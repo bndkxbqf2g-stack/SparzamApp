@@ -1527,17 +1527,124 @@ class RouteScreen extends StatelessWidget {
 
   final List<ListItem> items;
 
-  double basketCost(Store store) {
-    return items.fold<double>(
+  static const double euroPerKmRoundTrip = 0.22;
+  static const int maxStores = 3;
+
+  double basketCost(Store store, Iterable<ListItem> selectedItems) {
+    return selectedItems.fold<double>(
       0,
       (sum, item) =>
           sum + ((store.prices[item.product.id] ?? 0) * item.quantity),
     );
   }
 
-  double effectiveCost(Store store) {
-    const euroPerKmRoundTrip = 0.22;
-    return basketCost(store) + (store.distanceKm * 2 * euroPerKmRoundTrip);
+  double travelCost(Iterable<Store> selectedStores) {
+    return selectedStores.fold<double>(
+      0,
+      (sum, store) => sum + (store.distanceKm * 2 * euroPerKmRoundTrip),
+    );
+  }
+
+  RoutePlan buildPlan(List<Store> selectedStores) {
+    final assignments = <Store, List<ListItem>>{};
+    final unassigned = <ListItem>[];
+
+    for (final item in items) {
+      Store? bestStore;
+      var bestPrice = double.infinity;
+
+      for (final store in selectedStores) {
+        final price = store.prices[item.product.id];
+        if (price != null && price < bestPrice) {
+          bestPrice = price;
+          bestStore = store;
+        }
+      }
+
+      if (bestStore == null) {
+        unassigned.add(item);
+      } else {
+        assignments.putIfAbsent(bestStore, () => []).add(item);
+      }
+    }
+
+    final basket = assignments.entries.fold<double>(
+      0,
+      (sum, entry) => sum + basketCost(entry.key, entry.value),
+    );
+    final travel = travelCost(assignments.keys);
+
+    return RoutePlan(
+      stores: assignments.keys.toList(),
+      assignments: assignments,
+      basket: basket,
+      travel: travel,
+      total: basket + travel,
+      unassigned: unassigned,
+    );
+  }
+
+  List<List<Store>> storeCombinations() {
+    final combinations = <List<Store>>[];
+
+    for (final store in stores) {
+      combinations.add([store]);
+    }
+
+    for (var i = 0; i < stores.length; i++) {
+      for (var j = i + 1; j < stores.length; j++) {
+        combinations.add([stores[i], stores[j]]);
+      }
+    }
+
+    for (var i = 0; i < stores.length; i++) {
+      for (var j = i + 1; j < stores.length; j++) {
+        for (var k = j + 1; k < stores.length; k++) {
+          combinations.add([stores[i], stores[j], stores[k]]);
+        }
+      }
+    }
+
+    return combinations;
+  }
+
+  RoutePlan? bestPlan() {
+    if (items.isEmpty) {
+      return null;
+    }
+
+    final plans = storeCombinations()
+        .map(buildPlan)
+        .where((plan) => plan.unassigned.isEmpty)
+        .toList();
+
+    if (plans.isEmpty) {
+      return null;
+    }
+
+    plans.sort((a, b) {
+      final totalComparison = a.total.compareTo(b.total);
+      if (totalComparison != 0) {
+        return totalComparison;
+      }
+      return a.stores.length.compareTo(b.stores.length);
+    });
+
+    return plans.first;
+  }
+
+  RoutePlan? bestSingleStorePlan() {
+    final plans = stores
+        .map((store) => buildPlan([store]))
+        .where((plan) => plan.unassigned.isEmpty)
+        .toList();
+
+    if (plans.isEmpty) {
+      return null;
+    }
+
+    plans.sort((a, b) => a.total.compareTo(b.total));
+    return plans.first;
   }
 
   @override
@@ -1554,32 +1661,43 @@ class RouteScreen extends StatelessWidget {
       );
     }
 
-    final results = stores.map((store) {
-      return RouteResult(
-        store: store,
-        basket: basketCost(store),
-        total: effectiveCost(store),
-      );
-    }).toList()
-      ..sort((a, b) => a.total.compareTo(b.total));
+    final best = bestPlan();
+    final bestSingle = bestSingleStorePlan();
 
-    final best = results.first;
+    if (best == null) {
+      return const _RouteMessage(
+        title: 'Noch keine passende Einkaufsroute',
+        message:
+            'Für mindestens einen Artikel gibt es aktuell keinen hinterlegten '
+            'Preis in den Testmärkten. Diese Artikel werden später über echte '
+            'Produkt- und Angebotsdaten aufgelöst.',
+      );
+    }
+
+    final single = bestSingle;
+    final extraSavings = single == null ? 0 : single.total - best.total;
+    final usesMultipleStores = best.stores.length > 1;
+
+    final alternatives = storeCombinations()
+        .map(buildPlan)
+        .where((plan) => plan.unassigned.isEmpty)
+        .toList()
+      ..sort((a, b) => a.total.compareTo(b.total));
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 28),
       children: [
         Text(
-          'Beste Route',
+          'Einkaufsoptimierung',
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.w800,
-          ),
+                fontWeight: FontWeight.w800,
+              ),
         ),
         const SizedBox(height: 6),
-        Text(
-          'Erste Testlogik: Warenkorb + geschätzte Hin- und Rückfahrt.',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Colors.black54,
-          ),
+        const Text(
+          'sparzamApp vergleicht Warenkorb, Fahrtkosten und bis zu '
+          '3 Märkte. Ein Mehrmarkt-Einkauf wird nur sinnvoll, wenn die '
+          'Ersparnis die zusätzlichen Fahrten übersteigt.',
         ),
         const SizedBox(height: 18),
         Card(
@@ -1590,73 +1708,165 @@ class RouteScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const CircleAvatar(child: Icon(Icons.check)),
+                    CircleAvatar(
+                      backgroundColor: usesMultipleStores
+                          ? Colors.orange.shade50
+                          : Colors.green.shade50,
+                      child: Icon(
+                        usesMultipleStores
+                            ? Icons.alt_route
+                            : Icons.check_circle_outline,
+                        color: usesMultipleStores
+                            ? Colors.orange.shade700
+                            : Colors.green.shade700,
+                      ),
+                    ),
                     const SizedBox(width: 12),
-                    const Expanded(
+                    Expanded(
                       child: Text(
-                        'Aktuell günstigste Einzelroute',
-                        style: TextStyle(fontWeight: FontWeight.w700),
+                        usesMultipleStores
+                            ? 'Wirtschaftlich sinnvoll: mehrere Märkte'
+                            : 'Wirtschaftlich sinnvoll: ein Markt',
+                        style: const TextStyle(fontWeight: FontWeight.w800),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  '${best.store.name} · ${best.store.location}',
+                  best.stores
+                      .map((store) => store.name + ' · ' + store.location)
+                      .join(' + '),
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+                        fontWeight: FontWeight.w800,
+                      ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '${best.total.toStringAsFixed(2)} € Gesamtkosten',
+                  best.total.toStringAsFixed(2) +
+                      ' € wirtschaftliche Gesamtkosten',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+                        fontWeight: FontWeight.w800,
+                      ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 Text(
-                  'Warenkorb ${best.basket.toStringAsFixed(2)} € · '
-                  '${(best.store.distanceKm * 2).toStringAsFixed(1)} km',
+                  'Warenkorb ' +
+                      best.basket.toStringAsFixed(2) +
+                      ' € · Fahrt ' +
+                      best.travel.toStringAsFixed(2) +
+                      ' €',
                 ),
+                if (usesMultipleStores && extraSavings > 0) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    'Ersparnis gegenüber der günstigsten Einzelroute: ' +
+                        extraSavings.toStringAsFixed(2) +
+                        ' €',
+                    style: TextStyle(
+                      color: Colors.green.shade700,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
         ),
         const SizedBox(height: 18),
         Text(
-          'Vergleich der 7 Märkte',
+          'Dein Einkaufsplan',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+                fontWeight: FontWeight.w700,
+              ),
         ),
         const SizedBox(height: 10),
-        for (final result in results)
+        for (final store in best.stores)
+          Card(
+            child: ExpansionTile(
+              leading: CircleAvatar(
+                backgroundColor: store.isBigShop
+                    ? Colors.orange.shade50
+                    : Colors.blue.shade50,
+                child: Icon(
+                  store.isBigShop ? Icons.local_mall : Icons.storefront,
+                  color: store.isBigShop
+                      ? Colors.orange.shade700
+                      : Colors.blue.shade700,
+                ),
+              ),
+              title: Text(
+                store.name + ' · ' + store.location,
+                style: const TextStyle(fontWeight: FontWeight.w700),
+              ),
+              subtitle: Text(
+                best.assignments[store]!.length.toString() +
+                    ' Artikel · ' +
+                    basketCost(store, best.assignments[store]!)
+                        .toStringAsFixed(2) +
+                    ' €',
+              ),
+              children: [
+                for (final item in best.assignments[store]!)
+                  ListTile(
+                    dense: true,
+                    title: Text(item.product.name),
+                    trailing: Text(
+                      (store.prices[item.product.id]! * item.quantity)
+                              .toStringAsFixed(2) +
+                          ' €',
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                    subtitle: Text(
+                      item.quantity > 1
+                          ? item.product.unit + ' · ×' + item.quantity.toString()
+                          : item.product.unit,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        const SizedBox(height: 18),
+        Text(
+          'Vergleich',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+        ),
+        const SizedBox(height: 10),
+        for (final plan in alternatives.take(5))
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: Card(
               child: ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: result.store == best.store
-                      ? Colors.green.shade50
-                      : Colors.grey.shade100,
+                  backgroundColor: plan.stores.length == 1
+                      ? Colors.grey.shade100
+                      : Colors.orange.shade50,
                   child: Icon(
-                    result.store == best.store ? Icons.check : Icons.store,
-                    color: result.store == best.store
-                        ? Colors.green.shade700
-                        : Colors.black54,
+                    plan.stores.length == 1
+                        ? Icons.storefront
+                        : Icons.alt_route,
+                    color: plan.stores.length == 1
+                        ? Colors.black54
+                        : Colors.orange.shade700,
                   ),
                 ),
                 title: Text(
-                  '${result.store.name} · ${result.store.location}',
+                  plan.stores.map((store) => store.name).join(' + '),
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
                 subtitle: Text(
-                  'Warenkorb ${result.basket.toStringAsFixed(2)} € · '
-                  '${result.store.distanceKm.toStringAsFixed(1)} km',
+                  plan.stores.length.toString() +
+                      (plan.stores.length == 1 ? ' Markt · ' : ' Märkte · ') +
+                      'Warenkorb ' +
+                      plan.basket.toStringAsFixed(2) +
+                      ' € · Fahrt ' +
+                      plan.travel.toStringAsFixed(2) +
+                      ' €',
                 ),
                 trailing: Text(
-                  '${result.total.toStringAsFixed(2)} €',
+                  plan.total.toStringAsFixed(2) + ' €',
                   style: const TextStyle(fontWeight: FontWeight.w800),
                 ),
               ),
@@ -1668,8 +1878,10 @@ class RouteScreen extends StatelessWidget {
           child: const Padding(
             padding: EdgeInsets.all(16),
             child: Text(
-              'Noch Testdaten: Mehrmarkt-Kombinationen, Angebote, Coupons '
-              'und echte Preisquellen werden als nächste Ausbaustufe ergänzt.',
+              'Testlogik: Fahrtkosten werden derzeit als Hin- und Rückfahrt '
+              'pro Markt mit 0,22 €/km gerechnet. Später ersetzt sparzamApp '
+              'diese Schätzung durch echte Routen, Umwege, Angebote, Coupons '
+              'und persönliche Mobilitätsdaten.',
             ),
           ),
         ),
@@ -1678,16 +1890,70 @@ class RouteScreen extends StatelessWidget {
   }
 }
 
-class RouteResult {
-  const RouteResult({
-    required this.store,
+class RoutePlan {
+  const RoutePlan({
+    required this.stores,
+    required this.assignments,
     required this.basket,
+    required this.travel,
     required this.total,
+    required this.unassigned,
   });
 
-  final Store store;
+  final List<Store> stores;
+  final Map<Store, List<ListItem>> assignments;
   final double basket;
+  final double travel;
   final double total;
+  final List<ListItem> unassigned;
+}
+
+class _RouteMessage extends StatelessWidget {
+  const _RouteMessage({
+    required this.title,
+    required this.message,
+  });
+
+  final String title;
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.route_outlined,
+                  size: 52,
+                  color: Colors.blue.shade600,
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 18,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  message,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class ReceiptScreen extends StatelessWidget {
