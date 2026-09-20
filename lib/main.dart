@@ -7,12 +7,17 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final recentPurchaseStore = RecentPurchaseStore();
+  final shoppingListStore = ShoppingListStore();
+
   final recentPurchases = await recentPurchaseStore.load();
+  final initialShoppingList = await shoppingListStore.load();
 
   runApp(
     SparzamApp(
       recentPurchaseStore: recentPurchaseStore,
+      shoppingListStore: shoppingListStore,
       initialRecentPurchases: recentPurchases,
+      initialShoppingList: initialShoppingList,
     ),
   );
 }
@@ -114,6 +119,62 @@ class RecentPurchaseStore {
     );
 
     return next;
+  }
+}
+
+
+
+class ShoppingListStore {
+  static const _storageKey = 'shopping_list';
+  final SharedPreferencesAsync _preferences = SharedPreferencesAsync();
+
+  Future<List<ListItem>> load() async {
+    final values = await _preferences.getStringList(_storageKey);
+    if (values == null) {
+      return <ListItem>[];
+    }
+
+    final items = <ListItem>[];
+
+    for (final value in values) {
+      try {
+        final json = jsonDecode(value) as Map<String, dynamic>;
+        items.add(
+          ListItem(
+            product: Product(
+              id: json['id'] as String,
+              name: json['name'] as String,
+              unit: json['unit'] as String,
+              group: json['group'] as String,
+            ),
+            quantity: (json['quantity'] as num?)?.toInt() ?? 1,
+          ),
+        );
+      } catch (_) {
+        // Beschädigte Einzel-Einträge werden ignoriert.
+      }
+    }
+
+    return items;
+  }
+
+  Future<void> save(List<ListItem> items) async {
+    await _preferences.setStringList(
+      _storageKey,
+      items.map((item) {
+        return jsonEncode({
+          'id': item.product.id,
+          'name': item.product.name,
+          'unit': item.product.unit,
+          'group': item.product.group,
+          'quantity': item.quantity,
+        });
+      }).toList(),
+    );
+  }
+
+  Future<void> clear() async {
+    await _preferences.remove(_storageKey);
   }
 }
 
@@ -320,11 +381,15 @@ class SparzamApp extends StatelessWidget {
   const SparzamApp({
     super.key,
     required this.recentPurchaseStore,
+    required this.shoppingListStore,
     required this.initialRecentPurchases,
+    required this.initialShoppingList,
   });
 
   final RecentPurchaseStore recentPurchaseStore;
+  final ShoppingListStore shoppingListStore;
   final List<RecentPurchase> initialRecentPurchases;
+  final List<ListItem> initialShoppingList;
 
   @override
   Widget build(BuildContext context) {
@@ -350,7 +415,9 @@ class SparzamApp extends StatelessWidget {
       ),
       home: AppShell(
         recentPurchaseStore: recentPurchaseStore,
+        shoppingListStore: shoppingListStore,
         initialRecentPurchases: initialRecentPurchases,
+        initialShoppingList: initialShoppingList,
       ),
     );
   }
@@ -360,11 +427,15 @@ class AppShell extends StatefulWidget {
   const AppShell({
     super.key,
     required this.recentPurchaseStore,
+    required this.shoppingListStore,
     required this.initialRecentPurchases,
+    required this.initialShoppingList,
   });
 
   final RecentPurchaseStore recentPurchaseStore;
+  final ShoppingListStore shoppingListStore;
   final List<RecentPurchase> initialRecentPurchases;
+  final List<ListItem> initialShoppingList;
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -372,13 +443,18 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   int selectedIndex = 0;
-  final List<ListItem> shoppingList = [];
+  late List<ListItem> shoppingList;
   late List<RecentPurchase> recentPurchases;
 
   @override
   void initState() {
     super.initState();
+    shoppingList = [...widget.initialShoppingList];
     recentPurchases = [...widget.initialRecentPurchases];
+  }
+
+  Future<void> persistShoppingList() {
+    return widget.shoppingListStore.save(shoppingList);
   }
 
   // Erste Lernstufe: Die zuletzt gewählte Variante wird pro Produktgruppe
@@ -390,6 +466,7 @@ class _AppShellState extends State<AppShell> {
   void addProduct(Product product) {
     setState(() {
       preferredProductByGroup[product.group] = product.id;
+
       for (final item in shoppingList) {
         if (item.product.id == product.id) {
           item.quantity++;
@@ -399,6 +476,8 @@ class _AppShellState extends State<AppShell> {
 
       shoppingList.add(ListItem(product: product));
     });
+
+    persistShoppingList();
   }
 
   Future<void> markPurchased(Product product) async {
@@ -432,6 +511,8 @@ class _AppShellState extends State<AppShell> {
         shoppingList.removeAt(index);
       }
     });
+
+    persistShoppingList();
   }
 
   @override
