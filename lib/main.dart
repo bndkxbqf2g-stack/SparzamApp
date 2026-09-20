@@ -464,6 +464,7 @@ class SparzamApp extends StatelessWidget {
     required this.shoppingListStore,
     required this.initialRecentPurchases,
     required this.initialShoppingList,
+    required this.initialPreferredProductByGroup,
   });
 
   final RecentPurchaseStore recentPurchaseStore;
