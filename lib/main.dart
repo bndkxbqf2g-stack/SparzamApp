@@ -889,11 +889,20 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     }
   }
 
+  void _focusShoppingInput() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      _inputFocusNode.requestFocus();
+    });
+  }
+
   void add(Product product) {
     widget.onAdd(product);
     controller.clear();
     setState(() {});
-    FocusScope.of(context).requestFocus(_inputFocusNode);
+    _focusShoppingInput();
   }
 
   void addCustomProduct() {
@@ -917,6 +926,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     widget.onAdd(product);
     controller.clear();
     setState(() {});
+    _focusShoppingInput();
   }
 
   Future<void> toggleChecked(Product product) async {
