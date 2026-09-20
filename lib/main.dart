@@ -512,12 +512,14 @@ class AppShell extends StatefulWidget {
     required this.shoppingListStore,
     required this.initialRecentPurchases,
     required this.initialShoppingList,
+    required this.initialPreferredProductByGroup,
   });
 
   final RecentPurchaseStore recentPurchaseStore;
   final ShoppingListStore shoppingListStore;
   final List<RecentPurchase> initialRecentPurchases;
   final List<ListItem> initialShoppingList;
+  final Map<String, String> initialPreferredProductByGroup;
 
   @override
   State<AppShell> createState() => _AppShellState();
