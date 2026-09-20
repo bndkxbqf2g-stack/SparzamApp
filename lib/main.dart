@@ -28,12 +28,14 @@ class RecentPurchase {
     required this.name,
     required this.unit,
     required this.group,
+    this.purchaseCount = 1,
   });
 
   final String id;
   final String name;
   final String unit;
   final String group;
+  final int purchaseCount;
 
   factory RecentPurchase.fromProduct(Product product) {
     return RecentPurchase(
@@ -51,6 +53,7 @@ class RecentPurchase {
       name: json['name'] as String,
       unit: json['unit'] as String,
       group: json['group'] as String,
+      purchaseCount: (json['purchaseCount'] as num?)?.toInt() ?? 1,
     );
   }
 
@@ -60,6 +63,7 @@ class RecentPurchase {
       'name': name,
       'unit': unit,
       'group': group,
+      'purchaseCount': purchaseCount,
     });
   }
 
@@ -106,7 +110,14 @@ class RecentPurchaseStore {
     Product product,
     List<RecentPurchase> current,
   ) async {
-    final purchase = RecentPurchase.fromProduct(product);
+    final previous = current.where((item) => item.id == product.id).firstOrNull;
+    final purchase = RecentPurchase(
+      id: product.id,
+      name: product.name,
+      unit: product.unit,
+      group: product.group,
+      purchaseCount: (previous?.purchaseCount ?? 0) + 1,
+    );
 
     final next = <RecentPurchase>[
       purchase,
@@ -496,8 +507,6 @@ class _AppShellState extends State<AppShell> {
 
   void addProduct(Product product) {
     setState(() {
-      preferredProductByGroup[product.group] = product.id;
-
       for (final item in shoppingList) {
         if (item.product.id == product.id) {
           item.quantity++;
@@ -518,11 +527,8 @@ class _AppShellState extends State<AppShell> {
       recentPurchases,
     );
 
-    if (!mounted) {
-      return;
-    }
-
     setState(() {
+      preferredProductByGroup[product.group] = product.id;
       recentPurchases = next;
     });
   }
