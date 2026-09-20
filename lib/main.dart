@@ -577,6 +577,7 @@ class _AppShellState extends State<AppShell> {
         recentPurchases: recentPurchases,
         onPurchased: markPurchased,
         onClearPurchased: clearPurchasedItems,
+        shoppingListStore: widget.shoppingListStore,
       ),
       RouteScreen(items: shoppingList),
       const ReceiptScreen(),
@@ -826,6 +827,7 @@ class ShoppingListScreen extends StatefulWidget {
     required this.recentPurchases,
     required this.onPurchased,
     required this.onClearPurchased,
+    required this.shoppingListStore,
   });
 
   final List<ListItem> items;
@@ -835,6 +837,7 @@ class ShoppingListScreen extends StatefulWidget {
   final List<RecentPurchase> recentPurchases;
   final Future<void> Function(Product product) onPurchased;
   final void Function(Set<String> productIds) onClearPurchased;
+  final ShoppingListStore shoppingListStore;
 
   @override
   State<ShoppingListScreen> createState() => _ShoppingListScreenState();
@@ -844,6 +847,23 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   final controller = TextEditingController();
   final _inputFocusNode = FocusNode();
   final Set<String> checkedProductIds = <String>{};
+  List<RecentPurchase> knownItems = <RecentPurchase>[];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadKnownItems();
+  }
+
+  Future<void> _loadKnownItems() async {
+    final items = await widget.shoppingListStore.loadKnownItems();
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      knownItems = items;
+    });
+  }
 
   List<Product> get suggestions {
     final query = controller.text.trim().toLowerCase();
@@ -852,7 +872,12 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       return const <Product>[];
     }
 
-    final matches = products.where((product) {
+    final learnedMatches = knownItems
+        .map((item) => item.toProduct())
+        .where((product) => product.name.toLowerCase().contains(query))
+        .toList();
+
+    final catalogMatches = products.where((product) {
       final haystacks = <String>[
         product.name,
         product.group,
@@ -864,7 +889,18 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       );
     }).toList();
 
+    final combined = <Product>[...learnedMatches, ...catalogMatches];
+    final seen = <String>{};
+    final matches = combined.where((product) => seen.add(product.id)).toList();
+
     matches.sort((a, b) {
+      final aLearned = knownItems.any((item) => item.id == a.id);
+      final bLearned = knownItems.any((item) => item.id == b.id);
+
+      if (aLearned != bLearned) {
+        return aLearned ? -1 : 1;
+      }
+
       final aPreferred =
           widget.preferredProductByGroup[a.group] == a.id;
       final bPreferred =
