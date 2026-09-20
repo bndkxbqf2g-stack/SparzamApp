@@ -1,7 +1,120 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-void main() {
-  runApp(const SparzamApp());
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final recentPurchaseStore = RecentPurchaseStore();
+  final recentPurchases = await recentPurchaseStore.load();
+
+  runApp(
+    SparzamApp(
+      recentPurchaseStore: recentPurchaseStore,
+      initialRecentPurchases: recentPurchases,
+    ),
+  );
+}
+
+class RecentPurchase {
+  const RecentPurchase({
+    required this.id,
+    required this.name,
+    required this.unit,
+    required this.group,
+  });
+
+  final String id;
+  final String name;
+  final String unit;
+  final String group;
+
+  factory RecentPurchase.fromProduct(Product product) {
+    return RecentPurchase(
+      id: product.id,
+      name: product.name,
+      unit: product.unit,
+      group: product.group,
+    );
+  }
+
+  factory RecentPurchase.fromJson(String value) {
+    final json = jsonDecode(value) as Map<String, dynamic>;
+    return RecentPurchase(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      unit: json['unit'] as String,
+      group: json['group'] as String,
+    );
+  }
+
+  String toJson() {
+    return jsonEncode({
+      'id': id,
+      'name': name,
+      'unit': unit,
+      'group': group,
+    });
+  }
+
+  Product toProduct() {
+    final known = products.where((product) => product.id == id);
+    if (known.isNotEmpty) {
+      return known.first;
+    }
+
+    return Product(
+      id: id,
+      name: name,
+      unit: unit,
+      group: group,
+    );
+  }
+}
+
+class RecentPurchaseStore {
+  static const _storageKey = 'recent_purchases';
+  final SharedPreferencesAsync _preferences = SharedPreferencesAsync();
+
+  Future<List<RecentPurchase>> load() async {
+    final values = await _preferences.getStringList(_storageKey);
+
+    if (values == null) {
+      return <RecentPurchase>[];
+    }
+
+    final purchases = <RecentPurchase>[];
+
+    for (final value in values) {
+      try {
+        purchases.add(RecentPurchase.fromJson(value));
+      } catch (_) {
+        // Beschädigte Einzel-Einträge werden ignoriert.
+      }
+    }
+
+    return purchases.take(30).toList();
+  }
+
+  Future<List<RecentPurchase>> add(
+    Product product,
+    List<RecentPurchase> current,
+  ) async {
+    final purchase = RecentPurchase.fromProduct(product);
+
+    final next = <RecentPurchase>[
+      purchase,
+      ...current.where((item) => item.id != purchase.id),
+    ].take(30).toList();
+
+    await _preferences.setStringList(
+      _storageKey,
+      next.map((item) => item.toJson()).toList(),
+    );
+
+    return next;
+  }
 }
 
 class Store {
@@ -204,7 +317,14 @@ const stores = <Store>[
 ];
 
 class SparzamApp extends StatelessWidget {
-  const SparzamApp({super.key});
+  const SparzamApp({
+    super.key,
+    required this.recentPurchaseStore,
+    required this.initialRecentPurchases,
+  });
+
+  final RecentPurchaseStore recentPurchaseStore;
+  final List<RecentPurchase> initialRecentPurchases;
 
   @override
   Widget build(BuildContext context) {
@@ -228,13 +348,23 @@ class SparzamApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const AppShell(),
+      home: AppShell(
+        recentPurchaseStore: recentPurchaseStore,
+        initialRecentPurchases: initialRecentPurchases,
+      ),
     );
   }
 }
 
 class AppShell extends StatefulWidget {
-  const AppShell({super.key});
+  const AppShell({
+    super.key,
+    required this.recentPurchaseStore,
+    required this.initialRecentPurchases,
+  });
+
+  final RecentPurchaseStore recentPurchaseStore;
+  final List<RecentPurchase> initialRecentPurchases;
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -243,6 +373,13 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   int selectedIndex = 0;
   final List<ListItem> shoppingList = [];
+  late List<RecentPurchase> recentPurchases;
+
+  @override
+  void initState() {
+    super.initState();
+    recentPurchases = [...widget.initialRecentPurchases];
+  }
 
   // Erste Lernstufe: Die zuletzt gewählte Variante wird pro Produktgruppe
   // als persönliche Präferenz gemerkt. Vorerst nur während der App-Sitzung.
@@ -261,6 +398,21 @@ class _AppShellState extends State<AppShell> {
       }
 
       shoppingList.add(ListItem(product: product));
+    });
+  }
+
+  Future<void> markPurchased(Product product) async {
+    final next = await widget.recentPurchaseStore.add(
+      product,
+      recentPurchases,
+    );
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      recentPurchases = next;
     });
   }
 
@@ -295,6 +447,8 @@ class _AppShellState extends State<AppShell> {
         onAdd: addProduct,
         onChangeQuantity: changeQuantity,
         preferredProductByGroup: preferredProductByGroup,
+        recentPurchases: recentPurchases,
+        onPurchased: markPurchased,
       ),
       RouteScreen(items: shoppingList),
       const ReceiptScreen(),
