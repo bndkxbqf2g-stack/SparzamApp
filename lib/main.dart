@@ -898,7 +898,7 @@ class ReceiptScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 18),
-                const FilledButton.icon(
+                FilledButton.icon(
                   onPressed: null,
                   icon: Icon(Icons.camera_alt_outlined),
                   label: Text('Bon fotografieren'),
