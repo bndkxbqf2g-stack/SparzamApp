@@ -126,7 +126,38 @@ class RecentPurchaseStore {
 
 class ShoppingListStore {
   static const _storageKey = 'shopping_list';
+  static const _knownItemsStorageKey = 'known_shopping_items';
   final SharedPreferencesAsync _preferences = SharedPreferencesAsync();
+
+  Future<List<RecentPurchase>> loadKnownItems() async {
+    final values = await _preferences.getStringList(_knownItemsStorageKey);
+    if (values == null) {
+      return <RecentPurchase>[];
+    }
+
+    final items = <RecentPurchase>[];
+    for (final value in values) {
+      try {
+        items.add(RecentPurchase.fromJson(value));
+      } catch (_) {
+        // Beschädigte Einzel-Einträge werden ignoriert.
+      }
+    }
+    return items;
+  }
+
+  Future<void> saveKnownItem(Product product) async {
+    final current = await loadKnownItems();
+    final item = RecentPurchase.fromProduct(product);
+    final next = [
+      item,
+      ...current.where((existing) => existing.id != item.id),
+    ];
+    await _preferences.setStringList(
+      _knownItemsStorageKey,
+      next.map((entry) => entry.toJson()).toList(),
+    );
+  }
 
   Future<List<ListItem>> load() async {
     final values = await _preferences.getStringList(_storageKey);
@@ -478,6 +509,7 @@ class _AppShellState extends State<AppShell> {
     });
 
     persistShoppingList();
+    widget.shoppingListStore.saveKnownItem(product);
   }
 
   Future<void> markPurchased(Product product) async {
