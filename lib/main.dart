@@ -11,6 +11,8 @@ Future<void> main() async {
 
   final recentPurchases = await recentPurchaseStore.load();
   final initialShoppingList = await shoppingListStore.load();
+  final preferredProductByGroup =
+      await shoppingListStore.loadPreferredProducts();
 
   runApp(
     SparzamApp(
@@ -18,6 +20,7 @@ Future<void> main() async {
       shoppingListStore: shoppingListStore,
       initialRecentPurchases: recentPurchases,
       initialShoppingList: initialShoppingList,
+      initialPreferredProductByGroup: preferredProductByGroup,
     ),
   );
 }
@@ -29,6 +32,7 @@ class RecentPurchase {
     required this.unit,
     required this.group,
     this.purchaseCount = 1,
+    this.totalQuantity = 1,
   });
 
   final String id;
@@ -36,6 +40,9 @@ class RecentPurchase {
   final String unit;
   final String group;
   final int purchaseCount;
+  final int totalQuantity;
+
+  double get averageQuantity => totalQuantity / purchaseCount;
 
   factory RecentPurchase.fromProduct(Product product) {
     return RecentPurchase(
@@ -54,6 +61,7 @@ class RecentPurchase {
       unit: json['unit'] as String,
       group: json['group'] as String,
       purchaseCount: (json['purchaseCount'] as num?)?.toInt() ?? 1,
+      totalQuantity: (json['totalQuantity'] as num?)?.toInt() ?? 1,
     );
   }
 
@@ -64,6 +72,7 @@ class RecentPurchase {
       'unit': unit,
       'group': group,
       'purchaseCount': purchaseCount,
+      'totalQuantity': totalQuantity,
     });
   }
 
@@ -108,6 +117,7 @@ class RecentPurchaseStore {
 
   Future<List<RecentPurchase>> add(
     Product product,
+    int quantity,
     List<RecentPurchase> current,
   ) async {
     final previous = current.where((item) => item.id == product.id).firstOrNull;
@@ -117,6 +127,7 @@ class RecentPurchaseStore {
       unit: product.unit,
       group: product.group,
       purchaseCount: (previous?.purchaseCount ?? 0) + 1,
+      totalQuantity: (previous?.totalQuantity ?? 0) + quantity,
     );
 
     final next = <RecentPurchase>[
@@ -138,7 +149,34 @@ class RecentPurchaseStore {
 class ShoppingListStore {
   static const _storageKey = 'shopping_list';
   static const _knownItemsStorageKey = 'known_shopping_items';
+  static const _preferredProductsStorageKey = 'preferred_products_by_group';
   final SharedPreferencesAsync _preferences = SharedPreferencesAsync();
+
+  Future<Map<String, String>> loadPreferredProducts() async {
+    final values =
+        await _preferences.getStringList(_preferredProductsStorageKey);
+    if (values == null) {
+      return <String, String>{'butter': 'butter_streichzart'};
+    }
+
+    final result = <String, String>{};
+    for (final value in values) {
+      final parts = value.split('|');
+      if (parts.length == 2) {
+        result[parts[0]] = parts[1];
+      }
+    }
+    return result;
+  }
+
+  Future<void> savePreferredProduct(String group, String productId) async {
+    final current = await loadPreferredProducts();
+    current[group] = productId;
+    await _preferences.setStringList(
+      _preferredProductsStorageKey,
+      current.entries.map((entry) => '${entry.key}|${entry.value}').toList(),
+    );
+  }
 
   Future<List<RecentPurchase>> loadKnownItems() async {
     final values = await _preferences.getStringList(_knownItemsStorageKey);
@@ -432,6 +470,7 @@ class SparzamApp extends StatelessWidget {
   final ShoppingListStore shoppingListStore;
   final List<RecentPurchase> initialRecentPurchases;
   final List<ListItem> initialShoppingList;
+  final Map<String, String> initialPreferredProductByGroup;
 
   @override
   Widget build(BuildContext context) {
@@ -460,6 +499,7 @@ class SparzamApp extends StatelessWidget {
         shoppingListStore: shoppingListStore,
         initialRecentPurchases: initialRecentPurchases,
         initialShoppingList: initialShoppingList,
+        initialPreferredProductByGroup: initialPreferredProductByGroup,
       ),
     );
   }
@@ -493,17 +533,15 @@ class _AppShellState extends State<AppShell> {
     super.initState();
     shoppingList = [...widget.initialShoppingList];
     recentPurchases = [...widget.initialRecentPurchases];
+    preferredProductByGroup = {...widget.initialPreferredProductByGroup};
   }
 
   Future<void> persistShoppingList() {
     return widget.shoppingListStore.save(shoppingList);
   }
 
-  // Erste Lernstufe: Die zuletzt gewählte Variante wird pro Produktgruppe
-  // als persönliche Präferenz gemerkt. Vorerst nur während der App-Sitzung.
-  final Map<String, String> preferredProductByGroup = {
-    'butter': 'butter_streichzart',
-  };
+  // Persönliche Präferenzen werden dauerhaft gespeichert und beim Start geladen.
+  late final Map<String, String> preferredProductByGroup;
 
   void addProduct(Product product) {
     setState(() {
@@ -521,10 +559,16 @@ class _AppShellState extends State<AppShell> {
     widget.shoppingListStore.saveKnownItem(product);
   }
 
-  Future<void> markPurchased(Product product) async {
+  Future<void> markPurchased(Product product, int quantity) async {
     final next = await widget.recentPurchaseStore.add(
       product,
+      quantity,
       recentPurchases,
+    );
+
+    await widget.shoppingListStore.savePreferredProduct(
+      product.group,
+      product.id,
     );
 
     setState(() {
@@ -841,7 +885,7 @@ class ShoppingListScreen extends StatefulWidget {
   final void Function(String productId, int delta) onChangeQuantity;
   final Map<String, String> preferredProductByGroup;
   final List<RecentPurchase> recentPurchases;
-  final Future<void> Function(Product product) onPurchased;
+  final Future<void> Function(Product product, int quantity) onPurchased;
   final void Function(Set<String> productIds) onClearPurchased;
   final ShoppingListStore shoppingListStore;
 
@@ -1028,7 +1072,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     });
 
     if (!wasChecked) {
-      await widget.onPurchased(product);
+      final item = widget.items.firstWhere(
+        (item) => item.product.id == product.id,
+      );
+      await widget.onPurchased(product, item.quantity);
     }
   }
 
@@ -1202,7 +1249,11 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                       return ActionChip(
                         onPressed: () => add(purchase.toProduct()),
                         avatar: const Icon(Icons.history, size: 18),
-                        label: Text(purchase.name),
+                        label: Text(
+                          purchase.averageQuantity > 1.5
+                              ? '${purchase.name} · meist ×${purchase.averageQuantity.round()}'
+                              : purchase.name,
+                        ),
                       );
                     },
                   ),
