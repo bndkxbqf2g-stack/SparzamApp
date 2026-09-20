@@ -1182,7 +1182,6 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                       ],
                     ),
                   ],
-                    ),
                 ],
               ),
               const SizedBox(height: 14),
