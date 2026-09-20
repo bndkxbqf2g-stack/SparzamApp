@@ -540,6 +540,7 @@ class ShoppingListScreen extends StatefulWidget {
     required this.items,
     required this.onAdd,
     required this.onChangeQuantity,
+    required this.preferredProductByGroup,
   });
 
   final List<ListItem> items;
@@ -553,15 +554,16 @@ class ShoppingListScreen extends StatefulWidget {
 
 class _ShoppingListScreenState extends State<ShoppingListScreen> {
   final controller = TextEditingController();
+  final Set<String> checkedProductIds = <String>{};
 
   List<Product> get suggestions {
     final query = controller.text.trim().toLowerCase();
 
-    final matches = products.where((product) {
-      if (query.isEmpty) {
-        return true;
-      }
+    if (query.isEmpty) {
+      return const <Product>[];
+    }
 
+    final matches = products.where((product) {
       final haystacks = <String>[
         product.name,
         product.group,
@@ -593,14 +595,57 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     return matches;
   }
 
-  bool get hasMultipleMatchesForQuery {
-    final query = controller.text.trim().toLowerCase();
-    if (query.isEmpty) {
-      return false;
+  List<Product> get quickProducts {
+    final preferredIds = widget.preferredProductByGroup.values.toSet();
+    final preferred = products.where((p) => preferredIds.contains(p.id));
+    final favorites = products.where((p) => p.isFavorite);
+    final combined = <Product>[...preferred, ...favorites];
+
+    final seen = <String>{};
+    return combined.where((p) => seen.add(p.id)).take(5).toList();
+  }
+
+  Map<String, List<ListItem>> get itemsByGroup {
+    final grouped = <String, List<ListItem>>{};
+
+    for (final item in widget.items) {
+      grouped.putIfAbsent(item.product.group, () => []).add(item);
     }
 
-    return suggestions.length > 1 &&
-        suggestions.map((product) => product.group).toSet().length == 1;
+    return grouped;
+  }
+
+  String groupLabel(String group) {
+    switch (group) {
+      case 'butter':
+        return 'Milch & Käse';
+      case 'milch':
+        return 'Milch & Käse';
+      case 'obst':
+        return 'Obst & Gemüse';
+      case 'fleisch':
+        return 'Fleisch';
+      case 'nudeln':
+        return 'Nudeln & Beilagen';
+      default:
+        return 'Weitere Produkte';
+    }
+  }
+
+  void add(Product product) {
+    widget.onAdd(product);
+    controller.clear();
+    setState(() {});
+  }
+
+  void toggleChecked(String productId) {
+    setState(() {
+      if (checkedProductIds.contains(productId)) {
+        checkedProductIds.remove(productId);
+      } else {
+        checkedProductIds.add(productId);
+      }
+    });
   }
 
   @override
@@ -611,180 +656,258 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 28),
+    final grouped = itemsByGroup;
+
+    return Column(
       children: [
-        Text(
-          'Einkaufsliste',
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 16),
-        TextField(
-          controller: controller,
-          onChanged: (_) => setState(() {}),
-          decoration: InputDecoration(
-            hintText: 'Produkt hinzufügen, z. B. Butter',
-            prefixIcon: const Icon(Icons.search),
-            suffixIcon: controller.text.isEmpty
-                ? null
-                : IconButton(
-                    onPressed: () {
-                      controller.clear();
-                      setState(() {});
-                    },
-                    icon: const Icon(Icons.clear),
-                  ),
-            filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide.none,
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-        if (hasMultipleMatchesForQuery)
-          Card(
-            color: Colors.blue.shade50,
-            child: const Padding(
-              padding: EdgeInsets.all(14),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
+            children: [
+              Row(
                 children: [
-                  Icon(Icons.auto_awesome_outlined),
-                  SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      'sparzamApp erkennt mehrere passende Produkte. '
-                      'Deine zuletzt gewählte Variante steht oben.',
+                      'Einkaufsliste',
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
                     ),
                   ),
+                  if (widget.items.isNotEmpty)
+                    Text(
+                      '${widget.items.length}',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black54,
+                          ),
+                    ),
                 ],
               ),
-            ),
-          ),
-        if (hasMultipleMatchesForQuery) const SizedBox(height: 10),
-        Card(
-          child: Column(
-            children: [
-              for (final product in suggestions)
-                ListTile(
-                  leading: Icon(
-                    widget.preferredProductByGroup[product.group] == product.id
-                        ? Icons.auto_awesome
-                        : product.isFavorite
-                            ? Icons.star
-                            : Icons.add_circle_outline,
-                    color:
-                        widget.preferredProductByGroup[product.group] ==
-                                product.id
-                            ? Colors.blue.shade700
-                            : product.isFavorite
-                                ? Colors.amber.shade700
-                                : null,
-                  ),
-                  title: Text(
-                    widget.preferredProductByGroup[product.group] == product.id
-                        ? '${product.name} · deine Auswahl'
-                        : product.isFavorite
-                            ? '${product.name} · bisheriger Favorit'
-                            : product.name,
-                  ),
-                  subtitle: Text(product.unit),
-                  trailing: IconButton(
-                    onPressed: () {
-                      widget.onAdd(product);
-                      final group = product.group;
-                      controller.clear();
-                      setState(() {});
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'Gespeichert: ' + product.name + ' ist jetzt deine '
-                            'bevorzugte ' +
-                            (group == 'butter' ? 'Butter' : group) +
-                            '-Variante.',
-                          ),
-                          duration: const Duration(seconds: 2),
+              const SizedBox(height: 14),
+              TextField(
+                controller: controller,
+                onChanged: (_) => setState(() {}),
+                textInputAction: TextInputAction.done,
+                onSubmitted: (_) {
+                  if (suggestions.isNotEmpty) {
+                    add(suggestions.first);
+                  }
+                },
+                decoration: InputDecoration(
+                  hintText: 'Was möchtest du einkaufen?',
+                  prefixIcon: const Icon(Icons.add_circle_outline),
+                  suffixIcon: controller.text.isEmpty
+                      ? null
+                      : IconButton(
+                          onPressed: () {
+                            controller.clear();
+                            setState(() {});
+                          },
+                          icon: const Icon(Icons.close),
                         ),
-                      );
-                    },
-                    icon: const Icon(Icons.add),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 16,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none,
                   ),
                 ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 18),
-        Card(
-          child: widget.items.isEmpty
-              ? const Padding(
-                  padding: EdgeInsets.all(24),
+              ),
+              if (suggestions.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Card(
                   child: Column(
                     children: [
-                      Icon(Icons.shopping_basket_outlined, size: 48),
-                      SizedBox(height: 12),
-                      Text(
-                        'Deine Liste ist noch leer.',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 17,
+                      for (final product in suggestions)
+                        ListTile(
+                          onTap: () => add(product),
+                          leading: CircleAvatar(
+                            radius: 18,
+                            child: Icon(
+                              widget.preferredProductByGroup[product.group] ==
+                                      product.id
+                                  ? Icons.auto_awesome
+                                  : Icons.add,
+                              size: 18,
+                            ),
+                          ),
+                          title: Text(
+                            widget.preferredProductByGroup[product.group] ==
+                                    product.id
+                                ? '${product.name} · deine Auswahl'
+                                : product.name,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          subtitle: Text(product.unit),
+                          trailing: const Icon(Icons.chevron_right),
                         ),
-                      ),
-                      SizedBox(height: 6),
-                      Text(
-                        'Füge oben Produkte hinzu. Später lernt sparzamApp '
-                        'deine Lieblingsprodukte automatisch.',
-                        textAlign: TextAlign.center,
-                      ),
                     ],
                   ),
-                )
-              : Column(
-                  children: [
-                    for (final item in widget.items)
-                      ListTile(
-                        leading: item.product.isFavorite
-                            ? Icon(
-                                Icons.star,
-                                color: Colors.amber.shade700,
-                              )
-                            : const Icon(Icons.shopping_basket_outlined),
-                        title: Text(
-                          item.product.name,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        subtitle: Text(item.product.unit),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              onPressed: () => widget.onChangeQuantity(
-                                item.product.id,
-                                -1,
-                              ),
-                              icon: const Icon(Icons.remove_circle_outline),
-                            ),
-                            Text(
-                              '${item.quantity}',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () => widget.onChangeQuantity(
-                                item.product.id,
-                                1,
-                              ),
-                              icon: const Icon(Icons.add_circle_outline),
-                            ),
-                          ],
-                        ),
-                      ),
-                  ],
                 ),
+              ] else if (controller.text.trim().isEmpty && quickProducts.isNotEmpty) ...[
+                const SizedBox(height: 14),
+                Text(
+                  'Schnell hinzufügen',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 44,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: quickProducts.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 8),
+                    itemBuilder: (context, index) {
+                      final product = quickProducts[index];
+                      return ActionChip(
+                        onPressed: () => add(product),
+                        avatar: const Icon(Icons.add, size: 18),
+                        label: Text(product.name),
+                      );
+                    },
+                  ),
+                ),
+              ],
+              const SizedBox(height: 22),
+              if (widget.items.isEmpty)
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 34, 24, 34),
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.shopping_basket_outlined,
+                          size: 52,
+                          color: Colors.blue.shade600,
+                        ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Deine Liste ist noch leer.',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        const Text(
+                          'Tippe oben ein Produkt ein oder füge es über '
+                          '„Schnell hinzufügen“ direkt hinzu.',
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              else
+                for (final entry in grouped.entries) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Text(
+                      groupLabel(entry.key),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
+                    ),
+                  ),
+                  Card(
+                    clipBehavior: Clip.antiAlias,
+                    child: Column(
+                      children: [
+                        for (var i = 0; i < entry.value.length; i++) ...[
+                          Builder(
+                            builder: (context) {
+                              final item = entry.value[i];
+                              final checked =
+                                  checkedProductIds.contains(item.product.id);
+
+                              return ListTile(
+                                onTap: () => toggleChecked(item.product.id),
+                                leading: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 150),
+                                  width: 26,
+                                  height: 26,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: checked
+                                        ? Colors.green.shade600
+                                        : Colors.transparent,
+                                    border: Border.all(
+                                      color: checked
+                                          ? Colors.green.shade600
+                                          : Colors.black26,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: checked
+                                      ? const Icon(
+                                          Icons.check,
+                                          size: 17,
+                                          color: Colors.white,
+                                        )
+                                      : null,
+                                ),
+                                title: Text(
+                                  item.product.name,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    decoration: checked
+                                        ? TextDecoration.lineThrough
+                                        : null,
+                                    color: checked ? Colors.black45 : null,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  item.quantity > 1
+                                      ? '${item.product.unit} · ×${item.quantity}'
+                                      : item.product.unit,
+                                ),
+                                trailing: PopupMenuButton<String>(
+                                  onSelected: (value) {
+                                    if (value == 'minus') {
+                                      widget.onChangeQuantity(
+                                        item.product.id,
+                                        -1,
+                                      );
+                                    } else if (value == 'plus') {
+                                      widget.onChangeQuantity(
+                                        item.product.id,
+                                        1,
+                                      );
+                                    }
+                                  },
+                                  itemBuilder: (_) => const [
+                                    PopupMenuItem(
+                                      value: 'plus',
+                                      child: Text('Menge erhöhen'),
+                                    ),
+                                    PopupMenuItem(
+                                      value: 'minus',
+                                      child: Text('Menge verringern'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                          if (i < entry.value.length - 1)
+                            const Divider(height: 1),
+                        ],
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+            ],
+          ),
         ),
       ],
     );
