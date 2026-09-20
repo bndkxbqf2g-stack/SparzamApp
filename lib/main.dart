@@ -515,6 +515,20 @@ class _AppShellState extends State<AppShell> {
     persistShoppingList();
   }
 
+  void clearPurchasedItems(Set<String> productIds) {
+    if (productIds.isEmpty) {
+      return;
+    }
+
+    setState(() {
+      shoppingList.removeWhere(
+        (item) => productIds.contains(item.product.id),
+      );
+    });
+
+    persistShoppingList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final pages = [
@@ -530,6 +544,7 @@ class _AppShellState extends State<AppShell> {
         preferredProductByGroup: preferredProductByGroup,
         recentPurchases: recentPurchases,
         onPurchased: markPurchased,
+        onClearPurchased: clearPurchasedItems,
       ),
       RouteScreen(items: shoppingList),
       const ReceiptScreen(),
@@ -778,6 +793,7 @@ class ShoppingListScreen extends StatefulWidget {
     required this.preferredProductByGroup,
     required this.recentPurchases,
     required this.onPurchased,
+    required this.onClearPurchased,
   });
 
   final List<ListItem> items;
@@ -786,6 +802,7 @@ class ShoppingListScreen extends StatefulWidget {
   final Map<String, String> preferredProductByGroup;
   final List<RecentPurchase> recentPurchases;
   final Future<void> Function(Product product) onPurchased;
+  final void Function(Set<String> productIds) onClearPurchased;
 
   @override
   State<ShoppingListScreen> createState() => _ShoppingListScreenState();
@@ -1110,6 +1127,22 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 ),
               ],
               const SizedBox(height: 22),
+              if (checkedProductIds.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 14),
+                  child: FilledButton.icon(
+                    onPressed: () {
+                      final purchased = {...checkedProductIds};
+                      widget.onClearPurchased(purchased);
+                      setState(() => checkedProductIds.clear());
+                    },
+                    icon: const Icon(Icons.check_circle_outline),
+                    label: Text(
+                      checkedProductIds.length.toString() +
+                          ' erledigte Artikel entfernen',
+                    ),
+                  ),
+                ),
               if (widget.items.isEmpty)
                 Card(
                   child: Padding(
