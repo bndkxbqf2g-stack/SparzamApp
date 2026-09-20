@@ -1131,13 +1131,57 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                           ),
                     ),
                   ),
-                  if (widget.items.isNotEmpty)
+                  if (widget.items.isNotEmpty) ...[
                     Text(
-                      '${widget.items.length}',
+                      widget.items.length.toString() + ' Artikel',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w700,
                             color: Colors.black54,
                           ),
+                    ),
+                    const SizedBox(width: 4),
+                    PopupMenuButton<String>(
+                      tooltip: 'Listenoptionen',
+                      onSelected: (value) async {
+                        if (value != 'clear') {
+                          return;
+                        }
+                        final shouldClear = await showDialog<bool>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Einkaufsliste leeren?'),
+                                content: const Text(
+                                  'Alle Artikel werden aus der aktuellen Liste entfernt. '
+                                  'Deine Kaufhistorie bleibt erhalten.',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context, false),
+                                    child: const Text('Abbrechen'),
+                                  ),
+                                  FilledButton(
+                                    onPressed: () => Navigator.pop(context, true),
+                                    child: const Text('Liste leeren'),
+                                  ),
+                                ],
+                              ),
+                            ) ??
+                            false;
+                        if (shouldClear) {
+                          widget.onClearPurchased(
+                            widget.items.map((item) => item.product.id).toSet(),
+                          );
+                          setState(() => checkedProductIds.clear());
+                        }
+                      },
+                      itemBuilder: (_) => const [
+                        PopupMenuItem(
+                          value: 'clear',
+                          child: Text('Gesamte Liste leeren'),
+                        ),
+                      ],
+                    ),
+                  ],
                     ),
                 ],
               ),
@@ -1153,12 +1197,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     return;
                   }
 
-                  final exactMatch = suggestions.where(
-                    (product) => product.name.toLowerCase() == name.toLowerCase(),
-                  );
-
-                  if (exactMatch.isNotEmpty) {
-                    add(exactMatch.first);
+                  if (suggestions.isNotEmpty) {
+                    add(suggestions.first);
                   } else {
                     addCustomProduct();
                   }
@@ -1432,28 +1472,34 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                       ? '${item.product.unit} · ×${item.quantity}'
                                       : item.product.unit,
                                 ),
-                                trailing: PopupMenuButton<String>(
-                                  onSelected: (value) {
-                                    if (value == 'minus') {
-                                      widget.onChangeQuantity(
-                                        item.product.id,
-                                        -1,
-                                      );
-                                    } else if (value == 'plus') {
-                                      widget.onChangeQuantity(
-                                        item.product.id,
-                                        1,
-                                      );
-                                    }
-                                  },
-                                  itemBuilder: (_) => const [
-                                    PopupMenuItem(
-                                      value: 'plus',
-                                      child: Text('Menge erhöhen'),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      tooltip: 'Menge verringern',
+                                      onPressed: checked
+                                          ? null
+                                          : () => widget.onChangeQuantity(
+                                                item.product.id,
+                                                -1,
+                                              ),
+                                      icon: const Icon(Icons.remove_circle_outline),
                                     ),
-                                    PopupMenuItem(
-                                      value: 'minus',
-                                      child: Text('Menge verringern'),
+                                    Text(
+                                      item.quantity.toString(),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      tooltip: 'Menge erhöhen',
+                                      onPressed: checked
+                                          ? null
+                                          : () => widget.onChangeQuantity(
+                                                item.product.id,
+                                                1,
+                                              ),
+                                      icon: const Icon(Icons.add_circle_outline),
                                     ),
                                   ],
                                 ),
