@@ -708,8 +708,19 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 onChanged: (_) => setState(() {}),
                 textInputAction: TextInputAction.done,
                 onSubmitted: (_) {
-                  if (suggestions.isNotEmpty) {
-                    add(suggestions.first);
+                  final name = controller.text.trim();
+                  if (name.isEmpty) {
+                    return;
+                  }
+
+                  final exactMatch = suggestions.where(
+                    (product) => product.name.toLowerCase() == name.toLowerCase(),
+                  );
+
+                  if (exactMatch.isNotEmpty) {
+                    add(exactMatch.first);
+                  } else {
+                    addCustomProduct();
                   }
                 },
                 decoration: InputDecoration(
