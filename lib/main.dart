@@ -907,6 +907,19 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         return aLearned ? -1 : 1;
       }
 
+      if (aLearned && bLearned) {
+        final aCount = knownItems
+            .firstWhere((item) => item.id == a.id)
+            .purchaseCount;
+        final bCount = knownItems
+            .firstWhere((item) => item.id == b.id)
+            .purchaseCount;
+
+        if (aCount != bCount) {
+          return bCount.compareTo(aCount);
+        }
+      }
+
       final aPreferred =
           widget.preferredProductByGroup[a.group] == a.id;
       final bPreferred =
