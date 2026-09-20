@@ -638,6 +638,24 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     setState(() {});
   }
 
+  void addCustomProduct() {
+    final name = controller.text.trim();
+    if (name.isEmpty) {
+      return;
+    }
+
+    final product = Product(
+      id: 'custom_${DateTime.now().microsecondsSinceEpoch}',
+      name: name,
+      unit: 'Artikel',
+      group: 'custom',
+    );
+
+    widget.onAdd(product);
+    controller.clear();
+    setState(() {});
+  }
+
   void toggleChecked(String productId) {
     setState(() {
       if (checkedProductIds.contains(productId)) {
@@ -748,7 +766,40 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                           subtitle: Text(product.unit),
                           trailing: const Icon(Icons.chevron_right),
                         ),
+                      ListTile(
+                        onTap: addCustomProduct,
+                        leading: const CircleAvatar(
+                          radius: 18,
+                          child: Icon(Icons.playlist_add),
+                        ),
+                        title: Text(
+                          '„${controller.text.trim()}“ zur Liste hinzufügen',
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: const Text(
+                          'Noch kein bekanntes Produkt – wird trotzdem gespeichert.',
+                        ),
+                        trailing: const Icon(Icons.chevron_right),
+                      ),
                     ],
+                  ),
+                ),
+              ] else if (controller.text.trim().isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Card(
+                  child: ListTile(
+                    onTap: addCustomProduct,
+                    leading: const CircleAvatar(
+                      child: Icon(Icons.playlist_add),
+                    ),
+                    title: Text(
+                      '„${controller.text.trim()}“ hinzufügen',
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                    subtitle: const Text(
+                      'Noch nicht bekannt – trotzdem direkt auf die Einkaufsliste.',
+                    ),
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 18),
                   ),
                 ),
               ] else if (controller.text.trim().isEmpty && quickProducts.isNotEmpty) ...[
