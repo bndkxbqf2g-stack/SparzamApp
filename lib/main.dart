@@ -25,12 +25,16 @@ class Product {
     required this.id,
     required this.name,
     required this.unit,
+    required this.group,
+    this.aliases = const [],
     this.isFavorite = false,
   });
 
   final String id;
   final String name;
   final String unit;
+  final String group;
+  final List<String> aliases;
   final bool isFavorite;
 }
 
@@ -49,37 +53,51 @@ const products = <Product>[
     id: 'butter_streichzart',
     name: 'Streichzart ungesalzen',
     unit: '250 g',
+    group: 'butter',
+    aliases: ['butter'],
     isFavorite: true,
   ),
   Product(
     id: 'butter_block',
     name: 'Butterblock',
     unit: '250 g',
+    group: 'butter',
+    aliases: ['butter', 'backen'],
   ),
   Product(
     id: 'milch_35',
     name: 'Vollmilch 3,5 %',
     unit: '1 l',
+    group: 'milch',
+    aliases: ['milch'],
   ),
   Product(
     id: 'bananen',
     name: 'Bananen',
     unit: '1 kg',
+    group: 'obst',
+    aliases: ['banane'],
   ),
   Product(
     id: 'weintrauben',
     name: 'Weintrauben',
     unit: '500 g',
+    group: 'obst',
+    aliases: ['trauben', 'weintraube'],
   ),
   Product(
     id: 'hackfleisch',
     name: 'Hackfleisch gemischt',
     unit: '500 g',
+    group: 'fleisch',
+    aliases: ['hack', 'hackfleisch'],
   ),
   Product(
     id: 'nudeln',
     name: 'Spaghetti',
     unit: '500 g',
+    group: 'nudeln',
+    aliases: ['nudeln', 'pasta'],
   ),
 ];
 
@@ -226,8 +244,15 @@ class _AppShellState extends State<AppShell> {
   int selectedIndex = 0;
   final List<ListItem> shoppingList = [];
 
+  // Erste Lernstufe: Die zuletzt gewählte Variante wird pro Produktgruppe
+  // als persönliche Präferenz gemerkt. Vorerst nur während der App-Sitzung.
+  final Map<String, String> preferredProductByGroup = {
+    'butter': 'butter_streichzart',
+  };
+
   void addProduct(Product product) {
     setState(() {
+      preferredProductByGroup[product.group] = product.id;
       for (final item in shoppingList) {
         if (item.product.id == product.id) {
           item.quantity++;
@@ -269,6 +294,7 @@ class _AppShellState extends State<AppShell> {
         items: shoppingList,
         onAdd: addProduct,
         onChangeQuantity: changeQuantity,
+        preferredProductByGroup: preferredProductByGroup,
       ),
       RouteScreen(items: shoppingList),
       const ReceiptScreen(),
@@ -519,6 +545,7 @@ class ShoppingListScreen extends StatefulWidget {
   final List<ListItem> items;
   final ValueChanged<Product> onAdd;
   final void Function(String productId, int delta) onChangeQuantity;
+  final Map<String, String> preferredProductByGroup;
 
   @override
   State<ShoppingListScreen> createState() => _ShoppingListScreenState();
@@ -530,13 +557,50 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   List<Product> get suggestions {
     final query = controller.text.trim().toLowerCase();
 
+    final matches = products.where((product) {
+      if (query.isEmpty) {
+        return true;
+      }
+
+      final haystacks = <String>[
+        product.name,
+        product.group,
+        ...product.aliases,
+      ];
+
+      return haystacks.any(
+        (value) => value.toLowerCase().contains(query),
+      );
+    }).toList();
+
+    matches.sort((a, b) {
+      final aPreferred =
+          widget.preferredProductByGroup[a.group] == a.id;
+      final bPreferred =
+          widget.preferredProductByGroup[b.group] == b.id;
+
+      if (aPreferred != bPreferred) {
+        return aPreferred ? -1 : 1;
+      }
+
+      if (a.isFavorite != b.isFavorite) {
+        return a.isFavorite ? -1 : 1;
+      }
+
+      return a.name.compareTo(b.name);
+    });
+
+    return matches;
+  }
+
+  bool get hasMultipleMatchesForQuery {
+    final query = controller.text.trim().toLowerCase();
     if (query.isEmpty) {
-      return products;
+      return false;
     }
 
-    return products
-        .where((product) => product.name.toLowerCase().contains(query))
-        .toList();
+    return suggestions.length > 1 &&
+        suggestions.map((product) => product.group).toSet().length == 1;
   }
 
   @override
@@ -581,26 +645,71 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           ),
         ),
         const SizedBox(height: 10),
+        if (hasMultipleMatchesForQuery)
+          Card(
+            color: Colors.blue.shade50,
+            child: const Padding(
+              padding: EdgeInsets.all(14),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.auto_awesome_outlined),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'sparzamApp erkennt mehrere passende Produkte. '
+                      'Deine zuletzt gewählte Variante steht oben.',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        if (hasMultipleMatchesForQuery) const SizedBox(height: 10),
         Card(
           child: Column(
             children: [
               for (final product in suggestions)
                 ListTile(
                   leading: Icon(
-                    product.isFavorite ? Icons.star : Icons.add_circle_outline,
-                    color: product.isFavorite ? Colors.amber.shade700 : null,
+                    widget.preferredProductByGroup[product.group] == product.id
+                        ? Icons.auto_awesome
+                        : product.isFavorite
+                            ? Icons.star
+                            : Icons.add_circle_outline,
+                    color:
+                        widget.preferredProductByGroup[product.group] ==
+                                product.id
+                            ? Colors.blue.shade700
+                            : product.isFavorite
+                                ? Colors.amber.shade700
+                                : null,
                   ),
                   title: Text(
-                    product.isFavorite
-                        ? '${product.name} · dein Favorit'
-                        : product.name,
+                    widget.preferredProductByGroup[product.group] == product.id
+                        ? '${product.name} · deine Auswahl'
+                        : product.isFavorite
+                            ? '${product.name} · bisheriger Favorit'
+                            : product.name,
                   ),
                   subtitle: Text(product.unit),
                   trailing: IconButton(
                     onPressed: () {
                       widget.onAdd(product);
+                      final group = product.group;
                       controller.clear();
                       setState(() {});
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Gespeichert: ' + product.name + ' ist jetzt deine '
+                            'bevorzugte ' +
+                            (group == 'butter' ? 'Butter' : group) +
+                            '-Variante.',
+                          ),
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
                     },
                     icon: const Icon(Icons.add),
                   ),
