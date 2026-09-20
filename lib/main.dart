@@ -954,16 +954,22 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         return aLearned ? -1 : 1;
       }
 
-      if (aLearned && bLearned) {
-        final aCount = knownItems
-            .firstWhere((item) => item.id == a.id)
-            .purchaseCount;
-        final bCount = knownItems
-            .firstWhere((item) => item.id == b.id)
-            .purchaseCount;
+      final aPurchase = widget.recentPurchases
+          .where((item) => item.id == a.id)
+          .firstOrNull;
+      final bPurchase = widget.recentPurchases
+          .where((item) => item.id == b.id)
+          .firstOrNull;
 
-        if (aCount != bCount) {
-          return bCount.compareTo(aCount);
+      if (aPurchase != null || bPurchase != null) {
+        if (aPurchase == null) {
+          return 1;
+        }
+        if (bPurchase == null) {
+          return -1;
+        }
+        if (aPurchase.purchaseCount != bPurchase.purchaseCount) {
+          return bPurchase.purchaseCount.compareTo(aPurchase.purchaseCount);
         }
       }
 
@@ -1034,6 +1040,22 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
 
   void add(Product product) {
     widget.onAdd(product);
+    controller.clear();
+    setState(() {});
+    _focusShoppingInput();
+  }
+
+  void addRecentPurchase(RecentPurchase purchase) {
+    final product = purchase.toProduct();
+    widget.onAdd(product);
+
+    final learnedQuantity = purchase.averageQuantity.round();
+    if (learnedQuantity > 1) {
+      for (var index = 1; index < learnedQuantity; index++) {
+        widget.onAdd(product);
+      }
+    }
+
     controller.clear();
     setState(() {});
     _focusShoppingInput();
@@ -1192,7 +1214,20 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          subtitle: Text(product.unit),
+                          subtitle: Text(
+                            () {
+                              final purchase = widget.recentPurchases
+                                  .where((item) => item.id == product.id)
+                                  .firstOrNull;
+                              if (purchase == null) {
+                                return product.unit;
+                              }
+                              final quantity = purchase.averageQuantity.round();
+                              return quantity > 1
+                                  ? product.unit + ' · meist ×' + quantity.toString()
+                                  : product.unit;
+                            }(),
+                          ),
                           trailing: const Icon(Icons.chevron_right),
                         ),
                       ListTile(
@@ -1250,7 +1285,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     itemBuilder: (context, index) {
                       final purchase = widget.recentPurchases[index];
                       return ActionChip(
-                        onPressed: () => add(purchase.toProduct()),
+                        onPressed: () => addRecentPurchase(purchase),
                         avatar: const Icon(Icons.history, size: 18),
                         label: Text(
                           purchase.averageQuantity > 1.5
