@@ -810,6 +810,7 @@ class ShoppingListScreen extends StatefulWidget {
 
 class _ShoppingListScreenState extends State<ShoppingListScreen> {
   final controller = TextEditingController();
+  final _inputFocusNode = FocusNode();
   final Set<String> checkedProductIds = <String>{};
 
   List<Product> get suggestions {
@@ -892,6 +893,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     widget.onAdd(product);
     controller.clear();
     setState(() {});
+    FocusScope.of(context).requestFocus(_inputFocusNode);
   }
 
   void addCustomProduct() {
@@ -936,6 +938,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   @override
   void dispose() {
     controller.dispose();
+    _inputFocusNode.dispose();
     super.dispose();
   }
 
@@ -972,6 +975,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               const SizedBox(height: 14),
               TextField(
                 controller: controller,
+                focusNode: _inputFocusNode,
                 onChanged: (_) => setState(() {}),
                 textInputAction: TextInputAction.done,
                 onSubmitted: (_) {
