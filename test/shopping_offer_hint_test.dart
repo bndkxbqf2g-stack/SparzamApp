@@ -45,6 +45,38 @@ void main() {
     expect(hint.savings, greaterThan(0));
   });
 
+  test('deaktivierte Märkte werden für Angebotshinweise ignoriert', () {
+    final item = ListItem(product: milk);
+    final offers = [
+      Offer(
+        id: 'lidl_milk',
+        productId: 'milch_35',
+        storeName: 'Lidl',
+        originalPrice: 1.29,
+        offerPrice: 1.09,
+        validUntil: DateTime(2026, 9, 25),
+      ),
+      Offer(
+        id: 'aldi_milk',
+        productId: 'milch_35',
+        storeName: 'ALDI Süd',
+        originalPrice: 1.15,
+        offerPrice: 0.69,
+        validUntil: DateTime(2026, 9, 25),
+      ),
+    ];
+
+    final hint = bestShoppingOffer(
+      item,
+      offers,
+      now: DateTime(2026, 9, 22),
+      enabledStoreNames: const ['Lidl'],
+    );
+
+    expect(hint, isNotNull);
+    expect(hint!.storeName, 'Lidl');
+  });
+
   test('abgelaufenes Angebot erzeugt keinen Hinweis', () {
     final item = ListItem(product: milk);
     final offers = [
