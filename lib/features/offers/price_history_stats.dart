@@ -3,6 +3,8 @@ import '../../models/price_point.dart';
 class PriceHistoryStats {
   const PriceHistoryStats({
     required this.samples,
+    required this.samples30,
+    required this.samples90,
     this.normal90,
     this.best30,
     this.best90,
@@ -11,6 +13,8 @@ class PriceHistoryStats {
   });
 
   final int samples;
+  final int samples30;
+  final int samples90;
   final double? normal90;
   final double? best30;
   final double? best90;
@@ -24,7 +28,8 @@ PriceHistoryStats priceHistoryStats(
   required String storeName,
   DateTime? now,
 }) {
-  final today = now ?? DateTime.now();
+  final reference = now ?? DateTime.now();
+  final today = DateTime(reference.year, reference.month, reference.day);
   final cutoff30 = today.subtract(const Duration(days: 30));
   final cutoff90 = today.subtract(const Duration(days: 90));
 
@@ -33,15 +38,32 @@ PriceHistoryStats priceHistoryStats(
         (point) =>
             point.productId == productId &&
             point.storeName == storeName &&
-            !point.date.isAfter(today),
+            !DateTime(point.date.year, point.date.month, point.date.day)
+                .isAfter(today),
       )
       .toList()
     ..sort((a, b) => a.date.compareTo(b.date));
 
   final days90 =
-      matching.where((point) => !point.date.isBefore(cutoff90)).toList();
+      matching
+          .where(
+            (point) => !DateTime(
+              point.date.year,
+              point.date.month,
+              point.date.day,
+            ).isBefore(cutoff90),
+          )
+          .toList();
   final days30 =
-      matching.where((point) => !point.date.isBefore(cutoff30)).toList();
+      matching
+          .where(
+            (point) => !DateTime(
+              point.date.year,
+              point.date.month,
+              point.date.day,
+            ).isBefore(cutoff30),
+          )
+          .toList();
 
   final normal90 = days90.isEmpty
       ? null
@@ -50,6 +72,8 @@ PriceHistoryStats priceHistoryStats(
 
   return PriceHistoryStats(
     samples: matching.length,
+    samples30: days30.length,
+    samples90: days90.length,
     normal90: normal90,
     best30: _minimum(days30),
     best90: _minimum(days90),

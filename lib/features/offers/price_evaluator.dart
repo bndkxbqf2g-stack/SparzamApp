@@ -54,7 +54,7 @@ PriceEvaluation evaluatePrice(
     normalPrice: normal,
     bestPrice: best,
     savingPercent: saving,
-    sampleCount: stats.samples,
+    sampleCount: stats.samples90,
     best30Price: stats.best30,
     best90Price: stats.best90,
   );
