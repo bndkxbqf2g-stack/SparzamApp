@@ -1,4 +1,5 @@
 import '../../models/list_item.dart';
+import '../../models/market_price.dart';
 import '../../models/offer.dart';
 import 'shopping_offer_hint.dart';
 
@@ -7,6 +8,7 @@ List<ListItem> prioritizeOfferItems(
   List<Offer> offers, {
   DateTime? now,
   List<String> enabledStoreNames = const <String>[],
+  List<MarketPrice> marketPrices = const <MarketPrice>[],
 }) {
   final indexed = items.indexed.map((entry) {
     final hint = bestShoppingOffer(
@@ -14,6 +16,7 @@ List<ListItem> prioritizeOfferItems(
       offers,
       now: now,
       enabledStoreNames: enabledStoreNames,
+      marketPrices: marketPrices,
     );
     return _RankedItem(
       item: entry.$2,
