@@ -30,7 +30,7 @@ void main() {
       return http.Response('', 404);
     });
 
-    final service = RoadDistanceService(client: client);
+    final service = RoadDistanceService(originAddress: '97225 Zellingen, Germany', client: client);
     final distance = await service.fetchKm('Testmarkt, Germany');
 
     expect(distance, 4.2);
@@ -48,7 +48,7 @@ void main() {
       return http.Response('', 500);
     });
 
-    final service = RoadDistanceService(client: client);
+    final service = RoadDistanceService(originAddress: '97225 Zellingen, Germany', client: client);
     final distance = await service.fetchKm('Testmarkt, Germany');
 
     expect(distance, isNull);
