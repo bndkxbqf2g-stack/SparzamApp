@@ -137,7 +137,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         .replaceAll(RegExp(r'^_+|_+$'), '');
 
     final product = Product(
-      id: 'custom_' + (slug.isEmpty ? 'artikel' : slug),
+      id: 'custom_${slug.isEmpty ? 'artikel' : slug}',
       name: name,
       unit: 'Artikel',
       group: 'custom',
@@ -197,7 +197,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   ),
                   if (widget.items.isNotEmpty) ...[
                     Text(
-                      widget.items.length.toString() + ' Artikel',
+                      '${widget.items.length} Artikel',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w700,
                             color: Colors.black54,
@@ -331,7 +331,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                               }
                               final quantity = purchase.averageQuantity.round();
                               return quantity > 1
-                                  ? product.unit + ' · meist ×' + quantity.toString()
+                                  ? '${product.unit} · meist ×$quantity'
                                   : product.unit;
                             }(),
                           ),
@@ -388,7 +388,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: widget.recentPurchases.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 8),
+                    separatorBuilder: (context, index) => const SizedBox(width: 8),
                     itemBuilder: (context, index) {
                       final purchase = widget.recentPurchases[index];
                       return ActionChip(
@@ -418,7 +418,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: quickProducts.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 8),
+                    separatorBuilder: (context, index) => const SizedBox(width: 8),
                     itemBuilder: (context, index) {
                       final product = quickProducts[index];
                       return ActionChip(
@@ -442,8 +442,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     },
                     icon: const Icon(Icons.check_circle_outline),
                     label: Text(
-                      checkedProductIds.length.toString() +
-                          ' erledigte Artikel entfernen',
+                      '${checkedProductIds.length} erledigte Artikel entfernen',
                     ),
                   ),
                 ),
