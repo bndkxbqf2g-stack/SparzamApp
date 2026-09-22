@@ -10,6 +10,7 @@ class RouteOptimizer {
     this.items,
     List<Offer> offers, {
     Map<String, double>? roadDistances,
+    this.euroPerKm = 0.22,
   })  : roadDistances = roadDistances ?? const <String, double>{},
         prices = RoutePriceResolver(offers);
 
@@ -17,7 +18,7 @@ class RouteOptimizer {
   final RoutePriceResolver prices;
   final Map<String, double> roadDistances;
 
-  static const double euroPerKmRoundTrip = 0.22;
+  final double euroPerKm;
 
   double basketCost(Store store, Iterable<ListItem> selectedItems) {
     return selectedItems.fold<double>(
@@ -32,7 +33,7 @@ class RouteOptimizer {
       (sum, store) => sum +
           ((roadDistances[store.name] ?? store.distanceKm) *
               2 *
-              euroPerKmRoundTrip),
+              euroPerKm),
     );
   }
 
