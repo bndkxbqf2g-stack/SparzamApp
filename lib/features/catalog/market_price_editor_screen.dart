@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../data/stores.dart';
 import '../../models/market_price.dart';
 import '../../models/product.dart';
+import '../../services/open_prices_service.dart';
 
 class MarketPriceEditorScreen extends StatefulWidget {
   const MarketPriceEditorScreen({
@@ -29,6 +30,8 @@ class MarketPriceEditorScreen extends StatefulWidget {
 class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
   late List<MarketPrice> prices;
   late final Map<String, TextEditingController> controllers;
+  final openPrices = OpenPricesService();
+  bool importing = false;
 
   @override
   void initState() {
@@ -56,6 +59,7 @@ class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
     for (final controller in controllers.values) {
       controller.dispose();
     }
+    openPrices.close();
     super.dispose();
   }
 
@@ -70,6 +74,7 @@ class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
         storeName: storeName,
         price: raw,
         updatedAt: DateTime.now(),
+        source: MarketPriceSource.manual,
       ),
     );
     if (mounted) setState(() => prices = next);
@@ -81,6 +86,58 @@ class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
     if (mounted) setState(() => prices = next);
   }
 
+  Future<void> importOpenPrices() async {
+    if (importing || widget.product.ean == null) return;
+    setState(() => importing = true);
+
+    try {
+      final found = await openPrices.fetchRecentPrices(
+        product: widget.product,
+        stores: stores,
+      );
+      var next = prices;
+      var imported = 0;
+      for (final price in found) {
+        final before = next;
+        next = await widget.onSave(price);
+        if (!identical(before, next) && next != before) imported++;
+      }
+
+      if (!mounted) return;
+      setState(() {
+        prices = next;
+        for (final store in stores) {
+          controllers[store.name]!.text =
+              _priceFor(store.name)?.price.toStringAsFixed(2) ?? '';
+        }
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            found.isEmpty
+                ? 'Keine aktuellen Open-Prices-Daten für diese EAN gefunden.'
+                : '${found.length} passende Open-Prices-Preise geprüft.',
+          ),
+        ),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Open Prices konnte gerade nicht geladen werden.'),
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => importing = false);
+    }
+  }
+
+  String _date(DateTime date) =>
+      '${date.day.toString().padLeft(2, '0')}.'
+      '${date.month.toString().padLeft(2, '0')}.'
+      '${date.year}';
+
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(title: Text('Preise · ${widget.product.name}')),
@@ -88,9 +145,43 @@ class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
           padding: const EdgeInsets.all(16),
           children: [
             const Text(
-              'Eigene Marktpreise überschreiben die Demo-Normalpreise '
+              'Eigene Marktpreise überschreiben Demo- und Open-Prices-Daten '
               'und werden sofort für Angebote und Routen verwendet.',
             ),
+            const SizedBox(height: 10),
+            if (widget.product.ean != null &&
+                widget.product.ean!.trim().isNotEmpty)
+              Card(
+                child: ListTile(
+                  leading: const Icon(Icons.cloud_download_outlined),
+                  title: const Text('Open Prices'),
+                  subtitle: const Text(
+                    'Aktuelle EUR-Normalpreise der letzten 60 Tage laden. '
+                    'Quelle: Open Food Facts / Open Prices (ODbL).',
+                  ),
+                  trailing: importing
+                      ? const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : IconButton(
+                          tooltip: 'Open Prices laden',
+                          onPressed: importOpenPrices,
+                          icon: const Icon(Icons.refresh),
+                        ),
+                ),
+              )
+            else
+              const Card(
+                child: ListTile(
+                  leading: Icon(Icons.info_outline),
+                  title: Text('Open Prices nicht verfügbar'),
+                  subtitle: Text(
+                    'Hinterlege zuerst eine EAN / einen Barcode für dieses Produkt.',
+                  ),
+                ),
+              ),
             const SizedBox(height: 12),
             for (final store in stores)
               Padding(
@@ -101,11 +192,28 @@ class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: Text(
-                            store.name,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w700,
-                            ),
+                          child: Builder(
+                            builder: (context) {
+                              final saved = _priceFor(store.name);
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    store.name,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  if (saved != null)
+                                    Text(
+                                      '${saved.sourceLabel} · ${_date(saved.updatedAt)}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall,
+                                    ),
+                                ],
+                              );
+                            },
                           ),
                         ),
                         SizedBox(
