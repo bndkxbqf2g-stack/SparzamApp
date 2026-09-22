@@ -57,7 +57,7 @@ class RoadDistanceService {
 
       for (final entry in destinations.entries) {
         if (entry.value.trim().isEmpty) continue;
-        if (coordinates.length > 1 && geocodeDelay > Duration.zero) {
+        if (geocodeDelay > Duration.zero) {
           await Future<void>.delayed(geocodeDelay);
         }
         final coordinate = await _geocode(entry.value);
