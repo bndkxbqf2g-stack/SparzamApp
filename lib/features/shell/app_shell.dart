@@ -414,6 +414,7 @@ class _AppShellState extends State<AppShell> {
   Future<PriceSyncResult> syncOpenPrices({
     void Function(int processed, int total)? onProgress,
     bool Function()? shouldCancel,
+    List<String>? retryProductIds,
   }) async {
     if (!priceDataSettings.openPricesEnabled) {
       return PriceSyncResult(
@@ -427,8 +428,11 @@ class _AppShellState extends State<AppShell> {
       );
     }
 
+    final retryIds = retryProductIds?.toSet();
     final result = await priceCoordinator.syncOpenPrices(
-      products: catalogProducts,
+      products: retryIds == null
+          ? catalogProducts
+          : catalogProducts.where((product) => retryIds.contains(product.id)).toList(),
       maxAgeDays: priceDataSettings.openPricesMaxAgeDays,
       prices: marketPrices,
       history: priceHistory,

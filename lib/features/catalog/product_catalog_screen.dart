@@ -35,6 +35,7 @@ class ProductCatalogScreen extends StatefulWidget {
   final Future<PriceSyncResult> Function({
     void Function(int processed, int total)? onProgress,
     bool Function()? shouldCancel,
+    List<String>? retryProductIds,
   }) onSyncOpenPrices;
 
   @override
@@ -50,6 +51,7 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
   String? syncFeedback;
   String? syncProgress;
   bool cancelRequested = false;
+  List<String> failedProductIds = const [];
 
   @override
   void initState() {
@@ -88,9 +90,10 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
   bool isCustom(Product product) =>
       customProducts.any((item) => item.id == product.id);
 
-  Future<void> syncOpenPrices() async {
+  Future<void> syncOpenPrices({bool retryFailuresOnly = false}) async {
     if (syncing || !widget.priceDataSettings.openPricesEnabled) return;
-    final eanCount = allProducts
+    final retryIds = retryFailuresOnly ? [...failedProductIds] : null;
+    final eanCount = retryIds?.length ?? allProducts
         .where((product) => (product.ean ?? '').trim().isNotEmpty)
         .length;
     setState(() {
@@ -107,10 +110,12 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
           }
         },
         shouldCancel: () => cancelRequested || !mounted,
+        retryProductIds: retryIds,
       );
       if (!mounted) return;
       setState(() {
         marketPrices = result.prices;
+        failedProductIds = result.failedProductIds;
         syncFeedback = '${result.cancelled ? 'Abgebrochen: ' : ''}'
             '${result.productsProcessed}/${result.productsWithEan} '
             'EAN-Produkte geprüft · ${result.pricesFound} '
@@ -278,6 +283,20 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                         if (syncFeedback != null) ...[
                           const SizedBox(height: 8),
                           Text(syncFeedback!),
+                        ],
+                        if (!syncing && failedProductIds.isNotEmpty) ...[
+                          const SizedBox(height: 8),
+                          TextButton.icon(
+                            onPressed: () => syncOpenPrices(
+                              retryFailuresOnly: true,
+                            ),
+                            icon: const Icon(Icons.refresh),
+                            label: Text(
+                              '${failedProductIds.length} fehlgeschlagene '
+                              '${failedProductIds.length == 1 ? 'Abfrage' : 'Abfragen'} '
+                              'erneut versuchen',
+                            ),
+                          ),
                         ],
                         if (syncing && syncProgress != null) ...[
                           const SizedBox(height: 8),

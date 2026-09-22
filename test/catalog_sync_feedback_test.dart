@@ -11,6 +11,7 @@ void main() {
   Widget catalog(Future<PriceSyncResult> Function({
     void Function(int, int)? onProgress,
     bool Function()? shouldCancel,
+    List<String>? retryProductIds,
   }) onSync) => MaterialApp(
         home: ProductCatalogScreen(
           customProducts: const [],
@@ -25,7 +26,7 @@ void main() {
       );
 
   testWidgets('zeigt gefundene Preise und geprüfte EANs', (tester) async {
-    await tester.pumpWidget(catalog(({onProgress, shouldCancel}) async =>
+    await tester.pumpWidget(catalog(({onProgress, shouldCancel, retryProductIds}) async =>
         const PriceSyncResult(
           prices: <MarketPrice>[],
           history: [],
@@ -45,7 +46,7 @@ void main() {
   testWidgets('zeigt Verbindungsfehler und ermöglicht neuen Versuch',
       (tester) async {
     await tester.pumpWidget(catalog(
-        ({onProgress, shouldCancel}) async => throw Exception('offline')));
+        ({onProgress, shouldCancel, retryProductIds}) async => throw Exception('offline')));
     await tester.tap(find.text('Open Prices aktualisieren'));
     await tester.pumpAndSettle();
 
@@ -59,6 +60,7 @@ void main() {
     await tester.pumpWidget(catalog(({
       onProgress,
       shouldCancel,
+      retryProductIds,
     }) async => const PriceSyncResult(
           prices: [],
           history: [],
@@ -75,12 +77,44 @@ void main() {
     expect(find.textContaining('1 Preis gefunden'), findsOneWidget);
   });
 
+  testWidgets('erneuter Versuch prüft nur fehlgeschlagene Produkte',
+      (tester) async {
+    final requests = <List<String>?>[];
+    await tester.pumpWidget(catalog(({
+      onProgress,
+      shouldCancel,
+      retryProductIds,
+    }) async {
+      requests.add(retryProductIds);
+      return PriceSyncResult(
+        prices: const [],
+        history: const [],
+        productsChecked: retryProductIds == null ? 2 : 1,
+        productsWithEan: retryProductIds == null ? 2 : 1,
+        productsProcessed: retryProductIds == null ? 2 : 1,
+        pricesFound: 0,
+        cancelled: false,
+        failedProductIds: retryProductIds == null ? const ['bad'] : const [],
+      );
+    }));
+    await tester.tap(find.text('Open Prices aktualisieren'));
+    await tester.pumpAndSettle();
+    final retry = find.text('1 fehlgeschlagene Abfrage erneut versuchen');
+    await tester.ensureVisible(retry);
+    await tester.tap(retry);
+    await tester.pumpAndSettle();
+
+    expect(requests, [null, ['bad']]);
+    expect(retry, findsNothing);
+  });
+
   testWidgets('Abbrechen signalisiert den laufenden Abruf', (tester) async {
     final pending = Completer<PriceSyncResult>();
     bool Function()? cancellationCheck;
     await tester.pumpWidget(catalog(({
       onProgress,
       shouldCancel,
+      retryProductIds,
     }) {
       cancellationCheck = shouldCancel;
       return pending.future;
