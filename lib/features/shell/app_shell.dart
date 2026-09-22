@@ -28,7 +28,6 @@ import '../../services/shopping_list_store.dart';
 import '../budget/budget_calculator.dart';
 import '../budget/budget_screen.dart';
 import '../catalog/product_catalog_screen.dart';
-import '../catalog/market_price_freshness.dart';
 import '../home/dashboard_data.dart';
 import '../home/home_screen.dart';
 import '../offers/offers_screen.dart';
@@ -46,6 +45,7 @@ import '../scanner/scanner_screen.dart';
 import '../shopping_list/replenishment_analyzer.dart';
 import '../shopping_list/shopping_list_screen.dart';
 import 'shell_catalog.dart';
+import 'shell_pricing.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({
@@ -159,17 +159,8 @@ class _AppShellState extends State<AppShell> {
 
   bool isBaseProduct(String id) => isBaseCatalogProduct(id);
 
-  List<MarketPrice> get activeMarketPrices {
-    if (!priceDataSettings.openPricesEnabled) {
-      return marketPrices
-          .where((price) => price.source == MarketPriceSource.manual)
-          .toList(growable: false);
-    }
-    return usableMarketPrices(
-      marketPrices,
-      openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
-    );
-  }
+  List<MarketPrice> get activeMarketPrices =>
+      activePrices(marketPrices, priceDataSettings);
 
   List<ReplenishmentSuggestion> get replenishmentSuggestions =>
       buildReplenishmentSuggestions(
@@ -458,20 +449,10 @@ class _AppShellState extends State<AppShell> {
     return next;
   }
 
-  PricePoint _historyPoint(MarketPrice price) => PricePoint(
-        productId: price.productId,
-        storeName: price.storeName,
-        price: price.price,
-        date: price.updatedAt,
-        source: price.source == MarketPriceSource.manual
-            ? PricePointSource.manual
-            : PricePointSource.openPrices,
-      );
-
   Future<List<MarketPrice>> saveMarketPrice(MarketPrice price) async {
     final next = await widget.marketPriceStore.upsert(price, marketPrices);
     final nextHistory = await widget.priceHistoryStore.upsertObservation(
-      _historyPoint(price),
+      priceHistoryPoint(price),
       priceHistory,
     );
     if (mounted) {
@@ -509,7 +490,7 @@ class _AppShellState extends State<AppShell> {
     for (final price in result.prices) {
       next = await widget.marketPriceStore.upsert(price, next);
       nextHistory = await widget.priceHistoryStore.upsertObservation(
-        _historyPoint(price),
+        priceHistoryPoint(price),
         nextHistory,
       );
     }
