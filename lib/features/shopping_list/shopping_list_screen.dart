@@ -18,6 +18,7 @@ import 'shopping_suggestions.dart';
 import 'shopping_list_header.dart';
 import 'shopping_input.dart';
 import 'shopping_recent_choices.dart';
+import 'shopping_search_results.dart';
 
 class ShoppingListScreen extends StatefulWidget {
   const ShoppingListScreen({
@@ -262,86 +263,16 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   onAdd: addReplenishment,
                 ),
               ],
-              if (suggestions.isNotEmpty) ...[
-                const SizedBox(height: 8),
-                Card(
-                  child: Column(
-                    children: [
-                      for (final product in suggestions)
-                        ListTile(
-                          onTap: () => add(product),
-                          leading: CircleAvatar(
-                            radius: 18,
-                            child: Icon(
-                              widget.preferredProductByGroup[product.group] ==
-                                      product.id
-                                  ? Icons.auto_awesome
-                                  : Icons.add,
-                              size: 18,
-                            ),
-                          ),
-                          title: Text(
-                            widget.preferredProductByGroup[product.group] ==
-                                    product.id
-                                ? '${product.name} · deine Auswahl'
-                                : product.name,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          subtitle: Text(
-                            () {
-                              final purchase = widget.recentPurchases
-                                  .where((item) => item.id == product.id)
-                                  .firstOrNull;
-                              if (purchase == null) {
-                                return product.unit;
-                              }
-                              final quantity = purchase.averageQuantity.round();
-                              return quantity > 1
-                                  ? '${product.unit} · meist ×$quantity'
-                                  : product.unit;
-                            }(),
-                          ),
-                          trailing: const Icon(Icons.chevron_right),
-                        ),
-                      ListTile(
-                        onTap: addCustomProduct,
-                        leading: const CircleAvatar(
-                          radius: 18,
-                          child: Icon(Icons.playlist_add),
-                        ),
-                        title: Text(
-                          '„${controller.text.trim()}“ zur Liste hinzufügen',
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        subtitle: const Text(
-                          'Noch kein bekanntes Produkt – wird trotzdem gespeichert.',
-                        ),
-                        trailing: const Icon(Icons.chevron_right),
-                      ),
-                    ],
-                  ),
-                ),
-              ] else if (controller.text.trim().isNotEmpty) ...[
-                const SizedBox(height: 8),
-                Card(
-                  child: ListTile(
-                    onTap: addCustomProduct,
-                    leading: const CircleAvatar(
-                      child: Icon(Icons.playlist_add),
-                    ),
-                    title: Text(
-                      '„${controller.text.trim()}“ hinzufügen',
-                      style: const TextStyle(fontWeight: FontWeight.w700),
-                    ),
-                    subtitle: const Text(
-                      'Noch nicht bekannt – trotzdem direkt auf die Einkaufsliste.',
-                    ),
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 18),
-                  ),
-                ),
-              ] else if (controller.text.trim().isEmpty) ...[
+              if (controller.text.trim().isNotEmpty)
+                ShoppingSearchResults(
+                  query: controller.text.trim(),
+                  suggestions: suggestions,
+                  preferredProductByGroup: widget.preferredProductByGroup,
+                  recentPurchases: widget.recentPurchases,
+                  onAdd: add,
+                  onAddCustom: addCustomProduct,
+                )
+              else ...[
                 ShoppingRecentChoices(
                   recentPurchases: widget.recentPurchases,
                   quickProducts: quickProducts,
