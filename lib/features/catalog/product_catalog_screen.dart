@@ -167,6 +167,8 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
             if (mounted) setState(() => marketPrices = next);
             return next;
           },
+          openPricesMaxAgeDays:
+              widget.priceDataSettings.openPricesMaxAgeDays,
           onDelete: (productId, storeName) async {
             final next = await widget.onDeletePrice(productId, storeName);
             if (mounted) setState(() => marketPrices = next);
