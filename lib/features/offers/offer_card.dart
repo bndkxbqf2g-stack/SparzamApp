@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../data/products.dart';
 import '../../models/offer.dart';
 import '../../models/price_point.dart';
 import '../../models/product.dart';
@@ -15,7 +16,7 @@ class OfferCard extends StatelessWidget {
     super.key,
     required this.offer,
     required this.priceHistory,
-    this.catalogProducts = const <Product>[],
+    this.catalogProducts = products,
     this.onEdit,
     this.onDelete,
   });
