@@ -4,6 +4,8 @@ class DashboardData {
     required this.activeOffers,
     required this.routeNames,
     required this.routeTotal,
+    required this.routeTravelMinutes,
+    required this.mobilityLabel,
     required this.todaySavings,
     required this.monthlySavings,
     required this.monthlyPurchases,
@@ -15,6 +17,8 @@ class DashboardData {
   final int activeOffers;
   final String routeNames;
   final double routeTotal;
+  final int routeTravelMinutes;
+  final String mobilityLabel;
   final double todaySavings;
   final double monthlySavings;
   final int monthlyPurchases;
