@@ -53,7 +53,7 @@ class _PurchaseDetailScreenState extends State<PurchaseDetailScreen> {
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
     );
-    if (selected == null) return;
+    if (selected == null || !mounted) return;
     setState(() {
       purchaseDate = DateTime(
         selected.year,
@@ -71,18 +71,29 @@ class _PurchaseDetailScreenState extends State<PurchaseDetailScreen> {
     setState(() => saving = true);
     final basket = _moneyValue(basketController);
     final travel = _moneyValue(travelController);
-    await widget.onSave(
-      widget.record.copyWith(
-        createdAt: purchaseDate,
-        items: items,
-        basket: basket,
-        travel: travel,
-        total: basket + travel,
-        baselineTotal: _moneyValue(baselineController),
-      ),
-    );
-    if (!mounted) return;
-    Navigator.pop(context);
+    try {
+      await widget.onSave(
+        widget.record.copyWith(
+          createdAt: purchaseDate,
+          items: items,
+          basket: basket,
+          travel: travel,
+          total: basket + travel,
+          baselineTotal: _moneyValue(baselineController),
+        ),
+      );
+      if (mounted) Navigator.pop(context);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Korrektur konnte nicht gespeichert werden. Bitte erneut versuchen.'),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => saving = false);
+    }
   }
 
   void changeQuantity(int index, int quantity) {
