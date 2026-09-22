@@ -126,7 +126,7 @@ class _ProductEditorScreenState extends State<ProductEditorScreen> {
             .toList(),
         isFavorite: favorite,
         packageAmount: double.tryParse(
-          packageAmount.text.replaceAll(',', '.').trim(),
+          packageAmount.text.trim().replaceAll(',', '.'),
         ),
         packageUnit: packageUnit.text.trim().isEmpty
             ? null
@@ -229,6 +229,17 @@ class _ProductEditorScreenState extends State<ProductEditorScreen> {
                         labelText: 'Packungsmenge',
                         hintText: 'z. B. 500',
                       ),
+                      validator: (value) {
+                        final input = (value ?? '').trim();
+                        if (input.isEmpty) return null;
+                        final amount = double.tryParse(
+                          input.replaceAll(',', '.'),
+                        );
+                        if (amount == null || !amount.isFinite || amount <= 0) {
+                          return 'Gültige Menge über 0 eingeben';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -239,6 +250,11 @@ class _ProductEditorScreenState extends State<ProductEditorScreen> {
                         labelText: 'Mengeneinheit',
                         hintText: 'g, kg, ml, l, st',
                       ),
+                      validator: (value) =>
+                          packageAmount.text.trim().isNotEmpty &&
+                                  (value ?? '').trim().isEmpty
+                              ? 'Einheit eingeben'
+                              : null,
                     ),
                   ),
                 ],
