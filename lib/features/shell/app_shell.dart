@@ -186,16 +186,16 @@ class _AppShellState extends State<AppShell> {
     });
   }
 
-  Future<void> saveOffer(Offer offer) async {
+  Future<List<Offer>> saveOffer(Offer offer) async {
     final next = await widget.offerStore.upsert(offer, offers);
-    if (!mounted) return;
-    setState(() => offers = next);
+    if (mounted) setState(() => offers = next);
+    return next;
   }
 
-  Future<void> deleteOffer(Offer offer) async {
+  Future<List<Offer>> deleteOffer(Offer offer) async {
     final next = await widget.offerStore.remove(offer.id, offers);
-    if (!mounted) return;
-    setState(() => offers = next);
+    if (mounted) setState(() => offers = next);
+    return next;
   }
 
   void openBudget() {
