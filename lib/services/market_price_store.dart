@@ -29,6 +29,17 @@ class MarketPriceStore {
     MarketPrice price,
     List<MarketPrice> current,
   ) async {
+    final existing = current.where((item) => item.key == price.key);
+    if (existing.isNotEmpty) {
+      final currentPrice = existing.first;
+      if (price.source == MarketPriceSource.openPrices) {
+        if (currentPrice.isManual ||
+            !price.updatedAt.isAfter(currentPrice.updatedAt)) {
+          return current;
+        }
+      }
+    }
+
     final next = [
       price,
       ...current.where((item) => item.key != price.key),

@@ -30,6 +30,54 @@ void main() {
     expect(loaded.single.price, 2.49);
   });
 
+  test('Open Prices überschreibt keinen manuellen Preis', () async {
+    final store = MarketPriceStore();
+    final manual = MarketPrice(
+      productId: 'a',
+      storeName: 'Lidl',
+      price: 2.49,
+      updatedAt: DateTime(2026, 9, 10),
+    );
+    final external = MarketPrice(
+      productId: 'a',
+      storeName: 'Lidl',
+      price: 1.99,
+      updatedAt: DateTime(2026, 9, 20),
+      source: MarketPriceSource.openPrices,
+      externalId: 123,
+    );
+
+    final first = await store.upsert(manual, const <MarketPrice>[]);
+    final second = await store.upsert(external, first);
+
+    expect(second.single.price, 2.49);
+    expect(second.single.source, MarketPriceSource.manual);
+  });
+
+  test('neuerer Open-Prices-Preis ersetzt älteren Open-Prices-Preis', () async {
+    final store = MarketPriceStore();
+    final oldPrice = MarketPrice(
+      productId: 'a',
+      storeName: 'Lidl',
+      price: 2.49,
+      updatedAt: DateTime(2026, 9, 10),
+      source: MarketPriceSource.openPrices,
+    );
+    final newPrice = MarketPrice(
+      productId: 'a',
+      storeName: 'Lidl',
+      price: 2.29,
+      updatedAt: DateTime(2026, 9, 20),
+      source: MarketPriceSource.openPrices,
+    );
+
+    final first = await store.upsert(oldPrice, const <MarketPrice>[]);
+    final second = await store.upsert(newPrice, first);
+
+    expect(second.single.price, 2.29);
+    expect(second.single.updatedAt, DateTime(2026, 9, 20));
+  });
+
   test('alle Preise eines Produkts können gemeinsam entfernt werden', () async {
     final store = MarketPriceStore();
     final prices = [
