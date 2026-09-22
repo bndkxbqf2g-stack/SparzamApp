@@ -42,6 +42,19 @@ class _RouteScreenState extends State<RouteScreen> {
     _loadRoadDistances();
   }
 
+  @override
+  void didUpdateWidget(covariant RouteScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.mobility.startAddress != widget.mobility.startAddress) {
+      service.close();
+      service = RoadDistanceService(
+        originAddress: widget.mobility.startAddress,
+      );
+      roadDistances = <String, double>{};
+      _loadRoadDistances();
+    }
+  }
+
   Future<void> _loadRoadDistances() async {
     final loaded = await cache.load(widget.mobility.startAddress);
     if (!mounted) return;
