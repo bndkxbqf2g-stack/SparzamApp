@@ -1,5 +1,5 @@
-import '../../data/products.dart';
 import '../../models/offer.dart';
+import '../../models/product.dart';
 
 enum OfferStatusFilter { active, all, expired }
 
@@ -8,6 +8,7 @@ List<Offer> filterOffers(
   required OfferStatusFilter status,
   String query = '',
   DateTime? now,
+  List<Product> catalogProducts = const <Product>[],
 }) {
   final today = _day(now ?? DateTime.now());
   final normalizedQuery = query.trim().toLowerCase();
@@ -18,7 +19,9 @@ List<Offer> filterOffers(
     if (status == OfferStatusFilter.expired && active) return false;
     if (normalizedQuery.isEmpty) return true;
 
-    final product = products.where((item) => item.id == offer.productId).firstOrNull;
+    final product = catalogProducts
+        .where((item) => item.id == offer.productId)
+        .firstOrNull;
     final searchable = <String>[
       offer.storeName,
       offer.productId,
