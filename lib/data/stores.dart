@@ -4,6 +4,7 @@ const stores = <Store>[
   Store(
     name: 'Lidl',
     location: 'Zellingen',
+    address: 'Am Güßgraben 2, 97225 Zellingen, Germany',
     distanceKm: 1.2,
     prices: {
       'butter_streichzart': 1.99,
@@ -18,6 +19,7 @@ const stores = <Store>[
   Store(
     name: 'EDEKA',
     location: 'Zellingen',
+    address: 'Würzburger Str. 100, 97225 Zellingen, Germany',
     distanceKm: 1.4,
     prices: {
       'butter_streichzart': 1.89,
@@ -32,6 +34,7 @@ const stores = <Store>[
   Store(
     name: 'PENNY',
     location: 'Zellingen',
+    address: 'Am Güßgraben 1, 97225 Zellingen, Germany',
     distanceKm: 1.1,
     prices: {
       'butter_streichzart': 1.99,
@@ -46,6 +49,7 @@ const stores = <Store>[
   Store(
     name: 'ALDI Süd',
     location: 'Zellingen',
+    address: 'Würzburger Str. 74, 97225 Zellingen, Germany',
     distanceKm: 1.6,
     prices: {
       'butter_streichzart': 1.89,
@@ -60,6 +64,7 @@ const stores = <Store>[
   Store(
     name: 'Netto',
     location: 'Thüngersheim',
+    address: 'Am Straßacker 1, 97291 Thüngersheim, Germany',
     distanceKm: 5.8,
     prices: {
       'butter_streichzart': 2.09,
@@ -74,6 +79,7 @@ const stores = <Store>[
   Store(
     name: 'REWE',
     location: 'Veitshöchheim',
+    address: 'Pont-l\'Eveque-Allee 1, 97209 Veitshöchheim, Germany',
     distanceKm: 16.5,
     prices: {
       'butter_streichzart': 1.99,
@@ -88,6 +94,7 @@ const stores = <Store>[
   Store(
     name: 'Kaufland',
     location: 'Würzburg · Nürnberger Straße',
+    address: 'Nürnberger Str. 12, 97076 Würzburg, Germany',
     distanceKm: 25.0,
     isBigShop: true,
     prices: {

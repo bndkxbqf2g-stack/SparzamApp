@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import '../../models/list_item.dart';
 import '../../models/offer.dart';
 import '../../models/store.dart';
+import '../../services/road_distance_service.dart';
+import '../../services/road_distance_store.dart';
 import 'store_shopping_summary.dart';
 import 'store_value.dart';
 
-class StoreScreen extends StatelessWidget {
+class StoreScreen extends StatefulWidget {
   const StoreScreen({
     super.key,
     required this.store,
@@ -19,12 +21,69 @@ class StoreScreen extends StatelessWidget {
   final List<Offer> offers;
 
   @override
+  State<StoreScreen> createState() => _StoreScreenState();
+}
+
+class _StoreScreenState extends State<StoreScreen> {
+  final cache = RoadDistanceStore();
+  final service = RoadDistanceService();
+  Map<String, double> roadDistances = <String, double>{};
+  bool loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final loaded = await cache.load();
+    if (!mounted) return;
+    setState(() => roadDistances = loaded);
+  }
+
+  Future<void> _refresh() async {
+    if (loading || widget.store.address.isEmpty) return;
+    setState(() => loading = true);
+
+    final distance = await service.fetchKm(widget.store.address);
+    final next = {...roadDistances};
+    if (distance != null && distance > 0) {
+      next[widget.store.name] = distance;
+      await cache.save(next);
+    }
+
+    if (!mounted) return;
+    setState(() {
+      roadDistances = next;
+      loading = false;
+    });
+  }
+
+  @override
+  void dispose() {
+    service.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final summary = buildStoreShoppingSummary(store, items, offers);
-    final value = evaluateStoreValue(store, items, offers);
+    final summary = buildStoreShoppingSummary(
+      widget.store,
+      widget.items,
+      widget.offers,
+    );
+    final value = evaluateStoreValue(
+      widget.store,
+      widget.items,
+      widget.offers,
+      roadDistances: roadDistances,
+    );
+    final roadDistance = roadDistances[widget.store.name];
+    final shownDistance = roadDistance ?? widget.store.distanceKm;
 
     return Scaffold(
-      appBar: AppBar(title: Text(store.name)),
+      appBar: AppBar(title: Text(widget.store.name)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -35,16 +94,38 @@ class StoreScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    store.name,
+                    widget.store.name,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.w800,
                         ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    '${store.location} · ${store.distanceKm.toStringAsFixed(1)} km',
+                  Text(widget.store.location),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          roadDistance == null
+                              ? '${shownDistance.toStringAsFixed(1)} km · hinterlegter Wert'
+                              : '${shownDistance.toStringAsFixed(1)} km · reale Straßenstrecke',
+                        ),
+                      ),
+                      if (loading)
+                        const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      else
+                        IconButton(
+                          tooltip: 'Straßenstrecke aktualisieren',
+                          onPressed: _refresh,
+                          icon: const Icon(Icons.refresh),
+                        ),
+                    ],
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 10),
                   Text(
                     '${summary.total.toStringAsFixed(2)} €',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -74,7 +155,9 @@ class StoreScreen extends StatelessWidget {
             const Card(
               child: Padding(
                 padding: EdgeInsets.all(20),
-                child: Text('Für deine aktuelle Liste sind hier keine Preise hinterlegt.'),
+                child: Text(
+                  'Für deine aktuelle Liste sind hier keine Preise hinterlegt.',
+                ),
               ),
             )
           else
@@ -104,7 +187,9 @@ class _StoreLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListTile(
         leading: Icon(
-          line.usesOffer ? Icons.local_offer_outlined : Icons.shopping_bag_outlined,
+          line.usesOffer
+              ? Icons.local_offer_outlined
+              : Icons.shopping_bag_outlined,
         ),
         title: Text(
           line.item.product.name,
@@ -141,7 +226,6 @@ class _StoreLine extends StatelessWidget {
         ),
       );
 }
-
 
 class _ValueCard extends StatelessWidget {
   const _ValueCard({required this.value});
