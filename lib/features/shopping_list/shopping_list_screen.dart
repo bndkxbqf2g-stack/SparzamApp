@@ -7,9 +7,11 @@ import '../../models/offer.dart';
 import '../../models/product.dart';
 import '../../models/price_point.dart';
 import '../../models/recent_purchase.dart';
+import '../../models/replenishment_suggestion.dart';
 import '../../services/shopping_list_store.dart';
 import '../offers/offer_details_screen.dart';
 import 'shopping_item_sorter.dart';
+import 'replenishment_card.dart';
 import 'shopping_offer_badge.dart';
 import 'shopping_offer_hint.dart';
 import 'shopping_suggestions.dart';
@@ -31,6 +33,7 @@ class ShoppingListScreen extends StatefulWidget {
     required this.mobility,
     required this.catalogProducts,
     required this.marketPrices,
+    required this.replenishmentSuggestions,
   });
 
   final List<ListItem> items;
@@ -47,6 +50,7 @@ class ShoppingListScreen extends StatefulWidget {
   final MobilitySettings mobility;
   final List<Product> catalogProducts;
   final List<MarketPrice> marketPrices;
+  final List<ReplenishmentSuggestion> replenishmentSuggestions;
 
   @override
   State<ShoppingListScreen> createState() => _ShoppingListScreenState();
@@ -136,6 +140,13 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     widget.onAdd(product);
     controller.clear();
     setState(() {});
+    _focusShoppingInput();
+  }
+
+  void addReplenishment(ReplenishmentSuggestion suggestion) {
+    for (var index = 0; index < suggestion.suggestedQuantity; index++) {
+      widget.onAdd(suggestion.product);
+    }
     _focusShoppingInput();
   }
 
@@ -324,6 +335,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   ),
                 ),
               ),
+              if (controller.text.trim().isEmpty &&
+                  widget.replenishmentSuggestions.isNotEmpty) ...[
+                const SizedBox(height: 14),
+                ReplenishmentCard(
+                  suggestions: widget.replenishmentSuggestions,
+                  onAdd: addReplenishment,
+                ),
+              ],
               if (suggestions.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Card(

@@ -10,6 +10,7 @@ import '../../models/product.dart';
 import '../../models/price_point.dart';
 import '../../models/price_data_settings.dart';
 import '../../models/recent_purchase.dart';
+import '../../models/replenishment_suggestion.dart';
 import '../../models/road_route_matrix.dart';
 import '../../models/purchase_record.dart';
 import '../../services/budget_store.dart';
@@ -42,6 +43,7 @@ import '../route/route_optimizer.dart';
 import '../route/route_screen.dart';
 import '../route/travel_estimator.dart';
 import '../scanner/scanner_screen.dart';
+import '../shopping_list/replenishment_analyzer.dart';
 import '../shopping_list/shopping_list_screen.dart';
 
 class AppShell extends StatefulWidget {
@@ -176,6 +178,14 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
+  List<ReplenishmentSuggestion> get replenishmentSuggestions =>
+      buildReplenishmentSuggestions(
+        history: purchaseHistory,
+        catalogProducts: catalogProducts,
+        currentListProductIds:
+            shoppingList.map((item) => item.product.id).toSet(),
+      );
+
   Future<void> persistShoppingList() =>
       widget.shoppingListStore.save(shoppingList);
 
@@ -296,7 +306,9 @@ class _AppShellState extends State<AppShell> {
     final monthly = summarizeMonth(purchaseHistory);
     final today = DateTime.now();
     final day = DateTime(today.year, today.month, today.day);
-    final activeOffers = offers.where((offer) => !offer.validUntil.isBefore(day)).length;
+    final activeOffers =
+        offers.where((offer) => !offer.validUntil.isBefore(day)).length;
+    final replenishment = replenishmentSuggestions;
 
     return DashboardData(
       itemCount: shoppingList.length,
@@ -310,6 +322,13 @@ class _AppShellState extends State<AppShell> {
       monthlyPurchases: monthly.purchases,
       budgetRemaining: snapshot.afterPlannedShop,
       budgetConfigured: budget.isConfigured,
+      replenishmentCount: replenishment.length,
+      replenishmentPreview: replenishment.isEmpty
+          ? ''
+          : replenishment
+              .take(3)
+              .map((item) => item.product.name)
+              .join(' · '),
     );
   }
 
@@ -601,6 +620,7 @@ class _AppShellState extends State<AppShell> {
         mobility: mobility,
         catalogProducts: catalogProducts,
         marketPrices: activeMarketPrices,
+        replenishmentSuggestions: replenishmentSuggestions,
       ),
       RouteScreen(
         items: shoppingList,

@@ -60,6 +60,16 @@ class HomeScreen extends StatelessWidget {
             onTap: onOpenOffers,
           ),
           const SizedBox(height: 10),
+          if (data.replenishmentCount > 0) ...[
+            DashboardTile(
+              icon: Icons.autorenew,
+              title: 'Bald wieder nötig',
+              value: '${data.replenishmentCount} Produkte',
+              subtitle: data.replenishmentPreview,
+              onTap: onOpenList,
+            ),
+            const SizedBox(height: 10),
+          ],
           DashboardTile(
             icon: Icons.shopping_cart_outlined,
             title: 'Einkaufsliste',

@@ -11,6 +11,8 @@ class DashboardData {
     required this.monthlyPurchases,
     required this.budgetRemaining,
     required this.budgetConfigured,
+    required this.replenishmentCount,
+    required this.replenishmentPreview,
   });
 
   final int itemCount;
@@ -24,4 +26,6 @@ class DashboardData {
   final int monthlyPurchases;
   final double budgetRemaining;
   final bool budgetConfigured;
+  final int replenishmentCount;
+  final String replenishmentPreview;
 }
