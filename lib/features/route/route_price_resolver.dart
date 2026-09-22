@@ -1,4 +1,5 @@
 import '../../models/list_item.dart';
+import '../../models/market_price.dart';
 import '../../models/offer.dart';
 import '../../models/store.dart';
 import '../offers/effective_price.dart';
@@ -21,16 +22,24 @@ class RoutePriceQuote {
 }
 
 class RoutePriceResolver {
-  const RoutePriceResolver(this.offers, {this.now});
+  RoutePriceResolver(
+    this.offers, {
+    this.now,
+    List<MarketPrice> marketPrices = const <MarketPrice>[],
+  }) : marketPrices = {
+          for (final price in marketPrices) price.key: price.price,
+        };
 
   final List<Offer> offers;
   final DateTime? now;
+  final Map<String, double> marketPrices;
 
   RoutePriceQuote? quote(Store store, ListItem item) {
-    final regular = store.prices[item.product.id];
-    if (regular == null) return null;
-
     final offer = _bestOffer(store, item.product.id);
+    final customPrice = marketPrices['${store.name}|${item.product.id}'];
+    final regular =
+        customPrice ?? store.prices[item.product.id] ?? offer?.originalPrice;
+    if (regular == null) return null;
     if (offer == null) {
       return RoutePriceQuote(
         unitPrice: regular,
