@@ -25,6 +25,7 @@ class _ProductEditorScreenState extends State<ProductEditorScreen> {
   late final TextEditingController packageUnit;
   final openFoodFacts = OpenFoodFactsService();
   bool enriching = false;
+  String? imageUrl;
 
   @override
   void initState() {
@@ -41,6 +42,7 @@ class _ProductEditorScreenState extends State<ProductEditorScreen> {
     );
     packageUnit = TextEditingController(text: product?.packageUnit ?? '');
     favorite = product?.isFavorite ?? false;
+    imageUrl = product?.imageUrl;
   }
 
   @override
@@ -89,6 +91,7 @@ class _ProductEditorScreenState extends State<ProductEditorScreen> {
       group.text = enriched.group;
       packageAmount.text = enriched.packageAmount?.toString() ?? '';
       packageUnit.text = enriched.packageUnit ?? '';
+      imageUrl = enriched.imageUrl;
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -128,7 +131,7 @@ class _ProductEditorScreenState extends State<ProductEditorScreen> {
         packageUnit: packageUnit.text.trim().isEmpty
             ? null
             : packageUnit.text.trim().toLowerCase(),
-        imageUrl: widget.product?.imageUrl,
+        imageUrl: imageUrl,
       ),
     );
   }
