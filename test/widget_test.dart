@@ -9,6 +9,7 @@ import 'package:sparzamapp/models/price_point.dart';
 import 'package:sparzamapp/models/recent_purchase.dart';
 import 'package:sparzamapp/models/purchase_record.dart';
 import 'package:sparzamapp/services/budget_store.dart';
+import 'package:sparzamapp/services/offer_store.dart';
 import 'package:sparzamapp/services/recent_purchase_store.dart';
 import 'package:sparzamapp/services/purchase_store.dart';
 import 'package:sparzamapp/services/shopping_list_store.dart';
@@ -27,6 +28,7 @@ void main() {
     await tester.pumpWidget(
       SparzamApp(
         budgetStore: BudgetStore(),
+        offerStore: OfferStore(),
         recentPurchaseStore: RecentPurchaseStore(),
         purchaseStore: PurchaseStore(),
         shoppingListStore: ShoppingListStore(),

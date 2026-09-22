@@ -8,6 +8,7 @@ import '../../models/price_point.dart';
 import '../../models/recent_purchase.dart';
 import '../../models/purchase_record.dart';
 import '../../services/budget_store.dart';
+import '../../services/offer_store.dart';
 import '../../services/recent_purchase_store.dart';
 import '../../services/purchase_store.dart';
 import '../../services/shopping_list_store.dart';
@@ -28,6 +29,7 @@ class AppShell extends StatefulWidget {
   const AppShell({
     super.key,
     required this.budgetStore,
+    required this.offerStore,
     required this.recentPurchaseStore,
     required this.purchaseStore,
     required this.shoppingListStore,
@@ -41,6 +43,7 @@ class AppShell extends StatefulWidget {
   });
 
   final BudgetStore budgetStore;
+  final OfferStore offerStore;
   final RecentPurchaseStore recentPurchaseStore;
   final PurchaseStore purchaseStore;
   final ShoppingListStore shoppingListStore;
@@ -183,6 +186,18 @@ class _AppShellState extends State<AppShell> {
     });
   }
 
+  Future<void> saveOffer(Offer offer) async {
+    final next = await widget.offerStore.upsert(offer, offers);
+    if (!mounted) return;
+    setState(() => offers = next);
+  }
+
+  Future<void> deleteOffer(Offer offer) async {
+    final next = await widget.offerStore.remove(offer.id, offers);
+    if (!mounted) return;
+    setState(() => offers = next);
+  }
+
   void openBudget() {
     final best = shoppingList.isEmpty ? null : RouteOptimizer(shoppingList, offers).bestPlan();
     Navigator.of(context).push(
@@ -209,6 +224,8 @@ class _AppShellState extends State<AppShell> {
             builder: (_) => OffersScreen(
               offers: offers,
               priceHistory: widget.initialPriceHistory,
+              onSave: saveOffer,
+              onDelete: deleteOffer,
             ),
           ),
         ),
