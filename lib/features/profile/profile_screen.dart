@@ -72,7 +72,7 @@ class ProfileScreen extends StatelessWidget {
                 const Divider(height: 1),
                 ListTile(
                   onTap: onEditPriceData,
-                  leading: const Icon(Icons.database_outlined),
+                  leading: const Icon(Icons.storage_outlined),
                   title: const Text('Preisdaten'),
                   subtitle: Text(priceDataSummary),
                   trailing: const Icon(Icons.chevron_right),
