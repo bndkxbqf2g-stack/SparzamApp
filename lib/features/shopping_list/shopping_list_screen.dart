@@ -19,6 +19,7 @@ import 'shopping_list_header.dart';
 import 'shopping_input.dart';
 import 'shopping_recent_choices.dart';
 import 'shopping_search_results.dart';
+import 'shopping_list_status.dart';
 
 class ShoppingListScreen extends StatefulWidget {
   const ShoppingListScreen({
@@ -281,50 +282,16 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 ),
               ],
               const SizedBox(height: 22),
-              if (checkedProductIds.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 14),
-                  child: FilledButton.icon(
-                    onPressed: () {
-                      final purchased = {...checkedProductIds};
-                      widget.onClearPurchased(purchased);
-                      setState(() => checkedProductIds.clear());
-                    },
-                    icon: const Icon(Icons.check_circle_outline),
-                    label: Text(
-                      '${checkedProductIds.length} erledigte Artikel entfernen',
-                    ),
-                  ),
-                ),
+              CompletedItemsAction(
+                count: checkedProductIds.length,
+                onRemove: () {
+                  final purchased = {...checkedProductIds};
+                  widget.onClearPurchased(purchased);
+                  setState(() => checkedProductIds.clear());
+                },
+              ),
               if (widget.items.isEmpty)
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 34, 24, 34),
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.shopping_basket_outlined,
-                          size: 52,
-                          color: Colors.blue.shade600,
-                        ),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'Deine Liste ist noch leer.',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 18,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        const Text(
-                          'Tippe oben ein Produkt ein oder füge es über '
-                          '„Schnell hinzufügen“ direkt hinzu.',
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                )
+                const EmptyShoppingListCard()
               else
                 for (final entry in grouped.entries) ...[
                   ShoppingGroupCard(
