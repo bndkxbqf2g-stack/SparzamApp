@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/list_item.dart';
+import '../../models/mobility_settings.dart';
 import '../../models/offer.dart';
 import '../../models/store.dart';
 import '../../services/road_distance_service.dart';
@@ -14,11 +15,13 @@ class StoreScreen extends StatefulWidget {
     required this.store,
     required this.items,
     required this.offers,
+    required this.mobility,
   });
 
   final Store store;
   final List<ListItem> items;
   final List<Offer> offers;
+  final MobilitySettings mobility;
 
   @override
   State<StoreScreen> createState() => _StoreScreenState();
@@ -26,18 +29,19 @@ class StoreScreen extends StatefulWidget {
 
 class _StoreScreenState extends State<StoreScreen> {
   final cache = RoadDistanceStore();
-  final service = RoadDistanceService();
+  late RoadDistanceService service;
   Map<String, double> roadDistances = <String, double>{};
   bool loading = false;
 
   @override
   void initState() {
     super.initState();
+    service = RoadDistanceService(originAddress: widget.mobility.startAddress);
     _load();
   }
 
   Future<void> _load() async {
-    final loaded = await cache.load();
+    final loaded = await cache.load(widget.mobility.startAddress);
     if (!mounted) return;
     setState(() => roadDistances = loaded);
   }
@@ -50,7 +54,7 @@ class _StoreScreenState extends State<StoreScreen> {
     final next = {...roadDistances};
     if (distance != null && distance > 0) {
       next[widget.store.name] = distance;
-      await cache.save(next);
+      await cache.save(widget.mobility.startAddress, next);
     }
 
     if (!mounted) return;
@@ -78,6 +82,7 @@ class _StoreScreenState extends State<StoreScreen> {
       widget.items,
       widget.offers,
       roadDistances: roadDistances,
+      euroPerKm: widget.mobility.euroPerKm,
     );
     final roadDistance = roadDistances[widget.store.name];
     final shownDistance = roadDistance ?? widget.store.distanceKm;
