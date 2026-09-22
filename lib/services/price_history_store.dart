@@ -5,24 +5,53 @@ import '../models/price_point.dart';
 
 class PriceHistoryStore {
   static const _key = 'price_history_v1';
+  final SharedPreferencesAsync _preferences = SharedPreferencesAsync();
 
   Future<List<PricePoint>> load() async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getStringList(_key);
+    final raw = await _preferences.getStringList(_key);
     if (raw == null) {
       await save(samplePriceHistory);
       return [...samplePriceHistory];
     }
-    return raw.map(PricePoint.fromJson).toList();
+
+    final result = <PricePoint>[];
+    for (final value in raw) {
+      try {
+        result.add(PricePoint.fromJson(value));
+      } catch (_) {
+        // Einzelne defekte Alt-Einträge nicht den kompletten Verlauf zerstören.
+      }
+    }
+    return result;
   }
 
-  Future<void> save(List<PricePoint> history) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(_key, history.map((item) => item.toJson()).toList());
+  Future<void> save(List<PricePoint> history) =>
+      _preferences.setStringList(
+        _key,
+        history.map((item) => item.toJson()).toList(),
+      );
+
+  Future<List<PricePoint>> upsertObservation(
+    PricePoint point,
+    List<PricePoint> current,
+  ) async {
+    final next = [
+      ...current.where(
+        (item) => item.observationKey != point.observationKey,
+      ),
+      point,
+    ]..sort((a, b) => a.date.compareTo(b.date));
+
+    await save(next);
+    return next;
   }
 
-  Future<List<PricePoint>> add(PricePoint point, List<PricePoint> current) async {
-    final next = [...current, point];
+  Future<List<PricePoint>> removeProduct(
+    String productId,
+    List<PricePoint> current,
+  ) async {
+    final next =
+        current.where((item) => item.productId != productId).toList();
     await save(next);
     return next;
   }
