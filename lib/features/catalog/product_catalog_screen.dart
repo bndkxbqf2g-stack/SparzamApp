@@ -71,11 +71,52 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
     );
     if (result == null) return;
 
+    final duplicateEan = result.ean != null &&
+        allProducts.any(
+          (item) =>
+              item.id != result.id &&
+              item.ean != null &&
+              item.ean == result.ean,
+        );
+    if (duplicateEan) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Dieser Barcode ist bereits einem Produkt zugeordnet.'),
+          ),
+        );
+      }
+      return;
+    }
+
     final next = await widget.onSaveProduct(result);
     if (mounted) setState(() => customProducts = next);
   }
 
   Future<void> delete(Product product) async {
+    final confirmed = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Produkt löschen?'),
+            content: const Text(
+              'Eigene Marktpreise und Angebote für dieses Produkt '
+              'werden ebenfalls entfernt.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Abbrechen'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Löschen'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+    if (!confirmed) return;
+
     final next = await widget.onDeleteProduct(product);
     if (mounted) setState(() => customProducts = next);
   }
