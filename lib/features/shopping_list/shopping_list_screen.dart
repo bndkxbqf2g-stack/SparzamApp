@@ -11,8 +11,8 @@ import '../../models/replenishment_suggestion.dart';
 import '../../services/shopping_list_store.dart';
 import '../offers/offer_details_screen.dart';
 import 'shopping_item_sorter.dart';
+import 'shopping_group_card.dart';
 import 'replenishment_card.dart';
-import 'shopping_offer_badge.dart';
 import 'shopping_offer_hint.dart';
 import 'shopping_suggestions.dart';
 
@@ -110,23 +110,6 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     return grouped;
   }
 
-  String groupLabel(String group) {
-    switch (group) {
-      case 'butter':
-        return 'Milch & Käse';
-      case 'milch':
-        return 'Milch & Käse';
-      case 'obst':
-        return 'Obst & Gemüse';
-      case 'fleisch':
-        return 'Fleisch';
-      case 'nudeln':
-        return 'Nudeln & Beilagen';
-      default:
-        return 'Weitere Produkte';
-    }
-  }
-
   void _focusShoppingInput() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) {
@@ -207,6 +190,22 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       );
       await widget.onPurchased(product, item.quantity);
     }
+  }
+
+  void openOffer(ShoppingOfferHint hint) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => OfferDetailsScreen(
+          offer: hint.offer,
+          priceHistory: widget.priceHistory,
+          items: widget.items,
+          offers: widget.offers,
+          mobility: widget.mobility,
+          catalogProducts: widget.catalogProducts,
+          marketPrices: widget.marketPrices,
+        ),
+      ),
+    );
   }
 
   @override
@@ -526,143 +525,17 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 )
               else
                 for (final entry in grouped.entries) ...[
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Text(
-                      groupLabel(entry.key),
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w800,
-                          ),
-                    ),
+                  ShoppingGroupCard(
+                    group: entry.key,
+                    items: entry.value,
+                    checkedProductIds: checkedProductIds,
+                    offers: widget.offers,
+                    enabledStoreNames: widget.mobility.enabledStoreNames,
+                    marketPrices: widget.marketPrices,
+                    onToggle: toggleChecked,
+                    onChangeQuantity: widget.onChangeQuantity,
+                    onOpenOffer: openOffer,
                   ),
-                  Card(
-                    clipBehavior: Clip.antiAlias,
-                    child: Column(
-                      children: [
-                        for (var i = 0; i < entry.value.length; i++) ...[
-                          Builder(
-                            builder: (context) {
-                              final item = entry.value[i];
-                              final checked =
-                                  checkedProductIds.contains(item.product.id);
-
-                              return ListTile(
-                                onTap: () => toggleChecked(item.product),
-                                leading: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 150),
-                                  width: 26,
-                                  height: 26,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: checked
-                                        ? Colors.green.shade600
-                                        : Colors.transparent,
-                                    border: Border.all(
-                                      color: checked
-                                          ? Colors.green.shade600
-                                          : Colors.black26,
-                                      width: 2,
-                                    ),
-                                  ),
-                                  child: checked
-                                      ? const Icon(
-                                          Icons.check,
-                                          size: 17,
-                                          color: Colors.white,
-                                        )
-                                      : null,
-                                ),
-                                title: Text(
-                                  item.product.name,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    decoration: checked
-                                        ? TextDecoration.lineThrough
-                                        : null,
-                                    color: checked ? Colors.black45 : null,
-                                  ),
-                                ),
-                                subtitle: Builder(
-                                  builder: (context) {
-                                    final hint = bestShoppingOffer(
-                                      item,
-                                      widget.offers,
-                                      enabledStoreNames:
-                                          widget.mobility.enabledStoreNames,
-                                      marketPrices: widget.marketPrices,
-                                    );
-                                    return Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          item.quantity > 1
-                                              ? '${item.product.unit} · ×${item.quantity}'
-                                              : item.product.unit,
-                                        ),
-                                        if (!checked && hint != null)
-                                          ShoppingOfferBadge(
-                                            hint: hint,
-                                            onTap: () => Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (_) => OfferDetailsScreen(
-                                                  offer: hint.offer,
-                                                  priceHistory: widget.priceHistory,
-                                                  items: widget.items,
-                                                  offers: widget.offers,
-                                                  mobility: widget.mobility,
-                                                  catalogProducts:
-                                                      widget.catalogProducts,
-                                                  marketPrices:
-                                                      widget.marketPrices,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                      ],
-                                    );
-                                  },
-                                ),
-                                trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      tooltip: 'Menge verringern',
-                                      onPressed: checked
-                                          ? null
-                                          : () => widget.onChangeQuantity(
-                                                item.product.id,
-                                                -1,
-                                              ),
-                                      icon: const Icon(Icons.remove_circle_outline),
-                                    ),
-                                    Text(
-                                      item.quantity.toString(),
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w800,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      tooltip: 'Menge erhöhen',
-                                      onPressed: checked
-                                          ? null
-                                          : () => widget.onChangeQuantity(
-                                                item.product.id,
-                                                1,
-                                              ),
-                                      icon: const Icon(Icons.add_circle_outline),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                          if (i < entry.value.length - 1)
-                            const Divider(height: 1),
-                        ],
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
                 ],
             ],
           ),
@@ -671,4 +544,3 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     );
   }
 }
-
