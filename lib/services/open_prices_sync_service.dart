@@ -3,6 +3,11 @@ import '../models/market_price.dart';
 import '../models/product.dart';
 import 'open_prices_service.dart';
 
+typedef OpenPricesProductFetcher = Future<List<MarketPrice>> Function(
+  Product product,
+  int maxAgeDays,
+);
+
 class OpenPricesSyncResult {
   const OpenPricesSyncResult({
     required this.productsChecked,
@@ -18,7 +23,9 @@ class OpenPricesSyncResult {
 }
 
 class OpenPricesSyncService {
-  const OpenPricesSyncService();
+  const OpenPricesSyncService({this.fetcher});
+
+  final OpenPricesProductFetcher? fetcher;
 
   Future<OpenPricesSyncResult> sync({
     required List<Product> products,
@@ -29,24 +36,30 @@ class OpenPricesSyncService {
         .toList();
 
     final result = <MarketPrice>[];
-    final service = OpenPricesService(
-      maxAge: Duration(days: maxAgeDays),
-    );
+    final customFetcher = fetcher;
+    OpenPricesService? service;
+    if (customFetcher == null) {
+      service = OpenPricesService(
+        maxAge: Duration(days: maxAgeDays),
+      );
+    }
 
     try {
       for (var index = 0; index < withEan.length; index++) {
-        final found = await service.fetchRecentPrices(
-          product: withEan[index],
-          stores: stores,
-        );
+        final found = customFetcher != null
+            ? await customFetcher(withEan[index], maxAgeDays)
+            : await service!.fetchRecentPrices(
+                product: withEan[index],
+                stores: stores,
+              );
         result.addAll(found);
 
-        if (index < withEan.length - 1) {
+        if (customFetcher == null && index < withEan.length - 1) {
           await Future<void>.delayed(const Duration(milliseconds: 250));
         }
       }
     } finally {
-      service.close();
+      service?.close();
     }
 
     return OpenPricesSyncResult(
