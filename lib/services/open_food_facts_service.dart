@@ -88,16 +88,27 @@ class OpenFoodFactsService {
     if (quantity == null || quantity.isEmpty) return null;
 
     final normalized = quantity.replaceAll(',', '.').toLowerCase();
-    final match = RegExp(
-      r'([0-9]+(?:\.[0-9]+)?)\s*(kg|g|ml|cl|l|stück|stuck|stk|st)',
+    final multi = RegExp(
+      r'([0-9]+)\s*[x×]\s*([0-9]+(?:\.[0-9]+)?)\s*'
+      r'(kg|g|ml|cl|l|stück|stuck|stk|st)',
     ).firstMatch(normalized);
+    final match = multi ??
+        RegExp(
+          r'([0-9]+(?:\.[0-9]+)?)\s*'
+          r'(kg|g|ml|cl|l|stück|stuck|stk|st)',
+        ).firstMatch(normalized);
     if (match == null) return null;
 
-    final parsed = double.tryParse(match.group(1)!);
+    final multiplier = multi == null
+        ? 1.0
+        : (double.tryParse(multi.group(1)!) ?? 1);
+    final amountGroup = multi == null ? 1 : 2;
+    final unitGroup = multi == null ? 2 : 3;
+    final parsed = double.tryParse(match.group(amountGroup)!);
     if (parsed == null || parsed <= 0) return null;
 
-    var parsedUnit = _normalizeUnit(match.group(2)!);
-    var parsedAmount = parsed;
+    var parsedUnit = _normalizeUnit(match.group(unitGroup)!);
+    var parsedAmount = parsed * multiplier;
     if (parsedUnit == 'cl') {
       parsedAmount *= 10;
       parsedUnit = 'ml';
