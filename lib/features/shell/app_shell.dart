@@ -96,17 +96,32 @@ class _AppShellState extends State<AppShell> {
   final roadDistanceStore = RoadDistanceStore();
   late final Map<String, String> preferredProductByGroup;
 
+  Product? _catalogProduct(String id) {
+    final matches = [
+      ...base_catalog.products,
+      ...customProducts,
+    ].where((product) => product.id == id);
+    return matches.isEmpty ? null : matches.first;
+  }
+
   @override
   void initState() {
     super.initState();
     budget = widget.initialBudget;
     mobility = widget.initialMobility;
-    shoppingList = [...widget.initialShoppingList];
+    customProducts = [...widget.initialCustomProducts];
+    marketPrices = [...widget.initialMarketPrices];
+    shoppingList = widget.initialShoppingList
+        .map(
+          (item) => ListItem(
+            product: _catalogProduct(item.product.id) ?? item.product,
+            quantity: item.quantity,
+          ),
+        )
+        .toList();
     offers = [...widget.initialOffers];
     recentPurchases = [...widget.initialRecentPurchases];
     purchaseHistory = [...widget.initialPurchaseHistory];
-    customProducts = [...widget.initialCustomProducts];
-    marketPrices = [...widget.initialMarketPrices];
     preferredProductByGroup = {...widget.initialPreferredProductByGroup};
     _loadRoadDistances();
   }
@@ -158,10 +173,17 @@ class _AppShellState extends State<AppShell> {
   Future<void> openScanner() async {
     final learned = await widget.shoppingListStore.loadKnownItems();
     if (!mounted) return;
+
+    final seen = <String>{};
+    final scannerProducts = <Product>[
+      ...catalogProducts,
+      ...learned.map((item) => item.toProduct()),
+    ].where((product) => seen.add(product.id)).toList();
+
     final product = await Navigator.of(context).push<Product>(
       MaterialPageRoute(
         builder: (_) => ScannerScreen(
-          learnedProducts: learned.map((item) => item.toProduct()).toList(),
+          learnedProducts: scannerProducts,
         ),
       ),
     );
@@ -292,6 +314,7 @@ class _AppShellState extends State<AppShell> {
       await persistShoppingList();
     }
 
+    await widget.shoppingListStore.saveKnownItem(product);
     if (mounted) setState(() => customProducts = next);
     return next;
   }
@@ -311,6 +334,15 @@ class _AppShellState extends State<AppShell> {
         in offers.where((item) => item.productId == product.id).toList()) {
       nextOffers = await widget.offerStore.remove(offer.id, nextOffers);
     }
+
+    shoppingList.removeWhere((item) => item.product.id == product.id);
+    preferredProductByGroup.removeWhere((_, id) => id == product.id);
+    await persistShoppingList();
+    await widget.shoppingListStore.removeKnownItem(product.id);
+    await widget.shoppingListStore.removePreferredProduct(
+      product.group,
+      product.id,
+    );
 
     if (mounted) {
       setState(() {
