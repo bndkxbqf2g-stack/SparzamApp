@@ -7,6 +7,7 @@ import 'models/market_price.dart';
 import 'models/mobility_settings.dart';
 import 'models/offer.dart';
 import 'models/price_point.dart';
+import 'models/price_data_settings.dart';
 import 'models/product.dart';
 import 'models/recent_purchase.dart';
 import 'models/purchase_record.dart';
@@ -15,6 +16,7 @@ import 'services/offer_store.dart';
 import 'services/mobility_settings_store.dart';
 import 'services/market_price_store.dart';
 import 'services/product_catalog_store.dart';
+import 'services/price_data_settings_store.dart';
 import 'services/recent_purchase_store.dart';
 import 'services/purchase_store.dart';
 import 'services/shopping_list_store.dart';
@@ -27,6 +29,7 @@ class SparzamApp extends StatelessWidget {
     required this.mobilityStore,
     required this.marketPriceStore,
     required this.productCatalogStore,
+    required this.priceDataSettingsStore,
     required this.recentPurchaseStore,
     required this.purchaseStore,
     required this.shoppingListStore,
@@ -36,6 +39,7 @@ class SparzamApp extends StatelessWidget {
     required this.initialMarketPrices,
     required this.initialCustomProducts,
     required this.initialPriceHistory,
+    required this.initialPriceDataSettings,
     required this.initialRecentPurchases,
     required this.initialPurchaseHistory,
     required this.initialShoppingList,
@@ -47,6 +51,7 @@ class SparzamApp extends StatelessWidget {
   final MobilitySettingsStore mobilityStore;
   final MarketPriceStore marketPriceStore;
   final ProductCatalogStore productCatalogStore;
+  final PriceDataSettingsStore priceDataSettingsStore;
   final RecentPurchaseStore recentPurchaseStore;
   final PurchaseStore purchaseStore;
   final ShoppingListStore shoppingListStore;
@@ -56,6 +61,7 @@ class SparzamApp extends StatelessWidget {
   final List<MarketPrice> initialMarketPrices;
   final List<Product> initialCustomProducts;
   final List<PricePoint> initialPriceHistory;
+  final PriceDataSettings initialPriceDataSettings;
   final List<RecentPurchase> initialRecentPurchases;
   final List<PurchaseRecord> initialPurchaseHistory;
   final List<ListItem> initialShoppingList;
@@ -86,6 +92,7 @@ class SparzamApp extends StatelessWidget {
         mobilityStore: mobilityStore,
         marketPriceStore: marketPriceStore,
         productCatalogStore: productCatalogStore,
+        priceDataSettingsStore: priceDataSettingsStore,
         recentPurchaseStore: recentPurchaseStore,
         purchaseStore: purchaseStore,
         shoppingListStore: shoppingListStore,
@@ -95,6 +102,7 @@ class SparzamApp extends StatelessWidget {
         initialMarketPrices: initialMarketPrices,
         initialCustomProducts: initialCustomProducts,
         initialPriceHistory: initialPriceHistory,
+        initialPriceDataSettings: initialPriceDataSettings,
         initialRecentPurchases: initialRecentPurchases,
         initialPurchaseHistory: initialPurchaseHistory,
         initialShoppingList: initialShoppingList,
