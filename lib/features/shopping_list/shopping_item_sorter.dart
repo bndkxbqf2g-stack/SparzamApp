@@ -6,9 +6,15 @@ List<ListItem> prioritizeOfferItems(
   List<ListItem> items,
   List<Offer> offers, {
   DateTime? now,
+  List<String> enabledStoreNames = const <String>[],
 }) {
   final indexed = items.indexed.map((entry) {
-    final hint = bestShoppingOffer(entry.$2, offers, now: now);
+    final hint = bestShoppingOffer(
+      entry.$2,
+      offers,
+      now: now,
+      enabledStoreNames: enabledStoreNames,
+    );
     return _RankedItem(
       item: entry.$2,
       originalIndex: entry.$1,
