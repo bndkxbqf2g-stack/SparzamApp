@@ -77,5 +77,8 @@ void main() {
 
     expect(result.prices, [fetched]);
     expect(result.history.single.source, PricePointSource.openPrices);
+    expect(result.productsChecked, 1);
+    expect(result.productsWithEan, 1);
+    expect(result.pricesFound, 1);
   });
 }

@@ -8,6 +8,7 @@ import '../../models/offer.dart';
 import '../../models/product.dart';
 import '../../models/price_point.dart';
 import '../../models/price_data_settings.dart';
+import '../../models/price_sync_result.dart';
 import '../../models/recent_purchase.dart';
 import '../../models/replenishment_suggestion.dart';
 import '../../models/road_route_matrix.dart';
@@ -401,8 +402,16 @@ class _AppShellState extends State<AppShell> {
     return next;
   }
 
-  Future<List<MarketPrice>> syncOpenPrices() async {
-    if (!priceDataSettings.openPricesEnabled) return marketPrices;
+  Future<PriceSyncResult> syncOpenPrices() async {
+    if (!priceDataSettings.openPricesEnabled) {
+      return PriceSyncResult(
+        prices: marketPrices,
+        history: priceHistory,
+        productsChecked: 0,
+        productsWithEan: 0,
+        pricesFound: 0,
+      );
+    }
 
     final result = await priceCoordinator.syncOpenPrices(
       products: catalogProducts,
@@ -417,7 +426,7 @@ class _AppShellState extends State<AppShell> {
         priceHistory = result.history;
       });
     }
-    return result.prices;
+    return result;
   }
 
   Future<void> openPriceDataSettings() async {

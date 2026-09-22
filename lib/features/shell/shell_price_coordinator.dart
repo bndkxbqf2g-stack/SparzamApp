@@ -1,5 +1,6 @@
 import '../../models/market_price.dart';
 import '../../models/price_point.dart';
+import '../../models/price_sync_result.dart';
 import '../../models/product.dart';
 import '../../services/market_price_store.dart';
 import '../../services/open_prices_sync_service.dart';
@@ -48,7 +49,7 @@ class ShellPriceCoordinator {
   }) =>
       marketPriceStore.remove(productId, storeName, prices);
 
-  Future<PriceMutationResult> syncOpenPrices({
+  Future<PriceSyncResult> syncOpenPrices({
     required List<Product> products,
     required int maxAgeDays,
     required List<MarketPrice> prices,
@@ -68,9 +69,12 @@ class ShellPriceCoordinator {
         nextHistory,
       );
     }
-    return PriceMutationResult(
+    return PriceSyncResult(
       prices: nextPrices,
       history: nextHistory,
+      productsChecked: synced.productsChecked,
+      productsWithEan: synced.productsWithEan,
+      pricesFound: synced.pricesFound,
     );
   }
 }

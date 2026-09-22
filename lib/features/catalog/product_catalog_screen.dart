@@ -4,6 +4,7 @@ import '../../data/products.dart' as demo;
 import '../../models/market_price.dart';
 import '../../models/product.dart';
 import '../../models/price_data_settings.dart';
+import '../../models/price_sync_result.dart';
 import 'price_coverage.dart';
 import 'market_price_editor_screen.dart';
 import 'product_editor_screen.dart';
@@ -31,7 +32,7 @@ class ProductCatalogScreen extends StatefulWidget {
     String storeName,
   ) onDeletePrice;
   final PriceDataSettings priceDataSettings;
-  final Future<List<MarketPrice>> Function() onSyncOpenPrices;
+  final Future<PriceSyncResult> Function() onSyncOpenPrices;
 
   @override
   State<ProductCatalogScreen> createState() => _ProductCatalogScreenState();
@@ -43,6 +44,7 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
   String query = '';
   bool syncing = false;
   bool autoSyncTriggered = false;
+  String? syncFeedback;
 
   @override
   void initState() {
@@ -83,16 +85,23 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
 
   Future<void> syncOpenPrices() async {
     if (syncing || !widget.priceDataSettings.openPricesEnabled) return;
-    setState(() => syncing = true);
+    setState(() {
+      syncing = true;
+      syncFeedback = null;
+    });
     try {
-      final next = await widget.onSyncOpenPrices();
+      final result = await widget.onSyncOpenPrices();
       if (!mounted) return;
-      setState(() => marketPrices = next);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Open-Prices-Abgleich abgeschlossen.'),
-        ),
-      );
+      setState(() {
+        marketPrices = result.prices;
+        syncFeedback = '${result.productsWithEan}/${result.productsChecked} '
+            'Produkte mit EAN geprüft · ${result.pricesFound} '
+            '${result.pricesFound == 1 ? 'Preis' : 'Preise'} gefunden.';
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => syncFeedback =
+          'Open Prices konnte nicht aktualisiert werden. Bitte Verbindung prüfen und erneut versuchen.');
     } finally {
       if (mounted) setState(() => syncing = false);
     }
@@ -236,6 +245,10 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                                 : const Icon(Icons.sync_outlined),
                             label: const Text('Open Prices aktualisieren'),
                           ),
+                        ],
+                        if (syncFeedback != null) ...[
+                          const SizedBox(height: 8),
+                          Text(syncFeedback!),
                         ],
                       ],
                     ),
