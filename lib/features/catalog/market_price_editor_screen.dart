@@ -35,6 +35,13 @@ class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
   late final Map<String, TextEditingController> controllers;
   late final OpenPricesService openPrices;
   bool importing = false;
+  String? savingStore;
+
+  void showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
 
   @override
   void initState() {
@@ -70,30 +77,51 @@ class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
   }
 
   Future<void> save(String storeName) async {
+    if (savingStore != null || importing) return;
     final raw =
         double.tryParse(controllers[storeName]!.text.replaceAll(',', '.'));
-    if (raw == null || raw <= 0) return;
+    if (raw == null || !raw.isFinite || raw <= 0) {
+      showError('Bitte einen gültigen Preis über 0 € eingeben.');
+      return;
+    }
 
-    final next = await widget.onSave(
-      MarketPrice(
-        productId: widget.product.id,
-        storeName: storeName,
-        price: raw,
-        updatedAt: DateTime.now(),
-        source: MarketPriceSource.manual,
-      ),
-    );
-    if (mounted) setState(() => prices = next);
+    setState(() => savingStore = storeName);
+    try {
+      final next = await widget.onSave(
+        MarketPrice(
+          productId: widget.product.id,
+          storeName: storeName,
+          price: raw,
+          updatedAt: DateTime.now(),
+          source: MarketPriceSource.manual,
+        ),
+      );
+      if (mounted) setState(() => prices = next);
+    } catch (_) {
+      if (mounted) showError('Der Preis konnte nicht gespeichert werden.');
+    } finally {
+      if (mounted) setState(() => savingStore = null);
+    }
   }
 
   Future<void> remove(String storeName) async {
-    controllers[storeName]!.clear();
-    final next = await widget.onDelete(widget.product.id, storeName);
-    if (mounted) setState(() => prices = next);
+    if (savingStore != null || importing) return;
+    setState(() => savingStore = storeName);
+    try {
+      final next = await widget.onDelete(widget.product.id, storeName);
+      if (mounted) {
+        setState(() => prices = next);
+        controllers[storeName]!.clear();
+      }
+    } catch (_) {
+      if (mounted) showError('Der Preis konnte nicht gelöscht werden.');
+    } finally {
+      if (mounted) setState(() => savingStore = null);
+    }
   }
 
   Future<void> importOpenPrices() async {
-    if (importing || widget.product.ean == null) return;
+    if (importing || savingStore != null || widget.product.ean == null) return;
     setState(() => importing = true);
 
     try {
@@ -171,7 +199,7 @@ class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
                         )
                       : IconButton(
                           tooltip: 'Open Prices laden',
-                          onPressed: importOpenPrices,
+                          onPressed: savingStore == null ? importOpenPrices : null,
                           icon: const Icon(Icons.refresh),
                         ),
                 ),
@@ -255,18 +283,23 @@ class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
                               suffixText: '€',
                               isDense: true,
                             ),
+                            enabled: savingStore == null && !importing,
                             onSubmitted: (_) => save(store.name),
                           ),
                         ),
                         IconButton(
                           tooltip: 'Speichern',
-                          onPressed: () => save(store.name),
+                          onPressed: savingStore == null && !importing
+                              ? () => save(store.name)
+                              : null,
                           icon: const Icon(Icons.save_outlined),
                         ),
                         if (_priceFor(store.name) != null)
                           IconButton(
                             tooltip: 'Eigenen Preis löschen',
-                            onPressed: () => remove(store.name),
+                            onPressed: savingStore == null && !importing
+                                ? () => remove(store.name)
+                                : null,
                             icon: const Icon(Icons.delete_outline),
                           ),
                       ],
