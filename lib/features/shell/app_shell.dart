@@ -45,6 +45,7 @@ import 'shell_catalog.dart';
 import 'shell_pricing.dart';
 import 'shell_routing.dart';
 import 'shell_dashboard.dart';
+import 'shell_navigation.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({
@@ -628,13 +629,7 @@ class _AppShellState extends State<AppShell> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,
         onDestinationSelected: (index) => setState(() => selectedIndex = index),
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Home'),
-          NavigationDestination(icon: Icon(Icons.shopping_cart_outlined), selectedIcon: Icon(Icons.shopping_cart), label: 'Liste'),
-          NavigationDestination(icon: Icon(Icons.route_outlined), selectedIcon: Icon(Icons.route), label: 'Route'),
-          NavigationDestination(icon: Icon(Icons.receipt_long_outlined), selectedIcon: Icon(Icons.receipt_long), label: 'Bon'),
-          NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Profil'),
-        ],
+        destinations: shellDestinations,
       ),
     );
   }
