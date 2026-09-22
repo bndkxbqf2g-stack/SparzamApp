@@ -6,11 +6,16 @@ import '../../models/store.dart';
 import 'route_price_resolver.dart';
 
 class RouteOptimizer {
-  RouteOptimizer(this.items, List<Offer> offers)
-      : prices = RoutePriceResolver(offers);
+  RouteOptimizer(
+    this.items,
+    List<Offer> offers, {
+    Map<String, double>? roadDistances,
+  })  : roadDistances = roadDistances ?? const <String, double>{},
+        prices = RoutePriceResolver(offers);
 
   final List<ListItem> items;
   final RoutePriceResolver prices;
+  final Map<String, double> roadDistances;
 
   static const double euroPerKmRoundTrip = 0.22;
 
@@ -24,7 +29,10 @@ class RouteOptimizer {
   double travelCost(Iterable<Store> selectedStores) {
     return selectedStores.fold<double>(
       0,
-      (sum, store) => sum + (store.distanceKm * 2 * euroPerKmRoundTrip),
+      (sum, store) => sum +
+          ((roadDistances[store.name] ?? store.distanceKm) *
+              2 *
+              euroPerKmRoundTrip),
     );
   }
 
