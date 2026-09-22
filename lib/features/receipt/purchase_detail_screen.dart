@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../models/purchase_record.dart';
+import 'purchase_items_editor.dart';
+import 'purchase_money_editor.dart';
 
 class PurchaseDetailScreen extends StatefulWidget {
   const PurchaseDetailScreen({
@@ -20,13 +22,27 @@ class PurchaseDetailScreen extends StatefulWidget {
 
 class _PurchaseDetailScreenState extends State<PurchaseDetailScreen> {
   late DateTime purchaseDate;
+  late List<PurchaseLine> items;
+  late final TextEditingController basketController;
+  late final TextEditingController travelController;
+  late final TextEditingController baselineController;
   bool saving = false;
 
   @override
   void initState() {
     super.initState();
     purchaseDate = widget.record.createdAt;
+    items = [...widget.record.items];
+    basketController = _moneyController(widget.record.basket);
+    travelController = _moneyController(widget.record.travel);
+    baselineController = _moneyController(widget.record.baselineTotal);
   }
+
+  TextEditingController _moneyController(double value) =>
+      TextEditingController(text: value.toStringAsFixed(2));
+
+  double _moneyValue(TextEditingController controller) =>
+      double.tryParse(controller.text.replaceAll(',', '.')) ?? 0;
 
   String euro(double value) => '${value.toStringAsFixed(2)} €';
 
@@ -53,9 +69,39 @@ class _PurchaseDetailScreenState extends State<PurchaseDetailScreen> {
   Future<void> save() async {
     if (saving) return;
     setState(() => saving = true);
-    await widget.onSave(widget.record.copyWith(createdAt: purchaseDate));
+    final basket = _moneyValue(basketController);
+    final travel = _moneyValue(travelController);
+    await widget.onSave(
+      widget.record.copyWith(
+        createdAt: purchaseDate,
+        items: items,
+        basket: basket,
+        travel: travel,
+        total: basket + travel,
+        baselineTotal: _moneyValue(baselineController),
+      ),
+    );
     if (!mounted) return;
     Navigator.pop(context);
+  }
+
+  void changeQuantity(int index, int quantity) {
+    final item = items[index];
+    setState(() {
+      items[index] = PurchaseLine(
+        productId: item.productId,
+        name: item.name,
+        quantity: quantity,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    basketController.dispose();
+    travelController.dispose();
+    baselineController.dispose();
+    super.dispose();
   }
 
   Future<void> delete() async {
@@ -136,55 +182,15 @@ class _PurchaseDetailScreenState extends State<PurchaseDetailScreen> {
                   ),
             ),
             const SizedBox(height: 8),
-            Card(
-              clipBehavior: Clip.antiAlias,
-              child: Column(
-                children: [
-                  for (var index = 0;
-                      index < widget.record.items.length;
-                      index++) ...[
-                    ListTile(
-                      leading: const Icon(Icons.shopping_bag_outlined),
-                      title: Text(widget.record.items[index].name),
-                      trailing: Text(
-                        '×${widget.record.items[index].quantity}',
-                        style: const TextStyle(fontWeight: FontWeight.w800),
-                      ),
-                    ),
-                    if (index < widget.record.items.length - 1)
-                      const Divider(height: 1),
-                  ],
-                ],
-              ),
+            PurchaseItemsEditor(
+              items: items,
+              onQuantityChanged: changeQuantity,
             ),
             const SizedBox(height: 16),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    _MoneyRow(
-                      label: 'Warenkorb',
-                      value: euro(widget.record.basket),
-                    ),
-                    _MoneyRow(
-                      label: 'Fahrt',
-                      value: euro(widget.record.travel),
-                    ),
-                    const Divider(),
-                    _MoneyRow(
-                      label: 'Gesamt',
-                      value: euro(widget.record.total),
-                      strong: true,
-                    ),
-                    _MoneyRow(
-                      label: 'Ersparnis',
-                      value: euro(widget.record.savings),
-                      strong: true,
-                    ),
-                  ],
-                ),
-              ),
+            PurchaseMoneyEditor(
+              basketController: basketController,
+              travelController: travelController,
+              baselineController: baselineController,
             ),
             const SizedBox(height: 20),
             FilledButton.icon(
@@ -197,34 +203,6 @@ class _PurchaseDetailScreenState extends State<PurchaseDetailScreen> {
                     )
                   : const Icon(Icons.save_outlined),
               label: const Text('Korrektur speichern'),
-            ),
-          ],
-        ),
-      );
-}
-
-class _MoneyRow extends StatelessWidget {
-  const _MoneyRow({
-    required this.label,
-    required this.value,
-    this.strong = false,
-  });
-
-  final String label;
-  final String value;
-  final bool strong;
-
-  @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3),
-        child: Row(
-          children: [
-            Expanded(child: Text(label)),
-            Text(
-              value,
-              style: TextStyle(
-                fontWeight: strong ? FontWeight.w800 : FontWeight.w600,
-              ),
             ),
           ],
         ),
