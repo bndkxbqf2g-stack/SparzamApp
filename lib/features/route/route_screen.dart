@@ -139,7 +139,7 @@ class _RouteScreenState extends State<RouteScreen> {
         const SizedBox(height: 6),
         const Text(
           'Verglichen werden Normalpreise, aktive Angebote, Coupons, '
-          'Cashback und Fahrtkosten für bis zu 3 Märkte.',
+          'Cashback, Wegeaufwand und deine persönlichen Routenregeln.',
         ),
         const SizedBox(height: 12),
         Card(
