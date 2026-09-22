@@ -90,7 +90,13 @@ class OfferCard extends StatelessWidget {
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    'Normal ${evaluation.normalPrice.toStringAsFixed(2)} € · Best ${evaluation.bestPrice.toStringAsFixed(2)} €',
+                    [
+                      'Normal ${evaluation.normalPrice.toStringAsFixed(2)} €',
+                      if (evaluation.best30Price != null)
+                        '30T ${evaluation.best30Price!.toStringAsFixed(2)} €',
+                      if (evaluation.best90Price != null)
+                        '90T ${evaluation.best90Price!.toStringAsFixed(2)} €',
+                    ].join(' · '),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ),
