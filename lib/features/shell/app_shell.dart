@@ -19,7 +19,6 @@ import '../../services/market_price_store.dart';
 import '../../services/product_catalog_store.dart';
 import '../../services/price_data_settings_store.dart';
 import '../../services/price_history_store.dart';
-import '../../services/open_prices_sync_service.dart';
 import '../../services/recent_purchase_store.dart';
 import '../../services/purchase_store.dart';
 import '../../services/road_distance_store.dart';
@@ -41,7 +40,6 @@ import '../scanner/scanner_screen.dart';
 import '../shopping_list/replenishment_analyzer.dart';
 import '../shopping_list/shopping_list_screen.dart';
 import 'shell_catalog.dart';
-import 'shell_pricing.dart';
 import 'shell_routing.dart';
 import 'shell_dashboard.dart';
 import 'shell_navigation.dart';
@@ -424,28 +422,20 @@ class _AppShellState extends State<AppShell> {
   Future<List<MarketPrice>> syncOpenPrices() async {
     if (!priceDataSettings.openPricesEnabled) return marketPrices;
 
-    final result = await const OpenPricesSyncService().sync(
+    final result = await priceCoordinator.syncOpenPrices(
       products: catalogProducts,
       maxAgeDays: priceDataSettings.openPricesMaxAgeDays,
+      prices: marketPrices,
+      history: priceHistory,
     );
-
-    var next = marketPrices;
-    var nextHistory = priceHistory;
-    for (final price in result.prices) {
-      next = await widget.marketPriceStore.upsert(price, next);
-      nextHistory = await widget.priceHistoryStore.upsertObservation(
-        priceHistoryPoint(price),
-        nextHistory,
-      );
-    }
 
     if (mounted) {
       setState(() {
-        marketPrices = next;
-        priceHistory = nextHistory;
+        marketPrices = result.prices;
+        priceHistory = result.history;
       });
     }
-    return next;
+    return result.prices;
   }
 
   Future<void> openPriceDataSettings() async {
