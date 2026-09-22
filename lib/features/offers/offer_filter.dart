@@ -1,3 +1,4 @@
+import '../../data/products.dart';
 import '../../models/offer.dart';
 import '../../models/product.dart';
 
@@ -8,7 +9,7 @@ List<Offer> filterOffers(
   required OfferStatusFilter status,
   String query = '',
   DateTime? now,
-  List<Product> catalogProducts = const <Product>[],
+  List<Product> catalogProducts = products,
 }) {
   final today = _day(now ?? DateTime.now());
   final normalizedQuery = query.trim().toLowerCase();
