@@ -97,7 +97,6 @@ class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
       );
       var next = prices;
       for (final price in found) {
-        final before = next;
         next = await widget.onSave(price);
       }
 
