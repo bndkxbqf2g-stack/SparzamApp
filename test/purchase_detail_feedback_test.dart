@@ -59,4 +59,27 @@ void main() {
       find.byTooltip('Einkauf löschen'),
     ).onPressed, isNotNull);
   });
+
+  testWidgets('ungültiger Warenkorb verändert die Kaufhistorie nicht',
+      (tester) async {
+    var calls = 0;
+    await tester.pumpWidget(MaterialApp(
+      home: PurchaseDetailScreen(
+        record: record,
+        onSave: (_) async {
+          calls++;
+        },
+        onDelete: (_) async {},
+      ),
+    ));
+    await tester.enterText(find.byType(TextField).first, '-4');
+    final button = find.text('Korrektur speichern');
+    await tester.ensureVisible(button);
+    await tester.tap(button);
+    await tester.pump();
+
+    expect(calls, 0);
+    expect(find.textContaining('Bitte gültige, nicht negative Beträge'),
+        findsOneWidget);
+  });
 }

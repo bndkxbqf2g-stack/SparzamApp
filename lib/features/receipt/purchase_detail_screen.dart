@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/purchase_record.dart';
+import 'purchase_amount.dart';
 import 'purchase_items_editor.dart';
 import 'purchase_money_editor.dart';
 
@@ -41,9 +42,6 @@ class _PurchaseDetailScreenState extends State<PurchaseDetailScreen> {
   TextEditingController _moneyController(double value) =>
       TextEditingController(text: value.toStringAsFixed(2));
 
-  double _moneyValue(TextEditingController controller) =>
-      double.tryParse(controller.text.replaceAll(',', '.')) ?? 0;
-
   String euro(double value) => '${value.toStringAsFixed(2)} €';
 
   Future<void> pickDate() async {
@@ -68,9 +66,18 @@ class _PurchaseDetailScreenState extends State<PurchaseDetailScreen> {
 
   Future<void> save() async {
     if (saving) return;
+    final basket = parsePurchaseAmount(basketController.text);
+    final travel = parsePurchaseAmount(travelController.text);
+    final baseline = parsePurchaseAmount(baselineController.text);
+    if (basket == null || travel == null || baseline == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Bitte gültige, nicht negative Beträge eingeben.'),
+        ),
+      );
+      return;
+    }
     setState(() => saving = true);
-    final basket = _moneyValue(basketController);
-    final travel = _moneyValue(travelController);
     try {
       await widget.onSave(
         widget.record.copyWith(
@@ -79,7 +86,7 @@ class _PurchaseDetailScreenState extends State<PurchaseDetailScreen> {
           basket: basket,
           travel: travel,
           total: basket + travel,
-          baselineTotal: _moneyValue(baselineController),
+          baselineTotal: baseline,
         ),
       );
       if (mounted) Navigator.pop(context);
