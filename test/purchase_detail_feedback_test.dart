@@ -33,4 +33,30 @@ void main() {
     expect(tester.widget<FilledButton>(find.byType(FilledButton).last).onPressed,
         isNotNull);
   });
+
+  testWidgets('fehlgeschlagenes Löschen lässt erneuten Versuch zu',
+      (tester) async {
+    var calls = 0;
+    await tester.pumpWidget(MaterialApp(
+      home: PurchaseDetailScreen(
+        record: record,
+        onSave: (_) async {},
+        onDelete: (_) async {
+          calls++;
+          throw StateError('offline');
+        },
+      ),
+    ));
+    await tester.tap(find.byTooltip('Einkauf löschen'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Löschen'));
+    await tester.pump();
+    await tester.pump();
+
+    expect(calls, 1);
+    expect(find.textContaining('konnte nicht gelöscht werden'), findsOneWidget);
+    expect(tester.widget<IconButton>(
+      find.byTooltip('Einkauf löschen'),
+    ).onPressed, isNotNull);
+  });
 }

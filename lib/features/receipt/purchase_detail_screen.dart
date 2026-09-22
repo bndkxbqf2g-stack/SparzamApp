@@ -139,12 +139,23 @@ class _PurchaseDetailScreenState extends State<PurchaseDetailScreen> {
           ),
         ) ??
         false;
-    if (!confirmed) return;
+    if (!confirmed || !mounted || saving) return;
 
     setState(() => saving = true);
-    await widget.onDelete(widget.record);
-    if (!mounted) return;
-    Navigator.pop(context);
+    try {
+      await widget.onDelete(widget.record);
+      if (mounted) Navigator.pop(context);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Einkauf konnte nicht gelöscht werden. Bitte erneut versuchen.'),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => saving = false);
+    }
   }
 
   @override
