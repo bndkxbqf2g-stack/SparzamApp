@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../../models/list_item.dart';
 import '../../models/offer.dart';
 import '../../models/product.dart';
+import '../../models/price_point.dart';
 import '../../models/recent_purchase.dart';
 import '../../services/shopping_list_store.dart';
+import '../offers/offer_details_screen.dart';
 import 'shopping_item_sorter.dart';
 import 'shopping_offer_badge.dart';
 import 'shopping_offer_hint.dart';
@@ -23,6 +25,7 @@ class ShoppingListScreen extends StatefulWidget {
     required this.shoppingListStore,
     required this.onOpenScanner,
     required this.offers,
+    required this.priceHistory,
   });
 
   final List<ListItem> items;
@@ -35,6 +38,7 @@ class ShoppingListScreen extends StatefulWidget {
   final ShoppingListStore shoppingListStore;
   final VoidCallback onOpenScanner;
   final List<Offer> offers;
+  final List<PricePoint> priceHistory;
 
   @override
   State<ShoppingListScreen> createState() => _ShoppingListScreenState();
@@ -558,7 +562,17 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                               : item.product.unit,
                                         ),
                                         if (!checked && hint != null)
-                                          ShoppingOfferBadge(hint: hint),
+                                          ShoppingOfferBadge(
+                                            hint: hint,
+                                            onTap: () => Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (_) => OfferDetailsScreen(
+                                                  offer: hint.offer,
+                                                  priceHistory: widget.priceHistory,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                       ],
                                     );
                                   },

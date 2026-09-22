@@ -51,14 +51,29 @@ class OfferCard extends StatelessWidget {
                       style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
                 ),
                 _Price(offer: offer, price: price),
-                PopupMenuButton<String>(
-                  tooltip: 'Angebotsoptionen',
-                  onSelected: (value) => value == 'edit' ? onEdit?.call() : onDelete?.call(),
-                  itemBuilder: (context) => const [
-                    PopupMenuItem(value: 'edit', child: Text('Bearbeiten')),
-                    PopupMenuItem(value: 'delete', child: Text('Löschen')),
-                  ],
-                ),
+                if (onEdit != null || onDelete != null)
+                  PopupMenuButton<String>(
+                    tooltip: 'Angebotsoptionen',
+                    onSelected: (value) {
+                      if (value == 'edit') {
+                        onEdit?.call();
+                      } else {
+                        onDelete?.call();
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      if (onEdit != null)
+                        const PopupMenuItem(
+                          value: 'edit',
+                          child: Text('Bearbeiten'),
+                        ),
+                      if (onDelete != null)
+                        const PopupMenuItem(
+                          value: 'delete',
+                          child: Text('Löschen'),
+                        ),
+                    ],
+                  ),
               ],
             ),
             const SizedBox(height: 4),
