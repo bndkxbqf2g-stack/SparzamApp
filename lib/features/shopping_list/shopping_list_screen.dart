@@ -17,6 +17,7 @@ import 'shopping_offer_hint.dart';
 import 'shopping_suggestions.dart';
 import 'shopping_list_header.dart';
 import 'shopping_input.dart';
+import 'shopping_recent_choices.dart';
 
 class ShoppingListScreen extends StatefulWidget {
   const ShoppingListScreen({
@@ -340,61 +341,12 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     trailing: const Icon(Icons.arrow_forward_ios, size: 18),
                   ),
                 ),
-              ] else if (controller.text.trim().isEmpty &&
-                  widget.recentPurchases.isNotEmpty) ...[
-                const SizedBox(height: 14),
-                Text(
-                  'Zuletzt gekauft',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                ),
-                const SizedBox(height: 8),
-                SizedBox(
-                  height: 48,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: widget.recentPurchases.length,
-                    separatorBuilder: (context, index) => const SizedBox(width: 8),
-                    itemBuilder: (context, index) {
-                      final purchase = widget.recentPurchases[index];
-                      return ActionChip(
-                        onPressed: () => addRecentPurchase(purchase),
-                        avatar: const Icon(Icons.history, size: 18),
-                        label: Text(
-                          purchase.averageQuantity > 1.5
-                              ? '${purchase.name} · meist ×${purchase.averageQuantity.round()}'
-                              : purchase.name,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ] else if (controller.text.trim().isEmpty &&
-                  quickProducts.isNotEmpty) ...[
-                const SizedBox(height: 14),
-                Text(
-                  'Schnell hinzufügen',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                ),
-                const SizedBox(height: 8),
-                SizedBox(
-                  height: 44,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: quickProducts.length,
-                    separatorBuilder: (context, index) => const SizedBox(width: 8),
-                    itemBuilder: (context, index) {
-                      final product = quickProducts[index];
-                      return ActionChip(
-                        onPressed: () => add(product),
-                        avatar: const Icon(Icons.add, size: 18),
-                        label: Text(product.name),
-                      );
-                    },
-                  ),
+              ] else if (controller.text.trim().isEmpty) ...[
+                ShoppingRecentChoices(
+                  recentPurchases: widget.recentPurchases,
+                  quickProducts: quickProducts,
+                  onAddRecent: addRecentPurchase,
+                  onAddProduct: add,
                 ),
               ],
               const SizedBox(height: 22),
