@@ -45,7 +45,10 @@ class HomeScreen extends StatelessWidget {
             icon: Icons.route_outlined,
             title: 'Günstigste Route',
             value: data.routeNames,
-            subtitle: data.routeTotal == 0 ? 'Route berechnen' : '${euro(data.routeTotal)} inklusive Fahrt',
+            subtitle: data.routeTotal == 0
+                ? 'Route berechnen'
+                : '${euro(data.routeTotal)} · ${data.mobilityLabel} · '
+                    'ca. ${data.routeTravelMinutes} Min.',
             onTap: data.itemCount == 0 ? onOpenList : onOpenRoute,
           ),
           const SizedBox(height: 10),
