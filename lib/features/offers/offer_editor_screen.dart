@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
-import '../../data/products.dart';
 import '../../data/stores.dart';
 import '../../models/offer.dart';
+import '../../models/product.dart';
 
 class OfferEditorScreen extends StatefulWidget {
-  const OfferEditorScreen({super.key, this.offer});
+  const OfferEditorScreen({
+    super.key,
+    this.offer,
+    required this.catalogProducts,
+  });
 
   final Offer? offer;
+  final List<Product> catalogProducts;
 
   @override
   State<OfferEditorScreen> createState() => _OfferEditorScreenState();
@@ -31,7 +36,7 @@ class _OfferEditorScreenState extends State<OfferEditorScreen> {
   void initState() {
     super.initState();
     final offer = widget.offer;
-    productId = offer?.productId ?? products.first.id;
+    productId = offer?.productId ?? widget.catalogProducts.first.id;
     storeName = offer?.storeName ?? stores.first.name;
     validUntil = offer?.validUntil ?? DateTime.now().add(const Duration(days: 7));
     originalPrice = _controller(offer?.originalPrice);
@@ -128,7 +133,7 @@ class _OfferEditorScreenState extends State<OfferEditorScreen> {
               DropdownButtonFormField<String>(
                 initialValue: productId,
                 decoration: const InputDecoration(labelText: 'Produkt'),
-                items: products
+                items: widget.catalogProducts
                     .map((p) => DropdownMenuItem(value: p.id, child: Text(p.name)))
                     .toList(),
                 onChanged: (value) => setState(() => productId = value!),
