@@ -1,0 +1,77 @@
+import 'package:flutter/material.dart';
+
+import 'features/shell/app_shell.dart';
+import 'models/budget_plan.dart';
+import 'models/list_item.dart';
+import 'models/offer.dart';
+import 'models/price_point.dart';
+import 'models/recent_purchase.dart';
+import 'models/purchase_record.dart';
+import 'services/budget_store.dart';
+import 'services/recent_purchase_store.dart';
+import 'services/purchase_store.dart';
+import 'services/shopping_list_store.dart';
+
+class SparzamApp extends StatelessWidget {
+  const SparzamApp({
+    super.key,
+    required this.budgetStore,
+    required this.recentPurchaseStore,
+    required this.purchaseStore,
+    required this.shoppingListStore,
+    required this.initialBudget,
+    required this.initialOffers,
+    required this.initialPriceHistory,
+    required this.initialRecentPurchases,
+    required this.initialPurchaseHistory,
+    required this.initialShoppingList,
+    required this.initialPreferredProductByGroup,
+  });
+
+  final BudgetStore budgetStore;
+  final RecentPurchaseStore recentPurchaseStore;
+  final PurchaseStore purchaseStore;
+  final ShoppingListStore shoppingListStore;
+  final BudgetPlan initialBudget;
+  final List<Offer> initialOffers;
+  final List<PricePoint> initialPriceHistory;
+  final List<RecentPurchase> initialRecentPurchases;
+  final List<PurchaseRecord> initialPurchaseHistory;
+  final List<ListItem> initialShoppingList;
+  final Map<String, String> initialPreferredProductByGroup;
+
+  @override
+  Widget build(BuildContext context) {
+    const primary = Color(0xFF155EEF);
+
+    return MaterialApp(
+      title: 'sparzamApp',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: primary),
+        scaffoldBackgroundColor: const Color(0xFFF7F9FC),
+        cardTheme: const CardThemeData(
+          elevation: 0,
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(18)),
+          ),
+        ),
+      ),
+      home: AppShell(
+        budgetStore: budgetStore,
+        recentPurchaseStore: recentPurchaseStore,
+        purchaseStore: purchaseStore,
+        shoppingListStore: shoppingListStore,
+        initialBudget: initialBudget,
+        initialOffers: initialOffers,
+        initialPriceHistory: initialPriceHistory,
+        initialRecentPurchases: initialRecentPurchases,
+        initialPurchaseHistory: initialPurchaseHistory,
+        initialShoppingList: initialShoppingList,
+        initialPreferredProductByGroup: initialPreferredProductByGroup,
+      ),
+    );
+  }
+}

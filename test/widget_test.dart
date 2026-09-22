@@ -1,30 +1,34 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:sparzamapp/main.dart';
+import 'package:sparzamapp/app.dart';
+import 'package:sparzamapp/models/budget_plan.dart';
+import 'package:sparzamapp/models/list_item.dart';
+import 'package:sparzamapp/models/offer.dart';
+import 'package:sparzamapp/models/price_point.dart';
+import 'package:sparzamapp/models/recent_purchase.dart';
+import 'package:sparzamapp/models/purchase_record.dart';
+import 'package:sparzamapp/services/budget_store.dart';
+import 'package:sparzamapp/services/recent_purchase_store.dart';
+import 'package:sparzamapp/services/purchase_store.dart';
+import 'package:sparzamapp/services/shopping_list_store.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('sparzamApp startet', (tester) async {
+    await tester.pumpWidget(
+      SparzamApp(
+        budgetStore: BudgetStore(),
+        recentPurchaseStore: RecentPurchaseStore(),
+        purchaseStore: PurchaseStore(),
+        shoppingListStore: ShoppingListStore(),
+        initialBudget: const BudgetPlan(),
+        initialOffers: const <Offer>[],
+        initialPriceHistory: const <PricePoint>[],
+        initialRecentPurchases: const <RecentPurchase>[],
+        initialPurchaseHistory: const <PurchaseRecord>[],
+        initialShoppingList: <ListItem>[],
+        initialPreferredProductByGroup: const <String, String>{},
+      ),
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('sparzamApp'), findsOneWidget);
   });
 }
