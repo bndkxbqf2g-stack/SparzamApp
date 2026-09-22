@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -43,6 +45,7 @@ void main() {
               "price": 4.49,
               "currency": "EUR",
               "price_is_discounted": false,
+              "price_per": "UNIT",
               "date": "2026-09-20",
               "location": {
                 "osm_brand": "Lidl",
@@ -56,6 +59,7 @@ void main() {
               "price": 4.79,
               "currency": "EUR",
               "price_is_discounted": false,
+              "price_per": "UNIT",
               "date": "2026-09-19",
               "location": {
                 "osm_brand": "ALDI Süd",
@@ -130,6 +134,10 @@ void main() {
           "items": [
             {
               "id": 13,
+              "product_code": "1234567890123",
+              "currency": "EUR",
+              "price_is_discounted": false,
+              "price_per": "UNIT",
               "price": 3.99,
               "date": "2026-09-20",
               "location": {
@@ -161,11 +169,17 @@ void main() {
       client: MockClient((_) async => http.Response('''
         {"items":[
           {"id":1,"price":1.19,"date":"2026-09-20",
+           "product_code":"1234567890123","currency":"EUR",
+           "price_is_discounted":false,"price_per":"UNIT",
            "location":{"osm_brand":"Lidl","osm_name":"Lidl",
                        "osm_address_city":"München"}},
           {"id":2,"price":1.49,"date":"2026-09-20",
+           "product_code":"1234567890123","currency":"EUR",
+           "price_is_discounted":false,"price_per":"UNIT",
            "location":{"osm_brand":"Lidl","osm_name":"Lidl"}},
           {"id":3,"price":1.59,"date":"2026-09-20",
+           "product_code":"1234567890123","currency":"EUR",
+           "price_is_discounted":false,"price_per":"UNIT",
            "location":{"osm_brand":"Lidl","osm_name":"Lidl",
                        "osm_address_city":"Zellingen"}}
         ]}''', 200)),
@@ -189,6 +203,8 @@ void main() {
       client: MockClient((_) async => http.Response('''
         {"items":[
           {"id":1,"price":1.19,"date":"2026-09-20",
+           "product_code":"1234567890123","currency":"EUR",
+           "price_is_discounted":false,"price_per":"UNIT",
            "location":{"osm_brand":"Lidl","osm_name":"Lidl",
                        "osm_address_city":"Zellingen",
                        "osm_address_postcode":"99999"}}
@@ -216,9 +232,13 @@ void main() {
       client: MockClient((_) async => http.Response('''
         {"items":[
           {"id":1,"price":2.5,"date":"2026-09-19",
+           "product_code":"1234567890123","currency":"EUR",
+           "price_is_discounted":false,"price_per":"UNIT",
            "location":{"osm_brand":"Lidl","osm_name":"Lidl",
                        "osm_address_city":"Zellingen"}},
           {"id":2,"price":1.9,"date":"2026-09-21",
+           "product_code":"1234567890123","currency":"EUR",
+           "price_is_discounted":false,"price_per":"UNIT",
            "location":{"osm_brand":"Lidl","osm_name":"Lidl",
                        "osm_address_city":"Zellingen"}}
         ]}''', 200)),
@@ -232,6 +252,51 @@ void main() {
 
     expect(prices.single.price, 1.9);
     expect(prices.single.externalId, 2);
+    service.close();
+  });
+
+  test('fremde, rabattierte und veraltete Preise werden nicht importiert',
+      () async {
+    final valid = <String, dynamic>{
+      'id': 10,
+      'type': 'PRODUCT',
+      'product_code': product.ean,
+      'price': 2.49,
+      'currency': 'EUR',
+      'price_is_discounted': false,
+      'price_per': 'UNIT',
+      'date': '2026-09-20',
+      'location': {
+        'osm_brand': 'Lidl',
+        'osm_name': 'Lidl',
+        'osm_address_city': 'Zellingen',
+      },
+    };
+    final service = OpenPricesService(
+      maxAge: const Duration(days: 30),
+      client: MockClient((_) async => http.Response(jsonEncode({
+            'items': [
+              {...valid, 'product_code': 'another-ean'},
+              {...valid, 'currency': 'USD'},
+              {...valid, 'price_is_discounted': true},
+              {...valid, 'price_per': 'KILOGRAM'},
+              {...valid, 'duplicate_of': 12},
+              {...valid, 'type': 'CATEGORY'},
+              {...valid, 'date': '2026-07-01'},
+              {...valid, 'date': '2026-09-23'},
+              valid,
+            ],
+          }), 200)),
+    );
+
+    final prices = await service.fetchRecentPrices(
+      product: product,
+      stores: stores,
+      now: DateTime(2026, 9, 22),
+    );
+
+    expect(prices, hasLength(1));
+    expect(prices.single.price, 2.49);
     service.close();
   });
 

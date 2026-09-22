@@ -59,6 +59,14 @@ class OpenPricesService {
 
     for (final raw in items) {
       if (raw is! Map<String, dynamic>) continue;
+      if (raw['product_code'] != ean ||
+          raw['currency'] != 'EUR' ||
+          raw['price_is_discounted'] != false ||
+          raw['price_per'] != 'UNIT' ||
+          raw['duplicate_of'] != null ||
+          (raw['type'] != null && raw['type'] != 'PRODUCT')) {
+        continue;
+      }
       final price = (raw['price'] as num?)?.toDouble();
       final dateRaw = raw['date'] as String?;
       final location = raw['location'] as Map<String, dynamic>?;
@@ -71,6 +79,16 @@ class OpenPricesService {
 
       final observedAt = DateTime.tryParse(dateRaw);
       if (observedAt == null) continue;
+      final observedDay = DateTime(
+        observedAt.year,
+        observedAt.month,
+        observedAt.day,
+      );
+      final earliestDay = DateTime(earliest.year, earliest.month, earliest.day);
+      final todayDay = DateTime(today.year, today.month, today.day);
+      if (observedDay.isBefore(earliestDay) || observedDay.isAfter(todayDay)) {
+        continue;
+      }
       final previous = byStore[store.name];
       if (previous != null && !observedAt.isAfter(previous.updatedAt)) {
         continue;
