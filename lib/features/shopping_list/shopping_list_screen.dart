@@ -16,6 +16,7 @@ import 'replenishment_card.dart';
 import 'shopping_offer_hint.dart';
 import 'shopping_suggestions.dart';
 import 'custom_shopping_product.dart';
+import 'shopping_additions.dart';
 import 'shopping_list_header.dart';
 import 'shopping_input.dart';
 import 'shopping_recent_choices.dart';
@@ -121,21 +122,15 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   }
 
   void addReplenishment(ReplenishmentSuggestion suggestion) {
-    for (var index = 0; index < suggestion.suggestedQuantity; index++) {
-      widget.onAdd(suggestion.product);
+    for (final product in productsForReplenishment(suggestion)) {
+      widget.onAdd(product);
     }
     _focusShoppingInput();
   }
 
   void addRecentPurchase(RecentPurchase purchase) {
-    final product = purchase.toProduct();
-    widget.onAdd(product);
-
-    final learnedQuantity = purchase.averageQuantity.round();
-    if (learnedQuantity > 1) {
-      for (var index = 1; index < learnedQuantity; index++) {
-        widget.onAdd(product);
-      }
+    for (final product in productsForRecentPurchase(purchase)) {
+      widget.onAdd(product);
     }
 
     controller.clear();
