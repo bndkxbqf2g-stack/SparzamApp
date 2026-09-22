@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../data/stores.dart';
+import '../../models/list_item.dart';
 import '../../models/offer.dart';
 import '../../models/price_point.dart';
+import '../store/store_screen.dart';
 import 'offer_card.dart';
 
 class OfferDetailsScreen extends StatelessWidget {
@@ -10,10 +12,14 @@ class OfferDetailsScreen extends StatelessWidget {
     super.key,
     required this.offer,
     required this.priceHistory,
+    required this.items,
+    required this.offers,
   });
 
   final Offer offer;
   final List<PricePoint> priceHistory;
+  final List<ListItem> items;
+  final List<Offer> offers;
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +38,21 @@ class OfferDetailsScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Card(
               child: ListTile(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => StoreScreen(
+                      store: store,
+                      items: items,
+                      offers: offers,
+                    ),
+                  ),
+                ),
                 leading: const Icon(Icons.store_outlined),
                 title: Text(store.name),
                 subtitle: Text(
                   '${store.location} · ${store.distanceKm.toStringAsFixed(1)} km',
                 ),
+                trailing: const Icon(Icons.chevron_right),
               ),
             ),
           ],

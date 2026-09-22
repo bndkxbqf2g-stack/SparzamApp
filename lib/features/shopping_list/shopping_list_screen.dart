@@ -569,6 +569,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                                 builder: (_) => OfferDetailsScreen(
                                                   offer: hint.offer,
                                                   priceHistory: widget.priceHistory,
+                                                  items: widget.items,
+                                                  offers: widget.offers,
                                                 ),
                                               ),
                                             ),
