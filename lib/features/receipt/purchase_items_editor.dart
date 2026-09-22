@@ -54,3 +54,4 @@ class PurchaseItemsEditor extends StatelessWidget {
           ],
         ),
       );
+}
