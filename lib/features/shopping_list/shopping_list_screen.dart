@@ -591,6 +591,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                                   items: widget.items,
                                                   offers: widget.offers,
                                                   mobility: widget.mobility,
+                                                  catalogProducts:
+                                                      widget.catalogProducts,
+                                                  marketPrices:
+                                                      widget.marketPrices,
                                                 ),
                                               ),
                                             ),
