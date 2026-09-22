@@ -90,6 +90,9 @@ class OpenPricesService {
     Map<String, dynamic> location,
     List<Store> stores,
   ) {
+    final city = (location['osm_address_city'] as String?)?.trim();
+    if (city == null || city.isEmpty) return null;
+    final postcode = (location['osm_address_postcode'] as String?)?.trim();
     final haystack = [
       location['osm_brand'],
       location['osm_name'],
@@ -99,6 +102,14 @@ class OpenPricesService {
     if (haystack.isEmpty) return null;
 
     for (final store in stores) {
+      if (_normalize(store.location.split('·').first) != _normalize(city)) {
+        continue;
+      }
+      final storePostcode = RegExp(r'\b\d{5}\b').firstMatch(store.address);
+      if (postcode != null && postcode.isNotEmpty &&
+          storePostcode != null && storePostcode.group(0) != postcode) {
+        continue;
+      }
       final needle = _normalize(store.name);
       if (needle.isNotEmpty && haystack.contains(needle)) return store;
     }

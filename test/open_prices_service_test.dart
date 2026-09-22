@@ -155,6 +155,62 @@ void main() {
     service.close();
   });
 
+  test('gleiche Kette in anderer Stadt wird nicht als lokaler Preis genutzt',
+      () async {
+    final service = OpenPricesService(
+      client: MockClient((_) async => http.Response('''
+        {"items":[
+          {"id":1,"price":1.19,"date":"2026-09-20",
+           "location":{"osm_brand":"Lidl","osm_name":"Lidl",
+                       "osm_address_city":"München"}},
+          {"id":2,"price":1.49,"date":"2026-09-20",
+           "location":{"osm_brand":"Lidl","osm_name":"Lidl"}},
+          {"id":3,"price":1.59,"date":"2026-09-20",
+           "location":{"osm_brand":"Lidl","osm_name":"Lidl",
+                       "osm_address_city":"Zellingen"}}
+        ]}''', 200)),
+    );
+
+    final prices = await service.fetchRecentPrices(
+      product: product,
+      stores: stores,
+      now: DateTime(2026, 9, 22),
+    );
+
+    expect(prices, hasLength(1));
+    expect(prices.single.price, 1.59);
+    expect(prices.single.sourceLocationName, 'Lidl · Zellingen');
+    service.close();
+  });
+
+  test('abweichende Postleitzahl schließt gleiche Stadt und Kette aus',
+      () async {
+    final service = OpenPricesService(
+      client: MockClient((_) async => http.Response('''
+        {"items":[
+          {"id":1,"price":1.19,"date":"2026-09-20",
+           "location":{"osm_brand":"Lidl","osm_name":"Lidl",
+                       "osm_address_city":"Zellingen",
+                       "osm_address_postcode":"99999"}}
+        ]}''', 200)),
+    );
+    const local = Store(
+      name: 'Lidl',
+      location: 'Zellingen',
+      address: 'Am Güßgraben 2, 97225 Zellingen, Germany',
+      distanceKm: 1,
+      prices: {},
+    );
+
+    final prices = await service.fetchRecentPrices(
+      product: product,
+      stores: const [local],
+      now: DateTime(2026, 9, 22),
+    );
+    expect(prices, isEmpty);
+    service.close();
+  });
+
   test('Serverfehler wird als Abruffehler gemeldet', () async {
     final service = OpenPricesService(
       client: MockClient((_) async => http.Response('{}', 503)),
