@@ -15,6 +15,7 @@ import 'shopping_group_card.dart';
 import 'replenishment_card.dart';
 import 'shopping_offer_hint.dart';
 import 'shopping_suggestions.dart';
+import 'shopping_list_header.dart';
 
 class ShoppingListScreen extends StatefulWidget {
   const ShoppingListScreen({
@@ -225,68 +226,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Einkaufsliste',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.w800,
-                          ),
-                    ),
-                  ),
-                  if (widget.items.isNotEmpty) ...[
-                    Text(
-                      '${widget.items.length} Artikel',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black54,
-                          ),
-                    ),
-                    const SizedBox(width: 4),
-                    PopupMenuButton<String>(
-                      tooltip: 'Listenoptionen',
-                      onSelected: (value) async {
-                        if (value != 'clear') {
-                          return;
-                        }
-                        final shouldClear = await showDialog<bool>(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text('Einkaufsliste leeren?'),
-                                content: const Text(
-                                  'Alle Artikel werden aus der aktuellen Liste entfernt. '
-                                  'Deine Kaufhistorie bleibt erhalten.',
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context, false),
-                                    child: const Text('Abbrechen'),
-                                  ),
-                                  FilledButton(
-                                    onPressed: () => Navigator.pop(context, true),
-                                    child: const Text('Liste leeren'),
-                                  ),
-                                ],
-                              ),
-                            ) ??
-                            false;
-                        if (shouldClear) {
-                          widget.onClearPurchased(
-                            widget.items.map((item) => item.product.id).toSet(),
-                          );
-                          setState(() => checkedProductIds.clear());
-                        }
-                      },
-                      itemBuilder: (_) => const [
-                        PopupMenuItem(
-                          value: 'clear',
-                          child: Text('Gesamte Liste leeren'),
-                        ),
-                      ],
-                    ),
-                  ],
-                ],
+              ShoppingListHeader(
+                itemCount: widget.items.length,
+                onClear: () {
+                  widget.onClearPurchased(
+                    widget.items.map((item) => item.product.id).toSet(),
+                  );
+                  setState(() => checkedProductIds.clear());
+                },
               ),
               const SizedBox(height: 14),
               TextField(
