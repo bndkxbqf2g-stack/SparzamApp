@@ -21,6 +21,7 @@ Future<void> main() async {
   runApp(
     SparzamApp(
       budgetStore: budgetStore,
+      offerStore: offerStore,
       recentPurchaseStore: recentPurchaseStore,
       purchaseStore: purchaseStore,
       shoppingListStore: shoppingListStore,
