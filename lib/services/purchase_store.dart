@@ -24,7 +24,8 @@ class PurchaseStore {
     String id,
     List<PurchaseRecord> current,
   ) async {
-    final next = current.where((item) => item.id != id).toList();
+    final next = current.where((item) => item.id != id).toList()
+      ..sort(_newestFirst);
     await _preferences.setStringList(
       _key,
       next.map((item) => item.toJson()).toList(),
@@ -36,8 +37,12 @@ class PurchaseStore {
     PurchaseRecord record,
     List<PurchaseRecord> current,
   ) async {
-    final next = [record, ...current.where((item) => item.id != record.id)];
+    final next = [record, ...current.where((item) => item.id != record.id)]
+      ..sort(_newestFirst);
     await _preferences.setStringList(_key, next.map((item) => item.toJson()).toList());
     return next;
   }
+
+  static int _newestFirst(PurchaseRecord a, PurchaseRecord b) =>
+      b.createdAt.compareTo(a.createdAt);
 }

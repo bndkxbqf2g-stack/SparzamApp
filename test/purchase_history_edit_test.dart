@@ -48,6 +48,26 @@ void main() {
     expect(loaded.single.createdAt, DateTime(2026, 9, 3));
   });
 
+  test('Historie bleibt nach einer Datumskorrektur chronologisch', () async {
+    final store = PurchaseStore();
+    var current = await store.add(
+      record('1', DateTime(2026, 9, 3)),
+      const [],
+    );
+    current = await store.add(
+      record('2', DateTime(2026, 9, 2)),
+      current,
+    );
+
+    current = await store.add(
+      record('1', DateTime(2026, 9, 1)),
+      current,
+    );
+
+    expect(current.map((item) => item.id), ['2', '1']);
+    expect((await store.load()).map((item) => item.id), ['2', '1']);
+  });
+
   test('Einkauf kann aus Historie entfernt werden', () async {
     final store = PurchaseStore();
     var current = await store.add(
