@@ -5,6 +5,7 @@ import '../../models/offer.dart';
 import '../../models/product.dart';
 import '../../models/recent_purchase.dart';
 import '../../services/shopping_list_store.dart';
+import 'shopping_item_sorter.dart';
 import 'shopping_offer_badge.dart';
 import 'shopping_offer_hint.dart';
 import 'shopping_suggestions.dart';
@@ -76,6 +77,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
 
     for (final item in widget.items) {
       grouped.putIfAbsent(item.product.group, () => []).add(item);
+    }
+
+    for (final entry in grouped.entries) {
+      grouped[entry.key] = prioritizeOfferItems(entry.value, widget.offers);
     }
 
     return grouped;
