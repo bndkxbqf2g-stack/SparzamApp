@@ -265,7 +265,9 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                     title: Text(product.name),
                     subtitle: Text([
                       if ((product.brand ?? '').isNotEmpty) product.brand!,
-                      product.unit,
+                      product.packageAmount != null && product.packageUnit != null
+                          ? '${product.packageAmount} ${product.packageUnit}'
+                          : product.unit,
                       isCustom(product) ? 'Eigenes Produkt' : 'Basisprodukt',
                     ].join(' · ')),
                     onTap: () => editPrices(product),

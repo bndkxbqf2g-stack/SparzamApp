@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../models/product.dart';
+import '../../services/open_food_facts_service.dart';
 import 'barcode_product_resolver.dart';
 
 class ScannerScreen extends StatefulWidget {
@@ -16,8 +17,10 @@ class ScannerScreen extends StatefulWidget {
 class _ScannerScreenState extends State<ScannerScreen> {
   String? unknownCode;
   bool completing = false;
+  bool lookingUp = false;
+  final openFoodFacts = OpenFoodFactsService();
 
-  void resolve(String? code) {
+  Future<void> resolve(String? code) async {
     if (completing || code == null || code.isEmpty) return;
     final product = productForBarcode(code, widget.learnedProducts);
     if (product != null) {
@@ -25,7 +28,21 @@ class _ScannerScreenState extends State<ScannerScreen> {
       Navigator.pop(context, product);
       return;
     }
-    if (unknownCode != code) setState(() => unknownCode = code);
+    if (lookingUp) return;
+    setState(() {
+      lookingUp = true;
+      unknownCode = code;
+    });
+
+    final enriched = await openFoodFacts.fetchProductByEan(code);
+    if (!mounted) return;
+    if (enriched != null) {
+      completing = true;
+      Navigator.pop(context, enriched);
+      return;
+    }
+
+    setState(() => lookingUp = false);
   }
 
   Future<void> enterCode() async {
@@ -50,7 +67,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
       ),
     );
     controller.dispose();
-    if (code != null) resolve(code);
+    if (code != null) await resolve(code);
   }
 
   Future<void> addUnknown() async {
@@ -90,6 +107,12 @@ class _ScannerScreenState extends State<ScannerScreen> {
   }
 
   @override
+  void dispose() {
+    openFoodFacts.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: const Text('Barcode scannen'),
@@ -112,10 +135,13 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   ? const Text('Barcode in den Rahmen halten.')
                   : Column(
                       children: [
-                        Text('Noch unbekannt: $unknownCode'),
+                        if (lookingUp)
+                          const Text('Produktdaten werden gesucht …')
+                        else
+                          Text('Noch unbekannt: $unknownCode'),
                         const SizedBox(height: 8),
                         FilledButton.icon(
-                          onPressed: addUnknown,
+                          onPressed: lookingUp ? null : addUnknown,
                           icon: const Icon(Icons.add),
                           label: const Text('Produkt anlegen'),
                         ),

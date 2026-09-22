@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/product.dart';
+import '../../services/open_food_facts_service.dart';
 
 class ProductEditorScreen extends StatefulWidget {
   const ProductEditorScreen({super.key, this.product});
@@ -20,6 +21,11 @@ class _ProductEditorScreenState extends State<ProductEditorScreen> {
   late final TextEditingController ean;
   late final TextEditingController aliases;
   late bool favorite;
+  late final TextEditingController packageAmount;
+  late final TextEditingController packageUnit;
+  final openFoodFacts = OpenFoodFactsService();
+  bool enriching = false;
+  String? imageUrl;
 
   @override
   void initState() {
@@ -31,15 +37,72 @@ class _ProductEditorScreenState extends State<ProductEditorScreen> {
     group = TextEditingController(text: product?.group ?? 'custom');
     ean = TextEditingController(text: product?.ean ?? '');
     aliases = TextEditingController(text: product?.aliases.join(', ') ?? '');
+    packageAmount = TextEditingController(
+      text: product?.packageAmount?.toString() ?? '',
+    );
+    packageUnit = TextEditingController(text: product?.packageUnit ?? '');
     favorite = product?.isFavorite ?? false;
+    imageUrl = product?.imageUrl;
   }
 
   @override
   void dispose() {
-    for (final controller in [name, brand, unit, group, ean, aliases]) {
+    for (final controller in [
+      name,
+      brand,
+      unit,
+      group,
+      ean,
+      aliases,
+      packageAmount,
+      packageUnit,
+    ]) {
       controller.dispose();
     }
+    openFoodFacts.close();
     super.dispose();
+  }
+
+  Future<void> enrichFromEan() async {
+    final code = ean.text.trim();
+    if (code.isEmpty || enriching) return;
+    setState(() => enriching = true);
+
+    final existing = widget.product ??
+        Product(
+          id: 'barcode_$code',
+          name: name.text.trim().isEmpty ? 'Produkt' : name.text.trim(),
+          unit: unit.text.trim().isEmpty ? 'Artikel' : unit.text.trim(),
+          group: group.text.trim().isEmpty ? 'custom' : group.text.trim(),
+          ean: code,
+        );
+    final enriched = await openFoodFacts.fetchProductByEan(
+      code,
+      existing: existing,
+    );
+
+    if (!mounted) return;
+    setState(() {
+      enriching = false;
+      if (enriched == null) return;
+      name.text = enriched.name;
+      brand.text = enriched.brand ?? '';
+      unit.text = enriched.unit;
+      group.text = enriched.group;
+      packageAmount.text = enriched.packageAmount?.toString() ?? '';
+      packageUnit.text = enriched.packageUnit ?? '';
+      imageUrl = enriched.imageUrl;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          enriched == null
+              ? 'Keine Produktdaten bei Open Food Facts gefunden.'
+              : 'Produktdaten wurden ergänzt.',
+        ),
+      ),
+    );
   }
 
   void save() {
@@ -62,6 +125,13 @@ class _ProductEditorScreenState extends State<ProductEditorScreen> {
             .where((item) => item.isNotEmpty)
             .toList(),
         isFavorite: favorite,
+        packageAmount: double.tryParse(
+          packageAmount.text.replaceAll(',', '.').trim(),
+        ),
+        packageUnit: packageUnit.text.trim().isEmpty
+            ? null
+            : packageUnit.text.trim().toLowerCase(),
+        imageUrl: imageUrl,
       ),
     );
   }
@@ -120,13 +190,58 @@ class _ProductEditorScreenState extends State<ProductEditorScreen> {
                 ],
               ),
               const SizedBox(height: 12),
-              TextFormField(
-                controller: ean,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'EAN / Barcode',
-                  hintText: 'optional',
-                ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: ean,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'EAN / Barcode',
+                        hintText: 'optional',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton.filledTonal(
+                    tooltip: 'Produktdaten laden',
+                    onPressed: enriching ? null : enrichFromEan,
+                    icon: enriching
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.cloud_download_outlined),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: packageAmount,
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      decoration: const InputDecoration(
+                        labelText: 'Packungsmenge',
+                        hintText: 'z. B. 500',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextFormField(
+                      controller: packageUnit,
+                      decoration: const InputDecoration(
+                        labelText: 'Mengeneinheit',
+                        hintText: 'g, kg, ml, l, st',
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 12),
               TextFormField(

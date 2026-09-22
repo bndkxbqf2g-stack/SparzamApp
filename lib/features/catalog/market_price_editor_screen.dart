@@ -4,6 +4,7 @@ import '../../data/stores.dart';
 import '../../models/market_price.dart';
 import '../../models/product.dart';
 import '../../services/open_prices_service.dart';
+import 'unit_price.dart';
 
 class MarketPriceEditorScreen extends StatefulWidget {
   const MarketPriceEditorScreen({
@@ -207,7 +208,7 @@ class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
-                                  if (saved != null)
+                                  if (saved != null) ...[
                                     Text(
                                       '${saved.sourceLabel} · '
                                       '${saved.freshnessLabel(
@@ -220,6 +221,24 @@ class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
                                           .textTheme
                                           .bodySmall,
                                     ),
+                                    if (baseUnitPriceLabel(
+                                          widget.product,
+                                          saved.price,
+                                        ) !=
+                                        null)
+                                      Text(
+                                        baseUnitPriceLabel(
+                                          widget.product,
+                                          saved.price,
+                                        )!,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                      ),
+                                  ],
                                 ],
                               );
                             },
