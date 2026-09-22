@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/offer.dart';
 import '../../models/price_point.dart';
+import '../../models/product.dart';
 import 'offer_card.dart';
 import 'offer_editor_screen.dart';
 import 'offer_filter.dart';
@@ -14,12 +15,14 @@ class OffersScreen extends StatefulWidget {
     required this.priceHistory,
     required this.onSave,
     required this.onDelete,
+    required this.catalogProducts,
   });
 
   final List<Offer> offers;
   final List<PricePoint> priceHistory;
   final Future<List<Offer>> Function(Offer offer) onSave;
   final Future<List<Offer>> Function(Offer offer) onDelete;
+  final List<Product> catalogProducts;
 
   @override
   State<OffersScreen> createState() => _OffersScreenState();
@@ -45,7 +48,12 @@ class _OffersScreenState extends State<OffersScreen> {
 
   Future<void> _edit([Offer? offer]) async {
     final result = await Navigator.of(context).push<Offer>(
-      MaterialPageRoute(builder: (_) => OfferEditorScreen(offer: offer)),
+      MaterialPageRoute(
+        builder: (_) => OfferEditorScreen(
+          offer: offer,
+          catalogProducts: widget.catalogProducts,
+        ),
+      ),
     );
     if (result == null) return;
 
@@ -80,7 +88,12 @@ class _OffersScreenState extends State<OffersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final visible = filterOffers(offers, status: filter, query: query);
+    final visible = filterOffers(
+      offers,
+      status: filter,
+      query: query,
+      catalogProducts: widget.catalogProducts,
+    );
 
     return Scaffold(
       appBar: AppBar(title: const Text('Angebote')),
@@ -106,6 +119,7 @@ class _OffersScreenState extends State<OffersScreen> {
               OfferCard(
                 offer: visible[index],
                 priceHistory: widget.priceHistory,
+                catalogProducts: widget.catalogProducts,
                 onEdit: () => _edit(visible[index]),
                 onDelete: () => _delete(visible[index]),
               ),
