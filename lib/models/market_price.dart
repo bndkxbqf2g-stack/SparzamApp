@@ -22,6 +22,37 @@ class MarketPrice {
   String get key => '$storeName|$productId';
   bool get isManual => source == MarketPriceSource.manual;
 
+  bool isUsable({
+    required DateTime now,
+    required int openPricesMaxAgeDays,
+  }) {
+    if (isManual) return true;
+    final cutoff = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).subtract(Duration(days: openPricesMaxAgeDays));
+    final observed = DateTime(
+      updatedAt.year,
+      updatedAt.month,
+      updatedAt.day,
+    );
+    return !observed.isBefore(cutoff);
+  }
+
+  String freshnessLabel({
+    required DateTime now,
+    required int openPricesMaxAgeDays,
+  }) {
+    if (isManual) return 'manuell';
+    return isUsable(
+      now: now,
+      openPricesMaxAgeDays: openPricesMaxAgeDays,
+    )
+        ? 'aktuell'
+        : 'veraltet';
+  }
+
   String get sourceLabel => switch (source) {
         MarketPriceSource.manual => 'Eigener Preis',
         MarketPriceSource.openPrices => 'Open Prices',

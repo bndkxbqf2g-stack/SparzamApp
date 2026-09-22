@@ -8,6 +8,7 @@ import '../../models/mobility_settings.dart';
 import '../../models/offer.dart';
 import '../../models/product.dart';
 import '../../models/price_point.dart';
+import '../../models/price_data_settings.dart';
 import '../../models/recent_purchase.dart';
 import '../../models/purchase_record.dart';
 import '../../services/budget_store.dart';
@@ -15,6 +16,8 @@ import '../../services/offer_store.dart';
 import '../../services/mobility_settings_store.dart';
 import '../../services/market_price_store.dart';
 import '../../services/product_catalog_store.dart';
+import '../../services/price_data_settings_store.dart';
+import '../../services/open_prices_sync_service.dart';
 import '../../services/recent_purchase_store.dart';
 import '../../services/purchase_store.dart';
 import '../../services/road_distance_store.dart';
@@ -22,11 +25,13 @@ import '../../services/shopping_list_store.dart';
 import '../budget/budget_calculator.dart';
 import '../budget/budget_screen.dart';
 import '../catalog/product_catalog_screen.dart';
+import '../catalog/market_price_freshness.dart';
 import '../home/dashboard_data.dart';
 import '../home/home_screen.dart';
 import '../offers/offers_screen.dart';
 import '../profile/mobility_settings_screen.dart';
 import '../profile/profile_screen.dart';
+import '../profile/price_data_settings_screen.dart';
 import '../profile/store_selection_screen.dart';
 import '../receipt/receipt_screen.dart';
 import '../receipt/purchase_summary.dart';
@@ -44,6 +49,7 @@ class AppShell extends StatefulWidget {
     required this.mobilityStore,
     required this.marketPriceStore,
     required this.productCatalogStore,
+    required this.priceDataSettingsStore,
     required this.recentPurchaseStore,
     required this.purchaseStore,
     required this.shoppingListStore,
@@ -53,6 +59,7 @@ class AppShell extends StatefulWidget {
     required this.initialMarketPrices,
     required this.initialCustomProducts,
     required this.initialPriceHistory,
+    required this.initialPriceDataSettings,
     required this.initialRecentPurchases,
     required this.initialPurchaseHistory,
     required this.initialShoppingList,
@@ -64,6 +71,7 @@ class AppShell extends StatefulWidget {
   final MobilitySettingsStore mobilityStore;
   final MarketPriceStore marketPriceStore;
   final ProductCatalogStore productCatalogStore;
+  final PriceDataSettingsStore priceDataSettingsStore;
   final RecentPurchaseStore recentPurchaseStore;
   final PurchaseStore purchaseStore;
   final ShoppingListStore shoppingListStore;
@@ -73,6 +81,7 @@ class AppShell extends StatefulWidget {
   final List<MarketPrice> initialMarketPrices;
   final List<Product> initialCustomProducts;
   final List<PricePoint> initialPriceHistory;
+  final PriceDataSettings initialPriceDataSettings;
   final List<RecentPurchase> initialRecentPurchases;
   final List<PurchaseRecord> initialPurchaseHistory;
   final List<ListItem> initialShoppingList;
@@ -92,6 +101,7 @@ class _AppShellState extends State<AppShell> {
   late List<PurchaseRecord> purchaseHistory;
   late List<Product> customProducts;
   late List<MarketPrice> marketPrices;
+  late PriceDataSettings priceDataSettings;
   Map<String, double> roadDistances = <String, double>{};
   final roadDistanceStore = RoadDistanceStore();
   late final Map<String, String> preferredProductByGroup;
@@ -111,6 +121,7 @@ class _AppShellState extends State<AppShell> {
     mobility = widget.initialMobility;
     customProducts = [...widget.initialCustomProducts];
     marketPrices = [...widget.initialMarketPrices];
+    priceDataSettings = widget.initialPriceDataSettings;
     shoppingList = widget.initialShoppingList
         .map(
           (item) => ListItem(
@@ -139,6 +150,18 @@ class _AppShellState extends State<AppShell> {
 
   bool isBaseProduct(String id) =>
       base_catalog.products.any((product) => product.id == id);
+
+  List<MarketPrice> get activeMarketPrices {
+    if (!priceDataSettings.openPricesEnabled) {
+      return marketPrices
+          .where((price) => price.source == MarketPriceSource.manual)
+          .toList(growable: false);
+    }
+    return usableMarketPrices(
+      marketPrices,
+      openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
+    );
+  }
 
   Future<void> persistShoppingList() =>
       widget.shoppingListStore.save(shoppingList);
@@ -225,7 +248,7 @@ class _AppShellState extends State<AppShell> {
           maxStores: mobility.maxStores,
           minExtraStoreSavings: mobility.minExtraStoreSavings,
           enabledStoreNames: mobility.enabledStoreNames,
-          marketPrices: marketPrices,
+          marketPrices: activeMarketPrices,
         );
 
   RouteOptimizer? get regularOptimizer => shoppingList.isEmpty
@@ -238,7 +261,7 @@ class _AppShellState extends State<AppShell> {
           maxStores: mobility.maxStores,
           minExtraStoreSavings: mobility.minExtraStoreSavings,
           enabledStoreNames: mobility.enabledStoreNames,
-          marketPrices: marketPrices,
+          marketPrices: activeMarketPrices,
         );
 
   DashboardData dashboardData() {
@@ -373,6 +396,38 @@ class _AppShellState extends State<AppShell> {
     return next;
   }
 
+  Future<List<MarketPrice>> syncOpenPrices() async {
+    if (!priceDataSettings.openPricesEnabled) return marketPrices;
+
+    final result = await const OpenPricesSyncService().sync(
+      products: catalogProducts,
+      maxAgeDays: priceDataSettings.openPricesMaxAgeDays,
+    );
+
+    var next = marketPrices;
+    for (final price in result.prices) {
+      next = await widget.marketPriceStore.upsert(price, next);
+    }
+
+    if (mounted) setState(() => marketPrices = next);
+    return next;
+  }
+
+  Future<void> openPriceDataSettings() async {
+    final result = await Navigator.of(context).push<PriceDataSettings>(
+      MaterialPageRoute(
+        builder: (_) => PriceDataSettingsScreen(
+          initialSettings: priceDataSettings,
+        ),
+      ),
+    );
+    if (result == null) return;
+
+    await widget.priceDataSettingsStore.save(result);
+    if (!mounted) return;
+    setState(() => priceDataSettings = result);
+  }
+
   Future<void> openCatalog() async {
     await Navigator.of(context).push<void>(
       MaterialPageRoute(
@@ -383,6 +438,8 @@ class _AppShellState extends State<AppShell> {
           onDeleteProduct: deleteCatalogProduct,
           onSavePrice: saveMarketPrice,
           onDeletePrice: deleteMarketPrice,
+          priceDataSettings: priceDataSettings,
+          onSyncOpenPrices: syncOpenPrices,
         ),
       ),
     );
@@ -441,7 +498,7 @@ class _AppShellState extends State<AppShell> {
           maxStores: mobility.maxStores,
           minExtraStoreSavings: mobility.minExtraStoreSavings,
           enabledStoreNames: mobility.enabledStoreNames,
-          marketPrices: marketPrices,
+          marketPrices: activeMarketPrices,
           ).bestPlan();
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -490,13 +547,13 @@ class _AppShellState extends State<AppShell> {
         priceHistory: widget.initialPriceHistory,
         mobility: mobility,
         catalogProducts: catalogProducts,
-        marketPrices: marketPrices,
+        marketPrices: activeMarketPrices,
       ),
       RouteScreen(
         items: shoppingList,
         offers: offers,
         mobility: mobility,
-        marketPrices: marketPrices,
+        marketPrices: activeMarketPrices,
         onRoadDistancesChanged: (value) =>
             setState(() => roadDistances = value),
       ),
@@ -515,6 +572,10 @@ class _AppShellState extends State<AppShell> {
             : mobility.enabledStoreNames.length,
         onOpenCatalog: openCatalog,
         productCount: catalogProducts.length,
+        onEditPriceData: openPriceDataSettings,
+        priceDataSummary: priceDataSettings.openPricesEnabled
+            ? 'Open Prices · max. ${priceDataSettings.openPricesMaxAgeDays} Tage'
+            : 'Nur eigene Preise',
       ),
     ];
 

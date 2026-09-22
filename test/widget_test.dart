@@ -8,6 +8,7 @@ import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/mobility_settings.dart';
 import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/models/price_point.dart';
+import 'package:sparzamapp/models/price_data_settings.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/recent_purchase.dart';
 import 'package:sparzamapp/models/purchase_record.dart';
@@ -16,6 +17,7 @@ import 'package:sparzamapp/services/offer_store.dart';
 import 'package:sparzamapp/services/mobility_settings_store.dart';
 import 'package:sparzamapp/services/market_price_store.dart';
 import 'package:sparzamapp/services/product_catalog_store.dart';
+import 'package:sparzamapp/services/price_data_settings_store.dart';
 import 'package:sparzamapp/services/recent_purchase_store.dart';
 import 'package:sparzamapp/services/purchase_store.dart';
 import 'package:sparzamapp/services/shopping_list_store.dart';
@@ -38,6 +40,7 @@ void main() {
         mobilityStore: MobilitySettingsStore(),
         marketPriceStore: MarketPriceStore(),
         productCatalogStore: ProductCatalogStore(),
+        priceDataSettingsStore: PriceDataSettingsStore(),
         recentPurchaseStore: RecentPurchaseStore(),
         purchaseStore: PurchaseStore(),
         shoppingListStore: ShoppingListStore(),
@@ -47,6 +50,7 @@ void main() {
         initialMarketPrices: const <MarketPrice>[],
         initialCustomProducts: const <Product>[],
         initialPriceHistory: const <PricePoint>[],
+        initialPriceDataSettings: const PriceDataSettings(),
         initialRecentPurchases: const <RecentPurchase>[],
         initialPurchaseHistory: const <PurchaseRecord>[],
         initialShoppingList: <ListItem>[],

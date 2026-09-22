@@ -12,6 +12,7 @@ class MarketPriceEditorScreen extends StatefulWidget {
     required this.prices,
     required this.onSave,
     required this.onDelete,
+    required this.openPricesMaxAgeDays,
   });
 
   final Product product;
@@ -21,6 +22,7 @@ class MarketPriceEditorScreen extends StatefulWidget {
     String productId,
     String storeName,
   ) onDelete;
+  final int openPricesMaxAgeDays;
 
   @override
   State<MarketPriceEditorScreen> createState() =>
@@ -30,13 +32,16 @@ class MarketPriceEditorScreen extends StatefulWidget {
 class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
   late List<MarketPrice> prices;
   late final Map<String, TextEditingController> controllers;
-  final openPrices = OpenPricesService();
+  late final OpenPricesService openPrices;
   bool importing = false;
 
   @override
   void initState() {
     super.initState();
     prices = [...widget.prices];
+    openPrices = OpenPricesService(
+      maxAge: Duration(days: widget.openPricesMaxAgeDays),
+    );
     controllers = {
       for (final store in stores)
         store.name: TextEditingController(
@@ -152,8 +157,9 @@ class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
                 child: ListTile(
                   leading: const Icon(Icons.cloud_download_outlined),
                   title: const Text('Open Prices'),
-                  subtitle: const Text(
-                    'Aktuelle EUR-Normalpreise der letzten 60 Tage laden. '
+                  subtitle: Text(
+                    'Aktuelle EUR-Normalpreise der letzten '
+                    '${widget.openPricesMaxAgeDays} Tage laden. '
                     'Quelle: Open Food Facts / Open Prices (ODbL).',
                   ),
                   trailing: importing
@@ -203,7 +209,13 @@ class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
                                   ),
                                   if (saved != null)
                                     Text(
-                                      '${saved.sourceLabel} · ${_date(saved.updatedAt)}',
+                                      '${saved.sourceLabel} · '
+                                      '${saved.freshnessLabel(
+                                        now: DateTime.now(),
+                                        openPricesMaxAgeDays:
+                                            widget.openPricesMaxAgeDays,
+                                      )} · '
+                                      '${_date(saved.updatedAt)}',
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall,
