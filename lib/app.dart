@@ -8,6 +8,7 @@ import 'models/price_point.dart';
 import 'models/recent_purchase.dart';
 import 'models/purchase_record.dart';
 import 'services/budget_store.dart';
+import 'services/offer_store.dart';
 import 'services/recent_purchase_store.dart';
 import 'services/purchase_store.dart';
 import 'services/shopping_list_store.dart';
@@ -16,6 +17,7 @@ class SparzamApp extends StatelessWidget {
   const SparzamApp({
     super.key,
     required this.budgetStore,
+    required this.offerStore,
     required this.recentPurchaseStore,
     required this.purchaseStore,
     required this.shoppingListStore,
@@ -29,6 +31,7 @@ class SparzamApp extends StatelessWidget {
   });
 
   final BudgetStore budgetStore;
+  final OfferStore offerStore;
   final RecentPurchaseStore recentPurchaseStore;
   final PurchaseStore purchaseStore;
   final ShoppingListStore shoppingListStore;
@@ -61,6 +64,7 @@ class SparzamApp extends StatelessWidget {
       ),
       home: AppShell(
         budgetStore: budgetStore,
+        offerStore: offerStore,
         recentPurchaseStore: recentPurchaseStore,
         purchaseStore: purchaseStore,
         shoppingListStore: shoppingListStore,
