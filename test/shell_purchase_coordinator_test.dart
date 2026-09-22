@@ -127,6 +127,62 @@ void main() {
     expect((await BudgetStore().load()).foodSpent, 10);
     expect((await listStore.load()).single.quantity, 2);
   });
+
+  test('fehlgeschlagene Korrektur stellt alten Beleg und Budget wieder her',
+      () async {
+    final original = PurchaseRecord(
+      id: '1', createdAt: DateTime(2026, 9, 5),
+      storeNames: const ['Lidl'], items: const [], basket: 40,
+      travel: 0, total: 40, baselineTotal: 50,
+    );
+    await PurchaseStore().save([original]);
+    await BudgetStore().save(const BudgetPlan(foodSpent: 100));
+    final coordinator = ShellPurchaseCoordinator(
+      budgetStore: _SaveFailsOnce(),
+      purchaseStore: PurchaseStore(),
+      shoppingListStore: ShoppingListStore(),
+    );
+
+    await expectLater(
+      coordinator.update(
+        record: original.copyWith(basket: 30, total: 30),
+        history: [original],
+        budget: const BudgetPlan(foodSpent: 100),
+        now: DateTime(2026, 9, 22),
+      ),
+      throwsStateError,
+    );
+    expect((await PurchaseStore().load()).single.basket, 40);
+    expect((await BudgetStore().load()).foodSpent, 100);
+  });
+
+  test('fehlgeschlagenes Löschen stellt alten Beleg und Budget wieder her',
+      () async {
+    final original = PurchaseRecord(
+      id: '1', createdAt: DateTime(2026, 9, 5),
+      storeNames: const ['Lidl'], items: const [], basket: 40,
+      travel: 0, total: 40, baselineTotal: 50,
+    );
+    await PurchaseStore().save([original]);
+    await BudgetStore().save(const BudgetPlan(foodSpent: 100));
+    final coordinator = ShellPurchaseCoordinator(
+      budgetStore: _SaveFailsOnce(),
+      purchaseStore: PurchaseStore(),
+      shoppingListStore: ShoppingListStore(),
+    );
+
+    await expectLater(
+      coordinator.delete(
+        record: original,
+        history: [original],
+        budget: const BudgetPlan(foodSpent: 100),
+        now: DateTime(2026, 9, 22),
+      ),
+      throwsStateError,
+    );
+    expect((await PurchaseStore().load()).single.basket, 40);
+    expect((await BudgetStore().load()).foodSpent, 100);
+  });
 }
 
 class _ClearFailsAfterWrite extends ShoppingListStore {
@@ -134,5 +190,18 @@ class _ClearFailsAfterWrite extends ShoppingListStore {
   Future<void> clear() async {
     await super.clear();
     throw StateError('clear failed');
+  }
+}
+
+class _SaveFailsOnce extends BudgetStore {
+  bool fail = true;
+
+  @override
+  Future<void> save(BudgetPlan plan) async {
+    await super.save(plan);
+    if (fail) {
+      fail = false;
+      throw StateError('budget save failed');
+    }
   }
 }
