@@ -8,7 +8,11 @@ class RoadRouteMatrixStore {
   static const _key = 'road_route_matrix_v1';
   final SharedPreferencesAsync _preferences = SharedPreferencesAsync();
 
-  Future<RoadRouteMatrix?> load(String originAddress) async {
+  Future<RoadRouteMatrix?> load(
+    String originAddress, {
+    DateTime? now,
+    Duration maxAge = const Duration(hours: 24),
+  }) async {
     final raw = await _preferences.getString(_key);
     if (raw == null || raw.isEmpty) return null;
 
@@ -16,7 +20,10 @@ class RoadRouteMatrixStore {
       final matrix = RoadRouteMatrix.fromJson(
         jsonDecode(raw) as Map<String, dynamic>,
       );
-      return matrix.originAddress == originAddress ? matrix : null;
+      return matrix.originAddress == originAddress &&
+              matrix.isFresh(now: now, maxAge: maxAge)
+          ? matrix
+          : null;
     } catch (_) {
       return null;
     }

@@ -2,12 +2,25 @@ class RoadRouteMatrix {
   const RoadRouteMatrix({
     required this.originAddress,
     required this.distancesKm,
+    this.fetchedAt,
   });
 
   static const origin = '@origin';
 
   final String originAddress;
   final Map<String, double> distancesKm;
+  final DateTime? fetchedAt;
+
+  bool isFresh({
+    DateTime? now,
+    Duration maxAge = const Duration(hours: 24),
+  }) {
+    final fetched = fetchedAt;
+    if (fetched == null) return false;
+    final reference = now ?? DateTime.now();
+    if (fetched.isAfter(reference)) return false;
+    return reference.difference(fetched) <= maxAge;
+  }
 
   String _key(String from, String to) => '$from|$to';
 
@@ -28,6 +41,7 @@ class RoadRouteMatrix {
   Map<String, dynamic> toJson() => {
         'originAddress': originAddress,
         'distancesKm': distancesKm,
+        'fetchedAt': fetchedAt?.toIso8601String(),
       };
 
   factory RoadRouteMatrix.fromJson(Map<String, dynamic> json) =>
@@ -37,5 +51,8 @@ class RoadRouteMatrix {
             (json['distancesKm'] as Map<String, dynamic>).map(
           (key, value) => MapEntry(key, (value as num).toDouble()),
         ),
+        fetchedAt: json['fetchedAt'] == null
+            ? null
+            : DateTime.tryParse(json['fetchedAt'] as String),
       );
 }

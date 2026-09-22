@@ -102,6 +102,7 @@ class RoadDistanceService {
       return RoadRouteMatrix(
         originAddress: originAddress,
         distancesKm: distances,
+        fetchedAt: DateTime.now(),
       );
     } catch (_) {
       return null;

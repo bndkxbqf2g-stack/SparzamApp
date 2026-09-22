@@ -16,17 +16,39 @@ void main() {
 
   test('Distanzmatrix wird nur für denselben Startort geladen', () async {
     final store = RoadRouteMatrixStore();
-    const matrix = RoadRouteMatrix(
+    final now = DateTime(2026, 9, 22, 12);
+    final matrix = RoadRouteMatrix(
       originAddress: 'Start A',
       distancesKm: {
         '@origin|Lidl': 2,
         'Lidl|@origin': 2.1,
       },
+      fetchedAt: now.subtract(const Duration(hours: 2)),
     );
 
     await store.save(matrix);
 
-    expect(await store.load('Start A'), isNotNull);
-    expect(await store.load('Start B'), isNull);
+    expect(await store.load('Start A', now: now), isNotNull);
+    expect(await store.load('Start B', now: now), isNull);
+  });
+
+  test('veraltete oder undatierte Matrizen werden neu geladen', () async {
+    final store = RoadRouteMatrixStore();
+    final now = DateTime(2026, 9, 22, 12);
+    final stale = RoadRouteMatrix(
+      originAddress: 'Start A',
+      distancesKm: const {'@origin|Lidl': 2},
+      fetchedAt: now.subtract(const Duration(hours: 25)),
+    );
+
+    await store.save(stale);
+    expect(await store.load('Start A', now: now), isNull);
+
+    const legacy = RoadRouteMatrix(
+      originAddress: 'Start A',
+      distancesKm: {'@origin|Lidl': 2},
+    );
+    await store.save(legacy);
+    expect(await store.load('Start A', now: now), isNull);
   });
 }
