@@ -7,10 +7,11 @@ class RoadDistanceService {
 
   static const originAddress = '97225 Zellingen, Germany';
   final http.Client _client;
+  _Coordinate? _origin;
 
   Future<double?> fetchKm(String destination) async {
     try {
-      final origin = await _geocode(originAddress);
+      final origin = _origin ??= await _geocode(originAddress);
       final target = await _geocode(destination);
       if (origin == null || target == null) return null;
 
