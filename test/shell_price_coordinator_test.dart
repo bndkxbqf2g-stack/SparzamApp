@@ -1,0 +1,44 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:sparzamapp/features/shell/shell_price_coordinator.dart';
+import 'package:sparzamapp/models/market_price.dart';
+import 'package:sparzamapp/models/price_point.dart';
+import 'package:sparzamapp/services/market_price_store.dart';
+import 'package:sparzamapp/services/price_history_store.dart';
+
+void main() {
+  setUp(() {
+    SharedPreferencesAsyncPlatform.instance =
+        InMemorySharedPreferencesAsync.empty();
+  });
+  tearDown(() => SharedPreferencesAsyncPlatform.instance = null);
+
+  test('Preisänderung aktualisiert Preisbuch und Verlauf gemeinsam', () async {
+    final coordinator = ShellPriceCoordinator(
+      marketPriceStore: MarketPriceStore(),
+      priceHistoryStore: PriceHistoryStore(),
+    );
+    final price = MarketPrice(
+      productId: 'milk',
+      storeName: 'Lidl',
+      price: 1.19,
+      updatedAt: DateTime.now(),
+    );
+
+    final saved = await coordinator.save(
+      price: price,
+      prices: const [],
+      history: const [],
+    );
+    final deleted = await coordinator.delete(
+      productId: 'milk',
+      storeName: 'Lidl',
+      prices: saved.prices,
+    );
+
+    expect(saved.prices, [price]);
+    expect(saved.history.single.source, PricePointSource.manual);
+    expect(deleted, isEmpty);
+  });
+}

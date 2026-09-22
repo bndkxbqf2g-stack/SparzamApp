@@ -46,6 +46,7 @@ import 'shell_routing.dart';
 import 'shell_dashboard.dart';
 import 'shell_navigation.dart';
 import 'shell_purchase_coordinator.dart';
+import 'shell_price_coordinator.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({
@@ -265,6 +266,11 @@ class _AppShellState extends State<AppShell> {
         shoppingListStore: widget.shoppingListStore,
       );
 
+  ShellPriceCoordinator get priceCoordinator => ShellPriceCoordinator(
+        marketPriceStore: widget.marketPriceStore,
+        priceHistoryStore: widget.priceHistoryStore,
+      );
+
   DashboardData dashboardData() => buildShellDashboard(
         shoppingList: shoppingList,
         offers: offers,
@@ -388,28 +394,28 @@ class _AppShellState extends State<AppShell> {
   }
 
   Future<List<MarketPrice>> saveMarketPrice(MarketPrice price) async {
-    final next = await widget.marketPriceStore.upsert(price, marketPrices);
-    final nextHistory = await widget.priceHistoryStore.upsertObservation(
-      priceHistoryPoint(price),
-      priceHistory,
+    final result = await priceCoordinator.save(
+      price: price,
+      prices: marketPrices,
+      history: priceHistory,
     );
     if (mounted) {
       setState(() {
-        marketPrices = next;
-        priceHistory = nextHistory;
+        marketPrices = result.prices;
+        priceHistory = result.history;
       });
     }
-    return next;
+    return result.prices;
   }
 
   Future<List<MarketPrice>> deleteMarketPrice(
     String productId,
     String storeName,
   ) async {
-    final next = await widget.marketPriceStore.remove(
-      productId,
-      storeName,
-      marketPrices,
+    final next = await priceCoordinator.delete(
+      productId: productId,
+      storeName: storeName,
+      prices: marketPrices,
     );
     if (mounted) setState(() => marketPrices = next);
     return next;
