@@ -23,11 +23,16 @@ ShoppingOfferHint? bestShoppingOffer(
   ListItem item,
   List<Offer> offers, {
   DateTime? now,
+  List<String> enabledStoreNames = const <String>[],
 }) {
   final resolver = RoutePriceResolver(offers, now: now);
   ShoppingOfferHint? best;
 
   for (final store in stores) {
+    if (enabledStoreNames.isNotEmpty &&
+        !enabledStoreNames.contains(store.name)) {
+      continue;
+    }
     final quote = resolver.quote(store, item);
     if (quote == null || !quote.usesOffer || quote.offer == null) continue;
 
