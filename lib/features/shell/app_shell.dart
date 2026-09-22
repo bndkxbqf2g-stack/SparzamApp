@@ -46,6 +46,7 @@ import 'shell_pricing.dart';
 import 'shell_routing.dart';
 import 'shell_dashboard.dart';
 import 'shell_navigation.dart';
+import 'shell_purchase_coordinator.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({
@@ -258,6 +259,13 @@ class _AppShellState extends State<AppShell> {
 
   RouteOptimizer? get regularOptimizer => routing.regular;
 
+  ShellPurchaseCoordinator get purchaseCoordinator =>
+      ShellPurchaseCoordinator(
+        budgetStore: widget.budgetStore,
+        purchaseStore: widget.purchaseStore,
+        shoppingListStore: widget.shoppingListStore,
+      );
+
   DashboardData dashboardData() => buildShellDashboard(
         shoppingList: shoppingList,
         offers: offers,
@@ -275,20 +283,18 @@ class _AppShellState extends State<AppShell> {
     final baseline = regularOptimizer?.bestSingleStorePlan();
     if (plan == null || baseline == null || shoppingList.isEmpty) return;
 
-    final record = PurchaseRecord.fromPlan(
+    final result = await purchaseCoordinator.complete(
       plan: plan,
       baselineTotal: baseline.total,
       items: shoppingList,
+      history: purchaseHistory,
+      budget: budget,
     );
-    final nextHistory = await widget.purchaseStore.add(record, purchaseHistory);
-    final nextBudget = budget.copyWith(foodSpent: budget.foodSpent + plan.basket);
-    await widget.budgetStore.save(nextBudget);
-    await widget.shoppingListStore.clear();
 
     if (!mounted) return;
     setState(() {
-      purchaseHistory = nextHistory;
-      budget = nextBudget;
+      purchaseHistory = result.history;
+      budget = result.budget;
       shoppingList.clear();
     });
   }
