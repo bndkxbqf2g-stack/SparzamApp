@@ -115,6 +115,8 @@ class _AppShellState extends State<AppShell> {
   final roadRouteMatrixStore = RoadRouteMatrixStore();
   RoadRouteMatrix? roadMatrix;
   late Map<String, String> preferredProductByGroup;
+  Future<void> _pendingShoppingListSave = Future<void>.value();
+  bool _purchaseInProgress = false;
 
   Product? _catalogProduct(String id) {
     return catalogProductById(id, customProducts);
@@ -169,8 +171,16 @@ class _AppShellState extends State<AppShell> {
             shoppingList.map((item) => item.product.id).toSet(),
       );
 
-  Future<void> persistShoppingList() =>
-      widget.shoppingListStore.save(shoppingList);
+  Future<void> persistShoppingList() {
+    final snapshot = [
+      for (final item in shoppingList)
+        ListItem(product: item.product, quantity: item.quantity),
+    ];
+    _pendingShoppingListSave = _pendingShoppingListSave.then(
+      (_) => widget.shoppingListStore.save(snapshot),
+    );
+    return _pendingShoppingListSave;
+  }
 
   Future<void> ensureCatalogProduct(Product product) async {
     if (isBaseProduct(product.id) ||
@@ -282,24 +292,30 @@ class _AppShellState extends State<AppShell> {
       );
 
   Future<void> completePurchase() async {
+    if (_purchaseInProgress) return;
     final plan = currentOptimizer?.bestPlan();
     final baseline = regularOptimizer?.bestSingleStorePlan();
     if (plan == null || baseline == null || shoppingList.isEmpty) return;
+    _purchaseInProgress = true;
+    try {
+      await _pendingShoppingListSave;
+      final result = await purchaseCoordinator.complete(
+        plan: plan,
+        baselineTotal: baseline.total,
+        items: shoppingList,
+        history: purchaseHistory,
+        budget: budget,
+      );
 
-    final result = await purchaseCoordinator.complete(
-      plan: plan,
-      baselineTotal: baseline.total,
-      items: shoppingList,
-      history: purchaseHistory,
-      budget: budget,
-    );
-
-    if (!mounted) return;
-    setState(() {
-      purchaseHistory = result.history;
-      budget = result.budget;
-      shoppingList.clear();
-    });
+      if (!mounted) return;
+      setState(() {
+        purchaseHistory = result.history;
+        budget = result.budget;
+        shoppingList.clear();
+      });
+    } finally {
+      _purchaseInProgress = false;
+    }
   }
 
   Future<void> updatePurchase(PurchaseRecord record) async {
