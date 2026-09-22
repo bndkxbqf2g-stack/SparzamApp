@@ -18,6 +18,7 @@ import '../../services/mobility_settings_store.dart';
 import '../../services/market_price_store.dart';
 import '../../services/product_catalog_store.dart';
 import '../../services/price_data_settings_store.dart';
+import '../../services/price_history_store.dart';
 import '../../services/open_prices_sync_service.dart';
 import '../../services/recent_purchase_store.dart';
 import '../../services/purchase_store.dart';
@@ -52,6 +53,7 @@ class AppShell extends StatefulWidget {
     required this.marketPriceStore,
     required this.productCatalogStore,
     required this.priceDataSettingsStore,
+    required this.priceHistoryStore,
     required this.recentPurchaseStore,
     required this.purchaseStore,
     required this.shoppingListStore,
@@ -74,6 +76,7 @@ class AppShell extends StatefulWidget {
   final MarketPriceStore marketPriceStore;
   final ProductCatalogStore productCatalogStore;
   final PriceDataSettingsStore priceDataSettingsStore;
+  final PriceHistoryStore priceHistoryStore;
   final RecentPurchaseStore recentPurchaseStore;
   final PurchaseStore purchaseStore;
   final ShoppingListStore shoppingListStore;
@@ -104,6 +107,7 @@ class _AppShellState extends State<AppShell> {
   late List<Product> customProducts;
   late List<MarketPrice> marketPrices;
   late PriceDataSettings priceDataSettings;
+  late List<PricePoint> priceHistory;
   Map<String, double> roadDistances = <String, double>{};
   final roadDistanceStore = RoadDistanceStore();
   final roadRouteMatrixStore = RoadRouteMatrixStore();
@@ -126,6 +130,7 @@ class _AppShellState extends State<AppShell> {
     customProducts = [...widget.initialCustomProducts];
     marketPrices = [...widget.initialMarketPrices];
     priceDataSettings = widget.initialPriceDataSettings;
+    priceHistory = [...widget.initialPriceHistory];
     shoppingList = widget.initialShoppingList
         .map(
           (item) => ListItem(
@@ -362,6 +367,10 @@ class _AppShellState extends State<AppShell> {
       product.id,
       marketPrices,
     );
+    final nextPriceHistory = await widget.priceHistoryStore.removeProduct(
+      product.id,
+      priceHistory,
+    );
 
     var nextOffers = offers;
     for (final offer
@@ -382,15 +391,35 @@ class _AppShellState extends State<AppShell> {
       setState(() {
         customProducts = next;
         marketPrices = nextPrices;
+        priceHistory = nextPriceHistory;
         offers = nextOffers;
       });
     }
     return next;
   }
 
+  PricePoint _historyPoint(MarketPrice price) => PricePoint(
+        productId: price.productId,
+        storeName: price.storeName,
+        price: price.price,
+        date: price.updatedAt,
+        source: price.source == MarketPriceSource.manual
+            ? PricePointSource.manual
+            : PricePointSource.openPrices,
+      );
+
   Future<List<MarketPrice>> saveMarketPrice(MarketPrice price) async {
     final next = await widget.marketPriceStore.upsert(price, marketPrices);
-    if (mounted) setState(() => marketPrices = next);
+    final nextHistory = await widget.priceHistoryStore.upsertObservation(
+      _historyPoint(price),
+      priceHistory,
+    );
+    if (mounted) {
+      setState(() {
+        marketPrices = next;
+        priceHistory = nextHistory;
+      });
+    }
     return next;
   }
 
@@ -416,11 +445,21 @@ class _AppShellState extends State<AppShell> {
     );
 
     var next = marketPrices;
+    var nextHistory = priceHistory;
     for (final price in result.prices) {
       next = await widget.marketPriceStore.upsert(price, next);
+      nextHistory = await widget.priceHistoryStore.upsertObservation(
+        _historyPoint(price),
+        nextHistory,
+      );
     }
 
-    if (mounted) setState(() => marketPrices = next);
+    if (mounted) {
+      setState(() {
+        marketPrices = next;
+        priceHistory = nextHistory;
+      });
+    }
     return next;
   }
 
@@ -537,7 +576,7 @@ class _AppShellState extends State<AppShell> {
           MaterialPageRoute(
             builder: (_) => OffersScreen(
               offers: offers,
-              priceHistory: widget.initialPriceHistory,
+              priceHistory: priceHistory,
               onSave: saveOffer,
               onDelete: deleteOffer,
               catalogProducts: catalogProducts,
@@ -558,7 +597,7 @@ class _AppShellState extends State<AppShell> {
         shoppingListStore: widget.shoppingListStore,
         onOpenScanner: openScanner,
         offers: offers,
-        priceHistory: widget.initialPriceHistory,
+        priceHistory: priceHistory,
         mobility: mobility,
         catalogProducts: catalogProducts,
         marketPrices: activeMarketPrices,

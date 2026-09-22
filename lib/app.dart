@@ -17,6 +17,7 @@ import 'services/mobility_settings_store.dart';
 import 'services/market_price_store.dart';
 import 'services/product_catalog_store.dart';
 import 'services/price_data_settings_store.dart';
+import 'services/price_history_store.dart';
 import 'services/recent_purchase_store.dart';
 import 'services/purchase_store.dart';
 import 'services/shopping_list_store.dart';
@@ -30,6 +31,7 @@ class SparzamApp extends StatelessWidget {
     required this.marketPriceStore,
     required this.productCatalogStore,
     required this.priceDataSettingsStore,
+    required this.priceHistoryStore,
     required this.recentPurchaseStore,
     required this.purchaseStore,
     required this.shoppingListStore,
@@ -52,6 +54,7 @@ class SparzamApp extends StatelessWidget {
   final MarketPriceStore marketPriceStore;
   final ProductCatalogStore productCatalogStore;
   final PriceDataSettingsStore priceDataSettingsStore;
+  final PriceHistoryStore priceHistoryStore;
   final RecentPurchaseStore recentPurchaseStore;
   final PurchaseStore purchaseStore;
   final ShoppingListStore shoppingListStore;
@@ -93,6 +96,7 @@ class SparzamApp extends StatelessWidget {
         marketPriceStore: marketPriceStore,
         productCatalogStore: productCatalogStore,
         priceDataSettingsStore: priceDataSettingsStore,
+        priceHistoryStore: priceHistoryStore,
         recentPurchaseStore: recentPurchaseStore,
         purchaseStore: purchaseStore,
         shoppingListStore: shoppingListStore,

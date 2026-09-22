@@ -18,6 +18,7 @@ import 'package:sparzamapp/services/mobility_settings_store.dart';
 import 'package:sparzamapp/services/market_price_store.dart';
 import 'package:sparzamapp/services/product_catalog_store.dart';
 import 'package:sparzamapp/services/price_data_settings_store.dart';
+import 'package:sparzamapp/services/price_history_store.dart';
 import 'package:sparzamapp/services/recent_purchase_store.dart';
 import 'package:sparzamapp/services/purchase_store.dart';
 import 'package:sparzamapp/services/shopping_list_store.dart';
@@ -41,6 +42,7 @@ void main() {
         marketPriceStore: MarketPriceStore(),
         productCatalogStore: ProductCatalogStore(),
         priceDataSettingsStore: PriceDataSettingsStore(),
+        priceHistoryStore: PriceHistoryStore(),
         recentPurchaseStore: RecentPurchaseStore(),
         purchaseStore: PurchaseStore(),
         shoppingListStore: ShoppingListStore(),
