@@ -11,6 +11,8 @@ class ProfileScreen extends StatelessWidget {
     required this.storeCount,
     required this.onOpenCatalog,
     required this.productCount,
+    required this.onEditPriceData,
+    required this.priceDataSummary,
   });
 
   final MobilitySettings mobility;
@@ -19,6 +21,8 @@ class ProfileScreen extends StatelessWidget {
   final int storeCount;
   final VoidCallback onOpenCatalog;
   final int productCount;
+  final VoidCallback onEditPriceData;
+  final String priceDataSummary;
 
   @override
   Widget build(BuildContext context) => ListView(
@@ -63,6 +67,14 @@ class ProfileScreen extends StatelessWidget {
                   leading: const Icon(Icons.inventory_2_outlined),
                   title: const Text('Produktkatalog'),
                   subtitle: Text('$productCount Produkte · eigene Preise verwalten'),
+                  trailing: const Icon(Icons.chevron_right),
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  onTap: onEditPriceData,
+                  leading: const Icon(Icons.database_outlined),
+                  title: const Text('Preisdaten'),
+                  subtitle: Text(priceDataSummary),
                   trailing: const Icon(Icons.chevron_right),
                 ),
                 const Divider(height: 1),
