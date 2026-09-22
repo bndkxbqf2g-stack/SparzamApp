@@ -35,7 +35,7 @@ class RoutePriceResolver {
   final Map<String, double> marketPrices;
 
   RoutePriceQuote? quote(Store store, ListItem item) {
-    final offer = _bestOffer(store, item.product.id);
+    final offer = _bestOffer(store, item.product.id, item.quantity);
     final customPrice = marketPrices['${store.name}|${item.product.id}'];
     final regular =
         customPrice ?? store.prices[item.product.id] ?? offer?.originalPrice;
@@ -69,7 +69,7 @@ class RoutePriceResolver {
     );
   }
 
-  Offer? _bestOffer(Store store, String productId) {
+  Offer? _bestOffer(Store store, String productId, int quantity) {
     final today = now ?? DateTime.now();
     final matches = offers.where(
       (offer) =>
@@ -81,7 +81,8 @@ class RoutePriceResolver {
     Offer? best;
     var bestPrice = double.infinity;
     for (final offer in matches) {
-      final price = effectivePrice(offer).finalPrice;
+      final price = effectivePrice(offer).finalPrice *
+          _paidUnits(quantity, offer);
       if (price < bestPrice) {
         best = offer;
         bestPrice = price;
