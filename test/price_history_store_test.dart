@@ -83,4 +83,46 @@ void main() {
 
     expect(loaded.single.source, PricePointSource.manual);
   });
+
+  test('alte Beobachtungen werden beim nächsten Speichern begrenzt', () async {
+    final store = PriceHistoryStore();
+    final old = PricePoint(
+      productId: 'a',
+      storeName: 'Lidl',
+      price: 1.49,
+      date: DateTime(2025, 9, 21),
+    );
+    final recent = PricePoint(
+      productId: 'a',
+      storeName: 'Lidl',
+      price: 1.59,
+      date: DateTime(2026, 9, 20),
+    );
+
+    final history = await store.upsertObservation(
+      recent,
+      [old],
+      now: DateTime(2026, 9, 22),
+    );
+
+    expect(history, [recent]);
+  });
+
+  test('ungültige Preise werden nicht in die Historie aufgenommen', () async {
+    final store = PriceHistoryStore();
+    final invalid = PricePoint(
+      productId: 'a',
+      storeName: 'Lidl',
+      price: 0,
+      date: DateTime(2026, 9, 20),
+    );
+
+    final history = await store.upsertObservation(
+      invalid,
+      const [],
+      now: DateTime(2026, 9, 22),
+    );
+
+    expect(history, isEmpty);
+  });
 }

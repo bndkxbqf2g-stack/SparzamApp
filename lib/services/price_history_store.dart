@@ -5,6 +5,7 @@ import '../models/price_point.dart';
 
 class PriceHistoryStore {
   static const _key = 'price_history_v1';
+  static const retentionDays = 365;
   final SharedPreferencesAsync _preferences = SharedPreferencesAsync();
 
   Future<List<PricePoint>> load() async {
@@ -33,11 +34,19 @@ class PriceHistoryStore {
 
   Future<List<PricePoint>> upsertObservation(
     PricePoint point,
-    List<PricePoint> current,
-  ) async {
+    List<PricePoint> current, {
+    DateTime? now,
+  }) async {
+    if (point.price <= 0) return [...current];
+
+    final reference = now ?? DateTime.now();
+    final today = DateTime(reference.year, reference.month, reference.day);
+    final cutoff = today.subtract(const Duration(days: retentionDays));
     final next = [
       ...current.where(
-        (item) => item.observationKey != point.observationKey,
+        (item) =>
+            item.observationKey != point.observationKey &&
+            !item.date.isBefore(cutoff),
       ),
       point,
     ]..sort((a, b) => a.date.compareTo(b.date));
