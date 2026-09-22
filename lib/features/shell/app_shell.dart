@@ -40,6 +40,7 @@ import 'shell_routing.dart';
 import 'shell_dashboard.dart';
 import 'shell_navigation.dart';
 import 'shell_pages.dart';
+import 'shell_pricing.dart';
 import 'shell_purchase_coordinator.dart';
 import 'shell_price_coordinator.dart';
 
@@ -111,7 +112,7 @@ class _AppShellState extends State<AppShell> {
   final roadDistanceStore = RoadDistanceStore();
   final roadRouteMatrixStore = RoadRouteMatrixStore();
   RoadRouteMatrix? roadMatrix;
-  late final Map<String, String> preferredProductByGroup;
+  late Map<String, String> preferredProductByGroup;
 
   Product? _catalogProduct(String id) {
     return catalogProductById(id, customProducts);

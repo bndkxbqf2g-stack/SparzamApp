@@ -64,7 +64,7 @@ void main() {
       source: MarketPriceSource.openPrices,
     );
     final service = OpenPricesSyncService(
-      fetcher: (_, __) async => [fetched],
+      fetcher: (_, _) async => [fetched],
     );
 
     final result = await coordinator.syncOpenPrices(

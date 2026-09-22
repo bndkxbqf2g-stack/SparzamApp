@@ -100,7 +100,7 @@ void main() {
         ),
       ],
       shoppingList: [ListItem(product: product)],
-      preferredProductByGroup: const {'Molkerei': product.id},
+      preferredProductByGroup: {'Molkerei': product.id},
     );
 
     expect(result.products, isEmpty);
@@ -111,6 +111,3 @@ void main() {
     expect(result.preferredProductByGroup, isEmpty);
   });
 }
-import 'package:sparzamapp/services/market_price_store.dart';
-import 'package:sparzamapp/services/offer_store.dart';
-import 'package:sparzamapp/services/price_history_store.dart';
