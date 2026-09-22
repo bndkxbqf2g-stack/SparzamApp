@@ -22,7 +22,7 @@ List<Product> buildSuggestions({
       ].any((value) => value.toLowerCase().contains(normalized)));
 
   final seen = <String>{};
-  final matches = <Product>[...learnedMatches, ...catalogMatches]
+  final matches = <Product>[...catalogMatches, ...learnedMatches]
       .where((product) => seen.add(product.id))
       .toList();
 
