@@ -11,7 +11,12 @@ class RouteOptimizer {
     List<Offer> offers, {
     Map<String, double>? roadDistances,
     this.euroPerKm = 0.22,
+    this.maxStores = 3,
+    this.minExtraStoreSavings = 0,
+    List<String>? enabledStoreNames,
   })  : roadDistances = roadDistances ?? const <String, double>{},
+        enabledStoreNames =
+            (enabledStoreNames ?? const <String>[]).toSet(),
         prices = RoutePriceResolver(offers);
 
   final List<ListItem> items;
@@ -19,6 +24,15 @@ class RouteOptimizer {
   final Map<String, double> roadDistances;
 
   final double euroPerKm;
+  final int maxStores;
+  final double minExtraStoreSavings;
+  final Set<String> enabledStoreNames;
+
+  bool isStoreEnabled(Store store) =>
+      enabledStoreNames.isEmpty || enabledStoreNames.contains(store.name);
+
+  List<Store> get availableStores =>
+      stores.where(isStoreEnabled).toList(growable: false);
 
   double basketCost(Store store, Iterable<ListItem> selectedItems) {
     return selectedItems.fold<double>(
@@ -77,20 +91,25 @@ class RouteOptimizer {
   }
 
   List<List<Store>> storeCombinations() {
+    final source = availableStores;
     final combinations = <List<Store>>[];
 
-    for (final store in stores) {
+    for (final store in source) {
       combinations.add([store]);
     }
-    for (var i = 0; i < stores.length; i++) {
-      for (var j = i + 1; j < stores.length; j++) {
-        combinations.add([stores[i], stores[j]]);
+    if (maxStores >= 2) {
+      for (var i = 0; i < source.length; i++) {
+        for (var j = i + 1; j < source.length; j++) {
+          combinations.add([source[i], source[j]]);
+        }
       }
     }
-    for (var i = 0; i < stores.length; i++) {
-      for (var j = i + 1; j < stores.length; j++) {
-        for (var k = j + 1; k < stores.length; k++) {
-          combinations.add([stores[i], stores[j], stores[k]]);
+    if (maxStores >= 3) {
+      for (var i = 0; i < source.length; i++) {
+        for (var j = i + 1; j < source.length; j++) {
+          for (var k = j + 1; k < source.length; k++) {
+            combinations.add([source[i], source[j], source[k]]);
+          }
         }
       }
     }
@@ -110,11 +129,34 @@ class RouteOptimizer {
 
   RoutePlan? bestPlan() {
     final plans = alternatives();
-    return items.isEmpty || plans.isEmpty ? null : plans.first;
+    if (items.isEmpty || plans.isEmpty) return null;
+
+    final bestByCount = <int, RoutePlan>{};
+    for (final plan in plans) {
+      bestByCount.putIfAbsent(plan.stores.length, () => plan);
+    }
+
+    var recommended =
+        bestByCount[1] ?? bestByCount.values.reduce((a, b) =>
+            a.stores.length <= b.stores.length ? a : b);
+
+    for (var count = recommended.stores.length + 1;
+        count <= maxStores;
+        count++) {
+      final candidate = bestByCount[count];
+      if (candidate == null) continue;
+      final addedStores = candidate.stores.length - recommended.stores.length;
+      final requiredSavings = minExtraStoreSavings * addedStores;
+      if (recommended.total - candidate.total >= requiredSavings) {
+        recommended = candidate;
+      }
+    }
+
+    return recommended;
   }
 
   RoutePlan? bestSingleStorePlan() {
-    final plans = stores
+    final plans = availableStores
         .map((store) => buildPlan([store]))
         .where((plan) => plan.unassigned.isEmpty)
         .toList()
