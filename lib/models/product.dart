@@ -8,6 +8,9 @@ class Product {
     this.isFavorite = false,
     this.ean,
     this.brand,
+    this.packageAmount,
+    this.packageUnit,
+    this.imageUrl,
   });
 
   final String id;
@@ -18,6 +21,9 @@ class Product {
   final bool isFavorite;
   final String? ean;
   final String? brand;
+  final double? packageAmount;
+  final String? packageUnit;
+  final String? imageUrl;
 
   Product copyWith({
     String? id,
@@ -28,6 +34,9 @@ class Product {
     bool? isFavorite,
     String? ean,
     String? brand,
+    double? packageAmount,
+    String? packageUnit,
+    String? imageUrl,
   }) =>
       Product(
         id: id ?? this.id,
@@ -38,6 +47,9 @@ class Product {
         isFavorite: isFavorite ?? this.isFavorite,
         ean: ean ?? this.ean,
         brand: brand ?? this.brand,
+        packageAmount: packageAmount ?? this.packageAmount,
+        packageUnit: packageUnit ?? this.packageUnit,
+        imageUrl: imageUrl ?? this.imageUrl,
       );
 
   Map<String, dynamic> toJson() => {
@@ -49,6 +61,9 @@ class Product {
         'isFavorite': isFavorite,
         'ean': ean,
         'brand': brand,
+        'packageAmount': packageAmount,
+        'packageUnit': packageUnit,
+        'imageUrl': imageUrl,
       };
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
@@ -63,5 +78,8 @@ class Product {
         isFavorite: json['isFavorite'] as bool? ?? false,
         ean: json['ean'] as String?,
         brand: json['brand'] as String?,
+        packageAmount: (json['packageAmount'] as num?)?.toDouble(),
+        packageUnit: json['packageUnit'] as String?,
+        imageUrl: json['imageUrl'] as String?,
       );
 }
