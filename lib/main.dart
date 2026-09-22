@@ -34,6 +34,7 @@ Future<void> main() async {
       marketPriceStore: marketPriceStore,
       productCatalogStore: productCatalogStore,
       priceDataSettingsStore: priceDataSettingsStore,
+      priceHistoryStore: priceHistoryStore,
       recentPurchaseStore: recentPurchaseStore,
       purchaseStore: purchaseStore,
       shoppingListStore: shoppingListStore,
