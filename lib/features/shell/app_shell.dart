@@ -242,6 +242,7 @@ class _AppShellState extends State<AppShell> {
         onClearPurchased: clearPurchasedItems,
         shoppingListStore: widget.shoppingListStore,
         onOpenScanner: openScanner,
+        offers: offers,
       ),
       RouteScreen(items: shoppingList, offers: offers),
       ReceiptScreen(
