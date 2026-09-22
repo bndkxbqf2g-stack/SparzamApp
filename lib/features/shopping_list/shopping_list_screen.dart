@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../models/list_item.dart';
+import '../../models/offer.dart';
 import '../../models/product.dart';
 import '../../models/recent_purchase.dart';
 import '../../services/shopping_list_store.dart';
+import 'shopping_offer_badge.dart';
+import 'shopping_offer_hint.dart';
 import 'shopping_suggestions.dart';
 
 class ShoppingListScreen extends StatefulWidget {
@@ -18,6 +21,7 @@ class ShoppingListScreen extends StatefulWidget {
     required this.onClearPurchased,
     required this.shoppingListStore,
     required this.onOpenScanner,
+    required this.offers,
   });
 
   final List<ListItem> items;
@@ -29,6 +33,7 @@ class ShoppingListScreen extends StatefulWidget {
   final void Function(Set<String> productIds) onClearPurchased;
   final ShoppingListStore shoppingListStore;
   final VoidCallback onOpenScanner;
+  final List<Offer> offers;
 
   @override
   State<ShoppingListScreen> createState() => _ShoppingListScreenState();
@@ -533,10 +538,25 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                     color: checked ? Colors.black45 : null,
                                   ),
                                 ),
-                                subtitle: Text(
-                                  item.quantity > 1
-                                      ? '${item.product.unit} · ×${item.quantity}'
-                                      : item.product.unit,
+                                subtitle: Builder(
+                                  builder: (context) {
+                                    final hint = bestShoppingOffer(
+                                      item,
+                                      widget.offers,
+                                    );
+                                    return Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item.quantity > 1
+                                              ? '${item.product.unit} · ×${item.quantity}'
+                                              : item.product.unit,
+                                        ),
+                                        if (!checked && hint != null)
+                                          ShoppingOfferBadge(hint: hint),
+                                      ],
+                                    );
+                                  },
                                 ),
                                 trailing: Row(
                                   mainAxisSize: MainAxisSize.min,
