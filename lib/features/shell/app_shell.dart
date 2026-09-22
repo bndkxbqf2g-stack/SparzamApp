@@ -35,7 +35,6 @@ import '../profile/profile_screen.dart';
 import '../profile/price_data_settings_screen.dart';
 import '../profile/store_selection_screen.dart';
 import '../receipt/receipt_screen.dart';
-import '../receipt/purchase_budget_adjustment.dart';
 import '../route/route_optimizer.dart';
 import '../route/route_screen.dart';
 import '../scanner/scanner_screen.dart';
@@ -300,42 +299,29 @@ class _AppShellState extends State<AppShell> {
   }
 
   Future<void> updatePurchase(PurchaseRecord record) async {
-    final previousIndex =
-        purchaseHistory.indexWhere((item) => item.id == record.id);
-    final previous =
-        previousIndex < 0 ? null : purchaseHistory[previousIndex];
-    final next = await widget.purchaseStore.add(record, purchaseHistory);
-    var nextBudget = budget;
-    if (previous != null) {
-      nextBudget = budget.copyWith(
-        foodSpent: adjustedFoodSpent(
-          currentFoodSpent: budget.foodSpent,
-          previous: previous,
-          replacement: record,
-        ),
-      );
-      await widget.budgetStore.save(nextBudget);
-    }
+    final result = await purchaseCoordinator.update(
+      record: record,
+      history: purchaseHistory,
+      budget: budget,
+    );
     if (!mounted) return;
     setState(() {
-      purchaseHistory = next;
-      budget = nextBudget;
+      purchaseHistory = result.history;
+      budget = result.budget;
     });
   }
 
   Future<void> deletePurchase(PurchaseRecord record) async {
-    final next = await widget.purchaseStore.remove(record.id, purchaseHistory);
-    final nextFoodSpent = adjustedFoodSpent(
-      currentFoodSpent: budget.foodSpent,
-      previous: record,
+    final result = await purchaseCoordinator.delete(
+      record: record,
+      history: purchaseHistory,
+      budget: budget,
     );
-    final nextBudget = budget.copyWith(foodSpent: nextFoodSpent);
-    await widget.budgetStore.save(nextBudget);
 
     if (!mounted) return;
     setState(() {
-      purchaseHistory = next;
-      budget = nextBudget;
+      purchaseHistory = result.history;
+      budget = result.budget;
     });
   }
 
