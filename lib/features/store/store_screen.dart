@@ -4,6 +4,7 @@ import '../../models/list_item.dart';
 import '../../models/offer.dart';
 import '../../models/store.dart';
 import 'store_shopping_summary.dart';
+import 'store_value.dart';
 
 class StoreScreen extends StatelessWidget {
   const StoreScreen({
@@ -20,6 +21,7 @@ class StoreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final summary = buildStoreShoppingSummary(store, items, offers);
+    final value = evaluateStoreValue(store, items, offers);
 
     return Scaffold(
       appBar: AppBar(title: Text(store.name)),
@@ -58,6 +60,8 @@ class StoreScreen extends StatelessWidget {
               ),
             ),
           ),
+          const SizedBox(height: 16),
+          _ValueCard(value: value),
           const SizedBox(height: 16),
           Text(
             'Deine Artikel in diesem Markt',
@@ -133,6 +137,102 @@ class _StoreLine extends StatelessWidget {
                 '${line.unitPrice.toStringAsFixed(2)} € / Einheit',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
+          ],
+        ),
+      );
+}
+
+
+class _ValueCard extends StatelessWidget {
+  const _ValueCard({required this.value});
+
+  final StoreValue value;
+
+  @override
+  Widget build(BuildContext context) {
+    final positive = value.isWorthIt;
+    final neutral = value.isNeutral;
+    final icon = positive
+        ? Icons.thumb_up_alt_outlined
+        : neutral
+            ? Icons.remove_circle_outline
+            : Icons.warning_amber_rounded;
+    final title = positive
+        ? 'Dieser Markt lohnt sich durch die Angebote'
+        : neutral
+            ? 'Angebotsvorteil und Fahrtkosten gleichen sich aus'
+            : 'Die Fahrtkosten sind höher als die Angebotsersparnis';
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            _ValueRow(
+              label: 'Warenkorbersparnis',
+              value: '+${value.basketSavings.toStringAsFixed(2)} €',
+            ),
+            _ValueRow(
+              label: 'Fahrtkosten',
+              value: '-${value.travelCost.toStringAsFixed(2)} €',
+            ),
+            const Divider(height: 20),
+            _ValueRow(
+              label: 'Echter Vorteil',
+              value: '${value.netAdvantage >= 0 ? '+' : ''}'
+                  '${value.netAdvantage.toStringAsFixed(2)} €',
+              strong: true,
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Gesamt inklusive Fahrt: '
+              '${value.totalWithTravel.toStringAsFixed(2)} €',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ValueRow extends StatelessWidget {
+  const _ValueRow({
+    required this.label,
+    required this.value,
+    this.strong = false,
+  });
+
+  final String label;
+  final String value;
+  final bool strong;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: Row(
+          children: [
+            Expanded(child: Text(label)),
+            Text(
+              value,
+              style: TextStyle(
+                fontWeight: strong ? FontWeight.w800 : FontWeight.w600,
+              ),
+            ),
           ],
         ),
       );
