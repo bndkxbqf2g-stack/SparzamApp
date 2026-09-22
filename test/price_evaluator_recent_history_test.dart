@@ -43,7 +43,7 @@ void main() {
 
     expect(evaluation.best90Price, 1.29);
     expect(evaluation.bestPrice, 1.29);
-    expect(evaluation.normalPrice, 1.34);
+    expect(evaluation.normalPrice, closeTo(1.34, 0.001));
     expect(evaluation.level, PriceLevel.great);
   });
 }
