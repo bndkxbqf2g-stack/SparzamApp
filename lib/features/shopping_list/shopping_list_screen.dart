@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/list_item.dart';
+import '../../models/mobility_settings.dart';
 import '../../models/offer.dart';
 import '../../models/product.dart';
 import '../../models/price_point.dart';
@@ -26,6 +27,7 @@ class ShoppingListScreen extends StatefulWidget {
     required this.onOpenScanner,
     required this.offers,
     required this.priceHistory,
+    required this.mobility,
   });
 
   final List<ListItem> items;
@@ -39,6 +41,7 @@ class ShoppingListScreen extends StatefulWidget {
   final VoidCallback onOpenScanner;
   final List<Offer> offers;
   final List<PricePoint> priceHistory;
+  final MobilitySettings mobility;
 
   @override
   State<ShoppingListScreen> createState() => _ShoppingListScreenState();
@@ -571,6 +574,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                                   priceHistory: widget.priceHistory,
                                                   items: widget.items,
                                                   offers: widget.offers,
+                                                  mobility: widget.mobility,
                                                 ),
                                               ),
                                             ),

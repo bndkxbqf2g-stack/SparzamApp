@@ -28,6 +28,17 @@ void main() {
     expect(optimizer.travelCost([store]), closeTo(1.76, 0.001));
   });
 
+  test('eigener Kilometerpreis wird verwendet', () {
+    final optimizer = RouteOptimizer(
+      [ListItem(product: product)],
+      const [],
+      roadDistances: const {'Markt': 4.0},
+      euroPerKm: 0.50,
+    );
+
+    expect(optimizer.travelCost([store]), closeTo(4.0, 0.001));
+  });
+
   test('ohne Straßenentfernung bleibt Fallback aktiv', () {
     final optimizer = RouteOptimizer(
       [ListItem(product: product)],

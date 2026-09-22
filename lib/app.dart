@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'features/shell/app_shell.dart';
 import 'models/budget_plan.dart';
 import 'models/list_item.dart';
+import 'models/mobility_settings.dart';
 import 'models/offer.dart';
 import 'models/price_point.dart';
 import 'models/recent_purchase.dart';
 import 'models/purchase_record.dart';
 import 'services/budget_store.dart';
 import 'services/offer_store.dart';
+import 'services/mobility_settings_store.dart';
 import 'services/recent_purchase_store.dart';
 import 'services/purchase_store.dart';
 import 'services/shopping_list_store.dart';
@@ -18,11 +20,13 @@ class SparzamApp extends StatelessWidget {
     super.key,
     required this.budgetStore,
     required this.offerStore,
+    required this.mobilityStore,
     required this.recentPurchaseStore,
     required this.purchaseStore,
     required this.shoppingListStore,
     required this.initialBudget,
     required this.initialOffers,
+    required this.initialMobility,
     required this.initialPriceHistory,
     required this.initialRecentPurchases,
     required this.initialPurchaseHistory,
@@ -32,11 +36,13 @@ class SparzamApp extends StatelessWidget {
 
   final BudgetStore budgetStore;
   final OfferStore offerStore;
+  final MobilitySettingsStore mobilityStore;
   final RecentPurchaseStore recentPurchaseStore;
   final PurchaseStore purchaseStore;
   final ShoppingListStore shoppingListStore;
   final BudgetPlan initialBudget;
   final List<Offer> initialOffers;
+  final MobilitySettings initialMobility;
   final List<PricePoint> initialPriceHistory;
   final List<RecentPurchase> initialRecentPurchases;
   final List<PurchaseRecord> initialPurchaseHistory;
@@ -65,11 +71,13 @@ class SparzamApp extends StatelessWidget {
       home: AppShell(
         budgetStore: budgetStore,
         offerStore: offerStore,
+        mobilityStore: mobilityStore,
         recentPurchaseStore: recentPurchaseStore,
         purchaseStore: purchaseStore,
         shoppingListStore: shoppingListStore,
         initialBudget: initialBudget,
         initialOffers: initialOffers,
+        initialMobility: initialMobility,
         initialPriceHistory: initialPriceHistory,
         initialRecentPurchases: initialRecentPurchases,
         initialPurchaseHistory: initialPurchaseHistory,

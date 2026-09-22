@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/budget_plan.dart';
 import '../../models/list_item.dart';
+import '../../models/mobility_settings.dart';
 import '../../models/offer.dart';
 import '../../models/product.dart';
 import '../../models/price_point.dart';
@@ -9,14 +10,17 @@ import '../../models/recent_purchase.dart';
 import '../../models/purchase_record.dart';
 import '../../services/budget_store.dart';
 import '../../services/offer_store.dart';
+import '../../services/mobility_settings_store.dart';
 import '../../services/recent_purchase_store.dart';
 import '../../services/purchase_store.dart';
+import '../../services/road_distance_store.dart';
 import '../../services/shopping_list_store.dart';
 import '../budget/budget_calculator.dart';
 import '../budget/budget_screen.dart';
 import '../home/dashboard_data.dart';
 import '../home/home_screen.dart';
 import '../offers/offers_screen.dart';
+import '../profile/mobility_settings_screen.dart';
 import '../profile/profile_screen.dart';
 import '../receipt/receipt_screen.dart';
 import '../receipt/purchase_summary.dart';
@@ -30,11 +34,13 @@ class AppShell extends StatefulWidget {
     super.key,
     required this.budgetStore,
     required this.offerStore,
+    required this.mobilityStore,
     required this.recentPurchaseStore,
     required this.purchaseStore,
     required this.shoppingListStore,
     required this.initialBudget,
     required this.initialOffers,
+    required this.initialMobility,
     required this.initialPriceHistory,
     required this.initialRecentPurchases,
     required this.initialPurchaseHistory,
@@ -44,11 +50,13 @@ class AppShell extends StatefulWidget {
 
   final BudgetStore budgetStore;
   final OfferStore offerStore;
+  final MobilitySettingsStore mobilityStore;
   final RecentPurchaseStore recentPurchaseStore;
   final PurchaseStore purchaseStore;
   final ShoppingListStore shoppingListStore;
   final BudgetPlan initialBudget;
   final List<Offer> initialOffers;
+  final MobilitySettings initialMobility;
   final List<PricePoint> initialPriceHistory;
   final List<RecentPurchase> initialRecentPurchases;
   final List<PurchaseRecord> initialPurchaseHistory;
@@ -62,24 +70,36 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   int selectedIndex = 0;
   late BudgetPlan budget;
+  late MobilitySettings mobility;
   late List<ListItem> shoppingList;
   late List<Offer> offers;
   late List<RecentPurchase> recentPurchases;
   late List<PurchaseRecord> purchaseHistory;
+  Map<String, double> roadDistances = <String, double>{};
+  final roadDistanceStore = RoadDistanceStore();
   late final Map<String, String> preferredProductByGroup;
 
   @override
   void initState() {
     super.initState();
     budget = widget.initialBudget;
+    mobility = widget.initialMobility;
     shoppingList = [...widget.initialShoppingList];
     offers = [...widget.initialOffers];
     recentPurchases = [...widget.initialRecentPurchases];
     purchaseHistory = [...widget.initialPurchaseHistory];
     preferredProductByGroup = {...widget.initialPreferredProductByGroup};
+    _loadRoadDistances();
   }
 
-  Future<void> persistShoppingList() => widget.shoppingListStore.save(shoppingList);
+  Future<void> _loadRoadDistances() async {
+    final loaded = await roadDistanceStore.load(mobility.startAddress);
+    if (!mounted) return;
+    setState(() => roadDistances = loaded);
+  }
+
+  Future<void> persistShoppingList() =>
+      widget.shoppingListStore.save(shoppingList);
 
   void addProduct(Product product) {
     setState(() {
@@ -133,11 +153,23 @@ class _AppShellState extends State<AppShell> {
     persistShoppingList();
   }
 
-  RouteOptimizer? get currentOptimizer =>
-      shoppingList.isEmpty ? null : RouteOptimizer(shoppingList, offers);
+  RouteOptimizer? get currentOptimizer => shoppingList.isEmpty
+      ? null
+      : RouteOptimizer(
+          shoppingList,
+          offers,
+          roadDistances: roadDistances,
+          euroPerKm: mobility.euroPerKm,
+        );
 
-  RouteOptimizer? get regularOptimizer =>
-      shoppingList.isEmpty ? null : RouteOptimizer(shoppingList, const <Offer>[]);
+  RouteOptimizer? get regularOptimizer => shoppingList.isEmpty
+      ? null
+      : RouteOptimizer(
+          shoppingList,
+          const <Offer>[],
+          roadDistances: roadDistances,
+          euroPerKm: mobility.euroPerKm,
+        );
 
   DashboardData dashboardData() {
     final best = currentOptimizer?.bestPlan();
@@ -198,8 +230,32 @@ class _AppShellState extends State<AppShell> {
     return next;
   }
 
+  Future<void> openMobilitySettings() async {
+    final result = await Navigator.of(context).push<MobilitySettings>(
+      MaterialPageRoute(
+        builder: (_) => MobilitySettingsScreen(initialSettings: mobility),
+      ),
+    );
+    if (result == null) return;
+
+    await widget.mobilityStore.save(result);
+    final loaded = await roadDistanceStore.load(result.startAddress);
+    if (!mounted) return;
+    setState(() {
+      mobility = result;
+      roadDistances = loaded;
+    });
+  }
+
   void openBudget() {
-    final best = shoppingList.isEmpty ? null : RouteOptimizer(shoppingList, offers).bestPlan();
+    final best = shoppingList.isEmpty
+        ? null
+        : RouteOptimizer(
+            shoppingList,
+            offers,
+            roadDistances: roadDistances,
+            euroPerKm: mobility.euroPerKm,
+          ).bestPlan();
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => BudgetScreen(
@@ -244,15 +300,25 @@ class _AppShellState extends State<AppShell> {
         onOpenScanner: openScanner,
         offers: offers,
         priceHistory: widget.initialPriceHistory,
+        mobility: mobility,
       ),
-      RouteScreen(items: shoppingList, offers: offers),
+      RouteScreen(
+        items: shoppingList,
+        offers: offers,
+        mobility: mobility,
+        onRoadDistancesChanged: (value) =>
+            setState(() => roadDistances = value),
+      ),
       ReceiptScreen(
         plan: currentOptimizer?.bestPlan(),
         baselineTotal: regularOptimizer?.bestSingleStorePlan()?.total ?? 0,
         history: purchaseHistory,
         onComplete: completePurchase,
       ),
-      const ProfileScreen(),
+      ProfileScreen(
+        mobility: mobility,
+        onEditMobility: openMobilitySettings,
+      ),
     ];
 
     return Scaffold(

@@ -4,12 +4,14 @@ import 'package:shared_preferences_platform_interface/shared_preferences_async_p
 import 'package:sparzamapp/app.dart';
 import 'package:sparzamapp/models/budget_plan.dart';
 import 'package:sparzamapp/models/list_item.dart';
+import 'package:sparzamapp/models/mobility_settings.dart';
 import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/models/price_point.dart';
 import 'package:sparzamapp/models/recent_purchase.dart';
 import 'package:sparzamapp/models/purchase_record.dart';
 import 'package:sparzamapp/services/budget_store.dart';
 import 'package:sparzamapp/services/offer_store.dart';
+import 'package:sparzamapp/services/mobility_settings_store.dart';
 import 'package:sparzamapp/services/recent_purchase_store.dart';
 import 'package:sparzamapp/services/purchase_store.dart';
 import 'package:sparzamapp/services/shopping_list_store.dart';
@@ -29,11 +31,13 @@ void main() {
       SparzamApp(
         budgetStore: BudgetStore(),
         offerStore: OfferStore(),
+        mobilityStore: MobilitySettingsStore(),
         recentPurchaseStore: RecentPurchaseStore(),
         purchaseStore: PurchaseStore(),
         shoppingListStore: ShoppingListStore(),
         initialBudget: const BudgetPlan(),
         initialOffers: const <Offer>[],
+        initialMobility: const MobilitySettings(),
         initialPriceHistory: const <PricePoint>[],
         initialRecentPurchases: const <RecentPurchase>[],
         initialPurchaseHistory: const <PurchaseRecord>[],

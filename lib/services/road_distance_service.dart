@@ -3,9 +3,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class RoadDistanceService {
-  RoadDistanceService({http.Client? client}) : _client = client ?? http.Client();
+  RoadDistanceService({
+    required this.originAddress,
+    http.Client? client,
+  }) : _client = client ?? http.Client();
 
-  static const originAddress = '97225 Zellingen, Germany';
+  final String originAddress;
   final http.Client _client;
   _Coordinate? _origin;
 

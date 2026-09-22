@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/stores.dart';
 import '../../models/list_item.dart';
+import '../../models/mobility_settings.dart';
 import '../../models/offer.dart';
 import '../../models/price_point.dart';
 import '../store/store_screen.dart';
@@ -14,12 +15,14 @@ class OfferDetailsScreen extends StatelessWidget {
     required this.priceHistory,
     required this.items,
     required this.offers,
+    required this.mobility,
   });
 
   final Offer offer;
   final List<PricePoint> priceHistory;
   final List<ListItem> items;
   final List<Offer> offers;
+  final MobilitySettings mobility;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +47,7 @@ class OfferDetailsScreen extends StatelessWidget {
                       store: store,
                       items: items,
                       offers: offers,
+                      mobility: mobility,
                     ),
                   ),
                 ),

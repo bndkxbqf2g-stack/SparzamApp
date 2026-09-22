@@ -27,6 +27,7 @@ StoreValue evaluateStoreValue(
   List<Offer> offers, {
   DateTime? now,
   Map<String, double>? roadDistances,
+  double euroPerKm = 0.22,
 }) {
   final summary = buildStoreShoppingSummary(
     store,
@@ -38,6 +39,7 @@ StoreValue evaluateStoreValue(
     items,
     offers,
     roadDistances: roadDistances,
+    euroPerKm: euroPerKm,
   );
   final travel = optimizer.travelCost([store]);
   final net = summary.savings - travel;
