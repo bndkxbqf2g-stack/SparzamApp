@@ -211,6 +211,30 @@ void main() {
     service.close();
   });
 
+  test('jüngster Preis gewinnt auch bei ungeordneter Antwort', () async {
+    final service = OpenPricesService(
+      client: MockClient((_) async => http.Response('''
+        {"items":[
+          {"id":1,"price":2.5,"date":"2026-09-19",
+           "location":{"osm_brand":"Lidl","osm_name":"Lidl",
+                       "osm_address_city":"Zellingen"}},
+          {"id":2,"price":1.9,"date":"2026-09-21",
+           "location":{"osm_brand":"Lidl","osm_name":"Lidl",
+                       "osm_address_city":"Zellingen"}}
+        ]}''', 200)),
+    );
+
+    final prices = await service.fetchRecentPrices(
+      product: product,
+      stores: stores,
+      now: DateTime(2026, 9, 22),
+    );
+
+    expect(prices.single.price, 1.9);
+    expect(prices.single.externalId, 2);
+    service.close();
+  });
+
   test('Serverfehler wird als Abruffehler gemeldet', () async {
     final service = OpenPricesService(
       client: MockClient((_) async => http.Response('{}', 503)),

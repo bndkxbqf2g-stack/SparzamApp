@@ -67,10 +67,14 @@ class OpenPricesService {
       }
 
       final store = _matchStore(location, stores);
-      if (store == null || byStore.containsKey(store.name)) continue;
+      if (store == null) continue;
 
       final observedAt = DateTime.tryParse(dateRaw);
       if (observedAt == null) continue;
+      final previous = byStore[store.name];
+      if (previous != null && !observedAt.isAfter(previous.updatedAt)) {
+        continue;
+      }
 
       byStore[store.name] = MarketPrice(
         productId: product.id,
