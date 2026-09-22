@@ -52,6 +52,16 @@ class MarketPriceStore {
     return next;
   }
 
+  Future<List<MarketPrice>> removeProduct(
+    String productId,
+    List<MarketPrice> current,
+  ) async {
+    final next =
+        current.where((item) => item.productId != productId).toList();
+    await _save(next);
+    return next;
+  }
+
   Future<void> _save(List<MarketPrice> prices) =>
       _preferences.setStringList(
         _key,
