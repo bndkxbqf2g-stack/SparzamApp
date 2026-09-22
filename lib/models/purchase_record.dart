@@ -29,16 +29,22 @@ class PurchaseRecord {
 
   PurchaseRecord copyWith({
     DateTime? createdAt,
+    List<String>? storeNames,
+    List<PurchaseLine>? items,
+    double? basket,
+    double? travel,
+    double? total,
+    double? baselineTotal,
   }) =>
       PurchaseRecord(
         id: id,
         createdAt: createdAt ?? this.createdAt,
-        storeNames: storeNames,
-        items: items,
-        basket: basket,
-        travel: travel,
-        total: total,
-        baselineTotal: baselineTotal,
+        storeNames: storeNames ?? this.storeNames,
+        items: items ?? this.items,
+        basket: basket ?? this.basket,
+        travel: travel ?? this.travel,
+        total: total ?? this.total,
+        baselineTotal: baselineTotal ?? this.baselineTotal,
       );
 
   factory PurchaseRecord.fromPlan({

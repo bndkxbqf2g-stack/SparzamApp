@@ -84,4 +84,24 @@ void main() {
     expect(next.map((item) => item.id), ['2']);
     expect((await store.load()).map((item) => item.id), ['2']);
   });
+
+  test('Beträge und Artikelmengen können korrigiert werden', () {
+    final original = record('1', DateTime(2026, 9, 1));
+
+    final corrected = original.copyWith(
+      items: const [
+        PurchaseLine(productId: 'milk', name: 'Milch', quantity: 1),
+      ],
+      basket: 1.25,
+      travel: 0.25,
+      total: 1.50,
+      baselineTotal: 2,
+    );
+
+    expect(corrected.items.single.quantity, 1);
+    expect(corrected.basket, 1.25);
+    expect(corrected.travel, 0.25);
+    expect(corrected.total, 1.50);
+    expect(corrected.savings, 0.50);
+  });
 }
