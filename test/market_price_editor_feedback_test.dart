@@ -24,7 +24,7 @@ void main() {
         prices: [price],
         openPricesMaxAgeDays: 30,
         onSave: (_) async => [price],
-        onDelete: (_, __) {
+        onDelete: (_, _) {
           calls++;
           return pending.future;
         },
@@ -55,7 +55,7 @@ void main() {
           calls++;
           return [];
         },
-        onDelete: (_, __) async => [],
+        onDelete: (_, _) async => [],
       ),
     ));
 
