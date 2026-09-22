@@ -28,11 +28,11 @@ void showPriceHistory(
           if (sorted.isEmpty)
             const Text('Noch keine Preisbeobachtungen vorhanden.')
           else
-            for (final point in sorted.take(8))
+            for (final point in sorted.take(12))
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text('${point.price.toStringAsFixed(2)} €'),
-                subtitle: Text(point.storeName),
+                subtitle: Text('${point.storeName} · ${point.source.label}'),
                 trailing: Text(_date(point.date)),
               ),
         ],
