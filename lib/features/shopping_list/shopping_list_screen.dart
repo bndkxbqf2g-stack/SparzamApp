@@ -10,8 +10,8 @@ import '../../models/recent_purchase.dart';
 import '../../models/replenishment_suggestion.dart';
 import '../../services/shopping_list_store.dart';
 import '../offers/offer_details_screen.dart';
-import 'shopping_item_sorter.dart';
 import 'shopping_group_card.dart';
+import 'shopping_grouping.dart';
 import 'replenishment_card.dart';
 import 'shopping_offer_hint.dart';
 import 'shopping_suggestions.dart';
@@ -96,24 +96,12 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         catalogProducts: widget.catalogProducts,
       );
 
-  Map<String, List<ListItem>> get itemsByGroup {
-    final grouped = <String, List<ListItem>>{};
-
-    for (final item in widget.items) {
-      grouped.putIfAbsent(item.product.group, () => []).add(item);
-    }
-
-    for (final entry in grouped.entries) {
-      grouped[entry.key] = prioritizeOfferItems(
-        entry.value,
+  Map<String, List<ListItem>> get itemsByGroup => groupShoppingItems(
+        widget.items,
         widget.offers,
         enabledStoreNames: widget.mobility.enabledStoreNames,
         marketPrices: widget.marketPrices,
       );
-    }
-
-    return grouped;
-  }
 
   void _focusShoppingInput() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
