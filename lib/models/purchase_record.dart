@@ -27,6 +27,20 @@ class PurchaseRecord {
   double get savings => (baselineTotal - total).clamp(0.0, double.infinity).toDouble();
   int get itemCount => items.fold(0, (sum, item) => sum + item.quantity);
 
+  PurchaseRecord copyWith({
+    DateTime? createdAt,
+  }) =>
+      PurchaseRecord(
+        id: id,
+        createdAt: createdAt ?? this.createdAt,
+        storeNames: storeNames,
+        items: items,
+        basket: basket,
+        travel: travel,
+        total: total,
+        baselineTotal: baselineTotal,
+      );
+
   factory PurchaseRecord.fromPlan({
     required RoutePlan plan,
     required double baselineTotal,

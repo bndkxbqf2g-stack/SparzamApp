@@ -355,6 +355,26 @@ class _AppShellState extends State<AppShell> {
     });
   }
 
+  Future<void> updatePurchase(PurchaseRecord record) async {
+    final next = await widget.purchaseStore.add(record, purchaseHistory);
+    if (!mounted) return;
+    setState(() => purchaseHistory = next);
+  }
+
+  Future<void> deletePurchase(PurchaseRecord record) async {
+    final next = await widget.purchaseStore.remove(record.id, purchaseHistory);
+    final nextFoodSpent =
+        (budget.foodSpent - record.basket).clamp(0.0, double.infinity).toDouble();
+    final nextBudget = budget.copyWith(foodSpent: nextFoodSpent);
+    await widget.budgetStore.save(nextBudget);
+
+    if (!mounted) return;
+    setState(() {
+      purchaseHistory = next;
+      budget = nextBudget;
+    });
+  }
+
   Future<List<Product>> saveCatalogProduct(Product product) async {
     final next = await widget.productCatalogStore.upsert(
       product,
@@ -637,6 +657,8 @@ class _AppShellState extends State<AppShell> {
         baselineTotal: regularOptimizer?.bestSingleStorePlan()?.total ?? 0,
         history: purchaseHistory,
         onComplete: completePurchase,
+        onUpdatePurchase: updatePurchase,
+        onDeletePurchase: deletePurchase,
       ),
       ProfileScreen(
         mobility: mobility,

@@ -20,6 +20,18 @@ class PurchaseStore {
     return records;
   }
 
+  Future<List<PurchaseRecord>> remove(
+    String id,
+    List<PurchaseRecord> current,
+  ) async {
+    final next = current.where((item) => item.id != id).toList();
+    await _preferences.setStringList(
+      _key,
+      next.map((item) => item.toJson()).toList(),
+    );
+    return next;
+  }
+
   Future<List<PurchaseRecord>> add(
     PurchaseRecord record,
     List<PurchaseRecord> current,

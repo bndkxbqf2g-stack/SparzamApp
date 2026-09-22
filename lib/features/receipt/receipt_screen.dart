@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/purchase_record.dart';
 import '../../models/route_plan.dart';
 import 'purchase_history_card.dart';
+import 'purchase_detail_screen.dart';
 
 class ReceiptScreen extends StatelessWidget {
   const ReceiptScreen({
@@ -11,12 +12,16 @@ class ReceiptScreen extends StatelessWidget {
     required this.baselineTotal,
     required this.history,
     required this.onComplete,
+    required this.onUpdatePurchase,
+    required this.onDeletePurchase,
   });
 
   final RoutePlan? plan;
   final double baselineTotal;
   final List<PurchaseRecord> history;
   final Future<void> Function() onComplete;
+  final Future<void> Function(PurchaseRecord record) onUpdatePurchase;
+  final Future<void> Function(PurchaseRecord record) onDeletePurchase;
 
   String euro(double value) => '${value.toStringAsFixed(2)} €';
 
@@ -47,7 +52,18 @@ class ReceiptScreen extends StatelessWidget {
           else
             ...history.take(10).map((record) => Padding(
                   padding: const EdgeInsets.only(bottom: 8),
-                  child: PurchaseHistoryCard(record: record),
+                  child: PurchaseHistoryCard(
+                    record: record,
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => PurchaseDetailScreen(
+                          record: record,
+                          onSave: onUpdatePurchase,
+                          onDelete: onDeletePurchase,
+                        ),
+                      ),
+                    ),
+                  ),
                 )),
         ],
       );
