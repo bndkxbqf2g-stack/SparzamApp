@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../data/products.dart' as base_catalog;
 import '../../models/budget_plan.dart';
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
@@ -46,6 +45,7 @@ import '../route/travel_estimator.dart';
 import '../scanner/scanner_screen.dart';
 import '../shopping_list/replenishment_analyzer.dart';
 import '../shopping_list/shopping_list_screen.dart';
+import 'shell_catalog.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({
@@ -118,11 +118,7 @@ class _AppShellState extends State<AppShell> {
   late final Map<String, String> preferredProductByGroup;
 
   Product? _catalogProduct(String id) {
-    final matches = [
-      ...base_catalog.products,
-      ...customProducts,
-    ].where((product) => product.id == id);
-    return matches.isEmpty ? null : matches.first;
+    return catalogProductById(id, customProducts);
   }
 
   @override
@@ -159,13 +155,9 @@ class _AppShellState extends State<AppShell> {
     });
   }
 
-  List<Product> get catalogProducts => [
-        ...base_catalog.products,
-        ...customProducts,
-      ];
+  List<Product> get catalogProducts => buildCatalogProducts(customProducts);
 
-  bool isBaseProduct(String id) =>
-      base_catalog.products.any((product) => product.id == id);
+  bool isBaseProduct(String id) => isBaseCatalogProduct(id);
 
   List<MarketPrice> get activeMarketPrices {
     if (!priceDataSettings.openPricesEnabled) {
