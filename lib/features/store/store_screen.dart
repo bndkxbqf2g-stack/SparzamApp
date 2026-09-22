@@ -8,6 +8,7 @@ import '../../services/road_distance_service.dart';
 import '../../services/road_distance_store.dart';
 import 'store_shopping_summary.dart';
 import 'store_value.dart';
+import '../route/travel_estimator.dart';
 
 class StoreScreen extends StatefulWidget {
   const StoreScreen({
@@ -82,10 +83,15 @@ class _StoreScreenState extends State<StoreScreen> {
       widget.items,
       widget.offers,
       roadDistances: roadDistances,
-      euroPerKm: widget.mobility.euroPerKm,
+      euroPerKm: widget.mobility.effectiveEuroPerKm,
     );
     final roadDistance = roadDistances[widget.store.name];
     final shownDistance = roadDistance ?? widget.store.distanceKm;
+    final travel = estimateRoundTrips(
+      [widget.store],
+      mobility: widget.mobility,
+      roadDistances: roadDistances,
+    );
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.store.name)),
@@ -106,6 +112,11 @@ class _StoreScreenState extends State<StoreScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(widget.store.location),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${widget.mobility.mode.label} · ca. ${travel.durationLabel} Wegezeit',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
