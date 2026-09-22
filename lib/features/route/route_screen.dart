@@ -134,7 +134,8 @@ class _RouteScreenState extends State<RouteScreen> {
       minExtraStoreSavings: widget.mobility.minExtraStoreSavings,
       enabledStoreNames: widget.mobility.enabledStoreNames,
       marketPrices: widget.marketPrices,
-      roadMatrix: roadMatrix,
+      roadMatrix:
+          widget.mobility.mode == MobilityMode.car ? roadMatrix : null,
     );
     final best = optimizer.bestPlan();
     if (best == null) return const _MissingPrices();
@@ -147,7 +148,8 @@ class _RouteScreenState extends State<RouteScreen> {
       best.stores,
       mobility: widget.mobility,
       roadDistances: roadDistances,
-      roadMatrix: roadMatrix,
+      roadMatrix:
+          widget.mobility.mode == MobilityMode.car ? roadMatrix : null,
     );
     final recommendation = buildRouteRecommendationInfo(
       recommended: best,
@@ -256,13 +258,12 @@ class _RouteScreenState extends State<RouteScreen> {
             padding: const EdgeInsets.all(16),
             child: Text(
               widget.mobility.mode == MobilityMode.car
-                  ? (realCount > 0
-                      ? 'Fahrtkosten: optimierte Straßenroute × '
-                          '${widget.mobility.effectiveEuroPerKm.toStringAsFixed(2)} €/km. '
-                          'Nicht geladene Strecken verwenden den hinterlegten Fallback.'
+                  ? (optimizedTravel.usesRoadMatrix
+                      ? 'Fahrtkosten: optimierte Mehrmarkt-Straßenroute × '
+                          '${widget.mobility.effectiveEuroPerKm.toStringAsFixed(2)} €/km.'
                       : 'Fahrtkosten: aktuell '
                           '${widget.mobility.effectiveEuroPerKm.toStringAsFixed(2)} €/km '
-                          'auf Basis der hinterlegten Entfernungen.')
+                          'auf Basis der hinterlegten Fallback-Distanzen.')
                   : '${widget.mobility.mode.label}: keine monetären Fahrtkosten. '
                       'Die Strecke wird weiterhin für die geschätzte Wegezeit verwendet.',
             ),
