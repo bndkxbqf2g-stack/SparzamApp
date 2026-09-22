@@ -87,7 +87,11 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     }
 
     for (final entry in grouped.entries) {
-      grouped[entry.key] = prioritizeOfferItems(entry.value, widget.offers);
+      grouped[entry.key] = prioritizeOfferItems(
+        entry.value,
+        widget.offers,
+        enabledStoreNames: widget.mobility.enabledStoreNames,
+      );
     }
 
     return grouped;
@@ -555,6 +559,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                     final hint = bestShoppingOffer(
                                       item,
                                       widget.offers,
+                                      enabledStoreNames:
+                                          widget.mobility.enabledStoreNames,
                                     );
                                     return Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
