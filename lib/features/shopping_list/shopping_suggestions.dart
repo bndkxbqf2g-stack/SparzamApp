@@ -7,6 +7,7 @@ List<Product> buildSuggestions({
   required List<RecentPurchase> knownItems,
   required List<RecentPurchase> recentPurchases,
   required Map<String, String> preferredProductByGroup,
+  List<Product> catalogProducts = products,
 }) {
   final normalized = query.trim().toLowerCase();
   if (normalized.isEmpty) return const <Product>[];
@@ -14,7 +15,7 @@ List<Product> buildSuggestions({
   final learnedMatches = knownItems
       .map((item) => item.toProduct())
       .where((product) => product.name.toLowerCase().contains(normalized));
-  final catalogMatches = products.where((product) => [
+  final catalogMatches = catalogProducts.where((product) => [
         product.name,
         product.group,
         ...product.aliases,
@@ -50,11 +51,14 @@ List<Product> buildSuggestions({
   return matches;
 }
 
-List<Product> buildQuickProducts(Map<String, String> preferredProductByGroup) {
+List<Product> buildQuickProducts(
+  Map<String, String> preferredProductByGroup, {
+  List<Product> catalogProducts = products,
+}) {
   final preferredIds = preferredProductByGroup.values.toSet();
   final seen = <String>{};
   return <Product>[
-    ...products.where((p) => preferredIds.contains(p.id)),
-    ...products.where((p) => p.isFavorite),
+    ...catalogProducts.where((p) => preferredIds.contains(p.id)),
+    ...catalogProducts.where((p) => p.isFavorite),
   ].where((p) => seen.add(p.id)).take(5).toList();
 }
