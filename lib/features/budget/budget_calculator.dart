@@ -16,6 +16,7 @@ enum BudgetForecastStatus { onTrack, warning, overBudget }
 
 class BudgetForecast {
   const BudgetForecast({
+    required this.isConfigured,
     required this.projectedFoodSpend,
     required this.projectedRemaining,
     required this.weeklyAllowance,
@@ -24,6 +25,7 @@ class BudgetForecast {
     required this.status,
   });
 
+  final bool isConfigured;
   final double projectedFoodSpend;
   final double projectedRemaining;
   final double weeklyAllowance;
@@ -31,7 +33,6 @@ class BudgetForecast {
   final int daysRemaining;
   final BudgetForecastStatus status;
 
-  bool get isConfigured => projectedFoodSpend >= 0;
 }
 
 BudgetSnapshot calculateBudget(BudgetPlan plan, double plannedShop) {
@@ -54,6 +55,7 @@ BudgetForecast calculateBudgetForecast(
 
   if (plan.foodBudget <= 0) {
     return BudgetForecast(
+      isConfigured: false,
       projectedFoodSpend: 0,
       projectedRemaining: 0,
       weeklyAllowance: 0,
@@ -63,7 +65,9 @@ BudgetForecast calculateBudgetForecast(
     );
   }
 
-  final spentAfterPlan = plan.foodSpent + plannedShop;
+  final spentAfterPlan = (plan.foodSpent + plannedShop)
+      .clamp(0.0, double.infinity)
+      .toDouble();
   final dailyPace = spentAfterPlan / elapsedDays;
   final projectedFoodSpend = dailyPace * daysInMonth;
   final projectedRemaining = plan.foodBudget - projectedFoodSpend;
@@ -81,6 +85,7 @@ BudgetForecast calculateBudgetForecast(
           : BudgetForecastStatus.onTrack;
 
   return BudgetForecast(
+    isConfigured: true,
     projectedFoodSpend: projectedFoodSpend,
     projectedRemaining: projectedRemaining,
     weeklyAllowance: weeklyAllowance,

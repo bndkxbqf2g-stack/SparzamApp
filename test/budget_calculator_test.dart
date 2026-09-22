@@ -29,6 +29,7 @@ void main() {
       );
 
       expect(forecast.dailyPace, 6);
+      expect(forecast.isConfigured, isTrue);
       expect(forecast.projectedFoodSpend, 180);
       expect(forecast.projectedRemaining, 120);
       expect(forecast.weeklyAllowance, 84);
@@ -76,11 +77,27 @@ void main() {
       );
 
       expect(forecast.projectedFoodSpend, 0);
+      expect(forecast.isConfigured, isFalse);
       expect(forecast.projectedRemaining, 0);
       expect(forecast.weeklyAllowance, 0);
       expect(forecast.dailyPace, 0);
       expect(forecast.daysRemaining, 0);
       expect(forecast.status, BudgetForecastStatus.onTrack);
+    });
+
+    test('negative Eingaben erzeugen keine negative Prognose', () {
+      const plan = BudgetPlan(foodBudget: 300, foodSpent: -20);
+
+      final forecast = calculateBudgetForecast(
+        plan,
+        -10,
+        now: DateTime(2026, 9, 10),
+      );
+
+      expect(forecast.dailyPace, 0);
+      expect(forecast.projectedFoodSpend, 0);
+      expect(forecast.projectedRemaining, 300);
+      expect(forecast.weeklyAllowance, 105);
     });
   });
 }
