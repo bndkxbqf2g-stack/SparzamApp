@@ -2,7 +2,7 @@ class Store {
   const Store({
     required this.name,
     required this.location,
-    required this.address,
+    this.address = '',
     required this.distanceKm,
     required this.prices,
     this.isBigShop = false,
