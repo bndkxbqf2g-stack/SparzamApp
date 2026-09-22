@@ -30,12 +30,12 @@ class _StoreSelectionScreenState extends State<StoreSelectionScreen> {
     final allNames = stores.map((store) => store.name).toSet();
     final saveAsAll = enabled.length == allNames.length &&
         enabled.containsAll(allNames);
+    final selected = enabled.toList()..sort();
 
     Navigator.pop(
       context,
       widget.initialSettings.copyWith(
-        enabledStoreNames:
-            saveAsAll ? const <String>[] : enabled.toList()..sort(),
+        enabledStoreNames: saveAsAll ? const <String>[] : selected,
       ),
     );
   }
