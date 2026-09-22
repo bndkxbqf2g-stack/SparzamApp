@@ -88,3 +88,4 @@ class _ChoiceSection extends StatelessWidget {
           ),
         ],
       );
+}

@@ -70,3 +70,4 @@ class ShoppingListHeader extends StatelessWidget {
           ],
         ],
       );
+}

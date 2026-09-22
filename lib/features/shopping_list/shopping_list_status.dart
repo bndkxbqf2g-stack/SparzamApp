@@ -55,3 +55,4 @@ class EmptyShoppingListCard extends StatelessWidget {
           ),
         ),
       );
+}
