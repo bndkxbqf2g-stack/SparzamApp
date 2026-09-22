@@ -70,4 +70,44 @@ void main() {
 
     expect(receivedAge, 90);
   });
+
+  test('Abbruch bewahrt bereits abgefragte Preise und meldet Fortschritt',
+      () async {
+    final seen = <String>[];
+    final progress = <String>[];
+    var cancel = false;
+    final service = OpenPricesSyncService(
+      fetcher: (product, _) async {
+        seen.add(product.id);
+        return [
+          MarketPrice(
+            productId: product.id,
+            storeName: 'Lidl',
+            price: 1.99,
+            updatedAt: DateTime(2026, 9, 20),
+            source: MarketPriceSource.openPrices,
+          ),
+        ];
+      },
+    );
+
+    final result = await service.sync(
+      products: const [
+        Product(id: 'one', name: 'Eins', unit: 'Stk', group: 'x', ean: '1'),
+        Product(id: 'two', name: 'Zwei', unit: 'Stk', group: 'x', ean: '2'),
+      ],
+      maxAgeDays: 30,
+      onProgress: (processed, total) {
+        progress.add('$processed/$total');
+        cancel = true;
+      },
+      shouldCancel: () => cancel,
+    );
+
+    expect(seen, ['one']);
+    expect(progress, ['1/2']);
+    expect(result.productsProcessed, 1);
+    expect(result.cancelled, isTrue);
+    expect(result.prices.single.productId, 'one');
+  });
 }

@@ -32,7 +32,10 @@ class ProductCatalogScreen extends StatefulWidget {
     String storeName,
   ) onDeletePrice;
   final PriceDataSettings priceDataSettings;
-  final Future<PriceSyncResult> Function() onSyncOpenPrices;
+  final Future<PriceSyncResult> Function({
+    void Function(int processed, int total)? onProgress,
+    bool Function()? shouldCancel,
+  }) onSyncOpenPrices;
 
   @override
   State<ProductCatalogScreen> createState() => _ProductCatalogScreenState();
@@ -45,6 +48,8 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
   bool syncing = false;
   bool autoSyncTriggered = false;
   String? syncFeedback;
+  String? syncProgress;
+  bool cancelRequested = false;
 
   @override
   void initState() {
@@ -85,17 +90,30 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
 
   Future<void> syncOpenPrices() async {
     if (syncing || !widget.priceDataSettings.openPricesEnabled) return;
+    final eanCount = allProducts
+        .where((product) => (product.ean ?? '').trim().isNotEmpty)
+        .length;
     setState(() {
       syncing = true;
       syncFeedback = null;
+      syncProgress = '0/$eanCount EANs geprüft';
+      cancelRequested = false;
     });
     try {
-      final result = await widget.onSyncOpenPrices();
+      final result = await widget.onSyncOpenPrices(
+        onProgress: (processed, total) {
+          if (mounted) {
+            setState(() => syncProgress = '$processed/$total EANs geprüft');
+          }
+        },
+        shouldCancel: () => cancelRequested || !mounted,
+      );
       if (!mounted) return;
       setState(() {
         marketPrices = result.prices;
-        syncFeedback = '${result.productsWithEan}/${result.productsChecked} '
-            'Produkte mit EAN geprüft · ${result.pricesFound} '
+        syncFeedback = '${result.cancelled ? 'Abgebrochen: ' : ''}'
+            '${result.productsProcessed}/${result.productsWithEan} '
+            'EAN-Produkte geprüft · ${result.pricesFound} '
             '${result.pricesFound == 1 ? 'Preis' : 'Preise'} gefunden.';
       });
     } catch (_) {
@@ -103,7 +121,12 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
       setState(() => syncFeedback =
           'Open Prices konnte nicht aktualisiert werden. Bitte Verbindung prüfen und erneut versuchen.');
     } finally {
-      if (mounted) setState(() => syncing = false);
+      if (mounted) {
+        setState(() {
+          syncing = false;
+          syncProgress = null;
+        });
+      }
     }
   }
 
@@ -249,6 +272,18 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                         if (syncFeedback != null) ...[
                           const SizedBox(height: 8),
                           Text(syncFeedback!),
+                        ],
+                        if (syncing && syncProgress != null) ...[
+                          const SizedBox(height: 8),
+                          Text(syncProgress!),
+                          TextButton(
+                            onPressed: cancelRequested
+                                ? null
+                                : () => setState(() => cancelRequested = true),
+                            child: Text(cancelRequested
+                                ? 'Abbruch läuft …'
+                                : 'Abbrechen'),
+                          ),
                         ],
                       ],
                     ),

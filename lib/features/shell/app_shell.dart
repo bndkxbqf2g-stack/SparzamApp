@@ -402,7 +402,10 @@ class _AppShellState extends State<AppShell> {
     return next;
   }
 
-  Future<PriceSyncResult> syncOpenPrices() async {
+  Future<PriceSyncResult> syncOpenPrices({
+    void Function(int processed, int total)? onProgress,
+    bool Function()? shouldCancel,
+  }) async {
     if (!priceDataSettings.openPricesEnabled) {
       return PriceSyncResult(
         prices: marketPrices,
@@ -410,6 +413,8 @@ class _AppShellState extends State<AppShell> {
         productsChecked: 0,
         productsWithEan: 0,
         pricesFound: 0,
+        productsProcessed: 0,
+        cancelled: false,
       );
     }
 
@@ -418,6 +423,8 @@ class _AppShellState extends State<AppShell> {
       maxAgeDays: priceDataSettings.openPricesMaxAgeDays,
       prices: marketPrices,
       history: priceHistory,
+      onProgress: onProgress,
+      shouldCancel: shouldCancel,
     );
 
     if (mounted) {

@@ -38,6 +38,7 @@ Die GitHub-Actions-Workflowdatei `.github/workflows/flutter_ci.yml` führt zusä
 
 ## Nächste Etappen
 
-1. Open-Prices-Abgleich verständlicher machen: Fehler anzeigen, gefundene Preise und Abdeckung sichtbar machen sowie größere Abgleiche kontrollierbar halten.
-2. Den vollständigen Einkaufsweg vom Scan über die Liste und Route bis zum Abschluss durch Integrationstests und gezielte Randfalltests absichern.
-3. Weitere Preiserfassung und Produktabdeckung anhand dieser Ergebnisse priorisieren. Anmeldung und Cloud-Synchronisierung sind ein eigenständiger späterer Schritt.
+Der Open-Prices-Abgleich zeigt gefundene Preise, Fortschritt und Fehler an. Längere Abgleiche können abgebrochen werden; bereits gefundene Preise bleiben erhalten.
+
+1. Den vollständigen Einkaufsweg vom Scan über die Liste und Route bis zum Abschluss durch Integrationstests und gezielte Randfalltests absichern.
+2. Weitere Preiserfassung und Produktabdeckung anhand dieser Ergebnisse priorisieren. Anmeldung und Cloud-Synchronisierung sind ein eigenständiger späterer Schritt.

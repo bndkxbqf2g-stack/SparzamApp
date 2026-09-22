@@ -55,10 +55,14 @@ class ShellPriceCoordinator {
     required List<MarketPrice> prices,
     required List<PricePoint> history,
     OpenPricesSyncService service = const OpenPricesSyncService(),
+    void Function(int processed, int total)? onProgress,
+    bool Function()? shouldCancel,
   }) async {
     final synced = await service.sync(
       products: products,
       maxAgeDays: maxAgeDays,
+      onProgress: onProgress,
+      shouldCancel: shouldCancel,
     );
     var nextPrices = prices;
     var nextHistory = history;
@@ -75,6 +79,8 @@ class ShellPriceCoordinator {
       productsChecked: synced.productsChecked,
       productsWithEan: synced.productsWithEan,
       pricesFound: synced.pricesFound,
+      productsProcessed: synced.productsProcessed,
+      cancelled: synced.cancelled,
     );
   }
 }

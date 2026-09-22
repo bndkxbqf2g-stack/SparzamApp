@@ -80,5 +80,46 @@ void main() {
     expect(result.productsChecked, 1);
     expect(result.productsWithEan, 1);
     expect(result.pricesFound, 1);
+    expect(result.productsProcessed, 1);
+    expect(result.cancelled, isFalse);
+  });
+
+  test('Abgebrochener Sync persistiert bereits gefundene Preise', () async {
+    final coordinator = ShellPriceCoordinator(
+      marketPriceStore: MarketPriceStore(),
+      priceHistoryStore: PriceHistoryStore(),
+    );
+    var cancel = false;
+    final service = OpenPricesSyncService(
+      fetcher: (product, _) async => [
+        MarketPrice(
+          productId: product.id,
+          storeName: 'Lidl',
+          price: 1.09,
+          updatedAt: DateTime.now(),
+          source: MarketPriceSource.openPrices,
+        ),
+      ],
+    );
+
+    final result = await coordinator.syncOpenPrices(
+      products: const [
+        Product(id: 'one', name: 'Eins', unit: 'Stk', group: 'x', ean: '1'),
+        Product(id: 'two', name: 'Zwei', unit: 'Stk', group: 'x', ean: '2'),
+      ],
+      maxAgeDays: 14,
+      prices: const [],
+      history: const [],
+      service: service,
+      onProgress: (_, _) {
+        cancel = true;
+      },
+      shouldCancel: () => cancel,
+    );
+
+    expect(result.cancelled, isTrue);
+    expect(result.productsProcessed, 1);
+    expect(result.prices.single.productId, 'one');
+    expect(result.history.single.productId, 'one');
   });
 }

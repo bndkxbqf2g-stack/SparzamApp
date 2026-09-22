@@ -8,6 +8,8 @@ class PriceSyncResult {
     required this.productsChecked,
     required this.productsWithEan,
     required this.pricesFound,
+    required this.productsProcessed,
+    required this.cancelled,
   });
 
   final List<MarketPrice> prices;
@@ -15,4 +17,6 @@ class PriceSyncResult {
   final int productsChecked;
   final int productsWithEan;
   final int pricesFound;
+  final int productsProcessed;
+  final bool cancelled;
 }
