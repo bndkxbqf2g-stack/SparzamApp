@@ -10,6 +10,7 @@ import '../../models/product.dart';
 import '../../models/price_point.dart';
 import '../../models/price_data_settings.dart';
 import '../../models/recent_purchase.dart';
+import '../../models/road_route_matrix.dart';
 import '../../models/purchase_record.dart';
 import '../../services/budget_store.dart';
 import '../../services/offer_store.dart';
@@ -21,6 +22,7 @@ import '../../services/open_prices_sync_service.dart';
 import '../../services/recent_purchase_store.dart';
 import '../../services/purchase_store.dart';
 import '../../services/road_distance_store.dart';
+import '../../services/road_route_matrix_store.dart';
 import '../../services/shopping_list_store.dart';
 import '../budget/budget_calculator.dart';
 import '../budget/budget_screen.dart';
@@ -104,6 +106,8 @@ class _AppShellState extends State<AppShell> {
   late PriceDataSettings priceDataSettings;
   Map<String, double> roadDistances = <String, double>{};
   final roadDistanceStore = RoadDistanceStore();
+  final roadRouteMatrixStore = RoadRouteMatrixStore();
+  RoadRouteMatrix? roadMatrix;
   late final Map<String, String> preferredProductByGroup;
 
   Product? _catalogProduct(String id) {
@@ -139,8 +143,12 @@ class _AppShellState extends State<AppShell> {
 
   Future<void> _loadRoadDistances() async {
     final loaded = await roadDistanceStore.load(mobility.startAddress);
+    final matrix = await roadRouteMatrixStore.load(mobility.startAddress);
     if (!mounted) return;
-    setState(() => roadDistances = loaded);
+    setState(() {
+      roadDistances = loaded;
+      roadMatrix = matrix;
+    });
   }
 
   List<Product> get catalogProducts => [
@@ -249,6 +257,7 @@ class _AppShellState extends State<AppShell> {
           minExtraStoreSavings: mobility.minExtraStoreSavings,
           enabledStoreNames: mobility.enabledStoreNames,
           marketPrices: activeMarketPrices,
+          roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
         );
 
   RouteOptimizer? get regularOptimizer => shoppingList.isEmpty
@@ -262,6 +271,7 @@ class _AppShellState extends State<AppShell> {
           minExtraStoreSavings: mobility.minExtraStoreSavings,
           enabledStoreNames: mobility.enabledStoreNames,
           marketPrices: activeMarketPrices,
+          roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
         );
 
   DashboardData dashboardData() {
@@ -274,6 +284,7 @@ class _AppShellState extends State<AppShell> {
             best.stores,
             mobility: mobility,
             roadDistances: roadDistances,
+            roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
           );
     final planned = best?.basket ?? 0;
     final snapshot = calculateBudget(budget, planned);
@@ -467,10 +478,12 @@ class _AppShellState extends State<AppShell> {
 
     await widget.mobilityStore.save(result);
     final loaded = await roadDistanceStore.load(result.startAddress);
+    final matrix = await roadRouteMatrixStore.load(result.startAddress);
     if (!mounted) return;
     setState(() {
       mobility = result;
       roadDistances = loaded;
+      roadMatrix = matrix;
     });
   }
 
@@ -499,6 +512,7 @@ class _AppShellState extends State<AppShell> {
           minExtraStoreSavings: mobility.minExtraStoreSavings,
           enabledStoreNames: mobility.enabledStoreNames,
           marketPrices: activeMarketPrices,
+          roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
           ).bestPlan();
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -556,6 +570,8 @@ class _AppShellState extends State<AppShell> {
         marketPrices: activeMarketPrices,
         onRoadDistancesChanged: (value) =>
             setState(() => roadDistances = value),
+        onRoadMatrixChanged: (value) =>
+            setState(() => roadMatrix = value),
       ),
       ReceiptScreen(
         plan: currentOptimizer?.bestPlan(),

@@ -3,8 +3,10 @@ import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/offer.dart';
 import '../../models/route_plan.dart';
+import '../../models/road_route_matrix.dart';
 import '../../models/store.dart';
 import 'route_price_resolver.dart';
+import 'route_travel_distance.dart';
 
 class RouteOptimizer {
   RouteOptimizer(
@@ -16,6 +18,7 @@ class RouteOptimizer {
     this.minExtraStoreSavings = 0,
     List<String>? enabledStoreNames,
     List<MarketPrice> marketPrices = const <MarketPrice>[],
+    this.roadMatrix,
   })  : roadDistances = roadDistances ?? const <String, double>{},
         enabledStoreNames =
             (enabledStoreNames ?? const <String>[]).toSet(),
@@ -24,6 +27,7 @@ class RouteOptimizer {
   final List<ListItem> items;
   final RoutePriceResolver prices;
   final Map<String, double> roadDistances;
+  final RoadRouteMatrix? roadMatrix;
 
   final double euroPerKm;
   final int maxStores;
@@ -43,15 +47,15 @@ class RouteOptimizer {
     );
   }
 
-  double travelCost(Iterable<Store> selectedStores) {
-    return selectedStores.fold<double>(
-      0,
-      (sum, store) => sum +
-          ((roadDistances[store.name] ?? store.distanceKm) *
-              2 *
-              euroPerKm),
-    );
-  }
+  OptimizedTravelRoute travelRoute(Iterable<Store> selectedStores) =>
+      optimizeTravelRoute(
+        selectedStores,
+        roadMatrix: roadMatrix,
+        fallbackDistances: roadDistances,
+      );
+
+  double travelCost(Iterable<Store> selectedStores) =>
+      travelRoute(selectedStores).distanceKm * euroPerKm;
 
   RoutePlan buildPlan(List<Store> selectedStores) {
     final assignments = <Store, List<ListItem>>{};
@@ -80,10 +84,11 @@ class RouteOptimizer {
       0,
       (sum, entry) => sum + basketCost(entry.key, entry.value),
     );
-    final travel = travelCost(assignments.keys);
+    final optimizedTravel = travelRoute(assignments.keys);
+    final travel = optimizedTravel.distanceKm * euroPerKm;
 
     return RoutePlan(
-      stores: assignments.keys.toList(),
+      stores: optimizedTravel.stores,
       assignments: assignments,
       basket: basket,
       travel: travel,

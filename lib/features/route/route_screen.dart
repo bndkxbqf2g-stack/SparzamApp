@@ -5,8 +5,10 @@ import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/mobility_settings.dart';
 import '../../models/offer.dart';
+import '../../models/road_route_matrix.dart';
 import '../../services/road_distance_service.dart';
 import '../../services/road_distance_store.dart';
+import '../../services/road_route_matrix_store.dart';
 import 'route_alternative_card.dart';
 import 'route_recommendation.dart';
 import 'route_recommendation_card.dart';
@@ -23,6 +25,7 @@ class RouteScreen extends StatefulWidget {
     required this.mobility,
     required this.marketPrices,
     this.onRoadDistancesChanged,
+    this.onRoadMatrixChanged,
   });
 
   final List<ListItem> items;
@@ -30,6 +33,7 @@ class RouteScreen extends StatefulWidget {
   final MobilitySettings mobility;
   final List<MarketPrice> marketPrices;
   final ValueChanged<Map<String, double>>? onRoadDistancesChanged;
+  final ValueChanged<RoadRouteMatrix?>? onRoadMatrixChanged;
 
   @override
   State<RouteScreen> createState() => _RouteScreenState();
@@ -37,8 +41,10 @@ class RouteScreen extends StatefulWidget {
 
 class _RouteScreenState extends State<RouteScreen> {
   final cache = RoadDistanceStore();
+  final matrixCache = RoadRouteMatrixStore();
   late RoadDistanceService service;
   Map<String, double> roadDistances = <String, double>{};
+  RoadRouteMatrix? roadMatrix;
   bool loadingRoadDistances = false;
 
   @override
@@ -57,36 +63,56 @@ class _RouteScreenState extends State<RouteScreen> {
         originAddress: widget.mobility.startAddress,
       );
       roadDistances = <String, double>{};
+      roadMatrix = null;
       _loadRoadDistances();
     }
   }
 
   Future<void> _loadRoadDistances() async {
     final loaded = await cache.load(widget.mobility.startAddress);
+    final matrix = await matrixCache.load(widget.mobility.startAddress);
     if (!mounted) return;
-    setState(() => roadDistances = loaded);
+    setState(() {
+      roadDistances = loaded;
+      roadMatrix = matrix;
+    });
   }
 
   Future<void> _refreshRoadDistances() async {
     if (loadingRoadDistances) return;
     setState(() => loadingRoadDistances = true);
 
+    final destinations = {
+      for (final store in stores)
+        if (widget.mobility.isStoreEnabled(store.name) &&
+            store.address.isNotEmpty)
+          store.name: store.address,
+    };
+    final matrix = await service.fetchMatrix(destinations);
     final next = {...roadDistances};
-    for (final store in stores) {
-      if (!widget.mobility.isStoreEnabled(store.name)) continue;
-      if (store.address.isEmpty) continue;
-      final distance = await service.fetchKm(store.address);
-      if (distance != null && distance > 0) next[store.name] = distance;
-      await Future<void>.delayed(const Duration(milliseconds: 1100));
+
+    if (matrix != null) {
+      for (final store in stores) {
+        final distance = matrix.distance(
+          RoadRouteMatrix.origin,
+          store.name,
+        );
+        if (distance != null && distance > 0) {
+          next[store.name] = distance;
+        }
+      }
+      await matrixCache.save(matrix);
     }
 
     await cache.save(widget.mobility.startAddress, next);
     if (!mounted) return;
     setState(() {
       roadDistances = next;
+      roadMatrix = matrix ?? roadMatrix;
       loadingRoadDistances = false;
     });
     widget.onRoadDistancesChanged?.call(next);
+    widget.onRoadMatrixChanged?.call(matrix ?? roadMatrix);
   }
 
   @override
@@ -108,6 +134,8 @@ class _RouteScreenState extends State<RouteScreen> {
       minExtraStoreSavings: widget.mobility.minExtraStoreSavings,
       enabledStoreNames: widget.mobility.enabledStoreNames,
       marketPrices: widget.marketPrices,
+      roadMatrix:
+          widget.mobility.mode == MobilityMode.car ? roadMatrix : null,
     );
     final best = optimizer.bestPlan();
     if (best == null) return const _MissingPrices();
@@ -120,6 +148,8 @@ class _RouteScreenState extends State<RouteScreen> {
       best.stores,
       mobility: widget.mobility,
       roadDistances: roadDistances,
+      roadMatrix:
+          widget.mobility.mode == MobilityMode.car ? roadMatrix : null,
     );
     final recommendation = buildRouteRecommendationInfo(
       recommended: best,
@@ -127,6 +157,7 @@ class _RouteScreenState extends State<RouteScreen> {
       singleStore: single,
       mobility: widget.mobility,
     );
+    final optimizedTravel = optimizer.travelRoute(best.stores);
     final realCount = roadDistances.entries
         .where((entry) => widget.mobility.isStoreEnabled(entry.key))
         .length;
@@ -182,6 +213,28 @@ class _RouteScreenState extends State<RouteScreen> {
           travelLabel: travel.durationLabel,
           mobilityLabel: widget.mobility.mode.label,
         ),
+        if (best.stores.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.alt_route),
+              title: Text(
+                [
+                  'Start',
+                  ...best.stores.map((store) => store.name),
+                  'Start',
+                ].join(' → '),
+              ),
+              subtitle: Text(
+                optimizedTravel.usesRoadMatrix
+                    ? '${optimizedTravel.distanceKm.toStringAsFixed(1)} km · '
+                        'optimierte Straßenroute'
+                    : '${optimizedTravel.distanceKm.toStringAsFixed(1)} km · '
+                        'Fallback-Distanzen',
+              ),
+            ),
+          ),
+        ],
         const SizedBox(height: 18),
         _Title('Dein Einkaufsplan'),
         const SizedBox(height: 10),
@@ -205,13 +258,12 @@ class _RouteScreenState extends State<RouteScreen> {
             padding: const EdgeInsets.all(16),
             child: Text(
               widget.mobility.mode == MobilityMode.car
-                  ? (realCount > 0
-                      ? 'Fahrtkosten: Straßenentfernung × 2 × '
-                          '${widget.mobility.effectiveEuroPerKm.toStringAsFixed(2)} €/km. '
-                          'Nicht geladene Strecken verwenden den hinterlegten Fallback.'
+                  ? (optimizedTravel.usesRoadMatrix
+                      ? 'Fahrtkosten: optimierte Mehrmarkt-Straßenroute × '
+                          '${widget.mobility.effectiveEuroPerKm.toStringAsFixed(2)} €/km.'
                       : 'Fahrtkosten: aktuell '
                           '${widget.mobility.effectiveEuroPerKm.toStringAsFixed(2)} €/km '
-                          'auf Basis der hinterlegten Entfernungen.')
+                          'auf Basis der hinterlegten Fallback-Distanzen.')
                   : '${widget.mobility.mode.label}: keine monetären Fahrtkosten. '
                       'Die Strecke wird weiterhin für die geschätzte Wegezeit verwendet.',
             ),

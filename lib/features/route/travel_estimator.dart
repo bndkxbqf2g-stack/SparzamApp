@@ -1,5 +1,7 @@
 import '../../models/mobility_settings.dart';
+import '../../models/road_route_matrix.dart';
 import '../../models/store.dart';
+import 'route_travel_distance.dart';
 
 class TravelEstimate {
   const TravelEstimate({
@@ -22,17 +24,18 @@ TravelEstimate estimateRoundTrips(
   Iterable<Store> stores, {
   required MobilitySettings mobility,
   Map<String, double> roadDistances = const <String, double>{},
+  RoadRouteMatrix? roadMatrix,
 }) {
-  final distance = stores.fold<double>(
-    0,
-    (sum, store) =>
-        sum + (roadDistances[store.name] ?? store.distanceKm) * 2,
+  final route = optimizeTravelRoute(
+    stores,
+    roadMatrix: roadMatrix,
+    fallbackDistances: roadDistances,
   );
   final minutes =
-      ((distance / mobility.mode.averageSpeedKmh) * 60).round();
+      ((route.distanceKm / mobility.mode.averageSpeedKmh) * 60).round();
 
   return TravelEstimate(
-    distanceKm: distance,
+    distanceKm: route.distanceKm,
     minutes: minutes,
   );
 }
