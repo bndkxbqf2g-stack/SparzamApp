@@ -15,6 +15,7 @@ import 'shopping_grouping.dart';
 import 'replenishment_card.dart';
 import 'shopping_offer_hint.dart';
 import 'shopping_suggestions.dart';
+import 'custom_shopping_product.dart';
 import 'shopping_list_header.dart';
 import 'shopping_input.dart';
 import 'shopping_recent_choices.dart';
@@ -148,19 +149,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       return;
     }
 
-    final slug = name
-        .toLowerCase()
-        .replaceAll(RegExp(r'[^a-z0-9]+'), '_')
-        .replaceAll(RegExp(r'^_+|_+$'), '');
-
-    final product = Product(
-      id: 'custom_${slug.isEmpty ? 'artikel' : slug}',
-      name: name,
-      unit: 'Artikel',
-      group: 'custom',
-    );
-
-    widget.onAdd(product);
+    widget.onAdd(customShoppingProduct(name));
     controller.clear();
     setState(() {});
     _focusShoppingInput();
