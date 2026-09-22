@@ -27,23 +27,19 @@ import '../../services/shopping_list_store.dart';
 import '../budget/budget_screen.dart';
 import '../catalog/product_catalog_screen.dart';
 import '../home/dashboard_data.dart';
-import '../home/home_screen.dart';
 import '../offers/offers_screen.dart';
 import '../profile/mobility_settings_screen.dart';
-import '../profile/profile_screen.dart';
 import '../profile/price_data_settings_screen.dart';
 import '../profile/store_selection_screen.dart';
-import '../receipt/receipt_screen.dart';
 import '../route/route_optimizer.dart';
-import '../route/route_screen.dart';
 import '../scanner/scanner_screen.dart';
 import '../shopping_list/replenishment_analyzer.dart';
-import '../shopping_list/shopping_list_screen.dart';
 import 'shell_catalog.dart';
 import 'shell_catalog_coordinator.dart';
 import 'shell_routing.dart';
 import 'shell_dashboard.dart';
 import 'shell_navigation.dart';
+import 'shell_pages.dart';
 import 'shell_purchase_coordinator.dart';
 import 'shell_price_coordinator.dart';
 
@@ -527,12 +523,11 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
-    final pages = [
-      HomeScreen(
-        data: dashboardData(),
-        onOpenList: () => setState(() => selectedIndex = 1),
-        onOpenRoute: () => setState(() => selectedIndex = 2),
-        onOpenOffers: () => Navigator.of(context).push(
+    final pages = buildShellPages(
+      dashboard: dashboardData(),
+      onOpenList: () => setState(() => selectedIndex = 1),
+      onOpenRoute: () => setState(() => selectedIndex = 2),
+      onOpenOffers: () => Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => OffersScreen(
               offers: offers,
@@ -543,59 +538,41 @@ class _AppShellState extends State<AppShell> {
             ),
           ),
         ),
-        onOpenBudget: openBudget,
-        onOpenScanner: openScanner,
-      ),
-      ShoppingListScreen(
-        items: shoppingList,
-        onAdd: addProduct,
-        onChangeQuantity: changeQuantity,
-        preferredProductByGroup: preferredProductByGroup,
-        recentPurchases: recentPurchases,
-        onPurchased: markPurchased,
-        onClearPurchased: clearPurchasedItems,
-        shoppingListStore: widget.shoppingListStore,
-        onOpenScanner: openScanner,
-        offers: offers,
-        priceHistory: priceHistory,
-        mobility: mobility,
-        catalogProducts: catalogProducts,
-        marketPrices: activeMarketPrices,
-        replenishmentSuggestions: replenishmentSuggestions,
-      ),
-      RouteScreen(
-        items: shoppingList,
-        offers: offers,
-        mobility: mobility,
-        marketPrices: activeMarketPrices,
-        onRoadDistancesChanged: (value) =>
-            setState(() => roadDistances = value),
-        onRoadMatrixChanged: (value) =>
-            setState(() => roadMatrix = value),
-      ),
-      ReceiptScreen(
-        plan: currentOptimizer?.bestPlan(),
-        baselineTotal: regularOptimizer?.bestSingleStorePlan()?.total ?? 0,
-        history: purchaseHistory,
-        onComplete: completePurchase,
-        onUpdatePurchase: updatePurchase,
-        onDeletePurchase: deletePurchase,
-      ),
-      ProfileScreen(
-        mobility: mobility,
-        onEditMobility: openMobilitySettings,
-        onEditStores: openStoreSettings,
-        storeCount: mobility.enabledStoreNames.isEmpty
-            ? 7
-            : mobility.enabledStoreNames.length,
-        onOpenCatalog: openCatalog,
-        productCount: catalogProducts.length,
-        onEditPriceData: openPriceDataSettings,
-        priceDataSummary: priceDataSettings.openPricesEnabled
-            ? 'Open Prices · max. ${priceDataSettings.openPricesMaxAgeDays} Tage'
-            : 'Nur eigene Preise',
-      ),
-    ];
+      onOpenBudget: openBudget,
+      onOpenScanner: openScanner,
+      shoppingList: shoppingList,
+      onAddProduct: addProduct,
+      onChangeQuantity: changeQuantity,
+      preferredProductByGroup: preferredProductByGroup,
+      recentPurchases: recentPurchases,
+      onPurchased: markPurchased,
+      onClearPurchased: clearPurchasedItems,
+      shoppingListStore: widget.shoppingListStore,
+      offers: offers,
+      priceHistory: priceHistory,
+      mobility: mobility,
+      catalogProducts: catalogProducts,
+      marketPrices: activeMarketPrices,
+      replenishmentSuggestions: replenishmentSuggestions,
+      onRoadDistancesChanged: (value) => setState(() => roadDistances = value),
+      onRoadMatrixChanged: (value) => setState(() => roadMatrix = value),
+      currentPlan: currentOptimizer?.bestPlan(),
+      baselineTotal: regularOptimizer?.bestSingleStorePlan()?.total ?? 0,
+      purchaseHistory: purchaseHistory,
+      onCompletePurchase: completePurchase,
+      onUpdatePurchase: updatePurchase,
+      onDeletePurchase: deletePurchase,
+      onEditMobility: openMobilitySettings,
+      onEditStores: openStoreSettings,
+      storeCount: mobility.enabledStoreNames.isEmpty
+          ? 7
+          : mobility.enabledStoreNames.length,
+      onOpenCatalog: openCatalog,
+      onEditPriceData: openPriceDataSettings,
+      priceDataSummary: priceDataSettings.openPricesEnabled
+          ? 'Open Prices · max. ${priceDataSettings.openPricesMaxAgeDays} Tage'
+          : 'Nur eigene Preise',
+    );
 
     return Scaffold(
       body: SafeArea(child: pages[selectedIndex]),

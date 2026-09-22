@@ -8,6 +8,9 @@ import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/models/price_point.dart';
 import 'package:sparzamapp/models/product.dart';
+import 'package:sparzamapp/services/market_price_store.dart';
+import 'package:sparzamapp/services/offer_store.dart';
+import 'package:sparzamapp/services/price_history_store.dart';
 import 'package:sparzamapp/services/product_catalog_store.dart';
 import 'package:sparzamapp/services/shopping_list_store.dart';
 
