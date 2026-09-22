@@ -28,22 +28,27 @@ class MarketPriceStore {
   Future<List<MarketPrice>> upsert(
     MarketPrice price,
     List<MarketPrice> current,
+  ) => upsertMany([price], current);
+
+  Future<List<MarketPrice>> upsertMany(
+    Iterable<MarketPrice> prices,
+    List<MarketPrice> current,
   ) async {
-    final existing = current.where((item) => item.key == price.key);
-    if (existing.isNotEmpty) {
-      final currentPrice = existing.first;
-      if (price.source == MarketPriceSource.openPrices) {
-        if (currentPrice.isManual ||
-            !price.updatedAt.isAfter(currentPrice.updatedAt)) {
-          return current;
+    var next = current;
+    for (final price in prices) {
+      final existing = next.where((item) => item.key == price.key);
+      if (existing.isNotEmpty) {
+        final currentPrice = existing.first;
+        if (price.source == MarketPriceSource.openPrices) {
+          if (currentPrice.isManual ||
+              !price.updatedAt.isAfter(currentPrice.updatedAt)) {
+            continue;
+          }
         }
       }
+      next = [price, ...next.where((item) => item.key != price.key)];
     }
-
-    final next = [
-      price,
-      ...current.where((item) => item.key != price.key),
-    ];
+    if (identical(next, current)) return current;
     await _save(next);
     return next;
   }

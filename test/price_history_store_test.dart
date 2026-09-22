@@ -125,4 +125,40 @@ void main() {
 
     expect(history, isEmpty);
   });
+
+  test('Sammelimport ersetzt Tageswert und erhält eigene Beobachtung',
+      () async {
+    final store = PriceHistoryStore();
+    final original = PricePoint(
+      productId: 'a',
+      storeName: 'Lidl',
+      price: 2,
+      date: DateTime(2026, 9, 20, 8),
+      source: PricePointSource.openPrices,
+    );
+    final updated = PricePoint(
+      productId: 'a',
+      storeName: 'Lidl',
+      price: 1.8,
+      date: DateTime(2026, 9, 20, 18),
+      source: PricePointSource.openPrices,
+    );
+    final manual = PricePoint(
+      productId: 'a',
+      storeName: 'Lidl',
+      price: 2.2,
+      date: DateTime(2026, 9, 20),
+      source: PricePointSource.manual,
+    );
+    final history = await store.upsertObservations(
+      [original, updated],
+      [manual],
+      now: DateTime(2026, 9, 22),
+    );
+
+    expect(history, hasLength(2));
+    expect(history.firstWhere((point) => point.source ==
+        PricePointSource.openPrices).price, 1.8);
+    expect((await store.load()).length, 2);
+  });
 }

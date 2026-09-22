@@ -64,15 +64,11 @@ class ShellPriceCoordinator {
       onProgress: onProgress,
       shouldCancel: shouldCancel,
     );
-    var nextPrices = prices;
-    var nextHistory = history;
-    for (final price in synced.prices) {
-      nextPrices = await marketPriceStore.upsert(price, nextPrices);
-      nextHistory = await priceHistoryStore.upsertObservation(
-        priceHistoryPoint(price),
-        nextHistory,
-      );
-    }
+    final nextPrices = await marketPriceStore.upsertMany(synced.prices, prices);
+    final nextHistory = await priceHistoryStore.upsertObservations(
+      synced.prices.map(priceHistoryPoint),
+      history,
+    );
     return PriceSyncResult(
       prices: nextPrices,
       history: nextHistory,

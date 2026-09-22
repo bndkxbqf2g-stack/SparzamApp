@@ -36,20 +36,25 @@ class PriceHistoryStore {
     PricePoint point,
     List<PricePoint> current, {
     DateTime? now,
+  }) => upsertObservations([point], current, now: now);
+
+  Future<List<PricePoint>> upsertObservations(
+    Iterable<PricePoint> points,
+    List<PricePoint> current, {
+    DateTime? now,
   }) async {
-    if (point.price <= 0) return [...current];
+    final valid = points.where((point) => point.price > 0).toList();
+    if (valid.isEmpty) return [...current];
 
     final reference = now ?? DateTime.now();
     final today = DateTime(reference.year, reference.month, reference.day);
     final cutoff = today.subtract(const Duration(days: retentionDays));
-    final next = [
-      ...current.where(
-        (item) =>
-            item.observationKey != point.observationKey &&
-            !item.date.isBefore(cutoff),
-      ),
-      point,
-    ]..sort((a, b) => a.date.compareTo(b.date));
+    final next = current.where((item) => !item.date.isBefore(cutoff)).toList();
+    for (final point in valid) {
+      next.removeWhere((item) => item.observationKey == point.observationKey);
+      next.add(point);
+    }
+    next.sort((a, b) => a.date.compareTo(b.date));
 
     await save(next);
     return next;

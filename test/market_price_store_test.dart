@@ -109,4 +109,43 @@ void main() {
     final next = await store.removeProduct('a', current);
     expect(next.map((item) => item.productId), ['b']);
   });
+
+  test('Sammelimport bewahrt eigene Preise und übernimmt neuere Fremdpreise',
+      () async {
+    final store = MarketPriceStore();
+    final manual = MarketPrice(
+      productId: 'milk',
+      storeName: 'Lidl',
+      price: 2.5,
+      updatedAt: DateTime(2026, 9, 20),
+    );
+    final old = MarketPrice(
+      productId: 'eggs',
+      storeName: 'Lidl',
+      price: 3,
+      updatedAt: DateTime(2026, 9, 10),
+      source: MarketPriceSource.openPrices,
+    );
+    final updated = MarketPrice(
+      productId: 'eggs',
+      storeName: 'Lidl',
+      price: 2.6,
+      updatedAt: DateTime(2026, 9, 22),
+      source: MarketPriceSource.openPrices,
+    );
+    final ignored = MarketPrice(
+      productId: 'milk',
+      storeName: 'Lidl',
+      price: 1,
+      updatedAt: DateTime(2026, 9, 22),
+      source: MarketPriceSource.openPrices,
+    );
+
+    final prices = await store.upsertMany([ignored, updated], [manual, old]);
+
+    expect(prices.firstWhere((price) => price.productId == 'milk').price, 2.5);
+    expect(prices.firstWhere((price) => price.productId == 'eggs').price, 2.6);
+    expect((await store.load()).map((price) => price.price),
+        prices.map((price) => price.price));
+  });
 }
