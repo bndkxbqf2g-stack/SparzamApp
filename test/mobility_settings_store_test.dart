@@ -19,6 +19,10 @@ void main() {
     const settings = MobilitySettings(
       startAddress: 'Teststraße 1, 97070 Würzburg, Germany',
       euroPerKm: 0.35,
+      mode: MobilityMode.bike,
+      maxStores: 2,
+      minExtraStoreSavings: 1.25,
+      enabledStoreNames: ['Lidl', 'ALDI Süd'],
     );
 
     await store.save(settings);
@@ -26,6 +30,11 @@ void main() {
 
     expect(loaded.startAddress, settings.startAddress);
     expect(loaded.euroPerKm, settings.euroPerKm);
+    expect(loaded.mode, MobilityMode.bike);
+    expect(loaded.maxStores, 2);
+    expect(loaded.minExtraStoreSavings, 1.25);
+    expect(loaded.enabledStoreNames, ['Lidl', 'ALDI Süd']);
+    expect(loaded.effectiveEuroPerKm, 0);
   });
 
   test('Standardwerte bleiben ohne gespeicherte Einstellungen erhalten', () async {
