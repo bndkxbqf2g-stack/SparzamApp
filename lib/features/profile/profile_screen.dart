@@ -9,12 +9,16 @@ class ProfileScreen extends StatelessWidget {
     required this.onEditMobility,
     required this.onEditStores,
     required this.storeCount,
+    required this.onOpenCatalog,
+    required this.productCount,
   });
 
   final MobilitySettings mobility;
   final VoidCallback onEditMobility;
   final VoidCallback onEditStores;
   final int storeCount;
+  final VoidCallback onOpenCatalog;
+  final int productCount;
 
   @override
   Widget build(BuildContext context) => ListView(
@@ -51,6 +55,14 @@ class ProfileScreen extends StatelessWidget {
                     '${mobility.effectiveEuroPerKm.toStringAsFixed(2)} €/km · '
                     'max. ${mobility.maxStores} Märkte',
                   ),
+                  trailing: const Icon(Icons.chevron_right),
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  onTap: onOpenCatalog,
+                  leading: const Icon(Icons.inventory_2_outlined),
+                  title: const Text('Produktkatalog'),
+                  subtitle: Text('$productCount Produkte · eigene Preise verwalten'),
                   trailing: const Icon(Icons.chevron_right),
                 ),
                 const Divider(height: 1),
