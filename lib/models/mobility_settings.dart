@@ -79,7 +79,8 @@ class MobilitySettings {
               : '97225 Zellingen, Germany',
       euroPerKm: (json['euroPerKm'] as num?)?.toDouble() ?? 0.22,
       mode: mode.isEmpty ? MobilityMode.car : mode.first,
-      maxStores: ((json['maxStores'] as num?)?.toInt() ?? 3).clamp(1, 3),
+      maxStores:
+          ((json['maxStores'] as num?)?.toInt() ?? 3).clamp(1, 3).toInt(),
       minExtraStoreSavings:
           (json['minExtraStoreSavings'] as num?)?.toDouble() ?? 0.50,
       enabledStoreNames: stores,
