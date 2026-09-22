@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/stores.dart';
 import '../../models/list_item.dart';
+import '../../models/mobility_settings.dart';
 import '../../models/offer.dart';
 import '../../services/road_distance_service.dart';
 import '../../services/road_distance_store.dart';
@@ -15,10 +16,14 @@ class RouteScreen extends StatefulWidget {
     super.key,
     required this.items,
     required this.offers,
+    required this.mobility,
+    this.onRoadDistancesChanged,
   });
 
   final List<ListItem> items;
   final List<Offer> offers;
+  final MobilitySettings mobility;
+  final ValueChanged<Map<String, double>>? onRoadDistancesChanged;
 
   @override
   State<RouteScreen> createState() => _RouteScreenState();
@@ -26,18 +31,19 @@ class RouteScreen extends StatefulWidget {
 
 class _RouteScreenState extends State<RouteScreen> {
   final cache = RoadDistanceStore();
-  final service = RoadDistanceService();
+  late RoadDistanceService service;
   Map<String, double> roadDistances = <String, double>{};
   bool loadingRoadDistances = false;
 
   @override
   void initState() {
     super.initState();
+    service = RoadDistanceService(originAddress: widget.mobility.startAddress);
     _loadRoadDistances();
   }
 
   Future<void> _loadRoadDistances() async {
-    final loaded = await cache.load();
+    final loaded = await cache.load(widget.mobility.startAddress);
     if (!mounted) return;
     setState(() => roadDistances = loaded);
   }
@@ -54,12 +60,13 @@ class _RouteScreenState extends State<RouteScreen> {
       await Future<void>.delayed(const Duration(milliseconds: 1100));
     }
 
-    await cache.save(next);
+    await cache.save(widget.mobility.startAddress, next);
     if (!mounted) return;
     setState(() {
       roadDistances = next;
       loadingRoadDistances = false;
     });
+    widget.onRoadDistancesChanged?.call(next);
   }
 
   @override
@@ -76,6 +83,7 @@ class _RouteScreenState extends State<RouteScreen> {
       widget.items,
       widget.offers,
       roadDistances: roadDistances,
+      euroPerKm: widget.mobility.euroPerKm,
     );
     final best = optimizer.bestPlan();
     if (best == null) return const _MissingPrices();
@@ -112,7 +120,7 @@ class _RouteScreenState extends State<RouteScreen> {
             ),
             subtitle: Text(
               realCount > 0
-                  ? '$realCount Märkte mit realer Fahrstrecke · Start: Zellingen'
+                  ? '$realCount Märkte mit realer Fahrstrecke · Start: ${widget.mobility.startAddress}'
                   : 'Tippe auf Aktualisieren, um reale Fahrstrecken zu laden.',
             ),
             trailing: loadingRoadDistances
@@ -153,10 +161,10 @@ class _RouteScreenState extends State<RouteScreen> {
             padding: const EdgeInsets.all(16),
             child: Text(
               realCount > 0
-                  ? 'Fahrtkosten: reale Straßenentfernung × 2 × 0,22 €/km. '
+                  ? 'Fahrtkosten: reale Straßenentfernung × 2 × ${widget.mobility.euroPerKm.toStringAsFixed(2)} €/km. '
                       'Falls eine Strecke nicht geladen werden kann, bleibt der '
                       'hinterlegte MVP-Wert als Fallback aktiv.'
-                  : 'Fahrtkosten: derzeit 0,22 €/km für Hin- und Rückfahrt auf '
+                  : 'Fahrtkosten: derzeit ${widget.mobility.euroPerKm.toStringAsFixed(2)} €/km für Hin- und Rückfahrt auf '
                       'Basis der hinterlegten Entfernungen. Reale Straßenrouten '
                       'können oben geladen werden.',
             ),
