@@ -27,6 +27,7 @@ import '../receipt/receipt_screen.dart';
 import '../receipt/purchase_summary.dart';
 import '../route/route_optimizer.dart';
 import '../route/route_screen.dart';
+import '../route/travel_estimator.dart';
 import '../scanner/scanner_screen.dart';
 import '../shopping_list/shopping_list_screen.dart';
 
@@ -182,6 +183,13 @@ class _AppShellState extends State<AppShell> {
     final best = currentOptimizer?.bestPlan();
     final baseline = regularOptimizer?.bestSingleStorePlan();
     final savings = best == null || baseline == null ? 0.0 : baseline.total - best.total;
+    final travel = best == null
+        ? const TravelEstimate(distanceKm: 0, minutes: 0)
+        : estimateRoundTrips(
+            best.stores,
+            mobility: mobility,
+            roadDistances: roadDistances,
+          );
     final planned = best?.basket ?? 0;
     final snapshot = calculateBudget(budget, planned);
     final monthly = summarizeMonth(purchaseHistory);
@@ -194,6 +202,8 @@ class _AppShellState extends State<AppShell> {
       activeOffers: activeOffers,
       routeNames: best == null ? 'Noch keine Route' : best.stores.map((store) => store.name).join(' + '),
       routeTotal: best?.total ?? 0,
+      routeTravelMinutes: travel.minutes,
+      mobilityLabel: mobility.mode.label,
       todaySavings: savings > 0 ? savings : 0,
       monthlySavings: monthly.savings,
       monthlyPurchases: monthly.purchases,
