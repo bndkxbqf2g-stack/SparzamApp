@@ -40,6 +40,7 @@ import '../scanner/scanner_screen.dart';
 import '../shopping_list/replenishment_analyzer.dart';
 import '../shopping_list/shopping_list_screen.dart';
 import 'shell_catalog.dart';
+import 'shell_catalog_coordinator.dart';
 import 'shell_routing.dart';
 import 'shell_dashboard.dart';
 import 'shell_navigation.dart';
@@ -269,6 +270,11 @@ class _AppShellState extends State<AppShell> {
         priceHistoryStore: widget.priceHistoryStore,
       );
 
+  ShellCatalogCoordinator get catalogCoordinator => ShellCatalogCoordinator(
+        productCatalogStore: widget.productCatalogStore,
+        shoppingListStore: widget.shoppingListStore,
+      );
+
   DashboardData dashboardData() => buildShellDashboard(
         shoppingList: shoppingList,
         offers: offers,
@@ -330,25 +336,18 @@ class _AppShellState extends State<AppShell> {
   }
 
   Future<List<Product>> saveCatalogProduct(Product product) async {
-    final next = await widget.productCatalogStore.upsert(
-      product,
-      customProducts,
+    final result = await catalogCoordinator.save(
+      product: product,
+      products: customProducts,
+      shoppingList: shoppingList,
     );
-
-    final listIndex =
-        shoppingList.indexWhere((item) => item.product.id == product.id);
-    if (listIndex >= 0) {
-      final quantity = shoppingList[listIndex].quantity;
-      shoppingList[listIndex] = ListItem(
-        product: product,
-        quantity: quantity,
-      );
-      await persistShoppingList();
+    if (mounted) {
+      setState(() {
+        customProducts = result.products;
+        shoppingList = result.shoppingList;
+      });
     }
-
-    await widget.shoppingListStore.saveKnownItem(product);
-    if (mounted) setState(() => customProducts = next);
-    return next;
+    return result.products;
   }
 
   Future<List<Product>> deleteCatalogProduct(Product product) async {
