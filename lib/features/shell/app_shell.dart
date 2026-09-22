@@ -39,6 +39,7 @@ import '../profile/price_data_settings_screen.dart';
 import '../profile/store_selection_screen.dart';
 import '../receipt/receipt_screen.dart';
 import '../receipt/purchase_summary.dart';
+import '../receipt/purchase_budget_adjustment.dart';
 import '../route/route_optimizer.dart';
 import '../route/route_screen.dart';
 import '../route/travel_estimator.dart';
@@ -364,15 +365,35 @@ class _AppShellState extends State<AppShell> {
   }
 
   Future<void> updatePurchase(PurchaseRecord record) async {
+    final previousIndex =
+        purchaseHistory.indexWhere((item) => item.id == record.id);
+    final previous =
+        previousIndex < 0 ? null : purchaseHistory[previousIndex];
     final next = await widget.purchaseStore.add(record, purchaseHistory);
+    var nextBudget = budget;
+    if (previous != null) {
+      nextBudget = budget.copyWith(
+        foodSpent: adjustedFoodSpent(
+          currentFoodSpent: budget.foodSpent,
+          previous: previous,
+          replacement: record,
+        ),
+      );
+      await widget.budgetStore.save(nextBudget);
+    }
     if (!mounted) return;
-    setState(() => purchaseHistory = next);
+    setState(() {
+      purchaseHistory = next;
+      budget = nextBudget;
+    });
   }
 
   Future<void> deletePurchase(PurchaseRecord record) async {
     final next = await widget.purchaseStore.remove(record.id, purchaseHistory);
-    final nextFoodSpent =
-        (budget.foodSpent - record.basket).clamp(0.0, double.infinity).toDouble();
+    final nextFoodSpent = adjustedFoodSpent(
+      currentFoodSpent: budget.foodSpent,
+      previous: record,
+    );
     final nextBudget = budget.copyWith(foodSpent: nextFoodSpent);
     await widget.budgetStore.save(nextBudget);
 
