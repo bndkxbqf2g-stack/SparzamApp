@@ -303,6 +303,7 @@ class _AppShellState extends State<AppShell> {
           );
     final planned = best?.basket ?? 0;
     final snapshot = calculateBudget(budget, planned);
+    final forecast = calculateBudgetForecast(budget, planned);
     final monthly = summarizeMonth(purchaseHistory);
     final today = DateTime.now();
     final day = DateTime(today.year, today.month, today.day);
@@ -329,6 +330,13 @@ class _AppShellState extends State<AppShell> {
               .take(3)
               .map((item) => item.product.name)
               .join(' · '),
+      budgetProjectedSpend: forecast.projectedFoodSpend,
+      budgetWeeklyAllowance: forecast.weeklyAllowance,
+      budgetForecastLabel: switch (forecast.status) {
+        BudgetForecastStatus.onTrack => 'im Plan',
+        BudgetForecastStatus.warning => 'knapp',
+        BudgetForecastStatus.overBudget => 'voraussichtlich drüber',
+      },
     );
   }
 
