@@ -13,6 +13,9 @@ class DashboardData {
     required this.budgetConfigured,
     required this.replenishmentCount,
     required this.replenishmentPreview,
+    required this.budgetProjectedSpend,
+    required this.budgetWeeklyAllowance,
+    required this.budgetForecastLabel,
   });
 
   final int itemCount;
@@ -28,4 +31,7 @@ class DashboardData {
   final bool budgetConfigured;
   final int replenishmentCount;
   final String replenishmentPreview;
+  final double budgetProjectedSpend;
+  final double budgetWeeklyAllowance;
+  final String budgetForecastLabel;
 }
