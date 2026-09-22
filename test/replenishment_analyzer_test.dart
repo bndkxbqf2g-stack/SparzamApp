@@ -105,6 +105,24 @@ void main() {
     expect(suggestions, isEmpty);
   });
 
+  test('mehrere Käufe am selben Tag zählen als eine Beobachtung', () {
+    final suggestions = buildReplenishmentSuggestions(
+      history: [
+        purchase(DateTime(2026, 9, 1, 9), 'milk', 'Milch', 1),
+        purchase(DateTime(2026, 9, 1, 18), 'milk', 'Milch', 2),
+        purchase(DateTime(2026, 9, 8), 'milk', 'Milch', 1),
+      ],
+      catalogProducts: const [milk],
+      currentListProductIds: const {},
+      now: DateTime(2026, 9, 15),
+    );
+
+    expect(suggestions, hasLength(1));
+    expect(suggestions.single.purchaseCount, 2);
+    expect(suggestions.single.intervalDays, 7);
+    expect(suggestions.single.averageQuantity, 2);
+  });
+
   test('überfällige Produkte stehen vor bald fälligen', () {
     final suggestions = buildReplenishmentSuggestions(
       history: [

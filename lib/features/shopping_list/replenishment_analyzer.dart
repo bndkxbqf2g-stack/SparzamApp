@@ -11,19 +11,32 @@ List<ReplenishmentSuggestion> buildReplenishmentSuggestions({
   int minimumPurchases = 2,
 }) {
   final today = _dateOnly(now ?? DateTime.now());
-  final byProduct = <String, List<_ObservedPurchase>>{};
+  final dailyQuantityByProduct = <String, Map<DateTime, int>>{};
 
   for (final record in history) {
     final date = _dateOnly(record.createdAt);
     for (final line in record.items) {
-      byProduct.putIfAbsent(line.productId, () => []).add(
-            _ObservedPurchase(
-              date: date,
-              quantity: line.quantity,
-            ),
-          );
+      final daily = dailyQuantityByProduct.putIfAbsent(
+        line.productId,
+        () => <DateTime, int>{},
+      );
+      daily[date] = (daily[date] ?? 0) + line.quantity;
     }
   }
+
+  final byProduct = dailyQuantityByProduct.map(
+    (productId, daily) => MapEntry(
+      productId,
+      daily.entries
+          .map(
+            (entry) => _ObservedPurchase(
+              date: entry.key,
+              quantity: entry.value,
+            ),
+          )
+          .toList(),
+    ),
+  );
 
   final catalogById = {
     for (final product in catalogProducts) product.id: product,
