@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../data/products.dart' as demo;
 import '../../models/market_price.dart';
 import '../../models/product.dart';
+import '../../models/price_data_settings.dart';
+import 'price_coverage.dart';
 import 'market_price_editor_screen.dart';
 import 'product_editor_screen.dart';
 
@@ -15,6 +17,8 @@ class ProductCatalogScreen extends StatefulWidget {
     required this.onDeleteProduct,
     required this.onSavePrice,
     required this.onDeletePrice,
+    required this.priceDataSettings,
+    required this.onSyncOpenPrices,
   });
 
   final List<Product> customProducts;
@@ -26,6 +30,8 @@ class ProductCatalogScreen extends StatefulWidget {
     String productId,
     String storeName,
   ) onDeletePrice;
+  final PriceDataSettings priceDataSettings;
+  final Future<List<MarketPrice>> Function() onSyncOpenPrices;
 
   @override
   State<ProductCatalogScreen> createState() => _ProductCatalogScreenState();
@@ -35,12 +41,24 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
   late List<Product> customProducts;
   late List<MarketPrice> marketPrices;
   String query = '';
+  bool syncing = false;
+  bool autoSyncTriggered = false;
 
   @override
   void initState() {
     super.initState();
     customProducts = [...widget.customProducts];
     marketPrices = [...widget.marketPrices];
+
+    if (widget.priceDataSettings.openPricesEnabled &&
+        widget.priceDataSettings.autoSyncOnCatalogOpen) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !autoSyncTriggered) {
+          autoSyncTriggered = true;
+          syncOpenPrices();
+        }
+      });
+    }
   }
 
   List<Product> get allProducts => [...demo.products, ...customProducts];
@@ -62,6 +80,23 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
 
   bool isCustom(Product product) =>
       customProducts.any((item) => item.id == product.id);
+
+  Future<void> syncOpenPrices() async {
+    if (syncing || !widget.priceDataSettings.openPricesEnabled) return;
+    setState(() => syncing = true);
+    try {
+      final next = await widget.onSyncOpenPrices();
+      if (!mounted) return;
+      setState(() => marketPrices = next);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Open-Prices-Abgleich abgeschlossen.'),
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => syncing = false);
+    }
+  }
 
   Future<void> edit([Product? product]) async {
     final result = await Navigator.of(context).push<Product>(
@@ -153,6 +188,60 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
         body: ListView(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
           children: [
+            Builder(
+              builder: (context) {
+                final coverage = calculatePriceCoverage(
+                  allProducts,
+                  marketPrices,
+                  openPricesMaxAgeDays:
+                      widget.priceDataSettings.openPricesMaxAgeDays,
+                );
+                return Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Preisdaten-Abdeckung',
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w800,
+                              ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          '${coverage.productsWithEan}/${coverage.products} Produkte mit EAN · '
+                          '${coverage.manualPrices} eigene Preise · '
+                          '${coverage.openPrices} Open-Prices-Daten',
+                        ),
+                        if (coverage.staleOpenPrices > 0)
+                          Text(
+                            '${coverage.staleOpenPrices} Open-Prices-Werte sind veraltet.',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        if (widget.priceDataSettings.openPricesEnabled) ...[
+                          const SizedBox(height: 10),
+                          FilledButton.tonalIcon(
+                            onPressed: syncing ? null : syncOpenPrices,
+                            icon: syncing
+                                ? const SizedBox(
+                                    width: 18,
+                                    height: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Icon(Icons.sync_outlined),
+                            label: const Text('Open Prices aktualisieren'),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
             TextField(
               onChanged: (value) => setState(() => query = value),
               decoration: const InputDecoration(
