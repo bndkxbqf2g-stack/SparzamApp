@@ -11,10 +11,18 @@ import 'price_evaluator.dart';
 import 'price_history_sheet.dart';
 
 class OfferCard extends StatelessWidget {
-  const OfferCard({super.key, required this.offer, required this.priceHistory});
+  const OfferCard({
+    super.key,
+    required this.offer,
+    required this.priceHistory,
+    this.onEdit,
+    this.onDelete,
+  });
 
   final Offer offer;
   final List<PricePoint> priceHistory;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +51,14 @@ class OfferCard extends StatelessWidget {
                       style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
                 ),
                 _Price(offer: offer, price: price),
+                PopupMenuButton<String>(
+                  tooltip: 'Angebotsoptionen',
+                  onSelected: (value) => value == 'edit' ? onEdit?.call() : onDelete?.call(),
+                  itemBuilder: (context) => const [
+                    PopupMenuItem(value: 'edit', child: Text('Bearbeiten')),
+                    PopupMenuItem(value: 'delete', child: Text('Löschen')),
+                  ],
+                ),
               ],
             ),
             const SizedBox(height: 4),
