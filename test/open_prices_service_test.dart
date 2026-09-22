@@ -154,4 +154,15 @@ void main() {
     expect(result, isEmpty);
     service.close();
   });
+
+  test('Serverfehler wird als Abruffehler gemeldet', () async {
+    final service = OpenPricesService(
+      client: MockClient((_) async => http.Response('{}', 503)),
+    );
+    await expectLater(
+      service.fetchRecentPrices(product: product, stores: stores),
+      throwsA(isA<http.ClientException>()),
+    );
+    service.close();
+  });
 }

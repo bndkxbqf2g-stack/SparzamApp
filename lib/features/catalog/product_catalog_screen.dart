@@ -115,6 +115,12 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
             '${result.productsProcessed}/${result.productsWithEan} '
             'EAN-Produkte geprüft · ${result.pricesFound} '
             '${result.pricesFound == 1 ? 'Preis' : 'Preise'} gefunden.';
+        if (result.failedProductIds.isNotEmpty) {
+          syncFeedback = '$syncFeedback '
+              '${result.failedProductIds.length} '
+              '${result.failedProductIds.length == 1 ? 'Abfrage' : 'Abfragen'} '
+              'fehlgeschlagen.';
+        }
       });
     } catch (_) {
       if (!mounted) return;

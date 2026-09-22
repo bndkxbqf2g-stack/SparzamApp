@@ -110,4 +110,32 @@ void main() {
     expect(result.cancelled, isTrue);
     expect(result.prices.single.productId, 'one');
   });
+
+  test('Fehler eines Produkts blockiert folgende Produkte nicht', () async {
+    final service = OpenPricesSyncService(
+      fetcher: (product, _) async {
+        if (product.id == 'bad') throw Exception('timeout');
+        return [
+          MarketPrice(
+            productId: product.id,
+            storeName: 'Lidl',
+            price: 1.2,
+            updatedAt: DateTime(2026, 9, 20),
+          ),
+        ];
+      },
+    );
+    final result = await service.sync(
+      products: const [
+        Product(id: 'bad', name: 'Fehler', unit: 'Stk', group: 'x', ean: '1'),
+        Product(id: 'good', name: 'Gut', unit: 'Stk', group: 'x', ean: '2'),
+      ],
+      maxAgeDays: 30,
+    );
+
+    expect(result.productsProcessed, 2);
+    expect(result.cancelled, isFalse);
+    expect(result.failedProductIds, ['bad']);
+    expect(result.prices.single.productId, 'good');
+  });
 }

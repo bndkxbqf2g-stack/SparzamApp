@@ -16,6 +16,7 @@ class OpenPricesSyncResult {
     required this.prices,
     required this.productsProcessed,
     required this.cancelled,
+    required this.failedProductIds,
   });
 
   final int productsChecked;
@@ -24,6 +25,7 @@ class OpenPricesSyncResult {
   final List<MarketPrice> prices;
   final int productsProcessed;
   final bool cancelled;
+  final List<String> failedProductIds;
 }
 
 class OpenPricesSyncService {
@@ -42,6 +44,7 @@ class OpenPricesSyncService {
         .toList();
 
     final result = <MarketPrice>[];
+    final failures = <String>[];
     var processed = 0;
     final customFetcher = fetcher;
     OpenPricesService? service;
@@ -54,13 +57,17 @@ class OpenPricesSyncService {
     try {
       for (var index = 0; index < withEan.length; index++) {
         if (shouldCancel?.call() == true) break;
-        final found = customFetcher != null
-            ? await customFetcher(withEan[index], maxAgeDays)
-            : await service!.fetchRecentPrices(
-                product: withEan[index],
-                stores: stores,
-              );
-        result.addAll(found);
+        try {
+          final found = customFetcher != null
+              ? await customFetcher(withEan[index], maxAgeDays)
+              : await service!.fetchRecentPrices(
+                  product: withEan[index],
+                  stores: stores,
+                );
+          result.addAll(found);
+        } catch (_) {
+          failures.add(withEan[index].id);
+        }
         processed++;
         onProgress?.call(processed, withEan.length);
 
@@ -80,6 +87,7 @@ class OpenPricesSyncService {
       prices: result,
       productsProcessed: processed,
       cancelled: processed < withEan.length,
+      failedProductIds: failures,
     );
   }
 }

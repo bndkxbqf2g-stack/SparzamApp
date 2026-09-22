@@ -54,6 +54,27 @@ void main() {
         isNotNull);
   });
 
+  testWidgets('Teilfehler erscheint neben den gefundenen Preisen',
+      (tester) async {
+    await tester.pumpWidget(catalog(({
+      onProgress,
+      shouldCancel,
+    }) async => const PriceSyncResult(
+          prices: [],
+          history: [],
+          productsChecked: 2,
+          productsWithEan: 2,
+          productsProcessed: 2,
+          pricesFound: 1,
+          cancelled: false,
+          failedProductIds: ['bad'],
+        )));
+    await tester.tap(find.text('Open Prices aktualisieren'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('1 Abfrage fehlgeschlagen'), findsOneWidget);
+    expect(find.textContaining('1 Preis gefunden'), findsOneWidget);
+  });
+
   testWidgets('Abbrechen signalisiert den laufenden Abruf', (tester) async {
     final pending = Completer<PriceSyncResult>();
     bool Function()? cancellationCheck;

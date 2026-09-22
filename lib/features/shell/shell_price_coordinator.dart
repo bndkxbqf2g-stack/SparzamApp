@@ -81,6 +81,7 @@ class ShellPriceCoordinator {
       pricesFound: synced.pricesFound,
       productsProcessed: synced.productsProcessed,
       cancelled: synced.cancelled,
+      failedProductIds: synced.failedProductIds,
     );
   }
 }

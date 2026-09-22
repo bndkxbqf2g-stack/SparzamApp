@@ -10,6 +10,7 @@ class PriceSyncResult {
     required this.pricesFound,
     required this.productsProcessed,
     required this.cancelled,
+    this.failedProductIds = const [],
   });
 
   final List<MarketPrice> prices;
@@ -19,4 +20,5 @@ class PriceSyncResult {
   final int pricesFound;
   final int productsProcessed;
   final bool cancelled;
+  final List<String> failedProductIds;
 }

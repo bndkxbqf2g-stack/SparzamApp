@@ -49,7 +49,9 @@ class OpenPricesService {
         )
         .timeout(const Duration(seconds: 12));
 
-    if (response.statusCode != 200) return const <MarketPrice>[];
+    if (response.statusCode != 200) {
+      throw http.ClientException('Open Prices HTTP ${response.statusCode}');
+    }
 
     final json = jsonDecode(response.body) as Map<String, dynamic>;
     final items = json['items'] as List<dynamic>? ?? const <dynamic>[];
