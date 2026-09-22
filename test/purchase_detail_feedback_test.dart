@@ -56,7 +56,10 @@ void main() {
     expect(calls, 1);
     expect(find.textContaining('konnte nicht gelöscht werden'), findsOneWidget);
     expect(tester.widget<IconButton>(
-      find.byTooltip('Einkauf löschen'),
+      find.ancestor(
+        of: find.byIcon(Icons.delete_outline),
+        matching: find.byType(IconButton),
+      ),
     ).onPressed, isNotNull);
   });
 
