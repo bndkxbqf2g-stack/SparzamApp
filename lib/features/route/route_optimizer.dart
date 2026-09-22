@@ -1,5 +1,6 @@
 import '../../data/stores.dart';
 import '../../models/list_item.dart';
+import '../../models/market_price.dart';
 import '../../models/offer.dart';
 import '../../models/route_plan.dart';
 import '../../models/store.dart';
@@ -14,10 +15,11 @@ class RouteOptimizer {
     this.maxStores = 3,
     this.minExtraStoreSavings = 0,
     List<String>? enabledStoreNames,
+    List<MarketPrice> marketPrices = const <MarketPrice>[],
   })  : roadDistances = roadDistances ?? const <String, double>{},
         enabledStoreNames =
             (enabledStoreNames ?? const <String>[]).toSet(),
-        prices = RoutePriceResolver(offers);
+        prices = RoutePriceResolver(offers, marketPrices: marketPrices);
 
   final List<ListItem> items;
   final RoutePriceResolver prices;

@@ -1,4 +1,5 @@
 import '../../models/list_item.dart';
+import '../../models/market_price.dart';
 import '../../models/offer.dart';
 import '../../models/store.dart';
 import '../route/route_price_resolver.dart';
@@ -40,8 +41,13 @@ StoreShoppingSummary buildStoreShoppingSummary(
   List<ListItem> items,
   List<Offer> offers, {
   DateTime? now,
+  List<MarketPrice> marketPrices = const <MarketPrice>[],
 }) {
-  final resolver = RoutePriceResolver(offers, now: now);
+  final resolver = RoutePriceResolver(
+    offers,
+    now: now,
+    marketPrices: marketPrices,
+  );
   final lines = <StoreShoppingLine>[];
 
   for (final item in items) {

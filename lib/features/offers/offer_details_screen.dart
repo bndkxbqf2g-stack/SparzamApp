@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../data/stores.dart';
 import '../../models/list_item.dart';
+import '../../models/market_price.dart';
 import '../../models/mobility_settings.dart';
 import '../../models/offer.dart';
 import '../../models/price_point.dart';
+import '../../models/product.dart';
 import '../store/store_screen.dart';
 import 'offer_card.dart';
 
@@ -16,6 +18,8 @@ class OfferDetailsScreen extends StatelessWidget {
     required this.items,
     required this.offers,
     required this.mobility,
+    required this.catalogProducts,
+    required this.marketPrices,
   });
 
   final Offer offer;
@@ -23,6 +27,8 @@ class OfferDetailsScreen extends StatelessWidget {
   final List<ListItem> items;
   final List<Offer> offers;
   final MobilitySettings mobility;
+  final List<Product> catalogProducts;
+  final List<MarketPrice> marketPrices;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +42,7 @@ class OfferDetailsScreen extends StatelessWidget {
           OfferCard(
             offer: offer,
             priceHistory: priceHistory,
+            catalogProducts: catalogProducts,
           ),
           if (store != null) ...[
             const SizedBox(height: 16),
@@ -48,6 +55,7 @@ class OfferDetailsScreen extends StatelessWidget {
                       items: items,
                       offers: offers,
                       mobility: mobility,
+                      marketPrices: marketPrices,
                     ),
                   ),
                 ),

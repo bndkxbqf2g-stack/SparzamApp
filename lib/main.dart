@@ -4,6 +4,8 @@ import 'app.dart';
 import 'services/budget_store.dart';
 import 'services/offer_store.dart';
 import 'services/mobility_settings_store.dart';
+import 'services/market_price_store.dart';
+import 'services/product_catalog_store.dart';
 import 'services/price_history_store.dart';
 import 'services/recent_purchase_store.dart';
 import 'services/purchase_store.dart';
@@ -15,6 +17,8 @@ Future<void> main() async {
   final budgetStore = BudgetStore();
   final offerStore = OfferStore();
   final mobilityStore = MobilitySettingsStore();
+  final marketPriceStore = MarketPriceStore();
+  final productCatalogStore = ProductCatalogStore();
   final priceHistoryStore = PriceHistoryStore();
   final recentPurchaseStore = RecentPurchaseStore();
   final purchaseStore = PurchaseStore();
@@ -25,12 +29,16 @@ Future<void> main() async {
       budgetStore: budgetStore,
       offerStore: offerStore,
       mobilityStore: mobilityStore,
+      marketPriceStore: marketPriceStore,
+      productCatalogStore: productCatalogStore,
       recentPurchaseStore: recentPurchaseStore,
       purchaseStore: purchaseStore,
       shoppingListStore: shoppingListStore,
       initialBudget: await budgetStore.load(),
       initialOffers: await offerStore.load(),
       initialMobility: await mobilityStore.load(),
+      initialMarketPrices: await marketPriceStore.load(),
+      initialCustomProducts: await productCatalogStore.load(),
       initialPriceHistory: await priceHistoryStore.load(),
       initialRecentPurchases: await recentPurchaseStore.load(),
       initialPurchaseHistory: await purchaseStore.load(),

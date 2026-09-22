@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/list_item.dart';
+import '../../models/market_price.dart';
 import '../../models/mobility_settings.dart';
 import '../../models/offer.dart';
 import '../../models/store.dart';
@@ -17,12 +18,14 @@ class StoreScreen extends StatefulWidget {
     required this.items,
     required this.offers,
     required this.mobility,
+    required this.marketPrices,
   });
 
   final Store store;
   final List<ListItem> items;
   final List<Offer> offers;
   final MobilitySettings mobility;
+  final List<MarketPrice> marketPrices;
 
   @override
   State<StoreScreen> createState() => _StoreScreenState();
@@ -77,6 +80,7 @@ class _StoreScreenState extends State<StoreScreen> {
       widget.store,
       widget.items,
       widget.offers,
+      marketPrices: widget.marketPrices,
     );
     final value = evaluateStoreValue(
       widget.store,
@@ -84,6 +88,7 @@ class _StoreScreenState extends State<StoreScreen> {
       widget.offers,
       roadDistances: roadDistances,
       euroPerKm: widget.mobility.effectiveEuroPerKm,
+      marketPrices: widget.marketPrices,
     );
     final roadDistance = roadDistances[widget.store.name];
     final shownDistance = roadDistance ?? widget.store.distanceKm;

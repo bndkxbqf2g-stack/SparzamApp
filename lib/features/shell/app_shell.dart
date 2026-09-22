@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../data/products.dart' as base_catalog;
 import '../../models/budget_plan.dart';
 import '../../models/list_item.dart';
+import '../../models/market_price.dart';
 import '../../models/mobility_settings.dart';
 import '../../models/offer.dart';
 import '../../models/product.dart';
@@ -11,12 +13,15 @@ import '../../models/purchase_record.dart';
 import '../../services/budget_store.dart';
 import '../../services/offer_store.dart';
 import '../../services/mobility_settings_store.dart';
+import '../../services/market_price_store.dart';
+import '../../services/product_catalog_store.dart';
 import '../../services/recent_purchase_store.dart';
 import '../../services/purchase_store.dart';
 import '../../services/road_distance_store.dart';
 import '../../services/shopping_list_store.dart';
 import '../budget/budget_calculator.dart';
 import '../budget/budget_screen.dart';
+import '../catalog/product_catalog_screen.dart';
 import '../home/dashboard_data.dart';
 import '../home/home_screen.dart';
 import '../offers/offers_screen.dart';
@@ -37,12 +42,16 @@ class AppShell extends StatefulWidget {
     required this.budgetStore,
     required this.offerStore,
     required this.mobilityStore,
+    required this.marketPriceStore,
+    required this.productCatalogStore,
     required this.recentPurchaseStore,
     required this.purchaseStore,
     required this.shoppingListStore,
     required this.initialBudget,
     required this.initialOffers,
     required this.initialMobility,
+    required this.initialMarketPrices,
+    required this.initialCustomProducts,
     required this.initialPriceHistory,
     required this.initialRecentPurchases,
     required this.initialPurchaseHistory,
@@ -53,12 +62,16 @@ class AppShell extends StatefulWidget {
   final BudgetStore budgetStore;
   final OfferStore offerStore;
   final MobilitySettingsStore mobilityStore;
+  final MarketPriceStore marketPriceStore;
+  final ProductCatalogStore productCatalogStore;
   final RecentPurchaseStore recentPurchaseStore;
   final PurchaseStore purchaseStore;
   final ShoppingListStore shoppingListStore;
   final BudgetPlan initialBudget;
   final List<Offer> initialOffers;
   final MobilitySettings initialMobility;
+  final List<MarketPrice> initialMarketPrices;
+  final List<Product> initialCustomProducts;
   final List<PricePoint> initialPriceHistory;
   final List<RecentPurchase> initialRecentPurchases;
   final List<PurchaseRecord> initialPurchaseHistory;
@@ -77,16 +90,35 @@ class _AppShellState extends State<AppShell> {
   late List<Offer> offers;
   late List<RecentPurchase> recentPurchases;
   late List<PurchaseRecord> purchaseHistory;
+  late List<Product> customProducts;
+  late List<MarketPrice> marketPrices;
   Map<String, double> roadDistances = <String, double>{};
   final roadDistanceStore = RoadDistanceStore();
   late final Map<String, String> preferredProductByGroup;
+
+  Product? _catalogProduct(String id) {
+    final matches = [
+      ...base_catalog.products,
+      ...customProducts,
+    ].where((product) => product.id == id);
+    return matches.isEmpty ? null : matches.first;
+  }
 
   @override
   void initState() {
     super.initState();
     budget = widget.initialBudget;
     mobility = widget.initialMobility;
-    shoppingList = [...widget.initialShoppingList];
+    customProducts = [...widget.initialCustomProducts];
+    marketPrices = [...widget.initialMarketPrices];
+    shoppingList = widget.initialShoppingList
+        .map(
+          (item) => ListItem(
+            product: _catalogProduct(item.product.id) ?? item.product,
+            quantity: item.quantity,
+          ),
+        )
+        .toList();
     offers = [...widget.initialOffers];
     recentPurchases = [...widget.initialRecentPurchases];
     purchaseHistory = [...widget.initialPurchaseHistory];
@@ -100,8 +132,28 @@ class _AppShellState extends State<AppShell> {
     setState(() => roadDistances = loaded);
   }
 
+  List<Product> get catalogProducts => [
+        ...base_catalog.products,
+        ...customProducts,
+      ];
+
+  bool isBaseProduct(String id) =>
+      base_catalog.products.any((product) => product.id == id);
+
   Future<void> persistShoppingList() =>
       widget.shoppingListStore.save(shoppingList);
+
+  Future<void> ensureCatalogProduct(Product product) async {
+    if (isBaseProduct(product.id) ||
+        customProducts.any((item) => item.id == product.id)) {
+      return;
+    }
+    final next = await widget.productCatalogStore.upsert(
+      product,
+      customProducts,
+    );
+    if (mounted) setState(() => customProducts = next);
+  }
 
   void addProduct(Product product) {
     setState(() {
@@ -115,15 +167,23 @@ class _AppShellState extends State<AppShell> {
     });
     persistShoppingList();
     widget.shoppingListStore.saveKnownItem(product);
+    ensureCatalogProduct(product);
   }
 
   Future<void> openScanner() async {
     final learned = await widget.shoppingListStore.loadKnownItems();
     if (!mounted) return;
+
+    final seen = <String>{};
+    final scannerProducts = <Product>[
+      ...catalogProducts,
+      ...learned.map((item) => item.toProduct()),
+    ].where((product) => seen.add(product.id)).toList();
+
     final product = await Navigator.of(context).push<Product>(
       MaterialPageRoute(
         builder: (_) => ScannerScreen(
-          learnedProducts: learned.map((item) => item.toProduct()).toList(),
+          learnedProducts: scannerProducts,
         ),
       ),
     );
@@ -165,6 +225,7 @@ class _AppShellState extends State<AppShell> {
           maxStores: mobility.maxStores,
           minExtraStoreSavings: mobility.minExtraStoreSavings,
           enabledStoreNames: mobility.enabledStoreNames,
+          marketPrices: marketPrices,
         );
 
   RouteOptimizer? get regularOptimizer => shoppingList.isEmpty
@@ -177,6 +238,7 @@ class _AppShellState extends State<AppShell> {
           maxStores: mobility.maxStores,
           minExtraStoreSavings: mobility.minExtraStoreSavings,
           enabledStoreNames: mobility.enabledStoreNames,
+          marketPrices: marketPrices,
         );
 
   DashboardData dashboardData() {
@@ -235,6 +297,97 @@ class _AppShellState extends State<AppShell> {
     });
   }
 
+  Future<List<Product>> saveCatalogProduct(Product product) async {
+    final next = await widget.productCatalogStore.upsert(
+      product,
+      customProducts,
+    );
+
+    final listIndex =
+        shoppingList.indexWhere((item) => item.product.id == product.id);
+    if (listIndex >= 0) {
+      final quantity = shoppingList[listIndex].quantity;
+      shoppingList[listIndex] = ListItem(
+        product: product,
+        quantity: quantity,
+      );
+      await persistShoppingList();
+    }
+
+    await widget.shoppingListStore.saveKnownItem(product);
+    if (mounted) setState(() => customProducts = next);
+    return next;
+  }
+
+  Future<List<Product>> deleteCatalogProduct(Product product) async {
+    final next = await widget.productCatalogStore.remove(
+      product.id,
+      customProducts,
+    );
+    final nextPrices = await widget.marketPriceStore.removeProduct(
+      product.id,
+      marketPrices,
+    );
+
+    var nextOffers = offers;
+    for (final offer
+        in offers.where((item) => item.productId == product.id).toList()) {
+      nextOffers = await widget.offerStore.remove(offer.id, nextOffers);
+    }
+
+    shoppingList.removeWhere((item) => item.product.id == product.id);
+    preferredProductByGroup.removeWhere((_, id) => id == product.id);
+    await persistShoppingList();
+    await widget.shoppingListStore.removeKnownItem(product.id);
+    await widget.shoppingListStore.removePreferredProduct(
+      product.group,
+      product.id,
+    );
+
+    if (mounted) {
+      setState(() {
+        customProducts = next;
+        marketPrices = nextPrices;
+        offers = nextOffers;
+      });
+    }
+    return next;
+  }
+
+  Future<List<MarketPrice>> saveMarketPrice(MarketPrice price) async {
+    final next = await widget.marketPriceStore.upsert(price, marketPrices);
+    if (mounted) setState(() => marketPrices = next);
+    return next;
+  }
+
+  Future<List<MarketPrice>> deleteMarketPrice(
+    String productId,
+    String storeName,
+  ) async {
+    final next = await widget.marketPriceStore.remove(
+      productId,
+      storeName,
+      marketPrices,
+    );
+    if (mounted) setState(() => marketPrices = next);
+    return next;
+  }
+
+  Future<void> openCatalog() async {
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute(
+        builder: (_) => ProductCatalogScreen(
+          customProducts: customProducts,
+          marketPrices: marketPrices,
+          onSaveProduct: saveCatalogProduct,
+          onDeleteProduct: deleteCatalogProduct,
+          onSavePrice: saveMarketPrice,
+          onDeletePrice: deleteMarketPrice,
+        ),
+      ),
+    );
+  }
+
   Future<List<Offer>> saveOffer(Offer offer) async {
     final next = await widget.offerStore.upsert(offer, offers);
     if (mounted) setState(() => offers = next);
@@ -288,6 +441,7 @@ class _AppShellState extends State<AppShell> {
           maxStores: mobility.maxStores,
           minExtraStoreSavings: mobility.minExtraStoreSavings,
           enabledStoreNames: mobility.enabledStoreNames,
+          marketPrices: marketPrices,
           ).bestPlan();
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -315,6 +469,7 @@ class _AppShellState extends State<AppShell> {
               priceHistory: widget.initialPriceHistory,
               onSave: saveOffer,
               onDelete: deleteOffer,
+              catalogProducts: catalogProducts,
             ),
           ),
         ),
@@ -334,11 +489,14 @@ class _AppShellState extends State<AppShell> {
         offers: offers,
         priceHistory: widget.initialPriceHistory,
         mobility: mobility,
+        catalogProducts: catalogProducts,
+        marketPrices: marketPrices,
       ),
       RouteScreen(
         items: shoppingList,
         offers: offers,
         mobility: mobility,
+        marketPrices: marketPrices,
         onRoadDistancesChanged: (value) =>
             setState(() => roadDistances = value),
       ),
@@ -355,6 +513,8 @@ class _AppShellState extends State<AppShell> {
         storeCount: mobility.enabledStoreNames.isEmpty
             ? 7
             : mobility.enabledStoreNames.length,
+        onOpenCatalog: openCatalog,
+        productCount: catalogProducts.length,
       ),
     ];
 

@@ -58,6 +58,27 @@ class ShoppingListStore {
     );
   }
 
+  Future<void> removeKnownItem(String id) async {
+    final current = await loadKnownItems();
+    await _preferences.setStringList(
+      _knownItemsStorageKey,
+      current
+          .where((item) => item.id != id)
+          .map((entry) => entry.toJson())
+          .toList(),
+    );
+  }
+
+  Future<void> removePreferredProduct(String group, String id) async {
+    final current = await loadPreferredProducts();
+    if (current[group] != id) return;
+    current.remove(group);
+    await _preferences.setStringList(
+      _preferredProductsStorageKey,
+      current.entries.map((entry) => '${entry.key}|${entry.value}').toList(),
+    );
+  }
+
   Future<List<ListItem>> load() async {
     final values = await _preferences.getStringList(_storageKey);
     if (values == null) return <ListItem>[];

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../data/products.dart';
 import '../../models/offer.dart';
 import '../../models/price_point.dart';
+import '../../models/product.dart';
 import 'cashback_calculator.dart';
 import 'coupon_calculator.dart';
 import 'effective_price.dart';
@@ -15,18 +16,22 @@ class OfferCard extends StatelessWidget {
     super.key,
     required this.offer,
     required this.priceHistory,
+    this.catalogProducts = products,
     this.onEdit,
     this.onDelete,
   });
 
   final Offer offer;
   final List<PricePoint> priceHistory;
+  final List<Product> catalogProducts;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
-    final product = products.where((item) => item.id == offer.productId).firstOrNull;
+    final product = catalogProducts
+        .where((item) => item.id == offer.productId)
+        .firstOrNull;
     final history = priceHistory
         .where((p) => p.productId == offer.productId && p.storeName == offer.storeName)
         .toList();

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/list_item.dart';
+import '../../models/market_price.dart';
 import '../../models/mobility_settings.dart';
 import '../../models/offer.dart';
 import '../../models/product.dart';
@@ -28,6 +29,8 @@ class ShoppingListScreen extends StatefulWidget {
     required this.offers,
     required this.priceHistory,
     required this.mobility,
+    required this.catalogProducts,
+    required this.marketPrices,
   });
 
   final List<ListItem> items;
@@ -42,6 +45,8 @@ class ShoppingListScreen extends StatefulWidget {
   final List<Offer> offers;
   final List<PricePoint> priceHistory;
   final MobilitySettings mobility;
+  final List<Product> catalogProducts;
+  final List<MarketPrice> marketPrices;
 
   @override
   State<ShoppingListScreen> createState() => _ShoppingListScreenState();
@@ -74,10 +79,13 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         knownItems: knownItems,
         recentPurchases: widget.recentPurchases,
         preferredProductByGroup: widget.preferredProductByGroup,
+        catalogProducts: widget.catalogProducts,
       );
 
-  List<Product> get quickProducts =>
-      buildQuickProducts(widget.preferredProductByGroup);
+  List<Product> get quickProducts => buildQuickProducts(
+        widget.preferredProductByGroup,
+        catalogProducts: widget.catalogProducts,
+      );
 
   Map<String, List<ListItem>> get itemsByGroup {
     final grouped = <String, List<ListItem>>{};
@@ -91,6 +99,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         entry.value,
         widget.offers,
         enabledStoreNames: widget.mobility.enabledStoreNames,
+        marketPrices: widget.marketPrices,
       );
     }
 
@@ -561,6 +570,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                       widget.offers,
                                       enabledStoreNames:
                                           widget.mobility.enabledStoreNames,
+                                      marketPrices: widget.marketPrices,
                                     );
                                     return Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -581,6 +591,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                                   items: widget.items,
                                                   offers: widget.offers,
                                                   mobility: widget.mobility,
+                                                  catalogProducts:
+                                                      widget.catalogProducts,
+                                                  marketPrices:
+                                                      widget.marketPrices,
                                                 ),
                                               ),
                                             ),

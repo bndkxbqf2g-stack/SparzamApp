@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/stores.dart';
 import '../../models/list_item.dart';
+import '../../models/market_price.dart';
 import '../../models/mobility_settings.dart';
 import '../../models/offer.dart';
 import '../../services/road_distance_service.dart';
@@ -20,12 +21,14 @@ class RouteScreen extends StatefulWidget {
     required this.items,
     required this.offers,
     required this.mobility,
+    required this.marketPrices,
     this.onRoadDistancesChanged,
   });
 
   final List<ListItem> items;
   final List<Offer> offers;
   final MobilitySettings mobility;
+  final List<MarketPrice> marketPrices;
   final ValueChanged<Map<String, double>>? onRoadDistancesChanged;
 
   @override
@@ -104,6 +107,7 @@ class _RouteScreenState extends State<RouteScreen> {
       maxStores: widget.mobility.maxStores,
       minExtraStoreSavings: widget.mobility.minExtraStoreSavings,
       enabledStoreNames: widget.mobility.enabledStoreNames,
+      marketPrices: widget.marketPrices,
     );
     final best = optimizer.bestPlan();
     if (best == null) return const _MissingPrices();
