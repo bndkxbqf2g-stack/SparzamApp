@@ -273,6 +273,9 @@ class _AppShellState extends State<AppShell> {
   ShellCatalogCoordinator get catalogCoordinator => ShellCatalogCoordinator(
         productCatalogStore: widget.productCatalogStore,
         shoppingListStore: widget.shoppingListStore,
+        marketPriceStore: widget.marketPriceStore,
+        priceHistoryStore: widget.priceHistoryStore,
+        offerStore: widget.offerStore,
       );
 
   DashboardData dashboardData() => buildShellDashboard(
@@ -351,43 +354,26 @@ class _AppShellState extends State<AppShell> {
   }
 
   Future<List<Product>> deleteCatalogProduct(Product product) async {
-    final next = await widget.productCatalogStore.remove(
-      product.id,
-      customProducts,
+    final result = await catalogCoordinator.delete(
+      product: product,
+      products: customProducts,
+      prices: marketPrices,
+      priceHistory: priceHistory,
+      offers: offers,
+      shoppingList: shoppingList,
+      preferredProductByGroup: preferredProductByGroup,
     );
-    final nextPrices = await widget.marketPriceStore.removeProduct(
-      product.id,
-      marketPrices,
-    );
-    final nextPriceHistory = await widget.priceHistoryStore.removeProduct(
-      product.id,
-      priceHistory,
-    );
-
-    var nextOffers = offers;
-    for (final offer
-        in offers.where((item) => item.productId == product.id).toList()) {
-      nextOffers = await widget.offerStore.remove(offer.id, nextOffers);
-    }
-
-    shoppingList.removeWhere((item) => item.product.id == product.id);
-    preferredProductByGroup.removeWhere((_, id) => id == product.id);
-    await persistShoppingList();
-    await widget.shoppingListStore.removeKnownItem(product.id);
-    await widget.shoppingListStore.removePreferredProduct(
-      product.group,
-      product.id,
-    );
-
     if (mounted) {
       setState(() {
-        customProducts = next;
-        marketPrices = nextPrices;
-        priceHistory = nextPriceHistory;
-        offers = nextOffers;
+        customProducts = result.products;
+        marketPrices = result.prices;
+        priceHistory = result.priceHistory;
+        offers = result.offers;
+        shoppingList = result.shoppingList;
+        preferredProductByGroup = result.preferredProductByGroup;
       });
     }
-    return next;
+    return result.products;
   }
 
   Future<List<MarketPrice>> saveMarketPrice(MarketPrice price) async {
