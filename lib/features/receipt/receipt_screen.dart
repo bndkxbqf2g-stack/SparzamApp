@@ -69,38 +69,66 @@ class ReceiptScreen extends StatelessWidget {
       );
 }
 
-class _CheckoutCard extends StatelessWidget {
+class _CheckoutCard extends StatefulWidget {
   const _CheckoutCard({required this.plan, required this.baselineTotal, required this.onComplete});
 
   final RoutePlan plan;
   final double baselineTotal;
   final Future<void> Function() onComplete;
 
+  @override
+  State<_CheckoutCard> createState() => _CheckoutCardState();
+}
+
+class _CheckoutCardState extends State<_CheckoutCard> {
+  bool saving = false;
+
   String euro(double value) => '${value.toStringAsFixed(2)} €';
+
+  Future<void> complete() async {
+    if (saving) return;
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => saving = true);
+    try {
+      await widget.onComplete();
+      if (messenger.mounted) {
+        messenger.showSnackBar(
+          const SnackBar(content: Text('Einkauf gespeichert.')),
+        );
+      }
+    } catch (_) {
+      if (messenger.mounted) {
+        messenger.showSnackBar(
+          const SnackBar(
+            content: Text('Einkauf konnte nicht gespeichert werden. Bitte erneut versuchen.'),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => saving = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final savings = (baselineTotal - plan.total).clamp(0.0, double.infinity).toDouble();
+    final savings = (widget.baselineTotal - widget.plan.total)
+        .clamp(0.0, double.infinity)
+        .toDouble();
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(plan.stores.map((store) => store.name).join(' + '), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+            Text(widget.plan.stores.map((store) => store.name).join(' + '), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
             const SizedBox(height: 10),
-            Text('Warenkorb: ${euro(plan.basket)}'),
-            Text('Fahrt: ${euro(plan.travel)}'),
-            Text('Gesamt: ${euro(plan.total)}', style: const TextStyle(fontWeight: FontWeight.w800)),
+            Text('Warenkorb: ${euro(widget.plan.basket)}'),
+            Text('Fahrt: ${euro(widget.plan.travel)}'),
+            Text('Gesamt: ${euro(widget.plan.total)}', style: const TextStyle(fontWeight: FontWeight.w800)),
             Text('Ersparnis: ${euro(savings)}'),
             const SizedBox(height: 16),
             FilledButton.icon(
-              onPressed: () async {
-                await onComplete();
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Einkauf gespeichert.')));
-                }
-              },
+              onPressed: saving ? null : complete,
               icon: const Icon(Icons.check_circle_outline),
               label: const Text('Einkauf bestätigen'),
             ),
