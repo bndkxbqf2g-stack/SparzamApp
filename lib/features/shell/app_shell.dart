@@ -22,6 +22,7 @@ import '../home/home_screen.dart';
 import '../offers/offers_screen.dart';
 import '../profile/mobility_settings_screen.dart';
 import '../profile/profile_screen.dart';
+import '../profile/store_selection_screen.dart';
 import '../receipt/receipt_screen.dart';
 import '../receipt/purchase_summary.dart';
 import '../route/route_optimizer.dart';
@@ -159,7 +160,10 @@ class _AppShellState extends State<AppShell> {
           shoppingList,
           offers,
           roadDistances: roadDistances,
-          euroPerKm: mobility.euroPerKm,
+          euroPerKm: mobility.effectiveEuroPerKm,
+          maxStores: mobility.maxStores,
+          minExtraStoreSavings: mobility.minExtraStoreSavings,
+          enabledStoreNames: mobility.enabledStoreNames,
         );
 
   RouteOptimizer? get regularOptimizer => shoppingList.isEmpty
@@ -168,7 +172,10 @@ class _AppShellState extends State<AppShell> {
           shoppingList,
           const <Offer>[],
           roadDistances: roadDistances,
-          euroPerKm: mobility.euroPerKm,
+          euroPerKm: mobility.effectiveEuroPerKm,
+          maxStores: mobility.maxStores,
+          minExtraStoreSavings: mobility.minExtraStoreSavings,
+          enabledStoreNames: mobility.enabledStoreNames,
         );
 
   DashboardData dashboardData() {
@@ -247,6 +254,19 @@ class _AppShellState extends State<AppShell> {
     });
   }
 
+  Future<void> openStoreSettings() async {
+    final result = await Navigator.of(context).push<MobilitySettings>(
+      MaterialPageRoute(
+        builder: (_) => StoreSelectionScreen(initialSettings: mobility),
+      ),
+    );
+    if (result == null) return;
+
+    await widget.mobilityStore.save(result);
+    if (!mounted) return;
+    setState(() => mobility = result);
+  }
+
   void openBudget() {
     final best = shoppingList.isEmpty
         ? null
@@ -254,7 +274,10 @@ class _AppShellState extends State<AppShell> {
             shoppingList,
             offers,
             roadDistances: roadDistances,
-            euroPerKm: mobility.euroPerKm,
+            euroPerKm: mobility.effectiveEuroPerKm,
+          maxStores: mobility.maxStores,
+          minExtraStoreSavings: mobility.minExtraStoreSavings,
+          enabledStoreNames: mobility.enabledStoreNames,
           ).bestPlan();
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -318,6 +341,10 @@ class _AppShellState extends State<AppShell> {
       ProfileScreen(
         mobility: mobility,
         onEditMobility: openMobilitySettings,
+        onEditStores: openStoreSettings,
+        storeCount: mobility.enabledStoreNames.isEmpty
+            ? 7
+            : mobility.enabledStoreNames.length,
       ),
     ];
 
