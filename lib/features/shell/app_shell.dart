@@ -46,6 +46,7 @@ import '../shopping_list/replenishment_analyzer.dart';
 import '../shopping_list/shopping_list_screen.dart';
 import 'shell_catalog.dart';
 import 'shell_pricing.dart';
+import 'shell_routing.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({
@@ -245,33 +246,18 @@ class _AppShellState extends State<AppShell> {
     persistShoppingList();
   }
 
-  RouteOptimizer? get currentOptimizer => shoppingList.isEmpty
-      ? null
-      : RouteOptimizer(
-          shoppingList,
-          offers,
-          roadDistances: roadDistances,
-          euroPerKm: mobility.effectiveEuroPerKm,
-          maxStores: mobility.maxStores,
-          minExtraStoreSavings: mobility.minExtraStoreSavings,
-          enabledStoreNames: mobility.enabledStoreNames,
-          marketPrices: activeMarketPrices,
-          roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
-        );
+  ShellRouting get routing => ShellRouting(
+        items: shoppingList,
+        offers: offers,
+        mobility: mobility,
+        marketPrices: activeMarketPrices,
+        roadDistances: roadDistances,
+        roadMatrix: roadMatrix,
+      );
 
-  RouteOptimizer? get regularOptimizer => shoppingList.isEmpty
-      ? null
-      : RouteOptimizer(
-          shoppingList,
-          const <Offer>[],
-          roadDistances: roadDistances,
-          euroPerKm: mobility.effectiveEuroPerKm,
-          maxStores: mobility.maxStores,
-          minExtraStoreSavings: mobility.minExtraStoreSavings,
-          enabledStoreNames: mobility.enabledStoreNames,
-          marketPrices: activeMarketPrices,
-          roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
-        );
+  RouteOptimizer? get currentOptimizer => routing.current;
+
+  RouteOptimizer? get regularOptimizer => routing.regular;
 
   DashboardData dashboardData() {
     final best = currentOptimizer?.bestPlan();
