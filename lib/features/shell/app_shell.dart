@@ -25,7 +25,6 @@ import '../../services/purchase_store.dart';
 import '../../services/road_distance_store.dart';
 import '../../services/road_route_matrix_store.dart';
 import '../../services/shopping_list_store.dart';
-import '../budget/budget_calculator.dart';
 import '../budget/budget_screen.dart';
 import '../catalog/product_catalog_screen.dart';
 import '../home/dashboard_data.dart';
@@ -36,17 +35,16 @@ import '../profile/profile_screen.dart';
 import '../profile/price_data_settings_screen.dart';
 import '../profile/store_selection_screen.dart';
 import '../receipt/receipt_screen.dart';
-import '../receipt/purchase_summary.dart';
 import '../receipt/purchase_budget_adjustment.dart';
 import '../route/route_optimizer.dart';
 import '../route/route_screen.dart';
-import '../route/travel_estimator.dart';
 import '../scanner/scanner_screen.dart';
 import '../shopping_list/replenishment_analyzer.dart';
 import '../shopping_list/shopping_list_screen.dart';
 import 'shell_catalog.dart';
 import 'shell_pricing.dart';
 import 'shell_routing.dart';
+import 'shell_dashboard.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({
@@ -259,56 +257,17 @@ class _AppShellState extends State<AppShell> {
 
   RouteOptimizer? get regularOptimizer => routing.regular;
 
-  DashboardData dashboardData() {
-    final best = currentOptimizer?.bestPlan();
-    final baseline = regularOptimizer?.bestSingleStorePlan();
-    final savings = best == null || baseline == null ? 0.0 : baseline.total - best.total;
-    final travel = best == null
-        ? const TravelEstimate(distanceKm: 0, minutes: 0)
-        : estimateRoundTrips(
-            best.stores,
-            mobility: mobility,
-            roadDistances: roadDistances,
-            roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
-          );
-    final planned = best?.basket ?? 0;
-    final snapshot = calculateBudget(budget, planned);
-    final forecast = calculateBudgetForecast(budget, planned);
-    final monthly = summarizeMonth(purchaseHistory);
-    final today = DateTime.now();
-    final day = DateTime(today.year, today.month, today.day);
-    final activeOffers =
-        offers.where((offer) => !offer.validUntil.isBefore(day)).length;
-    final replenishment = replenishmentSuggestions;
-
-    return DashboardData(
-      itemCount: shoppingList.length,
-      activeOffers: activeOffers,
-      routeNames: best == null ? 'Noch keine Route' : best.stores.map((store) => store.name).join(' + '),
-      routeTotal: best?.total ?? 0,
-      routeTravelMinutes: travel.minutes,
-      mobilityLabel: mobility.mode.label,
-      todaySavings: savings > 0 ? savings : 0,
-      monthlySavings: monthly.savings,
-      monthlyPurchases: monthly.purchases,
-      budgetRemaining: snapshot.afterPlannedShop,
-      budgetConfigured: budget.isConfigured,
-      replenishmentCount: replenishment.length,
-      replenishmentPreview: replenishment.isEmpty
-          ? ''
-          : replenishment
-              .take(3)
-              .map((item) => item.product.name)
-              .join(' · '),
-      budgetProjectedSpend: forecast.projectedFoodSpend,
-      budgetWeeklyAllowance: forecast.weeklyAllowance,
-      budgetForecastLabel: switch (forecast.status) {
-        BudgetForecastStatus.onTrack => 'im Plan',
-        BudgetForecastStatus.warning => 'knapp',
-        BudgetForecastStatus.overBudget => 'voraussichtlich drüber',
-      },
-    );
-  }
+  DashboardData dashboardData() => buildShellDashboard(
+        shoppingList: shoppingList,
+        offers: offers,
+        mobility: mobility,
+        roadDistances: roadDistances,
+        roadMatrix: roadMatrix,
+        routing: routing,
+        budget: budget,
+        purchaseHistory: purchaseHistory,
+        replenishment: replenishmentSuggestions,
+      );
 
   Future<void> completePurchase() async {
     final plan = currentOptimizer?.bestPlan();
