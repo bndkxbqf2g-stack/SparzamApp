@@ -91,7 +91,11 @@ class HomeScreen extends StatelessWidget {
             icon: Icons.account_balance_wallet_outlined,
             title: 'Budgetstatus',
             value: data.budgetConfigured ? euro(data.budgetRemaining) : 'Einrichten',
-            subtitle: data.budgetConfigured ? 'nach aktuellem Einkaufsplan übrig' : 'Monats- und Lebensmittelbudget festlegen',
+            subtitle: data.budgetConfigured
+                ? '${data.budgetForecastLabel} · Prognose '
+                    '${euro(data.budgetProjectedSpend)} · '
+                    '${euro(data.budgetWeeklyAllowance)}/Woche'
+                : 'Monats- und Lebensmittelbudget festlegen',
             onTap: onOpenBudget,
           ),
           const SizedBox(height: 18),
