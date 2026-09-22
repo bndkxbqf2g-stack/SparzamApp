@@ -26,6 +26,7 @@ StoreValue evaluateStoreValue(
   List<ListItem> items,
   List<Offer> offers, {
   DateTime? now,
+  Map<String, double>? roadDistances,
 }) {
   final summary = buildStoreShoppingSummary(
     store,
@@ -33,7 +34,11 @@ StoreValue evaluateStoreValue(
     offers,
     now: now,
   );
-  final optimizer = RouteOptimizer(items, offers);
+  final optimizer = RouteOptimizer(
+    items,
+    offers,
+    roadDistances: roadDistances,
+  );
   final travel = optimizer.travelCost([store]);
   final net = summary.savings - travel;
 
