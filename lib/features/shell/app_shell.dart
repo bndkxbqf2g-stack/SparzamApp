@@ -257,7 +257,7 @@ class _AppShellState extends State<AppShell> {
           minExtraStoreSavings: mobility.minExtraStoreSavings,
           enabledStoreNames: mobility.enabledStoreNames,
           marketPrices: activeMarketPrices,
-          roadMatrix: roadMatrix,
+          roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
         );
 
   RouteOptimizer? get regularOptimizer => shoppingList.isEmpty
@@ -271,7 +271,7 @@ class _AppShellState extends State<AppShell> {
           minExtraStoreSavings: mobility.minExtraStoreSavings,
           enabledStoreNames: mobility.enabledStoreNames,
           marketPrices: activeMarketPrices,
-          roadMatrix: roadMatrix,
+          roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
         );
 
   DashboardData dashboardData() {
@@ -284,7 +284,7 @@ class _AppShellState extends State<AppShell> {
             best.stores,
             mobility: mobility,
             roadDistances: roadDistances,
-            roadMatrix: roadMatrix,
+            roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
           );
     final planned = best?.basket ?? 0;
     final snapshot = calculateBudget(budget, planned);
@@ -512,7 +512,7 @@ class _AppShellState extends State<AppShell> {
           minExtraStoreSavings: mobility.minExtraStoreSavings,
           enabledStoreNames: mobility.enabledStoreNames,
           marketPrices: activeMarketPrices,
-          roadMatrix: roadMatrix,
+          roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
           ).bestPlan();
     Navigator.of(context).push(
       MaterialPageRoute(
