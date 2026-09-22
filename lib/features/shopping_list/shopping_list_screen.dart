@@ -16,6 +16,7 @@ import 'replenishment_card.dart';
 import 'shopping_offer_hint.dart';
 import 'shopping_suggestions.dart';
 import 'shopping_list_header.dart';
+import 'shopping_input.dart';
 
 class ShoppingListScreen extends StatefulWidget {
   const ShoppingListScreen({
@@ -236,16 +237,13 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 },
               ),
               const SizedBox(height: 14),
-              TextField(
+              ShoppingInput(
                 controller: controller,
                 focusNode: _inputFocusNode,
-                onChanged: (_) => setState(() {}),
-                textInputAction: TextInputAction.done,
-                onSubmitted: (_) {
+                onChanged: () => setState(() {}),
+                onSubmit: () {
                   final name = controller.text.trim();
-                  if (name.isEmpty) {
-                    return;
-                  }
+                  if (name.isEmpty) return;
 
                   if (suggestions.isNotEmpty) {
                     add(suggestions.first);
@@ -253,33 +251,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     addCustomProduct();
                   }
                 },
-                decoration: InputDecoration(
-                  hintText: 'Was möchtest du einkaufen?',
-                  prefixIcon: const Icon(Icons.add_circle_outline),
-                  suffixIcon: controller.text.isEmpty
-                      ? IconButton(
-                          tooltip: 'Barcode scannen',
-                          onPressed: widget.onOpenScanner,
-                          icon: const Icon(Icons.qr_code_scanner),
-                        )
-                      : IconButton(
-                          onPressed: () {
-                            controller.clear();
-                            setState(() {});
-                          },
-                          icon: const Icon(Icons.close),
-                        ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 18,
-                    vertical: 16,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(18),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
+                onOpenScanner: widget.onOpenScanner,
               ),
               if (controller.text.trim().isEmpty &&
                   widget.replenishmentSuggestions.isNotEmpty) ...[
