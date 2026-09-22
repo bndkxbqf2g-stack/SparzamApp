@@ -35,6 +35,7 @@ import '../profile/store_selection_screen.dart';
 import '../route/route_optimizer.dart';
 import '../scanner/scanner_screen.dart';
 import '../shopping_list/replenishment_analyzer.dart';
+import '../shopping_list/shopping_list_updates.dart';
 import 'shell_catalog.dart';
 import 'shell_catalog_coordinator.dart';
 import 'shell_routing.dart';
@@ -184,15 +185,7 @@ class _AppShellState extends State<AppShell> {
   }
 
   void addProduct(Product product) {
-    setState(() {
-      for (final item in shoppingList) {
-        if (item.product.id == product.id) {
-          item.quantity++;
-          return;
-        }
-      }
-      shoppingList.add(ListItem(product: product));
-    });
+    setState(() => shoppingList = addShoppingProduct(shoppingList, product));
     persistShoppingList();
     widget.shoppingListStore.saveKnownItem(product);
     ensureCatalogProduct(product);
@@ -215,7 +208,7 @@ class _AppShellState extends State<AppShell> {
         ),
       ),
     );
-    if (product != null) addProduct(product);
+    if (mounted && product != null) addProduct(product);
   }
 
   Future<void> markPurchased(Product product, int quantity) async {
