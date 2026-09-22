@@ -3,6 +3,8 @@ import 'package:shared_preferences_platform_interface/in_memory_shared_preferenc
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:sparzamapp/features/shell/shell_purchase_coordinator.dart';
 import 'package:sparzamapp/models/budget_plan.dart';
+import 'package:sparzamapp/models/list_item.dart';
+import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/route_plan.dart';
 import 'package:sparzamapp/models/purchase_record.dart';
 import 'package:sparzamapp/models/store.dart';
@@ -87,4 +89,50 @@ void main() {
     expect(deleted.budget.foodSpent, 60);
     expect(deleted.history, isEmpty);
   });
+
+  test('fehlgeschlagenes Leeren stellt Einkauf, Budget und Liste wieder her',
+      () async {
+    final listStore = _ClearFailsAfterWrite();
+    final coordinator = ShellPurchaseCoordinator(
+      budgetStore: BudgetStore(),
+      purchaseStore: PurchaseStore(),
+      shoppingListStore: listStore,
+    );
+    const product = Product(
+      id: 'milk', name: 'Milch', unit: 'l', group: 'Milch',
+    );
+    final items = [ListItem(product: product, quantity: 2)];
+    await listStore.save(items);
+    await BudgetStore().save(const BudgetPlan(foodBudget: 100, foodSpent: 10));
+    const store = Store(
+      name: 'Lidl', location: 'Zellingen', distanceKm: 2, prices: {},
+    );
+    const plan = RoutePlan(
+      stores: [store], assignments: {}, basket: 5, travel: 1,
+      total: 6, unassigned: [],
+    );
+
+    await expectLater(
+      coordinator.complete(
+        plan: plan,
+        baselineTotal: 8,
+        items: items,
+        history: const [],
+        budget: const BudgetPlan(foodBudget: 100, foodSpent: 10),
+      ),
+      throwsStateError,
+    );
+
+    expect(await PurchaseStore().load(), isEmpty);
+    expect((await BudgetStore().load()).foodSpent, 10);
+    expect((await listStore.load()).single.quantity, 2);
+  });
+}
+
+class _ClearFailsAfterWrite extends ShoppingListStore {
+  @override
+  Future<void> clear() async {
+    await super.clear();
+    throw StateError('clear failed');
+  }
 }

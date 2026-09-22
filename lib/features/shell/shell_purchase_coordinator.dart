@@ -40,16 +40,36 @@ class ShellPurchaseCoordinator {
       baselineTotal: baselineTotal,
       items: items,
     );
-    final nextHistory = await purchaseStore.add(record, history);
     final nextBudget = budget.copyWith(
       foodSpent: budget.foodSpent + plan.basket,
     );
-    await budgetStore.save(nextBudget);
-    await shoppingListStore.clear();
-    return PurchaseMutationResult(
-      history: nextHistory,
-      budget: nextBudget,
-    );
+    try {
+      final nextHistory = await purchaseStore.add(record, history);
+      await budgetStore.save(nextBudget);
+      await shoppingListStore.clear();
+      return PurchaseMutationResult(
+        history: nextHistory,
+        budget: nextBudget,
+      );
+    } catch (_) {
+      // Jeden Speicherbereich unabhängig zurücksetzen, soweit möglich.
+      try {
+        await purchaseStore.save(history);
+      } catch (_) {
+        // Der ursprüngliche Schreibfehler bleibt für die Oberfläche erhalten.
+      }
+      try {
+        await budgetStore.save(budget);
+      } catch (_) {
+        // Die weiteren Rücksetzungen trotzdem versuchen.
+      }
+      try {
+        await shoppingListStore.save(items);
+      } catch (_) {
+        // Die Oberfläche erhält weiterhin den ursprünglichen Fehler.
+      }
+      rethrow;
+    }
   }
 
   Future<PurchaseMutationResult> update({
