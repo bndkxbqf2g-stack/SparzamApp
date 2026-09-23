@@ -113,7 +113,7 @@ ReceiptDraft parseReceiptLedger(String text) {
         : isDeposit ? ReceiptRowKind.deposit
         : cents < 0 ? ReceiptRowKind.unresolved
         : ReceiptRowKind.item;
-    final linked = isDiscount && lastItemLine != null
+    final linked = isDiscount && !lower.contains('warenkorb') &&\n        lastItemLine != null
         ? lastItemLine : null;
     rows.add(ReceiptRow(
       line: index + 1,
