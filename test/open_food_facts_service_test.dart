@@ -125,4 +125,34 @@ void main() {
 
     service.close();
   });
+
+  test('abweichender Produktcode aus API wird nicht übernommen', () async {
+    final client = MockClient(
+      (_) async => http.Response(
+        '{"status":1,"code":"222","product":'
+        '{"code":"222","product_name":"Falsches Produkt"}}',
+        200,
+      ),
+    );
+    final service = OpenFoodFactsService(client: client);
+
+    expect(await service.fetchProductByEan('111'), isNull);
+
+    service.close();
+  });
+
+  test('abweichender verschachtelter Code wird ebenfalls abgelehnt', () async {
+    final client = MockClient(
+      (_) async => http.Response(
+        '{"status":1,"code":"111","product":'
+        '{"code":"222","product_name":"Falsches Produkt"}}',
+        200,
+      ),
+    );
+    final service = OpenFoodFactsService(client: client);
+
+    expect(await service.fetchProductByEan('111'), isNull);
+
+    service.close();
+  });
 }

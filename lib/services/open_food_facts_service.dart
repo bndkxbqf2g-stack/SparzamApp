@@ -43,6 +43,11 @@ class OpenFoodFactsService {
       if ((json['status'] as num?)?.toInt() != 1) return null;
       final raw = json['product'];
       if (raw is! Map<String, dynamic>) return null;
+      for (final returnedCode in [json['code'], raw['code']]) {
+        if (returnedCode != null && returnedCode.toString().trim() != code) {
+          return null;
+        }
+      }
 
       final name = (raw['product_name'] as String?)?.trim();
       if ((name ?? '').isEmpty && existing == null) return null;
@@ -80,7 +85,8 @@ class OpenFoodFactsService {
     final amount = (raw['product_quantity'] as num?)?.toDouble();
     final unit = (raw['product_quantity_unit'] as String?)?.trim().toLowerCase();
 
-    if (amount != null && amount > 0 && unit != null && unit.isNotEmpty) {
+    if (amount != null && amount.isFinite && amount > 0 &&
+        unit != null && unit.isNotEmpty) {
       return _ParsedQuantity(amount: amount, unit: _normalizeUnit(unit));
     }
 
@@ -105,7 +111,8 @@ class OpenFoodFactsService {
     final amountGroup = multi == null ? 1 : 2;
     final unitGroup = multi == null ? 2 : 3;
     final parsed = double.tryParse(match.group(amountGroup)!);
-    if (parsed == null || parsed <= 0) return null;
+    if (parsed == null || !parsed.isFinite || parsed <= 0 ||
+        !multiplier.isFinite || multiplier <= 0) return null;
 
     var parsedUnit = _normalizeUnit(match.group(unitGroup)!);
     var parsedAmount = parsed * multiplier;
@@ -113,6 +120,7 @@ class OpenFoodFactsService {
       parsedAmount *= 10;
       parsedUnit = 'ml';
     }
+    if (!parsedAmount.isFinite) return null;
 
     return _ParsedQuantity(amount: parsedAmount, unit: parsedUnit);
   }
