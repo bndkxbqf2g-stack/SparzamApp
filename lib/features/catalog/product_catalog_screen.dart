@@ -51,6 +51,9 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
   String? syncFeedback;
   String? syncProgress;
   bool cancelRequested = false;
+  bool editingProduct = false;
+  bool deletingProduct = false;
+  bool savingProduct = false;
   List<String> failedProductIds = const [];
 
   @override
@@ -142,12 +145,19 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
   }
 
   Future<void> edit([Product? product]) async {
-    final result = await Navigator.of(context).push<Product>(
-      MaterialPageRoute(
-        builder: (_) => ProductEditorScreen(product: product),
-      ),
-    );
-    if (result == null) return;
+    if (editingProduct || deletingProduct || savingProduct) return;
+    editingProduct = true;
+    Product? result;
+    try {
+      result = await Navigator.of(context).push<Product>(
+        MaterialPageRoute(
+          builder: (_) => ProductEditorScreen(product: product),
+        ),
+      );
+    } finally {
+      editingProduct = false;
+    }
+    if (!mounted || result == null) return;
 
     final duplicateEan = result.ean != null &&
         allProducts.any(
@@ -167,12 +177,26 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
       return;
     }
 
-    final next = await widget.onSaveProduct(result);
-    if (mounted) setState(() => customProducts = next);
+    setState(() => savingProduct = true);
+    try {
+      final next = await widget.onSaveProduct(result);
+      if (mounted) setState(() => customProducts = next);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Produkt konnte nicht gespeichert werden.')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => savingProduct = false);
+    }
   }
 
   Future<void> delete(Product product) async {
-    final confirmed = await showDialog<bool>(
+    if (editingProduct || deletingProduct || savingProduct) return;
+    setState(() => deletingProduct = true);
+    try {
+      final confirmed = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
             title: const Text('Produkt löschen?'),
@@ -193,10 +217,19 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
           ),
         ) ??
         false;
-    if (!confirmed) return;
+      if (!mounted || !confirmed) return;
 
-    final next = await widget.onDeleteProduct(product);
-    if (mounted) setState(() => customProducts = next);
+      final next = await widget.onDeleteProduct(product);
+      if (mounted) setState(() => customProducts = next);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Produkt konnte nicht gelöscht werden.')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => deletingProduct = false);
+    }
   }
 
   Future<void> editPrices(Product product) async {
@@ -226,7 +259,7 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(title: const Text('Produktkatalog')),
         floatingActionButton: FloatingActionButton.extended(
-          onPressed: edit,
+          onPressed: deletingProduct || savingProduct ? null : edit,
           icon: const Icon(Icons.add),
           label: const Text('Produkt'),
         ),
@@ -346,6 +379,7 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                     onTap: () => editPrices(product),
                     trailing: isCustom(product)
                         ? PopupMenuButton<String>(
+                            enabled: !deletingProduct && !savingProduct,
                             onSelected: (value) => value == 'edit'
                                 ? edit(product)
                                 : delete(product),
