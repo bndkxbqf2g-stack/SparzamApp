@@ -39,6 +39,10 @@ class MarketPriceStore {
       final existing = next.where((item) => item.key == price.key);
       if (existing.isNotEmpty) {
         final currentPrice = existing.first;
+        if (price.source == MarketPriceSource.receipt &&
+            currentPrice.updatedAt.isAfter(price.updatedAt)) {
+          continue;
+        }
         if (price.source == MarketPriceSource.openPrices) {
           if (currentPrice.isManual ||
               !price.updatedAt.isAfter(currentPrice.updatedAt)) {
