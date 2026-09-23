@@ -6,6 +6,7 @@ import '../../models/market_price.dart';
 import '../../models/product.dart';
 import 'receipt_file_text_reader.dart';
 import 'receipt_import.dart';
+import 'receipt_ledger.dart';
 
 class ReceiptImportDialog extends StatefulWidget {
   const ReceiptImportDialog({
@@ -25,6 +26,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
   final storeController = TextEditingController();
   final linesController = TextEditingController();
   final List<String> importedFileNames = <String>[];
+  final receiptDrafts = <({String name, ReceiptDraft draft})>[];
   String? errorMessage;
   bool importing = false;
   bool saving = false;
@@ -57,6 +59,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
       if (!mounted || result == null || result.files.isEmpty) return;
 
       final extractedTexts = <String>[];
+      final newDrafts = <({String name, ReceiptDraft draft})>[];
       final unreadableFiles = <String>[];
       for (final file in result.files) {
         final bytes = file.bytes;
@@ -69,7 +72,11 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
           bytes: bytes,
         );
         if (text != null && text.trim().isNotEmpty) {
-          extractedTexts.add(text.trim());
+          if (file.name.toLowerCase().endsWith('.pdf')) {
+            newDrafts.add((name: file.name, draft: parseReceiptLedger(text)));
+          } else {
+            extractedTexts.add(text.trim());
+          }
         } else if (file.name.toLowerCase().endsWith('.pdf')) {
           unreadableFiles.add(file.name);
         }
@@ -77,6 +84,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
       if (!mounted) return;
       setState(() {
         importedFileNames.addAll(result.files.map((file) => file.name));
+        receiptDrafts.addAll(newDrafts);
         _appendReceiptText(extractedTexts);
         if (unreadableFiles.isNotEmpty) {
           errorMessage =
@@ -176,6 +184,37 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
+                ),
+              ],
+              if (receiptDrafts.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                const Text('PDF-Prüfvorschau',
+                    style: TextStyle(fontWeight: FontWeight.w700)),
+                ...receiptDrafts.map((entry) {
+                  final draft = entry.draft;
+                  final printed = draft.totalCents;
+                  final difference = printed == null
+                      ? null : draft.calculatedCents - printed;
+                  return ListTile(
+                    dense: true,
+                    title: Text(entry.name,
+                        maxLines: 1, overflow: TextOverflow.ellipsis),
+                    subtitle: Text(
+                      '${draft.rows.length} Preiszeilen · '
+                      'gerechnet ${(draft.calculatedCents / 100).toStringAsFixed(2)} € · '
+                      '${printed == null ? 'Bonbetrag nicht erkannt' : 'Bonbetrag ${(printed / 100).toStringAsFixed(2)} €'}'
+                      '${difference == null || difference == 0 ? '' : ' · Abweichung ${(difference / 100).toStringAsFixed(2)} €'}'
+                      '${draft.unresolvedLines.isEmpty ? '' : ' · ${draft.unresolvedLines.length} offene Zeilen'}',
+                    ),
+                    trailing: Icon(draft.balances
+                        ? Icons.check_circle_outline
+                        : Icons.report_gmailerrorred_outlined),
+                  );
+                }),
+                const Text(
+                  'Diese PDF-Vorschau speichert keine Artikelpreise. '
+                  'Bitte eindeutige Einzelpreise unten selbst bestätigen.',
+                  style: TextStyle(fontSize: 12),
                 ),
               ],
               const SizedBox(height: 8),
