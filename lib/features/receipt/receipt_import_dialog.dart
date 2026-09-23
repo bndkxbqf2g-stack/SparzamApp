@@ -1,11 +1,10 @@
-import 'dart:convert';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../models/market_price.dart';
 import '../../models/product.dart';
+import 'receipt_file_text_reader.dart';
 import 'receipt_import.dart';
 
 class ReceiptImportDialog extends StatefulWidget {
@@ -25,43 +24,117 @@ class ReceiptImportDialog extends StatefulWidget {
 class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
   final storeController = TextEditingController();
   final linesController = TextEditingController();
-  bool hasPhoto = false;
-  String? importedFileName;
+  final List<String> importedFileNames = <String>[];
+  String? errorMessage;
+  bool importing = false;
   bool saving = false;
 
   Future<void> pickReceipt() async {
-    final image = await ImagePicker().pickImage(source: ImageSource.camera);
-    if (!mounted || image == null) return;
-    setState(() => hasPhoto = true);
-  }
-
-  Future<void> pickReceiptFile() async {
-    final result = await FilePicker.platform.pickFiles(
-      withData: true,
-      type: FileType.custom,
-      allowedExtensions: ['pdf', 'txt', 'csv', 'jpg', 'jpeg', 'png'],
-    );
-    if (!mounted || result == null || result.files.isEmpty) return;
-    final file = result.files.single;
-    setState(() => importedFileName = file.name);
-    final bytes = file.bytes;
-    final lower = file.name.toLowerCase();
-    if (bytes != null && (lower.endsWith('.txt') || lower.endsWith('.csv'))) {
-      linesController.text = utf8.decode(bytes, allowMalformed: true);
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.camera);
+      if (!mounted || image == null) return;
+      setState(() {
+        importedFileNames.add(image.name);
+        errorMessage = null;
+      });
+    } catch (error) {
+      if (mounted) setState(() => errorMessage = 'Kamera konnte nicht geöffnet werden: $error');
     }
   }
 
+  Future<void> pickReceiptFile() async {
+    setState(() {
+      importing = true;
+      errorMessage = null;
+    });
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        allowMultiple: true,
+        withData: true,
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'txt', 'csv', 'jpg', 'jpeg', 'png'],
+      );
+      if (!mounted || result == null || result.files.isEmpty) return;
+
+      final extractedTexts = <String>[];
+      final unreadableFiles = <String>[];
+      for (final file in result.files) {
+        final bytes = file.bytes;
+        if (bytes == null) {
+          unreadableFiles.add(file.name);
+          continue;
+        }
+        final text = await readReceiptFileText(
+          fileName: file.name,
+          bytes: bytes,
+        );
+        if (text != null && text.trim().isNotEmpty) {
+          extractedTexts.add(text.trim());
+        } else if (file.name.toLowerCase().endsWith('.pdf')) {
+          unreadableFiles.add(file.name);
+        }
+      }
+      if (!mounted) return;
+      setState(() {
+        importedFileNames.addAll(result.files.map((file) => file.name));
+        _appendReceiptText(extractedTexts);
+        if (unreadableFiles.isNotEmpty) {
+          errorMessage =
+              '${unreadableFiles.length} Beleg(e) enthalten keinen auslesbaren Text. Bitte die Artikel unten manuell ergänzen.';
+        }
+      });
+    } catch (error) {
+      if (mounted) {
+        setState(() => errorMessage = 'Dateien konnten nicht gelesen werden: $error');
+      }
+    } finally {
+      if (mounted) setState(() => importing = false);
+    }
+  }
+
+  void _appendReceiptText(List<String> texts) {
+    if (texts.isEmpty) return;
+    final current = linesController.text.trim();
+    linesController.text = [
+      if (current.isNotEmpty) current,
+      ...texts,
+    ].join('\n');
+  }
+
   Future<void> save() async {
+    final storeName = storeController.text.trim();
+    if (storeName.isEmpty) {
+      setState(() => errorMessage = 'Bitte zuerst den Markt angeben.');
+      return;
+    }
+    if (linesController.text.trim().isEmpty) {
+      setState(() => errorMessage = 'Es wurden keine Artikeldaten erkannt. Bitte Artikel und Preis manuell ergänzen.');
+      return;
+    }
     final result = parseReceiptLines(
       text: linesController.text,
-      storeName: storeController.text,
+      storeName: storeName,
       products: widget.products,
     );
-    if (result.prices.isEmpty) return;
+    if (result.prices.isEmpty) {
+      setState(() => errorMessage = 'Kein bekannter Artikel mit gültigem Preis gefunden. Bitte die Zeilen prüfen.');
+      return;
+    }
     setState(() => saving = true);
-    await widget.onSavePrices(result.prices);
-    if (!mounted) return;
-    Navigator.of(context).pop(result.unmatchedLines);
+    try {
+      await widget.onSavePrices(result.prices);
+      if (!mounted) return;
+      Navigator.of(context).pop(
+        ReceiptImportOutcome(
+          savedPrices: result.prices.length,
+          unmatchedLines: result.unmatchedLines,
+        ),
+      );
+    } catch (error) {
+      if (mounted) setState(() => errorMessage = 'Preise konnten nicht gespeichert werden: $error');
+    } finally {
+      if (mounted) setState(() => saving = false);
+    }
   }
 
   @override
@@ -80,23 +153,43 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               OutlinedButton.icon(
-                onPressed: saving ? null : pickReceipt,
+                onPressed: saving || importing ? null : pickReceipt,
                 icon: const Icon(Icons.photo_camera_outlined),
-                label: Text(hasPhoto ? 'Bon fotografiert' : 'Bon fotografieren'),
+                label: const Text('Weiteren Bon fotografieren'),
               ),
               const SizedBox(height: 6),
               OutlinedButton.icon(
-                onPressed: saving ? null : pickReceiptFile,
+                onPressed: saving || importing ? null : pickReceiptFile,
                 icon: const Icon(Icons.upload_file_outlined),
-                label: Text(importedFileName == null
-                    ? 'Bon-Datei hochladen'
-                    : 'Datei: $importedFileName'),
+                label: Text(importing
+                    ? 'Belege werden gelesen …'
+                    : 'Mehrere Bon-Dateien auswählen'),
               ),
+              if (importing) const LinearProgressIndicator(),
+              if (importedFileNames.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text('${importedFileNames.length} Beleg(e) ausgewählt'),
+                ...importedFileNames.map(
+                  (name) => Text(
+                    '• $name',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+              ],
               const SizedBox(height: 8),
               const Text(
-                'PDF/Bild-Belege dienen als Referenz für die manuelle Übertragung. TXT/CSV wird direkt eingelesen. Format je Zeile: Produkt;Preis',
+                'Textbasierte PDF-, TXT- und CSV-Belege werden direkt eingelesen. Fotos und gescannte PDFs können ausgewählt und anschließend manuell ergänzt werden.',
                 style: TextStyle(fontSize: 12),
               ),
+              if (errorMessage != null) ...[
+                const SizedBox(height: 8),
+                Text(
+                  errorMessage!,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              ],
               TextField(
                 controller: storeController,
                 decoration: const InputDecoration(labelText: 'Markt'),
@@ -117,12 +210,12 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
         ),
         actions: [
           TextButton(
-            onPressed: saving ? null : () => Navigator.of(context).pop(),
+            onPressed: saving || importing ? null : () => Navigator.of(context).pop(),
             child: const Text('Abbrechen'),
           ),
           FilledButton(
-            onPressed: saving ? null : save,
-            child: const Text('Preise lernen'),
+            onPressed: saving || importing ? null : save,
+            child: Text(saving ? 'Speichern …' : 'Preise lernen'),
           ),
         ],
       );

@@ -6,6 +6,7 @@ import '../../models/market_price.dart';
 import '../../models/product.dart';
 import 'purchase_history_card.dart';
 import 'purchase_detail_screen.dart';
+import 'receipt_import.dart';
 import 'receipt_import_dialog.dart';
 
 class ReceiptScreen extends StatelessWidget {
@@ -53,15 +54,26 @@ class ReceiptScreen extends StatelessWidget {
             ),
           const SizedBox(height: 12),
           OutlinedButton.icon(
-            onPressed: () => showDialog<void>(
-              context: context,
-              builder: (_) => ReceiptImportDialog(
-                products: catalogProducts,
-                onSavePrices: onSavePrices,
-              ),
-            ),
+            onPressed: () async {
+              final result = await showDialog<ReceiptImportOutcome>(
+                context: context,
+                builder: (_) => ReceiptImportDialog(
+                  products: catalogProducts,
+                  onSavePrices: onSavePrices,
+                ),
+              );
+              if (!context.mounted || result == null) return;
+              final unmatched = result.unmatchedLines.length;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    '${result.savedPrices} Bonpreis(e) gespeichert${unmatched > 0 ? ' · $unmatched Zeile(n) bitte prüfen' : ''}.',
+                  ),
+                ),
+              );
+            },
             icon: const Icon(Icons.document_scanner_outlined),
-            label: const Text('Kassenbon fotografieren und Preise lernen'),
+            label: const Text('Kassenbons importieren und Preise lernen'),
           ),
           const SizedBox(height: 22),
           Text('Letzte Einkäufe', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
