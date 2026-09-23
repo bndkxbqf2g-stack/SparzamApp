@@ -86,7 +86,9 @@ class OpenPriceDiscovery {
       }
       final data = jsonDecode(response.body) as Map<String, dynamic>;
       for (final raw in (data['items'] as List<dynamic>? ?? const [])) {
-        if (raw is! Map<String, dynamic>) continue;
+        if (raw is! Map<String, dynamic>) {
+          continue;
+        }
         if (raw['currency'] != 'EUR' || raw['duplicate_of'] != null) {
           continue;
         }
@@ -112,7 +114,9 @@ class OpenPriceDiscovery {
         ));
       }
       final pages = (data['pages'] as num?)?.toInt() ?? page;
-      if (page >= pages) break;
+      if (page >= pages) {
+        break;
+      }
     }
     return found;
   }
