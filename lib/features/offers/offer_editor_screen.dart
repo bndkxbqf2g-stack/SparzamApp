@@ -107,11 +107,19 @@ class _OfferEditorScreenState extends State<OfferEditorScreen> {
   }
 
   Future<void> _pickDate() async {
+    final today = DateUtils.dateOnly(DateTime.now());
+    final lastDay = DateUtils.addDaysToDate(today, 365);
+    final selected = DateUtils.dateOnly(validUntil);
+    final initialDay = selected.isBefore(today)
+        ? today
+        : selected.isAfter(lastDay)
+            ? lastDay
+            : selected;
     final date = await showDatePicker(
       context: context,
-      initialDate: validUntil,
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
+      initialDate: initialDay,
+      firstDate: today,
+      lastDate: lastDay,
     );
     if (date != null) setState(() => validUntil = date);
   }
