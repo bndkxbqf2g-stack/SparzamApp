@@ -15,6 +15,9 @@ import '../../models/route_plan.dart';
 import '../../services/shopping_list_store.dart';
 import '../home/dashboard_data.dart';
 import '../home/home_screen.dart';
+import '../catalog/prices_hub_screen.dart';
+import '../prospects/prospects_screen.dart';
+import 'more_screen.dart';
 import '../offers/offers_screen.dart';
 import '../profile/profile_screen.dart';
 import '../receipt/receipt_screen.dart';
@@ -106,37 +109,45 @@ List<Widget> buildShellPages({
         onDelete: onDeleteOffer,
         catalogProducts: catalogProducts,
       ),
-      RouteScreen(
-        items: shoppingList,
-        offers: offers,
-        mobility: mobility,
-        marketPrices: marketPrices,
-        onRoadDistancesChanged: onRoadDistancesChanged,
-        onRoadMatrixChanged: onRoadMatrixChanged,
-      ),
-      ReceiptScreen(
-        plan: currentPlan,
-        baselineTotal: baselineTotal,
-        history: purchaseHistory,
-        onComplete: onCompletePurchase,
-        onUpdatePurchase: onUpdatePurchase,
-        onDeletePurchase: onDeletePurchase,
-        catalogProducts: catalogProducts,
-        onSavePrices: (prices) async {
-          for (final price in prices) {
-            await onSavePrice(price);
-          }
-        },
-      ),
-      ProfileScreen(
-        mobility: mobility,
-        onEditMobility: onEditMobility,
-        onEditStores: onEditStores,
-        storeCount: storeCount,
+      const ProspectsScreen(),
+      PricesHubScreen(
         onOpenCatalog: onOpenCatalog,
-        productCount: catalogProducts.length,
-        onEditPriceData: onEditPriceData,
-        priceDataSummary: priceDataSummary,
-        onOpenDiagnostics: onOpenDiagnostics,
+        onOpenSettings: onEditPriceData,
+        summary: priceDataSummary,
+      ),
+      MoreScreen(
+        routePage: RouteScreen(
+          items: shoppingList,
+          offers: offers,
+          mobility: mobility,
+          marketPrices: marketPrices,
+          onRoadDistancesChanged: onRoadDistancesChanged,
+          onRoadMatrixChanged: onRoadMatrixChanged,
+        ),
+        receiptPage: ReceiptScreen(
+          plan: currentPlan,
+          baselineTotal: baselineTotal,
+          history: purchaseHistory,
+          onComplete: onCompletePurchase,
+          onUpdatePurchase: onUpdatePurchase,
+          onDeletePurchase: onDeletePurchase,
+          catalogProducts: catalogProducts,
+          onSavePrices: (prices) async {
+            for (final price in prices) {
+              await onSavePrice(price);
+            }
+          },
+        ),
+        profilePage: ProfileScreen(
+          mobility: mobility,
+          onEditMobility: onEditMobility,
+          onEditStores: onEditStores,
+          storeCount: storeCount,
+          onOpenCatalog: onOpenCatalog,
+          productCount: catalogProducts.length,
+          onEditPriceData: onEditPriceData,
+          priceDataSummary: priceDataSummary,
+          onOpenDiagnostics: onOpenDiagnostics,
+        ),
       ),
     ];
