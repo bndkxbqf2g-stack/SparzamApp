@@ -4,10 +4,8 @@ import 'package:sparzamapp/services/budget_store.dart';
 
 void main() {
   test('Speichern lehnt ungültige Zahlen ab', () async {
-    expect(
-      () => BudgetStore().save(
-        const BudgetPlan(foodBudget: double.nan),
-      ),
+    await expectLater(
+      BudgetStore().save(const BudgetPlan(foodBudget: double.nan)),
       throwsArgumentError,
     );
   });
