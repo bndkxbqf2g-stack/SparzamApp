@@ -23,6 +23,7 @@ import 'shopping_input.dart';
 import 'shopping_recent_choices.dart';
 import 'shopping_search_results.dart';
 import 'shopping_list_status.dart';
+import 'aisle_order_dialog.dart';
 
 class ShoppingListScreen extends StatefulWidget {
   const ShoppingListScreen({
@@ -34,6 +35,8 @@ class ShoppingListScreen extends StatefulWidget {
     this.onCreateShoppingList,
     required this.onAdd,
     required this.onChangeQuantity,
+    this.onUpdateItemNote,
+    this.onUpdateItemChecked,
     required this.preferredProductByGroup,
     required this.recentPurchases,
     required this.onPurchased,
@@ -55,6 +58,8 @@ class ShoppingListScreen extends StatefulWidget {
   final Future<void> Function(String name)? onCreateShoppingList;
   final ValueChanged<Product> onAdd;
   final void Function(String productId, int delta) onChangeQuantity;
+  final void Function(String productId, String note)? onUpdateItemNote;
+  final void Function(String productId, bool checked)? onUpdateItemChecked;
   final Map<String, String> preferredProductByGroup;
   final List<RecentPurchase> recentPurchases;
   final Future<void> Function(Product product, int quantity) onPurchased;
@@ -75,14 +80,33 @@ class ShoppingListScreen extends StatefulWidget {
 class _ShoppingListScreenState extends State<ShoppingListScreen> {
   final controller = TextEditingController();
   final _inputFocusNode = FocusNode();
-  final Set<String> checkedProductIds = <String>{};
   final Set<String> purchasingProductIds = <String>{};
   List<RecentPurchase> knownItems = <RecentPurchase>[];
+  List<String> aisleOrder = <String>[];
+  bool tileView = false;
 
   @override
   void initState() {
     super.initState();
     _loadKnownItems();
+    _loadAisleOrder();
+    _loadViewMode();
+  }
+
+  Future<void> _loadAisleOrder() async {
+    final order = await widget.shoppingListStore.loadAisleOrder();
+    if (mounted) setState(() => aisleOrder = order);
+  }
+
+  Future<void> _loadViewMode() async {
+    final enabled = await widget.shoppingListStore.loadTileView();
+    if (mounted) setState(() => tileView = enabled);
+  }
+
+  Future<void> toggleViewMode() async {
+    final next = !tileView;
+    setState(() => tileView = next);
+    await widget.shoppingListStore.saveTileView(next);
   }
 
   Future<void> _loadKnownItems() async {
@@ -114,6 +138,39 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         enabledStoreNames: widget.mobility.enabledStoreNames,
         marketPrices: widget.marketPrices,
       );
+
+  Set<String> get checkedProductIds => widget.items
+      .where((item) => item.checked)
+      .map((item) => item.product.id)
+      .toSet();
+
+  List<MapEntry<String, List<ListItem>>> orderedGroups(
+    Map<String, List<ListItem>> grouped,
+  ) {
+    final entries = grouped.entries.toList();
+    entries.sort((a, b) {
+      final aIndex = aisleOrder.indexOf(a.key);
+      final bIndex = aisleOrder.indexOf(b.key);
+      if (aIndex < 0 && bIndex < 0) return 0;
+      if (aIndex < 0) return 1;
+      if (bIndex < 0) return -1;
+      return aIndex.compareTo(bIndex);
+    });
+    return entries;
+  }
+
+  Future<void> editAisleOrder() async {
+    final groups = itemsByGroup.keys.toList();
+    if (groups.length < 2) return;
+    final result = await showAisleOrderDialog(
+      context,
+      groups: groups,
+      currentOrder: aisleOrder,
+    );
+    if (result == null) return;
+    await widget.shoppingListStore.saveAisleOrder(result);
+    if (mounted) setState(() => aisleOrder = result);
+  }
 
   void _focusShoppingInput() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -160,30 +217,62 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     _focusShoppingInput();
   }
 
+  Future<void> editItemDetails(ListItem item) async {
+    final noteController = TextEditingController(text: item.note);
+    final note = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(item.product.name),
+        content: TextField(
+          controller: noteController,
+          autofocus: true,
+          minLines: 2,
+          maxLines: 4,
+          decoration: const InputDecoration(
+            labelText: 'Notiz / genaue Beschreibung',
+            hintText: 'Zum Beispiel: Vollkorn, 500 g',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Abbrechen'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, noteController.text),
+            child: const Text('Speichern'),
+          ),
+        ],
+      ),
+    );
+    noteController.dispose();
+    if (note != null) widget.onUpdateItemNote?.call(item.product.id, note);
+  }
+
+  void setItemChecked(ListItem item, bool checked) {
+    final callback = widget.onUpdateItemChecked;
+    if (callback != null) {
+      callback(item.product.id, checked);
+      return;
+    }
+    setState(() => item.checked = checked);
+  }
+
   Future<void> toggleChecked(Product product) async {
     if (purchasingProductIds.contains(product.id)) return;
-    final wasChecked = checkedProductIds.contains(product.id);
-
-    setState(() {
-      if (wasChecked) {
-        checkedProductIds.remove(product.id);
-      } else {
-        checkedProductIds.add(product.id);
-      }
-    });
+    final item = widget.items.firstWhere(
+      (item) => item.product.id == product.id,
+    );
+    final wasChecked = item.checked;
+    setItemChecked(item, !wasChecked);
 
     if (!wasChecked) {
       purchasingProductIds.add(product.id);
       try {
-        final item = widget.items.firstWhere(
-          (item) => item.product.id == product.id,
-        );
         await widget.onPurchased(product, item.quantity);
       } catch (_) {
         if (mounted) {
-          setState(() {
-            checkedProductIds.remove(product.id);
-          });
+          setItemChecked(item, false);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Kauf konnte nicht gespeichert werden.')),
           );
@@ -233,12 +322,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 activeListId: widget.activeShoppingListId,
                 onSelectList: widget.onSelectShoppingList,
                 onCreateList: widget.onCreateShoppingList,
+                onEditAisleOrder: editAisleOrder,
+                tileView: tileView,
+                onToggleView: toggleViewMode,
                 onClear: () {
                   if (purchasingProductIds.isNotEmpty) return;
                   widget.onClearPurchased(
                     widget.items.map((item) => item.product.id).toSet(),
                   );
-                  setState(() => checkedProductIds.clear());
                 },
               ),
               const SizedBox(height: 14),
@@ -290,13 +381,12 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   if (purchasingProductIds.isNotEmpty) return;
                   final purchased = {...checkedProductIds};
                   widget.onClearPurchased(purchased);
-                  setState(() => checkedProductIds.clear());
                 },
               ),
               if (widget.items.isEmpty)
                 const EmptyShoppingListCard()
               else
-                for (final entry in grouped.entries) ...[
+                for (final entry in orderedGroups(grouped)) ...[
                   ShoppingGroupCard(
                     group: entry.key,
                     items: entry.value,
@@ -306,6 +396,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     marketPrices: widget.marketPrices,
                     onToggle: toggleChecked,
                     onChangeQuantity: widget.onChangeQuantity,
+                    onEditDetails: editItemDetails,
+                    tileView: tileView,
                     onOpenOffer: openOffer,
                   ),
                 ],

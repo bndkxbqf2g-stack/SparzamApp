@@ -12,6 +12,8 @@ class ShoppingListStore {
   static const _listsStorageKey = 'shopping_lists_v1';
   static const _knownItemsStorageKey = 'known_shopping_items';
   static const _preferredProductsStorageKey = 'preferred_products_by_group';
+  static const _aisleOrderStorageKey = 'shopping_aisle_order_v1';
+  static const _tileViewStorageKey = 'shopping_tile_view_v1';
   final SharedPreferencesAsync _preferences = SharedPreferencesAsync();
 
   Future<Map<String, String>> loadPreferredProducts() async {
@@ -99,6 +101,8 @@ class ShoppingListStore {
               ean: json['ean'] as String?,
             ),
             quantity: (json['quantity'] as num?)?.toInt() ?? 1,
+            note: json['note'] as String? ?? '',
+            checked: json['checked'] as bool? ?? false,
           ),
         );
       } catch (_) {
@@ -118,6 +122,8 @@ class ShoppingListStore {
         'group': item.product.group,
         'ean': item.product.ean,
         'quantity': item.quantity,
+        'note': item.note,
+        'checked': item.checked,
       })).toList(),
     );
   }
@@ -145,4 +151,16 @@ class ShoppingListStore {
         _listsStorageKey,
         lists.map((list) => jsonEncode(list.toJson())).toList(),
       );
+
+  Future<List<String>> loadAisleOrder() async =>
+      await _preferences.getStringList(_aisleOrderStorageKey) ?? <String>[];
+
+  Future<void> saveAisleOrder(List<String> groups) =>
+      _preferences.setStringList(_aisleOrderStorageKey, groups);
+
+  Future<bool> loadTileView() async =>
+      await _preferences.getBool(_tileViewStorageKey) ?? false;
+
+  Future<void> saveTileView(bool enabled) =>
+      _preferences.setBool(_tileViewStorageKey, enabled);
 }

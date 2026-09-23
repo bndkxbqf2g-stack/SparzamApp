@@ -28,7 +28,14 @@ void main() {
       NamedShoppingList(
         id: 'weekly',
         name: 'Wocheneinkauf',
-        items: [ListItem(product: product, quantity: 2)],
+        items: [
+          ListItem(
+            product: product,
+            quantity: 2,
+            note: 'Laktosefrei',
+            checked: true,
+          ),
+        ],
       ),
       const NamedShoppingList(
         id: 'party',
@@ -40,6 +47,21 @@ void main() {
     final loaded = await store.loadNamedLists();
     expect(loaded.map((list) => list.name), ['Wocheneinkauf', 'Party']);
     expect(loaded.first.items.single.quantity, 2);
+    expect(loaded.first.items.single.note, 'Laktosefrei');
+    expect(loaded.first.items.single.checked, isTrue);
     expect(loaded.last.items, isEmpty);
+  });
+
+  test('Marktreihenfolge und Ansichtsmodus bleiben gespeichert', () async {
+    final store = ShoppingListStore();
+
+    await store.saveAisleOrder(['obst', 'milch', 'backwaren']);
+    await store.saveTileView(true);
+
+    expect(
+      await store.loadAisleOrder(),
+      ['obst', 'milch', 'backwaren'],
+    );
+    expect(await store.loadTileView(), isTrue);
   });
 }

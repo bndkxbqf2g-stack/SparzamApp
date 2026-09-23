@@ -144,6 +144,8 @@ class _AppShellState extends State<AppShell> {
           (item) => ListItem(
             product: _catalogProduct(item.product.id) ?? item.product,
             quantity: item.quantity,
+            note: item.note,
+            checked: item.checked,
           ),
         )
         .toList();
@@ -163,7 +165,12 @@ class _AppShellState extends State<AppShell> {
   }
 
   List<ListItem> _copyItems(List<ListItem> items) => items
-      .map((item) => ListItem(product: item.product, quantity: item.quantity))
+      .map((item) => ListItem(
+            product: item.product,
+            quantity: item.quantity,
+            note: item.note,
+            checked: item.checked,
+          ))
       .toList();
 
   Future<void> _loadNamedShoppingLists() async {
@@ -208,7 +215,12 @@ class _AppShellState extends State<AppShell> {
   Future<void> persistShoppingList() {
     final snapshot = [
       for (final item in shoppingList)
-        ListItem(product: item.product, quantity: item.quantity),
+        ListItem(
+          product: item.product,
+          quantity: item.quantity,
+          note: item.note,
+          checked: item.checked,
+        ),
     ];
     final lists = namedShoppingLists
         .map((list) => list.id == activeShoppingListId
@@ -300,6 +312,11 @@ class _AppShellState extends State<AppShell> {
     persistShoppingListWithFeedback();
     widget.shoppingListStore.saveKnownItem(product);
     ensureCatalogProduct(product);
+    widget.diagnosticLogService.record(
+      category: 'Einkaufsliste',
+      message: 'Artikel hinzugefügt.',
+      details: product.name,
+    );
   }
 
   Future<void> openScanner() async {
@@ -338,6 +355,24 @@ class _AppShellState extends State<AppShell> {
       shoppingList[index].quantity += delta;
       if (shoppingList[index].quantity <= 0) shoppingList.removeAt(index);
     });
+    persistShoppingListWithFeedback();
+  }
+
+  void updateItemNote(String productId, String note) {
+    final index = shoppingList.indexWhere(
+      (item) => item.product.id == productId,
+    );
+    if (index < 0) return;
+    setState(() => shoppingList[index].note = note.trim());
+    persistShoppingListWithFeedback();
+  }
+
+  void updateItemChecked(String productId, bool checked) {
+    final index = shoppingList.indexWhere(
+      (item) => item.product.id == productId,
+    );
+    if (index < 0) return;
+    setState(() => shoppingList[index].checked = checked);
     persistShoppingListWithFeedback();
   }
 
@@ -397,6 +432,10 @@ class _AppShellState extends State<AppShell> {
     final plan = currentOptimizer?.bestPlan();
     final baseline = regularOptimizer?.bestSingleStorePlan();
     if (plan == null || baseline == null || shoppingList.isEmpty) return;
+    final purchasedItemCount = shoppingList.fold<int>(
+      0,
+      (sum, item) => sum + item.quantity,
+    );
     _purchaseInProgress = true;
     try {
       await _shoppingListSaves.pending;
@@ -415,6 +454,11 @@ class _AppShellState extends State<AppShell> {
         shoppingList.clear();
       });
       await persistShoppingList();
+      widget.diagnosticLogService.record(
+        category: 'Einkauf',
+        message: 'Einkauf abgeschlossen.',
+        details: '$purchasedItemCount Artikel',
+      );
     } finally {
       _purchaseInProgress = false;
     }
@@ -705,6 +749,8 @@ class _AppShellState extends State<AppShell> {
       onCreateShoppingList: createShoppingList,
       onAddProduct: addProduct,
       onChangeQuantity: changeQuantity,
+      onUpdateItemNote: updateItemNote,
+      onUpdateItemChecked: updateItemChecked,
       preferredProductByGroup: preferredProductByGroup,
       recentPurchases: recentPurchases,
       onPurchased: markPurchased,

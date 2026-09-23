@@ -46,12 +46,21 @@ void main() {
     final result = await coordinator.save(
       product: updatedProduct,
       products: const [oldProduct],
-      shoppingList: [ListItem(product: oldProduct, quantity: 2)],
+      shoppingList: [
+        ListItem(
+          product: oldProduct,
+          quantity: 2,
+          note: 'Bitte Bio',
+          checked: true,
+        ),
+      ],
     );
 
     expect(result.products, [updatedProduct]);
     expect(result.shoppingList.single.product, updatedProduct);
     expect(result.shoppingList.single.quantity, 2);
+    expect(result.shoppingList.single.note, 'Bitte Bio');
+    expect(result.shoppingList.single.checked, isTrue);
   });
 
   test('Löschen entfernt alle produktbezogenen Daten', () async {

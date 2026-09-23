@@ -7,7 +7,12 @@ List<ListItem> addShoppingProduct(List<ListItem> items, Product product) {
   return [
     for (var i = 0; i < items.length; i++)
       i == index
-          ? ListItem(product: product, quantity: items[i].quantity + 1)
+          ? ListItem(
+              product: product,
+              quantity: items[i].quantity + 1,
+              note: items[i].note,
+              checked: items[i].checked,
+            )
           : items[i],
   ];
 }

@@ -66,6 +66,8 @@ class ShellCatalogCoordinator {
       nextShoppingList[listIndex] = ListItem(
         product: product,
         quantity: nextShoppingList[listIndex].quantity,
+        note: nextShoppingList[listIndex].note,
+        checked: nextShoppingList[listIndex].checked,
       );
       await shoppingListStore.save(nextShoppingList);
     }

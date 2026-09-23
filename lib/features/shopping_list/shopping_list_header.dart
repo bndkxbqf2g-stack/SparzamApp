@@ -11,6 +11,9 @@ class ShoppingListHeader extends StatelessWidget {
     this.activeListId = 'default',
     this.onSelectList,
     this.onCreateList,
+    this.onEditAisleOrder,
+    this.tileView = false,
+    this.onToggleView,
   });
 
   final int itemCount;
@@ -19,6 +22,9 @@ class ShoppingListHeader extends StatelessWidget {
   final String activeListId;
   final Future<void> Function(String id)? onSelectList;
   final Future<void> Function(String name)? onCreateList;
+  final VoidCallback? onEditAisleOrder;
+  final bool tileView;
+  final VoidCallback? onToggleView;
 
   Future<void> _createList(BuildContext context) async {
     final controller = TextEditingController();
@@ -139,6 +145,16 @@ class ShoppingListHeader extends StatelessWidget {
                             if (id != null) onSelectList!(id);
                           },
                   ),
+                ),
+                IconButton(
+                  tooltip: 'Reihenfolge im Markt',
+                  onPressed: onEditAisleOrder,
+                  icon: const Icon(Icons.swap_vert),
+                ),
+                IconButton(
+                  tooltip: tileView ? 'Listenansicht' : 'Kachelansicht',
+                  onPressed: onToggleView,
+                  icon: Icon(tileView ? Icons.view_list : Icons.grid_view),
                 ),
                 IconButton(
                   tooltip: 'Neue Liste',

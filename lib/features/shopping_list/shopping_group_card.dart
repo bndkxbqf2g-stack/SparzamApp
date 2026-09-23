@@ -18,6 +18,8 @@ class ShoppingGroupCard extends StatelessWidget {
     required this.marketPrices,
     required this.onToggle,
     required this.onChangeQuantity,
+    required this.onEditDetails,
+    this.tileView = false,
     required this.onOpenOffer,
   });
 
@@ -29,6 +31,8 @@ class ShoppingGroupCard extends StatelessWidget {
   final List<MarketPrice> marketPrices;
   final ValueChanged<Product> onToggle;
   final void Function(String productId, int delta) onChangeQuantity;
+  final ValueChanged<ListItem> onEditDetails;
+  final bool tileView;
   final ValueChanged<ShoppingOfferHint> onOpenOffer;
 
   @override
@@ -44,12 +48,34 @@ class ShoppingGroupCard extends StatelessWidget {
                   ),
             ),
           ),
-          Card(
-            clipBehavior: Clip.antiAlias,
-            child: Column(
-              children: [
-                for (var index = 0; index < items.length; index++) ...[
-                  _ShoppingItemTile(
+          if (tileView)
+            LayoutBuilder(
+              builder: (context, constraints) => GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: constraints.maxWidth >= 650 ? 3 : 2,
+                childAspectRatio: 1.15,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                children: [
+                  for (final item in items)
+                    _ShoppingItemCard(
+                      item: item,
+                      checked: checkedProductIds.contains(item.product.id),
+                      onToggle: onToggle,
+                      onChangeQuantity: onChangeQuantity,
+                      onEditDetails: onEditDetails,
+                    ),
+                ],
+              ),
+            )
+          else
+            Card(
+              clipBehavior: Clip.antiAlias,
+              child: Column(
+                children: [
+                  for (var index = 0; index < items.length; index++) ...[
+                    _ShoppingItemTile(
                     item: items[index],
                     checked: checkedProductIds.contains(
                       items[index].product.id,
@@ -59,15 +85,98 @@ class ShoppingGroupCard extends StatelessWidget {
                     marketPrices: marketPrices,
                     onToggle: onToggle,
                     onChangeQuantity: onChangeQuantity,
+                    onEditDetails: onEditDetails,
                     onOpenOffer: onOpenOffer,
-                  ),
-                  if (index < items.length - 1) const Divider(height: 1),
+                    ),
+                    if (index < items.length - 1) const Divider(height: 1),
+                  ],
                 ],
+              ),
+            ),
+          const SizedBox(height: 16),
+        ],
+      );
+}
+
+class _ShoppingItemCard extends StatelessWidget {
+  const _ShoppingItemCard({
+    required this.item,
+    required this.checked,
+    required this.onToggle,
+    required this.onChangeQuantity,
+    required this.onEditDetails,
+  });
+
+  final ListItem item;
+  final bool checked;
+  final ValueChanged<Product> onToggle;
+  final void Function(String productId, int delta) onChangeQuantity;
+  final ValueChanged<ListItem> onEditDetails;
+
+  @override
+  Widget build(BuildContext context) => Card(
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () => onToggle(item.product),
+          onLongPress: () => onEditDetails(item),
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      checked ? Icons.check_circle : Icons.circle_outlined,
+                      color: checked ? Colors.green.shade600 : Colors.black38,
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        item.product.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          decoration:
+                              checked ? TextDecoration.lineThrough : null,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                if (item.note.isNotEmpty)
+                  Text(
+                    item.note,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                const Spacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      visualDensity: VisualDensity.compact,
+                      onPressed: checked
+                          ? null
+                          : () => onChangeQuantity(item.product.id, -1),
+                      icon: const Icon(Icons.remove_circle_outline),
+                    ),
+                    Text('${item.quantity}'),
+                    IconButton(
+                      visualDensity: VisualDensity.compact,
+                      onPressed: checked
+                          ? null
+                          : () => onChangeQuantity(item.product.id, 1),
+                      icon: const Icon(Icons.add_circle_outline),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
-          const SizedBox(height: 16),
-        ],
+        ),
       );
 }
 
@@ -80,6 +189,7 @@ class _ShoppingItemTile extends StatelessWidget {
     required this.marketPrices,
     required this.onToggle,
     required this.onChangeQuantity,
+    required this.onEditDetails,
     required this.onOpenOffer,
   });
 
@@ -90,6 +200,7 @@ class _ShoppingItemTile extends StatelessWidget {
   final List<MarketPrice> marketPrices;
   final ValueChanged<Product> onToggle;
   final void Function(String productId, int delta) onChangeQuantity;
+  final ValueChanged<ListItem> onEditDetails;
   final ValueChanged<ShoppingOfferHint> onOpenOffer;
 
   @override
@@ -103,6 +214,7 @@ class _ShoppingItemTile extends StatelessWidget {
 
     return ListTile(
       onTap: () => onToggle(item.product),
+      onLongPress: () => onEditDetails(item),
       leading: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
         width: 26,
@@ -135,6 +247,13 @@ class _ShoppingItemTile extends StatelessWidget {
                 ? '${item.product.unit} · ×${item.quantity}'
                 : item.product.unit,
           ),
+          if (item.note.isNotEmpty)
+            Text(
+              item.note,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: Colors.blueGrey.shade700),
+            ),
           if (!checked && hint != null)
             ShoppingOfferBadge(
               hint: hint,

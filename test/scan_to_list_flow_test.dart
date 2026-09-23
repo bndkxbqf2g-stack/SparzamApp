@@ -25,6 +25,8 @@ void main() {
     expect(scanned, same(product));
 
     final first = addShoppingProduct([], scanned!);
+    first.single.note = 'Bio';
+    first.single.checked = true;
     final second = addShoppingProduct(first, scanned);
     await ShoppingListStore().save(second);
     final restored = await ShoppingListStore().load();
@@ -33,6 +35,8 @@ void main() {
     expect(restored, hasLength(1));
     expect(restored.single.product.id, product.id);
     expect(restored.single.quantity, 2);
+    expect(restored.single.note, 'Bio');
+    expect(restored.single.checked, isTrue);
     expect(productForBarcode('   ', [product]), isNull);
   });
 }

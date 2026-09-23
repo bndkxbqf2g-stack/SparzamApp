@@ -19,6 +19,8 @@ class NamedShoppingList {
             .map((item) => {
                   'product': item.product.toJson(),
                   'quantity': item.quantity,
+                  'note': item.note,
+                  'checked': item.checked,
                 })
             .toList(),
       };
@@ -37,6 +39,8 @@ class NamedShoppingList {
       items.add(ListItem(
         product: Product.fromJson(item['product'] as Map<String, dynamic>),
         quantity: quantity,
+        note: item['note'] as String? ?? '',
+        checked: item['checked'] as bool? ?? false,
       ));
     }
     return NamedShoppingList(id: id, name: name, items: items);

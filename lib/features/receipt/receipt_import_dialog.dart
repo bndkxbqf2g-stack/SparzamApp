@@ -94,7 +94,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
               ),
               const SizedBox(height: 8),
               const Text(
-                'PDF/Bild-Belege werden zur Prüfung geöffnet. TXT/CSV wird direkt eingelesen. Format je Zeile: Produkt;Preis',
+                'PDF/Bild-Belege dienen als Referenz für die manuelle Übertragung. TXT/CSV wird direkt eingelesen. Format je Zeile: Produkt;Preis',
                 style: TextStyle(fontSize: 12),
               ),
               TextField(
