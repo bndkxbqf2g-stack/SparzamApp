@@ -13,6 +13,7 @@ class ProfileScreen extends StatelessWidget {
     required this.productCount,
     required this.onEditPriceData,
     required this.priceDataSummary,
+    required this.onOpenDiagnostics,
   });
 
   final MobilitySettings mobility;
@@ -23,6 +24,7 @@ class ProfileScreen extends StatelessWidget {
   final int productCount;
   final VoidCallback onEditPriceData;
   final String priceDataSummary;
+  final VoidCallback onOpenDiagnostics;
 
   @override
   Widget build(BuildContext context) => ListView(
@@ -83,6 +85,14 @@ class ProfileScreen extends StatelessWidget {
                   leading: const Icon(Icons.storefront_outlined),
                   title: const Text('Meine Märkte'),
                   subtitle: Text('$storeCount Märkte für Empfehlungen aktiv'),
+                  trailing: const Icon(Icons.chevron_right),
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  onTap: onOpenDiagnostics,
+                  leading: const Icon(Icons.bug_report_outlined),
+                  title: const Text('Diagnoseprotokoll'),
+                  subtitle: const Text('Fehler für den Praxistest erfassen und kopieren'),
                   trailing: const Icon(Icons.chevron_right),
                 ),
               ],

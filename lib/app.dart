@@ -21,6 +21,7 @@ import 'services/price_history_store.dart';
 import 'services/recent_purchase_store.dart';
 import 'services/purchase_store.dart';
 import 'services/shopping_list_store.dart';
+import 'services/diagnostic_log_service.dart';
 
 class SparzamApp extends StatelessWidget {
   const SparzamApp({
@@ -46,6 +47,7 @@ class SparzamApp extends StatelessWidget {
     required this.initialPurchaseHistory,
     required this.initialShoppingList,
     required this.initialPreferredProductByGroup,
+    required this.diagnosticLogService,
   });
 
   final BudgetStore budgetStore;
@@ -69,6 +71,7 @@ class SparzamApp extends StatelessWidget {
   final List<PurchaseRecord> initialPurchaseHistory;
   final List<ListItem> initialShoppingList;
   final Map<String, String> initialPreferredProductByGroup;
+  final DiagnosticLogService diagnosticLogService;
 
   @override
   Widget build(BuildContext context) {
@@ -111,6 +114,7 @@ class SparzamApp extends StatelessWidget {
         initialPurchaseHistory: initialPurchaseHistory,
         initialShoppingList: initialShoppingList,
         initialPreferredProductByGroup: initialPreferredProductByGroup,
+        diagnosticLogService: diagnosticLogService,
       ),
     );
   }

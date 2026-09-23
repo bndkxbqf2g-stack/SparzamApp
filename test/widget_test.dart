@@ -22,6 +22,7 @@ import 'package:sparzamapp/services/price_history_store.dart';
 import 'package:sparzamapp/services/recent_purchase_store.dart';
 import 'package:sparzamapp/services/purchase_store.dart';
 import 'package:sparzamapp/services/shopping_list_store.dart';
+import 'package:sparzamapp/services/diagnostic_log_service.dart';
 
 void main() {
   setUp(() {
@@ -46,6 +47,7 @@ void main() {
         recentPurchaseStore: RecentPurchaseStore(),
         purchaseStore: PurchaseStore(),
         shoppingListStore: ShoppingListStore(),
+        diagnosticLogService: DiagnosticLogService(),
         initialBudget: const BudgetPlan(),
         initialOffers: const <Offer>[],
         initialMobility: const MobilitySettings(),

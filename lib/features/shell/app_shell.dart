@@ -26,6 +26,7 @@ import '../../services/road_distance_store.dart';
 import '../../services/road_route_matrix_store.dart';
 import '../../services/shopping_list_store.dart';
 import '../../services/sequential_write_queue.dart';
+import '../../services/diagnostic_log_service.dart';
 import '../budget/budget_screen.dart';
 import '../catalog/product_catalog_screen.dart';
 import '../home/dashboard_data.dart';
@@ -33,6 +34,7 @@ import '../offers/offers_screen.dart';
 import '../profile/mobility_settings_screen.dart';
 import '../profile/price_data_settings_screen.dart';
 import '../profile/store_selection_screen.dart';
+import '../profile/diagnostic_log_screen.dart';
 import '../route/route_optimizer.dart';
 import '../scanner/scanner_screen.dart';
 import '../shopping_list/replenishment_analyzer.dart';
@@ -71,6 +73,7 @@ class AppShell extends StatefulWidget {
     required this.initialPurchaseHistory,
     required this.initialShoppingList,
     required this.initialPreferredProductByGroup,
+    required this.diagnosticLogService,
   });
 
   final BudgetStore budgetStore;
@@ -94,6 +97,7 @@ class AppShell extends StatefulWidget {
   final List<PurchaseRecord> initialPurchaseHistory;
   final List<ListItem> initialShoppingList;
   final Map<String, String> initialPreferredProductByGroup;
+  final DiagnosticLogService diagnosticLogService;
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -181,7 +185,12 @@ class _AppShellState extends State<AppShell> {
   }
 
   void persistShoppingListWithFeedback() {
-    persistShoppingList().catchError((Object _) {
+    persistShoppingList().catchError((Object error) {
+      widget.diagnosticLogService.record(
+        category: 'Einkaufsliste',
+        message: 'Einkaufsliste konnte nicht gespeichert werden.',
+        details: error.toString(),
+      );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Einkaufsliste konnte nicht gespeichert werden.')),
@@ -559,6 +568,14 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
+  void openDiagnostics() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => DiagnosticLogScreen(service: widget.diagnosticLogService),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final pages = buildShellPages(
@@ -610,6 +627,7 @@ class _AppShellState extends State<AppShell> {
       priceDataSummary: priceDataSettings.openPricesEnabled
           ? 'Open Prices · max. ${priceDataSettings.openPricesMaxAgeDays} Tage'
           : 'Nur eigene Preise',
+      onOpenDiagnostics: openDiagnostics,
     );
 
     return Scaffold(

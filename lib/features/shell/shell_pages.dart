@@ -54,6 +54,7 @@ List<Widget> buildShellPages({
   required VoidCallback onOpenCatalog,
   required VoidCallback onEditPriceData,
   required String priceDataSummary,
+  required VoidCallback onOpenDiagnostics,
 }) =>
     [
       HomeScreen(
@@ -106,5 +107,6 @@ List<Widget> buildShellPages({
         productCount: catalogProducts.length,
         onEditPriceData: onEditPriceData,
         priceDataSummary: priceDataSummary,
+        onOpenDiagnostics: onOpenDiagnostics,
       ),
     ];
