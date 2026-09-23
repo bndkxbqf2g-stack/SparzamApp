@@ -8,13 +8,20 @@ class BudgetStore {
   static const _spentKey = 'budget_food_spent';
   final SharedPreferencesAsync _preferences = SharedPreferencesAsync();
 
+  double _safe(double? value) =>
+      value != null && value.isFinite && value >= 0 ? value : 0;
+
   Future<BudgetPlan> load() async => BudgetPlan(
-        monthlyBudget: await _preferences.getDouble(_monthlyKey) ?? 0,
-        foodBudget: await _preferences.getDouble(_foodKey) ?? 0,
-        foodSpent: await _preferences.getDouble(_spentKey) ?? 0,
+        monthlyBudget: _safe(await _preferences.getDouble(_monthlyKey)),
+        foodBudget: _safe(await _preferences.getDouble(_foodKey)),
+        foodSpent: _safe(await _preferences.getDouble(_spentKey)),
       );
 
   Future<void> save(BudgetPlan plan) async {
+    if (![plan.monthlyBudget, plan.foodBudget, plan.foodSpent]
+        .every((value) => value.isFinite && value >= 0)) {
+      throw ArgumentError('Budgetbeträge müssen endlich und nichtnegativ sein.');
+    }
     await Future.wait([
       _preferences.setDouble(_monthlyKey, plan.monthlyBudget),
       _preferences.setDouble(_foodKey, plan.foodBudget),
