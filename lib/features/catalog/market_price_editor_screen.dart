@@ -4,6 +4,7 @@ import '../../data/stores.dart';
 import '../../models/market_price.dart';
 import '../../models/product.dart';
 import '../../services/open_prices_service.dart';
+import 'market_price_import.dart';
 import 'unit_price.dart';
 
 class MarketPriceEditorScreen extends StatefulWidget {
@@ -129,14 +130,15 @@ class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
         product: widget.product,
         stores: stores,
       );
-      var next = prices;
-      for (final price in found) {
-        next = await widget.onSave(price);
-      }
+      final result = await importMarketPrices(
+        found: found,
+        current: prices,
+        onSave: widget.onSave,
+      );
 
       if (!mounted) return;
       setState(() {
-        prices = next;
+        prices = result.prices;
         for (final store in stores) {
           controllers[store.name]!.text =
               _priceFor(store.name)?.price.toStringAsFixed(2) ?? '';
@@ -148,7 +150,10 @@ class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
           content: Text(
             found.isEmpty
                 ? 'Keine aktuellen Open-Prices-Daten für diese EAN gefunden.'
-                : '${found.length} passende Open-Prices-Preise geprüft.',
+                : result.failed == 0
+                    ? '${result.processed} passende Open-Prices-Preise geprüft.'
+                    : '${result.processed} Preise verarbeitet, '
+                        '${result.failed} konnten nicht gespeichert werden.',
           ),
         ),
       );
