@@ -23,6 +23,7 @@ class BudgetScreen extends StatefulWidget {
 }
 
 class _BudgetScreenState extends State<BudgetScreen> {
+  final formKey = GlobalKey<FormState>();
   late final monthly = _controller(widget.initialPlan.monthlyBudget);
   late final food = _controller(widget.initialPlan.foodBudget);
   late final spent = _controller(widget.initialPlan.foodSpent);
@@ -30,18 +31,38 @@ class _BudgetScreenState extends State<BudgetScreen> {
   TextEditingController _controller(double value) =>
       TextEditingController(text: value == 0 ? '' : value.toStringAsFixed(2));
 
-  double _value(TextEditingController controller) =>
-      double.tryParse(controller.text.replaceAll(',', '.')) ?? 0;
+  double? _value(TextEditingController controller) =>
+      double.tryParse(controller.text.replaceAll(',', '.').trim());
+
+  String? _validator(String? value) {
+    final number = double.tryParse((value ?? '').replaceAll(',', '.').trim());
+    if (number == null || !number.isFinite || number < 0) {
+      return 'Bitte einen gültigen Betrag ab 0 € eingeben';
+    }
+    return null;
+  }
 
   Future<void> save() async {
+    if (!formKey.currentState!.validate()) return;
+    final monthlyValue = _value(monthly)!;
+    final foodValue = _value(food)!;
+    final spentValue = _value(spent)!;
     final plan = BudgetPlan(
-      monthlyBudget: _value(monthly),
-      foodBudget: _value(food),
-      foodSpent: _value(spent),
+      monthlyBudget: monthlyValue,
+      foodBudget: foodValue,
+      foodSpent: spentValue,
     );
-    await widget.store.save(plan);
-    widget.onChanged(plan);
-    if (mounted) Navigator.pop(context);
+    try {
+      await widget.store.save(plan);
+      widget.onChanged(plan);
+      if (mounted) Navigator.pop(context);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Budget konnte nicht gespeichert werden.')),
+        );
+      }
+    }
   }
 
   @override
@@ -57,16 +78,18 @@ class _BudgetScreenState extends State<BudgetScreen> {
     final snapshot = calculateBudget(widget.initialPlan, widget.plannedShop);
     return Scaffold(
       appBar: AppBar(title: const Text('Budget')),
-      body: ListView(
+      body: Form(
+        key: formKey,
+        child: ListView(
         padding: const EdgeInsets.all(20),
         children: [
           _BudgetSummary(snapshot: snapshot, plannedShop: widget.plannedShop),
           const SizedBox(height: 18),
-          _MoneyField(controller: monthly, label: 'Verfügbares Monatsbudget'),
+          _MoneyField(controller: monthly, label: 'Verfügbares Monatsbudget', validator: _validator),
           const SizedBox(height: 12),
-          _MoneyField(controller: food, label: 'Lebensmittelbudget'),
+          _MoneyField(controller: food, label: 'Lebensmittelbudget', validator: _validator),
           const SizedBox(height: 12),
-          _MoneyField(controller: spent, label: 'Diesen Monat bereits ausgegeben'),
+          _MoneyField(controller: spent, label: 'Diesen Monat bereits ausgegeben', validator: _validator),
           const SizedBox(height: 18),
           FilledButton.icon(
             onPressed: save,
@@ -80,18 +103,20 @@ class _BudgetScreenState extends State<BudgetScreen> {
             style: TextStyle(color: Colors.black54),
           ),
         ],
+        ),
       ),
     );
   }
 }
 
 class _MoneyField extends StatelessWidget {
-  const _MoneyField({required this.controller, required this.label});
+  const _MoneyField({required this.controller, required this.label, required this.validator});
   final TextEditingController controller;
   final String label;
+  final String? Function(String?) validator;
 
   @override
-  Widget build(BuildContext context) => TextField(
+  Widget build(BuildContext context) => TextFormField(
         controller: controller,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
         decoration: InputDecoration(
@@ -99,6 +124,7 @@ class _MoneyField extends StatelessWidget {
           suffixText: '€',
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
         ),
+        validator: validator,
       );
 }
 
