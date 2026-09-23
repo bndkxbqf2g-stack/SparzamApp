@@ -23,9 +23,9 @@ class BudgetStore {
       throw ArgumentError('Budgetbeträge müssen endlich und nichtnegativ sein.');
     }
     await Future.wait([
-      _preferences.setDouble(_monthlyKey, plan.monthlyBudget, null),
-      _preferences.setDouble(_foodKey, plan.foodBudget, null),
-      _preferences.setDouble(_spentKey, plan.foodSpent, null),
+      _preferences.setDouble(_monthlyKey, plan.monthlyBudget),
+      _preferences.setDouble(_foodKey, plan.foodBudget),
+      _preferences.setDouble(_spentKey, plan.foodSpent),
     ]);
   }
 }
