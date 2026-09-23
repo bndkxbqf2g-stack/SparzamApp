@@ -14,7 +14,12 @@ class MoreScreen extends StatelessWidget {
 
   void _open(BuildContext context, Widget page) {
     Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => page),
+      MaterialPageRoute<void>(
+        builder: (_) => Scaffold(
+          appBar: AppBar(title: const Text('Sparzam')),
+          body: SafeArea(child: page),
+        ),
+      ),
     );
   }
 
