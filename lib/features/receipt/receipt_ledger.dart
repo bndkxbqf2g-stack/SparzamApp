@@ -125,9 +125,13 @@ ReceiptDraft parseReceiptLedger(String text) {
       unitCents: unitCents,
       linkedItemLine: linked,
     ));
-    if (kind == ReceiptRowKind.item) lastItemLine = index + 1;
+    if (kind == ReceiptRowKind.item) {
+      lastItemLine = index + 1;
+    }
     if (kind == ReceiptRowKind.deposit ||
-        kind == ReceiptRowKind.returnDeposit) lastItemLine = null;
+        kind == ReceiptRowKind.returnDeposit) {
+      lastItemLine = null;
+    }
     if (quantity != null && unitCents != null &&
         quantity * unitCents != cents) {
       unresolved.add(index + 1);
