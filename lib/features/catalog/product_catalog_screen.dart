@@ -157,14 +157,15 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
     } finally {
       editingProduct = false;
     }
-    if (!mounted || result == null) return;
+    final updated = result;
+    if (!mounted || updated == null) return;
 
-    final duplicateEan = result.ean != null &&
+    final duplicateEan = updated.ean != null &&
         allProducts.any(
           (item) =>
-              item.id != result.id &&
+              item.id != updated.id &&
               item.ean != null &&
-              item.ean == result.ean,
+              item.ean == updated.ean,
         );
     if (duplicateEan) {
       if (mounted) {
@@ -179,7 +180,7 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
 
     setState(() => savingProduct = true);
     try {
-      final next = await widget.onSaveProduct(result);
+      final next = await widget.onSaveProduct(updated);
       if (mounted) setState(() => customProducts = next);
     } catch (_) {
       if (mounted) {
