@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:sparzamapp/models/price_point.dart';
@@ -90,7 +91,7 @@ void main() {
       () async {
     final preferences = InMemorySharedPreferencesAsync.empty();
     SharedPreferencesAsyncPlatform.instance = preferences;
-    await preferences.setStringList('price_history_v1', [
+    await SharedPreferencesAsync().setStringList('price_history_v1', [
       jsonEncode({
         'productId': 'bad',
         'storeName': 'Lidl',
