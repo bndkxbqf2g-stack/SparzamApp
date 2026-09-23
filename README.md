@@ -36,6 +36,8 @@ flutter build web --release
 
 Die GitHub-Actions-Workflowdatei `.github/workflows/flutter_ci.yml` führt zusätzlich `flutter pub get` und diese drei Prüfungen bei Push und Pull Request aus. Änderungen sollen klein und modular bleiben; `lib/features/` enthält Oberflächen und anwendungsnahe Logik, `lib/models/` die Datenmodelle und `lib/services/` Speicherung sowie externe Abrufe. Zugehörige Tests liegen in `test/`.
 
+Der Workflow `.github/workflows/release.yml` baut bei Änderungen auf `main` zusätzlich eine Web-Version für GitHub Pages und eine Android-APK. Die APK liegt anschließend 14 Tage als GitHub-Actions-Artefakt vor. Für die Web-Version muss GitHub Pages einmalig auf **GitHub Actions** als Quelle gestellt sein; die erwartete Projektadresse ist `https://bndkxbqf2g-stack.github.io/SparzamApp/`.
+
 ## Nächste Etappen
 
 Der Open-Prices-Abgleich zeigt gefundene Preise, Fortschritt und Fehler an. Längere Abgleiche können abgebrochen werden; bereits gefundene Preise bleiben erhalten. Fehlgeschlagene Produktabfragen können einzeln erneut geprüft werden.
