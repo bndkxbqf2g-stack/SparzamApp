@@ -12,11 +12,11 @@ class MoreScreen extends StatelessWidget {
   final Widget receiptPage;
   final Widget profilePage;
 
-  void _open(BuildContext context, Widget page) {
+  void _open(BuildContext context, String title, Widget page) {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => Scaffold(
-          appBar: AppBar(title: const Text('Sparzam')),
+          appBar: AppBar(title: Text(title)),
           body: SafeArea(child: page),
         ),
       ),
@@ -32,17 +32,17 @@ class MoreScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.route_outlined),
             title: const Text('Einkaufsroute'),
-            onTap: () => _open(context, routePage),
+            onTap: () => _open(context, 'Einkaufsroute', routePage),
           ),
           ListTile(
             leading: const Icon(Icons.receipt_long_outlined),
             title: const Text('Bons und Einkäufe'),
-            onTap: () => _open(context, receiptPage),
+            onTap: () => _open(context, 'Bons und Einkäufe', receiptPage),
           ),
           ListTile(
             leading: const Icon(Icons.person_outline),
             title: const Text('Profil und Einstellungen'),
-            onTap: () => _open(context, profilePage),
+            onTap: () => _open(context, 'Profil und Einstellungen', profilePage),
           ),
         ],
       );
