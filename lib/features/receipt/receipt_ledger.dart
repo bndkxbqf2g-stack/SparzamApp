@@ -28,12 +28,18 @@ class ReceiptDraft {
     required this.totalCents,
     required this.calculatedCents,
     required this.unresolvedLines,
+    required this.fingerprint,
+    this.receiptDate,
+    this.retailer,
   });
 
   final List<ReceiptRow> rows;
   final int? totalCents;
   final int calculatedCents;
   final List<int> unresolvedLines;
+  final DateTime? receiptDate;
+  final String? retailer;
+  final String fingerprint;
 
   bool get balances =>
       totalCents != null && totalCents == calculatedCents &&
@@ -143,7 +149,17 @@ ReceiptDraft parseReceiptLedger(String text) {
   if (pendingQuantity != null || pendingLabel != null) {
     unresolved.add(lines.length);
   }
+  final date = _receiptDate(text);
+  final retailer = text.contains('Kaufland') ? 'Kaufland'
+      : text.contains('Netto') ? 'Netto' : null;
+  final basis = [retailer ?? '', date?.toIso8601String() ?? '',
+    printedTotal?.toString() ?? '',
+    ...rows.map((row) => '${row.kind.name}|${row.label}|${row.cents}|${row.quantity}'),
+  ].join('\\n');
   return ReceiptDraft(
+    receiptDate: date,
+    retailer: retailer,
+    fingerprint: _fingerprint(basis),
     rows: rows,
     totalCents: printedTotal,
     calculatedCents: rows.fold(0, (sum, row) => sum + row.cents),
@@ -156,4 +172,27 @@ int _cents(String value) {
   final parts = value.replaceAll('-', '').replaceAll(',', '.').split('.');
   final result = int.parse(parts[0]) * 100 + int.parse(parts[1]);
   return negative ? -result : result;
+}
+
+DateTime? _receiptDate(String text) {
+  final match = RegExp(r'\\bDatum\\s*:?\\s*(\\d{2})[.](\\d{2})[.](\\d{2})\\b')
+      .firstMatch(text);
+  if (match == null) return null;
+  final day = int.parse(match.group(1)!);
+  final month = int.parse(match.group(2)!);
+  final year = 2000 + int.parse(match.group(3)!);
+  final date = DateTime(year, month, day);
+  if (date.year != year || date.month != month || date.day != day) {
+    return null;
+  }
+  return date;
+}
+
+/// Stable local deduplication key over the priced ledger, without payment data.
+String _fingerprint(String value) {
+  var hash = 0x811c9dc5;
+  for (final unit in value.codeUnits) {
+    hash = ((hash ^ unit) * 0x01000193).toUnsigned(32);
+  }
+  return hash.toRadixString(16).padLeft(8, '0');
 }
