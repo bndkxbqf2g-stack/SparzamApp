@@ -34,7 +34,11 @@ void main() {
   }
 
   Future<void> save(WidgetTester tester) async {
-    await tester.ensureVisible(find.text('Angebot speichern'));
+    await tester.scrollUntilVisible(
+      find.text('Angebot speichern'),
+      250,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('Angebot speichern'));
     await tester.pumpAndSettle();
   }
@@ -60,10 +64,20 @@ void main() {
     expect(saved, isNull);
     expect(find.text('Anzahl über 0 eingeben'), findsOneWidget);
 
+    await tester.scrollUntilVisible(
+      find.widgetWithText(TextFormField, 'Bezahlen'),
+      -250,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.enterText(find.widgetWithText(TextFormField, 'Bezahlen'), '3');
     await save(tester);
     expect(find.text('Nicht mehr bezahlen als kaufen'), findsOneWidget);
 
+    await tester.scrollUntilVisible(
+      find.widgetWithText(TextFormField, 'Bezahlen'),
+      -250,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.enterText(find.widgetWithText(TextFormField, 'Bezahlen'), '1');
     await save(tester);
     expect(saved?.buyQuantity, 2);
