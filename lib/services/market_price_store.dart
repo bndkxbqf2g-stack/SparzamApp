@@ -40,7 +40,8 @@ class MarketPriceStore {
       if (existing.isNotEmpty) {
         final currentPrice = existing.first;
         if (price.source == MarketPriceSource.receipt &&
-            currentPrice.updatedAt.isAfter(price.updatedAt)) {
+            (currentPrice.source == MarketPriceSource.manual ||
+                currentPrice.updatedAt.isAfter(price.updatedAt))) {
           continue;
         }
         if (price.source == MarketPriceSource.openPrices) {
