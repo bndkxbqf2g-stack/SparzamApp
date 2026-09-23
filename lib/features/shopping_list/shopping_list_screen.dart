@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/mobility_settings.dart';
+import '../../models/named_shopping_list.dart';
 import '../../models/offer.dart';
 import '../../models/product.dart';
 import '../../models/price_point.dart';
@@ -27,6 +28,10 @@ class ShoppingListScreen extends StatefulWidget {
   const ShoppingListScreen({
     super.key,
     required this.items,
+    this.shoppingLists = const <NamedShoppingList>[],
+    this.activeShoppingListId = 'default',
+    this.onSelectShoppingList,
+    this.onCreateShoppingList,
     required this.onAdd,
     required this.onChangeQuantity,
     required this.preferredProductByGroup,
@@ -44,6 +49,10 @@ class ShoppingListScreen extends StatefulWidget {
   });
 
   final List<ListItem> items;
+  final List<NamedShoppingList> shoppingLists;
+  final String activeShoppingListId;
+  final Future<void> Function(String id)? onSelectShoppingList;
+  final Future<void> Function(String name)? onCreateShoppingList;
   final ValueChanged<Product> onAdd;
   final void Function(String productId, int delta) onChangeQuantity;
   final Map<String, String> preferredProductByGroup;
@@ -220,6 +229,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             children: [
               ShoppingListHeader(
                 itemCount: widget.items.length,
+                lists: widget.shoppingLists,
+                activeListId: widget.activeShoppingListId,
+                onSelectList: widget.onSelectShoppingList,
+                onCreateList: widget.onCreateShoppingList,
                 onClear: () {
                   if (purchasingProductIds.isNotEmpty) return;
                   widget.onClearPurchased(

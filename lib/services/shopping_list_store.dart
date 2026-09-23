@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/list_item.dart';
+import '../models/named_shopping_list.dart';
 import '../models/product.dart';
 import '../models/recent_purchase.dart';
 
 class ShoppingListStore {
   static const _storageKey = 'shopping_list';
+  static const _listsStorageKey = 'shopping_lists_v1';
   static const _knownItemsStorageKey = 'known_shopping_items';
   static const _preferredProductsStorageKey = 'preferred_products_by_group';
   final SharedPreferencesAsync _preferences = SharedPreferencesAsync();
@@ -121,4 +123,26 @@ class ShoppingListStore {
   }
 
   Future<void> clear() => _preferences.remove(_storageKey);
+
+  Future<List<NamedShoppingList>> loadNamedLists() async {
+    final values = await _preferences.getStringList(_listsStorageKey);
+    if (values == null) return const <NamedShoppingList>[];
+    final result = <NamedShoppingList>[];
+    for (final value in values) {
+      try {
+        result.add(NamedShoppingList.fromJson(
+          jsonDecode(value) as Map<String, dynamic>,
+        ));
+      } catch (_) {
+        // Beschädigte Listen werden ignoriert, die übrigen bleiben nutzbar.
+      }
+    }
+    return result;
+  }
+
+  Future<void> saveNamedLists(List<NamedShoppingList> lists) =>
+      _preferences.setStringList(
+        _listsStorageKey,
+        lists.map((list) => jsonEncode(list.toJson())).toList(),
+      );
 }

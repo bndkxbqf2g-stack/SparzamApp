@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/mobility_settings.dart';
+import '../../models/named_shopping_list.dart';
 import '../../models/offer.dart';
 import '../../models/price_point.dart';
 import '../../models/product.dart';
@@ -28,6 +29,10 @@ List<Widget> buildShellPages({
   required VoidCallback onOpenBudget,
   required VoidCallback onOpenScanner,
   required List<ListItem> shoppingList,
+  required List<NamedShoppingList> shoppingLists,
+  required String activeShoppingListId,
+  required Future<void> Function(String id) onSelectShoppingList,
+  required Future<void> Function(String name) onCreateShoppingList,
   required ValueChanged<Product> onAddProduct,
   required void Function(String productId, int delta) onChangeQuantity,
   required Map<String, String> preferredProductByGroup,
@@ -71,6 +76,10 @@ List<Widget> buildShellPages({
       ),
       ShoppingListScreen(
         items: shoppingList,
+        shoppingLists: shoppingLists,
+        activeShoppingListId: activeShoppingListId,
+        onSelectShoppingList: onSelectShoppingList,
+        onCreateShoppingList: onCreateShoppingList,
         onAdd: onAddProduct,
         onChangeQuantity: onChangeQuantity,
         preferredProductByGroup: preferredProductByGroup,

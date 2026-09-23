@@ -93,4 +93,30 @@ void main() {
     expect(coverage.openPrices, 1);
     expect(coverage.staleOpenPrices, 1);
   });
+
+  test('Coverage zählt verfügbare Produkte und Quellen je Markt', () {
+    final coverage = calculateStorePriceCoverage([
+      MarketPrice(
+        productId: 'a',
+        storeName: 'Lidl',
+        price: 1,
+        updatedAt: now,
+        source: MarketPriceSource.receipt,
+      ),
+      MarketPrice(
+        productId: 'b',
+        storeName: 'Lidl',
+        price: 2,
+        updatedAt: now,
+        source: MarketPriceSource.openPrices,
+      ),
+    ], storeNames: const ['Lidl', 'REWE']);
+
+    expect(coverage.first.storeName, 'Lidl');
+    expect(coverage.first.products, 2);
+    expect(coverage.first.receiptPrices, 1);
+    expect(coverage.first.openPrices, 1);
+    expect(coverage.last.storeName, 'REWE');
+    expect(coverage.last.products, 0);
+  });
 }

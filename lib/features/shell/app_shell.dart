@@ -4,6 +4,7 @@ import '../../models/budget_plan.dart';
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/mobility_settings.dart';
+import '../../models/named_shopping_list.dart';
 import '../../models/offer.dart';
 import '../../models/product.dart';
 import '../../models/price_point.dart';
@@ -108,6 +109,8 @@ class _AppShellState extends State<AppShell> {
   late BudgetPlan budget;
   late MobilitySettings mobility;
   late List<ListItem> shoppingList;
+  late List<NamedShoppingList> namedShoppingLists;
+  String activeShoppingListId = 'default';
   late List<Offer> offers;
   late List<RecentPurchase> recentPurchases;
   late List<PurchaseRecord> purchaseHistory;
@@ -144,11 +147,37 @@ class _AppShellState extends State<AppShell> {
           ),
         )
         .toList();
+    namedShoppingLists = [
+      NamedShoppingList(
+        id: activeShoppingListId,
+        name: 'Einkauf',
+        items: _copyItems(shoppingList),
+      ),
+    ];
     offers = [...widget.initialOffers];
     recentPurchases = [...widget.initialRecentPurchases];
     purchaseHistory = [...widget.initialPurchaseHistory];
     preferredProductByGroup = {...widget.initialPreferredProductByGroup};
     _loadRoadDistances();
+    _loadNamedShoppingLists();
+  }
+
+  List<ListItem> _copyItems(List<ListItem> items) => items
+      .map((item) => ListItem(product: item.product, quantity: item.quantity))
+      .toList();
+
+  Future<void> _loadNamedShoppingLists() async {
+    final loaded = await widget.shoppingListStore.loadNamedLists();
+    if (!mounted) return;
+    if (loaded.isEmpty) {
+      await widget.shoppingListStore.saveNamedLists(namedShoppingLists);
+      return;
+    }
+    setState(() {
+      namedShoppingLists = loaded;
+      activeShoppingListId = loaded.first.id;
+      shoppingList = _copyItems(loaded.first.items);
+    });
   }
 
   Future<void> _loadRoadDistances() async {
@@ -181,7 +210,62 @@ class _AppShellState extends State<AppShell> {
       for (final item in shoppingList)
         ListItem(product: item.product, quantity: item.quantity),
     ];
-    return _shoppingListSaves.add(() => widget.shoppingListStore.save(snapshot));
+    final lists = namedShoppingLists
+        .map((list) => list.id == activeShoppingListId
+            ? NamedShoppingList(
+                id: list.id,
+                name: list.name,
+                items: _copyItems(snapshot),
+              )
+            : list)
+        .toList();
+    namedShoppingLists = lists;
+    return _shoppingListSaves.add(() async {
+      await widget.shoppingListStore.save(snapshot);
+      await widget.shoppingListStore.saveNamedLists(lists);
+    });
+  }
+
+  Future<void> selectShoppingList(String id) async {
+    if (id == activeShoppingListId) return;
+    await persistShoppingList();
+    final matches = namedShoppingLists.where((list) => list.id == id);
+    final selected = matches.isEmpty ? null : matches.first;
+    if (!mounted || selected == null) return;
+    setState(() {
+      activeShoppingListId = selected.id;
+      shoppingList = _copyItems(selected.items);
+    });
+    await widget.shoppingListStore.save(shoppingList);
+    widget.diagnosticLogService.record(
+      category: 'Einkaufsliste',
+      message: 'Liste gewechselt.',
+      details: selected.name,
+    );
+  }
+
+  Future<void> createShoppingList(String name) async {
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return;
+    await persistShoppingList();
+    final created = NamedShoppingList(
+      id: 'list_${DateTime.now().microsecondsSinceEpoch}',
+      name: trimmed,
+      items: <ListItem>[],
+    );
+    if (!mounted) return;
+    setState(() {
+      namedShoppingLists = [...namedShoppingLists, created];
+      activeShoppingListId = created.id;
+      shoppingList = <ListItem>[];
+    });
+    await widget.shoppingListStore.saveNamedLists(namedShoppingLists);
+    await widget.shoppingListStore.save(shoppingList);
+    widget.diagnosticLogService.record(
+      category: 'Einkaufsliste',
+      message: 'Neue Liste erstellt.',
+      details: trimmed,
+    );
   }
 
   void persistShoppingListWithFeedback() {
@@ -330,6 +414,7 @@ class _AppShellState extends State<AppShell> {
         budget = result.budget;
         shoppingList.clear();
       });
+      await persistShoppingList();
     } finally {
       _purchaseInProgress = false;
     }
@@ -367,6 +452,10 @@ class _AppShellState extends State<AppShell> {
       product: product,
       products: customProducts,
       shoppingList: shoppingList,
+      shoppingLists: namedShoppingLists,
+      activeShoppingListId: activeShoppingListId,
+      onSelectShoppingList: selectShoppingList,
+      onCreateShoppingList: createShoppingList,
     );
     if (mounted) {
       setState(() {
@@ -412,6 +501,13 @@ class _AppShellState extends State<AppShell> {
         priceHistory = result.history;
       });
     }
+    widget.diagnosticLogService.record(
+      category: 'Preisdaten',
+      message: price.source == MarketPriceSource.receipt
+          ? 'Kassenbonpreis gespeichert.'
+          : 'Preis gespeichert.',
+      details: '${price.storeName} · ${price.productId} · ${price.price.toStringAsFixed(2)} €',
+    );
     return result.prices;
   }
 
@@ -446,16 +542,28 @@ class _AppShellState extends State<AppShell> {
     }
 
     final retryIds = retryProductIds?.toSet();
-    final result = await priceCoordinator.syncOpenPrices(
-      products: retryIds == null
-          ? catalogProducts
-          : catalogProducts.where((product) => retryIds.contains(product.id)).toList(),
-      maxAgeDays: priceDataSettings.openPricesMaxAgeDays,
-      prices: marketPrices,
-      history: priceHistory,
-      onProgress: onProgress,
-      shouldCancel: shouldCancel,
-    );
+    late PriceSyncResult result;
+    try {
+      result = await priceCoordinator.syncOpenPrices(
+        products: retryIds == null
+            ? catalogProducts
+            : catalogProducts
+                .where((product) => retryIds.contains(product.id))
+                .toList(),
+        maxAgeDays: priceDataSettings.openPricesMaxAgeDays,
+        prices: marketPrices,
+        history: priceHistory,
+        onProgress: onProgress,
+        shouldCancel: shouldCancel,
+      );
+    } catch (error) {
+      widget.diagnosticLogService.record(
+        category: 'Open Prices',
+        message: 'Preisabgleich fehlgeschlagen.',
+        details: error.toString(),
+      );
+      rethrow;
+    }
 
     if (mounted) {
       setState(() {
@@ -463,6 +571,15 @@ class _AppShellState extends State<AppShell> {
         priceHistory = result.history;
       });
     }
+    widget.diagnosticLogService.record(
+      category: 'Open Prices',
+      message: result.cancelled
+          ? 'Preisabgleich abgebrochen.'
+          : 'Preisabgleich abgeschlossen.',
+      details: '${result.productsProcessed}/${result.productsWithEan} Produkte · '
+          '${result.pricesFound} Preise · '
+          '${result.failedProductIds.length} Fehler',
+    );
     return result;
   }
 

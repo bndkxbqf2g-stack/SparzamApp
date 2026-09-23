@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../data/products.dart' as demo;
+import '../../data/stores.dart';
 import '../../models/market_price.dart';
 import '../../models/product.dart';
 import '../../models/price_data_settings.dart';
@@ -275,6 +276,10 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                   openPricesMaxAgeDays:
                       widget.priceDataSettings.openPricesMaxAgeDays,
                 );
+                final storeCoverage = calculateStorePriceCoverage(
+                  marketPrices,
+                  storeNames: stores.map((store) => store.name).toList(),
+                );
                 return Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
@@ -296,6 +301,21 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                         if (coverage.staleOpenPrices > 0)
                           Text(
                             '${coverage.staleOpenPrices} Open-Prices-Werte sind veraltet.',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Preise je Markt',
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                fontWeight: FontWeight.w800,
+                              ),
+                        ),
+                        const SizedBox(height: 4),
+                        for (final store in storeCoverage)
+                          Text(
+                            '${store.storeName}: ${store.products} Produkte'
+                            '${store.receiptPrices > 0 ? ' · ${store.receiptPrices} Kassenbon' : ''}'
+                            '${store.openPrices > 0 ? ' · ${store.openPrices} Open Prices' : ''}',
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         if (widget.priceDataSettings.openPricesEnabled) ...[
