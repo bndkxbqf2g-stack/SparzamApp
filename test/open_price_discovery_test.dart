@@ -60,8 +60,9 @@ void main() {
   test('requires a bounded targeted query', () async {
     final discovery = OpenPriceDiscovery(
         client: MockClient((request) async => http.Response('{}', 200)));
-    expect(() => discovery.search(), throwsArgumentError);
-    expect(() => discovery.search(categoryTag: 'en:breads', maxPages: 4),
+    await expectLater(discovery.search(), throwsArgumentError);
+    await expectLater(
+        discovery.search(categoryTag: 'en:breads', maxPages: 4),
         throwsArgumentError);
   });
 }
