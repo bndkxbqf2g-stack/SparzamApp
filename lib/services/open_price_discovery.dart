@@ -36,8 +36,8 @@ class OpenPriceLead {
 }
 
 class OpenPriceDiscovery {
-  OpenPriceDiscovery({required http.Client client}) : _client = client;
-  final http.Client _client;
+  OpenPriceDiscovery({required this.client});
+  final http.Client client;
 
   /// Returns at most three pages, with the caller choosing a barcode,
   /// a category, a location, or a combination. No private receipts are sent.
@@ -64,14 +64,20 @@ class OpenPriceDiscovery {
         'size': '50',
         'page': '$page',
         'duplicate_of__isnull': 'true',
-        if (productCode != null) 'product_code': productCode,
-        if (categoryTag != null) 'category_tag': categoryTag,
-        if (locationId != null) 'location_id': '$locationId',
         if (withoutProductCode) 'product_code__isnull': 'true',
       };
+      if (productCode != null) {
+        query['product_code'] = productCode;
+      }
+      if (categoryTag != null) {
+        query['category_tag'] = categoryTag;
+      }
+      if (locationId != null) {
+        query['location_id'] = '$locationId';
+      }
       final uri = Uri.https(
           'prices.openfoodfacts.org', '/api/v1/prices', query);
-      final response = await _client.get(uri, headers: const {
+      final response = await client.get(uri, headers: const {
         'Accept': 'application/json',
         'User-Agent': 'SparzamApp/1.0 (price discovery)',
       }).timeout(const Duration(seconds: 12));
@@ -88,7 +94,9 @@ class OpenPriceDiscovery {
         final price = raw['price'];
         final numericPrice = price is num ? price.toDouble() : null;
         if (numericPrice != null &&
-            (!numericPrice.isFinite || numericPrice <= 0)) continue;
+            (!numericPrice.isFinite || numericPrice <= 0)) {
+          continue;
+        }
         found.add(OpenPriceLead(
           id: (raw['id'] as num?)?.toInt() ?? -1,
           type: raw['type'] as String? ?? '',
