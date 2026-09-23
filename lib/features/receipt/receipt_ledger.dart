@@ -129,8 +129,12 @@ ReceiptDraft parseReceiptLedger(String text) {
     if (kind == ReceiptRowKind.deposit ||
         kind == ReceiptRowKind.returnDeposit) lastItemLine = null;
     if (quantity != null && unitCents != null &&
-        quantity * unitCents != cents) unresolved.add(index + 1);
-    if (kind == ReceiptRowKind.unresolved) unresolved.add(index + 1);
+        quantity * unitCents != cents) {
+      unresolved.add(index + 1);
+    }
+    if (kind == ReceiptRowKind.unresolved) {
+      unresolved.add(index + 1);
+    }
   }
   if (pendingQuantity != null || pendingLabel != null) {
     unresolved.add(lines.length);
