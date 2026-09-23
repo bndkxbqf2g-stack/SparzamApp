@@ -33,6 +33,7 @@ class _OffersScreenState extends State<OffersScreen> {
   late List<Offer> offers;
   var filter = OfferStatusFilter.active;
   var query = '';
+  var busy = false;
 
   @override
   void initState() {
@@ -47,22 +48,36 @@ class _OffersScreenState extends State<OffersScreen> {
   }
 
   Future<void> _edit([Offer? offer]) async {
-    final result = await Navigator.of(context).push<Offer>(
-      MaterialPageRoute(
-        builder: (_) => OfferEditorScreen(
-          offer: offer,
-          catalogProducts: widget.catalogProducts,
+    if (busy || widget.catalogProducts.isEmpty) return;
+    setState(() => busy = true);
+    try {
+      final result = await Navigator.of(context).push<Offer>(
+        MaterialPageRoute(
+          builder: (_) => OfferEditorScreen(
+            offer: offer,
+            catalogProducts: widget.catalogProducts,
+          ),
         ),
-      ),
-    );
-    if (result == null) return;
-
-    final next = await widget.onSave(result);
-    if (mounted) setState(() => offers = next);
+      );
+      if (!mounted || result == null) return;
+      final next = await widget.onSave(result);
+      if (mounted) setState(() => offers = next);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Angebot konnte nicht gespeichert werden.')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
   }
 
   Future<void> _delete(Offer offer) async {
-    final confirmed = await showDialog<bool>(
+    if (busy) return;
+    setState(() => busy = true);
+    try {
+      final confirmed = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
             title: const Text('Angebot löschen?'),
@@ -80,10 +95,19 @@ class _OffersScreenState extends State<OffersScreen> {
           ),
         ) ??
         false;
-    if (!confirmed) return;
+      if (!mounted || !confirmed) return;
 
-    final next = await widget.onDelete(offer);
-    if (mounted) setState(() => offers = next);
+      final next = await widget.onDelete(offer);
+      if (mounted) setState(() => offers = next);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Angebot konnte nicht gelöscht werden.')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
   }
 
   @override
@@ -98,7 +122,7 @@ class _OffersScreenState extends State<OffersScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Angebote')),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: _edit,
+        onPressed: busy || widget.catalogProducts.isEmpty ? null : _edit,
         icon: const Icon(Icons.add),
         label: const Text('Angebot'),
       ),
@@ -120,8 +144,8 @@ class _OffersScreenState extends State<OffersScreen> {
                 offer: visible[index],
                 priceHistory: widget.priceHistory,
                 catalogProducts: widget.catalogProducts,
-                onEdit: () => _edit(visible[index]),
-                onDelete: () => _delete(visible[index]),
+                onEdit: busy ? null : () => _edit(visible[index]),
+                onDelete: busy ? null : () => _delete(visible[index]),
               ),
               if (index < visible.length - 1) const SizedBox(height: 10),
             ],
