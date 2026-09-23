@@ -26,9 +26,8 @@ Future<List<String>?> showAisleOrderDialog(
                   title: Text(shoppingGroupLabel(group)),
                 ),
             ],
-            onReorder: (oldIndex, newIndex) {
+            onReorderItem: (oldIndex, newIndex) {
               setState(() {
-                if (newIndex > oldIndex) newIndex--;
                 final item = order.removeAt(oldIndex);
                 order.insert(newIndex, item);
               });
