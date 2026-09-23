@@ -9,7 +9,7 @@ List<MarketPrice> activePrices(
 ) {
   if (!settings.openPricesEnabled) {
     return prices
-        .where((price) => price.source == MarketPriceSource.manual)
+        .where((price) => price.isManual)
         .toList(growable: false);
   }
   return usableMarketPrices(
@@ -23,7 +23,7 @@ PricePoint priceHistoryPoint(MarketPrice price) => PricePoint(
       storeName: price.storeName,
       price: price.price,
       date: price.updatedAt,
-      source: price.source == MarketPriceSource.manual
-          ? PricePointSource.manual
-          : PricePointSource.openPrices,
+      source: price.source == MarketPriceSource.openPrices
+          ? PricePointSource.openPrices
+          : PricePointSource.manual,
     );

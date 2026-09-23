@@ -12,6 +12,11 @@ const shellDestinations = <NavigationDestination>[
     label: 'Liste',
   ),
   NavigationDestination(
+    icon: Icon(Icons.menu_book_outlined),
+    selectedIcon: Icon(Icons.menu_book),
+    label: 'Prospekte',
+  ),
+  NavigationDestination(
     icon: Icon(Icons.route_outlined),
     selectedIcon: Icon(Icons.route),
     label: 'Route',

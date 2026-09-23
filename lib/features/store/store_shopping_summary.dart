@@ -52,7 +52,7 @@ StoreShoppingSummary buildStoreShoppingSummary(
 
   for (final item in items) {
     final quote = resolver.quote(store, item);
-    if (quote == null) continue;
+    if (quote == null || quote.isEstimated) continue;
     lines.add(
       StoreShoppingLine(
         item: item,

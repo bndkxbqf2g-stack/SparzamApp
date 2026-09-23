@@ -30,7 +30,6 @@ import '../../services/diagnostic_log_service.dart';
 import '../budget/budget_screen.dart';
 import '../catalog/product_catalog_screen.dart';
 import '../home/dashboard_data.dart';
-import '../offers/offers_screen.dart';
 import '../profile/mobility_settings_screen.dart';
 import '../profile/price_data_settings_screen.dart';
 import '../profile/store_selection_screen.dart';
@@ -104,7 +103,8 @@ class AppShell extends StatefulWidget {
 }
 
 class _AppShellState extends State<AppShell> {
-  int selectedIndex = 0;
+  // The primary task is adding items. Open the app on the list, like Bring.
+  int selectedIndex = 1;
   late BudgetPlan budget;
   late MobilitySettings mobility;
   late List<ListItem> shoppingList;
@@ -581,18 +581,8 @@ class _AppShellState extends State<AppShell> {
     final pages = buildShellPages(
       dashboard: dashboardData(),
       onOpenList: () => setState(() => selectedIndex = 1),
-      onOpenRoute: () => setState(() => selectedIndex = 2),
-      onOpenOffers: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => OffersScreen(
-              offers: offers,
-              priceHistory: priceHistory,
-              onSave: saveOffer,
-              onDelete: deleteOffer,
-              catalogProducts: catalogProducts,
-            ),
-          ),
-        ),
+      onOpenRoute: () => setState(() => selectedIndex = 3),
+      onOpenOffers: () => setState(() => selectedIndex = 2),
       onOpenBudget: openBudget,
       onOpenScanner: openScanner,
       shoppingList: shoppingList,
@@ -624,6 +614,9 @@ class _AppShellState extends State<AppShell> {
           : mobility.enabledStoreNames.length,
       onOpenCatalog: openCatalog,
       onEditPriceData: openPriceDataSettings,
+      onSavePrice: saveMarketPrice,
+      onSaveOffer: saveOffer,
+      onDeleteOffer: deleteOffer,
       priceDataSummary: priceDataSettings.openPricesEnabled
           ? 'Open Prices · max. ${priceDataSettings.openPricesMaxAgeDays} Tage'
           : 'Nur eigene Preise',
@@ -631,6 +624,7 @@ class _AppShellState extends State<AppShell> {
     );
 
     return Scaffold(
+      appBar: AppBar(title: const Text('sparzamApp')),
       body: SafeArea(child: pages[selectedIndex]),
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,

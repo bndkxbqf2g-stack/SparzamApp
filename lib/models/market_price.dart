@@ -1,4 +1,4 @@
-enum MarketPriceSource { manual, openPrices }
+enum MarketPriceSource { receipt, manual, openPrices }
 
 class MarketPrice {
   const MarketPrice({
@@ -20,7 +20,8 @@ class MarketPrice {
   final String? sourceLocationName;
 
   String get key => '$storeName|$productId';
-  bool get isManual => source == MarketPriceSource.manual;
+  bool get isManual =>
+      source == MarketPriceSource.manual || source == MarketPriceSource.receipt;
 
   bool isUsable({
     required DateTime now,
@@ -54,6 +55,7 @@ class MarketPrice {
   }
 
   String get sourceLabel => switch (source) {
+        MarketPriceSource.receipt => 'Kassenbon',
         MarketPriceSource.manual => 'Eigener Preis',
         MarketPriceSource.openPrices => 'Open Prices',
       };

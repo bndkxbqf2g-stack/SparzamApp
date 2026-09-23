@@ -67,7 +67,7 @@ class RouteOptimizer {
 
       for (final store in selectedStores) {
         final quote = prices.quote(store, item);
-        if (quote != null && quote.total < bestPrice) {
+          if (quote != null && !quote.isEstimated && quote.total < bestPrice) {
           bestPrice = quote.total;
           bestStore = store;
         }

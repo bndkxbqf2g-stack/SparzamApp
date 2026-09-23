@@ -35,8 +35,7 @@ PriceCoverage calculatePriceCoverage(
     productsWithEan: products
         .where((product) => (product.ean ?? '').trim().isNotEmpty)
         .length,
-    manualPrices:
-        prices.where((price) => price.source == MarketPriceSource.manual).length,
+    manualPrices: prices.where((price) => price.isManual).length,
     openPrices: external.length,
     staleOpenPrices: external
         .where(

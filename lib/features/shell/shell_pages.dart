@@ -14,6 +14,7 @@ import '../../models/route_plan.dart';
 import '../../services/shopping_list_store.dart';
 import '../home/dashboard_data.dart';
 import '../home/home_screen.dart';
+import '../offers/offers_screen.dart';
 import '../profile/profile_screen.dart';
 import '../receipt/receipt_screen.dart';
 import '../route/route_screen.dart';
@@ -54,6 +55,9 @@ List<Widget> buildShellPages({
   required VoidCallback onOpenCatalog,
   required VoidCallback onEditPriceData,
   required String priceDataSummary,
+  required Future<List<MarketPrice>> Function(MarketPrice price) onSavePrice,
+  required Future<List<Offer>> Function(Offer offer) onSaveOffer,
+  required Future<List<Offer>> Function(Offer offer) onDeleteOffer,
   required VoidCallback onOpenDiagnostics,
 }) =>
     [
@@ -82,6 +86,13 @@ List<Widget> buildShellPages({
         marketPrices: marketPrices,
         replenishmentSuggestions: replenishmentSuggestions,
       ),
+      OffersScreen(
+        offers: offers,
+        priceHistory: priceHistory,
+        onSave: onSaveOffer,
+        onDelete: onDeleteOffer,
+        catalogProducts: catalogProducts,
+      ),
       RouteScreen(
         items: shoppingList,
         offers: offers,
@@ -97,6 +108,12 @@ List<Widget> buildShellPages({
         onComplete: onCompletePurchase,
         onUpdatePurchase: onUpdatePurchase,
         onDeletePurchase: onDeletePurchase,
+        catalogProducts: catalogProducts,
+        onSavePrices: (prices) async {
+          for (final price in prices) {
+            await onSavePrice(price);
+          }
+        },
       ),
       ProfileScreen(
         mobility: mobility,

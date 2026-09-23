@@ -62,7 +62,8 @@ class _RouteItemTile extends StatelessWidget {
       title: Text(item.product.name),
       subtitle: Text(
         '${item.product.unit}${item.quantity > 1 ? ' · ×${item.quantity}' : ''}'
-        '${quote.usesOffer ? ' · Angebot eingerechnet' : ''}',
+        '${quote.usesOffer ? ' · Angebot eingerechnet' : ''}'
+        '${quote.isEstimated ? ' · geschätzt' : ''}',
       ),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -72,6 +73,15 @@ class _RouteItemTile extends StatelessWidget {
             '${quote.total.toStringAsFixed(2)} €',
             style: const TextStyle(fontWeight: FontWeight.w700),
           ),
+          if (quote.isEstimated)
+            Text(
+              'Schätzwert',
+              style: TextStyle(
+                color: Colors.orange.shade800,
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           if (quote.usesOffer)
             Text(
               '-${quote.savings.toStringAsFixed(2)} €',

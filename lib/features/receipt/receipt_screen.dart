@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../models/purchase_record.dart';
 import '../../models/route_plan.dart';
+import '../../models/market_price.dart';
+import '../../models/product.dart';
 import 'purchase_history_card.dart';
 import 'purchase_detail_screen.dart';
+import 'receipt_import_dialog.dart';
 
 class ReceiptScreen extends StatelessWidget {
   const ReceiptScreen({
@@ -14,6 +17,8 @@ class ReceiptScreen extends StatelessWidget {
     required this.onComplete,
     required this.onUpdatePurchase,
     required this.onDeletePurchase,
+    this.catalogProducts = const <Product>[],
+    this.onSavePrices = _ignoreReceiptPrices,
   });
 
   final RoutePlan? plan;
@@ -22,6 +27,8 @@ class ReceiptScreen extends StatelessWidget {
   final Future<void> Function() onComplete;
   final Future<void> Function(PurchaseRecord record) onUpdatePurchase;
   final Future<void> Function(PurchaseRecord record) onDeletePurchase;
+  final List<Product> catalogProducts;
+  final Future<void> Function(List<MarketPrice> prices) onSavePrices;
 
   String euro(double value) => '${value.toStringAsFixed(2)} €';
 
@@ -44,6 +51,18 @@ class ReceiptScreen extends StatelessWidget {
               baselineTotal: baselineTotal,
               onComplete: onComplete,
             ),
+          const SizedBox(height: 12),
+          OutlinedButton.icon(
+            onPressed: () => showDialog<void>(
+              context: context,
+              builder: (_) => ReceiptImportDialog(
+                products: catalogProducts,
+                onSavePrices: onSavePrices,
+              ),
+            ),
+            icon: const Icon(Icons.document_scanner_outlined),
+            label: const Text('Kassenbon fotografieren und Preise lernen'),
+          ),
           const SizedBox(height: 22),
           Text('Letzte Einkäufe', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
           const SizedBox(height: 8),
@@ -68,6 +87,8 @@ class ReceiptScreen extends StatelessWidget {
         ],
       );
 }
+
+Future<void> _ignoreReceiptPrices(List<MarketPrice> prices) async {}
 
 class _CheckoutCard extends StatefulWidget {
   const _CheckoutCard({required this.plan, required this.baselineTotal, required this.onComplete});
