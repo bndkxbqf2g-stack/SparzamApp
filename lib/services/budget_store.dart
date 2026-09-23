@@ -6,7 +6,7 @@ class BudgetStore {
   static const _monthlyKey = 'budget_monthly';
   static const _foodKey = 'budget_food';
   static const _spentKey = 'budget_food_spent';
-  final SharedPreferencesAsync _preferences = SharedPreferencesAsync();
+  SharedPreferencesAsync get _preferences => SharedPreferencesAsync();
 
   double _safe(double? value) =>
       value != null && value.isFinite && value >= 0 ? value : 0;
