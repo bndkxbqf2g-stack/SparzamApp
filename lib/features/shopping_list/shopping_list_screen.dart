@@ -67,6 +67,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   final controller = TextEditingController();
   final _inputFocusNode = FocusNode();
   final Set<String> checkedProductIds = <String>{};
+  final Set<String> purchasingProductIds = <String>{};
   List<RecentPurchase> knownItems = <RecentPurchase>[];
 
   @override
@@ -151,6 +152,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   }
 
   Future<void> toggleChecked(Product product) async {
+    if (purchasingProductIds.contains(product.id)) return;
     final wasChecked = checkedProductIds.contains(product.id);
 
     setState(() {
@@ -162,10 +164,24 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     });
 
     if (!wasChecked) {
-      final item = widget.items.firstWhere(
-        (item) => item.product.id == product.id,
-      );
-      await widget.onPurchased(product, item.quantity);
+      purchasingProductIds.add(product.id);
+      try {
+        final item = widget.items.firstWhere(
+          (item) => item.product.id == product.id,
+        );
+        await widget.onPurchased(product, item.quantity);
+      } catch (_) {
+        if (mounted) {
+          setState(() {
+            checkedProductIds.remove(product.id);
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Kauf konnte nicht gespeichert werden.')),
+          );
+        }
+      } finally {
+        purchasingProductIds.remove(product.id);
+      }
     }
   }
 
@@ -205,6 +221,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               ShoppingListHeader(
                 itemCount: widget.items.length,
                 onClear: () {
+                  if (purchasingProductIds.isNotEmpty) return;
                   widget.onClearPurchased(
                     widget.items.map((item) => item.product.id).toSet(),
                   );
@@ -257,6 +274,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               CompletedItemsAction(
                 count: checkedProductIds.length,
                 onRemove: () {
+                  if (purchasingProductIds.isNotEmpty) return;
                   final purchased = {...checkedProductIds};
                   widget.onClearPurchased(purchased);
                   setState(() => checkedProductIds.clear());
