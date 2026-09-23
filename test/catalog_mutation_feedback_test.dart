@@ -68,7 +68,7 @@ void main() {
     pending.completeError(StateError('storage failed'));
     await tester.pump();
     expect(find.text('Produkt konnte nicht gelöscht werden.'), findsOneWidget);
-    expect(find.text('Testprodukt'), findsOneWidget);
+    expect(find.widgetWithText(ListTile, 'Testprodukt'), findsOneWidget);
     expect(tester.widget<PopupMenuButton<String>>(
       find.byType(PopupMenuButton<String>).first,
     ).enabled, isTrue);
@@ -84,6 +84,6 @@ void main() {
     await tester.tap(find.text('Produkt speichern'));
     await tester.pumpAndSettle();
     expect(find.text('Produkt konnte nicht gespeichert werden.'), findsOneWidget);
-    expect(find.text('Testprodukt'), findsOneWidget);
+    expect(find.widgetWithText(ListTile, 'Testprodukt'), findsOneWidget);
   });
 }
