@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  web:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,13 +33,28 @@ jobs:
       - name: Build web for GitHub Pages
         run: flutter build web --release --base-href "/SparzamApp/"
 
-      - name: Build Android APK
-        run: flutter build apk --release
-
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: build/web
+
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Android APK
+        run: flutter build apk --release
 
       - name: Upload Android APK artifact
         uses: actions/upload-artifact@v4
@@ -50,7 +65,7 @@ jobs:
           retention-days: 14
 
   deploy:
-    needs: build
+    needs: web
     runs-on: ubuntu-latest
     environment:
       name: github-pages
