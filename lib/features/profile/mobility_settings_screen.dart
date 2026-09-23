@@ -130,7 +130,8 @@ class _MobilitySettingsScreenState extends State<MobilitySettingsScreen> {
                 ),
                 validator: (value) {
                   final number = _number(value ?? '');
-                  if (number == null || number < 0 || number > 5) {
+                  if (number == null || !number.isFinite ||
+                      number < 0 || number > 5) {
                     return 'Bitte gültigen Wert zwischen 0 und 5 € eingeben';
                   }
                   return null;
@@ -164,7 +165,8 @@ class _MobilitySettingsScreenState extends State<MobilitySettingsScreen> {
                 ),
                 validator: (value) {
                   final number = _number(value ?? '');
-                  if (number == null || number < 0 || number > 50) {
+                  if (number == null || !number.isFinite ||
+                      number < 0 || number > 50) {
                     return 'Bitte gültigen Wert zwischen 0 und 50 € eingeben';
                   }
                   return null;

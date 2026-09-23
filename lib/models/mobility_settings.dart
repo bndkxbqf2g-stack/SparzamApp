@@ -71,18 +71,25 @@ class MobilitySettings {
             ?.whereType<String>()
             .toList() ??
         const <String>[];
+    final euroPerKm = (json['euroPerKm'] as num?)?.toDouble();
+    final minSavings = (json['minExtraStoreSavings'] as num?)?.toDouble();
 
     return MobilitySettings(
       startAddress:
           (json['startAddress'] as String?)?.trim().isNotEmpty == true
               ? (json['startAddress'] as String).trim()
               : '97225 Zellingen, Germany',
-      euroPerKm: (json['euroPerKm'] as num?)?.toDouble() ?? 0.22,
+      euroPerKm: euroPerKm != null && euroPerKm.isFinite &&
+              euroPerKm >= 0 && euroPerKm <= 5
+          ? euroPerKm
+          : 0.22,
       mode: mode.isEmpty ? MobilityMode.car : mode.first,
       maxStores:
           ((json['maxStores'] as num?)?.toInt() ?? 3).clamp(1, 3).toInt(),
-      minExtraStoreSavings:
-          (json['minExtraStoreSavings'] as num?)?.toDouble() ?? 0.50,
+      minExtraStoreSavings: minSavings != null && minSavings.isFinite &&
+              minSavings >= 0 && minSavings <= 50
+          ? minSavings
+          : 0.50,
       enabledStoreNames: stores,
     );
   }
