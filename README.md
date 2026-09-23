@@ -47,6 +47,10 @@ Der Open-Prices-Abgleich zeigt gefundene Preise, Fortschritt und Fehler an. Län
 
 CI prüft Analyse, automatisierte Tests und den Web-Build. Für eine Freigabe fehlen noch diese manuellen Prüfungen auf einem echten Zielgerät:
 
+Die ausführbare Checkliste mit Ergebnisfeldern liegt in
+[`docs/RELEASE_ACCEPTANCE.md`](docs/RELEASE_ACCEPTANCE.md). Jeder Test gilt erst
+als bestanden, wenn Erwartung und beobachtetes Ergebnis dokumentiert sind.
+
 1. App frisch installieren, eigenes Produkt mit Barcode anlegen, per Kamera scannen und einen unbekannten Barcode über Open Food Facts oder die manuelle Eingabe ergänzen. Kamera-Berechtigung und erneute Suche nach einem erfolglosen Abruf prüfen.
 2. Produkte und Mengen zur Einkaufsliste hinzufügen, abhaken, Mengen ändern und die App neu starten. Liste, eigene Produkte und bevorzugte Artikel müssen erhalten bleiben.
 3. Einen eigenen Marktpreis und ein Angebot mit Mehrfachkauf oder Coupon eintragen. Route und angezeigten Effektivpreis mit einer nachvollziehbaren Beispielrechnung vergleichen; fehlende und veraltete Preise prüfen.
