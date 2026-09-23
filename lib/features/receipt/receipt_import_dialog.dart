@@ -117,7 +117,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
       products: widget.products,
     );
     if (result.prices.isEmpty) {
-      setState(() => errorMessage = 'Kein bekannter Artikel mit gültigem Preis gefunden. Bitte die Zeilen prüfen.');
+      setState(() => errorMessage = 'Keine bestätigte Produkt-Preis-Zeile gefunden. Bitte geprüfte Einzelpreise im Format Produkt;1,29 eintragen.');
       return;
     }
     setState(() => saving = true);
@@ -180,7 +180,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
               ],
               const SizedBox(height: 8),
               const Text(
-                'Textbasierte PDF-, TXT- und CSV-Belege werden direkt eingelesen. Fotos und gescannte PDFs können ausgewählt und anschließend manuell ergänzt werden.',
+                'Text aus PDF-, TXT- und CSV-Dateien wird als Prüfhilfe eingelesen. Preise werden erst aus eindeutigen, geprüften Zeilen im Format Produkt;1,29 übernommen. Mengen, Rabatte und mehrdeutige Artikel bitte vorher prüfen. Fotos benötigen eine manuelle Übertragung.',
                 style: TextStyle(fontSize: 12),
               ),
               if (errorMessage != null) ...[
