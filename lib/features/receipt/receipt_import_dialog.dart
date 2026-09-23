@@ -27,6 +27,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
   final linesController = TextEditingController();
   final List<String> importedFileNames = <String>[];
   final receiptDrafts = <({String name, ReceiptDraft draft})>[];
+  int duplicateReceipts = 0;
   String? errorMessage;
   bool importing = false;
   bool saving = false;
@@ -60,6 +61,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
 
       final extractedTexts = <String>[];
       final newDrafts = <({String name, ReceiptDraft draft})>[];
+      var duplicateCount = 0;
       final unreadableFiles = <String>[];
       for (final file in result.files) {
         final bytes = file.bytes;
@@ -73,7 +75,14 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
         );
         if (text != null && text.trim().isNotEmpty) {
           if (file.name.toLowerCase().endsWith('.pdf')) {
-            newDrafts.add((name: file.name, draft: parseReceiptLedger(text)));
+            final draft = parseReceiptLedger(text);
+            final existing = [...receiptDrafts, ...newDrafts]
+                .any((entry) => entry.draft.fingerprint == draft.fingerprint);
+            if (existing) {
+              duplicateCount++;
+            } else {
+              newDrafts.add((name: file.name, draft: draft));
+            }
           } else {
             extractedTexts.add(text.trim());
           }
@@ -85,6 +94,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
       setState(() {
         importedFileNames.addAll(result.files.map((file) => file.name));
         receiptDrafts.addAll(newDrafts);
+        duplicateReceipts += duplicateCount;
         _appendReceiptText(extractedTexts);
         if (unreadableFiles.isNotEmpty) {
           errorMessage =
@@ -186,6 +196,8 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                   ),
                 ),
               ],
+              if (duplicateReceipts > 0)
+                Text('$duplicateReceipts doppelte(r) PDF-Beleg(e) übersprungen.'),
               if (receiptDrafts.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 const Text('PDF-Prüfvorschau',
@@ -197,8 +209,12 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                       ? null : draft.calculatedCents - printed;
                   return ListTile(
                     dense: true,
-                    title: Text(entry.name,
-                        maxLines: 1, overflow: TextOverflow.ellipsis),
+                    title: Text(
+                      '${draft.retailer ?? 'Unbekannter Markt'} · '
+                      '${draft.receiptDate == null ? 'Datum offen' : '${draft.receiptDate!.day.toString().padLeft(2, '0')}.${draft.receiptDate!.month.toString().padLeft(2, '0')}.${draft.receiptDate!.year}'} · '
+                      '${entry.name}',
+                      maxLines: 2, overflow: TextOverflow.ellipsis,
+                    ),
                     subtitle: Text(
                       '${draft.rows.length} Preiszeilen · '
                       'gerechnet ${(draft.calculatedCents / 100).toStringAsFixed(2)} € · '
