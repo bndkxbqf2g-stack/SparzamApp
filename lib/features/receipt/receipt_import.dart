@@ -18,6 +18,8 @@ class ReceiptImportOutcome {
   final List<String> unmatchedLines;
 }
 
+/// Only explicitly reviewed name;unit-price entries are eligible for learning.
+/// Raw receipt text needs a store-specific parser, quantity and discount checks.
 ReceiptImportResult parseReceiptLines({
   required String text,
   required String storeName,
@@ -30,29 +32,23 @@ ReceiptImportResult parseReceiptLines({
   for (final raw in text.split(RegExp(r'\r?\n'))) {
     final line = raw.trim();
     if (line.isEmpty) continue;
-    final parsed = _parseLine(line);
+    final parsed = _parseReviewedLine(line);
     if (parsed == null) {
       unmatched.add(line);
       continue;
     }
     final (name, price) = parsed;
     final normalized = _normalize(name);
-    Product? match;
-    for (final product in products) {
+    final matches = products.where((product) {
       final names = [product.name, ...product.aliases].map(_normalize);
-      if (names.any(
-        (candidate) => candidate == normalized || normalized.contains(candidate),
-      )) {
-        match = product;
-        break;
-      }
-    }
-    if (match == null || price <= 0) {
+      return names.contains(normalized);
+    }).toList();
+    if (matches.length != 1 || price <= 0) {
       unmatched.add(line);
       continue;
     }
     prices.add(MarketPrice(
-      productId: match.id,
+      productId: matches.single.id,
       storeName: storeName.trim(),
       price: price,
       updatedAt: timestamp,
@@ -62,24 +58,14 @@ ReceiptImportResult parseReceiptLines({
   return ReceiptImportResult(prices: prices, unmatchedLines: unmatched);
 }
 
-(String, double)? _parseLine(String line) {
-  final semicolon = line.lastIndexOf(';');
-  if (semicolon > 0) {
-    final price = _parsePrice(line.substring(semicolon + 1));
-    if (price != null) return (line.substring(0, semicolon).trim(), price);
-  }
-
-  final match = RegExp(r'(\d+[,.]\d{2})\s*€?\s*$').firstMatch(line);
+(String, double)? _parseReviewedLine(String line) {
+  final match = RegExp(r'^([^;]+);([0-9]+[,.][0-9]{2})$').firstMatch(line);
   if (match == null) return null;
-  final price = _parsePrice(match.group(1)!);
-  final name = line.substring(0, match.start).trim();
-  if (price == null || name.isEmpty) return null;
+  final name = match.group(1)!.trim();
+  final price = double.tryParse(match.group(2)!.replaceAll(',', '.'));
+  if (name.isEmpty || price == null) return null;
   return (name, price);
 }
-
-double? _parsePrice(String value) => double.tryParse(
-      value.replaceAll(',', '.').replaceAll(RegExp(r'[^0-9.]'), ''),
-    );
 
 String _normalize(String value) => value
     .toLowerCase()
