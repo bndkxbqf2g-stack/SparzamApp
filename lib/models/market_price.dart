@@ -69,14 +69,22 @@ class MarketPrice {
       };
 
   factory MarketPrice.fromJson(Map<String, dynamic> json) {
+    final productId = json['productId'] as String?;
+    final storeName = json['storeName'] as String?;
+    final price = (json['price'] as num?)?.toDouble();
+    if (productId == null || productId.trim().isEmpty ||
+        storeName == null || storeName.trim().isEmpty ||
+        price == null || !price.isFinite || price <= 0) {
+      throw const FormatException('Ungültiger Marktpreis');
+    }
     final sourceName = json['source'] as String?;
     final matches =
         MarketPriceSource.values.where((item) => item.name == sourceName);
 
     return MarketPrice(
-      productId: json['productId'] as String,
-      storeName: json['storeName'] as String,
-      price: (json['price'] as num).toDouble(),
+      productId: productId,
+      storeName: storeName,
+      price: price,
       updatedAt: DateTime.parse(json['updatedAt'] as String),
       source: matches.isEmpty ? MarketPriceSource.manual : matches.first,
       externalId: (json['externalId'] as num?)?.toInt(),

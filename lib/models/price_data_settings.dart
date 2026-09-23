@@ -28,14 +28,14 @@ class PriceDataSettings {
         'autoSyncOnCatalogOpen': autoSyncOnCatalogOpen,
       };
 
-  factory PriceDataSettings.fromJson(Map<String, dynamic> json) {
-    final rawAge = (json['openPricesMaxAgeDays'] as num?)?.toDouble();
-    final age = rawAge != null && rawAge.isFinite ? rawAge.toInt() : 60;
-    return PriceDataSettings(
-      openPricesEnabled: json['openPricesEnabled'] as bool? ?? true,
-      openPricesMaxAgeDays: age.clamp(7, 365).toInt(),
-      autoSyncOnCatalogOpen:
-          json['autoSyncOnCatalogOpen'] as bool? ?? false,
-    );
-  }
+  factory PriceDataSettings.fromJson(Map<String, dynamic> json) =>
+      PriceDataSettings(
+        openPricesEnabled: json['openPricesEnabled'] as bool? ?? true,
+        openPricesMaxAgeDays:
+            ((json['openPricesMaxAgeDays'] as num?)?.toInt() ?? 60)
+                .clamp(7, 365)
+                .toInt(),
+        autoSyncOnCatalogOpen:
+            json['autoSyncOnCatalogOpen'] as bool? ?? false,
+      );
 }

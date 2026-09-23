@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'dart:convert';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:sparzamapp/models/market_price.dart';
@@ -28,6 +29,30 @@ void main() {
 
     expect(next.single.key, 'Lidl|custom_test');
     expect(loaded.single.price, 2.49);
+  });
+
+  test('beschädigte oder negative gespeicherte Preise werden ignoriert',
+      () async {
+    final preferences = InMemorySharedPreferencesAsync.empty();
+    SharedPreferencesAsyncPlatform.instance = preferences;
+    await preferences.setStringList('market_prices_v1', [
+      jsonEncode({
+        'productId': 'bad',
+        'storeName': 'Lidl',
+        'price': -1,
+        'updatedAt': '2026-09-22T00:00:00.000',
+      }),
+      jsonEncode({
+        'productId': 'good',
+        'storeName': 'Lidl',
+        'price': 1.99,
+        'updatedAt': '2026-09-22T00:00:00.000',
+      }),
+    ]);
+
+    final loaded = await MarketPriceStore().load();
+    expect(loaded, hasLength(1));
+    expect(loaded.single.productId, 'good');
   });
 
   test('Open Prices überschreibt keinen manuellen Preis', () async {

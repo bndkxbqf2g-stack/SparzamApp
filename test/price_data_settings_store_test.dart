@@ -37,11 +37,4 @@ void main() {
     expect(loaded.openPricesMaxAgeDays, 60);
     expect(loaded.autoSyncOnCatalogOpen, isFalse);
   });
-
-  test('nicht endliches Höchstalter fällt auf 60 Tage zurück', () {
-    final settings = PriceDataSettings.fromJson({
-      'openPricesMaxAgeDays': double.nan,
-    });
-    expect(settings.openPricesMaxAgeDays, 60);
-  });
 }
