@@ -810,7 +810,6 @@ class _AppShellState extends State<AppShell> {
     );
 
     return Scaffold(
-      appBar: AppBar(title: const Text('sparzamApp')),
       body: SafeArea(child: pages[selectedIndex]),
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,
