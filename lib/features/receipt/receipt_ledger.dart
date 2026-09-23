@@ -175,7 +175,7 @@ int _cents(String value) {
 }
 
 DateTime? _receiptDate(String text) {
-  final match = RegExp(r'\\bDatum\\s*:?\\s*(\\d{2})[.](\\d{2})[.](\\d{2})\\b')
+  final match = RegExp(r'\bDatum\s*:?\s*(\d{2})[.](\d{2})[.](\d{2})\b')
       .firstMatch(text);
   if (match == null) return null;
   final day = int.parse(match.group(1)!);
