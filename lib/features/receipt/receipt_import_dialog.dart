@@ -28,6 +28,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
   final List<String> importedFileNames = <String>[];
   final receiptDrafts = <({String name, ReceiptDraft draft})>[];
   int duplicateReceipts = 0;
+  DateTime? receiptDate;
   String? errorMessage;
   bool importing = false;
   bool saving = false;
@@ -37,6 +38,18 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
     final day = date.day.toString().padLeft(2, '0');
     final month = date.month.toString().padLeft(2, '0');
     return '$day.$month.${date.year}';
+  }
+
+  Future<void> pickReceiptDate() async {
+    final chosen = await showDatePicker(
+      context: context,
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now(),
+      initialDate: receiptDate ?? DateTime.now(),
+    );
+    if (mounted && chosen != null) {
+      setState(() => receiptDate = chosen);
+    }
   }
 
   Future<void> pickReceipt() async {
@@ -102,6 +115,12 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
         importedFileNames.addAll(result.files.map((file) => file.name));
         receiptDrafts.addAll(newDrafts);
         duplicateReceipts += duplicateCount;
+        if (receiptDrafts.length == 1) {
+          receiptDate = receiptDrafts.single.draft.receiptDate;
+          storeController.text = receiptDrafts.single.draft.retailer ?? '';
+        } else if (newDrafts.isNotEmpty) {
+          receiptDate = null;
+        }
         _appendReceiptText(extractedTexts);
         if (unreadableFiles.isNotEmpty) {
           errorMessage =
@@ -136,10 +155,15 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
       setState(() => errorMessage = 'Es wurden keine Artikeldaten erkannt. Bitte Artikel und Preis manuell ergänzen.');
       return;
     }
+    if (receiptDate == null) {
+      setState(() => errorMessage = 'Bitte das Datum der bestätigten Einzelpreise auswählen.');
+      return;
+    }
     final result = parseReceiptLines(
       text: linesController.text,
       storeName: storeName,
       products: widget.products,
+      now: receiptDate,
     );
     if (result.prices.isEmpty) {
       setState(() => errorMessage = 'Keine bestätigte Produkt-Preis-Zeile gefunden. Bitte geprüfte Einzelpreise im Format Produkt;1,29 eintragen.');
@@ -252,6 +276,13 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               ],
+              OutlinedButton.icon(
+                onPressed: saving || importing ? null : pickReceiptDate,
+                icon: const Icon(Icons.calendar_today_outlined),
+                label: Text('Belegdatum: ${_dateLabel(receiptDate)}'),
+              ),
+              if (receiptDrafts.length > 1)
+                const Text('Bestätigte Einzelpreise bitte nur für einen Beleg und eine Filiale gleichzeitig übernehmen.'),
               TextField(
                 controller: storeController,
                 decoration: const InputDecoration(labelText: 'Markt'),

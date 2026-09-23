@@ -27,12 +27,15 @@ class MarketPrice {
     required DateTime now,
     required int openPricesMaxAgeDays,
   }) {
-    if (isManual) return true;
+    if (source == MarketPriceSource.manual) return true;
+    // Provisional safety window until receipt price stability is measured.
+    final maxAgeDays = source == MarketPriceSource.receipt
+        ? 30 : openPricesMaxAgeDays;
     final cutoff = DateTime(
       now.year,
       now.month,
       now.day,
-    ).subtract(Duration(days: openPricesMaxAgeDays));
+    ).subtract(Duration(days: maxAgeDays));
     final observed = DateTime(
       updatedAt.year,
       updatedAt.month,
@@ -45,7 +48,11 @@ class MarketPrice {
     required DateTime now,
     required int openPricesMaxAgeDays,
   }) {
-    if (isManual) return 'manuell';
+    if (source == MarketPriceSource.manual) return 'manuell';
+    if (source == MarketPriceSource.receipt) {
+      return isUsable(now: now, openPricesMaxAgeDays: openPricesMaxAgeDays)
+          ? 'Bonpreis' : 'historischer Bonpreis';
+    }
     return isUsable(
       now: now,
       openPricesMaxAgeDays: openPricesMaxAgeDays,

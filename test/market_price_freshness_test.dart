@@ -119,4 +119,17 @@ void main() {
     expect(coverage.last.storeName, 'REWE');
     expect(coverage.last.products, 0);
   });
+  test('older receipts are historical and excluded from current prices', () {
+    final receipt = MarketPrice(
+      productId: 'bread',
+      storeName: 'Netto',
+      price: 1.19,
+      updatedAt: DateTime(2026, 5, 26),
+      source: MarketPriceSource.receipt,
+    );
+    expect(receipt.isUsable(now: now, openPricesMaxAgeDays: 60), isFalse);
+    expect(receipt.freshnessLabel(now: now, openPricesMaxAgeDays: 60),
+        'historischer Bonpreis');
+  });
+
 }

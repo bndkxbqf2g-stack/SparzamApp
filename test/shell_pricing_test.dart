@@ -32,4 +32,17 @@ void main() {
     expect(priceHistoryPoint(manual).source, PricePointSource.manual);
     expect(priceHistoryPoint(external).source, PricePointSource.openPrices);
   });
+  test('historical receipt is excluded even with external sync disabled', () {
+    final oldReceipt = MarketPrice(
+      productId: 'bread', storeName: 'Netto', price: 1.19,
+      updatedAt: DateTime(2025, 1, 1),
+      source: MarketPriceSource.receipt,
+    );
+    final result = activePrices(
+      [manual, oldReceipt],
+      const PriceDataSettings(openPricesEnabled: false),
+    );
+    expect(result, [manual]);
+  });
+
 }
