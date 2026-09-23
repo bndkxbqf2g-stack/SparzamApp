@@ -62,6 +62,6 @@ void main() {
       ),
     );
 
-    expect(find.text('Einkaufsliste'), findsWidgets);
+    expect(find.text('sparzam'), findsOneWidget);
   });
 }
