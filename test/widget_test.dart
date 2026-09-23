@@ -62,6 +62,6 @@ void main() {
       ),
     );
 
-    expect(find.text('sparzamApp'), findsOneWidget);
+    expect(find.text('sparzam'), findsOneWidget);
   });
 }
