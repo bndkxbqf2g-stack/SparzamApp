@@ -25,6 +25,7 @@ import '../../services/purchase_store.dart';
 import '../../services/road_distance_store.dart';
 import '../../services/road_route_matrix_store.dart';
 import '../../services/shopping_list_store.dart';
+import '../../services/sequential_write_queue.dart';
 import '../budget/budget_screen.dart';
 import '../catalog/product_catalog_screen.dart';
 import '../home/dashboard_data.dart';
@@ -115,7 +116,7 @@ class _AppShellState extends State<AppShell> {
   final roadRouteMatrixStore = RoadRouteMatrixStore();
   RoadRouteMatrix? roadMatrix;
   late Map<String, String> preferredProductByGroup;
-  Future<void> _pendingShoppingListSave = Future<void>.value();
+  final _shoppingListSaves = SequentialWriteQueue();
   bool _purchaseInProgress = false;
 
   Product? _catalogProduct(String id) {
@@ -176,10 +177,17 @@ class _AppShellState extends State<AppShell> {
       for (final item in shoppingList)
         ListItem(product: item.product, quantity: item.quantity),
     ];
-    _pendingShoppingListSave = _pendingShoppingListSave.then(
-      (_) => widget.shoppingListStore.save(snapshot),
-    );
-    return _pendingShoppingListSave;
+    return _shoppingListSaves.add(() => widget.shoppingListStore.save(snapshot));
+  }
+
+  void persistShoppingListWithFeedback() {
+    persistShoppingList().catchError((Object _) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Einkaufsliste konnte nicht gespeichert werden.')),
+        );
+      }
+    });
   }
 
   Future<void> ensureCatalogProduct(Product product) async {
@@ -196,7 +204,7 @@ class _AppShellState extends State<AppShell> {
 
   void addProduct(Product product) {
     setState(() => shoppingList = addShoppingProduct(shoppingList, product));
-    persistShoppingList();
+    persistShoppingListWithFeedback();
     widget.shoppingListStore.saveKnownItem(product);
     ensureCatalogProduct(product);
   }
@@ -237,13 +245,13 @@ class _AppShellState extends State<AppShell> {
       shoppingList[index].quantity += delta;
       if (shoppingList[index].quantity <= 0) shoppingList.removeAt(index);
     });
-    persistShoppingList();
+    persistShoppingListWithFeedback();
   }
 
   void clearPurchasedItems(Set<String> productIds) {
     if (productIds.isEmpty) return;
     setState(() => shoppingList.removeWhere((item) => productIds.contains(item.product.id)));
-    persistShoppingList();
+    persistShoppingListWithFeedback();
   }
 
   ShellRouting get routing => ShellRouting(
@@ -298,7 +306,7 @@ class _AppShellState extends State<AppShell> {
     if (plan == null || baseline == null || shoppingList.isEmpty) return;
     _purchaseInProgress = true;
     try {
-      await _pendingShoppingListSave;
+      await _shoppingListSaves.pending;
       final result = await purchaseCoordinator.complete(
         plan: plan,
         baselineTotal: baseline.total,
