@@ -34,13 +34,31 @@ class RecentPurchase {
 
   factory RecentPurchase.fromJson(String value) {
     final json = jsonDecode(value) as Map<String, dynamic>;
+    final id = json['id'] as String?;
+    final name = json['name'] as String?;
+    final unit = json['unit'] as String?;
+    final group = json['group'] as String?;
+    final purchaseCount = (json['purchaseCount'] as num?)?.toInt() ?? 1;
+    final totalQuantity = (json['totalQuantity'] as num?)?.toInt() ?? 1;
+    if (id == null ||
+        id.trim().isEmpty ||
+        name == null ||
+        name.trim().isEmpty ||
+        unit == null ||
+        unit.trim().isEmpty ||
+        group == null ||
+        group.trim().isEmpty ||
+        purchaseCount <= 0 ||
+        totalQuantity <= 0) {
+      throw const FormatException('Ungültiger letzter Einkauf');
+    }
     return RecentPurchase(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      unit: json['unit'] as String,
-      group: json['group'] as String,
-      purchaseCount: (json['purchaseCount'] as num?)?.toInt() ?? 1,
-      totalQuantity: (json['totalQuantity'] as num?)?.toInt() ?? 1,
+      id: id,
+      name: name,
+      unit: unit,
+      group: group,
+      purchaseCount: purchaseCount,
+      totalQuantity: totalQuantity,
       ean: json['ean'] as String?,
     );
   }
