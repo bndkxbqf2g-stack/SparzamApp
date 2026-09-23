@@ -42,3 +42,16 @@ Der Open-Prices-Abgleich zeigt gefundene Preise, Fortschritt und Fehler an. Län
 
 1. Weitere Preiserfassung und Produktabdeckung priorisieren.
 2. Anmeldung und Cloud-Synchronisierung als eigenständigen späteren Schritt planen.
+
+## Abnahme vor Version 1
+
+CI prüft Analyse, automatisierte Tests und den Web-Build. Für eine Freigabe fehlen noch diese manuellen Prüfungen auf einem echten Zielgerät:
+
+1. App frisch installieren, eigenes Produkt mit Barcode anlegen, per Kamera scannen und einen unbekannten Barcode über Open Food Facts oder die manuelle Eingabe ergänzen. Kamera-Berechtigung und erneute Suche nach einem erfolglosen Abruf prüfen.
+2. Produkte und Mengen zur Einkaufsliste hinzufügen, abhaken, Mengen ändern und die App neu starten. Liste, eigene Produkte und bevorzugte Artikel müssen erhalten bleiben.
+3. Einen eigenen Marktpreis und ein Angebot mit Mehrfachkauf oder Coupon eintragen. Route und angezeigten Effektivpreis mit einer nachvollziehbaren Beispielrechnung vergleichen; fehlende und veraltete Preise prüfen.
+4. Einen Einkauf bestätigen, Bon und Lebensmittelbudget prüfen, den Einkauf bearbeiten und löschen. Nach jedem Schritt die App neu starten und die gespeicherten Werte vergleichen.
+5. Internetverbindung beim Produkt- und Preisabruf unterbrechen. Fehlermeldung, Teilerfolge und Wiederholung prüfen; bereits gespeicherte Daten dürfen nicht verloren gehen.
+6. Vor einem Release Demo-Preise und Beispielangebote deutlich als solche kennzeichnen, die gewünschte Preisabdeckung festlegen und den vollständigen Kernablauf vom Nutzer abnehmen lassen.
+
+Automatisierte Tests ersetzen diese Geräteprüfung nicht. Anmeldung, Cloud-Backup und Synchronisierung gehören derzeit nicht zu Version 1.
