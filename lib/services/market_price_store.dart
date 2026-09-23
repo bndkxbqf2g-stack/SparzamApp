@@ -44,7 +44,7 @@ class MarketPriceStore {
           continue;
         }
         if (price.source == MarketPriceSource.openPrices) {
-          if (currentPrice.isManual ||
+          if (currentPrice.source == MarketPriceSource.manual ||
               !price.updatedAt.isAfter(currentPrice.updatedAt)) {
             continue;
           }
