@@ -34,7 +34,7 @@ void main() {
 
     expect(saved, isNull);
     expect(find.text('Bitte einen gültigen Betrag ab 0 € eingeben'),
-        findsOneWidget);
+        findsNWidgets(3));
   });
 
   testWidgets('gültige Budgets werden gespeichert', (tester) async {
@@ -51,6 +51,11 @@ void main() {
     await tester.enterText(
       find.widgetWithText(TextFormField, 'Lebensmittelbudget'),
       '300,50',
+    );
+    await tester.scrollUntilVisible(
+      find.text('Budget speichern'),
+      250,
+      scrollable: find.byType(Scrollable).first,
     );
     await tester.tap(find.text('Budget speichern'));
     await tester.pumpAndSettle();
