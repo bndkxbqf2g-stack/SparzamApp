@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'design/sparzam_theme.dart';
 import 'features/shell/app_shell.dart';
 import 'models/budget_plan.dart';
 import 'models/list_item.dart';
@@ -75,23 +76,10 @@ class SparzamApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const primary = Color(0xFF155EEF);
-
     return MaterialApp(
-      title: 'sparzamApp',
+      title: 'Sparzam',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: primary),
-        scaffoldBackgroundColor: const Color(0xFFF7F9FC),
-        cardTheme: const CardThemeData(
-          elevation: 0,
-          margin: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(18)),
-          ),
-        ),
-      ),
+      theme: SparzamTheme.light,
       home: AppShell(
         budgetStore: budgetStore,
         offerStore: offerStore,
