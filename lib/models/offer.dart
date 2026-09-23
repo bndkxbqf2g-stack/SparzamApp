@@ -39,22 +39,52 @@ class Offer {
 
   factory Offer.fromJson(String value) {
     final json = jsonDecode(value) as Map<String, dynamic>;
+    final id = json['id'] as String?;
+    final productId = json['productId'] as String?;
+    final storeName = json['storeName'] as String?;
+    final originalPrice = _finiteDouble(json['originalPrice']);
+    final offerPrice = _finiteDouble(json['offerPrice']);
+    if (id == null ||
+        id.trim().isEmpty ||
+        productId == null ||
+        productId.trim().isEmpty ||
+        storeName == null ||
+        storeName.trim().isEmpty ||
+        originalPrice == null ||
+        originalPrice <= 0 ||
+        offerPrice == null ||
+        offerPrice <= 0 ||
+        offerPrice > originalPrice) {
+      throw const FormatException('Ungültiges Angebot');
+    }
     return Offer(
-      id: json['id'] as String,
-      productId: json['productId'] as String,
-      storeName: json['storeName'] as String,
-      originalPrice: (json['originalPrice'] as num).toDouble(),
-      offerPrice: (json['offerPrice'] as num).toDouble(),
+      id: id,
+      productId: productId,
+      storeName: storeName,
+      originalPrice: originalPrice,
+      offerPrice: offerPrice,
       validUntil: DateTime.parse(json['validUntil'] as String),
       buyQuantity: (json['buyQuantity'] as num?)?.toInt(),
       payQuantity: (json['payQuantity'] as num?)?.toInt(),
       coupon: json['coupon'] as bool? ?? false,
-      couponPercent: (json['couponPercent'] as num?)?.toDouble(),
-      couponAmount: (json['couponAmount'] as num?)?.toDouble(),
+      couponPercent: _optionalFiniteDouble(json['couponPercent']),
+      couponAmount: _optionalFiniteDouble(json['couponAmount']),
       cashback: json['cashback'] as bool? ?? false,
-      cashbackPercent: (json['cashbackPercent'] as num?)?.toDouble(),
-      cashbackAmount: (json['cashbackAmount'] as num?)?.toDouble(),
+      cashbackPercent: _optionalFiniteDouble(json['cashbackPercent']),
+      cashbackAmount: _optionalFiniteDouble(json['cashbackAmount']),
     );
+  }
+
+  static double? _finiteDouble(Object? value) =>
+      value is num && value.toDouble().isFinite ? value.toDouble() : null;
+
+  static double? _optionalFiniteDouble(Object? value) {
+    if (value == null) return null;
+    final parsed = _finiteDouble(value);
+    if (parsed == null || parsed < 0) {
+      throw const FormatException('Ungültiger Angebotsrabatt');
+    }
+    return parsed;
   }
 
   String toJson() => jsonEncode({

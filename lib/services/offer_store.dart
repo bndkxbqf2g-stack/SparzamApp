@@ -18,13 +18,21 @@ class OfferStore {
       return [...sampleOffers];
     }
 
-    var offers = raw.map(Offer.fromJson).toList();
+    final offers = <Offer>[];
+    for (final value in raw) {
+      try {
+        offers.add(Offer.fromJson(value));
+      } catch (_) {
+        // Einzelne defekte Angebote dürfen den restlichen Bestand nicht blockieren.
+      }
+    }
+    var current = offers;
     if ((prefs.getInt(_demoVersionKey) ?? 0) < _demoVersion) {
-      offers = _refreshDemoOffers(offers);
-      await save(offers);
+      current = _refreshDemoOffers(current);
+      await save(current);
       await prefs.setInt(_demoVersionKey, _demoVersion);
     }
-    return offers;
+    return current;
   }
 
   Future<void> save(List<Offer> offers) async {
