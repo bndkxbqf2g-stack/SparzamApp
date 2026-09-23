@@ -1,5 +1,6 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'dart:convert';
+
+import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:sparzamapp/models/market_price.dart';
@@ -48,7 +49,7 @@ void main() {
         'price': 1.99,
         'updatedAt': '2026-09-22T00:00:00.000',
       }),
-    ]);
+    ], null);
 
     final loaded = await MarketPriceStore().load();
     expect(loaded, hasLength(1));
