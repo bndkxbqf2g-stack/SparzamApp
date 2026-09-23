@@ -4,7 +4,7 @@ const shellDestinations = <NavigationDestination>[
   NavigationDestination(
     icon: Icon(Icons.home_outlined),
     selectedIcon: Icon(Icons.home),
-    label: 'Home',
+    label: 'Start',
   ),
   NavigationDestination(
     icon: Icon(Icons.shopping_cart_outlined),
@@ -12,23 +12,23 @@ const shellDestinations = <NavigationDestination>[
     label: 'Liste',
   ),
   NavigationDestination(
+    icon: Icon(Icons.local_offer_outlined),
+    selectedIcon: Icon(Icons.local_offer),
+    label: 'Angebote',
+  ),
+  NavigationDestination(
     icon: Icon(Icons.menu_book_outlined),
     selectedIcon: Icon(Icons.menu_book),
     label: 'Prospekte',
   ),
   NavigationDestination(
-    icon: Icon(Icons.route_outlined),
-    selectedIcon: Icon(Icons.route),
-    label: 'Route',
+    icon: Icon(Icons.sell_outlined),
+    selectedIcon: Icon(Icons.sell),
+    label: 'Preise',
   ),
   NavigationDestination(
-    icon: Icon(Icons.receipt_long_outlined),
-    selectedIcon: Icon(Icons.receipt_long),
-    label: 'Bon',
-  ),
-  NavigationDestination(
-    icon: Icon(Icons.person_outline),
-    selectedIcon: Icon(Icons.person),
-    label: 'Profil',
+    icon: Icon(Icons.more_horiz),
+    selectedIcon: Icon(Icons.more),
+    label: 'Mehr',
   ),
 ];
