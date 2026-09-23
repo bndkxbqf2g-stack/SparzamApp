@@ -175,4 +175,25 @@ void main() {
     expect((await store.load()).map((price) => price.price),
         prices.map((price) => price.price));
   });
+  test('older receipt cannot overwrite newer price, newer external can', () async {
+    final store = MarketPriceStore();
+    final newer = MarketPrice(
+      productId: 'bread', storeName: 'Netto', price: 1.49,
+      updatedAt: DateTime(2026, 9, 20), source: MarketPriceSource.receipt,
+    );
+    final older = MarketPrice(
+      productId: 'bread', storeName: 'Netto', price: 1.19,
+      updatedAt: DateTime(2026, 5, 26), source: MarketPriceSource.receipt,
+    );
+    final oldAttempt = await store.upsert(older, [newer]);
+    expect(oldAttempt.single.price, 1.49);
+    final external = MarketPrice(
+      productId: 'bread', storeName: 'Netto', price: 1.39,
+      updatedAt: DateTime(2026, 9, 22),
+      source: MarketPriceSource.openPrices,
+    );
+    final current = await store.upsert(external, oldAttempt);
+    expect(current.single.price, 1.39);
+  });
+
 }
