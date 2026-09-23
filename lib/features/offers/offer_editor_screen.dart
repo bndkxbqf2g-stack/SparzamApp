@@ -77,7 +77,33 @@ class _OfferEditorScreenState extends State<OfferEditorScreen> {
 
   String? _priceValidator(String? value) {
     final price = double.tryParse((value ?? '').replaceAll(',', '.').trim());
-    return price == null || price <= 0 ? 'Bitte gültigen Preis eingeben' : null;
+    return price == null || !price.isFinite || price <= 0
+        ? 'Bitte gültigen Preis eingeben'
+        : null;
+  }
+
+  String? _discountValidator(String? value, {bool percent = false}) {
+    final raw = (value ?? '').trim();
+    if (raw.isEmpty) return null;
+    final amount = double.tryParse(raw.replaceAll(',', '.'));
+    if (amount == null || !amount.isFinite || amount < 0 ||
+        (percent && amount > 100)) {
+      return percent ? 'Prozent zwischen 0 und 100' : 'Gültigen Betrag eingeben';
+    }
+    return null;
+  }
+
+  String? _quantityValidator(String? value, {required bool paying}) {
+    final raw = (value ?? '').trim();
+    final other = paying ? buyQuantity.text.trim() : payQuantity.text.trim();
+    if (raw.isEmpty && other.isEmpty) return null;
+    final count = int.tryParse(raw);
+    if (count == null || count <= 0) return 'Anzahl über 0 eingeben';
+    final buying = int.tryParse(buyQuantity.text.trim());
+    if (paying && buying != null && count > buying) {
+      return 'Nicht mehr bezahlen als kaufen';
+    }
+    return null;
   }
 
   Future<void> _pickDate() async {
@@ -168,9 +194,11 @@ class _OfferEditorScreenState extends State<OfferEditorScreen> {
               const SizedBox(height: 8),
               Row(
                 children: [
-                  Expanded(child: _numberField(buyQuantity, 'Kaufen', null, integer: true)),
+                  Expanded(child: _numberField(buyQuantity, 'Kaufen',
+                      (value) => _quantityValidator(value, paying: false), integer: true)),
                   const SizedBox(width: 12),
-                  Expanded(child: _numberField(payQuantity, 'Bezahlen', null, integer: true)),
+                  Expanded(child: _numberField(payQuantity, 'Bezahlen',
+                      (value) => _quantityValidator(value, paying: true), integer: true)),
                 ],
               ),
               const Divider(height: 28),
@@ -178,9 +206,10 @@ class _OfferEditorScreenState extends State<OfferEditorScreen> {
               const SizedBox(height: 8),
               Row(
                 children: [
-                  Expanded(child: _numberField(couponPercent, 'Prozent %', null)),
+                  Expanded(child: _numberField(couponPercent, 'Prozent %',
+                      (value) => _discountValidator(value, percent: true))),
                   const SizedBox(width: 12),
-                  Expanded(child: _numberField(couponAmount, 'Betrag €', null)),
+                  Expanded(child: _numberField(couponAmount, 'Betrag €', _discountValidator)),
                 ],
               ),
               const Divider(height: 28),
@@ -188,9 +217,10 @@ class _OfferEditorScreenState extends State<OfferEditorScreen> {
               const SizedBox(height: 8),
               Row(
                 children: [
-                  Expanded(child: _numberField(cashbackPercent, 'Prozent %', null)),
+                  Expanded(child: _numberField(cashbackPercent, 'Prozent %',
+                      (value) => _discountValidator(value, percent: true))),
                   const SizedBox(width: 12),
-                  Expanded(child: _numberField(cashbackAmount, 'Betrag €', null)),
+                  Expanded(child: _numberField(cashbackAmount, 'Betrag €', _discountValidator)),
                 ],
               ),
               const SizedBox(height: 24),
