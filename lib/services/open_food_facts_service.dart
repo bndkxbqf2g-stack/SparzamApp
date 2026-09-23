@@ -112,7 +112,9 @@ class OpenFoodFactsService {
     final unitGroup = multi == null ? 2 : 3;
     final parsed = double.tryParse(match.group(amountGroup)!);
     if (parsed == null || !parsed.isFinite || parsed <= 0 ||
-        !multiplier.isFinite || multiplier <= 0) return null;
+        !multiplier.isFinite || multiplier <= 0) {
+      return null;
+    }
 
     var parsedUnit = _normalizeUnit(match.group(unitGroup)!);
     var parsedAmount = parsed * multiplier;
