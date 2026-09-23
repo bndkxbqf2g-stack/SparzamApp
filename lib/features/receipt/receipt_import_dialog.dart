@@ -32,6 +32,13 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
   bool importing = false;
   bool saving = false;
 
+  String _dateLabel(DateTime? date) {
+    if (date == null) return 'Datum offen';
+    final day = date.day.toString().padLeft(2, '0');
+    final month = date.month.toString().padLeft(2, '0');
+    return '$day.$month.${date.year}';
+  }
+
   Future<void> pickReceipt() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.camera);
@@ -211,7 +218,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                     dense: true,
                     title: Text(
                       '${draft.retailer ?? 'Unbekannter Markt'} · '
-                      '${draft.receiptDate == null ? 'Datum offen' : '${draft.receiptDate!.day.toString().padLeft(2, '0')}.${draft.receiptDate!.month.toString().padLeft(2, '0')}.${draft.receiptDate!.year}'} · '
+                      '${_dateLabel(draft.receiptDate)} · '
                       '${entry.name}',
                       maxLines: 2, overflow: TextOverflow.ellipsis,
                     ),
