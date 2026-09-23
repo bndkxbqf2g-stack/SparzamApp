@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
@@ -82,6 +84,30 @@ void main() {
     final loaded = await store.load();
 
     expect(loaded.single.source, PricePointSource.manual);
+  });
+
+  test('beschädigte oder negative gespeicherte Preise werden ignoriert',
+      () async {
+    final preferences = InMemorySharedPreferencesAsync.empty();
+    SharedPreferencesAsyncPlatform.instance = preferences;
+    await preferences.setStringList('price_history_v1', [
+      jsonEncode({
+        'productId': 'bad',
+        'storeName': 'Lidl',
+        'price': -1,
+        'date': '2026-09-22T00:00:00.000',
+      }),
+      jsonEncode({
+        'productId': 'good',
+        'storeName': 'Lidl',
+        'price': 1.99,
+        'date': '2026-09-22T00:00:00.000',
+      }),
+    ]);
+
+    final loaded = await PriceHistoryStore().load();
+    expect(loaded, hasLength(1));
+    expect(loaded.single.productId, 'good');
   });
 
   test('alte Beobachtungen werden beim nächsten Speichern begrenzt', () async {

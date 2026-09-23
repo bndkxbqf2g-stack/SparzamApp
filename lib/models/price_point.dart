@@ -36,10 +36,22 @@ class PricePoint {
     final source = PricePointSource.values
         .where((item) => item.name == sourceName)
         .firstOrNull;
+    final productId = json['productId'] as String?;
+    final storeName = json['storeName'] as String?;
+    final rawPrice = json['price'];
+    final price = rawPrice is num ? rawPrice.toDouble() : double.nan;
+    if (productId == null ||
+        productId.trim().isEmpty ||
+        storeName == null ||
+        storeName.trim().isEmpty ||
+        !price.isFinite ||
+        price <= 0) {
+      throw const FormatException('Ungültiger Preisverlauf-Eintrag');
+    }
     return PricePoint(
-      productId: json['productId'] as String,
-      storeName: json['storeName'] as String,
-      price: (json['price'] as num).toDouble(),
+      productId: productId,
+      storeName: storeName,
+      price: price,
       date: DateTime.parse(json['date'] as String),
       source: source ?? PricePointSource.sample,
     );
