@@ -20,21 +20,22 @@ class _ScannerScreenState extends State<ScannerScreen> {
   bool lookingUp = false;
   final openFoodFacts = OpenFoodFactsService();
 
-  Future<void> resolve(String? code) async {
-    if (completing || code == null || code.isEmpty) return;
-    final product = productForBarcode(code, widget.learnedProducts);
+  Future<void> resolve(String? code, {bool retry = false}) async {
+    final normalizedCode = code?.trim();
+    if (completing || normalizedCode == null || normalizedCode.isEmpty) return;
+    final product = productForBarcode(normalizedCode, widget.learnedProducts);
     if (product != null) {
       completing = true;
       Navigator.pop(context, product);
       return;
     }
-    if (lookingUp) return;
+    if (lookingUp || (!retry && unknownCode == normalizedCode)) return;
     setState(() {
       lookingUp = true;
-      unknownCode = code;
+      unknownCode = normalizedCode;
     });
 
-    final enriched = await openFoodFacts.fetchProductByEan(code);
+    final enriched = await openFoodFacts.fetchProductByEan(normalizedCode);
     if (!mounted) return;
     if (enriched != null) {
       completing = true;
@@ -67,7 +68,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
       ),
     );
     controller.dispose();
-    if (code != null) await resolve(code);
+    if (code != null) await resolve(code, retry: true);
   }
 
   Future<void> addUnknown() async {
@@ -140,10 +141,23 @@ class _ScannerScreenState extends State<ScannerScreen> {
                         else
                           Text('Noch unbekannt: $unknownCode'),
                         const SizedBox(height: 8),
-                        FilledButton.icon(
-                          onPressed: lookingUp ? null : addUnknown,
-                          icon: const Icon(Icons.add),
-                          label: const Text('Produkt anlegen'),
+                        Wrap(
+                          spacing: 8,
+                          alignment: WrapAlignment.center,
+                          children: [
+                            OutlinedButton.icon(
+                              onPressed: lookingUp
+                                  ? null
+                                  : () => resolve(unknownCode, retry: true),
+                              icon: const Icon(Icons.refresh),
+                              label: const Text('Erneut suchen'),
+                            ),
+                            FilledButton.icon(
+                              onPressed: lookingUp ? null : addUnknown,
+                              icon: const Icon(Icons.add),
+                              label: const Text('Produkt anlegen'),
+                            ),
+                          ],
                         ),
                       ],
                     ),
