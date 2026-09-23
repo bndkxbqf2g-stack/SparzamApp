@@ -106,7 +106,7 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   // The primary task is adding items. Open the app on the list, like Bring.
-  int selectedIndex = 1;
+  int selectedIndex = 0;
   late BudgetPlan budget;
   late MobilitySettings mobility;
   late List<ListItem> shoppingList;
