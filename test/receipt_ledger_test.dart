@@ -49,4 +49,20 @@ Summe 1,80
     expect(draft.balances, isFalse);
     expect(draft.unresolvedLines, contains(2));
   });
+  test('fingerprint ignores payment metadata but distinguishes receipts', () {
+    const body = '''
+Kaufland
+Preis EUR
+Brot 1,49 B
+Summe 1,49
+Datum:23.07.26 Zeit: 10:00 Bon:1
+''';
+    final first = parseReceiptLedger('$body Kartenzahlung 1,49');
+    final second = parseReceiptLedger('$body Terminal-ID: 9999');
+    final third = parseReceiptLedger(body.replaceFirst('1,49 B', '1,39 B'));
+    expect(first.receiptDate, DateTime(2026, 7, 23));
+    expect(first.retailer, 'Kaufland');
+    expect(first.fingerprint, second.fingerprint);
+    expect(first.fingerprint, isNot(third.fingerprint));
+  });
 }
