@@ -5,7 +5,7 @@ void main() {
   test('Hauptnavigation behält Reihenfolge und Bezeichnungen', () {
     expect(
       shellDestinations.map((destination) => destination.label),
-      ['Home', 'Liste', 'Prospekte', 'Route', 'Bon', 'Profil'],
+      ['Start', 'Liste', 'Angebote', 'Prospekte', 'Preise', 'Mehr'],
     );
   });
 }

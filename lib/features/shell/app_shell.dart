@@ -36,6 +36,7 @@ import '../profile/price_data_settings_screen.dart';
 import '../profile/store_selection_screen.dart';
 import '../profile/diagnostic_log_screen.dart';
 import '../route/route_optimizer.dart';
+import '../route/route_screen.dart';
 import '../scanner/scanner_screen.dart';
 import '../shopping_list/replenishment_analyzer.dart';
 import '../shopping_list/shopping_list_updates.dart';
@@ -733,12 +734,34 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
+  void openRoute() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => Scaffold(
+          appBar: AppBar(title: const Text('Einkaufsroute')),
+          body: SafeArea(
+            child: RouteScreen(
+              items: shoppingList,
+              offers: offers,
+              mobility: mobility,
+              marketPrices: activeMarketPrices,
+              onRoadDistancesChanged: (value) =>
+                  setState(() => roadDistances = value),
+              onRoadMatrixChanged: (value) =>
+                  setState(() => roadMatrix = value),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final pages = buildShellPages(
       dashboard: dashboardData(),
       onOpenList: () => setState(() => selectedIndex = 1),
-      onOpenRoute: () => setState(() => selectedIndex = 3),
+      onOpenRoute: openRoute,
       onOpenOffers: () => setState(() => selectedIndex = 2),
       onOpenBudget: openBudget,
       onOpenScanner: openScanner,
