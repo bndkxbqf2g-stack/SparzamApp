@@ -52,6 +52,14 @@ void main() {
       find.widgetWithText(TextFormField, 'Lebensmittelbudget'),
       '300,50',
     );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Verfügbares Monatsbudget'),
+      '500',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Diesen Monat bereits ausgegeben'),
+      '50',
+    );
     await tester.scrollUntilVisible(
       find.text('Budget speichern'),
       250,
