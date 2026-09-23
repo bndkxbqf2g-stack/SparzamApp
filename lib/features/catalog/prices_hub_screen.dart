@@ -38,7 +38,7 @@ class PricesHubScreen extends StatelessWidget {
           const SizedBox(height: 12),
           Card(
             child: ListTile(
-              leading: const Icon(Icons.database_outlined,
+              leading: const Icon(Icons.storage_outlined,
                   color: SparzamTheme.deepGreen),
               title: const Text('Preisdaten'),
               subtitle: Text(summary),
