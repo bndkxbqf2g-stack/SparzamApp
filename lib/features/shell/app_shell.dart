@@ -452,10 +452,6 @@ class _AppShellState extends State<AppShell> {
       product: product,
       products: customProducts,
       shoppingList: shoppingList,
-      shoppingLists: namedShoppingLists,
-      activeShoppingListId: activeShoppingListId,
-      onSelectShoppingList: selectShoppingList,
-      onCreateShoppingList: createShoppingList,
     );
     if (mounted) {
       setState(() {
@@ -703,6 +699,10 @@ class _AppShellState extends State<AppShell> {
       onOpenBudget: openBudget,
       onOpenScanner: openScanner,
       shoppingList: shoppingList,
+      shoppingLists: namedShoppingLists,
+      activeShoppingListId: activeShoppingListId,
+      onSelectShoppingList: selectShoppingList,
+      onCreateShoppingList: createShoppingList,
       onAddProduct: addProduct,
       onChangeQuantity: changeQuantity,
       preferredProductByGroup: preferredProductByGroup,
