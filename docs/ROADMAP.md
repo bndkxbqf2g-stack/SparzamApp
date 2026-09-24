@@ -73,7 +73,7 @@ Work wird nur für Aufgaben eingesetzt, bei denen eine längere, selbstständige
 
 | Status | Aufgabe | Warum Work | Startvoraussetzung |
 | --- | --- | --- | --- |
-| WAITING | End-to-End-Audit der Preis- und Routenlogik | Repo-weite Prüfung des vollständigen Datenflusses und selbstständige Korrekturen über mehrere Module | Mengen-/Packungs-/Variantenvergleich abgeschlossen |
+| READY | End-to-End-Audit der Preis- und Routenlogik | Repo-weite Prüfung des vollständigen Datenflusses und selbstständige Korrekturen über mehrere Module | Mengen-/Packungs-/Variantenvergleich abgeschlossen |
 | WAITING | Reale Preisdatenquellen und Provider-Adapter | Recherche, Quellenprüfung, Mapping, Implementierung und Validierung als zusammenhängender Arbeitslauf | Beobachtungs-/Confidence-Schnittstellen stabil |
 | WAITING | Migration auf PriceObservation als direkte Planungsbasis | Größeres Refactoring über Stores, Route und UI mit Rückbau von Übergangsschnittstellen | PriceObservation deckt Bon, Angebot, fehlende Preise und Vergleichbarkeit ab |
 | WAITING | Meilenstein-Qualitätssicherung | App-/Repo-weite Tests, CI, Datenflussprüfung, Fehlerbehebung und Dokumentationsabgleich | vor dem nächsten größeren Produktmeilenstein |
@@ -83,3 +83,15 @@ Work wird nur für Aufgaben eingesetzt, bei denen eine längere, selbstständige
 - Work: nur freigegebene Einträge dieser Queue; keine eigenständige Wiederholung bereits abgeschlossener Pakete.
 - Ein Queue-Eintrag wechselt erst auf READY, wenn seine Startvoraussetzung erfüllt ist.
 - Nach Work-Abschluss: Status/Dokumentation aktualisieren, CI grün herstellen und nächsten Queue-Status eindeutig festhalten.
+
+## Update 24.09.2026 – Vergleichbarkeitspaket abgeschlossen
+- [x] Mengen-/Einheitennormalisierung für g/kg, ml/l und Stück.
+- [x] Exakte Packungsabweichungen vor der Routenprojektion blockieren.
+- [x] Familienpreise nur mit sicherer Mengenbasis normalisieren.
+- [x] Generische Familienwünsche von konkreten Geschwistervarianten trennen.
+- [x] Open-Prices-Sync auf aktuelle Einkaufsnachfrage begrenzen.
+- [x] Fehlende EAN konservativ über Open Food Facts entdecken, ohne Discovery als bestätigte Identität auszugeben.
+- [x] Automatische Bon-Vorschläge nicht als bestätigte exakte Produktidentität speichern.
+
+### WORK QUEUE Statusänderung
+Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ ist erfüllt. Der Eintrag **End-to-End-Audit der Preis- und Routenlogik** ist damit **READY**. Beim nächsten Work-Lauf soll dieser Audit als erstes freigegebenes Paket bearbeitet werden. Die übrigen Einträge bleiben WAITING, bis ihre jeweiligen Voraussetzungen erfüllt sind.
