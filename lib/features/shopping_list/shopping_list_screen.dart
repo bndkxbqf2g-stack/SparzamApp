@@ -14,7 +14,7 @@ import '../offers/offer_details_screen.dart';
 import 'shopping_group_card.dart';
 import 'shopping_grouping.dart';
 import 'replenishment_card.dart';
-import 'shopping_offer_hint.dart';
+
 import 'shopping_suggestions.dart';
 import 'custom_shopping_product.dart';
 import 'shopping_additions.dart';
@@ -48,6 +48,7 @@ class ShoppingListScreen extends StatefulWidget {
     required this.mobility,
     required this.catalogProducts,
     required this.marketPrices,
+    this.priceObservations = const <MarketPrice>[],
     required this.replenishmentSuggestions,
   });
 
@@ -71,6 +72,7 @@ class ShoppingListScreen extends StatefulWidget {
   final MobilitySettings mobility;
   final List<Product> catalogProducts;
   final List<MarketPrice> marketPrices;
+  final List<MarketPrice> priceObservations;
   final List<ReplenishmentSuggestion> replenishmentSuggestions;
 
   @override
@@ -283,11 +285,11 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     }
   }
 
-  void openOffer(ShoppingOfferHint hint) {
+  void openOffer(Offer offer) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => OfferDetailsScreen(
-          offer: hint.offer,
+          offer: offer,
           priceHistory: widget.priceHistory,
           items: widget.items,
           offers: widget.offers,
@@ -394,6 +396,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     offers: widget.offers,
                     enabledStoreNames: widget.mobility.enabledStoreNames,
                     marketPrices: widget.marketPrices,
+                    priceObservations: widget.priceObservations,
                     onToggle: toggleChecked,
                     onChangeQuantity: widget.onChangeQuantity,
                     onEditDetails: editItemDetails,
