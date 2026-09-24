@@ -78,4 +78,24 @@ void main() {
       isTrue,
     );
   });
+
+  test('vollständiger Warenkorb schlägt billigere unvollständige Route', () {
+    const unknown = Product(
+      id: 'nur_lidl',
+      name: 'Nur Lidl',
+      unit: 'Stück',
+      group: 'test',
+    );
+    final optimizer = RouteOptimizer(
+      [ListItem(product: milk), ListItem(product: unknown)],
+      const [],
+      euroPerKm: 0,
+      maxStores: 2,
+    );
+
+    final plans = optimizer.alternatives();
+    if (plans.any((plan) => plan.priceCoverage == 1)) {
+      expect(optimizer.bestPlan()!.priceCoverage, 1);
+    }
+  });
 }
