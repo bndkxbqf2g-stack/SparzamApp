@@ -78,3 +78,19 @@ Eine echte gekaufte Bonposition wird nicht aus der Einkaufspreishistorie entfern
 
 ## D022 – Einkaufsliste und Route verwenden dieselbe familienbewusste Preisbasis
 Bekannte Bonpreise dürfen nicht nur als UI-Hinweis existieren. Sie werden in die gemeinsame Preisbasis für Einkaufsliste und Routenplanung überführt. Ein generischer Einkaufswunsch (z. B. „Schmand“) darf auf belastbare Beobachtungen derselben konservativen Produktfamilie zurückgreifen. Eine konkrete Variante darf einen Familienpreis dagegen nur übernehmen, wenn die Bonidentität exakt über Name/Alias passt; dadurch bleiben z. B. Milch 1,5 % und 3,5 % getrennt. Historische Bonpreise bleiben als solche gekennzeichnet und sollen in einer folgenden Ausbaustufe hinsichtlich Aktualität/Qualität gegenüber aktuellen Angeboten gewichtet werden.
+
+
+## D023 – Ziel der Einkaufsoptimierung ist der wirtschaftlichste Gesamteinkauf
+Die zentrale Optimierung bewertet nicht isoliert den billigsten Einzelartikel oder Markt. Für jeden geplanten Einkauf werden alle belastbaren Preise der Einkaufspositionen je Markt zusammengeführt und sinnvolle Markt-Kombinationen verglichen. Das Ergebnis soll die wirtschaftlichste Gesamtstrategie sein: ein einzelner Markt oder – nur wenn der Mehrwert den zusätzlichen Aufwand rechtfertigt – eine Kombination aus mehreren Märkten.
+
+In die Bewertung gehören mindestens:
+- Warenkorbkosten der jeweiligen Markt-/Routenkombination,
+- tatsächlicher zusätzlicher Fahrweg und daraus abgeleitete Fahrtkosten,
+- Aktualität, Herkunft und Sicherheit der verwendeten Preise,
+- zeitlich gültige Angebote getrennt von historischen/normalen Preisen,
+- Produkt- und Packungsvergleichbarkeit,
+- fehlende Preise, die nicht stillschweigend als sicher bekannt behandelt werden.
+
+Ein günstiger Einzelpreis allein darf keinen zusätzlichen Markt erzwingen. Beispiel: Schmand kann bei Kaufland 0,79 €, Edeka 0,89 € und Lidl 0,69 € kosten; erst der komplette Warenkorb entscheidet, ob Lidl, Kaufland oder z. B. Lidl + Aldi insgesamt wirtschaftlicher ist. Ein weiter entfernter Markt wie Kaufland kann trotzdem optimal sein, wenn die Gesamtersparnis des Warenkorbs den Mehrweg rechtfertigt.
+
+Die Benutzeroberfläche muss dafür nicht jeden internen Rechenschritt in den Vordergrund stellen. Primäres Produktziel ist ein verständliches Endergebnis wie „am günstigsten: Lidl“ oder „am günstigsten: Lidl + Aldi“, ergänzt um erwartete Einkaufskosten, Fahrtaufwand/-kosten und sinnvolle Vergleichswerte.
