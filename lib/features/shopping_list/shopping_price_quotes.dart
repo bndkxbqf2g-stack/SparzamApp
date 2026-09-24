@@ -3,6 +3,12 @@ import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/offer.dart';
 
+bool isSampleOffer(Offer offer) => sampleOffers.any((sample) =>
+    sample.id == offer.id &&
+    sample.productId == offer.productId &&
+    sample.storeName == offer.storeName &&
+    sample.offerPrice == offer.offerPrice);
+
 enum ShoppingQuoteKind { receipt, ownPrice, offer }
 
 class ShoppingQuote {
@@ -70,10 +76,7 @@ List<ShoppingQuote> shoppingQuotes(
         offer.validUntil.isBefore(DateTime(today.year, today.month, today.day)) ||
         (enabledStores.isNotEmpty &&
             !enabledStores.contains(offer.storeName)) ||
-        sampleOffers.any((sample) =>
-            sample.id == offer.id &&
-            sample.productId == offer.productId &&
-            sample.offerPrice == offer.offerPrice)) {
+        isSampleOffer(offer)) {
       continue;
     }
     // Coupon, cashback and multi-buy conditions are not assumed to apply.
