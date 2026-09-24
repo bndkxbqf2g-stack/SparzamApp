@@ -87,28 +87,9 @@ Product? _matchProduct(ReceiptRow row, List<Product> products) {
   // "K.H-Milch" cannot distinguish 1.5% from 3.5% and is excluded.
   String? knownProductId;
   if (normalized == 'bananen lose mt' &&
-      row.quantity != null && row.unitCents != null) {
+      row.quantityUnit == 'kg' && row.unitCents != null) {
     knownProductId = 'bananen';
-  } else if (RegExp(r'^trauben 500g(?: hell| dunkel)?
-    knownProductId = 'weintrauben';
-  } else if (RegExp(r'^gl h-milch 3,5% 1 ?l$').hasMatch(normalized)) {
-    knownProductId = 'milch_35';
-  } else if (RegExp(r'^hackfleisch gemischt 500g$').hasMatch(normalized)) {
-    knownProductId = 'hackfleisch';
-  }
-  if (knownProductId != null) {
-    final matches = products.where((p) => p.id == knownProductId).toList();
-    return matches.length == 1 ? matches.single : null;
-  }
-  final matches = products.where((product) =>
-      _normalize(product.name) == normalized &&
-      !RegExp(r'\d+[,.]\d+\s*kg').hasMatch(normalized)).toList();
-  return matches.length == 1 ? matches.single : null;
-}
-
-String _normalize(String value) =>
-    value.toLowerCase().replaceAll(RegExp(r'\s+'), ' ').trim();
-).hasMatch(normalized)) {
+  } else if (RegExp(r'^trauben 500g(?: hell| dunkel)?$').hasMatch(normalized)) {
     knownProductId = 'weintrauben';
   } else if (RegExp(r'^gl h-milch 3,5% 1 ?l$').hasMatch(normalized)) {
     knownProductId = 'milch_35';
