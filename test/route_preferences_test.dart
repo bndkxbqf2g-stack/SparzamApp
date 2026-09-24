@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/route/route_optimizer.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/product.dart';
+import 'package:sparzamapp/models/market_price.dart';
 
 void main() {
   const milk = Product(
@@ -106,22 +107,34 @@ void main() {
   });
 
   test('vollständiger Warenkorb schlägt billigere unvollständige Route', () {
-    const unknown = Product(
-      id: 'nur_lidl',
-      name: 'Nur Lidl',
+    const secondItem = Product(
+      id: 'nur_edeka',
+      name: 'Nur EDEKA',
       unit: 'Stück',
       group: 'test',
     );
+    final now = DateTime(2026, 9, 24);
     final optimizer = RouteOptimizer(
-      [ListItem(product: milk), ListItem(product: unknown)],
+      [ListItem(product: milk), ListItem(product: secondItem)],
       const [],
       euroPerKm: 0,
       maxStores: 2,
+      enabledStoreNames: const ['Lidl', 'EDEKA'],
+      marketPrices: [
+        MarketPrice(
+          productId: 'nur_edeka',
+          storeName: 'EDEKA',
+          price: 100,
+          updatedAt: now,
+        ),
+      ],
+      now: now,
     );
 
-    final plans = optimizer.alternatives();
-    if (plans.any((plan) => plan.priceCoverage == 1)) {
-      expect(optimizer.bestPlan()!.priceCoverage, 1);
-    }
+    final singleStore = optimizer.bestSingleStorePlan()!;
+    expect(singleStore.priceCoverage, 0.5);
+    expect(optimizer.alternatives().any((plan) => plan.priceCoverage == 1), isTrue);
+    expect(optimizer.bestPlan()!.priceCoverage, 1);
+    expect(optimizer.bestPlan()!.stores.length, 2);
   });
 }
