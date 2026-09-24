@@ -70,3 +70,7 @@ Bei einem vollständig geprüften/ausgeglichenen Bon werden alle echten erkannte
 
 ## D020 – Bonfamilien werden bei der Auswertung aus dem Rohtext neu abgeleitet
 Für historische Preisstatistiken wird die Produktfamilie jeder Bonbeobachtung mit der jeweils aktuellen Familienerkennung erneut aus der originalen Bonbezeichnung abgeleitet. So profitieren auch bereits gespeicherte Bons von später verbesserten Alias-/Familienregeln, ohne dass Bons neu importiert oder gespeicherte Beobachtungen migriert werden müssen. Eine vorhandene konkrete productId bleibt davon unberührt und behält Vorrang für variantenspezifische Historien.
+
+
+## D021 – Tatsächlich bezahlte rabattierte Bonpreise bleiben als Historie sichtbar
+Eine echte gekaufte Bonposition wird nicht aus der Einkaufspreishistorie entfernt, nur weil direkt danach ein Artikelrabatt steht. Der auf der Produktzeile ausgewiesene Preis bleibt als belegte historische Preisbeobachtung verfügbar. Rabatt-/Angebotsstatus bleibt als Herkunftsmerkmal erhalten; daraus darf nicht stillschweigend ein dauerhafter Normalpreis abgeleitet werden.
