@@ -74,3 +74,7 @@ Für historische Preisstatistiken wird die Produktfamilie jeder Bonbeobachtung m
 
 ## D021 – Tatsächlich bezahlte rabattierte Bonpreise bleiben als Historie sichtbar
 Eine echte gekaufte Bonposition wird nicht aus der Einkaufspreishistorie entfernt, nur weil direkt danach ein Artikelrabatt steht. Der auf der Produktzeile ausgewiesene Preis bleibt als belegte historische Preisbeobachtung verfügbar. Rabatt-/Angebotsstatus bleibt als Herkunftsmerkmal erhalten; daraus darf nicht stillschweigend ein dauerhafter Normalpreis abgeleitet werden.
+
+
+## D022 – Einkaufsliste und Route verwenden dieselbe familienbewusste Preisbasis
+Bekannte Bonpreise dürfen nicht nur als UI-Hinweis existieren. Sie werden in die gemeinsame Preisbasis für Einkaufsliste und Routenplanung überführt. Ein generischer Einkaufswunsch (z. B. „Schmand“) darf auf belastbare Beobachtungen derselben konservativen Produktfamilie zurückgreifen. Eine konkrete Variante darf einen Familienpreis dagegen nur übernehmen, wenn die Bonidentität exakt über Name/Alias passt; dadurch bleiben z. B. Milch 1,5 % und 3,5 % getrennt. Historische Bonpreise bleiben als solche gekennzeichnet und sollen in einer folgenden Ausbaustufe hinsichtlich Aktualität/Qualität gegenüber aktuellen Angeboten gewichtet werden.
