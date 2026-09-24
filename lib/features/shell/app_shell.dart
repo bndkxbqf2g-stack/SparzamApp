@@ -802,6 +802,7 @@ class _AppShellState extends State<AppShell> {
       onOpenCatalog: openCatalog,
       onEditPriceData: openPriceDataSettings,
       onSavePrice: saveMarketPrice,
+      onSaveProduct: saveCatalogProduct,
       onSaveOffer: saveOffer,
       onDeleteOffer: deleteOffer,
       priceDataSummary: priceDataSettings.openPricesEnabled
