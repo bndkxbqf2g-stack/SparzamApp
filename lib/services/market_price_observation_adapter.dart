@@ -1,6 +1,7 @@
 import '../models/market_price.dart';
 import '../models/price_observation.dart';
 import '../models/product.dart';
+import '../models/price_data_settings.dart';
 import 'quantity_normalizer.dart';
 
 /// Existing exact market prices can enter the history without changing their
@@ -42,13 +43,17 @@ PriceObservation observationFromMarketPrice(MarketPrice price) =>
 List<MarketPrice> marketPricesFromObservations(
   Iterable<PriceObservation> observations, {
   Iterable<Product> products = const <Product>[],
+  PriceDataSettings settings = const PriceDataSettings(),
+  DateTime? now,
 }) {
+  final today = now ?? DateTime.now();
   final productsById = {for (final product in products) product.id: product};
   return observations
         .where((entry) =>
             entry.productId?.isNotEmpty == true &&
             entry.identityConfidence >= 1 &&
-            (entry.validUntil == null || !entry.validUntil!.isBefore(DateTime.now())) &&
+            (entry.validUntil == null || !entry.validUntil!.isBefore(today)) &&
+            _sourceAllowed(entry, settings, today) &&
             _matchesProductPackage(entry, productsById[entry.productId]) &&
             (entry.source == PriceObservationSource.manual ||
                 entry.source == PriceObservationSource.receipt ||
@@ -100,4 +105,17 @@ bool _matchesProductPackage(PriceObservation observation, Product? product) {
 int? _openPricesId(String? proofRef) {
   if (proofRef == null || !proofRef.startsWith('open-prices:')) return null;
   return int.tryParse(proofRef.substring('open-prices:'.length));
+}
+
+
+bool _sourceAllowed(
+  PriceObservation observation,
+  PriceDataSettings settings,
+  DateTime now,
+) {
+  if (observation.source != PriceObservationSource.openPrices) return true;
+  if (!settings.openPricesEnabled) return false;
+  return !observation.observedAt.isBefore(
+    now.subtract(Duration(days: settings.openPricesMaxAgeDays)),
+  );
 }
