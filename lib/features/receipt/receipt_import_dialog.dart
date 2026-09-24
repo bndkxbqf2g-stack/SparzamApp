@@ -197,8 +197,10 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
         ),
       );
     } catch (error) {
-      if (mounted) setState(() => errorMessage =
-          'Preise konnten nicht gespeichert werden: $error');
+      if (mounted) {
+        setState(() => errorMessage =
+            'Preise konnten nicht gespeichert werden: $error');
+      }
     } finally {
       if (mounted) setState(() => saving = false);
     }
