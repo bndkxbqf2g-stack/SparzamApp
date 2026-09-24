@@ -35,7 +35,11 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 - Persönliche Wiederkaufrhythmen.
 - Preisniveau und typische Preise lernen.
 - Sparpotenzial je Einkauf.
-- Markt-/Routenoptimierung unter Berücksichtigung des tatsächlichen Mehrwegs.
+- Für jede Einkaufsposition belastbare Preise je Markt zusammenführen und hinsichtlich Aktualität/Herkunft/Confidence bewerten.
+- Ein-Markt-Strategien und sinnvolle Kombinationen aus mehreren Märkten für den gesamten Warenkorb vergleichen.
+- Markt-/Routenoptimierung unter Berücksichtigung des tatsächlichen Mehrwegs und der daraus entstehenden Fahrtkosten.
+- Einen zusätzlichen Markt nur wählen, wenn die Ersparnis des gesamten Teilwarenkorbs den zusätzlichen Aufwand wirtschaftlich rechtfertigt.
+- Primäres Ergebnis: konkrete Empfehlung der wirtschaftlichsten Einkaufsstrategie (z. B. nur Lidl, Lidl + Aldi oder nur Kaufland), nicht bloß eine Liste billiger Einzelpreise.
 - Vorschläge nur dann, wenn sie praktisch relevant sind.
 
 ## Phase F – Synchronisierung / Mehrbenutzer
