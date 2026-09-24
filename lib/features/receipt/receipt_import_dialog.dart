@@ -222,7 +222,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
               OutlinedButton.icon(
                 onPressed: saving || importing ? null : pickReceipt,
                 icon: const Icon(Icons.photo_camera_outlined),
-                label: const Text('Weiteren Bon fotografieren'),
+                label: const Text('Foto aufnehmen (noch ohne Texterkennung)'),
               ),
               const SizedBox(height: 6),
               OutlinedButton.icon(
@@ -304,6 +304,31 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                   '${suggestion.price.price.toStringAsFixed(2).replaceAll('.', ',')} € je ${suggestion.product.unit}',
                                 ),
                               ),
+                          if (review.unmatchedItems > 0)
+                            ExpansionTile(
+                              title: Text(
+                                  '${review.unmatchedItems} weitere erkannte Positionen'),
+                              subtitle: const Text(
+                                  'Noch keinem Katalogprodukt sicher zugeordnet'),
+                              children: [
+                                for (final row in draft.rows.where(
+                                  (row) => row.kind == ReceiptRowKind.item &&
+                                    !review.suggestions.any(
+                                      (suggestion) => suggestion.row.line == row.line),
+                                ))
+                                  ListTile(
+                                    dense: true,
+                                    title: Text(row.label),
+                                    trailing: Text(
+                                      '${(row.cents / 100).toStringAsFixed(2).replaceAll('.', ',')} €',
+                                    ),
+                                    subtitle: Text(row.quantity == null
+                                        ? 'Bonposition'
+                                        : '${row.quantity} × '
+                                          '${((row.unitCents ?? row.cents) / 100).toStringAsFixed(2).replaceAll('.', ',')} €'),
+                                  ),
+                              ],
+                            ),
                         ],
                       ),
                     );
@@ -322,6 +347,10 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               ],
+              ExpansionTile(
+                title: const Text('Manuell ergänzen (optional)'),
+                initiallyExpanded: receiptDrafts.isEmpty,
+                children: [
               OutlinedButton.icon(
                 onPressed: saving || importing ? null : pickReceiptDate,
                 icon: const Icon(Icons.calendar_today_outlined),
@@ -345,6 +374,8 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                   hintText: 'Milch;1,29\nButter;1,89',
                   border: OutlineInputBorder(),
                 ),
+              ),
+                ],
               ),
             ],
           ),
