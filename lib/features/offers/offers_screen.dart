@@ -7,6 +7,7 @@ import 'offer_card.dart';
 import 'offer_editor_screen.dart';
 import 'offer_filter.dart';
 import 'offer_filter_bar.dart';
+import 'official_offer_links.dart';
 
 class OffersScreen extends StatefulWidget {
   const OffersScreen({
@@ -39,6 +40,14 @@ class _OffersScreenState extends State<OffersScreen> {
   void initState() {
     super.initState();
     offers = [...widget.offers];
+  }
+
+  @override
+  void didUpdateWidget(covariant OffersScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.offers != widget.offers) {
+      offers = [...widget.offers];
+    }
   }
 
   @override
@@ -141,6 +150,11 @@ class _OffersScreenState extends State<OffersScreen> {
             onFilterChanged: (value) => setState(() => filter = value),
           ),
           const SizedBox(height: 16),
+          Text('${visible.length} gespeicherte Angebote',
+              style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 6),
+          const Text('Bei einer Neuinstallation sind drei Beispielangebote enthalten.'),
+          const SizedBox(height: 14),
           if (visible.isEmpty)
             _EmptyOffers(filter: filter, hasQuery: query.trim().isNotEmpty)
           else
@@ -154,6 +168,8 @@ class _OffersScreenState extends State<OffersScreen> {
               ),
               if (index < visible.length - 1) const SizedBox(height: 10),
             ],
+          const SizedBox(height: 28),
+          const OfficialOfferLinks(),
         ],
       ),
     );
