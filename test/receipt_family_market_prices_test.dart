@@ -107,6 +107,47 @@ void main() {
     expect(prices.single.price, 0.69);
   });
 
+  test('generic Schmand collects comparable prices from multiple stores', () {
+    const product = Product(
+      id: 'shopping_schmand_multi',
+      name: 'Schmand',
+      unit: 'Stück',
+      group: 'sonstiges',
+    );
+    final prices = receiptFamilyMarketPrices(
+      items: [ListItem(product: product)],
+      observations: [
+        for (final entry in [
+          ('Lidl', 0.69),
+          ('Kaufland', 0.79),
+          ('EDEKA', 0.89),
+        ])
+          ReceiptObservation(
+            id: 'schmand-${entry.$1}',
+            receiptFingerprint: 'receipt-${entry.$1}',
+            rowLine: 1,
+            rawLabel: 'Schmand',
+            familyKey: 'schmand',
+            storeName: entry.$1,
+            observedAt: DateTime(2026, 9, 20),
+            totalPrice: entry.$2,
+            quantity: null,
+            quantityUnit: '',
+            unitPrice: null,
+            discounted: false,
+          ),
+      ],
+      now: DateTime(2026, 9, 24),
+    );
+
+    expect(prices, hasLength(3));
+    expect({for (final price in prices) price.storeName: price.price}, {
+      'Lidl': 0.69,
+      'Kaufland': 0.79,
+      'EDEKA': 0.89,
+    });
+  });
+
   test('unrelated families are never bridged', () {
     const product = Product(
       id: 'shopping_schmand',
