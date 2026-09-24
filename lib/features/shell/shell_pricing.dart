@@ -26,7 +26,9 @@ PricePoint priceHistoryPoint(MarketPrice price) => PricePoint(
       storeName: price.storeName,
       price: price.price,
       date: price.updatedAt,
-      source: price.source == MarketPriceSource.openPrices
-          ? PricePointSource.openPrices
-          : PricePointSource.manual,
+      source: switch (price.source) {
+        MarketPriceSource.openPrices => PricePointSource.openPrices,
+        MarketPriceSource.receipt => PricePointSource.receipt,
+        MarketPriceSource.manual => PricePointSource.manual,
+      }, 
     );
