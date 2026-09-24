@@ -15,6 +15,7 @@ class RouteSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final multi = best.stores.length > 1;
+    final complete = !best.hasDataGaps;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -24,21 +25,26 @@ class RouteSummaryCard extends StatelessWidget {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundColor:
-                      multi ? Colors.orange.shade50 : Colors.green.shade50,
+                  backgroundColor: !complete
+                      ? Colors.amber.shade50
+                      : multi ? Colors.orange.shade50 : Colors.green.shade50,
                   child: Icon(
-                    multi ? Icons.alt_route : Icons.check_circle_outline,
-                    color: multi
-                        ? Colors.orange.shade700
-                        : Colors.green.shade700,
+                    !complete
+                        ? Icons.info_outline
+                        : multi ? Icons.alt_route : Icons.check_circle_outline,
+                    color: !complete
+                        ? Colors.amber.shade800
+                        : multi ? Colors.orange.shade700 : Colors.green.shade700,
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    multi
-                        ? 'Wirtschaftlich sinnvoll: mehrere Märkte'
-                        : 'Wirtschaftlich sinnvoll: ein Markt',
+                    !complete
+                        ? 'Vorläufige Teilroute'
+                        : multi
+                            ? 'Wirtschaftlich sinnvoll: mehrere Märkte'
+                            : 'Wirtschaftlich sinnvoll: ein Markt',
                     style: const TextStyle(fontWeight: FontWeight.w800),
                   ),
                 ),
@@ -55,7 +61,9 @@ class RouteSummaryCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              '${best.total.toStringAsFixed(2)} € erwartete Gesamtkosten',
+              complete
+                  ? '${best.total.toStringAsFixed(2)} € erwartete Gesamtkosten'
+                  : '${best.total.toStringAsFixed(2)} € bekannte Teilkosten',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
