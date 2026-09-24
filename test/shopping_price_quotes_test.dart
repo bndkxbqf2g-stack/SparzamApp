@@ -16,9 +16,9 @@ void main() {
   final item = ListItem(product: milk);
   final receipt = MarketPrice(
     productId: 'milch_35',
-    storeName: 'Netto',
-    price: 0.95,
-    updatedAt: DateTime(2026, 8, 24),
+    storeName: 'Beispielmarkt',
+    price: 1.05,
+    updatedAt: DateTime(2026, 7, 14),
     source: MarketPriceSource.receipt,
   );
   final offer = Offer(
@@ -39,8 +39,8 @@ void main() {
     expect(quotes, hasLength(2));
     expect(quotes.first.kind, ShoppingQuoteKind.offer);
     expect(quotes.first.unitPrice, 0.89);
-    expect(quotes.last.sourceLabel, 'Bonpreis vom 24.08.2026');
-    expect(quotes.last.unitPrice, 0.95);
+    expect(quotes.last.sourceLabel, 'Bonpreis vom 14.07.2026');
+    expect(quotes.last.unitPrice, 1.05);
   });
 
   test('demo offers, Open Prices and unlike products are not used', () {
@@ -48,14 +48,14 @@ void main() {
         prices: [
           MarketPrice(
             productId: 'milch_15',
-            storeName: 'Netto',
+            storeName: 'Beispielmarkt',
             price: 0.85,
             updatedAt: DateTime(2026, 9, 24),
             source: MarketPriceSource.receipt,
           ),
           MarketPrice(
             productId: 'milch_35',
-            storeName: 'Netto',
+            storeName: 'Beispielmarkt',
             price: 0.81,
             updatedAt: DateTime(2026, 9, 24),
             source: MarketPriceSource.openPrices,
@@ -70,7 +70,7 @@ void main() {
     expect(shoppingQuotes(item,
         prices: [receipt],
         offers: [offer],
-        enabledStores: ['Netto'],
+        enabledStores: ['Beispielmarkt'],
         now: DateTime(2026, 9, 24)), hasLength(1));
     expect(shoppingQuotes(item,
         prices: [],
