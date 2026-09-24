@@ -74,6 +74,39 @@ void main() {
     expect(prices, isEmpty);
   });
 
+  test('generic Schmand can reuse a receipt unit price without package metadata', () {
+    const product = Product(
+      id: 'shopping_schmand_generic',
+      name: 'Schmand',
+      unit: 'Stück',
+      group: 'sonstiges',
+    );
+    final prices = receiptFamilyMarketPrices(
+      items: [ListItem(product: product)],
+      observations: [
+        ReceiptObservation(
+          id: 'receipt-schmand-unit',
+          receiptFingerprint: 'receipt-unit',
+          rowLine: 2,
+          rawLabel: 'Schmand',
+          familyKey: 'schmand',
+          storeName: 'Lidl',
+          observedAt: DateTime(2026, 9, 20),
+          totalPrice: 0.69,
+          quantity: null,
+          quantityUnit: '',
+          unitPrice: null,
+          discounted: false,
+        ),
+      ],
+      now: DateTime(2026, 9, 24),
+    );
+
+    expect(prices, hasLength(1));
+    expect(prices.single.storeName, 'Lidl');
+    expect(prices.single.price, 0.69);
+  });
+
   test('unrelated families are never bridged', () {
     const product = Product(
       id: 'shopping_schmand',
