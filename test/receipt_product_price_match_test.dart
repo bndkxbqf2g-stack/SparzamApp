@@ -1,0 +1,85 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:sparzamapp/features/shopping_list/receipt_product_price_match.dart';
+import 'package:sparzamapp/models/product.dart';
+import 'package:sparzamapp/models/receipt_price_stat.dart';
+
+void main() {
+  const mixedMince = Product(
+    id: 'hackfleisch_gemischt',
+    name: 'Hackfleisch gemischt',
+    unit: 'Packung',
+    group: 'fleisch',
+  );
+
+  ReceiptPriceStat stat({
+    required String family,
+    String? productId,
+    required double price,
+    required DateTime date,
+    bool comparable = false,
+  }) =>
+      ReceiptPriceStat(
+        familyKey: family,
+        productId: productId,
+        storeName: 'Kaufland',
+        latestPrice: price,
+        latestAt: date,
+        observationCount: 1,
+        medianPrice: price,
+        comparable: comparable,
+        priceBasis: comparable ? 'kg' : 'Packung',
+      );
+
+  test('finds historical hackfleisch price despite older product identity', () {
+    final result = receiptStatsForProduct(mixedMince, [
+      stat(
+        family: 'hackfleisch',
+        productId: 'receipt_auto_old',
+        price: 4.79,
+        date: DateTime(2026, 7, 23),
+      ),
+    ]);
+
+    expect(result, hasLength(1));
+    expect(result.single.medianPrice, 4.79);
+  });
+
+  test('exact product history still wins over family fallback', () {
+    final result = receiptStatsForProduct(mixedMince, [
+      stat(
+        family: 'hackfleisch',
+        productId: 'receipt_auto_old',
+        price: 4.79,
+        date: DateTime(2026, 7, 23),
+      ),
+      stat(
+        family: 'hackfleisch',
+        productId: 'hackfleisch_gemischt',
+        price: 4.99,
+        date: DateTime(2026, 8, 1),
+      ),
+    ]);
+
+    expect(result, hasLength(1));
+    expect(result.single.productId, 'hackfleisch_gemischt');
+  });
+
+  test('non-comparable family prices prefer newest, not cheapest', () {
+    final result = preferredReceiptStatForProduct(mixedMince, [
+      stat(
+        family: 'hackfleisch',
+        productId: 'old_a',
+        price: 4.79,
+        date: DateTime(2026, 7, 23),
+      ),
+      stat(
+        family: 'hackfleisch',
+        productId: 'new_b',
+        price: 9.99,
+        date: DateTime(2026, 8, 23),
+      ),
+    ]);
+
+    expect(result?.medianPrice, 9.99);
+  });
+}
