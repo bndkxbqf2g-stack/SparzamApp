@@ -354,8 +354,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                             ? 'Bonposition'
                                             : '${row.quantity} ${row.quantityUnit} × '
                                               '${((row.unitCents ?? row.cents) / 100).toStringAsFixed(2).replaceAll('.', ',')} €'),
-                                        if (draft.balances &&
-                                            isAmbiguousKauflandMilk(draft, row))
+                                        if (canAssignKauflandMilk(draft, row))
                                           DropdownButton<String>(
                                             isExpanded: true,
                                             value: assignedMilkVariants[
