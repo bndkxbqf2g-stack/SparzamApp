@@ -47,7 +47,7 @@ class ShoppingPriceBadge extends StatelessWidget {
                     ? 'Noch kein belegter Marktpreis'
                     : quotes.length == 1
                         ? '${quotes.first.storeName}: ${quotes.first.amountLabel}'
-                        : '${quotes.length} Marktpreise und Angebote',
+                        : '${quotes.length} Preisbelege · ab ${quotes.map((quote) => quote.unitPrice).reduce((a, b) => a < b ? a : b).toStringAsFixed(2).replaceAll('.', ',')} €',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
