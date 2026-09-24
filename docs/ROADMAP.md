@@ -10,6 +10,10 @@ Diese Roadmap ist eine Prioritätenliste, kein starres Releaseversprechen.
 Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 
 ## Phase B – Lernende Preisdatenbank
+- Gemeinsame append-only Preisbeobachtungen für bestehende Quellen speichern; aktuelle Marktpreise als Projektion ableiten, ohne Historie zu verlieren.
+- Provider/Adapter schrittweise anschließen: Bon, manuell, Open Prices, Angebote, später geprüfte Händlerdaten und Regalbilder; keine produktbezogene Sonderlogik.
+- Confidence aus Herkunft und Alter getrennt modellieren und fehlende Preise als Unsicherheitsbereich behandeln; knappe Routenentscheidungen kennzeichnen.
+- dataGap-Score für häufige, teure und entscheidungsrelevante Einkaufspositionen; nur gezielt neue Preisbelege anfordern.
 - Produktidentität von Preisbeobachtungen trennen.
 - Händler-/Bon-Aliase lernen.
 - Confidence für automatische Zuordnungen.
@@ -43,6 +47,7 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 - Vorschläge nur dann, wenn sie praktisch relevant sind.
 
 ## Phase F – Synchronisierung / Mehrbenutzer
+- Freiwillige Übermittlung geeigneter eigener Beobachtungen an Open Prices und später Community-Daten nur mit expliziter Freigabe und bereinigten Belegen.
 - Backend/Account-Konzept.
 - Cloud-Backup.
 - Geräteübergreifende Synchronisierung.

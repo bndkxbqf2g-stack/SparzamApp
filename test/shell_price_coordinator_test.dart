@@ -8,6 +8,7 @@ import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/services/market_price_store.dart';
 import 'package:sparzamapp/services/open_prices_sync_service.dart';
 import 'package:sparzamapp/services/price_history_store.dart';
+import 'package:sparzamapp/services/price_observation_store.dart';
 
 void main() {
   setUp(() {
@@ -41,6 +42,7 @@ void main() {
 
     expect(saved.prices, [price]);
     expect(saved.history.single.source, PricePointSource.manual);
+    expect((await PriceObservationStore().load()).single.price, 1.19);
     expect(deleted, isEmpty);
   });
 
@@ -77,6 +79,8 @@ void main() {
 
     expect(result.prices, [fetched]);
     expect(result.history.single.source, PricePointSource.openPrices);
+    expect((await PriceObservationStore().load()).single.source.name,
+        'openPrices');
     expect(result.productsChecked, 1);
     expect(result.productsWithEan, 1);
     expect(result.pricesFound, 1);

@@ -122,7 +122,7 @@ void main() {
     expect(quote.isEstimated, isTrue);
   });
 
-  test('manual observation wins over receipt fallback regardless of order', () {
+  test('fresh receipt can beat a dearer manual price regardless of order', () {
     final manual = MarketPrice(
       productId: 'test', storeName: 'Markt', price: 0.89,
       updatedAt: DateTime(2026, 9, 20),
@@ -133,20 +133,23 @@ void main() {
       source: MarketPriceSource.receipt,
     );
     for (final order in [[manual, receipt], [receipt, manual]]) {
-      final quote = RoutePriceResolver(const [], marketPrices: order)
+      final quote = RoutePriceResolver(const [],
+          now: DateTime(2026, 9, 24), marketPrices: order)
           .quote(store, ListItem(product: product));
-      expect(quote!.total, 0.89);
-      expect(quote.observation?.source, MarketPriceSource.manual);
+      expect(quote!.total, 0.79);
+      expect(quote.observation?.source, MarketPriceSource.receipt);
     }
   });
 
-  test('latest receipt wins among observations of the same source', () {
+  test('old discounted receipt cannot beat a fresh confirmed price', () {
     final quote = RoutePriceResolver(const [], marketPrices: [
       MarketPrice(productId: 'test', storeName: 'Markt', price: 0.79,
-          updatedAt: DateTime(2026, 9, 1), source: MarketPriceSource.receipt),
+          updatedAt: DateTime(2026, 7, 1),
+          source: MarketPriceSource.receipt, discounted: true),
       MarketPrice(productId: 'test', storeName: 'Markt', price: 0.89,
-          updatedAt: DateTime(2026, 9, 20), source: MarketPriceSource.receipt),
-    ]).quote(store, ListItem(product: product));
+          updatedAt: DateTime(2026, 9, 20)),
+    ], now: DateTime(2026, 9, 24))
+        .quote(store, ListItem(product: product));
     expect(quote!.total, 0.89);
     expect(quote.observation?.updatedAt, DateTime(2026, 9, 20));
   });

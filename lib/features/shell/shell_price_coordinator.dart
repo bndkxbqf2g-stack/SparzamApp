@@ -5,6 +5,8 @@ import '../../models/product.dart';
 import '../../services/market_price_store.dart';
 import '../../services/open_prices_sync_service.dart';
 import '../../services/price_history_store.dart';
+import '../../services/price_observation_store.dart';
+import '../../services/market_price_observation_adapter.dart';
 import 'shell_pricing.dart';
 
 class PriceMutationResult {
@@ -18,19 +20,22 @@ class PriceMutationResult {
 }
 
 class ShellPriceCoordinator {
-  const ShellPriceCoordinator({
+  ShellPriceCoordinator({
     required this.marketPriceStore,
     required this.priceHistoryStore,
-  });
+    PriceObservationStore? observationStore,
+  }) : observationStore = observationStore ?? PriceObservationStore();
 
   final MarketPriceStore marketPriceStore;
   final PriceHistoryStore priceHistoryStore;
+  final PriceObservationStore observationStore;
 
   Future<PriceMutationResult> save({
     required MarketPrice price,
     required List<MarketPrice> prices,
     required List<PricePoint> history,
   }) async {
+    await observationStore.append([observationFromMarketPrice(price)]);
     final nextPrices = await marketPriceStore.upsert(price, prices);
     final nextHistory = await priceHistoryStore.upsertObservation(
       priceHistoryPoint(price),
@@ -63,6 +68,9 @@ class ShellPriceCoordinator {
       maxAgeDays: maxAgeDays,
       onProgress: onProgress,
       shouldCancel: shouldCancel,
+    );
+    await observationStore.append(
+      synced.prices.map(observationFromMarketPrice),
     );
     final nextPrices = await marketPriceStore.upsertMany(synced.prices, prices);
     final nextHistory = await priceHistoryStore.upsertObservations(

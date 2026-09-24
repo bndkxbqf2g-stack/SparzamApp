@@ -4,6 +4,7 @@ import '../../models/offer.dart';
 import '../../models/store.dart';
 import '../../models/product.dart';
 import '../offers/effective_price.dart';
+import 'market_price_quality.dart';
 
 class RoutePriceQuote {
   const RoutePriceQuote({
@@ -34,7 +35,7 @@ class RoutePriceResolver {
     this.offers, {
     this.now,
     List<MarketPrice> marketPrices = const <MarketPrice>[],
-  }) : marketPrices = _preferredPrices(marketPrices),
+  }) : marketPrices = _preferredPrices(marketPrices, now ?? DateTime.now()),
         observedProductPrices = {
           for (final price in marketPrices)
             price.productId: [
@@ -133,26 +134,25 @@ class RoutePriceResolver {
     return best;
   }
 
-  static Map<String, MarketPrice> _preferredPrices(List<MarketPrice> input) {
+  static Map<String, MarketPrice> _preferredPrices(
+      List<MarketPrice> input, DateTime now) {
     final selected = <String, MarketPrice>{};
     for (final price in input) {
       if (!price.price.isFinite || price.price <= 0) continue;
       final previous = selected[price.key];
-      if (previous == null ||
-          _priority(price.source) > _priority(previous.source) ||
-          (_priority(price.source) == _priority(previous.source) &&
+      final score = price.price *
+          (1 + marketPriceQuality(price, now).uncertaintyRate);
+      final previousScore = previous == null ? double.infinity :
+          previous.price *
+              (1 + marketPriceQuality(previous, now).uncertaintyRate);
+      if (score < previousScore ||
+          (score == previousScore && previous != null &&
               price.updatedAt.isAfter(previous.updatedAt))) {
         selected[price.key] = price;
       }
     }
     return selected;
   }
-
-  static int _priority(MarketPriceSource source) => switch (source) {
-        MarketPriceSource.manual => 3,
-        MarketPriceSource.receipt => 2,
-        MarketPriceSource.openPrices => 1,
-      };
 
   int _paidUnits(int quantity, Offer offer) {
     final buy = offer.buyQuantity;

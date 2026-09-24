@@ -38,6 +38,13 @@ Preisbeobachtung:
 - Angebotsstatus
 - Bestätigungs-/Vertrauensstatus
 
+### Stand und nächste Schnittstelle (hybride Preisbasis)
+- `ReceiptObservationStore` hält Bonzeilen und deren Zuordnung; `MarketPriceStore` bislang nur die aktuelle Markt-Produkt-Projektion. `PriceHistoryStore` hält einen einfachen Tagesverlauf ohne alle Beleg-/Filialdaten. Angebote bleiben gesondert, da Mengen-/Couponregeln eigene Berechnung brauchen.
+- Gemeinsamer `PriceObservation`-Datensatz: append-only Historie für manuelle Preise und Open Prices mit Quelle, Produkt/Variante/Familie, Filiale/Region, Menge/Grundpreis, Rabatt/Angebotszeitraum, Zeitpunkt, Confidence und optionalem Nachweis. Bisherige Speicherformate bleiben lesbar; aktuelle Marktpreise bleiben vorerst eine schnelle Projektion für UI und Route.
+- Externe Quellen werden über Adapter übersetzt. Provider sollen nur benötigte Produkte abfragen; Matching und Preisbewertung bleiben in gemeinsamen Diensten. Regalvideo bleibt entsprechend D010 zunächst reine Evaluation.
+- Die Route bewertet konkurrierende bekannte Preise pro Markt anhand von Betrag und getrennter Quellen-/Altersunsicherheit. Fehlende Preisbereiche und dataGap-Priorisierung folgen in eigenen Paketen.
+- Rückgabe eigener Beobachtungen an Open Prices oder Community-Dienste ist später eine separate, ausdrücklich aktivierte Aktion mit Prüfung von Beleg, personenbezogenen Daten und Lizenz.
+
 Zuordnungswissen:
 - Rohtext/Bonbezeichnung
 - Händlerkontext
