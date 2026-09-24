@@ -10,6 +10,7 @@ import '../../models/product.dart';
 import '../../models/price_point.dart';
 import '../../models/price_data_settings.dart';
 import '../../models/price_sync_result.dart';
+import '../../models/price_observation.dart';
 import '../../models/recent_purchase.dart';
 import '../../models/replenishment_suggestion.dart';
 import '../../models/receipt_observation.dart';
@@ -22,6 +23,8 @@ import '../../services/market_price_store.dart';
 import '../../services/product_catalog_store.dart';
 import '../../services/price_data_settings_store.dart';
 import '../../services/price_history_store.dart';
+import '../../services/price_observation_store.dart';
+import '../../services/market_price_observation_adapter.dart';
 import '../../services/recent_purchase_store.dart';
 import '../../services/receipt_observation_store.dart';
 import '../../services/purchase_store.dart';
@@ -122,6 +125,8 @@ class _AppShellState extends State<AppShell> {
   late List<Product> customProducts;
   late List<MarketPrice> marketPrices;
   List<ReceiptObservation> receiptObservations = const <ReceiptObservation>[];
+  List<PriceObservation> historicalPriceObservations = const <PriceObservation>[];
+  final priceObservationStore = PriceObservationStore();
   late PriceDataSettings priceDataSettings;
   late List<PricePoint> priceHistory;
   Map<String, double> roadDistances = <String, double>{};
@@ -169,6 +174,7 @@ class _AppShellState extends State<AppShell> {
     _loadRoadDistances();
     _loadNamedShoppingLists();
     _loadReceiptObservations();
+    _loadPriceObservations();
   }
 
   List<ListItem> _copyItems(List<ListItem> items) => items
@@ -211,6 +217,9 @@ class _AppShellState extends State<AppShell> {
   List<MarketPrice> get activeMarketPrices =>
       activePrices(marketPrices, priceDataSettings);
 
+  List<MarketPrice> get historicalMarketPrices =>
+      marketPricesFromObservations(historicalPriceObservations);
+
   List<MarketPrice> get receiptFamilyPrices => receiptFamilyMarketPrices(
         items: shoppingList,
         observations: receiptObservations,
@@ -218,9 +227,15 @@ class _AppShellState extends State<AppShell> {
 
   List<MarketPrice> get planningMarketPrices =>
       planning_prices.planningMarketPrices(
-        exactPrices: activeMarketPrices,
+        exactPrices: [...activeMarketPrices, ...historicalMarketPrices],
         familyPrices: receiptFamilyPrices,
       );
+
+  Future<void> _loadPriceObservations() async {
+    final loaded = await priceObservationStore.load();
+    if (!mounted) return;
+    setState(() => historicalPriceObservations = loaded);
+  }
 
   Future<void> _loadReceiptObservations() async {
     final loaded = await ReceiptObservationStore().load();
@@ -565,6 +580,7 @@ class _AppShellState extends State<AppShell> {
         priceHistory = result.history;
       });
     }
+    await _loadPriceObservations();
     widget.diagnosticLogService.record(
       category: 'Preisdaten',
       message: price.source == MarketPriceSource.receipt
@@ -635,6 +651,7 @@ class _AppShellState extends State<AppShell> {
         priceHistory = result.history;
       });
     }
+    await _loadPriceObservations();
     widget.diagnosticLogService.record(
       category: 'Open Prices',
       message: result.cancelled
@@ -807,7 +824,7 @@ class _AppShellState extends State<AppShell> {
       mobility: mobility,
       catalogProducts: catalogProducts,
       marketPrices: planningMarketPrices,
-      priceObservations: [...marketPrices, ...receiptFamilyPrices],
+      priceObservations: [...planningMarketPrices],
       replenishmentSuggestions: replenishmentSuggestions,
       onRoadDistancesChanged: (value) => setState(() => roadDistances = value),
       onRoadMatrixChanged: (value) => setState(() => roadMatrix = value),
