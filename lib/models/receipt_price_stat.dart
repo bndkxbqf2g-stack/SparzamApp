@@ -1,6 +1,7 @@
 class ReceiptPriceStat {
   const ReceiptPriceStat({
     required this.familyKey,
+    this.productId,
     required this.storeName,
     required this.latestPrice,
     required this.latestAt,
@@ -11,6 +12,7 @@ class ReceiptPriceStat {
   });
 
   final String familyKey;
+  final String? productId;
   final String storeName;
   final double latestPrice;
   final DateTime latestAt;
