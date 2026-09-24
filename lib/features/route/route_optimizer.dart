@@ -137,9 +137,11 @@ class RouteOptimizer {
   List<RoutePlan> alternatives() {
     return storeCombinations()
         .map(buildPlan)
-        .where((plan) => plan.unassigned.isEmpty)
+        .where((plan) => plan.pricedItemCount > 0)
         .toList()
       ..sort((a, b) {
+        final coverage = b.priceCoverage.compareTo(a.priceCoverage);
+        if (coverage != 0) return coverage;
         final total = a.planningScore.compareTo(b.planningScore);
         return total != 0 ? total : a.stores.length.compareTo(b.stores.length);
       });
@@ -176,9 +178,14 @@ class RouteOptimizer {
   RoutePlan? bestSingleStorePlan() {
     final plans = availableStores
         .map((store) => buildPlan([store]))
-        .where((plan) => plan.unassigned.isEmpty)
+        .where((plan) => plan.pricedItemCount > 0)
         .toList()
-      ..sort((a, b) => a.planningScore.compareTo(b.planningScore));
+      ..sort((a, b) {
+        final coverage = b.priceCoverage.compareTo(a.priceCoverage);
+        return coverage != 0
+            ? coverage
+            : a.planningScore.compareTo(b.planningScore);
+      });
     return plans.isEmpty ? null : plans.first;
   }
 }
