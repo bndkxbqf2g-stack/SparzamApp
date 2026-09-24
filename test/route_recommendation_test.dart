@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/route/route_recommendation.dart';
-import 'package:sparzamapp/models/mobility_settings.dart';
 import 'package:sparzamapp/models/list_item.dart';
+import 'package:sparzamapp/models/mobility_settings.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/route_plan.dart';
 import 'package:sparzamapp/models/store.dart';
@@ -82,5 +82,4 @@ void main() {
     expect(incomplete.pricedItemCount, 0);
     expect(incomplete.priceCoverage, 0);
   });
-
 }
