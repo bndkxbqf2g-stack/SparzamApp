@@ -27,7 +27,8 @@ List<MarketPrice> receiptFamilyMarketPrices({
     if (family.isEmpty) continue;
     final productName = _normalize(item.product.name);
     final isGenericRequest = productName == family ||
-        isGenericFamilyRequest(item.product.name);
+        isGenericFamilyRequest(item.product.name) ||
+        _isSafeGenericReceiptFamily(productName, family);
 
     for (final observation in observations) {
       if (observation.observedAt.isBefore(cutoff) ||
@@ -57,6 +58,11 @@ List<MarketPrice> receiptFamilyMarketPrices({
   }
   return result.values.toList();
 }
+
+bool _isSafeGenericReceiptFamily(String productName, String family) =>
+    const {'schmand', 'joghurt', 'eier', 'kartoffeln', 'bananen', 'paprika'}
+        .contains(family) &&
+    productName == family;
 
 String _normalize(String value) => value
     .toLowerCase()
