@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../models/market_price.dart';
 import '../../models/product.dart';
 import '../../services/receipt_observation_store.dart';
+import '../../services/receipt_alias_store.dart';
 import 'receipt_file_text_reader.dart';
 import 'receipt_import.dart';
 import 'receipt_ledger.dart';
@@ -39,6 +40,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
   bool importing = false;
   bool saving = false;
   final observationStore = ReceiptObservationStore();
+  final aliasStore = ReceiptAliasStore();
 
   String _priceKey(String fingerprint, String productId) =>
       '$fingerprint|$productId';
@@ -217,6 +219,17 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
         for (final row in draft.rows) {
           final productId = assignedMilkVariants[_rowKey(draft, row)];
           if (productId != null) assigned[row.line] = productId;
+        }
+        for (final row in draft.rows) {
+          final productId = assigned[row.line];
+          if (productId != null && draft.retailer != null) {
+            await aliasStore.confirm(
+              storeName: draft.retailer!,
+              rawLabel: row.label,
+              productId: productId,
+              now: DateTime.now(),
+            );
+          }
         }
         savedObservations += await observationStore.addMany(
           buildReceiptObservations(
