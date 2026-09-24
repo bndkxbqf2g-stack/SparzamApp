@@ -59,3 +59,5 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 - Keine automatischen Zuordnungen bei zu geringer Sicherheit.
 - Reale Nutzbarkeit wichtiger als theoretisch maximale Automatisierung.
 - Jede Phase in kleinen, testbaren GitHub-Commits umsetzen.
+
+- [x] Gespeicherte exakte Preisbeobachtungshistorie als Eingang der bestehenden Marktpreis-/Routenprojektion verwenden, statt nur den zuletzt projizierten Marktpreis zu sehen.
