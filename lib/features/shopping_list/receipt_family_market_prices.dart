@@ -2,6 +2,7 @@ import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/receipt_observation.dart';
 import '../receipt/receipt_observation_builder.dart';
+import '../catalog/product_family.dart';
 
 /// Bridges receipt history into the common market-price pipeline used by the
 /// shopping list and route optimizer.
@@ -24,7 +25,8 @@ List<MarketPrice> receiptFamilyMarketPrices({
     final family = inferReceiptFamily(item.product.name);
     if (family.isEmpty) continue;
     final productName = _normalize(item.product.name);
-    final isGenericRequest = productName == family;
+    final isGenericRequest = productName == family ||
+        isGenericFamilyRequest(item.product.name);
 
     for (final observation in observations) {
       if (observation.observedAt.isBefore(cutoff) ||
