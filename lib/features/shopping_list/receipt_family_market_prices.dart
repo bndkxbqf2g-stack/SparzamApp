@@ -60,7 +60,7 @@ List<MarketPrice> receiptFamilyMarketPrices({
 }
 
 bool _isSafeGenericReceiptFamily(String productName, String family) =>
-    const {'schmand', 'joghurt', 'eier', 'kartoffeln', 'bananen', 'paprika'}
+    const {'schmand', 'joghurt', 'eier', 'kartoffeln', 'bananen', 'paprika', 'tomaten', 'milch'}
         .contains(family) &&
     productName == family;
 
