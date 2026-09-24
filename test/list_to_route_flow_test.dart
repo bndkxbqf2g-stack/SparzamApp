@@ -139,5 +139,30 @@ void main() {
     expect(routing.current!.bestSingleStorePlan()!.stores.single.name, 'Lidl');
     expect(routing.current!.bestSingleStorePlan()!.basket, closeTo(0.69, 0.001));
   });
+  test('zusätzlicher Markt wird nur bei ausreichender Gesamtersparnis gewählt', () {
+    const twoStoreMobility = MobilitySettings(
+      mode: MobilityMode.bike,
+      enabledStoreNames: ['Lidl', 'Kaufland'],
+    );
+    const milk = Product(id: 'matrix-milk', name: 'Milch', group: 'Molkerei', unit: 'l');
+    const cheese = Product(id: 'matrix-cheese', name: 'Käse', group: 'Käse', unit: 'Stück');
+    final routing = ShellRouting(
+      items: [ListItem(product: milk), ListItem(product: cheese)],
+      offers: const [],
+      mobility: twoStoreMobility,
+      marketPrices: [
+        MarketPrice(productId: milk.id, storeName: 'Lidl', price: 1, updatedAt: DateTime(2026,9,24)),
+        MarketPrice(productId: cheese.id, storeName: 'Lidl', price: 5, updatedAt: DateTime(2026,9,24)),
+        MarketPrice(productId: milk.id, storeName: 'Kaufland', price: 3, updatedAt: DateTime(2026,9,24)),
+        MarketPrice(productId: cheese.id, storeName: 'Kaufland', price: 1, updatedAt: DateTime(2026,9,24)),
+      ],
+      roadDistances: const {'Lidl': 0, 'Kaufland': 0},
+      roadMatrix: null,
+    );
+
+    final best = routing.current!.bestPlan()!;
+    expect(best.stores.map((store) => store.name).toSet(), {'Lidl', 'Kaufland'});
+    expect(best.basket, closeTo(2, 0.001));
+  });
 
 }
