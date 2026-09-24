@@ -6,6 +6,7 @@ import '../../models/market_price.dart';
 import '../../models/mobility_settings.dart';
 import '../../models/offer.dart';
 import '../../models/road_route_matrix.dart';
+import '../../models/route_plan.dart';
 import '../../services/road_distance_service.dart';
 import '../../services/road_distance_store.dart';
 import '../../services/road_route_matrix_store.dart';
