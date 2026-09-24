@@ -9,6 +9,7 @@ import 'package:sparzamapp/services/price_observation_adapters.dart';
 import 'package:sparzamapp/models/receipt_observation.dart';
 import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/models/product.dart';
+import 'package:sparzamapp/models/price_data_settings.dart';
 import 'package:sparzamapp/features/route/market_price_quality.dart';
 
 void main() {
@@ -138,6 +139,38 @@ void main() {
 
     expect(projected, hasLength(1));
     expect(projected.single.storeName, 'Edeka');
+  });
+
+  test('disabled Open Prices history cannot re-enter route planning', () {
+    final projected = marketPricesFromObservations([
+      PriceObservation(
+        id: 'open', productId: 'schmand', storeName: 'Lidl', price: 0.69,
+        observedAt: DateTime(2026, 9, 24),
+        source: PriceObservationSource.openPrices,
+      ),
+      PriceObservation(
+        id: 'manual', productId: 'schmand', storeName: 'Edeka', price: 0.89,
+        observedAt: DateTime(2026, 9, 24),
+        source: PriceObservationSource.manual,
+      ),
+    ], settings: const PriceDataSettings(openPricesEnabled: false),
+       now: DateTime(2026, 9, 24));
+
+    expect(projected, hasLength(1));
+    expect(projected.single.storeName, 'Edeka');
+  });
+
+  test('old Open Prices history respects configured maximum age', () {
+    final projected = marketPricesFromObservations([
+      PriceObservation(
+        id: 'old-open', productId: 'schmand', storeName: 'Lidl', price: 0.69,
+        observedAt: DateTime(2026, 7, 1),
+        source: PriceObservationSource.openPrices,
+      ),
+    ], settings: const PriceDataSettings(openPricesMaxAgeDays: 30),
+       now: DateTime(2026, 9, 24));
+
+    expect(projected, isEmpty);
   });
 
   test('source confidence and age confidence are separate', () {
