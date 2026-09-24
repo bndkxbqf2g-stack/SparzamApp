@@ -42,4 +42,24 @@ Datum 23.07.26
     expect(observations.single.familyKey, 'fischstäbchen');
     expect(observations.single.discounted, isTrue);
   });
+
+  test('generic manual assignment is stored on the observation', () {
+    final draft = parseReceiptLedger('''
+Kaufland
+Preis EUR
+Hackfl. gem. 4,79 B
+Summe 4,79
+Datum 23.07.26
+''');
+    final review = reviewReceiptPrices(draft, const <Product>[]);
+    final item = draft.rows.firstWhere((row) => row.kind == ReceiptRowKind.item);
+    final observations = buildReceiptObservations(
+      draft: draft,
+      review: review,
+      assignedProductIds: {item.line: 'hackfleisch'},
+    );
+
+    expect(observations.single.productId, 'hackfleisch');
+    expect(observations.single.familyKey, 'hackfleisch');
+  });
 }
