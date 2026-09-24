@@ -32,3 +32,39 @@ PriceObservation observationFromMarketPrice(MarketPrice price) =>
           ? null : 'open-prices:${price.externalId}',
       discounted: price.discounted,
     );
+
+
+/// Projects exact, route-usable observations back into the legacy MarketPrice
+/// contract. The append-only observation history remains the source evidence;
+/// this projection exists only while route/UI contracts still use MarketPrice.
+List<MarketPrice> marketPricesFromObservations(
+  Iterable<PriceObservation> observations,
+) =>
+    observations
+        .where((entry) =>
+            entry.productId?.isNotEmpty == true &&
+            entry.identityConfidence >= 1 &&
+            (entry.source == PriceObservationSource.manual ||
+                entry.source == PriceObservationSource.receipt ||
+                entry.source == PriceObservationSource.openPrices))
+        .map((entry) => MarketPrice(
+              productId: entry.productId!,
+              storeName: entry.storeName,
+              price: entry.price,
+              updatedAt: entry.observedAt,
+              source: switch (entry.source) {
+                PriceObservationSource.receipt => MarketPriceSource.receipt,
+                PriceObservationSource.openPrices => MarketPriceSource.openPrices,
+                _ => MarketPriceSource.manual,
+              },
+              externalId: _openPricesId(entry.proofRef),
+              sourceLocationName: entry.region,
+              discounted: entry.discounted ||
+                  entry.kind == PriceObservationKind.offer,
+            ))
+        .toList();
+
+int? _openPricesId(String? proofRef) {
+  if (proofRef == null || !proofRef.startsWith('open-prices:')) return null;
+  return int.tryParse(proofRef.substring('open-prices:'.length));
+}
