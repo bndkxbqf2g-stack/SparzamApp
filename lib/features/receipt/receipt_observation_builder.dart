@@ -11,11 +11,9 @@ List<ReceiptObservation> buildReceiptObservations({
   if (!draft.balances || draft.retailer == null || draft.receiptDate == null) {
     return const <ReceiptObservation>[];
   }
-  final matched = <int, String>{
-    for (final suggestion in review.suggestions)
-      suggestion.row.line: suggestion.product.id,
-    ...assignedProductIds,
-  };
+  // Only an explicit user assignment establishes exact product identity.
+  // Automatic review suggestions remain family evidence until confirmed.
+  final matched = <int, String>{...assignedProductIds};
   final discountedLines = draft.rows
       .where((row) => row.kind == ReceiptRowKind.discount)
       .map((row) => row.linkedItemLine)
