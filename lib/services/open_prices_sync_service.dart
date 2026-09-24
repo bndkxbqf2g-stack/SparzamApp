@@ -2,11 +2,13 @@ import '../data/stores.dart';
 import '../models/market_price.dart';
 import '../models/product.dart';
 import 'open_prices_service.dart';
+import 'open_food_facts_product_discovery.dart';
 
 typedef OpenPricesProductFetcher = Future<List<MarketPrice>> Function(
   Product product,
   int maxAgeDays,
 );
+typedef OpenPricesProductDiscoverer = Future<Product?> Function(Product product);
 
 class OpenPricesSyncResult {
   const OpenPricesSyncResult({
@@ -29,9 +31,10 @@ class OpenPricesSyncResult {
 }
 
 class OpenPricesSyncService {
-  const OpenPricesSyncService({this.fetcher});
+  const OpenPricesSyncService({this.fetcher, this.discoverer});
 
   final OpenPricesProductFetcher? fetcher;
+  final OpenPricesProductDiscoverer? discoverer;
 
   Future<OpenPricesSyncResult> sync({
     required List<Product> products,
@@ -39,54 +42,74 @@ class OpenPricesSyncService {
     void Function(int processed, int total)? onProgress,
     bool Function()? shouldCancel,
   }) async {
-    final withEan = products
-        .where((product) => (product.ean ?? '').trim().isNotEmpty)
-        .toList();
-
     final result = <MarketPrice>[];
     final failures = <String>[];
     var processed = 0;
     final customFetcher = fetcher;
+    final customDiscoverer = discoverer;
     OpenPricesService? service;
+    OpenFoodFactsProductDiscovery? discovery;
     if (customFetcher == null) {
       service = OpenPricesService(
         maxAge: Duration(days: maxAgeDays),
       );
+      discovery = OpenFoodFactsProductDiscovery();
+    }
+
+    final candidates = <Product>[];
+    for (final product in products) {
+      if ((product.ean ?? '').trim().isNotEmpty) {
+        candidates.add(product);
+        continue;
+      }
+      try {
+        final resolved = customDiscoverer != null
+            ? await customDiscoverer(product)
+            : customFetcher == null
+                ? await discovery!.discover(product)
+                : null;
+        if (resolved != null && (resolved.ean ?? '').trim().isNotEmpty) {
+          candidates.add(resolved);
+        }
+      } catch (_) {
+        failures.add(product.id);
+      }
     }
 
     try {
-      for (var index = 0; index < withEan.length; index++) {
+      for (var index = 0; index < candidates.length; index++) {
         if (shouldCancel?.call() == true) break;
         try {
           final found = customFetcher != null
-              ? await customFetcher(withEan[index], maxAgeDays)
+              ? await customFetcher(candidates[index], maxAgeDays)
               : await service!.fetchRecentPrices(
-                  product: withEan[index],
+                  product: candidates[index],
                   stores: stores,
                 );
           result.addAll(found);
         } catch (_) {
-          failures.add(withEan[index].id);
+          failures.add(candidates[index].id);
         }
         processed++;
-        onProgress?.call(processed, withEan.length);
+        onProgress?.call(processed, candidates.length);
 
-        if (customFetcher == null && index < withEan.length - 1 &&
+        if (customFetcher == null && index < candidates.length - 1 &&
             shouldCancel?.call() != true) {
           await Future<void>.delayed(const Duration(milliseconds: 250));
         }
       }
     } finally {
       service?.close();
+      discovery?.close();
     }
 
     return OpenPricesSyncResult(
       productsChecked: products.length,
-      productsWithEan: withEan.length,
+      productsWithEan: candidates.length,
       pricesFound: result.length,
       prices: result,
       productsProcessed: processed,
-      cancelled: processed < withEan.length,
+      cancelled: processed < candidates.length,
       failedProductIds: failures,
     );
   }
