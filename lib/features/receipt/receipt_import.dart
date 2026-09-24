@@ -11,10 +11,12 @@ class ReceiptImportResult {
 class ReceiptImportOutcome {
   const ReceiptImportOutcome({
     required this.savedPrices,
+    this.savedObservations = 0,
     required this.unmatchedLines,
   });
 
   final int savedPrices;
+  final int savedObservations;
   final List<String> unmatchedLines;
 }
 
