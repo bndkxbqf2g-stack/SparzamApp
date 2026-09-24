@@ -50,6 +50,7 @@ List<Widget> buildShellPages({
   required MobilitySettings mobility,
   required List<Product> catalogProducts,
   required List<MarketPrice> marketPrices,
+  required List<MarketPrice> priceObservations,
   required List<ReplenishmentSuggestion> replenishmentSuggestions,
   required ValueChanged<Map<String, double>> onRoadDistancesChanged,
   required ValueChanged<RoadRouteMatrix?> onRoadMatrixChanged,
@@ -100,6 +101,7 @@ List<Widget> buildShellPages({
         mobility: mobility,
         catalogProducts: catalogProducts,
         marketPrices: marketPrices,
+        priceObservations: priceObservations,
         replenishmentSuggestions: replenishmentSuggestions,
       ),
       OffersScreen(
