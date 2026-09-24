@@ -28,7 +28,9 @@ List<ReceiptObservation> buildReceiptObservations({
             receiptFingerprint: draft.fingerprint,
             rowLine: row.line,
             rawLabel: row.label,
-            familyKey: inferReceiptFamily(row.label),
+            familyKey: assignedProductIds.containsKey(row.line)
+                ? assignedProductIds[row.line]!
+                : inferReceiptFamily(row.label),
             storeName: draft.retailer!,
             observedAt: draft.receiptDate!,
             totalPrice: row.cents / 100,
