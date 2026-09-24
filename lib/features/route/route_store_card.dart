@@ -74,6 +74,7 @@ class _RouteItemTile extends StatelessWidget {
         '${item.product.unit}${item.quantity > 1 ? ' · ×${item.quantity}' : ''}'
         '${quote.usesOffer ? ' · Angebot eingerechnet' : ''}'
         '$provenance'
+        '${observation?.discounted == true ? ' · Bon mit Rabatt' : ''}'
         '${quote.isEstimated ? ' · geschätzt' : ''}',
       ),
       trailing: Column(

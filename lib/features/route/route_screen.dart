@@ -141,7 +141,8 @@ class _RouteScreenState extends State<RouteScreen> {
     if (best == null) return const _MissingPrices();
 
     final single = optimizer.bestSingleStorePlan();
-    final savings = single == null ? 0.0 : single.total - best.total;
+    final savings = single == null
+        ? 0.0 : single.planningScore - best.planningScore;
     final alternatives = optimizer.alternatives();
     final cheapest = alternatives.first;
     final travel = estimateRoundTrips(
@@ -174,7 +175,7 @@ class _RouteScreenState extends State<RouteScreen> {
         const SizedBox(height: 6),
         const Text(
           'Verglichen werden Normalpreise, aktive Angebote, Coupons, '
-          'Cashback, Wegeaufwand und deine persönlichen Routenregeln.',
+          'Cashback, Preisaktualität, Wegeaufwand und deine persönlichen Routenregeln.',
         ),
         const SizedBox(height: 12),
         Card(

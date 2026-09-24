@@ -39,6 +39,9 @@ MarketPrice? assignedReceiptPrice({
     price: cents / 100,
     updatedAt: draft.receiptDate!,
     source: MarketPriceSource.receipt,
+    discounted: draft.rows.any((entry) =>
+        entry.kind == ReceiptRowKind.discount &&
+        entry.linkedItemLine == row.line),
   );
 }
 

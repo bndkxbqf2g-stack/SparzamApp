@@ -55,7 +55,7 @@ class RouteSummaryCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              '${best.total.toStringAsFixed(2)} € wirtschaftliche Gesamtkosten',
+              '${best.total.toStringAsFixed(2)} € erwartete Gesamtkosten',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
@@ -65,10 +65,17 @@ class RouteSummaryCard extends StatelessWidget {
               'Effektiver Warenkorb ${best.basket.toStringAsFixed(2)} € · '
               'Fahrt ${best.travel.toStringAsFixed(2)} €',
             ),
+            if (best.uncertaintyReserve > 0) ...[
+              const SizedBox(height: 8),
+              Text(
+                'Preisunsicherheit: ${best.uncertaintyReserve.toStringAsFixed(2)} € '
+                'Rechenaufschlag nur für den Vergleich, keine zusätzlichen Kosten.',
+              ),
+            ],
             if (multi && extraSavings > 0) ...[
               const SizedBox(height: 8),
               Text(
-                'Ersparnis gegenüber der günstigsten Einzelroute: '
+                'Planungsvorteil gegenüber der besten Einzelroute: '
                 '${extraSavings.toStringAsFixed(2)} €',
                 style: TextStyle(
                   color: Colors.green.shade700,

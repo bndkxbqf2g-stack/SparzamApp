@@ -27,7 +27,8 @@ class RouteAlternativeCard extends StatelessWidget {
         subtitle: Text(
           '${plan.stores.length} ${single ? 'Markt' : 'Märkte'} · '
           'Warenkorb ${plan.basket.toStringAsFixed(2)} € · '
-          'Fahrt ${plan.travel.toStringAsFixed(2)} €',
+          'Fahrt ${plan.travel.toStringAsFixed(2)} € · '
+          'Planungswert ${plan.planningScore.toStringAsFixed(2)} €',
         ),
         trailing: Text(
           '${plan.total.toStringAsFixed(2)} €',

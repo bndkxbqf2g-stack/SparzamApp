@@ -6,6 +6,7 @@ import '../../models/route_plan.dart';
 import '../../models/road_route_matrix.dart';
 import '../../models/store.dart';
 import 'route_price_resolver.dart';
+import 'route_price_quality.dart';
 import 'route_travel_distance.dart';
 
 class RouteOptimizer {
@@ -19,15 +20,18 @@ class RouteOptimizer {
     List<String>? enabledStoreNames,
     List<MarketPrice> marketPrices = const <MarketPrice>[],
     this.roadMatrix,
+    DateTime? now,
   })  : roadDistances = roadDistances ?? const <String, double>{},
+        today = now ?? DateTime.now(),
         enabledStoreNames =
             (enabledStoreNames ?? const <String>[]).toSet(),
-        prices = RoutePriceResolver(offers, marketPrices: marketPrices);
+        prices = RoutePriceResolver(offers, marketPrices: marketPrices, now: now);
 
   final List<ListItem> items;
   final RoutePriceResolver prices;
   final Map<String, double> roadDistances;
   final RoadRouteMatrix? roadMatrix;
+  final DateTime today;
 
   final double euroPerKm;
   final int maxStores;
@@ -63,12 +67,13 @@ class RouteOptimizer {
 
     for (final item in items) {
       Store? bestStore;
-      var bestPrice = double.infinity;
+      var bestScore = double.infinity;
 
       for (final store in selectedStores) {
         final quote = prices.quote(store, item);
-          if (quote != null && !quote.isEstimated && quote.total < bestPrice) {
-          bestPrice = quote.total;
+        if (quote != null && !quote.isEstimated &&
+            quote.total + priceUncertaintyReserve(quote, today) < bestScore) {
+          bestScore = quote.total + priceUncertaintyReserve(quote, today);
           bestStore = store;
         }
       }
@@ -84,6 +89,11 @@ class RouteOptimizer {
       0,
       (sum, entry) => sum + basketCost(entry.key, entry.value),
     );
+    final uncertaintyReserve = assignments.entries.fold<double>(0, (sum, entry) =>
+        sum + entry.value.fold<double>(0, (subtotal, item) {
+          final quote = prices.quote(entry.key, item)!;
+          return subtotal + priceUncertaintyReserve(quote, today);
+        }));
     final optimizedTravel = travelRoute(assignments.keys);
     final travel = optimizedTravel.distanceKm * euroPerKm;
 
@@ -94,6 +104,7 @@ class RouteOptimizer {
       travel: travel,
       total: basket + travel,
       unassigned: unassigned,
+      uncertaintyReserve: uncertaintyReserve,
     );
   }
 
@@ -129,7 +140,7 @@ class RouteOptimizer {
         .where((plan) => plan.unassigned.isEmpty)
         .toList()
       ..sort((a, b) {
-        final total = a.total.compareTo(b.total);
+        final total = a.planningScore.compareTo(b.planningScore);
         return total != 0 ? total : a.stores.length.compareTo(b.stores.length);
       });
   }
@@ -154,7 +165,7 @@ class RouteOptimizer {
       if (candidate == null) continue;
       final addedStores = candidate.stores.length - recommended.stores.length;
       final requiredSavings = minExtraStoreSavings * addedStores;
-      if (recommended.total - candidate.total >= requiredSavings) {
+      if (recommended.planningScore - candidate.planningScore > requiredSavings) {
         recommended = candidate;
       }
     }
@@ -167,7 +178,7 @@ class RouteOptimizer {
         .map((store) => buildPlan([store]))
         .where((plan) => plan.unassigned.isEmpty)
         .toList()
-      ..sort((a, b) => a.total.compareTo(b.total));
+      ..sort((a, b) => a.planningScore.compareTo(b.planningScore));
     return plans.isEmpty ? null : plans.first;
   }
 }

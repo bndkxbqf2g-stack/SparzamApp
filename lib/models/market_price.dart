@@ -9,6 +9,7 @@ class MarketPrice {
     this.source = MarketPriceSource.manual,
     this.externalId,
     this.sourceLocationName,
+    this.discounted = false,
   });
 
   final String productId;
@@ -18,6 +19,7 @@ class MarketPrice {
   final MarketPriceSource source;
   final int? externalId;
   final String? sourceLocationName;
+  final bool discounted;
 
   String get key => '$storeName|$productId';
   bool get isManual =>
@@ -75,6 +77,7 @@ class MarketPrice {
         'source': source.name,
         'externalId': externalId,
         'sourceLocationName': sourceLocationName,
+        'discounted': discounted,
       };
 
   factory MarketPrice.fromJson(Map<String, dynamic> json) {
@@ -98,6 +101,7 @@ class MarketPrice {
       source: matches.isEmpty ? MarketPriceSource.manual : matches.first,
       externalId: (json['externalId'] as num?)?.toInt(),
       sourceLocationName: json['sourceLocationName'] as String?,
+      discounted: json['discounted'] as bool? ?? false,
     );
   }
 }

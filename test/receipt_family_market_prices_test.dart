@@ -22,7 +22,7 @@ void main() {
           rawLabel: 'K.Frischer Schmand',
           familyKey: 'legacy-wrong-family',
           storeName: 'Kaufland',
-          observedAt: DateTime(2026, 9, 23),
+          observedAt: DateTime(2026, 7, 23),
           totalPrice: 0.79,
           quantity: null,
           quantityUnit: 'Stück',
@@ -38,6 +38,7 @@ void main() {
     expect(prices.single.productId, 'shopping_schmand');
     expect(prices.single.storeName, 'Kaufland');
     expect(prices.single.price, 0.79);
+    expect(prices.single.discounted, isTrue);
   });
 
   test('specific milk variant does not consume ambiguous family history', () {
