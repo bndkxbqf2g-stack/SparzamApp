@@ -116,6 +116,8 @@ List<Widget> buildShellPages({
         summary: priceDataSummary,
       ),
       MoreScreen(
+        onOpenStores: onEditStores,
+        onOpenPriceData: onEditPriceData,
         routePage: RouteScreen(
           items: shoppingList,
           offers: offers,
