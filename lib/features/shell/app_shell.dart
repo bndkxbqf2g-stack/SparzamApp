@@ -611,6 +611,13 @@ class _AppShellState extends State<AppShell> {
     return next;
   }
 
+  List<Product> _openPricesDemandProducts() {
+    final wantedIds = shoppingList.map((item) => item.product.id).toSet();
+    return catalogProducts
+        .where((product) => wantedIds.contains(product.id))
+        .toList(growable: false);
+  }
+
   Future<PriceSyncResult> syncOpenPrices({
     void Function(int processed, int total)? onProgress,
     bool Function()? shouldCancel,
@@ -633,7 +640,7 @@ class _AppShellState extends State<AppShell> {
     try {
       result = await priceCoordinator.syncOpenPrices(
         products: retryIds == null
-            ? catalogProducts
+            ? _openPricesDemandProducts()
             : catalogProducts
                 .where((product) => retryIds.contains(product.id))
                 .toList(),
