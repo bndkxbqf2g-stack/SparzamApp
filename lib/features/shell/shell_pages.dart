@@ -102,6 +102,11 @@ List<Widget> buildShellPages({
         catalogProducts: catalogProducts,
         marketPrices: marketPrices,
         priceObservations: priceObservations,
+        onSavePrices: (prices) async {
+          for (final price in prices) {
+            await onSavePrice(price);
+          }
+        },
         replenishmentSuggestions: replenishmentSuggestions,
       ),
       OffersScreen(
