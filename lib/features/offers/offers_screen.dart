@@ -120,7 +120,10 @@ class _OffersScreenState extends State<OffersScreen> {
     );
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Angebote')),
+      appBar: AppBar(
+        title: const Text('Angebote'),
+        centerTitle: true,
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: busy || widget.catalogProducts.isEmpty ? null : _edit,
         icon: const Icon(Icons.add),
@@ -129,6 +132,8 @@ class _OffersScreenState extends State<OffersScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
         children: [
+          const Center(child: Text('Die besten Preise. Für dich.')),
+          const SizedBox(height: 18),
           OfferFilterBar(
             controller: searchController,
             filter: filter,
