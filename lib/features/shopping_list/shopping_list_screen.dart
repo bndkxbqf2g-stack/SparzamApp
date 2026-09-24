@@ -56,6 +56,7 @@ class ShoppingListScreen extends StatefulWidget {
     required this.marketPrices,
     this.priceObservations = const <MarketPrice>[],
     this.onSavePrices,
+    this.onCreateProduct,
     required this.replenishmentSuggestions,
   });
 
@@ -81,6 +82,7 @@ class ShoppingListScreen extends StatefulWidget {
   final List<MarketPrice> marketPrices;
   final List<MarketPrice> priceObservations;
   final Future<void> Function(List<MarketPrice>)? onSavePrices;
+  final Future<List<Product>> Function(Product product)? onCreateProduct;
   final List<ReplenishmentSuggestion> replenishmentSuggestions;
 
   @override
@@ -327,6 +329,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       builder: (_) => ReceiptImportDialog(
         products: widget.catalogProducts,
         onSavePrices: save,
+        onCreateProduct: widget.onCreateProduct,
       ),
     );
     if (!mounted || result == null) return;
