@@ -12,6 +12,7 @@ import '../../models/replenishment_suggestion.dart';
 import '../../services/shopping_list_store.dart';
 import '../offers/offer_details_screen.dart';
 import 'shopping_group_card.dart';
+import 'shopping_price_quotes.dart';
 import 'shopping_grouping.dart';
 import 'replenishment_card.dart';
 
@@ -136,7 +137,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
 
   Map<String, List<ListItem>> get itemsByGroup => groupShoppingItems(
         widget.items,
-        widget.offers,
+        widget.offers.where((offer) => !isSampleOffer(offer)).toList(),
         enabledStoreNames: widget.mobility.enabledStoreNames,
         marketPrices: widget.marketPrices,
       );
