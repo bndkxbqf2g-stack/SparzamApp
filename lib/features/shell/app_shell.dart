@@ -784,6 +784,7 @@ class _AppShellState extends State<AppShell> {
       mobility: mobility,
       catalogProducts: catalogProducts,
       marketPrices: activeMarketPrices,
+      priceObservations: marketPrices,
       replenishmentSuggestions: replenishmentSuggestions,
       onRoadDistancesChanged: (value) => setState(() => roadDistances = value),
       onRoadMatrixChanged: (value) => setState(() => roadMatrix = value),
