@@ -250,5 +250,31 @@ void main() {
       now: DateTime(2026, 9, 24),
     );
     expect(prices, isEmpty);
+  });  test('generic tomato request builds prices for each observed market', () {
+    const product = Product(id: 'tomaten-generic', name: 'Tomaten', unit: 'Stück', group: 'obst');
+    final prices = receiptFamilyMarketPrices(
+      items: [ListItem(product: product)],
+      observations: [
+        for (final entry in [('Kaufland', 'KLC Geh. Tomaten', 0.59), ('Lidl', 'Passata', 0.79)])
+          ReceiptObservation(
+            id: 'tomato-${entry.$1}',
+            receiptFingerprint: 'r-${entry.$1}',
+            rowLine: 1,
+            rawLabel: entry.$2,
+            familyKey: 'tomaten',
+            storeName: entry.$1,
+            observedAt: DateTime(2026, 9, 20),
+            totalPrice: entry.$3,
+            quantity: null,
+            quantityUnit: '',
+            unitPrice: null,
+            discounted: false,
+          ),
+      ],
+      now: DateTime(2026, 9, 24),
+    );
+    expect({for (final price in prices) price.storeName: price.price},
+        {'Kaufland': 0.59, 'Lidl': 0.79});
   });
+
 }
