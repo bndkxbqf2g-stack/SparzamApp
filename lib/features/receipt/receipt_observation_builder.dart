@@ -1,6 +1,7 @@
 import '../../models/receipt_observation.dart';
 import 'receipt_ledger.dart';
 import 'receipt_price_review.dart';
+import '../catalog/product_family.dart';
 
 List<ReceiptObservation> buildReceiptObservations({
   required ReceiptDraft draft,
@@ -49,6 +50,9 @@ String inferReceiptFamily(String label) {
       .replaceAll(RegExp(r'[._-]+'), ' ')
       .replaceAll(RegExp(r'\s+'), ' ')
       .trim();
+
+  final broad = broadProductFamily(value);
+  if (broad != null) return broad;
 
   const families = <String, List<String>>{
     'hackfleisch': [
