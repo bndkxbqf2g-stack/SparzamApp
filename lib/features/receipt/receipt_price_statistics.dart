@@ -16,8 +16,10 @@ List<ReceiptPriceStat> buildReceiptPriceStats(
         item.observedAt.isBefore(cutoff)) {
       continue;
     }
-    groups.putIfAbsent('${item.familyKey}|${item.storeName}', () => [])
-        .add(item);
+    final identity = item.productId == null
+        ? 'family:${item.familyKey}'
+        : 'product:${item.productId}';
+    groups.putIfAbsent('$identity|${item.storeName}', () => []).add(item);
   }
 
   final result = <ReceiptPriceStat>[];
@@ -32,6 +34,7 @@ List<ReceiptPriceStat> buildReceiptPriceStats(
       ..sort();
     result.add(ReceiptPriceStat(
       familyKey: entries.first.familyKey,
+      productId: entries.first.productId,
       storeName: entries.first.storeName,
       latestPrice: comparable
           ? entries.first.unitPrice!
