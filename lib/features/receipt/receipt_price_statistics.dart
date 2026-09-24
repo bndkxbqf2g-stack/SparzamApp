@@ -1,5 +1,6 @@
 import '../../models/receipt_observation.dart';
 import '../../models/receipt_price_stat.dart';
+import 'receipt_observation_builder.dart';
 
 List<ReceiptPriceStat> buildReceiptPriceStats(
   Iterable<ReceiptObservation> observations, {
@@ -12,14 +13,33 @@ List<ReceiptPriceStat> buildReceiptPriceStats(
   final groups = <String, List<ReceiptObservation>>{};
 
   for (final item in observations) {
-    if (item.discounted || item.familyKey.isEmpty ||
-        item.observedAt.isBefore(cutoff)) {
+    if (item.discounted || item.observedAt.isBefore(cutoff)) {
       continue;
     }
+
+    // Always derive the family from the original receipt label. This also
+    // repairs legacy observations with stale or accidentally wrong family keys.
+    final familyKey = inferReceiptFamily(item.rawLabel);
+    if (familyKey.isEmpty) continue;
+    final normalized = ReceiptObservation(
+      id: item.id,
+      receiptFingerprint: item.receiptFingerprint,
+      rowLine: item.rowLine,
+      rawLabel: item.rawLabel,
+      familyKey: familyKey,
+      storeName: item.storeName,
+      observedAt: item.observedAt,
+      totalPrice: item.totalPrice,
+      quantity: item.quantity,
+      quantityUnit: item.quantityUnit,
+      unitPrice: item.unitPrice,
+      discounted: item.discounted,
+      productId: item.productId,
+    );
     final identity = item.productId == null
-        ? 'family:${item.familyKey}'
+        ? 'family:$familyKey'
         : 'product:${item.productId}';
-    groups.putIfAbsent('$identity|${item.storeName}', () => []).add(item);
+    groups.putIfAbsent('$identity|${item.storeName}', () => []).add(normalized);
   }
 
   final result = <ReceiptPriceStat>[];
