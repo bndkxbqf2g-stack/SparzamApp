@@ -42,12 +42,16 @@ Future<String?> showReceiptProductPicker({
                     itemCount: matches.length,
                     itemBuilder: (context, index) {
                       final product = matches[index];
-                      return RadioListTile<String>(
-                        value: product.id,
-                        groupValue: selectedProductId,
+                      final selected = product.id == selectedProductId;
+                      return ListTile(
+                        leading: Icon(
+                          selected
+                              ? Icons.radio_button_checked
+                              : Icons.radio_button_unchecked,
+                        ),
                         title: Text(product.name),
                         subtitle: Text(product.unit),
-                        onChanged: (value) => Navigator.pop(context, value),
+                        onTap: () => Navigator.pop(context, product.id),
                       );
                     },
                   ),
