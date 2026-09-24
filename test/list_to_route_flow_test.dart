@@ -60,7 +60,7 @@ void main() {
     expect(routing.regular!.bestSingleStorePlan()!.basket, 4);
   });
 
-  test('ohne Preis oder Angebot gibt es keinen vollständigen Plan', () {
+  test('ohne belegten Preis bleibt ein reiner Schätzplan ausgeschlossen', () {
     final routing = ShellRouting(
       items: [ListItem(product: product)],
       offers: const [],
@@ -72,4 +72,39 @@ void main() {
 
     expect(routing.current!.bestPlan(), isNull);
   });
+  test('ein fehlender Preis blockiert belegte Teilroute nicht', () {
+    const unknown = Product(
+      id: 'unknown-cheese',
+      name: 'Bergkäse',
+      group: 'Käse',
+      unit: 'Stück',
+    );
+    final routing = ShellRouting(
+      items: [
+        ListItem(product: product),
+        ListItem(product: unknown),
+      ],
+      offers: const [],
+      mobility: mobility,
+      marketPrices: [
+        MarketPrice(
+          productId: product.id,
+          storeName: 'Lidl',
+          price: 1.19,
+          updatedAt: DateTime(2026, 9, 24),
+        ),
+      ],
+      roadDistances: const {},
+      roadMatrix: null,
+    );
+
+    final plan = routing.current!.bestPlan()!;
+    expect(plan.stores.single.name, 'Lidl');
+    expect(plan.pricedItemCount, 1);
+    expect(plan.missingItemCount, 1);
+    expect(plan.priceCoverage, 0.5);
+    expect(plan.unassigned.single.product.id, unknown.id);
+    expect(plan.basket, closeTo(1.19, 0.001));
+  });
+
 }
