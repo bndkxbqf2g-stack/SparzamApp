@@ -144,6 +144,7 @@ class _RouteScreenState extends State<RouteScreen> {
     final savings = single == null
         ? 0.0 : single.planningScore - best.planningScore;
     final alternatives = optimizer.alternatives();
+    final visibleAlternatives = _uniqueAlternatives(alternatives);
     final cheapest = alternatives.first;
     final travel = estimateRoundTrips(
       best.stores,
@@ -248,7 +249,7 @@ class _RouteScreenState extends State<RouteScreen> {
         const SizedBox(height: 18),
         _Title('Vergleich'),
         const SizedBox(height: 10),
-        for (final plan in alternatives.take(5))
+        for (final plan in visibleAlternatives.take(5))
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: RouteAlternativeCard(plan: plan),
@@ -273,6 +274,18 @@ class _RouteScreenState extends State<RouteScreen> {
       ],
     );
   }
+}
+
+List<RoutePlan> _uniqueAlternatives(List<RoutePlan> plans) {
+  final seen = <String>{};
+  return plans.where((plan) {
+    final stores = plan.stores.map((store) => store.name).toList()..sort();
+    final assignments = plan.assignments.entries
+        .expand((entry) => entry.value.map((item) => '${entry.key.name}:${item.product.id}'))
+        .toList()
+      ..sort();
+    return seen.add('${stores.join('|')}::${assignments.join('|')}');
+  }).toList();
 }
 
 class _Title extends StatelessWidget {
