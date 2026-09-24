@@ -1,7 +1,7 @@
 String normalizeProductText(String value) => value
     .toLowerCase()
     .replaceAll(RegExp(r'[._-]+'), ' ')
-    .replaceAll(RegExp(r'\\s+'), ' ')
+    .replaceAll(RegExp(r'\s+'), ' ')
     .trim();
 
 const _familyTerms = <String, List<String>>{
@@ -38,6 +38,6 @@ bool isGenericFamilyRequest(String value) {
     'kaese' => normalized == 'käse' || normalized == 'kaese',
     'wurst' => normalized == 'wurst',
     _ => _familyTerms[family]!.any((term) =>
-        normalized == term || normalized.endsWith(' ' + term)),
+        normalized == term || normalized.endsWith(' $term')),
   };
 }
