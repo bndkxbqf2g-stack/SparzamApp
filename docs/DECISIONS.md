@@ -63,3 +63,6 @@ Wenn für eine erkannte Bonposition noch kein passendes Katalogprodukt existiert
 
 ## D018 – Zugeordnete Varianten bekommen getrennte Preisstatistiken
 Sobald eine Bonbeobachtung eine konkrete Produkt-ID besitzt, wird ihre Preisstatistik nach dieser Produktidentität und nicht nur nach der groben Produktfamilie gruppiert. Damit dürfen z. B. Milch 1,5 % und 3,5 % trotz gemeinsamer Familie nicht in denselben Median fallen. Familienwerte dienen nur noch als Fallback für noch nicht konkret zugeordnete Beobachtungen.
+
+## D019 – Erkannte Bonprodukte wachsen automatisch in den Katalog
+Bei einem vollständig geprüften/ausgeglichenen Bon werden alle echten erkannten Produktpositionen automatisch in den Produktkatalog übernommen, sofern noch keine sichere oder exakt aliasgleiche Produktidentität existiert. Pfand und reine Rabattzeilen bleiben ausgeschlossen. Bei unklaren Varianten wird ausschließlich die tatsächlich gelesene Bonbezeichnung als vorläufige Produktidentität gespeichert; fehlende Details wie Fettstufe oder Packungsvariante werden nicht erfunden. Exakt normalisierte vorhandene Bon-Aliase/Namen werden wiederverwendet, um Dubletten zu vermeiden. Eine automatische Anlage zählt nicht als explizite Nutzerbestätigung für das Alias-Confidence-Lernen.
