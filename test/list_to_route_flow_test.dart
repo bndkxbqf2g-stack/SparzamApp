@@ -137,6 +137,7 @@ void main() {
         .toSet();
     expect(singleStores, containsAll(['Lidl', 'Kaufland', 'EDEKA']));
     expect(routing.current!.bestSingleStorePlan()!.stores.single.name, 'Lidl');
+    expect(routing.current!.bestSingleStorePlan()!.basket, closeTo(0.69, 0.001));
   });
 
 }
