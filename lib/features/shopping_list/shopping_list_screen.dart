@@ -57,6 +57,7 @@ class ShoppingListScreen extends StatefulWidget {
     this.priceObservations = const <MarketPrice>[],
     this.onSavePrices,
     this.onCreateProduct,
+    this.onReceiptObservationsChanged,
     required this.replenishmentSuggestions,
   });
 
@@ -83,6 +84,7 @@ class ShoppingListScreen extends StatefulWidget {
   final List<MarketPrice> priceObservations;
   final Future<void> Function(List<MarketPrice>)? onSavePrices;
   final Future<List<Product>> Function(Product product)? onCreateProduct;
+  final Future<void> Function()? onReceiptObservationsChanged;
   final List<ReplenishmentSuggestion> replenishmentSuggestions;
 
   @override
@@ -334,6 +336,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     );
     if (!mounted || result == null) return;
     await _loadReceiptPriceStats();
+    await widget.onReceiptObservationsChanged?.call();
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text('${result.savedObservations} Produktbeobachtung(en) gelernt · ${result.savedPrices} direkte Bonpreise.'),
