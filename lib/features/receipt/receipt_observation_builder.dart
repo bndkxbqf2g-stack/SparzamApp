@@ -51,7 +51,12 @@ String inferReceiptFamily(String label) {
       .trim();
 
   const families = <String, List<String>>{
-    'hackfleisch': ['hackfleisch', 'r hackfleisch', 'rinderhack'],
+    'hackfleisch': [
+      'hackfleisch',
+      'hackfl gem',
+      'r hackfleisch',
+      'rinderhack',
+    ],
     'milch': ['h milch', 'vollmilch', 'milch 1,5', 'milch 3,5'],
     'weintrauben': ['weintrauben', 'trauben'],
     'bananen': ['bananen'],
