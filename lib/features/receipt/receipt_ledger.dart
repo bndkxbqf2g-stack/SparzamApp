@@ -8,6 +8,7 @@ class ReceiptRow {
     required this.cents,
     required this.kind,
     this.quantity,
+    this.quantityUnit = 'Stück',
     this.unitCents,
     this.linkedItemLine,
   });
@@ -17,6 +18,7 @@ class ReceiptRow {
   final int cents;
   final ReceiptRowKind kind;
   final num? quantity;
+  final String quantityUnit;
   final int? unitCents;
   /// Only immediate, unambiguous item discounts are linked.
   final int? linkedItemLine;
@@ -93,6 +95,7 @@ ReceiptDraft parseReceiptLedger(String text) {
           cents: previous.cents,
           kind: previous.kind,
           quantity: quantity,
+          quantityUnit: 'kg',
           unitCents: unitCents,
         );
         continue;
