@@ -5,6 +5,13 @@ String normalizeProductText(String value) => value
     .trim();
 
 const _familyTerms = <String, List<String>>{
+  'schmand': ['schmand'],
+  'milch': ['milch', 'h milch', 'vollmilch'],
+  'joghurt': ['joghurt', 'jogurt'],
+  'eier': ['eier'],
+  'kartoffeln': ['kartoffeln'],
+  'bananen': ['bananen'],
+  'paprika': ['paprika'],
   'kaese': [
     'käse', 'kaese', 'gouda', 'edamer', 'emmentaler', 'bergkäse', 'bergkaese',
     'butterkäse', 'butterkaese', 'tilsiter',
@@ -30,6 +37,7 @@ bool isGenericFamilyRequest(String value) {
   return switch (family) {
     'kaese' => normalized == 'käse' || normalized == 'kaese',
     'wurst' => normalized == 'wurst',
-    _ => false,
+    _ => _familyTerms[family]!.any((term) =>
+        normalized == term || normalized.endsWith(' ' + term)),
   };
 }
