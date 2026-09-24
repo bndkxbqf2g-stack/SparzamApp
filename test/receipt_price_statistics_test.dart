@@ -57,4 +57,32 @@ void main() {
     ], now: DateTime(2027, 1, 24));
     expect(stats, isEmpty);
   });
+
+  test('keeps assigned variants in separate price histories', () {
+    ReceiptObservation assigned(String id, String productId, double price) =>
+        ReceiptObservation(
+          id: id,
+          receiptFingerprint: 'bon$id',
+          rowLine: 1,
+          rawLabel: 'K.H-Milch',
+          familyKey: 'milch',
+          storeName: 'Kaufland',
+          observedAt: DateTime(2026, 9, 23),
+          totalPrice: price,
+          quantity: null,
+          quantityUnit: 'Stück',
+          unitPrice: null,
+          discounted: false,
+          productId: productId,
+        );
+
+    final stats = buildReceiptPriceStats([
+      assigned('1', 'milch_15', 0.85),
+      assigned('2', 'milch_35', 0.95),
+    ], now: DateTime(2026, 9, 24));
+
+    expect(stats, hasLength(2));
+    expect(stats.map((item) => item.productId).toSet(),
+        {'milch_15', 'milch_35'});
+  });
 }
