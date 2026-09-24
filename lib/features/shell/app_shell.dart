@@ -245,9 +245,12 @@ class _AppShellState extends State<AppShell> {
   Future<void> _loadReceiptObservations() async {
     final loaded = await ReceiptObservationStore().load();
     await priceObservationStore.append(loaded.map(observationFromReceipt));
+    final historical = await priceObservationStore.load();
     if (!mounted) return;
-    setState(() => receiptObservations = loaded);
-    await _loadPriceObservations();
+    setState(() {
+      receiptObservations = loaded;
+      historicalPriceObservations = historical;
+    });
   }
 
   List<ReplenishmentSuggestion> get replenishmentSuggestions =>
