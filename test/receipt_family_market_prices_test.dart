@@ -11,6 +11,8 @@ void main() {
       name: 'Schmand',
       unit: 'Stück',
       group: 'sonstiges',
+      packageAmount: 1,
+      packageUnit: 'Stück',
     );
     final prices = receiptFamilyMarketPrices(
       items: [ListItem(product: product)],
@@ -24,7 +26,7 @@ void main() {
           storeName: 'Kaufland',
           observedAt: DateTime(2026, 7, 23),
           totalPrice: 0.79,
-          quantity: null,
+          quantity: 1,
           quantityUnit: 'Stück',
           unitPrice: null,
           discounted: true,
@@ -100,6 +102,68 @@ void main() {
       now: DateTime(2026, 9, 24),
     );
 
+    expect(prices, isEmpty);
+  });
+  test('normalizes different receipt package sizes to requested package', () {
+    const product = Product(
+      id: 'gouda-200',
+      name: 'Gouda',
+      unit: 'Packung',
+      group: 'kaese',
+      packageAmount: 200,
+      packageUnit: 'g',
+    );
+    final prices = receiptFamilyMarketPrices(
+      items: [ListItem(product: product)],
+      observations: [
+        ReceiptObservation(
+          id: 'gouda-400',
+          receiptFingerprint: 'receipt',
+          rowLine: 1,
+          rawLabel: 'Gouda',
+          familyKey: 'kaese',
+          storeName: 'Lidl',
+          observedAt: DateTime(2026, 9, 20),
+          totalPrice: 3.98,
+          quantity: 400,
+          quantityUnit: 'g',
+          unitPrice: null,
+          discounted: false,
+        ),
+      ],
+      now: DateTime(2026, 9, 24),
+    );
+    expect(prices, hasLength(1));
+    expect(prices.single.price, closeTo(1.99, 0.0001));
+  });
+
+  test('does not route generic family evidence without package basis', () {
+    const product = Product(
+      id: 'generic-kaese',
+      name: 'Käse',
+      unit: 'Packung',
+      group: 'kaese',
+    );
+    final prices = receiptFamilyMarketPrices(
+      items: [ListItem(product: product)],
+      observations: [
+        ReceiptObservation(
+          id: 'gouda-400',
+          receiptFingerprint: 'receipt',
+          rowLine: 1,
+          rawLabel: 'Gouda',
+          familyKey: 'kaese',
+          storeName: 'Lidl',
+          observedAt: DateTime(2026, 9, 20),
+          totalPrice: 3.98,
+          quantity: 400,
+          quantityUnit: 'g',
+          unitPrice: null,
+          discounted: false,
+        ),
+      ],
+      now: DateTime(2026, 9, 24),
+    );
     expect(prices, isEmpty);
   });
 }
