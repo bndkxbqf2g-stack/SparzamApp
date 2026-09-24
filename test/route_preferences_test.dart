@@ -57,6 +57,32 @@ void main() {
     expect(relaxed.bestPlan()!.stores.length, 2);
   });
 
+  test('zusätzlicher Markt muss seinen Mindestvorteil nach Fahrtkosten erreichen', () {
+    final strict = RouteOptimizer(
+      items(),
+      const [],
+      euroPerKm: 0.22,
+      maxStores: 2,
+      minExtraStoreSavings: 0.05,
+    );
+
+    final recommended = strict.bestPlan()!;
+    final alternatives = strict.alternatives();
+    final cheaperWithMoreStores = alternatives.where(
+      (plan) => plan.stores.length > recommended.stores.length &&
+          plan.planningScore < recommended.planningScore,
+    );
+
+    for (final candidate in cheaperWithMoreStores) {
+      final required = strict.minExtraStoreSavings *
+          (candidate.stores.length - recommended.stores.length);
+      expect(
+        recommended.planningScore - candidate.planningScore <= required,
+        isTrue,
+      );
+    }
+  });
+
   test('deaktivierte Märkte werden aus der Optimierung entfernt', () {
     final optimizer = RouteOptimizer(
       items(),
