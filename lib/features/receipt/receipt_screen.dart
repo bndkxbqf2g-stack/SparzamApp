@@ -20,6 +20,7 @@ class ReceiptScreen extends StatelessWidget {
     required this.onDeletePurchase,
     this.catalogProducts = const <Product>[],
     this.onSavePrices = _ignoreReceiptPrices,
+    this.onCreateProduct,
   });
 
   final RoutePlan? plan;
@@ -30,6 +31,7 @@ class ReceiptScreen extends StatelessWidget {
   final Future<void> Function(PurchaseRecord record) onDeletePurchase;
   final List<Product> catalogProducts;
   final Future<void> Function(List<MarketPrice> prices) onSavePrices;
+  final Future<List<Product>> Function(Product product)? onCreateProduct;
 
   String euro(double value) => '${value.toStringAsFixed(2)} €';
 
@@ -60,6 +62,7 @@ class ReceiptScreen extends StatelessWidget {
                 builder: (_) => ReceiptImportDialog(
                   products: catalogProducts,
                   onSavePrices: onSavePrices,
+                  onCreateProduct: onCreateProduct,
                 ),
               );
               if (!context.mounted || result == null) return;
