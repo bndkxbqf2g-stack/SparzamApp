@@ -390,3 +390,6 @@ Dauerhafte Architektur-/Produktentscheidungen gehören zusätzlich in `docs/DECI
 ## Abnahme vor Version 1
 
 Die ausführbare manuelle Checkliste liegt in `docs/RELEASE_ACCEPTANCE.md`. Automatisierte Tests ersetzen die Geräteprüfung nicht. Anmeldung, Cloud-Backup und Synchronisierung gehören derzeit nicht zu Version 1.
+
+
+Historische Bonbeobachtungen werden bei jeder Statistikberechnung erneut anhand ihrer originalen Bonbezeichnung einer Produktfamilie zugeordnet. Verbesserte Erkennungsregeln gelten dadurch automatisch auch für bereits gespeicherte Bons und für alle Produkte.
