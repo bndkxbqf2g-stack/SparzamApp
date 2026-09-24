@@ -138,4 +138,71 @@ void main() {
     expect(result.failedProductIds, ['bad']);
     expect(result.prices.single.productId, 'good');
   });
+  test('fehlende EAN kann konservativ vor dem Preisabruf entdeckt werden', () async {
+    final seen = <Product>[];
+    final service = OpenPricesSyncService(
+      discoverer: (product) async => product.copyWith(ean: '4000000000001'),
+      fetcher: (product, _) async {
+        seen.add(product);
+        return [
+          MarketPrice(
+            productId: product.id,
+            storeName: 'Lidl',
+            price: 0.79,
+            updatedAt: DateTime(2026, 9, 24),
+            source: MarketPriceSource.openPrices,
+          ),
+        ];
+      },
+    );
+
+    final result = await service.sync(
+      products: const [
+        Product(
+          id: 'schmand',
+          name: 'Schmand',
+          unit: '200 g',
+          group: 'milchprodukte',
+          packageAmount: 200,
+          packageUnit: 'g',
+        ),
+      ],
+      maxAgeDays: 30,
+    );
+
+    expect(seen.single.ean, '4000000000001');
+    expect(seen.single.id, 'schmand');
+    expect(result.productsWithEan, 1);
+    expect(result.pricesFound, 1);
+  });
+
+  test('nicht sicher entdecktes Produkt bleibt aus der Preisroute', () async {
+    var priceFetches = 0;
+    final service = OpenPricesSyncService(
+      discoverer: (_) async => null,
+      fetcher: (_, __) async {
+        priceFetches++;
+        return const [];
+      },
+    );
+
+    final result = await service.sync(
+      products: const [
+        Product(
+          id: 'kaese',
+          name: 'Käse',
+          unit: '200 g',
+          group: 'milchprodukte',
+          packageAmount: 200,
+          packageUnit: 'g',
+        ),
+      ],
+      maxAgeDays: 30,
+    );
+
+    expect(priceFetches, 0);
+    expect(result.productsWithEan, 0);
+    expect(result.pricesFound, 0);
+  });
+
 }
