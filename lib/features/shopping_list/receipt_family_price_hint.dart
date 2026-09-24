@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/product.dart';
 import '../../models/receipt_price_stat.dart';
-import '../receipt/receipt_observation_builder.dart';
+import 'receipt_product_price_match.dart';
 
 class ReceiptFamilyPriceHint extends StatelessWidget {
   const ReceiptFamilyPriceHint({
@@ -16,20 +16,8 @@ class ReceiptFamilyPriceHint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final family = inferReceiptFamily(product.name);
-    final exact = stats.where((stat) => stat.productId == product.id).toList();
-    final matches = exact.isNotEmpty
-        ? exact
-        : stats
-            .where((stat) => stat.productId == null && stat.familyKey == family)
-            .toList();
-    if (matches.isEmpty) return const SizedBox.shrink();
-
-    matches.sort((a, b) {
-      if (a.comparable != b.comparable) return a.comparable ? -1 : 1;
-      return a.medianPrice.compareTo(b.medianPrice);
-    });
-    final best = matches.first;
+    final best = preferredReceiptStatForProduct(product, stats);
+    if (best == null) return const SizedBox.shrink();
     final price = best.medianPrice.toStringAsFixed(2).replaceAll('.', ',');
     final suffix = best.comparable ? 'Median' : 'historisch, Packung prüfen';
 
