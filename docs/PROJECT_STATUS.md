@@ -54,3 +54,10 @@ Jeder Work-Lauf beendet ein möglichst kleines Arbeitspaket vollständig. Vor En
 6. Falls eine Architekturentscheidung gefallen ist: DECISIONS.md aktualisieren
 
 Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wahrheit verwenden und vom letzten gepushten Commit fortsetzen.
+
+## Update 24.09.2026 – Bonbeobachtungen
+- Vollständig geprüfte Bonpositionen werden nun zusätzlich als deduplizierte historische Produktbeobachtungen gespeichert, auch ohne sichere Katalogzuordnung.
+- Beobachtungen behalten Rohbezeichnung, Markt, Datum, Gesamtpreis, Menge/Einheit, ggf. Einzel-/Grundpreis, Rabattstatus und optionale Produktzuordnung.
+- Pfand und reine Rabattzeilen werden nicht zu Produktbeobachtungen.
+- Eine konservative Produktfamilie wird vorbereitet (u. a. Hackfleisch, Milch, Trauben, Bananen, Kartoffeln), damit generische Einkaufslistenbegriffe später auf historische Marktpreise zugreifen können.
+- Nächster Schritt: Preisstatistik (Median/Aktualität/Beobachtungszahl) aus diesen Beobachtungen und Anbindung an die Einkaufsliste.
