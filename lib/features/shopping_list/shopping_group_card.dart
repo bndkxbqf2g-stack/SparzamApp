@@ -55,7 +55,7 @@ class ShoppingGroupCard extends StatelessWidget {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 crossAxisCount: constraints.maxWidth >= 650 ? 3 : 2,
-                childAspectRatio: 1.15,
+                childAspectRatio: 0.95,
                 mainAxisSpacing: 8,
                 crossAxisSpacing: 8,
                 children: [
