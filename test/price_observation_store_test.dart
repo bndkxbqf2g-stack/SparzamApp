@@ -5,6 +5,9 @@ import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/services/market_price_observation_adapter.dart';
 import 'package:sparzamapp/services/price_observation_store.dart';
+import 'package:sparzamapp/services/price_observation_adapters.dart';
+import 'package:sparzamapp/models/receipt_observation.dart';
+import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/features/route/market_price_quality.dart';
 
 void main() {
@@ -85,6 +88,31 @@ void main() {
     ]);
 
     expect(projected, isEmpty);
+  });
+
+  test('receipt adapter preserves quantity and family without faking identity', () {
+    final observation = observationFromReceipt(ReceiptObservation(
+      id: 'r1', receiptFingerprint: 'fp', rowLine: 1,
+      rawLabel: 'SCHMAND 200G', familyKey: 'schmand',
+      storeName: 'Lidl', observedAt: DateTime(2026, 9, 24),
+      totalPrice: 0.69, quantity: 200, quantityUnit: 'g',
+      unitPrice: 3.45, discounted: false,
+    ));
+    expect(observation.familyKey, 'schmand');
+    expect(observation.quantity, 200);
+    expect(observation.identityConfidence, 0);
+  });
+
+  test('offer adapter carries validity into observation', () {
+    final observation = observationFromOffer(
+      Offer(id: 'o1', productId: 'schmand', storeName: 'Lidl',
+        originalPrice: 0.89, offerPrice: 0.69,
+        validUntil: DateTime(2026, 9, 27)),
+      observedAt: DateTime(2026, 9, 24),
+    );
+    expect(observation.kind, PriceObservationKind.offer);
+    expect(observation.validUntil, DateTime(2026, 9, 27));
+    expect(observation.discounted, isTrue);
   });
 
   test('source confidence and age confidence are separate', () {
