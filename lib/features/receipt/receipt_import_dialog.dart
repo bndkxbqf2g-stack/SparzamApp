@@ -7,6 +7,7 @@ import '../../models/product.dart';
 import 'receipt_file_text_reader.dart';
 import 'receipt_import.dart';
 import 'receipt_ledger.dart';
+import 'receipt_milk_assignment.dart';
 import 'receipt_price_review.dart';
 
 class ReceiptImportDialog extends StatefulWidget {
@@ -30,6 +31,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
   final receiptDrafts = <({String name, ReceiptDraft draft})>[];
   int duplicateReceipts = 0;
   final selectedReceiptPrices = <String>{};
+  final assignedMilkVariants = <String, String>{};
   DateTime? receiptDate;
   String? errorMessage;
   bool importing = false;
@@ -37,6 +39,9 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
 
   String _priceKey(String fingerprint, String productId) =>
       '$fingerprint|$productId';
+
+  String _rowKey(ReceiptDraft draft, ReceiptRow row) =>
+      '${draft.fingerprint}|${row.line}';
 
   String _dateLabel(DateTime? date) {
     if (date == null) return 'Datum offen';
@@ -157,12 +162,30 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
     final prices = <MarketPrice>[];
     final unmatched = <String>[];
     for (final entry in receiptDrafts) {
-      final review = reviewReceiptPrices(entry.draft, widget.products);
+      final draft = entry.draft;
+      final review = reviewReceiptPrices(draft, widget.products);
+      final usedProducts = <String>{};
       for (final suggestion in review.suggestions) {
         if (selectedReceiptPrices.contains(
-            _priceKey(entry.draft.fingerprint, suggestion.product.id))) {
+            _priceKey(draft.fingerprint, suggestion.product.id))) {
           prices.add(suggestion.price);
+          usedProducts.add(suggestion.product.id);
         }
+      }
+      for (final row in draft.rows) {
+        final id = assignedMilkVariants[_rowKey(draft, row)];
+        if (id == null) continue;
+        final products = widget.products.where((product) => product.id == id);
+        final price = products.length == 1
+            ? assignedKauflandMilkPrice(
+                draft: draft, row: row, product: products.single)
+            : null;
+        if (price == null || !usedProducts.add(id)) {
+          setState(() => errorMessage =
+              'Bitte jede Milchsorte je Bon nur einer eindeutigen, rabattfreien Zeile zuordnen.');
+          return;
+        }
+        prices.add(price);
       }
     }
     if (linesController.text.trim().isNotEmpty) {
@@ -324,10 +347,46 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                     trailing: Text(
                                       '${(row.cents / 100).toStringAsFixed(2).replaceAll('.', ',')} €',
                                     ),
-                                    subtitle: Text(row.quantity == null
-                                        ? 'Bonposition'
-                                        : '${row.quantity} ${row.quantityUnit} × '
-                                          '${((row.unitCents ?? row.cents) / 100).toStringAsFixed(2).replaceAll('.', ',')} €'),
+                                    subtitle: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(row.quantity == null
+                                            ? 'Bonposition'
+                                            : '${row.quantity} ${row.quantityUnit} × '
+                                              '${((row.unitCents ?? row.cents) / 100).toStringAsFixed(2).replaceAll('.', ',')} €'),
+                                        if (draft.balances &&
+                                            isAmbiguousKauflandMilk(draft, row))
+                                          DropdownButton<String>(
+                                            isExpanded: true,
+                                            value: assignedMilkVariants[
+                                                _rowKey(draft, row)],
+                                            hint: const Text('Milchsorte prüfen'),
+                                            items: [
+                                              const DropdownMenuItem<String>(
+                                                value: null,
+                                                child: Text('Offen lassen'),
+                                              ),
+                                              for (final product in widget.products.where(
+                                                  (p) => p.id == 'milch_15' ||
+                                                      p.id == 'milch_35'))
+                                                DropdownMenuItem<String>(
+                                                  value: product.id,
+                                                  child: Text(product.name),
+                                                ),
+                                            ],
+                                            onChanged: saving ? null : (value) {
+                                              setState(() {
+                                                final key = _rowKey(draft, row);
+                                                if (value == null) {
+                                                  assignedMilkVariants.remove(key);
+                                                } else {
+                                                  assignedMilkVariants[key] = value;
+                                                }
+                                              });
+                                            },
+                                          ),
+                                      ],
+                                    )
                                   ),
                               ],
                             ),
@@ -337,7 +396,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                   }),
                 const Text(
                   'Nur eindeutig zugeordnete Einzelpreise werden übernommen. '
-                  'Rabattpositionen und nicht unterscheidbare Sorten bleiben offen.',
+                  'Rabattpositionen bleiben offen. Abgekürzte K.H-Milch kannst du je Bon einer Sorte zuordnen; der Preis allein bestimmt den Fettgehalt nicht.',
                   style: TextStyle(fontSize: 12),
                 ),
               ],
