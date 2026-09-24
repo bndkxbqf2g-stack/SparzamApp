@@ -61,3 +61,5 @@ Zielrichtung: modern, harmonisch, warmweiß/salbeigrün. Separate Hauptbereiche;
 
 ## Änderungsregel
 Vor neuen Modulen prüfen, ob eine bestehende Verantwortung erweitert werden kann. Neue Geschäftslogik nicht direkt in große Widgets schreiben. Tests für Parsing, Matching und Preislogik bevorzugen.
+
+- Die Planungsprojektion liest nun zusätzlich die append-only `PriceObservation`-Historie. Nur exakte Produktidentitäten mit voller Identitäts-Confidence aus den bereits unterstützten Quellen manuell/Bon/Open Prices werden in den bestehenden `MarketPrice`-Vertrag zurückprojiziert; Familien- und unsichere Beobachtungen bleiben außerhalb der exakten Route.
