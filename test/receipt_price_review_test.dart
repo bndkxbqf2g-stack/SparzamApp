@@ -17,25 +17,25 @@ void main() {
     final july = parseReceiptLedger('''
 Kaufland
 Preis EUR
-Trauben 500g hell 1,79 B
+Trauben 500g hell 1,73 B
 K.H-Milch 2 * 0,85 1,70 B
-Summe 3,49
-Datum 23.07.26
+Summe 3,43
+Datum 23.07.24
 ''');
     final may = parseReceiptLedger('''
 Kaufland
 Preis EUR
 K.H-Milch 2 * 0,95 1,90 B
 Summe 1,90
-Datum 26.05.26
+Datum 26.05.24
 ''');
     final julyReview = reviewReceiptPrices(july, products);
     final mayReview = reviewReceiptPrices(may, products);
     expect(july.balances, isTrue);
     expect(julyReview.suggestions, hasLength(1));
     expect(julyReview.suggestions.single.price.productId, 'weintrauben');
-    expect(julyReview.suggestions.single.price.price, 1.79);
-    expect(julyReview.suggestions.single.price.updatedAt, DateTime(2026, 7, 23));
+    expect(julyReview.suggestions.single.price.price, 1.73);
+    expect(julyReview.suggestions.single.price.updatedAt, DateTime(2024, 7, 23));
     expect(may.balances, isTrue);
     expect(mayReview.suggestions, isEmpty);
   });
@@ -46,32 +46,32 @@ Netto
 EUR
 2 x 0,95
 GL H-Milch 3,5% 1 L 1,90 B
-Hackfleisch gemischt 500g 4,49 B
-SUMME [2] 6,39
-Datum 24.08.26
+Hackfleisch gemischt 500g 4,39 B
+SUMME [2] 6,29
+Datum 24.08.24
 ''');
     final matches = reviewReceiptPrices(draft, products).suggestions;
     expect(matches, hasLength(2));
     expect(matches.first.price.price, 0.95);
-    expect(matches.last.price.price, 4.49);
+    expect(matches.last.price.price, 4.39);
   });
 
   test('discounted products and unbalanced receipts cannot be promoted', () {
     final discounted = parseReceiptLedger('''
 Kaufland
 Preis EUR
-Trauben 500g hell 1,79 B
+Trauben 500g hell 1,73 B
 Artikelrabatt -0,30
-Summe 1,49
-Datum 23.07.26
+Summe 1,43
+Datum 23.07.24
 ''');
     expect(reviewReceiptPrices(discounted, products).suggestions, isEmpty);
     final broken = parseReceiptLedger('''
 Kaufland
 Preis EUR
-Trauben 500g hell 1,79 B
-Summe 1,99
-Datum 23.07.26
+Trauben 500g hell 1,73 B
+Summe 1,93
+Datum 23.07.24
 ''');
     expect(reviewReceiptPrices(broken, products).suggestions, isEmpty);
   });
@@ -80,10 +80,10 @@ Datum 23.07.26
     final draft = parseReceiptLedger('''
 Kaufland
 Preis EUR
-Trauben 500g hell 1,79 B
-Trauben 500g hell 1,89 B
-Summe 3,68
-Datum 23.07.26
+Trauben 500g hell 1,73 B
+Trauben 500g hell 1,83 B
+Summe 3,56
+Datum 23.07.24
 ''');
     expect(reviewReceiptPrices(draft, products).suggestions, isEmpty);
   });
