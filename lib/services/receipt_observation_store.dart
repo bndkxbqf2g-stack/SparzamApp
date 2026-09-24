@@ -30,11 +30,19 @@ class ReceiptObservationStore {
       for (final item in current) item.id: item,
     };
     var added = 0;
+    var changed = false;
     for (final observation in observations) {
-      if (!byId.containsKey(observation.id)) added++;
+      final previous = byId[observation.id];
+      if (previous == null) {
+        added++;
+        changed = true;
+      } else if (jsonEncode(previous.toJson()) !=
+          jsonEncode(observation.toJson())) {
+        changed = true;
+      }
       byId[observation.id] = observation;
     }
-    if (added == 0) return 0;
+    if (!changed) return 0;
     final next = byId.values.toList()
       ..sort((a, b) => b.observedAt.compareTo(a.observedAt));
     await _preferences.setStringList(
