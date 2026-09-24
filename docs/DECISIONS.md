@@ -120,3 +120,7 @@ Bonzeilen und Angebote werden zusätzlich in die gemeinsame `PriceObservation`-H
 
 ## D031 – Vergleichbarkeit kommt vor Preisranking
 Vor D025/D027 muss feststehen, dass zwei Preisbeobachtungen fachlich vergleichbar sind. Unterschiedliche Packungsgrößen dürfen nicht anhand des absoluten Packungspreises gegeneinander gewinnen, wenn keine sichere gemeinsame Mengenbasis vorliegt. Einheit und Menge müssen normalisierbar sein; Varianten bleiben getrennt, wenn die Einkaufsliste oder Produktidentität sie unterscheidet. Ein Grundpreis kann den Vergleich unterstützen, ersetzt aber keine sichere Produkt-/Variantenidentität. Das nächste Arbeitspaket implementiert diese Regel zentral statt quellenbezogener Sonderfälle.
+
+
+## D032 – Work ist eine gezielte Ausführungsebene, kein zweiter Entwicklungsstrom
+Der laufende Projektchat bleibt für kleine, klar abgegrenzte Änderungen, Entscheidungen, Tests, Commits und CI-Kontrolle zuständig. Aufgaben mit deutlichem Vorteil durch längere autonome Repo-/Browser-/Datei-Arbeit werden in der `WORK QUEUE` der Roadmap gesammelt. Work bearbeitet nur freigegebene Queue-Einträge und soll bereits abgeschlossene Pakete nicht erneut untersuchen, sofern kein konkreter Fehler dies verlangt. Ein Eintrag wird erst freigegeben, wenn seine dokumentierte Startvoraussetzung erfüllt ist.
