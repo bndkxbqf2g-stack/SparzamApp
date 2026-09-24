@@ -30,6 +30,39 @@ void main() {
         priceBasis: comparable ? 'kg' : 'Packung',
       );
 
+  test('specific variant does not inherit sibling family history', () {
+    const bergkaese = Product(
+      id: 'bergkaese', name: 'Bergkäse', unit: '200 g', group: 'kaese',
+    );
+    final result = receiptStatsForProduct(bergkaese, [
+      stat(
+        family: 'kaese',
+        productId: 'gouda',
+        price: 1.99,
+        date: DateTime(2026, 9, 20),
+      ),
+    ]);
+
+    expect(result, isEmpty);
+  });
+
+  test('generic family may use sibling family history as a hint', () {
+    const cheese = Product(
+      id: 'kaese', name: 'Käse', unit: 'Packung', group: 'kaese',
+    );
+    final result = receiptStatsForProduct(cheese, [
+      stat(
+        family: 'kaese',
+        productId: 'gouda',
+        price: 1.99,
+        date: DateTime(2026, 9, 20),
+      ),
+    ]);
+
+    expect(result, hasLength(1));
+    expect(result.single.productId, 'gouda');
+  });
+
   test('finds historical hackfleisch price despite older product identity', () {
     final result = receiptStatsForProduct(mixedMince, [
       stat(
