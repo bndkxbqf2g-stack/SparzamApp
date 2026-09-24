@@ -276,5 +276,30 @@ void main() {
     expect({for (final price in prices) price.storeName: price.price},
         {'Kaufland': 0.59, 'Lidl': 0.79});
   });
+  test('generic yoghurt aliases create separate market prices', () {
+    const product = Product(id: 'joghurt-generic', name: 'Joghurt', unit: 'Stück', group: 'milch');
+    final prices = receiptFamilyMarketPrices(
+      items: [ListItem(product: product)],
+      observations: [
+        for (final entry in [('Netto', 'Naturjoghurt', 0.79), ('Lidl', 'Joghurt natur', 0.69)])
+          ReceiptObservation(
+            id: 'joghurt-${entry.$1}',
+            receiptFingerprint: 'j-${entry.$1}',
+            rowLine: 1,
+            rawLabel: entry.$2,
+            familyKey: 'joghurt',
+            storeName: entry.$1,
+            observedAt: DateTime(2026, 9, 20),
+            totalPrice: entry.$3,
+            quantity: null,
+            quantityUnit: '',
+            unitPrice: null,
+            discounted: false,
+          ),
+      ],
+      now: DateTime(2026, 9, 24),
+    );
+    expect(prices.map((price) => price.storeName).toSet(), {'Netto', 'Lidl'});
+  });
 
 }
