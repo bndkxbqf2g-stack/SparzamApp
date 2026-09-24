@@ -16,7 +16,10 @@ List<ReceiptPriceStat> receiptStatsForProduct(
   final exact = stats.where((stat) => stat.productId == product.id).toList();
   if (exact.isNotEmpty) return exact;
 
-  if (!isGenericFamilyRequest(product.name)) return const <ReceiptPriceStat>[];
+  final broadFamily = broadProductFamily(product.name);
+  if (broadFamily != null && !isGenericFamilyRequest(product.name)) {
+    return const <ReceiptPriceStat>[];
+  }
 
   final family = inferReceiptFamily(product.name);
   return stats
