@@ -8,11 +8,15 @@ class MoreScreen extends StatelessWidget {
     required this.routePage,
     required this.receiptPage,
     required this.profilePage,
+    this.onOpenStores,
+    this.onOpenPriceData,
   });
 
   final Widget routePage;
   final Widget receiptPage;
   final Widget profilePage;
+  final VoidCallback? onOpenStores;
+  final VoidCallback? onOpenPriceData;
 
   void _open(BuildContext context, String title, Widget page) {
     Navigator.of(context).push(
@@ -48,6 +52,26 @@ class MoreScreen extends StatelessWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _open(context, 'Bons und Einkäufe', receiptPage),
           )),
+          if (onOpenStores != null) ...[
+            const SizedBox(height: 12),
+            Card(child: ListTile(
+              leading: const Icon(Icons.storefront_outlined,
+                  color: SparzamTheme.deepGreen),
+              title: const Text('Meine Märkte'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: onOpenStores,
+            )),
+          ],
+          if (onOpenPriceData != null) ...[
+            const SizedBox(height: 12),
+            Card(child: ListTile(
+              leading: const Icon(Icons.storage_outlined,
+                  color: SparzamTheme.deepGreen),
+              title: const Text('Datenquellen & Preisarchiv'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: onOpenPriceData,
+            )),
+          ],
           const SizedBox(height: 12),
           Card(child: ListTile(
             leading: const Icon(Icons.person_outline, color: SparzamTheme.deepGreen),
