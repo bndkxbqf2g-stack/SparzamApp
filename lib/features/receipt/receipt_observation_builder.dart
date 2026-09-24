@@ -59,15 +59,8 @@ String inferReceiptFamily(String label) {
       'r hackfleisch',
       'rinderhack',
     ],
-    'milch': ['h milch', 'vollmilch', 'milch 1,5', 'milch 3,5'],
     'weintrauben': ['weintrauben', 'trauben'],
-    'bananen': ['bananen'],
-    'kartoffeln': ['kartoffeln'],
-    'paprika': ['paprika'],
-    'eier': ['eier'],
     'fischstäbchen': ['fischstäbchen'],
-    'schmand': ['schmand'],
-    'joghurt': ['joghurt'],
     'toast': ['sandwichtoast', 'toast'],
   };
   for (final entry in families.entries) {
