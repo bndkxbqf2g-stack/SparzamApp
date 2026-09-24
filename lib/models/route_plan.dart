@@ -21,4 +21,13 @@ class RoutePlan {
   /// Heuristic planning margin; it is not part of the amount paid.
   final double uncertaintyReserve;
   double get planningScore => total + uncertaintyReserve;
+
+  int get pricedItemCount => assignments.values
+      .fold<int>(0, (sum, entries) => sum + entries.length);
+  int get missingItemCount => unassigned.length;
+  int get totalItemCount => pricedItemCount + missingItemCount;
+  double get priceCoverage => totalItemCount == 0
+      ? 0
+      : pricedItemCount / totalItemCount;
+  bool get hasDataGaps => unassigned.isNotEmpty;
 }
