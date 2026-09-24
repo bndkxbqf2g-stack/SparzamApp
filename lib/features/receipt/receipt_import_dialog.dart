@@ -4,10 +4,12 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../models/market_price.dart';
 import '../../models/product.dart';
+import '../../services/receipt_observation_store.dart';
 import 'receipt_file_text_reader.dart';
 import 'receipt_import.dart';
 import 'receipt_ledger.dart';
 import 'receipt_milk_assignment.dart';
+import 'receipt_observation_builder.dart';
 import 'receipt_price_review.dart';
 
 class ReceiptImportDialog extends StatefulWidget {
@@ -36,6 +38,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
   String? errorMessage;
   bool importing = false;
   bool saving = false;
+  final observationStore = ReceiptObservationStore();
 
   String _priceKey(String fingerprint, String productId) =>
       '$fingerprint|$productId';
@@ -204,18 +207,38 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
       prices.addAll(manual.prices);
       unmatched.addAll(manual.unmatchedLines);
     }
-    if (prices.isEmpty) {
-      setState(() => errorMessage =
-          'Kein eindeutiger Artikelpreis ausgewählt. Weitere Produkte können nach einer Katalogzuordnung übernommen werden.');
-      return;
-    }
     setState(() => saving = true);
     try {
-      await widget.onSavePrices(prices);
+      var savedObservations = 0;
+      for (final entry in receiptDrafts) {
+        final draft = entry.draft;
+        final review = reviewReceiptPrices(draft, widget.products);
+        final assigned = <int, String>{};
+        for (final row in draft.rows) {
+          final productId = assignedMilkVariants[_rowKey(draft, row)];
+          if (productId != null) assigned[row.line] = productId;
+        }
+        savedObservations += await observationStore.addMany(
+          buildReceiptObservations(
+            draft: draft,
+            review: review,
+            assignedProductIds: assigned,
+          ),
+        );
+      }
+      if (prices.isNotEmpty) {
+        await widget.onSavePrices(prices);
+      }
+      if (prices.isEmpty && savedObservations == 0) {
+        setState(() => errorMessage =
+            'Keine verwertbaren Produkt- oder Preisbeobachtungen gefunden.');
+        return;
+      }
       if (!mounted) return;
       Navigator.of(context).pop(
         ReceiptImportOutcome(
           savedPrices: prices.length,
+          savedObservations: savedObservations,
           unmatchedLines: unmatched,
         ),
       );
@@ -394,8 +417,9 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                     );
                   }),
                 const Text(
-                  'Nur eindeutig zugeordnete Einzelpreise werden übernommen. '
-                  'Rabattpositionen bleiben offen. Abgekürzte K.H-Milch kannst du je Bon einer Sorte zuordnen; der Preis allein bestimmt den Fettgehalt nicht.',
+                  'Alle erkannten Produktpositionen werden als Bonbeobachtungen für die lernende Preisdatenbank gespeichert. '
+                  'Nur eindeutig zugeordnete Einzelpreise werden bereits als direkte Katalogpreise verwendet. '
+                  'Pfand und reine Rabattzeilen werden nicht als Produkte angelegt.',
                   style: TextStyle(fontSize: 12),
                 ),
               ],
