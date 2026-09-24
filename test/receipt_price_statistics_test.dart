@@ -27,16 +27,41 @@ ReceiptObservation obs({
     );
 
 void main() {
-  test('uses robust median and ignores discounted observations', () {
+  test('uses robust median and keeps discounted purchases as history', () {
     final stats = buildReceiptPriceStats([
       obs(id: '1', price: 4.49),
       obs(id: '2', price: 4.79, day: 21),
       obs(id: '3', price: 9.99, discounted: true, day: 22),
     ], now: DateTime(2026, 9, 24));
 
-    expect(stats.single.medianPrice, 4.64);
-    expect(stats.single.observationCount, 2);
+    expect(stats.single.medianPrice, 4.79);
+    expect(stats.single.observationCount, 3);
     expect(stats.single.comparable, isFalse);
+  });
+
+
+  test('discounted Schmand remains available to the shopping list', () {
+    final stats = buildReceiptPriceStats([
+      ReceiptObservation(
+        id: 'schmand',
+        receiptFingerprint: 'kaufland-230726',
+        rowLine: 34,
+        rawLabel: 'K.Frischer Schmand',
+        familyKey: 'schmand',
+        storeName: 'Kaufland',
+        observedAt: DateTime(2026, 7, 23),
+        totalPrice: 0.79,
+        quantity: null,
+        quantityUnit: 'Stück',
+        unitPrice: null,
+        discounted: true,
+        productId: 'receipt_auto_schmand',
+      ),
+    ], now: DateTime(2026, 9, 24));
+
+    expect(stats.single.familyKey, 'schmand');
+    expect(stats.single.medianPrice, 0.79);
+    expect(stats.single.observationCount, 1);
   });
 
   test('unit prices are comparable when every observation has one', () {
