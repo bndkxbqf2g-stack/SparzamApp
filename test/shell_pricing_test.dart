@@ -19,6 +19,19 @@ void main() {
     source: MarketPriceSource.openPrices,
   );
 
+  test('deaktivierte externe Quelle lässt eigene und aktuelle Bonpreise durch', () {
+    final receipt = MarketPrice(
+      productId: 'milk', storeName: 'Netto', price: 1.15,
+      updatedAt: DateTime.now(), source: MarketPriceSource.receipt,
+    );
+    final result = activePrices(
+      [manual, receipt, external],
+      const PriceDataSettings(openPricesEnabled: false),
+    );
+
+    expect(result, [manual, receipt]);
+  });
+
   test('deaktivierte externe Quelle lässt nur eigene Preise durch', () {
     final result = activePrices(
       [manual, external],
