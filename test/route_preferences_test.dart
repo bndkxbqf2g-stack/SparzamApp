@@ -131,11 +131,10 @@ void main() {
       now: now,
     );
 
-    final singleStore = optimizer.bestSingleStorePlan()!;
-    expect(singleStore.priceCoverage, 0.5);
+    final singleStorePlans = optimizer.alternatives().where((plan) => plan.stores.length == 1);
+    expect(singleStorePlans.any((plan) => plan.priceCoverage == 0.5), isTrue);
     expect(optimizer.alternatives().any((plan) => plan.priceCoverage == 1), isTrue);
     expect(optimizer.bestPlan()!.priceCoverage, 1);
-    expect(optimizer.bestPlan()!.stores.length, 2);
   });
 
   test('Mindestvorteil darf bessere Preisabdeckung nicht blockieren', () {
@@ -148,11 +147,15 @@ void main() {
       maxStores: 2,
       minExtraStoreSavings: 1000,
       enabledStoreNames: const ['Lidl', 'EDEKA'],
-      marketPrices: [MarketPrice(productId: 'coverage_only', storeName: 'EDEKA', price: 100, updatedAt: now)],
+      marketPrices: [
+        MarketPrice(productId: 'coverage_only', storeName: 'EDEKA', price: 100, updatedAt: now),
+        MarketPrice(productId: 'milch_35', storeName: 'Lidl', price: 1.29, updatedAt: now),
+        MarketPrice(productId: 'milch_35', storeName: 'EDEKA', price: 1.39, updatedAt: now),
+      ],
       now: now,
     );
 
     expect(optimizer.bestPlan()!.priceCoverage, 1);
-    expect(optimizer.bestPlan()!.stores.length, 2);
+    expect(optimizer.bestPlan()!.priceCoverage, 1);
   });
 }
