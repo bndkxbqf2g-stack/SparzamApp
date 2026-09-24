@@ -8,6 +8,7 @@ import 'package:sparzamapp/services/price_observation_store.dart';
 import 'package:sparzamapp/services/price_observation_adapters.dart';
 import 'package:sparzamapp/models/receipt_observation.dart';
 import 'package:sparzamapp/models/offer.dart';
+import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/features/route/market_price_quality.dart';
 
 void main() {
@@ -113,6 +114,30 @@ void main() {
     expect(observation.kind, PriceObservationKind.offer);
     expect(observation.validUntil, DateTime(2026, 9, 27));
     expect(observation.discounted, isTrue);
+  });
+
+  test('exact route projection rejects a different declared package size', () {
+    const product = Product(
+      id: 'schmand-200', name: 'Schmand 200 g', unit: '200 g',
+      group: 'schmand', packageAmount: 200, packageUnit: 'g',
+    );
+    final projected = marketPricesFromObservations([
+      PriceObservation(
+        id: 'wrong-pack', productId: product.id, storeName: 'Lidl',
+        price: 0.69, quantity: 500, unit: 'g',
+        observedAt: DateTime(2026, 9, 24),
+        source: PriceObservationSource.receipt,
+      ),
+      PriceObservation(
+        id: 'right-pack', productId: product.id, storeName: 'Edeka',
+        price: 0.89, quantity: 0.2, unit: 'kg',
+        observedAt: DateTime(2026, 9, 24),
+        source: PriceObservationSource.receipt,
+      ),
+    ], products: const [product]);
+
+    expect(projected, hasLength(1));
+    expect(projected.single.storeName, 'Edeka');
   });
 
   test('source confidence and age confidence are separate', () {
