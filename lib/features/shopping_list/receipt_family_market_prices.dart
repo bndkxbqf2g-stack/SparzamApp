@@ -13,7 +13,7 @@ List<MarketPrice> receiptFamilyMarketPrices({
   required Iterable<ListItem> items,
   required Iterable<ReceiptObservation> observations,
   DateTime? now,
-  int maxAgeDays = 90,
+  int maxAgeDays = 30,
 }) {
   final today = now ?? DateTime.now();
   final cutoff = DateTime(today.year, today.month, today.day)

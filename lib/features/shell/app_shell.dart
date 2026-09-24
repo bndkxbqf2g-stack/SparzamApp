@@ -42,6 +42,7 @@ import '../route/route_screen.dart';
 import '../scanner/scanner_screen.dart';
 import '../shopping_list/replenishment_analyzer.dart';
 import '../shopping_list/receipt_family_market_prices.dart';
+import '../shopping_list/planning_market_prices.dart' as planning_prices;
 import '../shopping_list/shopping_list_updates.dart';
 import 'shell_catalog.dart';
 import 'shell_catalog_coordinator.dart';
@@ -215,10 +216,11 @@ class _AppShellState extends State<AppShell> {
         observations: receiptObservations,
       );
 
-  List<MarketPrice> get planningMarketPrices => [
-        ...activeMarketPrices,
-        ...receiptFamilyPrices,
-      ];
+  List<MarketPrice> get planningMarketPrices =>
+      planning_prices.planningMarketPrices(
+        exactPrices: activeMarketPrices,
+        familyPrices: receiptFamilyPrices,
+      );
 
   Future<void> _loadReceiptObservations() async {
     final loaded = await ReceiptObservationStore().load();
