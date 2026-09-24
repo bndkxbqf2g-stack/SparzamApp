@@ -19,10 +19,15 @@ class OfficialOfferLinks extends StatelessWidget {
   ];
 
   Future<void> _open(BuildContext context, String url) async {
-    final opened = await launchUrl(
-      Uri.parse(url),
-      mode: LaunchMode.externalApplication,
-    );
+    bool opened;
+    try {
+      opened = await launchUrl(
+        Uri.parse(url),
+        mode: LaunchMode.externalApplication,
+      );
+    } catch (_) {
+      opened = false;
+    }
     if (!opened && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Angebotsseite konnte nicht geöffnet werden.')),
