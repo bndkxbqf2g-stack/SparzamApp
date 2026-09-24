@@ -12,6 +12,7 @@ const _familyTerms = <String, List<String>>{
   'kartoffeln': ['kartoffeln'],
   'bananen': ['bananen'],
   'paprika': ['paprika'],
+  'tomaten': ['tomaten', 'tomate', 'passata', 'geh tomaten', 'gehackte tomaten'],
   'kaese': [
     'käse', 'kaese', 'gouda', 'edamer', 'emmentaler', 'bergkäse', 'bergkaese',
     'butterkäse', 'butterkaese', 'tilsiter',
