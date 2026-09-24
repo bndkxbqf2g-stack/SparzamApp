@@ -219,7 +219,10 @@ class _AppShellState extends State<AppShell> {
       activePrices(marketPrices, priceDataSettings);
 
   List<MarketPrice> get historicalMarketPrices =>
-      marketPricesFromObservations(historicalPriceObservations);
+      marketPricesFromObservations(
+        historicalPriceObservations,
+        products: productCatalog,
+      );
 
   List<MarketPrice> get receiptFamilyPrices => receiptFamilyMarketPrices(
         items: shoppingList,
