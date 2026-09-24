@@ -66,7 +66,7 @@ void main() {
       unit: 'Stück',
       group: 'kaese',
     );
-    const missing = ListItem(product: product, quantity: 1);
+    final missing = ListItem(product: product, quantity: 1);
 
     final incomplete = RoutePlan(
       stores: const [a],
@@ -74,7 +74,7 @@ void main() {
       basket: 0,
       travel: 0,
       total: 0,
-      unassigned: const [missing],
+      unassigned: [missing],
     );
 
     expect(incomplete.hasDataGaps, isTrue);
