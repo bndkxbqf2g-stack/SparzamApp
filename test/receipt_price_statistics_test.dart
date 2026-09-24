@@ -58,6 +58,31 @@ void main() {
     expect(stats, isEmpty);
   });
 
+
+  test('repairs stale family keys from raw labels for every product', () {
+    final stats = buildReceiptPriceStats([
+      ReceiptObservation(
+        id: 'legacy-schmand',
+        receiptFingerprint: 'bon-schmand',
+        rowLine: 7,
+        rawLabel: 'Schmand',
+        familyKey: 'receipt_auto_old_id',
+        storeName: 'Kaufland',
+        observedAt: DateTime(2026, 9, 23),
+        totalPrice: 0.99,
+        quantity: null,
+        quantityUnit: 'Stück',
+        unitPrice: null,
+        discounted: false,
+        productId: 'receipt_auto_old_id',
+      ),
+    ], now: DateTime(2026, 9, 24));
+
+    expect(stats.single.familyKey, 'schmand');
+    expect(stats.single.productId, 'receipt_auto_old_id');
+    expect(stats.single.medianPrice, 0.99);
+  });
+
   test('keeps assigned variants in separate price histories', () {
     ReceiptObservation assigned(String id, String productId, double price) =>
         ReceiptObservation(
