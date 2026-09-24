@@ -107,6 +107,13 @@ void main() {
     expect(prices.single.price, 0.69);
   });
 
+  test('store-brand and abbreviated Schmand labels resolve to one family', () {
+    expect(inferReceiptFamily('K-Schmand 24% 200g'), 'schmand');
+    expect(inferReceiptFamily('G&G Schmand 200 G'), 'schmand');
+    expect(inferReceiptFamily('Milbona Schmand'), 'schmand');
+    expect(inferReceiptFamily('Schmand'), 'schmand');
+  });
+
   test('generic Schmand collects comparable prices from multiple stores', () {
     const product = Product(
       id: 'shopping_schmand_multi',
