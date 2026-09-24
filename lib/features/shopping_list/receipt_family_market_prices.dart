@@ -23,12 +23,18 @@ List<MarketPrice> receiptFamilyMarketPrices({
   for (final item in items) {
     final family = inferReceiptFamily(item.product.name);
     if (family.isEmpty) continue;
+    final productName = _normalize(item.product.name);
+    final isGenericRequest = productName == family;
 
     for (final observation in observations) {
       if (observation.observedAt.isBefore(cutoff) ||
           inferReceiptFamily(observation.rawLabel) != family) {
         continue;
       }
+      final raw = _normalize(observation.rawLabel);
+      final exactIdentity = productName == raw ||
+          item.product.aliases.any((alias) => _normalize(alias) == raw);
+      if (!isGenericRequest && !exactIdentity) continue;
       final price = observation.unitPrice ?? observation.totalPrice;
       if (!price.isFinite || price <= 0) continue;
       final key = '${observation.storeName}|${item.product.id}';
@@ -47,3 +53,9 @@ List<MarketPrice> receiptFamilyMarketPrices({
   }
   return result.values.toList();
 }
+
+String _normalize(String value) => value
+    .toLowerCase()
+    .replaceAll(RegExp(r'[._-]+'), ' ')
+    .replaceAll(RegExp(r'\\s+'), ' ')
+    .trim();
