@@ -133,7 +133,7 @@ void main() {
             id: 'schmand-${entry.$1}',
             receiptFingerprint: 'receipt-${entry.$1}',
             rowLine: 1,
-            rawLabel: 'Schmand',
+            rawLabel: entry.$1 == 'Kaufland' ? 'K-Schmand 24% 200g' : entry.$1 == 'EDEKA' ? 'G&G Schmand 200 G' : 'Milbona Schmand',
             familyKey: 'schmand',
             storeName: entry.$1,
             observedAt: DateTime(2026, 9, 20),
