@@ -40,6 +40,37 @@ void main() {
     expect(prices.single.price, 0.79);
   });
 
+  test('specific milk variant does not consume ambiguous family history', () {
+    const product = Product(
+      id: 'milch_15',
+      name: 'H-Milch 1,5%',
+      unit: '1 l',
+      group: 'milch',
+    );
+    final prices = receiptFamilyMarketPrices(
+      items: [ListItem(product: product)],
+      observations: [
+        ReceiptObservation(
+          id: 'ambiguous-milk',
+          receiptFingerprint: 'receipt',
+          rowLine: 1,
+          rawLabel: 'K.H-Milch',
+          familyKey: 'milch',
+          storeName: 'Kaufland',
+          observedAt: DateTime(2026, 9, 1),
+          totalPrice: 0.95,
+          quantity: null,
+          quantityUnit: 'Stück',
+          unitPrice: null,
+          discounted: false,
+        ),
+      ],
+      now: DateTime(2026, 9, 24),
+    );
+
+    expect(prices, isEmpty);
+  });
+
   test('unrelated families are never bridged', () {
     const product = Product(
       id: 'shopping_schmand',
