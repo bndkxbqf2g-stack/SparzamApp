@@ -178,3 +178,13 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Größere repo-weite Prüfungen, mehrstufige Migrationen und Recherche+Implementierung werden für Work in der `WORK QUEUE` der Roadmap gesammelt.
 - Work soll ausschließlich freigegebene Queue-Aufgaben bearbeiten und abgeschlossene Pakete nicht unnötig erneut analysieren.
 - Der Projektchat entscheidet bei neuen Aufgaben selbstständig, ob direkte Umsetzung oder Work-Queue wirtschaftlicher ist.
+
+## Update 24.09.2026 – Vergleichbarkeit, Familien und externe Identität
+- Mengen werden zentral auf kg/l/Stück normalisiert; deklarierte abweichende Packungsgrößen dürfen nicht als exakter Preis derselben Produktpackung in die Route gelangen.
+- Bon-Familienpreise werden nur bei sicherer Mengenbasis auf die gewünschte Packung normiert. Ohne sichere Basis bleiben sie Hinweis statt Routenpreis.
+- Käse/Wurst besitzen eine breite Familienebene: generische Wünsche dürfen passende Geschwisterbelege nutzen, konkrete Varianten wie Bergkäse jedoch nicht den Preis von Gouda erben.
+- Historische Open-Prices-Beobachtungen respektieren Aktivierung und Alterslimit auch bei der Rückprojektion.
+- Open Prices wird bedarfsorientiert nur für Produkte der aktuellen Einkaufsliste abgefragt.
+- Für Produkte ohne EAN kann Open Food Facts konservativ zur EAN-Suche genutzt werden. Automatisch entdeckte EANs sind zunächst nur Retrieval-Evidenz und erzeugen keinen exakten Routenpreis ohne bestätigte Identität.
+- Auch automatische Bon-Vorschläge gelten nicht mehr als bestätigte exakte Produktidentität; nur explizite Zuordnungen dürfen diese Sicherheit herstellen.
+- Aktueller nächster großer Prüfschritt: End-to-End-Audit der Preis- und Routenlogik aus der WORK QUEUE.
