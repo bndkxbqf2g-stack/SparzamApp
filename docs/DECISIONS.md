@@ -109,3 +109,7 @@ Ein fester Quellenvorrang darf einen deutlich veralteten eigenen Preis nicht aut
 
 ## D028 – Externe Daten und Rückgabe nur über prüfbare Adapter
 Open Prices ist bereits lesend angebunden. Weitere Datensätze/Händlerquellen benötigen eine austauschbare Zuordnung mit EAN, Packungsbasis, Filiale, Angebotsgültigkeit und Herkunft; öffentlich sichtbare Daten sind nicht automatisch zur Weiterverwendung geeignet. Es wird kein fragiles Händler-Scraping eingebaut. Ein späterer Upload eigener Belege/Preise zu Open Prices oder Community-Plattformen erfolgt nur nach ausdrücklicher Nutzerentscheidung, mit geeigneter Belegbereinigung und unter den jeweiligen API-/Lizenzbedingungen.
+
+
+## D029 – Exakte Beobachtungshistorie ist Eingang der Routenprojektion
+Die aktuelle `MarketPriceStore`-Projektion darf die für die Routenwahl sichtbare Historie nicht begrenzen. Gespeicherte `PriceObservation`-Einträge mit konkreter Produkt-ID und voller Identitäts-Confidence werden für unterstützte Quellen (manuell, Bon, Open Prices) zusätzlich in die bestehende Marktpreis-Planungsschnittstelle projiziert. Dadurch kann D027 tatsächlich zwischen mehreren historischen Beobachtungen derselben Produkt-/Markt-Kombination wählen. Familien-only-Beobachtungen oder unsichere Identitäten werden nicht als exakte Produktpreise hochgestuft. Diese Rückprojektion ist eine Übergangsschnittstelle, bis Route und UI das gemeinsame Beobachtungsmodell direkt konsumieren.
