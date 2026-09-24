@@ -42,13 +42,13 @@ ReceiptPriceReview reviewReceiptPrices(
   final candidates = <ReceiptPriceSuggestion>[];
   for (final row in items) {
     if (discounted.contains(row.line) || unresolved.contains(row.line)) continue;
-    final product = _matchProduct(row.label, products);
+    final product = _matchProduct(row, products);
     if (product == null) continue;
     final unitCents = row.quantity == null
         ? row.cents
         : row.unitCents;
     if (unitCents == null || unitCents <= 0 || row.quantity != null &&
-        row.quantity! * unitCents != row.cents) {
+        (row.quantity! * unitCents).round() != row.cents) {
       continue;
     }
     candidates.add(ReceiptPriceSuggestion(
@@ -81,12 +81,34 @@ ReceiptPriceReview reviewReceiptPrices(
   );
 }
 
-Product? _matchProduct(String label, List<Product> products) {
-  final normalized = _normalize(label);
+Product? _matchProduct(ReceiptRow row, List<Product> products) {
+  final normalized = _normalize(row.label);
   // Some receipt abbreviations identify a package unambiguously. Bare
   // "K.H-Milch" cannot distinguish 1.5% from 3.5% and is excluded.
   String? knownProductId;
-  if (RegExp(r'^trauben 500g(?: hell| dunkel)?$').hasMatch(normalized)) {
+  if (normalized == 'bananen lose mt' &&
+      row.quantity != null && row.unitCents != null) {
+    knownProductId = 'bananen';
+  } else if (RegExp(r'^trauben 500g(?: hell| dunkel)?
+    knownProductId = 'weintrauben';
+  } else if (RegExp(r'^gl h-milch 3,5% 1 ?l$').hasMatch(normalized)) {
+    knownProductId = 'milch_35';
+  } else if (RegExp(r'^hackfleisch gemischt 500g$').hasMatch(normalized)) {
+    knownProductId = 'hackfleisch';
+  }
+  if (knownProductId != null) {
+    final matches = products.where((p) => p.id == knownProductId).toList();
+    return matches.length == 1 ? matches.single : null;
+  }
+  final matches = products.where((product) =>
+      _normalize(product.name) == normalized &&
+      !RegExp(r'\d+[,.]\d+\s*kg').hasMatch(normalized)).toList();
+  return matches.length == 1 ? matches.single : null;
+}
+
+String _normalize(String value) =>
+    value.toLowerCase().replaceAll(RegExp(r'\s+'), ' ').trim();
+).hasMatch(normalized)) {
     knownProductId = 'weintrauben';
   } else if (RegExp(r'^gl h-milch 3,5% 1 ?l$').hasMatch(normalized)) {
     knownProductId = 'milch_35';
