@@ -6,6 +6,7 @@ import '../../models/market_price.dart';
 import '../../models/product.dart';
 import '../../services/receipt_observation_store.dart';
 import '../../services/receipt_alias_store.dart';
+import 'receipt_auto_product.dart';
 import 'receipt_file_text_reader.dart';
 import 'receipt_import.dart';
 import 'receipt_ledger.dart';
@@ -187,7 +188,65 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
     ].join('\n');
   }
 
+  Future<void> _ensureAutomaticReceiptProducts() async {
+    final createProduct = widget.onCreateProduct;
+    if (createProduct == null) return;
+
+    for (final entry in receiptDrafts) {
+      final draft = entry.draft;
+      if (!draft.balances) continue;
+
+      final review = reviewReceiptPrices(draft, availableProducts);
+      final matchedLines = review.suggestions
+          .map((suggestion) => suggestion.row.line)
+          .toSet();
+
+      for (final row in draft.rows.where(
+        (row) => row.kind == ReceiptRowKind.item,
+      )) {
+        final key = _rowKey(draft, row);
+        if (matchedLines.contains(row.line) ||
+            assignedProducts.containsKey(key)) {
+          continue;
+        }
+
+        final existing = findExistingReceiptProduct(
+          row.label,
+          availableProducts,
+        );
+        if (existing != null) {
+          assignedProducts[key] = existing.id;
+          continue;
+        }
+
+        final product = buildAutomaticReceiptProduct(
+          row: row,
+          id: 'receipt_auto_${DateTime.now().microsecondsSinceEpoch}_${row.line}',
+        );
+        availableProducts = await createProduct(product);
+        assignedProducts[key] = product.id;
+      }
+    }
+  }
+
   Future<void> save() async {
+    setState(() {
+      saving = true;
+      errorMessage = null;
+    });
+    try {
+      await _ensureAutomaticReceiptProducts();
+    } catch (error) {
+      if (mounted) {
+        setState(() {
+          saving = false;
+          errorMessage = 'Erkannte Produkte konnten nicht angelegt werden: $error';
+        });
+      }
+      return;
+    }
+    if (!mounted) return;
+
     final prices = <MarketPrice>[];
     final unmatched = <String>[];
     for (final entry in receiptDrafts) {
@@ -235,7 +294,6 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
       prices.addAll(manual.prices);
       unmatched.addAll(manual.unmatchedLines);
     }
-    setState(() => saving = true);
     try {
       var savedObservations = 0;
       for (final entry in receiptDrafts) {
@@ -480,8 +538,8 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                     );
                   }),
                 const Text(
-                  'Alle erkannten Produktpositionen werden als Bonbeobachtungen für die lernende Preisdatenbank gespeichert. '
-                  'Nur eindeutig zugeordnete Einzelpreise werden bereits als direkte Katalogpreise verwendet. '
+                  'Alle erkannten Produktpositionen werden automatisch in den Produktkatalog aufgenommen und als Bonbeobachtungen gespeichert. '
+                  'Unklare Varianten bleiben zunächst unter ihrer Bonbezeichnung offen und können später präzisiert werden. '
                   'Pfand und reine Rabattzeilen werden nicht als Produkte angelegt.',
                   style: TextStyle(fontSize: 12),
                 ),
