@@ -55,7 +55,10 @@ ReceiptDraft parseReceiptLedger(String text) {
   final amount = RegExp(r'(-?\d+[,.]\d{2})(?:\*?\s*[AB])?\s*$');
   final total = RegExp(r'^\s*(?:Summe|SUMME\s*\[\d+\])\s+(\d+[,.]\d{2})\s*$');
   final quantityBefore = RegExp(r'^\s*(\d+)\s*x\s*(\d+[,.]\d{2})\s*$');
-  final quantityInline = RegExp(r'(\d+)\s*\*\s*(\d+[,.]\d{2})\s*
+  final quantityInline = RegExp(r'(\d+)\s*\*\s*(\d+[,.]\d{2})\s*$');
+  final weightUnit = RegExp(
+      r'^(\d+[,.]\d+)\s*kg\s*x\s*(\d+[,.]\d{2})\s*EUR/kg$',
+      caseSensitive: false);
   int? printedTotal;
   bool inItems = false;
   int? pendingQuantity;
