@@ -5,6 +5,8 @@ import 'package:sparzamapp/models/product.dart';
 
 void main() {
   const products = [
+    Product(id: 'bananen', name: 'Bananen',
+        unit: '1 kg', group: 'obst'),
     Product(id: 'weintrauben', name: 'Weintrauben',
         unit: '500 g', group: 'obst'),
     Product(id: 'milch_35', name: 'Vollmilch 3,5 %',
@@ -74,6 +76,34 @@ Summe 1,93
 Datum 23.07.24
 ''');
     expect(reviewReceiptPrices(broken, products).suggestions, isEmpty);
+  });
+
+  test('Netto kilogram price after item gives exact banana unit price', () {
+    final draft = parseReceiptLedger('''
+Netto
+EUR
+Bananen Lose MT 0,46 B
+0,464 kg x 1,00 EUR/kg
+SUMME [1] 0,46
+Datum 14.07.24
+''');
+    expect(draft.balances, isTrue);
+    final suggestion = reviewReceiptPrices(draft, products).suggestions.single;
+    expect(suggestion.price.productId, 'bananen');
+    expect(suggestion.price.price, 1);
+    expect(suggestion.row.quantity, 0.464);
+  });
+
+  test('weight without a printed unit price remains unmatched', () {
+    final draft = parseReceiptLedger('''
+Kaufland
+Preis EUR
+Bananen kg 0,498 kg 0,64 B
+Summe 0,64
+Datum 14.07.24
+''');
+    expect(draft.balances, isTrue);
+    expect(reviewReceiptPrices(draft, products).suggestions, isEmpty);
   });
 
   test('conflicting prices for one catalog product remain unassigned', () {
