@@ -12,6 +12,7 @@ import 'receipt_ledger.dart';
 import 'receipt_milk_assignment.dart';
 import 'receipt_observation_builder.dart';
 import 'receipt_price_review.dart';
+import 'receipt_product_picker.dart';
 
 class ReceiptImportDialog extends StatefulWidget {
   const ReceiptImportDialog({
@@ -34,7 +35,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
   final receiptDrafts = <({String name, ReceiptDraft draft})>[];
   int duplicateReceipts = 0;
   final selectedReceiptPrices = <String>{};
-  final assignedMilkVariants = <String, String>{};
+  final assignedProducts = <String, String>{};
   DateTime? receiptDate;
   String? errorMessage;
   bool importing = false;
@@ -135,7 +136,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
             );
             if (learnedId != null &&
                 widget.products.any((product) => product.id == learnedId)) {
-              assignedMilkVariants[_rowKey(draft, row)] = learnedId;
+              assignedProducts[_rowKey(draft, row)] = learnedId;
             }
           }
         }
@@ -191,19 +192,21 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
         }
       }
       for (final row in draft.rows) {
-        final id = assignedMilkVariants[_rowKey(draft, row)];
+        final id = assignedProducts[_rowKey(draft, row)];
         if (id == null) continue;
         final products = widget.products.where((product) => product.id == id);
-        final price = products.length == 1
-            ? assignedKauflandMilkPrice(
-                draft: draft, row: row, product: products.single)
-            : null;
-        if (price == null || !usedProducts.add(id)) {
-          setState(() => errorMessage =
-              'Bitte jede Milchsorte je Bon nur einer eindeutigen, rabattfreien Zeile zuordnen.');
-          return;
+        if (products.length != 1) continue;
+
+        // A manual assignment always teaches identity. It becomes a direct
+        // catalog price only where quantity/package semantics are already safe.
+        final price = assignedKauflandMilkPrice(
+          draft: draft,
+          row: row,
+          product: products.single,
+        );
+        if (price != null && usedProducts.add(id)) {
+          prices.add(price);
         }
-        prices.add(price);
       }
     }
     if (linesController.text.trim().isNotEmpty) {
@@ -230,7 +233,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
         final review = reviewReceiptPrices(draft, widget.products);
         final assigned = <int, String>{};
         for (final row in draft.rows) {
-          final productId = assignedMilkVariants[_rowKey(draft, row)];
+          final productId = assignedProducts[_rowKey(draft, row)];
           if (productId != null) assigned[row.line] = productId;
         }
         for (final row in draft.rows) {
@@ -403,41 +406,38 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                             ? 'Bonposition'
                                             : '${row.quantity} ${row.quantityUnit} × '
                                               '${((row.unitCents ?? row.cents) / 100).toStringAsFixed(2).replaceAll('.', ',')} €'),
-                                        if (assignedMilkVariants.containsKey(_rowKey(draft, row)))
+                                        if (assignedProducts.containsKey(_rowKey(draft, row)))
                                           Text(
-                                            'Gelernte Zuordnung: ${widget.products.where((p) => p.id == assignedMilkVariants[_rowKey(draft, row)]).first.name} · bitte prüfen',
+                                            'Zuordnung: ${widget.products.where((p) => p.id == assignedProducts[_rowKey(draft, row)]).first.name} · wird gelernt',
                                             style: const TextStyle(fontWeight: FontWeight.w600),
                                           ),
-                                        if (canAssignKauflandMilk(draft, row))
-                                          DropdownButton<String>(
-                                            isExpanded: true,
-                                            value: assignedMilkVariants[
-                                                _rowKey(draft, row)],
-                                            hint: const Text('Milchsorte prüfen'),
-                                            items: [
-                                              const DropdownMenuItem<String>(
-                                                value: null,
-                                                child: Text('Offen lassen'),
-                                              ),
-                                              for (final product in widget.products.where(
-                                                  (p) => p.id == 'milch_15' ||
-                                                      p.id == 'milch_35'))
-                                                DropdownMenuItem<String>(
-                                                  value: product.id,
-                                                  child: Text(product.name),
-                                                ),
-                                            ],
-                                            onChanged: saving ? null : (value) {
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: TextButton.icon(
+                                            icon: const Icon(Icons.link),
+                                            label: Text(
+                                              assignedProducts.containsKey(_rowKey(draft, row))
+                                                  ? 'Zuordnung ändern'
+                                                  : 'Produkt zuordnen',
+                                            ),
+                                            onPressed: saving ? null : () async {
+                                              final key = _rowKey(draft, row);
+                                              final value = await showReceiptProductPicker(
+                                                context: context,
+                                                products: widget.products,
+                                                selectedProductId: assignedProducts[key],
+                                              );
+                                              if (!mounted || value == null) return;
                                               setState(() {
-                                                final key = _rowKey(draft, row);
-                                                if (value == null) {
-                                                  assignedMilkVariants.remove(key);
+                                                if (value.isEmpty) {
+                                                  assignedProducts.remove(key);
                                                 } else {
-                                                  assignedMilkVariants[key] = value;
+                                                  assignedProducts[key] = value;
                                                 }
                                               });
                                             },
                                           ),
+                                        ),
                                       ],
                                     )
                                   ),
