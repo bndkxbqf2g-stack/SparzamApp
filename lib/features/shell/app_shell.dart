@@ -222,6 +222,7 @@ class _AppShellState extends State<AppShell> {
       marketPricesFromObservations(
         historicalPriceObservations,
         products: catalogProducts,
+        settings: priceDataSettings,
       );
 
   List<MarketPrice> get receiptFamilyPrices => receiptFamilyMarketPrices(
