@@ -149,7 +149,9 @@ class _OffersScreenState extends State<OffersScreen> {
             onQueryChanged: (value) => setState(() => query = value),
             onFilterChanged: (value) => setState(() => filter = value),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 18),
+          const OfficialOfferLinks(),
+          const SizedBox(height: 26),
           Text('${visible.length} gespeicherte Angebote',
               style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 6),
@@ -168,8 +170,7 @@ class _OffersScreenState extends State<OffersScreen> {
               ),
               if (index < visible.length - 1) const SizedBox(height: 10),
             ],
-          const SizedBox(height: 28),
-          const OfficialOfferLinks(),
+
         ],
       ),
     );
