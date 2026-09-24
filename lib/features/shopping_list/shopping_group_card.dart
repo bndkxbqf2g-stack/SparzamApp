@@ -4,7 +4,9 @@ import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/offer.dart';
 import '../../models/product.dart';
+import '../../models/receipt_price_stat.dart';
 import 'shopping_price_badge.dart';
+import 'receipt_family_price_hint.dart';
 
 class ShoppingGroupCard extends StatelessWidget {
   const ShoppingGroupCard({
@@ -16,6 +18,7 @@ class ShoppingGroupCard extends StatelessWidget {
     required this.enabledStoreNames,
     required this.marketPrices,
     required this.priceObservations,
+    this.receiptPriceStats = const <ReceiptPriceStat>[],
     required this.onToggle,
     required this.onChangeQuantity,
     required this.onEditDetails,
@@ -30,6 +33,7 @@ class ShoppingGroupCard extends StatelessWidget {
   final List<String> enabledStoreNames;
   final List<MarketPrice> marketPrices;
   final List<MarketPrice> priceObservations;
+  final List<ReceiptPriceStat> receiptPriceStats;
   final ValueChanged<Product> onToggle;
   final void Function(String productId, int delta) onChangeQuantity;
   final ValueChanged<ListItem> onEditDetails;
@@ -64,6 +68,7 @@ class ShoppingGroupCard extends StatelessWidget {
                       item: item,
                       offers: offers,
                       priceObservations: priceObservations,
+                      receiptPriceStats: receiptPriceStats,
                       enabledStoreNames: enabledStoreNames,
                       onOpenOffer: onOpenOffer,
                       checked: checkedProductIds.contains(item.product.id),
@@ -89,6 +94,7 @@ class ShoppingGroupCard extends StatelessWidget {
                     enabledStoreNames: enabledStoreNames,
                     marketPrices: marketPrices,
                     priceObservations: priceObservations,
+                    receiptPriceStats: receiptPriceStats,
                     onToggle: onToggle,
                     onChangeQuantity: onChangeQuantity,
                     onEditDetails: onEditDetails,
@@ -110,7 +116,8 @@ class _ShoppingItemCard extends StatelessWidget {
     required this.checked,
     required this.offers,
     required this.priceObservations,
-    required this.enabledStoreNames,
+    required this.receiptPriceStats,
+    required this.enabledStoreNames:
     required this.onOpenOffer,
     required this.onToggle,
     required this.onChangeQuantity,
@@ -121,6 +128,7 @@ class _ShoppingItemCard extends StatelessWidget {
   final bool checked;
   final List<Offer> offers;
   final List<MarketPrice> priceObservations;
+  final List<ReceiptPriceStat> receiptPriceStats;
   final List<String> enabledStoreNames;
   final ValueChanged<Offer> onOpenOffer;
   final ValueChanged<Product> onToggle;
@@ -166,6 +174,7 @@ class _ShoppingItemCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
+                ReceiptFamilyPriceHint(product: item.product, stats: receiptPriceStats),
                 ShoppingPriceBadge(
                   item: item,
                   prices: priceObservations,
@@ -209,7 +218,8 @@ class _ShoppingItemTile extends StatelessWidget {
     required this.enabledStoreNames,
     required this.marketPrices,
     required this.priceObservations,
-    required this.onToggle,
+    required this.receiptPriceStats,
+    required this.onToggle:
     required this.onChangeQuantity,
     required this.onEditDetails,
     required this.onOpenOffer,
@@ -221,6 +231,7 @@ class _ShoppingItemTile extends StatelessWidget {
   final List<String> enabledStoreNames;
   final List<MarketPrice> marketPrices;
   final List<MarketPrice> priceObservations;
+  final List<ReceiptPriceStat> receiptPriceStats;
   final ValueChanged<Product> onToggle;
   final void Function(String productId, int delta) onChangeQuantity;
   final ValueChanged<ListItem> onEditDetails;
@@ -270,6 +281,7 @@ class _ShoppingItemTile extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(color: Colors.blueGrey.shade700),
             ),
+          ReceiptFamilyPriceHint(product: item.product, stats: receiptPriceStats),
           ShoppingPriceBadge(
             item: item,
             prices: priceObservations,
