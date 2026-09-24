@@ -39,7 +39,7 @@ class OfficialOfferLinks extends StatelessWidget {
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Weitere aktuelle Angebote',
+          Text('Aktuelle Angebote bei 7 Märkten',
               style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 4),
           const Text(
@@ -47,18 +47,21 @@ class OfficialOfferLinks extends StatelessWidget {
             'hängen vom gewählten Markt ab.',
           ),
           const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (final source in _sources)
-                ActionChip(
-                  avatar: const Icon(Icons.open_in_new,
-                      size: 16, color: SparzamTheme.deepGreen),
-                  label: Text(source.$1),
-                  onPressed: () => _open(context, source.$2),
-                ),
-            ],
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (final source in _sources) ...[
+                  ActionChip(
+                    avatar: const Icon(Icons.open_in_new,
+                        size: 16, color: SparzamTheme.deepGreen),
+                    label: Text(source.$1),
+                    onPressed: () => _open(context, source.$2),
+                  ),
+                  const SizedBox(width: 8),
+                ],
+              ],
+            ),
           ),
         ],
       );
