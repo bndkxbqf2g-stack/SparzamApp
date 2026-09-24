@@ -1,6 +1,7 @@
 import '../../models/product.dart';
 import '../../models/receipt_price_stat.dart';
 import '../receipt/receipt_observation_builder.dart';
+import '../catalog/product_family.dart';
 
 /// Finds receipt statistics for a shopping-list product without pretending
 /// that a broader family observation is an exact variant match.
@@ -14,6 +15,8 @@ List<ReceiptPriceStat> receiptStatsForProduct(
 ) {
   final exact = stats.where((stat) => stat.productId == product.id).toList();
   if (exact.isNotEmpty) return exact;
+
+  if (!isGenericFamilyRequest(product.name)) return const <ReceiptPriceStat>[];
 
   final family = inferReceiptFamily(product.name);
   return stats
