@@ -36,6 +36,11 @@ void main() {
       );
 
   Future<void> choose(WidgetTester tester, String action) async {
+    await tester.scrollUntilVisible(
+      find.byTooltip('Angebotsoptionen'),
+      150,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.byTooltip('Angebotsoptionen'));
     await tester.pumpAndSettle();
     await tester.tap(find.text(action).last);
