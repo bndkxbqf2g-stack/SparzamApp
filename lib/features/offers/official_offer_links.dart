@@ -47,22 +47,18 @@ class OfficialOfferLinks extends StatelessWidget {
             'hängen vom gewählten Markt ab.',
           ),
           const SizedBox(height: 12),
-          Card(
-            clipBehavior: Clip.antiAlias,
-            child: Column(
-              children: [
-                for (var i = 0; i < _sources.length; i++) ...[
-                  ListTile(
-                    leading: const Icon(Icons.storefront_outlined,
-                        color: SparzamTheme.deepGreen),
-                    title: Text(_sources[i].$1),
-                    trailing: const Icon(Icons.open_in_new, size: 19),
-                    onTap: () => _open(context, _sources[i].$2),
-                  ),
-                  if (i < _sources.length - 1) const Divider(height: 1),
-                ],
-              ],
-            ),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final source in _sources)
+                ActionChip(
+                  avatar: const Icon(Icons.open_in_new,
+                      size: 16, color: SparzamTheme.deepGreen),
+                  label: Text(source.$1),
+                  onPressed: () => _open(context, source.$2),
+                ),
+            ],
           ),
         ],
       );
