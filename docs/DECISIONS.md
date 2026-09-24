@@ -113,3 +113,10 @@ Open Prices ist bereits lesend angebunden. Weitere Datensätze/Händlerquellen b
 
 ## D029 – Exakte Beobachtungshistorie ist Eingang der Routenprojektion
 Die aktuelle `MarketPriceStore`-Projektion darf die für die Routenwahl sichtbare Historie nicht begrenzen. Gespeicherte `PriceObservation`-Einträge mit konkreter Produkt-ID und voller Identitäts-Confidence werden für unterstützte Quellen (manuell, Bon, Open Prices) zusätzlich in die bestehende Marktpreis-Planungsschnittstelle projiziert. Dadurch kann D027 tatsächlich zwischen mehreren historischen Beobachtungen derselben Produkt-/Markt-Kombination wählen. Familien-only-Beobachtungen oder unsichere Identitäten werden nicht als exakte Produktpreise hochgestuft. Diese Rückprojektion ist eine Übergangsschnittstelle, bis Route und UI das gemeinsame Beobachtungsmodell direkt konsumieren.
+
+
+## D030 – Bon- und Angebotsdaten werden Evidenz, nicht Ersatz ihrer Fachmodelle
+Bonzeilen und Angebote werden zusätzlich in die gemeinsame `PriceObservation`-Historie adaptiert, während ihre bestehenden Fachmodelle vorerst erhalten bleiben. Bonzeilen ohne exakte Produktzuordnung bleiben Familienbeobachtungen; nur eine konkrete bestätigte Produkt-ID erhält volle Identitäts-Confidence. Angebote tragen ihre zeitliche Gültigkeit in der Beobachtung, und abgelaufene Angebote dürfen nicht als aktueller exakter Routenpreis verwendet werden.
+
+## D031 – Vergleichbarkeit kommt vor Preisranking
+Vor D025/D027 muss feststehen, dass zwei Preisbeobachtungen fachlich vergleichbar sind. Unterschiedliche Packungsgrößen dürfen nicht anhand des absoluten Packungspreises gegeneinander gewinnen, wenn keine sichere gemeinsame Mengenbasis vorliegt. Einheit und Menge müssen normalisierbar sein; Varianten bleiben getrennt, wenn die Einkaufsliste oder Produktidentität sie unterscheidet. Ein Grundpreis kann den Vergleich unterstützen, ersetzt aber keine sichere Produkt-/Variantenidentität. Das nächste Arbeitspaket implementiert diese Regel zentral statt quellenbezogener Sonderfälle.
