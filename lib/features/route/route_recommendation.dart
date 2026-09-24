@@ -17,6 +17,17 @@ RouteRecommendationInfo buildRouteRecommendationInfo({
   required RoutePlan? singleStore,
   required MobilitySettings mobility,
 }) {
+  if (recommended.hasDataGaps) {
+    final percent = (recommended.priceCoverage * 100).round();
+    return RouteRecommendationInfo(
+      title: 'Noch keine belastbare Gesamtempfehlung',
+      detail:
+          'Für $percent % der Liste liegen belastbare Preise vor. '
+          'Die aktuelle Route vergleicht deshalb nur den preislich belegten Teil '
+          'und ist noch keine Empfehlung für den vollständigen Einkauf.',
+    );
+  }
+
   if (recommended.stores.length > 1 && singleStore != null) {
     final savings = singleStore.planningScore - recommended.planningScore;
     return RouteRecommendationInfo(
