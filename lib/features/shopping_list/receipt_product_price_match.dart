@@ -6,7 +6,8 @@ import '../receipt/receipt_observation_builder.dart';
 /// that a broader family observation is an exact variant match.
 ///
 /// Exact product history wins. Otherwise an unassigned family observation may
-/// be used as a conservative historical hint for the same family.
+/// be used as a conservative historical hint for the same family, including
+/// older observations already linked to a different concrete catalog identity.
 List<ReceiptPriceStat> receiptStatsForProduct(
   Product product,
   Iterable<ReceiptPriceStat> stats,
@@ -16,7 +17,7 @@ List<ReceiptPriceStat> receiptStatsForProduct(
 
   final family = inferReceiptFamily(product.name);
   return stats
-      .where((stat) => stat.productId == null && stat.familyKey == family)
+      .where((stat) => stat.familyKey == family)
       .toList();
 }
 
