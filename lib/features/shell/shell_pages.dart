@@ -67,6 +67,7 @@ List<Widget> buildShellPages({
   required VoidCallback onEditPriceData,
   required String priceDataSummary,
   required Future<List<MarketPrice>> Function(MarketPrice price) onSavePrice,
+  required Future<List<Product>> Function(Product product) onSaveProduct,
   required Future<List<Offer>> Function(Offer offer) onSaveOffer,
   required Future<List<Offer>> Function(Offer offer) onDeleteOffer,
   required VoidCallback onOpenDiagnostics,
@@ -107,6 +108,7 @@ List<Widget> buildShellPages({
             await onSavePrice(price);
           }
         },
+        onCreateProduct: onSaveProduct,
         replenishmentSuggestions: replenishmentSuggestions,
       ),
       OffersScreen(
@@ -146,6 +148,7 @@ List<Widget> buildShellPages({
               await onSavePrice(price);
             }
           },
+          onCreateProduct: onSaveProduct,
         ),
         profilePage: ProfileScreen(
           mobility: mobility,
