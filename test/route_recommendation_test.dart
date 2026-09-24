@@ -59,6 +59,28 @@ void main() {
     expect(info.title, 'Mehrere Märkte lohnen sich');
     expect(info.detail, contains('2.00 €'));
   });
+  test('incomplete route does not claim a complete recommendation', () {
+    const product = Product(id: 'missing', name: 'Schmand', unit: 'Stück', group: 'molkerei');
+    final incomplete = RoutePlan(
+      stores: const [a],
+      assignments: const {},
+      basket: 0.95,
+      travel: 3.90,
+      total: 4.85,
+      unassigned: [ListItem(product: product)],
+    );
+
+    final info = buildRouteRecommendationInfo(
+      recommended: incomplete,
+      cheapest: incomplete,
+      singleStore: incomplete,
+      mobility: const MobilitySettings(),
+    );
+
+    expect(info.title, 'Noch keine belastbare Gesamtempfehlung');
+    expect(info.detail, contains('vollständigen Einkauf'));
+  });
+
   test('route plan exposes incomplete price coverage as data gap', () {
     const product = Product(
       id: 'unknown',
