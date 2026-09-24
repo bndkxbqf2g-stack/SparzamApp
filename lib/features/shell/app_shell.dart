@@ -795,18 +795,24 @@ class _AppShellState extends State<AppShell> {
   void openRoute() {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => Scaffold(
-          appBar: AppBar(title: const Text('Einkaufsroute')),
-          body: SafeArea(
-            child: RouteScreen(
-              items: shoppingList,
-              offers: offers,
-              mobility: mobility,
-              marketPrices: planningMarketPrices,
-              onRoadDistancesChanged: (value) =>
-                  setState(() => roadDistances = value),
-              onRoadMatrixChanged: (value) =>
-                  setState(() => roadMatrix = value),
+        builder: (_) => StatefulBuilder(
+          builder: (routeContext, refreshRoute) => Scaffold(
+            appBar: AppBar(title: const Text('Einkaufsroute')),
+            body: SafeArea(
+              child: RouteScreen(
+                items: shoppingList,
+                offers: offers,
+                mobility: mobility,
+                marketPrices: planningMarketPrices,
+                onRoadDistancesChanged: (value) {
+                  setState(() => roadDistances = value);
+                  refreshRoute(() {});
+                },
+                onRoadMatrixChanged: (value) {
+                  setState(() => roadMatrix = value);
+                  refreshRoute(() {});
+                },
+              ),
             ),
           ),
         ),
