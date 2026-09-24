@@ -10,7 +10,7 @@ import 'receipt_auto_product.dart';
 import 'receipt_file_text_reader.dart';
 import 'receipt_import.dart';
 import 'receipt_ledger.dart';
-import 'receipt_milk_assignment.dart';
+import 'receipt_assigned_price.dart';
 import 'receipt_observation_builder.dart';
 import 'receipt_price_review.dart';
 import 'receipt_product_picker.dart';
@@ -271,7 +271,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
 
         // A manual assignment always teaches identity. It becomes a direct
         // catalog price only where quantity/package semantics are already safe.
-        final price = assignedKauflandMilkPrice(
+        final price = assignedReceiptPrice(
           draft: draft,
           row: row,
           product: products.single,
