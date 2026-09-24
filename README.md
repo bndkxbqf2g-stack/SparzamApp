@@ -393,3 +393,5 @@ Die ausführbare manuelle Checkliste liegt in `docs/RELEASE_ACCEPTANCE.md`. Auto
 
 
 Historische Bonbeobachtungen werden bei jeder Statistikberechnung erneut anhand ihrer originalen Bonbezeichnung einer Produktfamilie zugeordnet. Verbesserte Erkennungsregeln gelten dadurch automatisch auch für bereits gespeicherte Bons und für alle Produkte.
+
+- Tatsächlich gekaufte rabattierte Bonpositionen bleiben als historische Preisbeobachtungen sichtbar. Der Rabattstatus bleibt erhalten, damit ein rabattierter Kaufpreis nicht mit einem dauerhaften Normalpreis verwechselt werden muss.
