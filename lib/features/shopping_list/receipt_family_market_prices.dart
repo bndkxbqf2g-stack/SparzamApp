@@ -69,8 +69,11 @@ double? _comparablePrice(ListItem item, ReceiptObservation observation) {
   final packageAmount = item.product.packageAmount;
   final packageUnit = item.product.packageUnit;
   if (packageAmount == null || packageUnit == null) {
-    // A generic request has no safe package basis. Keep historical family
-    // evidence out of route totals instead of comparing arbitrary pack prices.
+    // A receipt row without package metadata represents one observed retail
+    // unit and can safely price a generic piece-based shopping request.
+    if (observation.quantity == null && observation.quantityUnit.isEmpty) {
+      return observation.totalPrice;
+    }
     return null;
   }
   final receiptAmount = observation.quantity?.toDouble();
