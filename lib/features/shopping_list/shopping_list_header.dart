@@ -93,6 +93,7 @@ class ShoppingListHeader extends StatelessWidget {
               Expanded(
                 child: Text(
                   'Einkaufsliste',
+                  textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.w800,
                       ),
@@ -122,6 +123,7 @@ class ShoppingListHeader extends StatelessWidget {
               ],
             ],
           ),
+          const Center(child: Text('Gemeinsam. Besser. Günstiger.')),
           if (lists.isNotEmpty) ...[
             const SizedBox(height: 8),
             Row(
