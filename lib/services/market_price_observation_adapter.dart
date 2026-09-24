@@ -44,6 +44,7 @@ List<MarketPrice> marketPricesFromObservations(
         .where((entry) =>
             entry.productId?.isNotEmpty == true &&
             entry.identityConfidence >= 1 &&
+            (entry.validUntil == null || !entry.validUntil!.isBefore(DateTime.now())) &&
             (entry.source == PriceObservationSource.manual ||
                 entry.source == PriceObservationSource.receipt ||
                 entry.source == PriceObservationSource.openPrices))
