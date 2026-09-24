@@ -40,6 +40,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
   int duplicateReceipts = 0;
   final selectedReceiptPrices = <String>{};
   final assignedProducts = <String, String>{};
+  final automaticProductAssignments = <String>{};
   late List<Product> availableProducts;
   DateTime? receiptDate;
   String? errorMessage;
@@ -216,6 +217,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
         );
         if (existing != null) {
           assignedProducts[key] = existing.id;
+          automaticProductAssignments.add(key);
           continue;
         }
 
@@ -225,6 +227,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
         );
         availableProducts = await createProduct(product);
         assignedProducts[key] = product.id;
+        automaticProductAssignments.add(key);
       }
     }
   }
@@ -306,7 +309,9 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
         }
         for (final row in draft.rows) {
           final productId = assigned[row.line];
-          if (productId != null && draft.retailer != null) {
+          if (productId != null &&
+              draft.retailer != null &&
+              !automaticProductAssignments.contains(_rowKey(draft, row))) {
             await aliasStore.confirm(
               storeName: draft.retailer!,
               rawLabel: row.label,
