@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/route/route_recommendation.dart';
 import 'package:sparzamapp/models/mobility_settings.dart';
+import 'package:sparzamapp/models/list_item.dart';
+import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/route_plan.dart';
 import 'package:sparzamapp/models/store.dart';
 
@@ -57,4 +59,28 @@ void main() {
     expect(info.title, 'Mehrere Märkte lohnen sich');
     expect(info.detail, contains('2.00 €'));
   });
+  test('route plan exposes incomplete price coverage as data gap', () {
+    const product = Product(
+      id: 'unknown',
+      name: 'Bergkäse',
+      unit: 'Stück',
+      group: 'kaese',
+    );
+    const missing = ListItem(product: product, quantity: 1);
+
+    final incomplete = RoutePlan(
+      stores: const [a],
+      assignments: const {},
+      basket: 0,
+      travel: 0,
+      total: 0,
+      unassigned: const [missing],
+    );
+
+    expect(incomplete.hasDataGaps, isTrue);
+    expect(incomplete.missingItemCount, 1);
+    expect(incomplete.pricedItemCount, 0);
+    expect(incomplete.priceCoverage, 0);
+  });
+
 }
