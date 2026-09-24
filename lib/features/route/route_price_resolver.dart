@@ -12,6 +12,7 @@ class RoutePriceQuote {
     required this.regularTotal,
     this.offer,
     this.isEstimated = false,
+    this.observation,
   });
 
   final double unitPrice;
@@ -21,6 +22,8 @@ class RoutePriceQuote {
   /// True when no observed/store price was available and a category estimate
   /// was used. Estimates are deliberately exposed to the UI.
   final bool isEstimated;
+  /// Source of the selected market-specific price, if available.
+  final MarketPrice? observation;
 
   bool get usesOffer => offer != null;
   double get savings => regularTotal - total;
@@ -31,9 +34,7 @@ class RoutePriceResolver {
     this.offers, {
     this.now,
     List<MarketPrice> marketPrices = const <MarketPrice>[],
-  }) : marketPrices = {
-          for (final price in marketPrices) price.key: price.price,
-        },
+  }) : marketPrices = _preferredPrices(marketPrices),
         observedProductPrices = {
           for (final price in marketPrices)
             price.productId: [
@@ -45,14 +46,15 @@ class RoutePriceResolver {
 
   final List<Offer> offers;
   final DateTime? now;
-  final Map<String, double> marketPrices;
+  final Map<String, MarketPrice> marketPrices;
   final Map<String, List<double>> observedProductPrices;
 
   RoutePriceQuote? quote(Store store, ListItem item) {
     final offer = _bestOffer(store, item.product, item.quantity);
     final customPrice = marketPrices['${store.name}|${item.product.id}'];
-    final observed =
-        customPrice ?? store.prices[item.product.id] ?? offer?.originalPrice;
+    final observed = customPrice?.price ??
+        store.prices[item.product.id] ??
+        offer?.originalPrice;
     final regular = observed ?? _estimate(item.product);
     final isEstimated = observed == null;
     if (offer == null) {
@@ -61,6 +63,7 @@ class RoutePriceResolver {
         total: regular * item.quantity,
         regularTotal: regular * item.quantity,
         isEstimated: isEstimated,
+        observation: customPrice,
       );
     }
 
@@ -75,6 +78,7 @@ class RoutePriceResolver {
         total: regularTotal,
         regularTotal: regularTotal,
         isEstimated: isEstimated,
+        observation: customPrice,
       );
     }
 
@@ -84,6 +88,7 @@ class RoutePriceResolver {
       regularTotal: regularTotal,
       offer: offer,
       isEstimated: isEstimated,
+      observation: customPrice,
     );
   }
 
@@ -110,7 +115,7 @@ class RoutePriceResolver {
     final today = now ?? DateTime.now();
     final matches = offers.where(
       (offer) =>
-          _matchesProduct(offer, product) &&
+          offer.productId == product.id &&
           offer.storeName == store.name &&
           !offer.validUntil.isBefore(DateTime(today.year, today.month, today.day)),
     );
@@ -128,19 +133,26 @@ class RoutePriceResolver {
     return best;
   }
 
-  bool _matchesProduct(Offer offer, Product product) {
-    if (offer.productId == product.id) return true;
-    final productWords = _words('${product.name} ${product.aliases.join(' ')}');
-    final offerWords = _words(offer.productId);
-    return productWords.any(offerWords.contains);
+  static Map<String, MarketPrice> _preferredPrices(List<MarketPrice> input) {
+    final selected = <String, MarketPrice>{};
+    for (final price in input) {
+      if (!price.price.isFinite || price.price <= 0) continue;
+      final previous = selected[price.key];
+      if (previous == null ||
+          _priority(price.source) > _priority(previous.source) ||
+          (_priority(price.source) == _priority(previous.source) &&
+              price.updatedAt.isAfter(previous.updatedAt))) {
+        selected[price.key] = price;
+      }
+    }
+    return selected;
   }
 
-  Set<String> _words(String value) => value
-      .toLowerCase()
-      .replaceAll(RegExp(r'[^a-z0-9äöüß ]'), ' ')
-      .split(RegExp(r'\s+|_'))
-      .where((word) => word.length >= 4)
-      .toSet();
+  static int _priority(MarketPriceSource source) => switch (source) {
+        MarketPriceSource.manual => 3,
+        MarketPriceSource.receipt => 2,
+        MarketPriceSource.openPrices => 1,
+      };
 
   int _paidUnits(int quantity, Offer offer) {
     final buy = offer.buyQuantity;

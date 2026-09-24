@@ -121,4 +121,48 @@ void main() {
     expect(quote!.unitPrice, 1.4);
     expect(quote.isEstimated, isTrue);
   });
+
+  test('manual observation wins over receipt fallback regardless of order', () {
+    final manual = MarketPrice(
+      productId: 'test', storeName: 'Markt', price: 0.89,
+      updatedAt: DateTime(2026, 9, 20),
+    );
+    final receipt = MarketPrice(
+      productId: 'test', storeName: 'Markt', price: 0.79,
+      updatedAt: DateTime(2026, 9, 23),
+      source: MarketPriceSource.receipt,
+    );
+    for (final order in [[manual, receipt], [receipt, manual]]) {
+      final quote = RoutePriceResolver(const [], marketPrices: order)
+          .quote(store, ListItem(product: product));
+      expect(quote!.total, 0.89);
+      expect(quote.observation?.source, MarketPriceSource.manual);
+    }
+  });
+
+  test('latest receipt wins among observations of the same source', () {
+    final quote = RoutePriceResolver(const [], marketPrices: [
+      MarketPrice(productId: 'test', storeName: 'Markt', price: 0.79,
+          updatedAt: DateTime(2026, 9, 1), source: MarketPriceSource.receipt),
+      MarketPrice(productId: 'test', storeName: 'Markt', price: 0.89,
+          updatedAt: DateTime(2026, 9, 20), source: MarketPriceSource.receipt),
+    ]).quote(store, ListItem(product: product));
+    expect(quote!.total, 0.89);
+    expect(quote.observation?.updatedAt, DateTime(2026, 9, 20));
+  });
+
+  test('offer never transfers to a different product with a similar id', () {
+    const other = Product(id: 'milch_15', name: 'Milch 1,5 %',
+        unit: '1 l', group: 'milch');
+    const market = Store(name: 'Markt', location: 'Ort', distanceKm: 1,
+        prices: {'milch_15': 1.25});
+    final quote = RoutePriceResolver([
+      Offer(id: 'milk-offer', productId: 'milch_35', storeName: 'Markt',
+          originalPrice: 1.29, offerPrice: 0.69,
+          validUntil: DateTime(2026, 9, 30)),
+    ], now: DateTime(2026, 9, 24))
+        .quote(market, ListItem(product: other));
+    expect(quote!.total, 1.25);
+    expect(quote.usesOffer, isFalse);
+  });
 }

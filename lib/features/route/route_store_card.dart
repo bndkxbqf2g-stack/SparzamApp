@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/list_item.dart';
+import '../../models/market_price.dart';
 import '../../models/store.dart';
 import 'route_price_resolver.dart';
 
@@ -57,12 +58,22 @@ class _RouteItemTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final quote = prices.quote(store, item)!;
+    final observation = quote.observation;
+    final age = observation == null
+        ? null
+        : DateTime.now().difference(observation.updatedAt).inDays;
+    final provenance = observation == null
+        ? ''
+        : observation.source == MarketPriceSource.receipt
+            ? ' · Bonpreis${age != null && age > 30 ? ' (historisch)' : ''}'
+            : ' · ${observation.sourceLabel}';
     return ListTile(
       dense: true,
       title: Text(item.product.name),
       subtitle: Text(
         '${item.product.unit}${item.quantity > 1 ? ' · ×${item.quantity}' : ''}'
         '${quote.usesOffer ? ' · Angebot eingerechnet' : ''}'
+        '$provenance'
         '${quote.isEstimated ? ' · geschätzt' : ''}',
       ),
       trailing: Column(
