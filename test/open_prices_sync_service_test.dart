@@ -180,7 +180,7 @@ void main() {
     var priceFetches = 0;
     final service = OpenPricesSyncService(
       discoverer: (_) async => null,
-      fetcher: (_, __) async {
+      fetcher: (_, _) async {
         priceFetches++;
         return const [];
       },
