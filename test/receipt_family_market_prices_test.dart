@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sparzamapp/features/receipt/receipt_observation_builder.dart';
 import 'package:sparzamapp/features/shopping_list/receipt_family_market_prices.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/product.dart';
