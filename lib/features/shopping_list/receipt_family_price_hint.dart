@@ -17,7 +17,12 @@ class ReceiptFamilyPriceHint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final family = inferReceiptFamily(product.name);
-    final matches = stats.where((stat) => stat.familyKey == family).toList();
+    final exact = stats.where((stat) => stat.productId == product.id).toList();
+    final matches = exact.isNotEmpty
+        ? exact
+        : stats
+            .where((stat) => stat.productId == null && stat.familyKey == family)
+            .toList();
     if (matches.isEmpty) return const SizedBox.shrink();
 
     matches.sort((a, b) {
