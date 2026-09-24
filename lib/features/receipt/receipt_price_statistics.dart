@@ -13,7 +13,7 @@ List<ReceiptPriceStat> buildReceiptPriceStats(
   final groups = <String, List<ReceiptObservation>>{};
 
   for (final item in observations) {
-    if (item.discounted || item.observedAt.isBefore(cutoff)) {
+    if (item.observedAt.isBefore(cutoff)) {
       continue;
     }
 
