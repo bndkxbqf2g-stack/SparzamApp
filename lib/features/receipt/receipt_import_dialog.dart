@@ -302,7 +302,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                 title: Text(suggestion.product.name),
                                 subtitle: Text(
                                   '${suggestion.row.label} · '
-                                  '${suggestion.row.quantity == null ? '1 Stück' : '${suggestion.row.quantity} Stück'} · '
+                                  '${suggestion.row.quantity == null ? '1 Stück' : '${suggestion.row.quantity} ${suggestion.row.quantityUnit}'} · '
                                   '${suggestion.price.price.toStringAsFixed(2).replaceAll('.', ',')} € je ${suggestion.product.unit}',
                                 ),
                               ),
@@ -326,7 +326,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                     ),
                                     subtitle: Text(row.quantity == null
                                         ? 'Bonposition'
-                                        : '${row.quantity} × '
+                                        : '${row.quantity} ${row.quantityUnit} × '
                                           '${((row.unitCents ?? row.cents) / 100).toStringAsFixed(2).replaceAll('.', ',')} €'),
                                   ),
                               ],
