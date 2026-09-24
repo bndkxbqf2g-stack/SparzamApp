@@ -4,8 +4,7 @@ import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/offer.dart';
 import '../../models/product.dart';
-import 'shopping_offer_badge.dart';
-import 'shopping_offer_hint.dart';
+import 'shopping_price_badge.dart';
 
 class ShoppingGroupCard extends StatelessWidget {
   const ShoppingGroupCard({
@@ -16,6 +15,7 @@ class ShoppingGroupCard extends StatelessWidget {
     required this.offers,
     required this.enabledStoreNames,
     required this.marketPrices,
+    required this.priceObservations,
     required this.onToggle,
     required this.onChangeQuantity,
     required this.onEditDetails,
@@ -29,11 +29,12 @@ class ShoppingGroupCard extends StatelessWidget {
   final List<Offer> offers;
   final List<String> enabledStoreNames;
   final List<MarketPrice> marketPrices;
+  final List<MarketPrice> priceObservations;
   final ValueChanged<Product> onToggle;
   final void Function(String productId, int delta) onChangeQuantity;
   final ValueChanged<ListItem> onEditDetails;
   final bool tileView;
-  final ValueChanged<ShoppingOfferHint> onOpenOffer;
+  final ValueChanged<Offer> onOpenOffer;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -61,6 +62,10 @@ class ShoppingGroupCard extends StatelessWidget {
                   for (final item in items)
                     _ShoppingItemCard(
                       item: item,
+                      offers: offers,
+                      priceObservations: priceObservations,
+                      enabledStoreNames: enabledStoreNames,
+                      onOpenOffer: onOpenOffer,
                       checked: checkedProductIds.contains(item.product.id),
                       onToggle: onToggle,
                       onChangeQuantity: onChangeQuantity,
@@ -83,6 +88,7 @@ class ShoppingGroupCard extends StatelessWidget {
                     offers: offers,
                     enabledStoreNames: enabledStoreNames,
                     marketPrices: marketPrices,
+                    priceObservations: priceObservations,
                     onToggle: onToggle,
                     onChangeQuantity: onChangeQuantity,
                     onEditDetails: onEditDetails,
@@ -102,6 +108,10 @@ class _ShoppingItemCard extends StatelessWidget {
   const _ShoppingItemCard({
     required this.item,
     required this.checked,
+    required this.offers,
+    required this.priceObservations,
+    required this.enabledStoreNames,
+    required this.onOpenOffer,
     required this.onToggle,
     required this.onChangeQuantity,
     required this.onEditDetails,
@@ -109,6 +119,10 @@ class _ShoppingItemCard extends StatelessWidget {
 
   final ListItem item;
   final bool checked;
+  final List<Offer> offers;
+  final List<MarketPrice> priceObservations;
+  final List<String> enabledStoreNames;
+  final ValueChanged<Offer> onOpenOffer;
   final ValueChanged<Product> onToggle;
   final void Function(String productId, int delta) onChangeQuantity;
   final ValueChanged<ListItem> onEditDetails;
@@ -152,6 +166,13 @@ class _ShoppingItemCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
+                ShoppingPriceBadge(
+                  item: item,
+                  prices: priceObservations,
+                  offers: offers,
+                  enabledStores: enabledStoreNames,
+                  onOpenOffer: onOpenOffer,
+                ),
                 const Spacer(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -187,6 +208,7 @@ class _ShoppingItemTile extends StatelessWidget {
     required this.offers,
     required this.enabledStoreNames,
     required this.marketPrices,
+    required this.priceObservations,
     required this.onToggle,
     required this.onChangeQuantity,
     required this.onEditDetails,
@@ -198,20 +220,14 @@ class _ShoppingItemTile extends StatelessWidget {
   final List<Offer> offers;
   final List<String> enabledStoreNames;
   final List<MarketPrice> marketPrices;
+  final List<MarketPrice> priceObservations;
   final ValueChanged<Product> onToggle;
   final void Function(String productId, int delta) onChangeQuantity;
   final ValueChanged<ListItem> onEditDetails;
-  final ValueChanged<ShoppingOfferHint> onOpenOffer;
+  final ValueChanged<Offer> onOpenOffer;
 
   @override
   Widget build(BuildContext context) {
-    final hint = bestShoppingOffer(
-      item,
-      offers,
-      enabledStoreNames: enabledStoreNames,
-      marketPrices: marketPrices,
-    );
-
     return ListTile(
       onTap: () => onToggle(item.product),
       onLongPress: () => onEditDetails(item),
@@ -254,11 +270,13 @@ class _ShoppingItemTile extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(color: Colors.blueGrey.shade700),
             ),
-          if (!checked && hint != null)
-            ShoppingOfferBadge(
-              hint: hint,
-              onTap: () => onOpenOffer(hint),
-            ),
+          ShoppingPriceBadge(
+            item: item,
+            prices: priceObservations,
+            offers: offers,
+            enabledStores: enabledStoreNames,
+            onOpenOffer: onOpenOffer,
+          ),
         ],
       ),
       trailing: Row(
