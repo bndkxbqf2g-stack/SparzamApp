@@ -12,6 +12,7 @@ import '../../models/price_data_settings.dart';
 import '../../models/price_sync_result.dart';
 import '../../models/recent_purchase.dart';
 import '../../models/replenishment_suggestion.dart';
+import '../../models/receipt_observation.dart';
 import '../../models/road_route_matrix.dart';
 import '../../models/purchase_record.dart';
 import '../../services/budget_store.dart';
@@ -22,6 +23,7 @@ import '../../services/product_catalog_store.dart';
 import '../../services/price_data_settings_store.dart';
 import '../../services/price_history_store.dart';
 import '../../services/recent_purchase_store.dart';
+import '../../services/receipt_observation_store.dart';
 import '../../services/purchase_store.dart';
 import '../../services/road_distance_store.dart';
 import '../../services/road_route_matrix_store.dart';
@@ -39,6 +41,7 @@ import '../route/route_optimizer.dart';
 import '../route/route_screen.dart';
 import '../scanner/scanner_screen.dart';
 import '../shopping_list/replenishment_analyzer.dart';
+import '../shopping_list/receipt_family_market_prices.dart';
 import '../shopping_list/shopping_list_updates.dart';
 import 'shell_catalog.dart';
 import 'shell_catalog_coordinator.dart';
@@ -117,6 +120,7 @@ class _AppShellState extends State<AppShell> {
   late List<PurchaseRecord> purchaseHistory;
   late List<Product> customProducts;
   late List<MarketPrice> marketPrices;
+  List<ReceiptObservation> receiptObservations = const <ReceiptObservation>[];
   late PriceDataSettings priceDataSettings;
   late List<PricePoint> priceHistory;
   Map<String, double> roadDistances = <String, double>{};
@@ -163,6 +167,7 @@ class _AppShellState extends State<AppShell> {
     preferredProductByGroup = {...widget.initialPreferredProductByGroup};
     _loadRoadDistances();
     _loadNamedShoppingLists();
+    _loadReceiptObservations();
   }
 
   List<ListItem> _copyItems(List<ListItem> items) => items
@@ -204,6 +209,22 @@ class _AppShellState extends State<AppShell> {
 
   List<MarketPrice> get activeMarketPrices =>
       activePrices(marketPrices, priceDataSettings);
+
+  List<MarketPrice> get receiptFamilyPrices => receiptFamilyMarketPrices(
+        items: shoppingList,
+        observations: receiptObservations,
+      );
+
+  List<MarketPrice> get planningMarketPrices => [
+        ...activeMarketPrices,
+        ...receiptFamilyPrices,
+      ];
+
+  Future<void> _loadReceiptObservations() async {
+    final loaded = await ReceiptObservationStore().load();
+    if (!mounted) return;
+    setState(() => receiptObservations = loaded);
+  }
 
   List<ReplenishmentSuggestion> get replenishmentSuggestions =>
       buildReplenishmentSuggestions(
@@ -387,7 +408,7 @@ class _AppShellState extends State<AppShell> {
         items: shoppingList,
         offers: offers,
         mobility: mobility,
-        marketPrices: activeMarketPrices,
+        marketPrices: planningMarketPrices,
         roadDistances: roadDistances,
         roadMatrix: roadMatrix,
       );
@@ -711,7 +732,7 @@ class _AppShellState extends State<AppShell> {
           maxStores: mobility.maxStores,
           minExtraStoreSavings: mobility.minExtraStoreSavings,
           enabledStoreNames: mobility.enabledStoreNames,
-          marketPrices: activeMarketPrices,
+          marketPrices: planningMarketPrices,
           roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
           ).bestPlan();
     Navigator.of(context).push(
@@ -744,7 +765,7 @@ class _AppShellState extends State<AppShell> {
               items: shoppingList,
               offers: offers,
               mobility: mobility,
-              marketPrices: activeMarketPrices,
+              marketPrices: planningMarketPrices,
               onRoadDistancesChanged: (value) =>
                   setState(() => roadDistances = value),
               onRoadMatrixChanged: (value) =>
@@ -783,8 +804,8 @@ class _AppShellState extends State<AppShell> {
       priceHistory: priceHistory,
       mobility: mobility,
       catalogProducts: catalogProducts,
-      marketPrices: activeMarketPrices,
-      priceObservations: marketPrices,
+      marketPrices: planningMarketPrices,
+      priceObservations: [...marketPrices, ...receiptFamilyPrices],
       replenishmentSuggestions: replenishmentSuggestions,
       onRoadDistancesChanged: (value) => setState(() => roadDistances = value),
       onRoadMatrixChanged: (value) => setState(() => roadMatrix = value),
