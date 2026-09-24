@@ -63,3 +63,6 @@ Zielrichtung: modern, harmonisch, warmweiß/salbeigrün. Separate Hauptbereiche;
 Vor neuen Modulen prüfen, ob eine bestehende Verantwortung erweitert werden kann. Neue Geschäftslogik nicht direkt in große Widgets schreiben. Tests für Parsing, Matching und Preislogik bevorzugen.
 
 - Die Planungsprojektion liest nun zusätzlich die append-only `PriceObservation`-Historie. Nur exakte Produktidentitäten mit voller Identitäts-Confidence aus den bereits unterstützten Quellen manuell/Bon/Open Prices werden in den bestehenden `MarketPrice`-Vertrag zurückprojiziert; Familien- und unsichere Beobachtungen bleiben außerhalb der exakten Route.
+
+- Bon- und Angebotsdaten besitzen nun Adapter in das gemeinsame `PriceObservation`-Modell. Die ursprünglichen Stores bleiben vorerst bestehen; die Beobachtungshistorie ist die gemeinsame Evidenzschicht. Bon-Familienzuordnungen werden nicht künstlich zu exakten Produktidentitäten. Angebote tragen ein Gültigkeitsende und werden nach Ablauf nicht in die exakte Routenprojektion übernommen.
+- Nächste Architekturschnittstelle: Vergleichbarkeit muss vor Preisranking geprüft werden. Packungsgröße, Einheit und Variante sind Teil der fachlichen Identität; ein niedriger absoluter Preis darf nur bei gleicher bzw. sicher normalisierbarer Mengenbasis konkurrieren.
