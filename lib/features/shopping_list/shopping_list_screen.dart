@@ -11,6 +11,8 @@ import '../../models/recent_purchase.dart';
 import '../../models/replenishment_suggestion.dart';
 import '../../services/shopping_list_store.dart';
 import '../offers/offer_details_screen.dart';
+import '../receipt/receipt_import_dialog.dart';
+import '../receipt/receipt_import.dart';
 import 'shopping_group_card.dart';
 import 'shopping_price_quotes.dart';
 import 'shopping_grouping.dart';
@@ -50,6 +52,7 @@ class ShoppingListScreen extends StatefulWidget {
     required this.catalogProducts,
     required this.marketPrices,
     this.priceObservations = const <MarketPrice>[],
+    this.onSavePrices,
     required this.replenishmentSuggestions,
   });
 
@@ -74,6 +77,7 @@ class ShoppingListScreen extends StatefulWidget {
   final List<Product> catalogProducts;
   final List<MarketPrice> marketPrices;
   final List<MarketPrice> priceObservations;
+  final Future<void> Function(List<MarketPrice>)? onSavePrices;
   final List<ReplenishmentSuggestion> replenishmentSuggestions;
 
   @override
@@ -302,6 +306,22 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     );
   }
 
+  Future<void> importReceipts() async {
+    final save = widget.onSavePrices;
+    if (save == null) return;
+    final result = await showDialog<ReceiptImportOutcome>(
+      context: context,
+      builder: (_) => ReceiptImportDialog(
+        products: widget.catalogProducts,
+        onSavePrices: save,
+      ),
+    );
+    if (!mounted || result == null) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('${result.savedPrices} Bonpreis(e) gespeichert.'),
+    ));
+  }
+
   @override
   void dispose() {
     controller.dispose();
@@ -375,6 +395,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   quickProducts: quickProducts,
                   onAddRecent: addRecentPurchase,
                   onAddProduct: add,
+                ),
+              ],
+              if (widget.items.isNotEmpty && widget.onSavePrices != null) ...[
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  onPressed: importReceipts,
+                  icon: const Icon(Icons.receipt_long_outlined),
+                  label: const Text('Bonpreise für die Liste übernehmen'),
                 ),
               ],
               const SizedBox(height: 22),
