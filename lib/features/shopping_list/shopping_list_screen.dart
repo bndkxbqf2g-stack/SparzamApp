@@ -9,10 +9,13 @@ import '../../models/product.dart';
 import '../../models/price_point.dart';
 import '../../models/recent_purchase.dart';
 import '../../models/replenishment_suggestion.dart';
+import '../../models/receipt_price_stat.dart';
+import '../../services/receipt_observation_store.dart';
 import '../../services/shopping_list_store.dart';
 import '../offers/offer_details_screen.dart';
 import '../receipt/receipt_import_dialog.dart';
 import '../receipt/receipt_import.dart';
+import '../receipt/receipt_price_statistics.dart';
 import 'shopping_group_card.dart';
 import 'shopping_price_quotes.dart';
 import 'shopping_grouping.dart';
@@ -91,6 +94,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   List<RecentPurchase> knownItems = <RecentPurchase>[];
   List<String> aisleOrder = <String>[];
   bool tileView = false;
+  List<ReceiptPriceStat> receiptPriceStats = const <ReceiptPriceStat>[];
 
   @override
   void initState() {
@@ -98,6 +102,15 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     _loadKnownItems();
     _loadAisleOrder();
     _loadViewMode();
+    _loadReceiptPriceStats();
+  }
+
+  Future<void> _loadReceiptPriceStats() async {
+    final observations = await ReceiptObservationStore().load();
+    if (!mounted) return;
+    setState(() {
+      receiptPriceStats = buildReceiptPriceStats(observations);
+    });
   }
 
   Future<void> _loadAisleOrder() async {
@@ -317,8 +330,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       ),
     );
     if (!mounted || result == null) return;
+    await _loadReceiptPriceStats();
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('${result.savedPrices} Bonpreis(e) gespeichert.'),
+      content: Text('${result.savedObservations} Produktbeobachtung(en) gelernt · ${result.savedPrices} direkte Bonpreise.'),
     ));
   }
 
@@ -426,6 +441,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     enabledStoreNames: widget.mobility.enabledStoreNames,
                     marketPrices: widget.marketPrices,
                     priceObservations: widget.priceObservations,
+                    receiptPriceStats: receiptPriceStats,
                     onToggle: toggleChecked,
                     onChangeQuantity: widget.onChangeQuantity,
                     onEditDetails: editItemDetails,
