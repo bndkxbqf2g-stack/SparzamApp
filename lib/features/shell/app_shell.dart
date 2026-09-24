@@ -24,6 +24,7 @@ import '../../services/product_catalog_store.dart';
 import '../../services/price_data_settings_store.dart';
 import '../../services/price_history_store.dart';
 import '../../services/price_observation_store.dart';
+import '../../services/price_observation_adapters.dart';
 import '../../services/market_price_observation_adapter.dart';
 import '../../services/recent_purchase_store.dart';
 import '../../services/receipt_observation_store.dart';
@@ -239,8 +240,10 @@ class _AppShellState extends State<AppShell> {
 
   Future<void> _loadReceiptObservations() async {
     final loaded = await ReceiptObservationStore().load();
+    await priceObservationStore.append(loaded.map(observationFromReceipt));
     if (!mounted) return;
     setState(() => receiptObservations = loaded);
+    await _loadPriceObservations();
   }
 
   List<ReplenishmentSuggestion> get replenishmentSuggestions =>
@@ -698,7 +701,11 @@ class _AppShellState extends State<AppShell> {
 
   Future<List<Offer>> saveOffer(Offer offer) async {
     final next = await widget.offerStore.upsert(offer, offers);
+    await priceObservationStore.append([
+      observationFromOffer(offer, observedAt: DateTime.now()),
+    ]);
     if (mounted) setState(() => offers = next);
+    await _loadPriceObservations();
     return next;
   }
 
