@@ -65,6 +65,27 @@ class RouteSummaryCard extends StatelessWidget {
               'Effektiver Warenkorb ${best.basket.toStringAsFixed(2)} € · '
               'Fahrt ${best.travel.toStringAsFixed(2)} €',
             ),
+            if (best.hasDataGaps) ...[
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.amber.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '${best.pricedItemCount} von ${best.totalItemCount} Artikeln '
+                  'preislich belegt. Noch ohne belastbaren Preis: '
+                  '${best.unassigned.map((item) => item.product.name).join(', ')}. '
+                  'Die angezeigten Kosten enthalten diese Artikel nicht.',
+                  style: TextStyle(
+                    color: Colors.amber.shade900,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
             if (best.uncertaintyReserve > 0) ...[
               const SizedBox(height: 8),
               Text(
