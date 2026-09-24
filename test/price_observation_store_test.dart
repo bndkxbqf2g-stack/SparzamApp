@@ -50,6 +50,43 @@ void main() {
     expect(restored.identityConfidence, 0.9);
   });
 
+  test('exact observation history projects every supported price for routing', () {
+    final projected = marketPricesFromObservations([
+      PriceObservation(
+        id: 'old', productId: 'schmand', storeName: 'Lidl', price: 0.79,
+        observedAt: DateTime(2026, 8, 1),
+        source: PriceObservationSource.manual,
+      ),
+      PriceObservation(
+        id: 'new', productId: 'schmand', storeName: 'Lidl', price: 0.89,
+        observedAt: DateTime(2026, 9, 24),
+        source: PriceObservationSource.openPrices,
+        proofRef: 'open-prices:42',
+      ),
+    ]);
+
+    expect(projected, hasLength(2));
+    expect(projected.map((item) => item.price), containsAll([0.79, 0.89]));
+    expect(projected.last.externalId, 42);
+  });
+
+  test('family-only or uncertain identity is not projected as exact route price', () {
+    final projected = marketPricesFromObservations([
+      PriceObservation(
+        id: 'family', familyKey: 'schmand', storeName: 'Lidl', price: 0.69,
+        observedAt: DateTime(2026, 9, 24),
+        source: PriceObservationSource.manual,
+      ),
+      PriceObservation(
+        id: 'uncertain', productId: 'schmand', storeName: 'Lidl', price: 0.59,
+        observedAt: DateTime(2026, 9, 24),
+        source: PriceObservationSource.manual, identityConfidence: 0.8,
+      ),
+    ]);
+
+    expect(projected, isEmpty);
+  });
+
   test('source confidence and age confidence are separate', () {
     final old = MarketPrice(productId: 'x', storeName: 'Lidl',
         price: 0.79, updatedAt: DateTime(2026, 7, 23),
