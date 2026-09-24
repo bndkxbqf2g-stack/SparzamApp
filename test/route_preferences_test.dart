@@ -137,4 +137,22 @@ void main() {
     expect(optimizer.bestPlan()!.priceCoverage, 1);
     expect(optimizer.bestPlan()!.stores.length, 2);
   });
+
+  test('Mindestvorteil darf bessere Preisabdeckung nicht blockieren', () {
+    const secondItem = Product(id: 'coverage_only', name: 'Coverage', unit: 'Stück', group: 'test');
+    final now = DateTime(2026, 9, 24);
+    final optimizer = RouteOptimizer(
+      [ListItem(product: milk), ListItem(product: secondItem)],
+      const [],
+      euroPerKm: 0,
+      maxStores: 2,
+      minExtraStoreSavings: 1000,
+      enabledStoreNames: const ['Lidl', 'EDEKA'],
+      marketPrices: [MarketPrice(productId: 'coverage_only', storeName: 'EDEKA', price: 100, updatedAt: now)],
+      now: now,
+    );
+
+    expect(optimizer.bestPlan()!.priceCoverage, 1);
+    expect(optimizer.bestPlan()!.stores.length, 2);
+  });
 }
