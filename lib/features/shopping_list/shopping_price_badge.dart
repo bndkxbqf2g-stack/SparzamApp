@@ -30,6 +30,20 @@ class ShoppingPriceBadge extends StatelessWidget {
       offers: offers,
       enabledStores: enabledStores,
     );
+    final offersToday = quotes.where((q) => q.kind == ShoppingQuoteKind.offer).toList();
+    offersToday.sort((a, b) => a.unitPrice.compareTo(b.unitPrice));
+    final receiptQuotes = quotes.where((q) => q.kind == ShoppingQuoteKind.receipt).toList();
+    receiptQuotes.sort((a, b) => b.observedAt!.compareTo(a.observedAt!));
+    final highlighted = offersToday.isNotEmpty
+        ? offersToday.first
+        : receiptQuotes.isNotEmpty
+            ? receiptQuotes.first
+            : quotes.isNotEmpty ? quotes.first : null;
+    final prefix = highlighted?.kind == ShoppingQuoteKind.offer
+        ? 'Angebot'
+        : highlighted?.kind == ShoppingQuoteKind.receipt
+            ? 'Bonpreis'
+            : 'Eigener Preis';
     return InkWell(
       onTap: quotes.isEmpty ? null : () => _showQuotes(context, quotes),
       borderRadius: BorderRadius.circular(12),
@@ -43,11 +57,10 @@ class ShoppingPriceBadge extends StatelessWidget {
             const SizedBox(width: 5),
             Flexible(
               child: Text(
-                quotes.isEmpty
+                highlighted == null
                     ? 'Noch kein belegter Marktpreis'
-                    : quotes.length == 1
-                        ? '${quotes.first.storeName}: ${quotes.first.amountLabel}'
-                        : '${quotes.length} Preisbelege · ab ${quotes.map((quote) => quote.unitPrice).reduce((a, b) => a < b ? a : b).toStringAsFixed(2).replaceAll('.', ',')} €',
+                    : '$prefix ${highlighted.storeName}: ${highlighted.amountLabel}'
+                      '${quotes.length > 1 ? ' · +${quotes.length - 1}' : ''}',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
