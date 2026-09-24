@@ -13,16 +13,19 @@ import 'receipt_milk_assignment.dart';
 import 'receipt_observation_builder.dart';
 import 'receipt_price_review.dart';
 import 'receipt_product_picker.dart';
+import 'receipt_product_candidate_dialog.dart';
 
 class ReceiptImportDialog extends StatefulWidget {
   const ReceiptImportDialog({
     super.key,
     required this.products,
     required this.onSavePrices,
+    this.onCreateProduct,
   });
 
   final List<Product> products;
   final Future<void> Function(List<MarketPrice> prices) onSavePrices;
+  final Future<List<Product>> Function(Product product)? onCreateProduct;
 
   @override
   State<ReceiptImportDialog> createState() => _ReceiptImportDialogState();
@@ -36,12 +39,19 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
   int duplicateReceipts = 0;
   final selectedReceiptPrices = <String>{};
   final assignedProducts = <String, String>{};
+  late List<Product> availableProducts;
   DateTime? receiptDate;
   String? errorMessage;
   bool importing = false;
   bool saving = false;
   final observationStore = ReceiptObservationStore();
   final aliasStore = ReceiptAliasStore();
+
+  @override
+  void initState() {
+    super.initState();
+    availableProducts = [...widget.products];
+  }
 
   String _priceKey(String fingerprint, String productId) =>
       '$fingerprint|$productId';
@@ -135,12 +145,12 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
               rawLabel: row.label,
             );
             if (learnedId != null &&
-                widget.products.any((product) => product.id == learnedId)) {
+                availableProducts.any((product) => product.id == learnedId)) {
               assignedProducts[_rowKey(draft, row)] = learnedId;
             }
           }
         }
-        final review = reviewReceiptPrices(draft, widget.products);
+        final review = reviewReceiptPrices(draft, availableProducts);
         for (final suggestion in review.suggestions) {
           selectedReceiptPrices.add(_priceKey(entry.draft.fingerprint, suggestion.product.id));
         }
@@ -182,7 +192,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
     final unmatched = <String>[];
     for (final entry in receiptDrafts) {
       final draft = entry.draft;
-      final review = reviewReceiptPrices(draft, widget.products);
+      final review = reviewReceiptPrices(draft, availableProducts);
       final usedProducts = <String>{};
       for (final suggestion in review.suggestions) {
         if (selectedReceiptPrices.contains(
@@ -194,7 +204,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
       for (final row in draft.rows) {
         final id = assignedProducts[_rowKey(draft, row)];
         if (id == null) continue;
-        final products = widget.products.where((product) => product.id == id);
+        final products = availableProducts.where((product) => product.id == id);
         if (products.length != 1) continue;
 
         // A manual assignment always teaches identity. It becomes a direct
@@ -219,7 +229,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
       final manual = parseReceiptLines(
         text: linesController.text,
         storeName: storeName,
-        products: widget.products,
+        products: availableProducts,
         now: receiptDate,
       );
       prices.addAll(manual.prices);
@@ -230,7 +240,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
       var savedObservations = 0;
       for (final entry in receiptDrafts) {
         final draft = entry.draft;
-        final review = reviewReceiptPrices(draft, widget.products);
+        final review = reviewReceiptPrices(draft, availableProducts);
         final assigned = <int, String>{};
         for (final row in draft.rows) {
           final productId = assignedProducts[_rowKey(draft, row)];
@@ -331,7 +341,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                 for (final entry in receiptDrafts)
                   Builder(builder: (context) {
                     final draft = entry.draft;
-                    final review = reviewReceiptPrices(draft, widget.products);
+                    final review = reviewReceiptPrices(draft, availableProducts);
                     return Card(
                       child: ExpansionTile(
                         initiallyExpanded: true,
@@ -408,7 +418,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                               '${((row.unitCents ?? row.cents) / 100).toStringAsFixed(2).replaceAll('.', ',')} €'),
                                         if (assignedProducts.containsKey(_rowKey(draft, row)))
                                           Text(
-                                            'Zuordnung: ${widget.products.where((p) => p.id == assignedProducts[_rowKey(draft, row)]).first.name} · wird gelernt',
+                                            'Zuordnung: ${availableProducts.where((p) => p.id == assignedProducts[_rowKey(draft, row)]).first.name} · wird gelernt',
                                             style: const TextStyle(fontWeight: FontWeight.w600),
                                           ),
                                         Align(
@@ -424,7 +434,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                               final key = _rowKey(draft, row);
                                               final value = await showReceiptProductPicker(
                                                 context: context,
-                                                products: widget.products,
+                                                products: availableProducts,
                                                 selectedProductId: assignedProducts[key],
                                               );
                                               if (!mounted || value == null) return;
@@ -438,6 +448,28 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                             },
                                           ),
                                         ),
+                                        if (widget.onCreateProduct != null)
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: TextButton.icon(
+                                              icon: const Icon(Icons.add_circle_outline),
+                                              label: const Text('Als neues Produkt anlegen'),
+                                              onPressed: saving ? null : () async {
+                                                final product = await showReceiptProductCandidateDialog(
+                                                  context: context,
+                                                  rawLabel: row.label,
+                                                  quantityUnit: row.quantityUnit,
+                                                );
+                                                if (!mounted || product == null) return;
+                                                final next = await widget.onCreateProduct!(product);
+                                                if (!mounted) return;
+                                                setState(() {
+                                                  availableProducts = next;
+                                                  assignedProducts[_rowKey(draft, row)] = product.id;
+                                                });
+                                              },
+                                            ),
+                                          ),
                                       ],
                                     )
                                   ),
