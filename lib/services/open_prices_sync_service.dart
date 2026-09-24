@@ -57,6 +57,7 @@ class OpenPricesSyncService {
     }
 
     final candidates = <Product>[];
+    final discoveredIds = <String>{};
     for (final product in products) {
       if ((product.ean ?? '').trim().isNotEmpty) {
         candidates.add(product);
@@ -70,6 +71,7 @@ class OpenPricesSyncService {
                 : null;
         if (resolved != null && (resolved.ean ?? '').trim().isNotEmpty) {
           candidates.add(resolved);
+          discoveredIds.add(resolved.id);
         }
       } catch (_) {
         failures.add(product.id);
@@ -86,7 +88,12 @@ class OpenPricesSyncService {
                   product: candidates[index],
                   stores: stores,
                 );
-          result.addAll(found);
+          // A discovered barcode is useful retrieval evidence, but it is not
+          // yet a user-confirmed exact identity. Keep those prices out of the
+          // exact route-price stream until the identity is confirmed.
+          if (!discoveredIds.contains(candidates[index].id)) {
+            result.addAll(found);
+          }
         } catch (_) {
           failures.add(candidates[index].id);
         }
