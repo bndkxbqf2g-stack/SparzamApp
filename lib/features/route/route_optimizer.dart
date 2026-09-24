@@ -165,6 +165,14 @@ class RouteOptimizer {
         count++) {
       final candidate = bestByCount[count];
       if (candidate == null) continue;
+      // A route that prices more of the requested basket is always preferred.
+      // Savings thresholds only decide between routes with equal coverage.
+      if (candidate.priceCoverage > recommended.priceCoverage) {
+        recommended = candidate;
+        continue;
+      }
+      if (candidate.priceCoverage < recommended.priceCoverage) continue;
+
       final addedStores = candidate.stores.length - recommended.stores.length;
       final requiredSavings = minExtraStoreSavings * addedStores;
       if (recommended.planningScore - candidate.planningScore > requiredSavings) {
