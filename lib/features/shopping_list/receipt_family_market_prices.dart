@@ -82,9 +82,9 @@ double? _comparablePrice(ListItem item, ReceiptObservation observation) {
     return null;
   }
   final perBase = normalizedUnitPrice(
-    observation.totalPrice,
-    receiptAmount,
-    receiptUnit,
+    price: observation.totalPrice,
+    amount: receiptAmount,
+    unit: receiptUnit,
   );
   if (perBase == null) return null;
   return perBase * wanted.amount;
