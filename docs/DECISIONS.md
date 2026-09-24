@@ -124,3 +124,12 @@ Vor D025/D027 muss feststehen, dass zwei Preisbeobachtungen fachlich vergleichba
 
 ## D032 – Work ist eine gezielte Ausführungsebene, kein zweiter Entwicklungsstrom
 Der laufende Projektchat bleibt für kleine, klar abgegrenzte Änderungen, Entscheidungen, Tests, Commits und CI-Kontrolle zuständig. Aufgaben mit deutlichem Vorteil durch längere autonome Repo-/Browser-/Datei-Arbeit werden in der `WORK QUEUE` der Roadmap gesammelt. Work bearbeitet nur freigegebene Queue-Einträge und soll bereits abgeschlossene Pakete nicht erneut untersuchen, sofern kein konkreter Fehler dies verlangt. Ein Eintrag wird erst freigegeben, wenn seine dokumentierte Startvoraussetzung erfüllt ist.
+
+## D033 – Generische Familien dürfen Geschwisterevidenz nutzen, konkrete Varianten nicht
+Ein generischer Familienwunsch wie „Käse“ oder „Wurst“ darf passende Beobachtungen konkreter Familienmitglieder als Familien-/Historienevidenz verwenden. Ein konkreter Variantenwunsch wie „Bergkäse“ darf dagegen nicht den Preis eines Geschwisterprodukts wie Gouda als exakten eigenen Preis übernehmen. Exakte Produkt-/Aliasidentität bleibt dafür erforderlich. Familienbelege bleiben als solche unterscheidbar und werden nicht stillschweigend zur Variantenidentität hochgestuft.
+
+## D034 – Familienpreis beeinflusst die Route nur mit sicherer Mengenbasis
+Familienbeobachtungen dürfen erst dann als Planungs-/Routenpreis verwendet werden, wenn beobachtete Menge/Einheit und gewünschte Packungsbasis sicher normalisierbar und fachlich vergleichbar sind. Fehlt diese Basis, darf die Beobachtung weiterhin als historischer Hinweis oder Datenbeleg sichtbar sein, aber nicht den Routen-Score verändern. Diese Regel gilt vor Unsicherheitsgewichtung und Preisranking.
+
+## D035 – Automatische Identitätserkennung ist Retrieval-Evidenz, keine Bestätigung
+Automatische Bon-Vorschläge und über Open Food Facts entdeckte EAN-Kandidaten dürfen Recherche, Matching und weitere Datenabfragen unterstützen, gelten aber nicht allein als bestätigte exakte Produktidentität. Ein daraus abgerufener Preis darf erst nach ausreichend bestätigter Identität in den exakten Routenpreisstrom gelangen. Damit bleibt die Identitäts-Confidence von Quellenqualität und Preisaktualität getrennt.
