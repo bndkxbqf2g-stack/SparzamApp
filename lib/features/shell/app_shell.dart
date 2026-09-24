@@ -824,6 +824,7 @@ class _AppShellState extends State<AppShell> {
       onEditPriceData: openPriceDataSettings,
       onSavePrice: saveMarketPrice,
       onSaveProduct: saveCatalogProduct,
+      onReceiptObservationsChanged: _loadReceiptObservations,
       onSaveOffer: saveOffer,
       onDeleteOffer: deleteOffer,
       priceDataSummary: priceDataSettings.openPricesEnabled
