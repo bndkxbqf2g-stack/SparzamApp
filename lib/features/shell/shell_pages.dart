@@ -68,6 +68,7 @@ List<Widget> buildShellPages({
   required String priceDataSummary,
   required Future<List<MarketPrice>> Function(MarketPrice price) onSavePrice,
   required Future<List<Product>> Function(Product product) onSaveProduct,
+  required Future<void> Function() onReceiptObservationsChanged,
   required Future<List<Offer>> Function(Offer offer) onSaveOffer,
   required Future<List<Offer>> Function(Offer offer) onDeleteOffer,
   required VoidCallback onOpenDiagnostics,
@@ -109,6 +110,7 @@ List<Widget> buildShellPages({
           }
         },
         onCreateProduct: onSaveProduct,
+        onReceiptObservationsChanged: onReceiptObservationsChanged,
         replenishmentSuggestions: replenishmentSuggestions,
       ),
       OffersScreen(
