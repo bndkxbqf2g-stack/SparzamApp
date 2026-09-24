@@ -67,7 +67,7 @@ class ReceiptScreen extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    '${result.savedPrices} Bonpreis(e) gespeichert${unmatched > 0 ? ' · $unmatched Zeile(n) bitte prüfen' : ''}.',
+                    '${result.savedObservations} Produktbeobachtung(en) gelernt · ${result.savedPrices} direkte Bonpreise${unmatched > 0 ? ' · $unmatched Zeile(n) bitte prüfen' : ''}.',
                   ),
                 ),
               );
