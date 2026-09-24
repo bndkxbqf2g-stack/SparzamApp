@@ -66,3 +66,7 @@ Vor neuen Modulen prüfen, ob eine bestehende Verantwortung erweitert werden kan
 
 - Bon- und Angebotsdaten besitzen nun Adapter in das gemeinsame `PriceObservation`-Modell. Die ursprünglichen Stores bleiben vorerst bestehen; die Beobachtungshistorie ist die gemeinsame Evidenzschicht. Bon-Familienzuordnungen werden nicht künstlich zu exakten Produktidentitäten. Angebote tragen ein Gültigkeitsende und werden nach Ablauf nicht in die exakte Routenprojektion übernommen.
 - Nächste Architekturschnittstelle: Vergleichbarkeit muss vor Preisranking geprüft werden. Packungsgröße, Einheit und Variante sind Teil der fachlichen Identität; ein niedriger absoluter Preis darf nur bei gleicher bzw. sicher normalisierbarer Mengenbasis konkurrieren.
+
+
+## Entwicklungsprozess
+Technische Wahrheit bleibt GitHub. Kleine Änderungen werden inkrementell umgesetzt. Größere Querschnittsarbeiten werden in der `WORK QUEUE` der Roadmap gesammelt, damit Work sie später mit vollständigem Repo-Kontext selbstständig ausführen kann. Dadurch soll dieselbe Analyse nicht mehrfach bezahlt bzw. durchgeführt werden.
