@@ -106,5 +106,37 @@ void main() {
     expect(plan.unassigned.single.product.id, unknown.id);
     expect(plan.basket, closeTo(1.19, 0.001));
   });
+  test('marktübergreifende Preise erzeugen echte Händleralternativen', () {
+    const multiMobility = MobilitySettings(
+      mode: MobilityMode.bike,
+      enabledStoreNames: ['Lidl', 'Kaufland', 'EDEKA'],
+    );
+    const schmand = Product(
+      id: 'shopping-schmand',
+      name: 'Schmand',
+      group: 'Molkerei',
+      unit: 'Stück',
+    );
+    final routing = ShellRouting(
+      items: [ListItem(product: schmand)],
+      offers: const [],
+      mobility: multiMobility,
+      marketPrices: [
+        MarketPrice(productId: schmand.id, storeName: 'Lidl', price: 0.69, updatedAt: DateTime(2026, 9, 24)),
+        MarketPrice(productId: schmand.id, storeName: 'Kaufland', price: 0.79, updatedAt: DateTime(2026, 9, 24)),
+        MarketPrice(productId: schmand.id, storeName: 'EDEKA', price: 0.89, updatedAt: DateTime(2026, 9, 24)),
+      ],
+      roadDistances: const {},
+      roadMatrix: null,
+    );
+
+    final alternatives = routing.current!.alternatives();
+    final singleStores = alternatives
+        .where((plan) => plan.stores.length == 1)
+        .map((plan) => plan.stores.single.name)
+        .toSet();
+    expect(singleStores, containsAll(['Lidl', 'Kaufland', 'EDEKA']));
+    expect(routing.current!.bestSingleStorePlan()!.stores.single.name, 'Lidl');
+  });
 
 }
