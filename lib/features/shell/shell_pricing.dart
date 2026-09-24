@@ -9,7 +9,7 @@ List<MarketPrice> activePrices(
 ) {
   if (!settings.openPricesEnabled) {
     return prices
-        .where((price) => price.isManual && price.isUsable(
+        .where((price) => price.source != MarketPriceSource.openPrices && price.isUsable(
           now: DateTime.now(),
           openPricesMaxAgeDays: settings.openPricesMaxAgeDays,
         ))
