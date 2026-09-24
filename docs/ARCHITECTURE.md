@@ -70,3 +70,11 @@ Vor neuen Modulen prüfen, ob eine bestehende Verantwortung erweitert werden kan
 
 ## Entwicklungsprozess
 Technische Wahrheit bleibt GitHub. Kleine Änderungen werden inkrementell umgesetzt. Größere Querschnittsarbeiten werden in der `WORK QUEUE` der Roadmap gesammelt, damit Work sie später mit vollständigem Repo-Kontext selbstständig ausführen kann. Dadurch soll dieselbe Analyse nicht mehrfach bezahlt bzw. durchgeführt werden.
+
+## Preisvergleichbarkeit und externe Discovery – Stand 24.09.2026
+- `quantity_normalizer.dart` bildet g/kg, ml/l und Stück auf gemeinsame Basiseinheiten ab. Vergleichbarkeit wird vor Preisranking geprüft.
+- `product_family.dart` trennt breite Familie, generischen Familienwunsch und konkrete Variante. Familienfallback ist damit nicht automatisch Variantenidentität.
+- Bon-Familienpreise dürfen nur mit sicher normalisierbarer Mengenbasis in die Planung einfließen; sonst bleiben sie Evidenz/Hinweis.
+- Die Open-Prices-Pipeline arbeitet demand-driven von der aktuellen Einkaufsliste. Bekannte EANs können direkt abgefragt werden.
+- `open_food_facts_product_discovery.dart` darf bei fehlender EAN konservativ einen Kandidaten zum Abruf finden. Ein Discovery-Treffer bestätigt die Produktidentität jedoch nicht und darf deshalb noch keinen exakten Routenpreis erzeugen.
+- Automatische Bon-Reviews und externe Discovery folgen damit derselben Grenze: Erkennung/Recherche ist Evidenz, explizit bestätigte Identität ist Voraussetzung für exakte Preisprojektion.
