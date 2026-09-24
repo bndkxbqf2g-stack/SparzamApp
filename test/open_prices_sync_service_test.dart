@@ -173,7 +173,8 @@ void main() {
     expect(seen.single.ean, '4000000000001');
     expect(seen.single.id, 'schmand');
     expect(result.productsWithEan, 1);
-    expect(result.pricesFound, 1);
+    expect(result.pricesFound, 0);
+    expect(result.prices, isEmpty);
   });
 
   test('nicht sicher entdecktes Produkt bleibt aus der Preisroute', () async {
