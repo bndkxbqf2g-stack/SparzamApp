@@ -61,3 +61,7 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 - Jede Phase in kleinen, testbaren GitHub-Commits umsetzen.
 
 - [x] Gespeicherte exakte Preisbeobachtungshistorie als Eingang der bestehenden Marktpreis-/Routenprojektion verwenden, statt nur den zuletzt projizierten Marktpreis zu sehen.
+
+- [x] Bonbeobachtungen in die gemeinsame Preisbeobachtungshistorie adaptieren, ohne Familienmatches als exakte Produktidentität auszugeben.
+- [x] Angebote mit Gültigkeit in die gemeinsame Preisbeobachtungshistorie adaptieren und abgelaufene Angebote aus der exakten Routenprojektion ausschließen.
+- [ ] **Nächstes Work-Paket:** Packungs-/Mengengleichheit und Variantenvergleichbarkeit zentral prüfen, bevor Beobachtungen gegeneinander gerankt werden.
