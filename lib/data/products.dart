@@ -27,6 +27,13 @@ const products = <Product>[
     aliases: ['milch'],
   ),
   Product(
+    id: 'milch_15',
+    name: 'Milch 1,5 %',
+    unit: '1 l',
+    group: 'milch',
+    aliases: ['fettarme Milch 1,5 %'],
+  ),
+  Product(
     id: 'bananen',
     name: 'Bananen',
     unit: '1 kg',
