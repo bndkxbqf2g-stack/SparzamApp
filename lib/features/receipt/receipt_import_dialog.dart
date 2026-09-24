@@ -126,7 +126,20 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
       }
       if (!mounted) return;
       for (final entry in newDrafts) {
-        final review = reviewReceiptPrices(entry.draft, widget.products);
+        final draft = entry.draft;
+        if (draft.retailer != null) {
+          for (final row in draft.rows.where((r) => r.kind == ReceiptRowKind.item)) {
+            final learnedId = await aliasStore.learnedProductId(
+              storeName: draft.retailer!,
+              rawLabel: row.label,
+            );
+            if (learnedId != null &&
+                widget.products.any((product) => product.id == learnedId)) {
+              assignedMilkVariants[_rowKey(draft, row)] = learnedId;
+            }
+          }
+        }
+        final review = reviewReceiptPrices(draft, widget.products);
         for (final suggestion in review.suggestions) {
           selectedReceiptPrices.add(_priceKey(entry.draft.fingerprint, suggestion.product.id));
         }
@@ -390,6 +403,11 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                             ? 'Bonposition'
                                             : '${row.quantity} ${row.quantityUnit} × '
                                               '${((row.unitCents ?? row.cents) / 100).toStringAsFixed(2).replaceAll('.', ',')} €'),
+                                        if (assignedMilkVariants.containsKey(_rowKey(draft, row)))
+                                          Text(
+                                            'Gelernte Zuordnung: ${widget.products.where((p) => p.id == assignedMilkVariants[_rowKey(draft, row)]).first.name} · bitte prüfen',
+                                            style: const TextStyle(fontWeight: FontWeight.w600),
+                                          ),
                                         if (canAssignKauflandMilk(draft, row))
                                           DropdownButton<String>(
                                             isExpanded: true,
