@@ -117,7 +117,7 @@ class _ShoppingItemCard extends StatelessWidget {
     required this.offers,
     required this.priceObservations,
     required this.receiptPriceStats,
-    required this.enabledStoreNames:
+    required this.enabledStoreNames,
     required this.onOpenOffer,
     required this.onToggle,
     required this.onChangeQuantity,
@@ -219,7 +219,7 @@ class _ShoppingItemTile extends StatelessWidget {
     required this.marketPrices,
     required this.priceObservations,
     required this.receiptPriceStats,
-    required this.onToggle:
+    required this.onToggle,
     required this.onChangeQuantity,
     required this.onEditDetails,
     required this.onOpenOffer,
