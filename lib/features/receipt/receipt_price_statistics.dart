@@ -52,6 +52,8 @@ List<ReceiptPriceStat> buildReceiptPriceStats(
 
 double _median(List<double> values) {
   final middle = values.length ~/ 2;
-  if (values.length.isOdd) return values[middle];
-  return (values[middle - 1] + values[middle]) / 2;
+  final median = values.length.isOdd
+      ? values[middle]
+      : (values[middle - 1] + values[middle]) / 2;
+  return (median * 100).roundToDouble() / 100;
 }
