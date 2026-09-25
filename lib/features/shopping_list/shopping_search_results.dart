@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/product.dart';
+import '../catalog/product_hierarchy.dart';
 import '../../models/recent_purchase.dart';
 
 class ShoppingSearchResults extends StatelessWidget {
@@ -82,11 +83,12 @@ class ShoppingSearchResults extends StatelessWidget {
   }
 
   String _subtitle(Product product) {
+    final hierarchy = productHierarchyLabel(product).path;
     final purchase = _recentPurchase(product.id);
-    if (purchase == null) return product.unit;
+    if (purchase == null) return '$hierarchy · ${product.unit}';
     final quantity = purchase.averageQuantity.round();
     return quantity > 1
-        ? '${product.unit} · meist ×$quantity'
-        : product.unit;
+        ? '$hierarchy · ${product.unit} · meist ×$quantity'
+        : '$hierarchy · ${product.unit}';
   }
 }
