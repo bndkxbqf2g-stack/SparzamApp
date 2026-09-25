@@ -10,7 +10,7 @@ class ProductHierarchyLabel {
   final String family;
   final String? variant;
 
-  String get path => variant == null ? family : '${family} › ${variant}';
+  String get path => variant == null ? family : '$family › $variant';
 }
 
 /// Presentation-only hierarchy derived from the existing identity resolver.
