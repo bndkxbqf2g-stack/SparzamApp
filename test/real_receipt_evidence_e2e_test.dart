@@ -46,6 +46,7 @@ void main() {
     final planning = planningMarketPrices(
       exactPrices: exactPrices,
       familyPrices: const [],
+      now: now,
     );
     final item = ListItem(product: product);
     final kaufland = stores.singleWhere((store) => store.name == 'Kaufland');
