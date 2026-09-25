@@ -96,8 +96,14 @@ void main() {
     expect(result.single.productId, 'hackfleisch_gemischt');
   });
 
-  test('non-comparable family prices prefer newest, not cheapest', () {
-    final result = preferredReceiptStatForProduct(mixedMince, [
+  test('non-comparable generic family prices prefer newest, not cheapest', () {
+    const genericMince = Product(
+      id: 'hackfleisch',
+      name: 'Hackfleisch',
+      unit: 'Packung',
+      group: 'fleisch',
+    );
+    final result = preferredReceiptStatForProduct(genericMince, [
       stat(
         family: 'hackfleisch',
         productId: 'old_a',
