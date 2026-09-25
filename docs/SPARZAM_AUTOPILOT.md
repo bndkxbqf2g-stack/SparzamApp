@@ -45,7 +45,7 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [ ] Angebotspreise vs. Normalpreise konsistent behandeln
 - [ ] Angebotsquellen automatisiert importieren: Händler, Bild, Gültigkeit, Produktidentität
 - [ ] Angebote per + direkt in die Einkaufsliste übernehmen
-- [ ] ausgewiesenen Normalpreis eines Angebots nur als bestätigte Preisbasis speichern
+- [x] ausgewiesenen Normalpreis eines Angebots nur als bestätigte Preisbasis speichern
 - [ ] UI klar zwischen historischem Hinweis und route-tauglichem Planungspreis unterscheiden
 
 ### Phase 3 – Einkaufslisten- und Preis-Matrix
@@ -137,3 +137,11 @@ Die Einkaufsliste muss als primäre Preisoberfläche dieselben route-tauglichen 
 Zielbild für die nächsten Blöcke: hierarchischer, erweiterbarer Produktkatalog statt einer endlosen flachen Aliasliste; Suche liefert mögliche Interpretationen; bekannte Bon-/Preis-/Angebotsdaten werden darunter eingeordnet. Danach Angebotsimport mit Bild und Gültigkeit sowie +‑Übernahme in die Einkaufsliste und expliziter Normalpreisbestätigung. Die Route bewertet den gesamten Warenkorb gegen 1/2/3 Märkte inklusive Fahrtkosten und Angebotsvorteil.
 
 Nächster sicherer Schritt nach grüner CI: den Such-/Katalogpfad auf diese hierarchische Produktauflösung umstellen und Quellpriorität sowie Angebot/Normalpreis absichern. Die sechs fehlenden Originalbelege bleiben ein Datenblocker nur für die vollständige reale Produkt×Markt-Matrix und daraus abgeleitete reale 1/2/3-Markt-Tests.
+
+
+## Update 25.09.2026 – Such- und Angebotsblock
+Die Einkaufssuche nutzt jetzt die vorhandene Identitätslogik auch als sichtbare Hierarchie. Identitätskompatible Produkte bleiben die primären Treffer; verwandte, aber andere Familien werden separat als Interpretationen angeboten. Im Referenzfall „Tomate“ werden damit frische Varianten nicht mit Tomatenmark/Passata als Preisidentität vermischt.
+
+Externe Angebote benötigen für eine belastbare Preisbeobachtung einen `proofRef`. Ohne Nachweis bleibt ihre Identitäts-Confidence 0; manuell eingegebene Angebote gelten weiterhin als explizite Nutzerbestätigung.
+
+Nächster sicherer Schwerpunkt: reale Angebots-/Prospektdaten in den bereits abgesicherten Importvertrag einspeisen und danach die Produkt×Markt-Abdeckung bzw. `dataGap`-Priorisierung ausbauen. Die zwei weiterhin fehlenden Originalbons bleiben ein separater Datenblocker und werden nicht erraten.

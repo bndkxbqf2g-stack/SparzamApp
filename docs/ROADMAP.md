@@ -64,7 +64,7 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 
 - [x] Bonbeobachtungen in die gemeinsame Preisbeobachtungshistorie adaptieren, ohne Familienmatches als exakte Produktidentität auszugeben.
 - [x] Angebote mit Gültigkeit in die gemeinsame Preisbeobachtungshistorie adaptieren und abgelaufene Angebote aus der exakten Routenprojektion ausschließen.
-- [ ] **Nächstes Work-Paket:** Packungs-/Mengengleichheit und Variantenvergleichbarkeit zentral prüfen, bevor Beobachtungen gegeneinander gerankt werden.
+- [x] Packungs-/Mengengleichheit und Variantenvergleichbarkeit werden zentral vor dem Preisranking geprüft.
 
 
 ## WORK QUEUE
@@ -103,3 +103,12 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - Ein im Audit verbliebener Projektionsfehler wurde behoben: mehrere exakte Beobachtungen derselben Produkt×Markt-Kombination werden vor der Route nicht mehr blind auf den neuesten Zeitstempel reduziert. Die Auswahl verwendet jetzt zentral denselben qualitätsbereinigten Preiswert wie der Route-Resolver.
 - Die vollständige Sieben-Bon-Matrix bleibt separat offen, weil zwei im UI sichtbare Originalbelege weiterhin nicht als Quelldatei vorliegen. Dieser Datenblocker wird nicht durch erfundene Parserannahmen umgangen.
 - Nächster Featureblock nach nachweislich grüner CI: hierarchische Produkt-/Suchauflösung sowie weitere Absicherung von Quellpriorität und Angebot/Normalpreis.
+
+
+## Update 25.09.2026 – Suchhierarchie und Angebotsnachweis
+- [x] Familie/Variante in der Einkaufssuche sichtbar machen.
+- [x] Verwandte Interpretationen getrennt von identitätskompatiblen Treffern anzeigen; Referenzfall „Tomate“.
+- [x] Externe Angebotsimporte ohne belastbaren Nachweis von exakter Preisprojektion ausschließen.
+- [x] Ausgewiesenen Normalpreis eines belegten Angebots als getrennte reguläre Preisbeobachtung erhalten.
+- [ ] Hierarchie über weitere Produktfamilien systematisch ausbauen; die vollständige Katalogmigration bleibt offen.
+- [ ] Angebotsquellen automatisiert aus realen Prospekten/Bildern einspeisen und Gültigkeit/Filialbezug prüfen.

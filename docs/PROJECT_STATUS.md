@@ -204,3 +204,16 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Exakte Produktidentität behält weiterhin Vorrang vor Familien-Fallback.
 - Ein Regressionstest sichert ab, dass ein älterer, qualitätsbereinigt günstigerer exakter Preis nicht von einem neueren, schlechter bewerteten Preis verdrängt wird.
 - Der End-to-End-Audit der aktuellen Preis-/Routenpipeline ist damit bis zu den dokumentierten Originaldaten-Grenzen abgeschlossen. Die vollständige Sieben-Bon-Matrix bleibt wegen fehlender Originalbelege separat offen.
+
+
+## Update 25.09.2026 – Hierarchische Suchinterpretationen
+- Die Einkaufssuche zeigt die bestehende Produktidentität jetzt als Familie → Variante, z. B. `Tomaten › Rispe` oder `Milch › H-Milch · 3,5 %`.
+- Primäre Treffer bleiben weiterhin identitätskompatibel. Bei „Tomate“ bleiben frische Tomatenvarianten echte Treffer.
+- Verwandte, aber fachlich andere Produkte wie Tomatenmark und Passata werden separat unter „Weitere Interpretationen“ angeboten und nicht in dieselbe Preisidentität hochgestuft.
+- Die Darstellung baut auf der zentralen Produktidentitätslogik auf und führt keine neue Alias-Sonderliste als Matching-Grundlage ein.
+
+## Update 25.09.2026 – Externe Angebote benötigen Preisnachweis
+- Manuell eingegebene Angebote bleiben als explizite Nutzerbestätigung nutzbar.
+- Externe Händler-/Prospektimporte werden nur noch als aufgelöste Angebote akzeptiert, wenn ein echter `proofRef` vorhanden ist.
+- Externe Angebots- und Normalpreisbeobachtungen ohne Nachweis erhalten zusätzlich Identitäts-Confidence 0 und können dadurch nicht als exakter Routenpreis projiziert werden.
+- Angebotspreis und ausgewiesener Normalpreis bleiben getrennte Beobachtungen; Gültigkeit und Herkunft bleiben erhalten.
