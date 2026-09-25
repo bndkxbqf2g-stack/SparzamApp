@@ -123,7 +123,7 @@ Explizite Nutzerzuordnungen bilden ein Lernsignal aus Händler + normalisierter 
 
 ## 3. Historische Bonpreis-Statistik
 
-Bonbeobachtungen werden standardmäßig über ein Fenster von **90 Tagen** betrachtet. Rabattierte Beobachtungen werden aus dem Normalpreis-Median ausgeschlossen.
+Bonbeobachtungen werden für historische Hinweise und Statistiken standardmäßig über ein Fenster von **90 Tagen** betrachtet. Für die konkrete Routenplanung sind Bonpreise wegen der Frischeprüfung jedoch nur bis 30 Tage routenfähig; ältere Beobachtungen bleiben sichtbar, fließen aber nicht mehr in die Routenentscheidung ein. Rabattierte Beobachtungen werden aus dem Normalpreis-Median ausgeschlossen.
 
 Gruppierung:
 1. Ist eine konkrete Produkt-ID vorhanden, wird nach Produkt-ID + Markt aggregiert.
