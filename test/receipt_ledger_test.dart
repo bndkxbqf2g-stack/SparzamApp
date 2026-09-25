@@ -65,4 +65,33 @@ Datum:23.07.26 Zeit: 10:00 Bon:1
     expect(first.fingerprint, second.fingerprint);
     expect(first.fingerprint, isNot(third.fingerprint));
   });
+  test('recognizes EDEKA Frischemarkt receipt and reconciles euro total', () {
+    final draft = parseReceiptLedger('''
+Frischemarkt Trabold
+Würzburger Str. 100
+97225 Zellingen
+EUR
+COLUMBUS HUELSEN 2,65*B
+AM.SP.TABAK 6,30*B
+PUEBLO CLASSIC 6,50*B
+BLANCHET BL.0,25L 1,69 B
+G&G STREICHFETT 1,09 A
+Beleg Wurst/Schinken BED / PREPACK2,16
+OETK.CREME LEGERE1,39 € x 2 2,78 A
+G&G HAEHNCHENBRUST 1,49 A
+G&G SCHOKOL.ALP.M. 0,99 A
+Posten: 10 ----------
+SUMME € 25,65
+Datum 17.01.26 10:44 Uhr
+AUF WIEDERSEHEN BEI EDEKA
+''');
+
+    expect(draft.retailer, 'EDEKA');
+    expect(draft.receiptDate, DateTime(2026, 1, 17));
+    expect(draft.totalCents, 2565);
+    expect(draft.calculatedCents, 2565);
+    expect(draft.unresolvedLines, isEmpty);
+    expect(draft.balances, isTrue);
+  });
+
 }
