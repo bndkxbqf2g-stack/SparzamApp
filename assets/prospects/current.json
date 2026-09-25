@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-25T21:03:47.191881Z",
+  "generatedAt": "2026-09-25T21:04:45.906968Z",
   "sources": [
     {
       "id": "aldi_sued",
@@ -15,7 +15,7 @@
       "storeName": "EDEKA",
       "url": "https://www.edeka.de/maerkte/023738/",
       "status": "ok",
-      "recordCount": 21,
+      "recordCount": 11,
       "prospects": []
     },
     {
@@ -257,16 +257,6 @@
       "proofRef": "https://www.edeka.de/maerkte/023738/#offer-70bcf87c9d1250bb4a46"
     },
     {
-      "sourceId": "1b92138e88e6f2d0b18e",
-      "productLabel": "Havana Club Rum ab 21.09.",
-      "storeName": "EDEKA",
-      "offerPrice": 10.99,
-      "validFrom": "2026-09-21",
-      "validUntil": "2026-09-26",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-1fc2eef9f8922376b0b7"
-    },
-    {
       "sourceId": "5f24cec096f7bd0cbb4d",
       "productLabel": "Rotkäppchen Sekt, Fruchtsecco oder Alkoholfrei",
       "storeName": "EDEKA",
@@ -275,16 +265,6 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.edeka.de/maerkte/023738/#offer-fd26998a0360245cf8a1"
-    },
-    {
-      "sourceId": "689b638a9f34acb5267a",
-      "productLabel": "Rotkäppchen Sekt, Fruchtsecco oder Alkoholfrei ab 21.09.",
-      "storeName": "EDEKA",
-      "offerPrice": 1.0,
-      "validFrom": "2026-09-21",
-      "validUntil": "2026-09-26",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-81efb69473ce7b66ffa7"
     },
     {
       "sourceId": "a432f4182f2d0478480f",
@@ -297,24 +277,14 @@
       "proofRef": "https://www.edeka.de/maerkte/023738/#offer-ae4860a8914313e40a3a"
     },
     {
-      "sourceId": "7cb8869cf9dcaa82c5e0",
-      "productLabel": "Asbach Uralt Weinbrand, Coffee & Cream oder Aperitif Rosé* ab 21.09.",
-      "storeName": "EDEKA",
-      "offerPrice": 9.99,
-      "validFrom": "2026-09-21",
-      "validUntil": "2026-09-26",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-943f12825440f04dd2a8"
-    },
-    {
-      "sourceId": "d5a48d863949d045c26e",
-      "productLabel": "MM Extra Sekt ab 24.09.",
+      "sourceId": "0f9c9ed75aa579865304",
+      "productLabel": "MM Extra Sekt",
       "storeName": "EDEKA",
       "offerPrice": 2.77,
-      "validFrom": "2026-09-21",
+      "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-4c0c9a2ada7ed8216c24"
+      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-3eeaacc927748db44d3e"
     },
     {
       "sourceId": "ad106e1f92a00d1a0e7f",
@@ -327,16 +297,6 @@
       "proofRef": "https://www.edeka.de/maerkte/023738/#offer-f52e8631b7e83a834d50"
     },
     {
-      "sourceId": "6717fbff5942bf0b7bba",
-      "productLabel": "Aperol Spritz ab 21.09.",
-      "storeName": "EDEKA",
-      "offerPrice": 6.99,
-      "validFrom": "2026-09-21",
-      "validUntil": "2026-09-26",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-02f2ffc7e2ffbedd22eb"
-    },
-    {
       "sourceId": "83de3d7d6b743ff3c356",
       "productLabel": "Sarti Aperitif Rosa",
       "storeName": "EDEKA",
@@ -345,16 +305,6 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.edeka.de/maerkte/023738/#offer-e0284cde0a83b9c2006e"
-    },
-    {
-      "sourceId": "b5fe82922b757bee3fa1",
-      "productLabel": "Sarti Aperitif Rosa ab 21.09.",
-      "storeName": "EDEKA",
-      "offerPrice": 14.99,
-      "validFrom": "2026-09-21",
-      "validUntil": "2026-09-26",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-dd66cd8080beaa9ec930"
     },
     {
       "sourceId": "cb0197c73217152a123b",
@@ -367,16 +317,6 @@
       "proofRef": "https://www.edeka.de/maerkte/023738/#offer-e5fa0faa19c2dbb62a3f"
     },
     {
-      "sourceId": "2b98118352c934679682",
-      "productLabel": "Three Sixty Vodka ab 21.09.",
-      "storeName": "EDEKA",
-      "offerPrice": 9.99,
-      "validFrom": "2026-09-21",
-      "validUntil": "2026-09-26",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-16eb8faca6dab1e572a7"
-    },
-    {
       "sourceId": "143f501bbbe3a5bfd669",
       "productLabel": "Southern Comfort Likör mit Whiskey",
       "storeName": "EDEKA",
@@ -385,16 +325,6 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.edeka.de/maerkte/023738/#offer-9d304dd655c213feabd2"
-    },
-    {
-      "sourceId": "6ef57574795a6f690270",
-      "productLabel": "Southern Comfort Likör mit Whiskey ab 21.09.",
-      "storeName": "EDEKA",
-      "offerPrice": 9.99,
-      "validFrom": "2026-09-21",
-      "validUntil": "2026-09-26",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-d80d37db961e9fbc4ebf"
     },
     {
       "sourceId": "0ec037051a189ef71a44",
@@ -407,16 +337,6 @@
       "proofRef": "https://www.edeka.de/maerkte/023738/#offer-6b7e7748ac5009a51bd4"
     },
     {
-      "sourceId": "8626b1fcf38edf715ff3",
-      "productLabel": "Brut Dargent Sekt ab 21.09.",
-      "storeName": "EDEKA",
-      "offerPrice": 5.99,
-      "validFrom": "2026-09-21",
-      "validUntil": "2026-09-26",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-4f9ce6a56d67397a1edb"
-    },
-    {
       "sourceId": "7c9f3d60b022e241b9e7",
       "productLabel": "GWF Franken Prädikatswein",
       "storeName": "EDEKA",
@@ -427,16 +347,6 @@
       "proofRef": "https://www.edeka.de/maerkte/023738/#offer-95d9f189c7983a5c3516"
     },
     {
-      "sourceId": "5238d69660d7eb34d739",
-      "productLabel": "GWF Franken Prädikatswein ab 21.09.",
-      "storeName": "EDEKA",
-      "offerPrice": 4.99,
-      "validFrom": "2026-09-21",
-      "validUntil": "2026-09-26",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-06c733ccb45d16652e5b"
-    },
-    {
       "sourceId": "69ca1942daa8d7b32a26",
       "productLabel": "Novantaceppi Primitivo Puglia, Rosato, Bio, Rosso Puglia Appassimento oder Pinot Grigio",
       "storeName": "EDEKA",
@@ -445,16 +355,6 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.edeka.de/maerkte/023738/#offer-9c32cd45712b3eb8dfa0"
-    },
-    {
-      "sourceId": "fa744aeebd98d8166074",
-      "productLabel": "Novantaceppi Primitivo Puglia, Rosato, Bio, Rosso Puglia Appassimento oder Pinot Grigio ab 21.09.",
-      "storeName": "EDEKA",
-      "offerPrice": 4.99,
-      "validFrom": "2026-09-21",
-      "validUntil": "2026-09-26",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-9e94fe51cbbab7941c88"
     },
     {
       "sourceId": "3223b243df5bc6812378",
