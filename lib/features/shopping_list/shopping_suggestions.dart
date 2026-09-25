@@ -18,18 +18,21 @@ List<Product> buildSuggestions({
       .where((product) => product.name.toLowerCase().contains(normalized));
   final queryIdentity = identifyProduct(query);
   final catalogMatches = catalogProducts.where((product) {
-    final textMatch = [
-      product.name,
-      product.group,
-      ...product.aliases,
-    ].any((value) => value.toLowerCase().contains(normalized));
-    if (textMatch) return true;
-    if (!queryIdentity.isKnown) return false;
+    final values = [product.name, product.group, ...product.aliases];
+    final textMatch =
+        values.any((value) => value.toLowerCase().contains(normalized));
+    if (!queryIdentity.isKnown) return textMatch;
 
-    return [product.name, ...product.aliases].any((value) {
-      final candidate = identifyProduct(value);
-      return compatibleProductIdentity(queryIdentity, candidate);
-    });
+    final identities = [product.name, ...product.aliases]
+        .map(identifyProduct)
+        .where((identity) => identity.isKnown)
+        .toList();
+    if (identities.isNotEmpty) {
+      return identities.any(
+        (candidate) => compatibleProductIdentity(queryIdentity, candidate),
+      );
+    }
+    return textMatch;
   });
 
   final seen = <String>{};
