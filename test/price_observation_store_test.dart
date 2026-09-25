@@ -34,6 +34,31 @@ void main() {
     expect(saved.map((item) => item.price), containsAll([0.79, 0.89]));
   });
 
+  test('stable derived evidence can be reinterpreted in place', () async {
+    final store = PriceObservationStore();
+    final old = PriceObservation(
+      id: 'receipt|1', productId: 'tomato', familyKey: 'tomaten',
+      storeName: 'Kaufland', price: 1.29,
+      observedAt: DateTime(2026, 9, 20),
+      source: PriceObservationSource.receipt,
+      identityConfidence: 1,
+    );
+    final revised = PriceObservation(
+      id: 'receipt|1', productId: 'tomato', familyKey: 'tomatenkonserve',
+      storeName: 'Kaufland', price: 1.29,
+      observedAt: DateTime(2026, 9, 20),
+      source: PriceObservationSource.receipt,
+      identityConfidence: 1,
+    );
+
+    await store.append([old]);
+    await store.upsertById([revised]);
+    final saved = await store.load();
+
+    expect(saved, hasLength(1));
+    expect(saved.single.familyKey, 'tomatenkonserve');
+  });
+
   test('record keeps branch, amount, offer validity and proof separately', () {
     final original = PriceObservation(
       id: 'shelf-1', productId: 'milk-15', familyKey: 'milch',
@@ -256,6 +281,24 @@ void main() {
 
     expect(projected, hasLength(1));
     expect(projected.single.storeName, 'Edeka');
+  });
+
+  test('verified leaflet regular price enters route planning', () {
+    final projected = marketPricesFromObservations([
+      PriceObservation(
+        id: 'leaflet-regular',
+        productId: 'chocolate',
+        storeName: 'Lidl',
+        price: 2.19,
+        observedAt: DateTime(2026, 9, 25),
+        source: PriceObservationSource.leaflet,
+        kind: PriceObservationKind.regular,
+        proofRef: 'leaflet:lidl:2026-09-25:p1',
+      ),
+    ], now: DateTime(2026, 9, 25));
+
+    expect(projected, hasLength(1));
+    expect(projected.single.price, 2.19);
   });
 
   test('future offer validity cannot enter route planning early', () {
