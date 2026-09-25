@@ -118,6 +118,10 @@ class RoutePriceResolver {
       (offer) =>
           offer.productId == product.id &&
           offer.storeName == store.name &&
+          (offer.validFrom == null ||
+              !DateTime(today.year, today.month, today.day)
+                  .isBefore(DateTime(offer.validFrom!.year,
+                      offer.validFrom!.month, offer.validFrom!.day))) &&
           !offer.validUntil.isBefore(DateTime(today.year, today.month, today.day)),
     );
 
