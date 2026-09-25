@@ -144,7 +144,7 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Eigene Marktpreise: 0 % bis 30 Tage, danach 5 %. Bonpreise: 5 % bis 30 Tage, 15 % bis 60 Tage, danach 25 %; erkannter Artikelrabatt +10 Prozentpunkte. Open Prices: 5 % bis 7 Tage, danach 10 %. Hinterlegte Katalogbeispiele ohne Beleg: 15 %. Aktuelle passende Angebote: 0 %. Prozentwerte sind Vorsichtsregeln, keine behauptete Preisschwankungsstatistik.
 - Ein alter rabattierter Einzelpreis allein kann so keine zusätzliche Marktfahrt auslösen, wenn sein nomineller Vorteil die Unsicherheit und die tatsächlichen Fahrtkosten nicht deckt. Ein größerer Vorteil im gesamten Warenkorb kann ihn weiterhin überwiegen.
 - Neu importierte rabattierte Bonbeobachtungen behalten das Rabattmerkmal auch in der Marktpreispipeline. Alte gespeicherte direkte Marktpreise ohne Rabattmerkmal bleiben als solche unbekannt; die Bonhistorie trägt das Merkmal weiterhin.
-- Familienbeobachtungen aus Bons bleiben bis 90 Tage für die Planung verfügbar. Ältere Belege wie der Schmand-Bon erhalten den höheren Unsicherheitsaufschlag und gelten nicht als sicher aktueller Regalpreis.
+- Familienbeobachtungen aus Bons werden bis 90 Tage für historische Hinweise/Statistiken berücksichtigt. Für die konkrete Routenplanung sind Bonpreise wegen der zentralen Frischegrenze nur bis 30 Tage routenfähig; ältere Belege bleiben sichtbar, verändern aber den Routen-Score nicht.
 - Nächster Schritt: Packungs-/Mengengleichheit und echte Verfügbarkeit je Markt weiter absichern, dann Unsicherheitsregeln anhand realer Preisverläufe kalibrieren.
 
 ## Update 24.09.2026 – Einstieg in die hybride Preisbasis
