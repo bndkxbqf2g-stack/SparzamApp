@@ -341,6 +341,30 @@ void main() {
     expect(prices, isEmpty);
   });
 
+  test('does not route receipt family prices dated in the future', () {
+    final now = DateTime(2026, 9, 25);
+    final prices = receiptFamilyMarketPrices(
+      now: now,
+      items: [
+        ListItem(product: const Product(
+          id: 'schmand', name: 'Schmand', unit: 'Becher',
+          group: 'milchprodukte',
+        )),
+      ],
+      observations: [
+        ReceiptObservation(
+          id: 'future-schmand', receiptFingerprint: 'future-receipt',
+          rowLine: 1, rawLabel: 'Schmand', familyKey: 'schmand',
+          storeName: 'Lidl', observedAt: DateTime(2026, 9, 26),
+          totalPrice: 0.49, quantity: null, quantityUnit: '',
+          unitPrice: null, discounted: false,
+        ),
+      ],
+    );
+
+    expect(prices, isEmpty);
+  });
+
   test('does not route receipt family prices older than the receipt freshness window', () {
     final now = DateTime(2026, 9, 25);
     final prices = receiptFamilyMarketPrices(
