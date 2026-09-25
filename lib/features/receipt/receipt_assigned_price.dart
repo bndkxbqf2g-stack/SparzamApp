@@ -9,7 +9,10 @@ MarketPrice? assignedReceiptPrice({
   required ReceiptDraft draft,
   required ReceiptRow row,
   required Product product,
+  required bool identityConfirmed,
 }) {
+  if (!identityConfirmed) return null;
+
   final milk = assignedKauflandMilkPrice(
     draft: draft,
     row: row,
