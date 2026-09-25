@@ -29,7 +29,7 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [x] Frisch-/Konserven-Tomaten in der Route trennen
 - [ ] reale sieben Bons als strukturierte Produkt×Markt-Testmatrix absichern
 - [ ] weitere häufige Händlerkürzel generalisiert abdecken
-- [ ] Identitäts-Konfidenz und Ablehnungsgrund sichtbar/testbar machen
+- [x] Identitäts-Konfidenz und Ablehnungsgrund sichtbar/testbar machen
 - [x] Store-Namen zwischen Bon, Open Prices und Marktmodell kanonisieren
 - [ ] fehlende/mehrdeutige Produktidentitäten sauber als unsicher behandeln
 
@@ -127,4 +127,4 @@ Der End-to-End-Audit hat drei konkrete Identitäts-Bypässe geschlossen: Eine bl
 
 Die reale Bon-Matrix ist in `docs/REAL_RECEIPT_MATRIX.md` begonnen. Der im Repository eindeutig belegte Kaufland-Schmand-Fall vom 23.07.2026 wird jetzt über `ReceiptObservation → PriceObservation → MarketPrice → planningMarketPrices → RoutePriceResolver → RouteOptimizer` getestet. Für sechs weitere Originalbons fehlen im Repository weiterhin eindeutig rekonstruierbare Original-Fixtures; deshalb bleibt der Roadmap-Punkt „sieben reale Bons“ offen und es wurden keine fehlenden Preise ergänzt.
 
-Nächster sicherer Schritt nach grüner CI: die sechs fehlenden Originalbelege ergänzen, danach die vollständige Produkt×Markt-Matrix und realistische 1/2/3-Markt-End-to-End-Tests daraus ableiten. Unabhängig davon kann die sichtbare Identitäts-Konfidenz/Ablehnungsbegründung weiter ausgebaut werden.
+Nächster sicherer Schritt nach grüner CI: fehlende/mehrdeutige Produktidentitäten weiter auditieren und Quellpriorität sowie Angebot/Normalpreis absichern. Die sechs fehlenden Originalbelege bleiben ein Datenblocker nur für die vollständige reale Produkt×Markt-Matrix und daraus abgeleitete reale 1/2/3-Markt-Tests.
