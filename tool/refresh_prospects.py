@@ -230,11 +230,17 @@ def main():
             offers, prospects = PARSERS[parser_name](body, url)
             metadata_only = parser_name == "lidl"
             if not offers and not metadata_only:
+                lower_body = body.lower()
+                marker = lower_body.find("festpreis")
+                snippet = ""
+                if marker >= 0:
+                    snippet = clean(re.sub(r"<[^>]+>", " ", body[max(0, marker - 180):marker + 260]))
                 diagnostics = (
                     "html=" + str(len(body)) +
-                    ", angebot=" + str(body.lower().count("angebot")) +
-                    ", festpreis=" + str(body.lower().count("festpreis")) +
-                    ", offer=" + str(body.lower().count("offer"))
+                    ", angebot=" + str(lower_body.count("angebot")) +
+                    ", festpreis=" + str(lower_body.count("festpreis")) +
+                    ", offer=" + str(lower_body.count("offer")) +
+                    ", sample=" + snippet[:120]
                 )
                 raise ValueError("keine sicher extrahierbaren Angebote gefunden; " + diagnostics)
             all_offers.extend(offers)
