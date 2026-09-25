@@ -14,29 +14,40 @@ class NormalizedQuantity {
 
 NormalizedQuantity? normalizeQuantity(double? amount, String? unit) {
   if (amount == null || !amount.isFinite || amount <= 0) return null;
-  final normalized = unit?.trim().toLowerCase();
+  final normalized = _normalizeUnit(unit);
   return switch (normalized) {
-    'g' => NormalizedQuantity(
+    'g' || 'gram' || 'grams' || 'gramm' => NormalizedQuantity(
         amount: amount / 1000,
         dimension: QuantityDimension.mass,
         baseUnit: 'kg',
       ),
-    'kg' => NormalizedQuantity(
+    'kg' || 'kilogram' || 'kilograms' || 'kilogramm' => NormalizedQuantity(
         amount: amount,
         dimension: QuantityDimension.mass,
         baseUnit: 'kg',
       ),
-    'ml' => NormalizedQuantity(
+    'ml' ||
+    'milliliter' ||
+    'millilitre' ||
+    'milliliters' ||
+    'millilitres' => NormalizedQuantity(
         amount: amount / 1000,
         dimension: QuantityDimension.volume,
         baseUnit: 'l',
       ),
-    'l' => NormalizedQuantity(
+    'l' || 'liter' || 'litre' || 'liters' || 'litres' => NormalizedQuantity(
         amount: amount,
         dimension: QuantityDimension.volume,
         baseUnit: 'l',
       ),
-    'st' || 'stk' || 'stück' || 'stueck' => NormalizedQuantity(
+    'st' ||
+    'stk' ||
+    'stück' ||
+    'stueck' ||
+    'pc' ||
+    'pcs' ||
+    'piece' ||
+    'pieces' => NormalizedQuantity(
         amount: amount,
         dimension: QuantityDimension.count,
         baseUnit: 'Stk',
@@ -44,6 +55,12 @@ NormalizedQuantity? normalizeQuantity(double? amount, String? unit) {
     _ => null,
   };
 }
+
+String? _normalizeUnit(String? unit) => unit
+    ?.trim()
+    .toLowerCase()
+    .replaceAll('.', '')
+    .replaceAll(RegExp(r'\s+'), ' ');
 
 bool quantitiesComparable({
   required double? leftAmount,

@@ -2,6 +2,8 @@ import '../../models/receipt_observation.dart';
 import 'receipt_ledger.dart';
 import 'receipt_price_review.dart';
 import '../catalog/product_family.dart';
+import '../../data/stores.dart';
+import '../../services/store_identity.dart';
 
 List<ReceiptObservation> buildReceiptObservations({
   required ReceiptDraft draft,
@@ -17,6 +19,7 @@ List<ReceiptObservation> buildReceiptObservations({
       .map((row) => row.linkedItemLine)
       .whereType<int>()
       .toSet();
+  final storeName = canonicalStoreName(draft.retailer, stores) ?? draft.retailer!;
 
   return draft.rows
       .where((row) => row.kind == ReceiptRowKind.item)
@@ -26,7 +29,7 @@ List<ReceiptObservation> buildReceiptObservations({
             rowLine: row.line,
             rawLabel: row.label,
             familyKey: inferReceiptFamily(row.label),
-            storeName: draft.retailer!,
+            storeName: storeName,
             observedAt: draft.receiptDate!,
             totalPrice: row.cents / 100,
             quantity: row.quantity,

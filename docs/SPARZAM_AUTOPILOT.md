@@ -30,7 +30,7 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [ ] reale sieben Bons als strukturierte Produkt×Markt-Testmatrix absichern
 - [ ] weitere häufige Händlerkürzel generalisiert abdecken
 - [ ] Identitäts-Konfidenz und Ablehnungsgrund sichtbar/testbar machen
-- [ ] Store-Namen zwischen Bon, Open Prices und Marktmodell kanonisieren
+- [x] Store-Namen zwischen Bon, Open Prices und Marktmodell kanonisieren
 - [ ] fehlende/mehrdeutige Produktidentitäten sauber als unsicher behandeln
 
 ### Phase 2 – Preisquellen und Vergleichbarkeit
@@ -39,7 +39,7 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [x] 30-Tage-Fenster für route-taugliche Receipt-Preise
 - [x] ältere Receipt-Daten für Historie behalten
 - [x] Paketgrößen normalisieren
-- [ ] Vergleichbarkeit für Stück/Gewicht/Volumen systematisch härten
+- [x] Vergleichbarkeit für Stück/Gewicht/Volumen systematisch härten
 - [ ] Marktpreis-Konfidenz und Preisbasis vereinheitlichen
 - [ ] Quellpriorität vollständig mit Tests absichern
 - [ ] Angebotspreise vs. Normalpreise konsistent behandeln
@@ -122,5 +122,7 @@ Nur **Status prüfen**. Keine neue Feature-Entwicklung und keine eigenständige 
 - `N`: normaler Entwicklungsblock für beide aktiven Projekte
 - `U`: nur Status beider aktiven Projekte prüfen
 
-## Aktueller nächster Schwerpunkt
-Nach grüner CI: Produkt-/Markt-Evidenzmatrix auf Basis der realen Bons weiter absichern, Store-Namen kanonisieren und anschließend realistische Mehrmarkt-End-to-End-Routentests ergänzen.
+## Wiedereinstieg nach dem aktuellen Entwicklungsblock
+Store-Namen werden für Bonbeobachtungen und Open-Prices-Importe auf konfigurierte Märkte aufgelöst; ähnliche, nicht passende Namen werden abgelehnt. Mengenangaben normalisieren zusätzlich gebräuchliche metrische Langformen und Stück-Schreibweisen, ohne unbekannte Packungsarten vergleichbar zu machen.
+
+Als Nächstes die **sieben realen Bons** als strukturierte Produkt×Markt-Testmatrix absichern. Dafür die vorhandenen Belege/Fixtures verwenden und fehlende Originalbelege anfordern statt Preise zu ergänzen. Danach Identitäts-Konfidenz und Ablehnungsgrund sichtbar/testbar machen und realistische Mehrmarkt-End-to-End-Tests aus denselben belegten Daten ergänzen.

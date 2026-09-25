@@ -163,6 +163,38 @@ void main() {
     service.close();
   });
 
+  test('ähnliche Namen werden nicht als konfigurierter Markt importiert', () async {
+    final client = MockClient((_) async => http.Response(
+      jsonEncode({
+        'items': [
+          {
+            'id': 14,
+            'product_code': '1234567890123',
+            'currency': 'EUR',
+            'price_is_discounted': false,
+            'price_per': 'UNIT',
+            'price': 3.99,
+            'date': '2026-09-20',
+            'location': {
+              'osm_brand': 'Lidl-Museum',
+              'osm_name': 'Lidl-Museum',
+              'osm_address_city': 'Zellingen',
+            },
+          },
+        ],
+      }), 200));
+    final service = OpenPricesService(client: client);
+
+    final result = await service.fetchRecentPrices(
+      product: product,
+      stores: stores,
+      now: DateTime(2026, 9, 22),
+    );
+
+    expect(result, isEmpty);
+    service.close();
+  });
+
   test('gleiche Kette in anderer Stadt wird nicht als lokaler Preis genutzt',
       () async {
     final service = OpenPricesService(

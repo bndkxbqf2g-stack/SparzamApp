@@ -19,6 +19,24 @@ void main() {
         closeTo(1.98, 0.0001));
   });
 
+  test('metric unit spellings normalize to the same package basis', () {
+    expect(quantitiesComparable(
+      leftAmount: 1000, leftUnit: ' Gramm ',
+      rightAmount: 1, rightUnit: 'KG.'), isTrue);
+    expect(normalizedUnitPrice(price: 1.25, amount: 500, unit: 'Milliliter'),
+        closeTo(2.5, 0.0001));
+    expect(quantitiesComparable(
+      leftAmount: 1, leftUnit: 'Liter',
+      rightAmount: 1000, rightUnit: 'ml'), isTrue);
+  });
+
+  test('piece-count spellings normalize but packages stay unknown', () {
+    expect(quantitiesComparable(
+      leftAmount: 6, leftUnit: 'Stk.',
+      rightAmount: 6, rightUnit: 'pieces'), isTrue);
+    expect(normalizeQuantity(1, 'Packung'), isNull);
+  });
+
   test('mass and count are not comparable', () {
     expect(quantitiesComparable(
       leftAmount: 200, leftUnit: 'g', rightAmount: 1, rightUnit: 'Stk'), isFalse);
