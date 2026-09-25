@@ -67,6 +67,7 @@ class ShoppingGroupCard extends StatelessWidget {
                     _ShoppingItemCard(
                       item: item,
                       offers: offers,
+                      marketPrices: marketPrices,
                       priceObservations: priceObservations,
                       receiptPriceStats: receiptPriceStats,
                       enabledStoreNames: enabledStoreNames,
@@ -115,6 +116,7 @@ class _ShoppingItemCard extends StatelessWidget {
     required this.item,
     required this.checked,
     required this.offers,
+    required this.marketPrices,
     required this.priceObservations,
     required this.receiptPriceStats,
     required this.enabledStoreNames,
@@ -127,6 +129,7 @@ class _ShoppingItemCard extends StatelessWidget {
   final ListItem item;
   final bool checked;
   final List<Offer> offers;
+  final List<MarketPrice> marketPrices;
   final List<MarketPrice> priceObservations;
   final List<ReceiptPriceStat> receiptPriceStats;
   final List<String> enabledStoreNames;
@@ -177,7 +180,7 @@ class _ShoppingItemCard extends StatelessWidget {
                 ReceiptFamilyPriceHint(product: item.product, stats: receiptPriceStats),
                 ShoppingPriceBadge(
                   item: item,
-                  prices: priceObservations,
+                  prices: marketPrices,
                   offers: offers,
                   enabledStores: enabledStoreNames,
                   onOpenOffer: onOpenOffer,
@@ -284,7 +287,7 @@ class _ShoppingItemTile extends StatelessWidget {
           ReceiptFamilyPriceHint(product: item.product, stats: receiptPriceStats),
           ShoppingPriceBadge(
             item: item,
-            prices: priceObservations,
+            prices: marketPrices,
             offers: offers,
             enabledStores: enabledStoreNames,
             onOpenOffer: onOpenOffer,
