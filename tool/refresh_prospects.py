@@ -17,6 +17,9 @@ SOURCES = (
     ("edeka_zellingen", "EDEKA", "https://www.edeka.de/maerkte/023738/", "edeka"),
     ("kaufland_grombuehl", "Kaufland", "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html", "kaufland"),
     ("lidl_zellingen", "Lidl", "https://www.lidl.de/c/online-prospekte/s10005610/", "lidl"),
+    ("penny_retzbach", "PENNY", "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1", "penny"),
+    ("netto_thuengersheim", "Netto", "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371", "netto"),
+    ("rewe_veitshoechheim", "REWE", "https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1/", "rewe"),
 )
 
 class VisibleTextParser(HTMLParser):
@@ -329,6 +332,120 @@ def parse_lidl(html_text, base_url):
 
     return [], prospects[:8]
 
+
+def parse_penny(html_text, base_url):
+    page = parsed(html_text)
+    valid_from, valid_until = current_week()
+    offers = []
+    price_re = re.compile(r"(?:Streichpreis|UVP)\s+(\d+[,.]\d{2})\s*€.*?Angebotspreis\s+(\d+[,.]\d{2})\s*€", re.I)
+    sale_re = re.compile(r"Angebotspreis\s+(\d+[,.]\d{2})\s*€", re.I)
+    for href, text in page.anchors:
+        if "angebotspreis" not in text.lower():
+            continue
+        sale_match = sale_re.search(text)
+        if sale_match is None:
+            continue
+        sale = money(sale_match.group(1))
+        original = None
+        regular_match = price_re.search(text)
+        if regular_match:
+            original = money(regular_match.group(1))
+        tail = text[sale_match.end():]
+        tail = re.sub(r"^\s*\d+[,.]\d{2}\s*", "", tail)
+        tail = re.sub(r"^\s*(?:Aktion|-\d{1,2}%[^\w]*)\s*", "", tail, flags=re.I)
+        label = re.split(r"\*?\s+je\s+", tail, maxsplit=1, flags=re.I)[0]
+        label = clean(label.replace("*", " "))
+        if len(label) < 2:
+            continue
+        offers.append(record(
+            "PENNY", label, sale, valid_from, valid_until,
+            urljoin(base_url, href), original,
+        ))
+    return dedupe(offers), []
+
+
+def _netto_money(value):
+    normalized = value.replace("–", "00").replace("-", "00")
+    if normalized.endswith("."):
+        normalized += "00"
+    return money(normalized)
+
+
+def parse_netto(html_text, base_url):
+    page = parsed(html_text)
+    whole = "\n".join(page.lines)
+    validity = re.search(
+        r"gültig von Montag,\s*(\d{2}\.\d{2}\.\d{2,4})\s*-\s*Samstag,\s*(\d{2}\.\d{2}\.\d{2,4})",
+        whole,
+        flags=re.I,
+    )
+    valid_from, valid_until = current_week()
+    if validity:
+        for index, value in enumerate(validity.groups()):
+            fmt = "%d.%m.%y" if len(value.rsplit(".", 1)[-1]) == 2 else "%d.%m.%Y"
+            parsed_value = datetime.strptime(value, fmt).date()
+            if index == 0:
+                valid_from = parsed_value
+            else:
+                valid_until = parsed_value
+
+    offers = []
+    trailing = re.compile(
+        r"^(.*?)(?:-\d{1,2}\s*%\s*)?(?:statt|UVP)\s+"
+        r"(\d+[,.]\d{2})\s+(\d+(?:[,.]\d{2}|[.–-]))\*?$",
+        re.I,
+    )
+    for href, text in page.anchors:
+        match = trailing.match(clean(text))
+        if match is None:
+            continue
+        label = clean(match.group(1))
+        regular = money(match.group(2))
+        sale = _netto_money(match.group(3))
+        if len(label) < 2:
+            continue
+        offers.append(record(
+            "Netto", label, sale, valid_from, valid_until,
+            urljoin(base_url, href), regular,
+        ))
+    return dedupe(offers), []
+
+
+def parse_rewe(html_text, base_url):
+    page = parsed(html_text)
+    valid_from, valid_until = current_week()
+    whole = "\n".join(page.lines)
+    validity = re.search(
+        r"(\d{1,2}\.\d{1,2}\.)\s*bis\s*(\d{1,2}\.\d{1,2}\.)",
+        whole,
+        flags=re.I,
+    )
+    if validity:
+        year = date.today().year
+        start = datetime.strptime(validity.group(1) + str(year), "%d.%m.%Y").date()
+        end = datetime.strptime(validity.group(2) + str(year), "%d.%m.%Y").date()
+        valid_from, valid_until = start, end
+
+    offers = []
+    for index, line in enumerate(page.lines):
+        if not line.startswith("### "):
+            continue
+        label = clean(line[4:])
+        if not label or label.lower().startswith(("gültig", "der angebots", "top-")):
+            continue
+        block = " ".join(page.lines[index + 1:index + 7])
+        price = re.search(r"\b(\d+[,.]\d{2})\s*€", block)
+        if price is None:
+            continue
+        if "aktion" not in block.lower() and "knaller" not in block.lower():
+            continue
+        proof = base_url + "#offer-" + stable_id("REWE", base_url, label)
+        offers.append(record(
+            "REWE", label, money(price.group(1)), valid_from, valid_until, proof,
+        ))
+    return dedupe(offers), []
+
+
 def dedupe(offers):
     unique = {}
     for item in offers:
@@ -336,7 +453,15 @@ def dedupe(offers):
         unique[key] = item
     return list(unique.values())
 
-PARSERS = {"aldi": parse_aldi, "edeka": parse_edeka, "kaufland": parse_kaufland, "lidl": parse_lidl}
+PARSERS = {
+    "aldi": parse_aldi,
+    "edeka": parse_edeka,
+    "kaufland": parse_kaufland,
+    "lidl": parse_lidl,
+    "penny": parse_penny,
+    "netto": parse_netto,
+    "rewe": parse_rewe,
+}
 
 def load_previous():
     if not OUTPUT.exists():

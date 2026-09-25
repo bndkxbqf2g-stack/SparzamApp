@@ -63,6 +63,57 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(offers[0]["offerPrice"], 0.39)
         self.assertEqual(offers[0]["originalPrice"], 0.49)
 
+
+    def test_penny_keeps_public_offer_and_stated_regular_price(self):
+        html = """
+        <a href="/angebot/gyros">
+          Streichpreis 7.45 € Angebotspreis 5.99 € 5.99 -19%
+          MITAKOS Hähnchengyros* je 750 g (1 kg = 7.99)
+        </a>
+        """
+        offers, _ = refresh.parse_penny(
+            html,
+            "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1",
+        )
+        self.assertEqual(len(offers), 1)
+        self.assertEqual(offers[0]["productLabel"], "MITAKOS Hähnchengyros")
+        self.assertEqual(offers[0]["offerPrice"], 5.99)
+        self.assertEqual(offers[0]["originalPrice"], 7.45)
+
+    def test_netto_reads_stated_regular_and_offer_price(self):
+        html = """
+        <p>Filial-Angebote gültig von Montag, 21.09.26 - Samstag, 26.09.26</p>
+        <a href="/angebot/paprika">
+          Paprika-Mix 500 g 2.98 / kg Niederlande / Spanien, Kl. I
+          -16 % statt 1.79 1.49*
+        </a>
+        """
+        offers, _ = refresh.parse_netto(
+            html,
+            "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371",
+        )
+        self.assertEqual(len(offers), 1)
+        self.assertEqual(offers[0]["offerPrice"], 1.49)
+        self.assertEqual(offers[0]["originalPrice"], 1.79)
+        self.assertEqual(offers[0]["validFrom"], "2026-09-21")
+        self.assertEqual(offers[0]["validUntil"], "2026-09-26")
+
+    def test_rewe_reads_public_action_price(self):
+        html = """
+        <p>Diese Woche 21.9. bis 27.9.</p>
+        <h3>Dr. Oetker Ristorante Pizza Salame</h3>
+        <p>tiefgefroren, je 320-g-Pckg.</p>
+        <p>Knaller</p>
+        <p>1,79 €</p>
+        """
+        offers, _ = refresh.parse_rewe(
+            html,
+            "https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1/",
+        )
+        self.assertEqual(len(offers), 1)
+        self.assertEqual(offers[0]["productLabel"], "Dr. Oetker Ristorante Pizza Salame")
+        self.assertEqual(offers[0]["offerPrice"], 1.79)
+
     def test_kaufland_extracts_sale_and_regular_price(self):
         html = """<p>Gültig vom 24.09.2026 bis 30.09.2026</p><a href="/angebot/bananen">Ecuador./kolumb. Bananen, lose je kg-31%0.88 1.29</a>"""
         offers, _ = refresh.parse_kaufland(html, "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html")
