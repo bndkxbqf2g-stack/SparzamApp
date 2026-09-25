@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-25T20:56:15.323994Z",
+  "generatedAt": "2026-09-25T20:59:02.830630Z",
   "sources": [
     {
       "id": "aldi_sued",
@@ -16,7 +16,7 @@
       "url": "https://www.edeka.de/maerkte/023738/",
       "status": "error",
       "recordCount": 0,
-      "error": "keine sicher extrahierbaren Angebote gefunden; html=379530, angebot=146, festpreis=22, offer=25"
+      "error": "keine sicher extrahierbaren Angebote gefunden; html=379476, angebot=146, festpreis=22, offer=25, sample=x font-display text-white text-lg rounded-lg flex sm:text-2xl z-10 pointer-events-none bg-red-700\"> 10.99 Festpreis von"
     },
     {
       "id": "kaufland_grombuehl",
