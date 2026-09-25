@@ -36,14 +36,8 @@ class RoutePriceResolver {
     this.now,
     List<MarketPrice> marketPrices = const <MarketPrice>[],
   }) : marketPrices = _preferredPrices(marketPrices, now ?? DateTime.now()),
-        observedProductPrices = {
-          for (final price in marketPrices)
-            price.productId: [
-              ...marketPrices
-                  .where((candidate) => candidate.productId == price.productId)
-                  .map((candidate) => candidate.price),
-            ],
-        };
+        observedProductPrices =
+            _observedPrices(marketPrices, now ?? DateTime.now());
 
   final List<Offer> offers;
   final DateTime? now;
@@ -160,6 +154,26 @@ class RoutePriceResolver {
       }
     }
     return selected;
+  }
+
+  static Map<String, List<double>> _observedPrices(
+      List<MarketPrice> input, DateTime now) {
+    final eligible = input.where((price) {
+      if (!price.price.isFinite || price.price <= 0) return false;
+      if (price.source == MarketPriceSource.receipt &&
+          !price.isUsable(now: now, openPricesMaxAgeDays: 36500)) {
+        return false;
+      }
+      return true;
+    }).toList();
+    return {
+      for (final price in eligible)
+        price.productId: [
+          ...eligible
+              .where((candidate) => candidate.productId == price.productId)
+              .map((candidate) => candidate.price),
+        ],
+    };
   }
 
   int _paidUnits(int quantity, Offer offer) {
