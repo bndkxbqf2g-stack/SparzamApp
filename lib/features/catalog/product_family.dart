@@ -36,6 +36,9 @@ bool isGenericFamilyRequest(String value) {
   final normalized = normalizeProductText(value);
   final family = broadProductFamily(value);
   if (family == null) return false;
+  if (family == 'hackfleisch') {
+    return normalized == 'hackfleisch' || normalized == 'hackfleisch gemischt';
+  }
   return switch (family) {
     'kaese' => normalized == 'käse' || normalized == 'kaese',
     'wurst' => normalized == 'wurst',
