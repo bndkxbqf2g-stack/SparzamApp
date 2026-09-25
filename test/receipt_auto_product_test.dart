@@ -58,4 +58,15 @@ Datum 23.07.26
       isNull,
     );
   });
+  test('known product families stay observations instead of raw catalog products', () {
+    expect(shouldCreateAutomaticReceiptProduct('GL H-Milch 3,5% 1 L'), isFalse);
+    expect(shouldCreateAutomaticReceiptProduct('Paprika rot spitz'), isFalse);
+    expect(shouldCreateAutomaticReceiptProduct('VL Eier BH 10ST'), isFalse);
+  });
+
+  test('unknown receipt labels may still create provisional catalog products', () {
+    expect(shouldCreateAutomaticReceiptProduct('Mystery Produkt 250g'), isTrue);
+  });
+
+
 }

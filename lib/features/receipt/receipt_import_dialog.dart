@@ -211,6 +211,10 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
           continue;
         }
 
+        if (!shouldCreateAutomaticReceiptProduct(row.label)) {
+          continue;
+        }
+
         final existing = findExistingReceiptProduct(
           row.label,
           availableProducts,

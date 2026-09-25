@@ -1,4 +1,5 @@
 import '../../models/product.dart';
+import '../catalog/product_identity.dart';
 import 'receipt_ledger.dart';
 import 'receipt_observation_builder.dart';
 
@@ -48,3 +49,11 @@ String receiptProductDisplayName(String value) {
   if (cleaned.isEmpty) return cleaned;
   return cleaned[0].toUpperCase() + cleaned.substring(1);
 }
+
+
+/// Known product families should stay as receipt observations until they can
+/// be matched to an actual catalog product. Creating a provisional catalog
+/// product for every known-family receipt label pollutes suggestions with
+/// retailer wording such as "GL H-Milch 3,5% 1 L".
+bool shouldCreateAutomaticReceiptProduct(String rawLabel) =>
+    !identifyProduct(rawLabel).isKnown;
