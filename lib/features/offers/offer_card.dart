@@ -7,6 +7,7 @@ import '../../models/product.dart';
 import 'cashback_calculator.dart';
 import 'coupon_calculator.dart';
 import 'effective_price.dart';
+import 'offer_evidence.dart';
 import 'price_badge.dart';
 import 'price_evaluator.dart';
 import 'price_history_sheet.dart';
