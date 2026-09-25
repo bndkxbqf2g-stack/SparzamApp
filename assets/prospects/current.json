@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-25T21:23:28.568644Z",
+  "generatedAt": "2026-09-25T21:33:10.793894Z",
   "sources": [
     {
       "id": "aldi_sued",
@@ -355,6 +355,30 @@
           "url": "https://www.lidl.de/l/prospekte/september-reise-highlights-28-08-2026-30-09-2026/ar/0?lf=RHF"
         }
       ]
+    },
+    {
+      "id": "penny_retzbach",
+      "storeName": "PENNY",
+      "url": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1",
+      "status": "ok",
+      "recordCount": 9,
+      "prospects": []
+    },
+    {
+      "id": "netto_thuengersheim",
+      "storeName": "Netto",
+      "url": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371",
+      "status": "error",
+      "recordCount": 0,
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "id": "rewe_veitshoechheim",
+      "storeName": "REWE",
+      "url": "https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1/",
+      "status": "error",
+      "recordCount": 0,
+      "error": "HTTP Error 403: Forbidden"
     }
   ],
   "offers": [
@@ -908,6 +932,99 @@
       "source": "retailerWebsite",
       "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=01513794",
       "originalPrice": 1.49
+    },
+    {
+      "sourceId": "203b2ec144afa07055c7",
+      "productLabel": "MÜLLER Müllermilch",
+      "storeName": "PENNY",
+      "offerPrice": 0.69,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.penny.de/angebote/15A-05-69/kuehlregal/mueller-muellermilch",
+      "originalPrice": 1.49
+    },
+    {
+      "sourceId": "f59529cbb177caa3789e",
+      "productLabel": "NATURGUT Bio-Limetten",
+      "storeName": "PENNY",
+      "offerPrice": 1.29,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.penny.de/angebote/15A-05-69/obst-und-gemuese/naturgut-bio-limetten"
+    },
+    {
+      "sourceId": "ab66c2cac61416942bee",
+      "productLabel": "Deutsche rote Äpfel",
+      "storeName": "PENNY",
+      "offerPrice": 2.49,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.penny.de/angebote/15A-05-69/obst-und-gemuese/deutsche-rote-aepfel-"
+    },
+    {
+      "sourceId": "a38abae2021ba3000345",
+      "productLabel": "Ananas ohne Krone",
+      "storeName": "PENNY",
+      "offerPrice": 1.49,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.penny.de/angebote/15A-05-69/obst-und-gemuese/ananas-ohne-krone"
+    },
+    {
+      "sourceId": "2f30864c42a54a57ba57",
+      "productLabel": "Deutsche Romana Salatherzen",
+      "storeName": "PENNY",
+      "offerPrice": 0.69,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.penny.de/angebote/15A-05-69/obst-und-gemuese/deutsche-romana-salatherzen-"
+    },
+    {
+      "sourceId": "f291d95ba0b94efa0171",
+      "productLabel": "Deutscher Weißkohl",
+      "storeName": "PENNY",
+      "offerPrice": 0.66,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.penny.de/angebote/15A-05-69/obst-und-gemuese/deutscher-weisskohl-",
+      "originalPrice": 1.19
+    },
+    {
+      "sourceId": "1f1df3e3ed2727bd0afe",
+      "productLabel": "BÄRENMARKE Frischmilch",
+      "storeName": "PENNY",
+      "offerPrice": 0.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.penny.de/angebote/15A-05-69/kuehlregal/baerenmarke-frischmilch",
+      "originalPrice": 1.59
+    },
+    {
+      "sourceId": "afe40685017966f06615",
+      "productLabel": "BERIDA Partygarnelen",
+      "storeName": "PENNY",
+      "offerPrice": 1.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.penny.de/angebote/15A-05-69/berida/berida-partygarnelen1"
+    },
+    {
+      "sourceId": "62769d9cc47257b4b57e",
+      "productLabel": "BERIDA Alaska-Seelachsfilet",
+      "storeName": "PENNY",
+      "offerPrice": 6.29,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.penny.de/angebote/15A-05-69/berida/berida-alaska-seelachsfilet"
     }
   ]
 }
