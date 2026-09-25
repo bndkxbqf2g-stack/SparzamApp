@@ -545,7 +545,7 @@ def _lidl_detail_url(flyer):
     ))
     slug = ""
     region = "0"
-    match = re.search(r"/l/(?:de/)?prospekte/([^/]+)/ar/(\\d+)", viewer)
+    match = re.search(r"/l/(?:de/)?prospekte/([^/]+)/ar/(\d+)", viewer)
     if match:
         slug = match.group(1)
         region = match.group(2)
