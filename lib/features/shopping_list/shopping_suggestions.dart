@@ -2,6 +2,7 @@ import '../../data/products.dart';
 import '../../models/product.dart';
 import '../../models/recent_purchase.dart';
 import '../catalog/product_identity.dart';
+import '../catalog/product_hierarchy.dart';
 
 List<Product> buildSuggestions({
   required String query,
@@ -62,6 +63,38 @@ List<Product> buildSuggestions({
     return a.name.compareTo(b.name);
   });
 
+  return matches;
+}
+
+List<Product> buildRelatedProductInterpretations({
+  required String query,
+  required List<Product> primarySuggestions,
+  List<Product> catalogProducts = products,
+}) {
+  final request = identifyProduct(query);
+  if (!request.isKnown) return const <Product>[];
+
+  final primaryIds = primarySuggestions.map((product) => product.id).toSet();
+  final seen = <String>{};
+  final matches = <Product>[];
+
+  for (final product in catalogProducts) {
+    if (primaryIds.contains(product.id)) continue;
+    final identities = [product.name, ...product.aliases]
+        .map(identifyProduct)
+        .where((identity) => identity.isKnown);
+
+    final related = identities.any(
+      (candidate) =>
+          sharesProductHierarchy(request, candidate) &&
+          !compatibleProductIdentity(request, candidate),
+    );
+    if (related && seen.add(product.id)) {
+      matches.add(product);
+    }
+  }
+
+  matches.sort((a, b) => a.name.compareTo(b.name));
   return matches;
 }
 
