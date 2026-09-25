@@ -136,7 +136,8 @@ bool compatibleProductIdentity(ProductIdentity request, ProductIdentity candidat
   if (!request.isKnown || request.familyKey != candidate.familyKey) {
     return false;
   }
-  if (request.productType != null && request.productType != candidate.productType) {
+  if (request.productType != candidate.productType &&
+      (request.productType != null || candidate.productType != null)) {
     return false;
   }
   if (request.fatPercent != null && request.fatPercent != candidate.fatPercent) {
