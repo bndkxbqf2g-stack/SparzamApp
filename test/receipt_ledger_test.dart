@@ -82,6 +82,7 @@ G&G HAEHNCHENBRUST 1,49 A
 G&G SCHOKOL.ALP.M. 0,99 A
 Posten: 10 ----------
 SUMME € 25,65
+Steuerübersicht NETTO 21,55
 Datum 17.01.26 10:44 Uhr
 AUF WIEDERSEHEN BEI EDEKA
 ''');
