@@ -49,3 +49,10 @@ void main() {
     expect(compatibleProductIdentity(identifyProduct('Mozzarella'), identifyProduct('Wa.Stein.Pizza Mozz. 350g')), isFalse);
   });
 }
+
+
+test('fresh tomato request is not compatible with preserved tomato products', () {
+  final fresh=identifyProduct('Tomaten');
+  final passata=identifyProduct('Passata');
+  expect(compatibleProductIdentity(fresh, passata), isFalse);
+});
