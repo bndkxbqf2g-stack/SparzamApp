@@ -22,6 +22,7 @@ List<MarketPrice> receiptFamilyMarketPrices({
     if (!request.isKnown && normalizedRequest.isEmpty) continue;
 
     for (final observation in observations) {
+      if (observation.observedAt.isAfter(today)) continue;
       if (observation.observedAt.isBefore(cutoff)) continue;
       if (observation.productId?.isNotEmpty == true &&
           !observation.identityConfirmed) {
