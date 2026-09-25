@@ -282,7 +282,7 @@ void main() {
       now: DateTime(2026, 9, 24),
     );
     expect(prices, isEmpty);
-  });  test('generic tomato request builds prices for each observed market', () {
+  });  test('fresh tomato request excludes preserved tomato receipt prices', () {
     const product = Product(id: 'tomaten-generic', name: 'Tomaten', unit: 'Stück', group: 'obst');
     final prices = receiptFamilyMarketPrices(
       items: [ListItem(product: product)],
@@ -305,8 +305,7 @@ void main() {
       ],
       now: DateTime(2026, 9, 24),
     );
-    expect({for (final price in prices) price.storeName: price.price},
-        {'Kaufland': 0.59, 'Lidl': 0.79});
+    expect(prices, isEmpty);
   });
 
   test('does not route receipt family prices older than the receipt freshness window', () {
