@@ -7,7 +7,7 @@ import sys
 from datetime import date, datetime, timedelta, timezone
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import urljoin
+from urllib.parse import quote, urljoin
 from urllib.request import Request, urlopen
 
 OUTPUT = Path("assets/prospects/current.json")
@@ -261,12 +261,57 @@ def parse_kaufland(html_text, base_url):
 def parse_lidl(html_text, base_url):
     page = parsed(html_text)
     prospects = []
+    seen = set()
     for href, text in page.anchors:
         absolute = urljoin(base_url, href)
-        if "/prospekte/" in absolute or "/l/prospekte/" in absolute:
-            prospects.append({"title": text[:160], "url": absolute})
-    unique = {item["url"]: item for item in prospects}
-    return [], list(unique.values())[:8]
+        if "/prospekte/" not in absolute and "/l/prospekte/" not in absolute:
+            continue
+        if absolute in seen:
+            continue
+        seen.add(absolute)
+
+        item = {"title": text[:160], "url": absolute}
+        match = re.search(r"/l/prospekte/([^/]+)/ar/(\\d+)", absolute)
+        if match and "aktionsprospekt" in text.lower():
+            slug, region = match.group(1), match.group(2)
+            api_url = (
+                "https://endpoints.leaflets.schwarz/v4/flyer"
+                "?version=4"
+                "&client=lidl"
+                "&flyer_identifier=" + quote(slug) +
+                "&region_id=" + region +
+                "&region_code=" + region
+            )
+            try:
+                payload = json.loads(fetch(api_url))
+                flyer = payload.get("flyer", payload)
+                products = flyer.get("products", []) if isinstance(flyer, dict) else []
+                pages = flyer.get("pages", []) if isinstance(flyer, dict) else []
+                item["apiUrl"] = api_url
+                item["apiTopKeys"] = sorted(payload.keys()) if isinstance(payload, dict) else []
+                item["flyerKeys"] = sorted(flyer.keys()) if isinstance(flyer, dict) else []
+                item["productCount"] = len(products) if isinstance(products, list) else 0
+                item["pageCount"] = len(pages) if isinstance(pages, list) else 0
+                if isinstance(products, list) and products and isinstance(products[0], dict):
+                    sample = products[0]
+                    item["productKeys"] = sorted(sample.keys())
+                    item["productSample"] = {
+                        key: sample.get(key)
+                        for key in sorted(sample.keys())
+                        if key in {
+                            "id", "name", "title", "price", "oldPrice",
+                            "priceOld", "offerPrice", "regularPrice",
+                            "validFrom", "validTo", "image", "imageUrl",
+                            "description", "brand"
+                        }
+                    }
+                if isinstance(pages, list) and pages and isinstance(pages[0], dict):
+                    item["pageKeys"] = sorted(pages[0].keys())
+            except Exception as error:
+                item["apiError"] = clean(str(error))[:240]
+        prospects.append(item)
+
+    return [], prospects[:8]
 
 def dedupe(offers):
     unique = {}
