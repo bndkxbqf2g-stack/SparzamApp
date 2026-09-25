@@ -119,6 +119,7 @@ List<Widget> buildShellPages({
         onSave: onSaveOffer,
         onDelete: onDeleteOffer,
         catalogProducts: catalogProducts,
+        onAddToShoppingList: onAddProduct,
       ),
       const ProspectsScreen(),
       PricesHubScreen(
