@@ -565,8 +565,11 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                         Text(
                                           row.quantity == null
                                               ? 'Preis laut Bon · 1 Position'
-                                              : 'Preis laut Bon · ${row.quantity} ${row.quantityUnit} × '
-                                                '${((row.unitCents ?? row.cents) / 100).toStringAsFixed(2).replaceAll('.', ',')} €',
+                                              : row.unitCents == null
+                                                  ? 'Preis laut Bon · ${row.quantity} ${row.quantityUnit} · '
+                                                    'Gesamtpreis ${(row.cents / 100).toStringAsFixed(2).replaceAll('.', ',')} €'
+                                                  : 'Preis laut Bon · ${row.quantity} ${row.quantityUnit} × '
+                                                    '${(row.unitCents! / 100).toStringAsFixed(2).replaceAll('.', ',')} €',
                                           style: const TextStyle(fontWeight: FontWeight.w600),
                                         ),
                                         Text(
