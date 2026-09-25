@@ -58,10 +58,13 @@ OfferImportResolution resolveOfferImport(
   final normalizedLabel = normalizeIdentityText(record.productLabel);
   final products = catalogProducts.toList(growable: false);
 
-  final exact = products.where((product) {
-    final labels = [product.name, ...product.aliases];
-    return labels.any((label) => normalizeIdentityText(label) == normalizedLabel);
-  }).toList();
+  // Only the canonical product name may short-circuit identity resolution.
+  // Generic aliases such as "Milch" can intentionally belong to multiple
+  // variants and must therefore remain ambiguous.
+  final exact = products
+      .where((product) =>
+          normalizeIdentityText(product.name) == normalizedLabel)
+      .toList();
 
   final Product? product;
   if (exact.length == 1) {
