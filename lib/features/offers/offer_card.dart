@@ -19,6 +19,7 @@ class OfferCard extends StatelessWidget {
     this.catalogProducts = products,
     this.onEdit,
     this.onDelete,
+    this.onAddToShoppingList,
   });
 
   final Offer offer;
@@ -26,6 +27,7 @@ class OfferCard extends StatelessWidget {
   final List<Product> catalogProducts;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
+  final ValueChanged<Product>? onAddToShoppingList;
 
   @override
   Widget build(BuildContext context) {
@@ -120,6 +122,17 @@ class OfferCard extends StatelessWidget {
                 if (offer.hasCashback) _Tag(cashbackLabel(offer)),
               ],
             ),
+            if (product != null && onAddToShoppingList != null) ...[
+              const SizedBox(height: 10),
+              Align(
+                alignment: Alignment.centerRight,
+                child: FilledButton.tonalIcon(
+                  onPressed: () => onAddToShoppingList!(product),
+                  icon: const Icon(Icons.add_shopping_cart_outlined),
+                  label: const Text('Zur Einkaufsliste'),
+                ),
+              ),
+            ],
           ],
         ),
       ),
