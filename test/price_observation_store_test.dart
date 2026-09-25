@@ -233,6 +233,33 @@ void main() {
     expect(projected.single.storeName, 'Edeka');
   });
 
+  test('future offer validity cannot enter route planning early', () {
+    final projected = marketPricesFromObservations([
+      PriceObservation(
+        id: 'future-offer', productId: 'schmand', storeName: 'Lidl',
+        price: 0.49, observedAt: DateTime(2026, 9, 24),
+        validFrom: DateTime(2026, 10, 1),
+        validUntil: DateTime(2026, 10, 7),
+        source: PriceObservationSource.manual,
+        kind: PriceObservationKind.offer,
+      ),
+    ], now: DateTime(2026, 9, 25));
+
+    expect(projected, isEmpty);
+  });
+
+  test('invalid observation cannot bypass store validation into routing', () {
+    final projected = marketPricesFromObservations([
+      PriceObservation(
+        id: 'invalid', productId: 'schmand', storeName: 'Lidl',
+        price: -0.49, observedAt: DateTime(2026, 9, 24),
+        source: PriceObservationSource.manual,
+      ),
+    ], now: DateTime(2026, 9, 25));
+
+    expect(projected, isEmpty);
+  });
+
   test('old Open Prices history respects configured maximum age', () {
     final projected = marketPricesFromObservations([
       PriceObservation(
