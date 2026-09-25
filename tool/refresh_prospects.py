@@ -11,12 +11,13 @@ from pathlib import Path
 from urllib.parse import quote, urljoin
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
+from zoneinfo import ZoneInfo
 
 OUTPUT = Path("assets/prospects/current.json")
 UA = "SparzamApp/1.0 (+https://github.com/bndkxbqf2g-stack/SparzamApp)"
 SOURCES = (
     ("aldi_sued", "ALDI Süd", "https://www.aldi-sued.de/", "aldi_api"),
-    ("edeka_zellingen", "EDEKA", "https://www.edeka.de/maerkte/023738/", "edeka"),
+    ("edeka_zellingen", "EDEKA", "https://www.edeka.de/maerkte/023738/", "edeka_api"),
     ("kaufland_grombuehl", "Kaufland", "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html", "kaufland"),
     ("lidl_zellingen", "Lidl", "https://www.lidl.de/c/online-prospekte/s10005610/", "lidl"),
     ("penny_retzbach", "PENNY", "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1", "penny"),
@@ -114,7 +115,7 @@ def stable_id(store, proof, text):
     raw = (store + "|" + proof + "|" + text).encode("utf-8")
     return hashlib.sha256(raw).hexdigest()[:20]
 
-def record(store, label, offer_price, valid_from, valid_until, proof, original=None):
+def record(store, label, offer_price, valid_from, valid_until, proof, original=None, image=None):
     result = {
         "sourceId": stable_id(store, proof, label + str(offer_price)),
         "productLabel": clean(label),
@@ -127,6 +128,8 @@ def record(store, label, offer_price, valid_from, valid_until, proof, original=N
     }
     if original is not None and original >= offer_price:
         result["originalPrice"] = round(float(original), 2)
+    if image:
+        result["imageUrl"] = image
     return result
 
 ALDI_API_URL = "https://api.aldi-sued.de/v3/product-search"
@@ -278,6 +281,128 @@ def parse_aldi(html_text, base_url):
         if len(label) >= 3:
             offers.append(record("ALDI Süd", label, offer_price, valid_from, valid_until, proof, original))
     return dedupe(offers), []
+
+EDEKA_API_URL = "https://www.edeka.de/eh/service/eh/offers"
+
+
+def _edeka_api_url(base_url):
+    match = re.search(r"/maerkte/(\\d+)/", base_url)
+    if match is None:
+        raise ValueError("EDEKA Markt-ID fehlt in der Markt-URL")
+    return EDEKA_API_URL + "?marketId=" + quote(match.group(1)) + "&limit=99999"
+
+
+def _json_money(value):
+    if isinstance(value, (int, float)):
+        return float(value)
+    if not isinstance(value, str):
+        return None
+    match = re.search(r"(\\d+[,.]\\d{1,2})", value)
+    return money(match.group(1)) if match else None
+
+
+def _edeka_date(value):
+    if isinstance(value, (int, float)):
+        timestamp = float(value)
+        if timestamp > 10_000_000_000:
+            timestamp /= 1000.0
+        try:
+            return datetime.fromtimestamp(
+                timestamp,
+                tz=ZoneInfo("Europe/Berlin"),
+            ).date()
+        except (OverflowError, OSError, ValueError):
+            return None
+    if not isinstance(value, str):
+        return None
+    raw = value.strip()
+    if not raw:
+        return None
+    for parser in (
+        lambda text: date.fromisoformat(text[:10]),
+        lambda text: datetime.strptime(text, "%d.%m.%Y").date(),
+    ):
+        try:
+            return parser(raw)
+        except ValueError:
+            pass
+    return None
+
+
+def parse_edeka_api(json_text, base_url):
+    payload = json.loads(json_text)
+    if isinstance(payload, dict):
+        docs = payload.get("docs", [])
+        root = payload
+    elif isinstance(payload, list):
+        docs = payload
+        root = {}
+    else:
+        raise ValueError("EDEKA API: ungültige Antwort")
+    if not isinstance(docs, list):
+        raise ValueError("EDEKA API: docs ist keine Liste")
+
+    offers = []
+    for index, doc in enumerate(docs):
+        if not isinstance(doc, dict):
+            continue
+        label = clean(str(doc.get("titel") or ""))
+        sale = _json_money(doc.get("preis"))
+        if len(label) < 2 or sale is None or sale <= 0:
+            continue
+
+        valid_from = _edeka_date(
+            doc.get("gueltig_von")
+            or doc.get("validFrom")
+            or root.get("gueltig_von")
+            or root.get("validFrom")
+        )
+        valid_until = _edeka_date(
+            doc.get("gueltig_bis")
+            or doc.get("validUntil")
+            or root.get("gueltig_bis")
+            or root.get("validUntil")
+        )
+        if valid_from is None and valid_until is not None:
+            valid_from = valid_until - timedelta(days=valid_until.weekday())
+        if valid_until is None and valid_from is not None:
+            valid_until = valid_from + timedelta(days=max(0, 5 - valid_from.weekday()))
+        if valid_from is None or valid_until is None:
+            valid_from, valid_until = current_week()
+
+        regular = None
+        for key in (
+            "streichpreis",
+            "originalPrice",
+            "regularPrice",
+            "alterPreis",
+            "oldPrice",
+        ):
+            candidate = _json_money(doc.get(key))
+            if candidate is not None and candidate >= sale:
+                regular = candidate
+                break
+
+        raw_id = clean(str(doc.get("angebotid") or doc.get("externeid") or index))
+        proof = base_url + "#offer-" + raw_id
+        image = clean(str(
+            doc.get("bild_app")
+            or doc.get("bild_web130")
+            or doc.get("bild_web90")
+            or ""
+        ))
+        offers.append(record(
+            "EDEKA",
+            label,
+            sale,
+            valid_from,
+            valid_until,
+            proof,
+            regular,
+            image,
+        ))
+    return dedupe(offers), []
+
 
 def parse_edeka(html_text, base_url):
     # EDEKA currently embeds part of the offer markup inside script/template
@@ -652,6 +777,7 @@ PARSERS = {
     "aldi": parse_aldi,
     "aldi_api": parse_aldi_api_page,
     "edeka": parse_edeka,
+    "edeka_api": parse_edeka_api,
     "kaufland": parse_kaufland,
     "lidl": parse_lidl,
     "penny": parse_penny,
@@ -686,6 +812,17 @@ def main():
                 except Exception:
                     body = fetch(url)
                     offers, prospects = parse_aldi(body, url)
+                    source_mode = "website_fallback"
+            elif parser_name == "edeka_api":
+                try:
+                    body = fetch(_edeka_api_url(url))
+                    offers, prospects = parse_edeka_api(body, url)
+                    source_mode = "structured_api"
+                    if not offers:
+                        raise ValueError("EDEKA API lieferte keine Angebote")
+                except Exception:
+                    body = fetch(url)
+                    offers, prospects = parse_edeka(body, url)
                     source_mode = "website_fallback"
             else:
                 body = fetch(url)

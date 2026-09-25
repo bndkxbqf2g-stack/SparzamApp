@@ -8,6 +8,68 @@ refresh = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(refresh)
 
 class ProspectParserTest(unittest.TestCase):
+    def test_edeka_api_reads_market_offers_and_dates(self):
+        payload = """
+        {
+          "gueltig_von": "2026-09-21",
+          "gueltig_bis": "2026-09-26",
+          "docs": [
+            {
+              "angebotid": 12345,
+              "titel": "K.Frischer Schmand",
+              "preis": 0.69,
+              "originalPrice": "0,89 €",
+              "nachlass": "22%",
+              "bild_app": "https://offer-images.api.edeka/schmand.jpg"
+            }
+          ]
+        }
+        """
+        offers, _ = refresh.parse_edeka_api(
+            payload,
+            "https://www.edeka.de/maerkte/023738/",
+        )
+        self.assertEqual(len(offers), 1)
+        self.assertEqual(offers[0]["productLabel"], "K.Frischer Schmand")
+        self.assertEqual(offers[0]["offerPrice"], 0.69)
+        self.assertEqual(offers[0]["originalPrice"], 0.89)
+        self.assertEqual(offers[0]["validFrom"], "2026-09-21")
+        self.assertEqual(offers[0]["validUntil"], "2026-09-26")
+        self.assertEqual(
+            offers[0]["imageUrl"],
+            "https://offer-images.api.edeka/schmand.jpg",
+        )
+        self.assertTrue(offers[0]["proofRef"].endswith("#offer-12345"))
+
+    def test_edeka_api_does_not_invent_regular_price_from_discount(self):
+        payload = """
+        {
+          "gueltig_von": "2026-09-21",
+          "gueltig_bis": "2026-09-26",
+          "docs": [
+            {
+              "angebotid": 7,
+              "titel": "Butter",
+              "preis": "1,49",
+              "nachlass": "25%"
+            }
+          ]
+        }
+        """
+        offers, _ = refresh.parse_edeka_api(
+            payload,
+            "https://www.edeka.de/maerkte/023738/",
+        )
+        self.assertEqual(offers[0]["offerPrice"], 1.49)
+        self.assertNotIn("originalPrice", offers[0])
+
+    def test_edeka_api_url_uses_market_id(self):
+        url = refresh._edeka_api_url(
+            "https://www.edeka.de/maerkte/023738/",
+        )
+        self.assertIn("marketId=023738", url)
+        self.assertIn("limit=99999", url)
+
     def test_edeka_uses_public_fixed_price_not_app_price(self):
         html = """<p>Gültig vom 21.09.2026 bis zum 26.09.2026.</p><h3>Angebot: Schmand</h3><p>Gültig ab 21.09.2026</p><p>App Preis von 0.59€</p><p>Festpreis von 0.69€</p>"""
         offers, _ = refresh.parse_edeka(html, "https://www.edeka.de/maerkte/023738/")
