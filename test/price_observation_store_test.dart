@@ -105,6 +105,50 @@ void main() {
     expect(observation.identityConfidence, 0);
   });
 
+  test('receipt product id alone does not create exact identity confidence', () {
+    final automatic = observationFromReceipt(ReceiptObservation(
+      id: 'r-auto', receiptFingerprint: 'fp-auto', rowLine: 1,
+      rawLabel: 'Unbekannte Spezialität', familyKey: 'unbekannte spezialitaet',
+      storeName: 'Lidl', observedAt: DateTime(2026, 9, 24),
+      totalPrice: 2.49, quantity: null, quantityUnit: 'Stück',
+      unitPrice: null, discounted: false,
+      productId: 'receipt_auto_specialitaet',
+    ));
+    final confirmed = observationFromReceipt(ReceiptObservation(
+      id: 'r-confirmed', receiptFingerprint: 'fp-confirmed', rowLine: 1,
+      rawLabel: 'Schmand', familyKey: 'schmand',
+      storeName: 'Lidl', observedAt: DateTime(2026, 9, 24),
+      totalPrice: 0.69, quantity: null, quantityUnit: 'Stück',
+      unitPrice: null, discounted: false,
+      productId: 'schmand', identityConfirmed: true,
+    ));
+
+    expect(automatic.productId, 'receipt_auto_specialitaet');
+    expect(automatic.identityConfidence, 0);
+    expect(confirmed.identityConfidence, 1);
+  });
+
+  test('legacy automatic receipt ids migrate as unconfirmed', () {
+    final restored = ReceiptObservation.fromJson({
+      'id': 'legacy',
+      'receiptFingerprint': 'legacy-fp',
+      'rowLine': 1,
+      'rawLabel': 'Unbekannte Spezialität',
+      'familyKey': 'unbekannte spezialitaet',
+      'storeName': 'Lidl',
+      'observedAt': '2026-09-24T00:00:00.000',
+      'totalPrice': 2.49,
+      'quantity': null,
+      'quantityUnit': 'Stück',
+      'unitPrice': null,
+      'discounted': false,
+      'productId': 'receipt_auto_specialitaet',
+    });
+
+    expect(restored.identityConfirmed, isFalse);
+    expect(observationFromReceipt(restored).identityConfidence, 0);
+  });
+
   test('offer adapter carries validity into observation', () {
     final observation = observationFromOffer(
       Offer(id: 'o1', productId: 'schmand', storeName: 'Lidl',
