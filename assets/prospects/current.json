@@ -1,11 +1,534 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-25T00:00:00Z",
+  "generatedAt": "2026-09-25T20:53:36.953830Z",
   "sources": [
-    {"id":"aldi_sued","storeName":"ALDI Süd","url":"https://www.aldi-sued.de/","status":"pending","recordCount":0},
-    {"id":"edeka_zellingen","storeName":"EDEKA","url":"https://www.edeka.de/maerkte/023738/","status":"pending","recordCount":0},
-    {"id":"kaufland_grombuehl","storeName":"Kaufland","url":"https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html","status":"pending","recordCount":0},
-    {"id":"lidl_zellingen","storeName":"Lidl","url":"https://www.lidl.de/s/de-DE/filialen/zellingen/am-guessgraben-2/","status":"metadata_only","recordCount":0}
+    {
+      "id": "aldi_sued",
+      "storeName": "ALDI Süd",
+      "url": "https://www.aldi-sued.de/",
+      "status": "ok",
+      "recordCount": 20,
+      "prospects": []
+    },
+    {
+      "id": "edeka_zellingen",
+      "storeName": "EDEKA",
+      "url": "https://www.edeka.de/maerkte/023738/",
+      "status": "error",
+      "recordCount": 0,
+      "error": "keine sicher extrahierbaren Angebote gefunden"
+    },
+    {
+      "id": "kaufland_grombuehl",
+      "storeName": "Kaufland",
+      "url": "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html",
+      "status": "ok",
+      "recordCount": 27,
+      "prospects": []
+    },
+    {
+      "id": "lidl_zellingen",
+      "storeName": "Lidl",
+      "url": "https://www.lidl.de/s/de-DE/filialen/zellingen/am-guessgraben-2/",
+      "status": "metadata_only",
+      "recordCount": 0,
+      "prospects": []
+    }
   ],
-  "offers": []
+  "offers": [
+    {
+      "sourceId": "fd0f0152ba6af2508918",
+      "productLabel": "ALPINA Universal Raum-Weiß 10 l (/1 l) ¹",
+      "storeName": "ALDI Süd",
+      "offerPrice": 15.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/alpina-universal-raum-weiss-000000000000564402"
+    },
+    {
+      "sourceId": "18583f1a42de967f4318",
+      "productLabel": "MEINE METZGEREI Hähnchenbrustfilet Teilstück 1 kg",
+      "storeName": "ALDI Süd",
+      "offerPrice": 8.19,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/meine-metzgerei-haehnchenbrustfilet-teilstueck-1-kg-000000000000211078",
+      "originalPrice": 9.99
+    },
+    {
+      "sourceId": "c0409d4e44e0f2b7c211",
+      "productLabel": "MEINE METZGEREI Rind Hamburger 400 g 0,4 kg (10,98 €/1 kg)",
+      "storeName": "ALDI Süd",
+      "offerPrice": 4.39,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/meine-metzgerei-rind-hamburger-400-g-000000000000642554",
+      "originalPrice": 5.49
+    },
+    {
+      "sourceId": "bcce74cad2cfc6693a6b",
+      "productLabel": "MEINE METZGEREI Puten Geschnetzeltes 400 g 0,4 kg (9,73 €/1 kg)",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.89,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/meine-metzgerei-puten-geschnetzeltes-400-g-000000000000717842",
+      "originalPrice": 4.69
+    },
+    {
+      "sourceId": "6d879b3a4645ecb23115",
+      "productLabel": "FERRERO Maxi King 105 g 0,11 kg (/1 kg) ¹",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.49,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ferrero-maxi-king-105-g-000000000000107055"
+    },
+    {
+      "sourceId": "01a6d9cc831524dcfdbf",
+      "productLabel": "ALDI SPORTS Protein Matcha Latte 250 g 0,25 kg (/1 kg) ¹",
+      "storeName": "ALDI Süd",
+      "offerPrice": 9.95,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-protein-matcha-latte-250-g-000000000000700241"
+    },
+    {
+      "sourceId": "dfb9c89340702b60e8e4",
+      "productLabel": "LENOR Weichspüler Luftfrisch Alpensee 1,064 l 76 WL (/1 WL) ¹",
+      "storeName": "ALDI Süd",
+      "offerPrice": 4.95,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/lenor-weichspueler-luftfrisch-alpensee-1-064-l-000000000000723870"
+    },
+    {
+      "sourceId": "3243803b24592e49c182",
+      "productLabel": "Tiefkühlung DR. OETKER Rustica 3-Salame 0,49 kg (/1 kg) ¹",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-oetker-rustica-3-salame-000000000000770163"
+    },
+    {
+      "sourceId": "0efc95ca7d203e0ee8b0",
+      "productLabel": "ROUGETTE Ofenkäse 320 g, Würzig 0,32 kg (/1 kg) ¹",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/rougette-ofenkaese-320-g-wuerzig-000000000204421003"
+    },
+    {
+      "sourceId": "25717f1e72685f637505",
+      "productLabel": "FEBREZE Bad-Lufterfrischer Duo 16 ml, Vanille 0,02 l (/1 l) ¹",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/febreze-bad-lufterfrischer-duo-16-ml-vanille-000000000505830002"
+    },
+    {
+      "sourceId": "8c3bade9c40a35c9978f",
+      "productLabel": "MEISTER PROPER Reiniger-Spray 0,8 l, Bad 0,8 l (/1 l) ¹",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.29,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/meister-proper-reiniger-spray-0-8-l-bad-000000000604927001"
+    },
+    {
+      "sourceId": "245e35dc44f27d0fc28f",
+      "productLabel": "FUNNY FRISCH Chipsfrisch 250 g, Ungarisch 0,25 kg (/1 kg) ¹",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/funny-frisch-chipsfrisch-250-g-ungarisch-000000000697776001"
+    },
+    {
+      "sourceId": "dba7a5df624299be1c2f",
+      "productLabel": "ALDI SPORTS Kreatin Pulver 200g, Waldbeere 0,2 kg (/1 kg) ¹",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-kreatin-pulver-200g-waldbeere-000000000746387001"
+    },
+    {
+      "sourceId": "ef3d9278999bb8533b56",
+      "productLabel": "Vegetarisch HOFBURGER Gouda jung 450 g 0,45 kg (6,67 €/1 kg)",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.0,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/hofburger-gouda-jung-450-g-000000000000204237",
+      "originalPrice": 3.79
+    },
+    {
+      "sourceId": "0572f471e19b735c870c",
+      "productLabel": "CUCINA XXL-Pizzateig 550 g 0,55 kg (1,82 €/1 kg)",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.0,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/cucina-xxl-pizzateig-550-g-000000000000211639",
+      "originalPrice": 1.29
+    },
+    {
+      "sourceId": "9025d1e6176f30adccc7",
+      "productLabel": "Vegan KING'S CROWN Rote Bete 430 g 0,43 KG/ATG (1,84 €/1 KG/ATG)",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.79,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/king-s-crown-rote-bete-430-g-000000000000273493",
+      "originalPrice": 1.09
+    },
+    {
+      "sourceId": "147d4f51ba46b95cb136",
+      "productLabel": "Vegan KING'S CROWN Tomatenmark 200 g 0,2 kg (3,45 €/1 kg)",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.69,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/king-s-crown-tomatenmark-200-g-000000000000381423",
+      "originalPrice": 0.89
+    },
+    {
+      "sourceId": "5eff71b89420ca22b97f",
+      "productLabel": "Vegan DELIKATO Tomaten-Ketchup 500 ml 0,5 l (2,00 €/1 l)",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.0,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/delikato-tomaten-ketchup-500-ml-000000000000575313",
+      "originalPrice": 1.29
+    },
+    {
+      "sourceId": "b927fe79f494aa612726",
+      "productLabel": "Vegetarisch MILSANI Back-Camembert mit Wildpreiselbeer-Dip 350 g 0,35 kg (6,54 €/1 kg)",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.29,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/milsani-back-camembert-mit-wildpreiselbeer-dip-350-g-000000000000589034",
+      "originalPrice": 2.99
+    },
+    {
+      "sourceId": "ec12bf5ef3514e60f023",
+      "productLabel": "MEINE BACKWELT Pizzastick Salami",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.69,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/meine-backwelt-pizzastick-salami-000000000000671184",
+      "originalPrice": 0.99
+    },
+    {
+      "sourceId": "3223b243df5bc6812378",
+      "productLabel": "K-PURLAND Schinkenschnitzel je 600-g-Packg. (1 kg = 6.65)",
+      "storeName": "Kaufland",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=00014387",
+      "originalPrice": 5.39
+    },
+    {
+      "sourceId": "4eb68a6024ab6c426fbe",
+      "productLabel": "Südafrik. Mandarinen je 750-g-Netz (1 kg = 1.86)",
+      "storeName": "Kaufland",
+      "offerPrice": 1.39,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=00371593",
+      "originalPrice": 2.79
+    },
+    {
+      "sourceId": "c8506605ccb4d6f308b8",
+      "productLabel": "SNACK IT Kabanossi je 120-g-Packg. (1 kg = 10.75)",
+      "storeName": "Kaufland",
+      "offerPrice": 1.29,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=01160315",
+      "originalPrice": 1.99
+    },
+    {
+      "sourceId": "09c3f4c671cb3a7738fe",
+      "productLabel": "KNÜLLER YOUCOOK Fertiggericht je 350 - 420-g-Packg. (1 kg = 9.03 - 10.83)",
+      "storeName": "Kaufland",
+      "offerPrice": 3.79,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=01187000"
+    },
+    {
+      "sourceId": "1b1009db08202d269a24",
+      "productLabel": "KNÜLLER NESTLÉ SCHÖLLER Eisgenuss je 4 - 9 St. = 280 - 840-ml-Packg. (1 l = 2.37 - 7.11) / (1 l = 2.14 - 6.40)** nur 1.99 Mit Kaufland Card XTRA **",
+      "storeName": "Kaufland",
+      "offerPrice": 1.79,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=00903468"
+    },
+    {
+      "sourceId": "9b34e4ac705cc1a4d6d5",
+      "productLabel": "KNÜLLER IGLO Schlemmer-Filet je 380-g-Packg. (1 kg = 7.87)",
+      "storeName": "Kaufland",
+      "offerPrice": 2.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=00804575"
+    },
+    {
+      "sourceId": "4aa591e4691c9a5183c0",
+      "productLabel": "KNÜLLER IGLO Fischstäbchen je 360 - 450-g-Packg. (1 kg = 6.65 - 8.31) / (1 kg = 5.54 - 6.92)** nur 2.99 Mit Kaufland Card XTRA **",
+      "storeName": "Kaufland",
+      "offerPrice": 2.49,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=00804377"
+    },
+    {
+      "sourceId": "90dd4bd3cf0ffa87fcfa",
+      "productLabel": "KNÜLLER KINDER Maxi King je 3 St. = 105-g-Packg. (1 kg = 14.19)",
+      "storeName": "Kaufland",
+      "offerPrice": 1.49,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=00414219"
+    },
+    {
+      "sourceId": "c376f5651bcdca4b1467",
+      "productLabel": "KERRYGOLD Extra XXL je 400-g-Becher (1 kg = 6.23) / (1 kg = 4.98)** -46% 2.49 4.69 Mit Kaufland Card XTRA **",
+      "storeName": "Kaufland",
+      "offerPrice": 1.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=01108705",
+      "originalPrice": 4.69
+    },
+    {
+      "sourceId": "4ad0493685f34ca8c4ff",
+      "productLabel": "SAINT ALBRAY oder ST. AGUR Weich- oder Schnittkäse je 125 - 180-g-Packg. (1 kg = 12.34 - 17.76)",
+      "storeName": "Kaufland",
+      "offerPrice": 2.22,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=00901367",
+      "originalPrice": 3.49
+    },
+    {
+      "sourceId": "231bf2789514868df2b3",
+      "productLabel": "KNÜLLER LEERDAMMER Holl. Schnittkäse je 100 - 140-g-Packg. (1 kg = 9.22 - 12.90)",
+      "storeName": "Kaufland",
+      "offerPrice": 1.29,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=01507953"
+    },
+    {
+      "sourceId": "6f4846f7692240bf67c8",
+      "productLabel": "PHILADELPHIA Frischkäsezubereitung je 100 - 195-g-Packg. (1 kg = 5.13 - 10.00)",
+      "storeName": "Kaufland",
+      "offerPrice": 1.0,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=20873710",
+      "originalPrice": 2.29
+    },
+    {
+      "sourceId": "7d112f72083b8003caf9",
+      "productLabel": "ORO DI PARMA Tomaten, Pizzasauce oder Tomatenmark je 200-g-Tube oder 400-g-Dose (1 kg = 2.50 - 5.00)",
+      "storeName": "Kaufland",
+      "offerPrice": 1.0,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=20656889",
+      "originalPrice": 1.99
+    },
+    {
+      "sourceId": "d0f9366e98fc7052206b",
+      "productLabel": "K-CLASSIC Sonnenblumenöl je 1-l-Fl. -21% 1.49 1.89 Mit Kaufland Card XTRA **",
+      "storeName": "Kaufland",
+      "offerPrice": 1.33,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=20671877",
+      "originalPrice": 1.89
+    },
+    {
+      "sourceId": "a19b459d5d5ad025bc5b",
+      "productLabel": "MÖVENPICK Kaffee je 500-g-Packg. (1 kg = 11.98)",
+      "storeName": "Kaufland",
+      "offerPrice": 5.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=02404184",
+      "originalPrice": 9.99
+    },
+    {
+      "sourceId": "496f0b89d53e3b83f4d3",
+      "productLabel": "LORENZ Crunchips je 150-g-Packg. (1 kg = 6.67)",
+      "storeName": "Kaufland",
+      "offerPrice": 1.0,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=20692278",
+      "originalPrice": 1.99
+    },
+    {
+      "sourceId": "3ae32c1b984c19acfa58",
+      "productLabel": "MILKA Schokolade je 85 - 100-g-Tafel (1 kg = 8.80 - 10.36)",
+      "storeName": "Kaufland",
+      "offerPrice": 0.88,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=20787694",
+      "originalPrice": 1.99
+    },
+    {
+      "sourceId": "a539a541b9aab8fc7471",
+      "productLabel": "KNÜLLER DUPLO Waffel-Schokoriegel je 18 St. = 327,6-g-Packg. (1 kg = 12.18)",
+      "storeName": "Kaufland",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=02501524"
+    },
+    {
+      "sourceId": "2cdbf3916e34e0c862e6",
+      "productLabel": "KNÜLLER PEPSI oder SCHWIP SCHWAP Erfrischungsgetränk je 1,25-l-PET-Fl. (1 l = 0.56)",
+      "storeName": "Kaufland",
+      "offerPrice": 0.69,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=20762076"
+    },
+    {
+      "sourceId": "91a1660aff079a84294c",
+      "productLabel": "PFANNER Saft-Getränk je 1-l-Packg.",
+      "storeName": "Kaufland",
+      "offerPrice": 1.19,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=02083687",
+      "originalPrice": 1.99
+    },
+    {
+      "sourceId": "af8923f584504597c6e4",
+      "productLabel": "TULLAMORE DEW Irish Whiskey je 0,7-l-Fl. (1 l = 19.99) / (1 l = 18.56)** -26% 13.99 18.99 Mit Kaufland Card XTRA **",
+      "storeName": "Kaufland",
+      "offerPrice": 12.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=02181014",
+      "originalPrice": 18.99
+    },
+    {
+      "sourceId": "f7d6ddca469594e8be25",
+      "productLabel": "KNÜLLER MAYBACH Qualitätswein oder Alkoholfrei je 0,75-l-Fl. (1 l = 3.99)",
+      "storeName": "Kaufland",
+      "offerPrice": 2.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=01853400"
+    },
+    {
+      "sourceId": "4c49c441c8bb4dfc2343",
+      "productLabel": "KNÜLLER HASSERÖDER Premium Pils je Ka. 20 x 0,5-l-Fl. (1 l = 0.80)",
+      "storeName": "Kaufland",
+      "offerPrice": 7.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=01453428"
+    },
+    {
+      "sourceId": "8f7830850a7463372c4c",
+      "productLabel": "KNÜLLER HAKLE Toilettenpapier Traumweich je Packg. 8 x 130 Blatt",
+      "storeName": "Kaufland",
+      "offerPrice": 2.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=05105404"
+    },
+    {
+      "sourceId": "481d2a8c59a33db59230",
+      "productLabel": "KNÜLLER L'ORÉAL PARIS Elvital Shampoo oder Spülung je 250 - 300-ml-Fl. (1 l = 9.97 - 11.96)",
+      "storeName": "Kaufland",
+      "offerPrice": 2.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=01114014"
+    },
+    {
+      "sourceId": "e495b19e287a5a7166a7",
+      "productLabel": "KNÜLLER PFANNER Eistee je 2-l-Packg. (1 l = 0.50)",
+      "storeName": "Kaufland",
+      "offerPrice": 0.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=02085363"
+    },
+    {
+      "sourceId": "10e94e47b00cc33f9ed8",
+      "productLabel": "Peruan./südafrik. Avocado, lose je Stück",
+      "storeName": "Kaufland",
+      "offerPrice": 0.69,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-30",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=01513794",
+      "originalPrice": 1.49
+    }
+  ]
 }
