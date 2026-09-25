@@ -10,6 +10,7 @@ import '../../services/receipt_alias_store.dart';
 import 'receipt_auto_product.dart';
 import 'receipt_file_text_reader.dart';
 import 'receipt_import.dart';
+import 'receipt_import_display.dart';
 import 'receipt_ledger.dart';
 import 'receipt_assigned_price.dart';
 import 'receipt_observation_builder.dart';
@@ -399,19 +400,10 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
     super.dispose();
   }
 
-  List<({String name, ReceiptDraft draft})> get _displayReceiptDrafts {
-    final drafts = [...receiptDrafts];
-    drafts.sort((a, b) {
-      final balanceCompare =
-          (b.draft.balances ? 1 : 0).compareTo(a.draft.balances ? 1 : 0);
-      if (balanceCompare != 0) return balanceCompare;
-      return a.name.compareTo(b.name);
-    });
-    return drafts;
-  }
+  List<ReceiptDisplayEntry> get _displayReceiptDrafts =>
+      orderReceiptDraftsForDisplay(receiptDrafts);
 
-  int get _importableReceiptCount =>
-      receiptDrafts.where((entry) => entry.draft.balances).length;
+  int get _importableReceiptCount => importableReceiptCount(receiptDrafts);
 
   @override
   Widget build(BuildContext context) => AlertDialog(
