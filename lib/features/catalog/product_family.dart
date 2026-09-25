@@ -27,9 +27,19 @@ const _familyTerms = <String, List<String>>{
 String? broadProductFamily(String value) {
   final normalized = normalizeProductText(value);
   for (final entry in _familyTerms.entries) {
-    if (entry.value.any(normalized.contains)) return entry.key;
+    if (entry.value.any((term) => _containsWholeTerm(normalized, term))) {
+      return entry.key;
+    }
   }
   return null;
+}
+
+bool _containsWholeTerm(String value, String term) {
+  final normalizedTerm = normalizeProductText(term);
+  return value == normalizedTerm ||
+      value.startsWith('$normalizedTerm ') ||
+      value.endsWith(' $normalizedTerm') ||
+      value.contains(' $normalizedTerm ');
 }
 
 bool isGenericFamilyRequest(String value) {

@@ -21,4 +21,8 @@ void main() {
     expect(isGenericFamilyRequest('Bergkäse'), isFalse);
     expect(isGenericFamilyRequest('Salami'), isFalse);
   });
+
+  test('unrelated compound words are not matched by a family substring', () {
+    expect(broadProductFamily('Milchreis'), isNull);
+  });
 }
