@@ -152,10 +152,9 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
             }
           }
         }
-        final review = reviewReceiptPrices(draft, availableProducts);
-        for (final suggestion in review.suggestions) {
-          selectedReceiptPrices.add(_priceKey(entry.draft.fingerprint, suggestion.product.id));
-        }
+        // Suggestions remain unselected until the user explicitly confirms
+        // the concrete product-price identity in this review.
+        reviewReceiptPrices(draft, availableProducts);
       }
       setState(() {
         importedFileNames.addAll(result.files.map((file) => file.name));
@@ -427,7 +426,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                           '${_dateLabel(draft.receiptDate)}',
                         ),
                         subtitle: Text(
-                          '${entry.name} · ${review.suggestions.length} eindeutige Preise · '
+                          '${entry.name} · ${review.suggestions.length} Preisvorschläge · '
                           '${review.unmatchedItems} weitere Artikel',
                         ),
                         children: [
@@ -557,6 +556,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                     );
                   }),
                 const Text(
+                  'Preisvorschläge werden erst nach aktivem Anhaken als exakte Marktpreise übernommen. '
                   'Alle erkannten Produktpositionen werden automatisch in den Produktkatalog aufgenommen und als Bonbeobachtungen gespeichert. '
                   'Unklare Varianten bleiben zunächst unter ihrer Bonbezeichnung offen und können später präzisiert werden. '
                   'Pfand und reine Rabattzeilen werden nicht als Produkte angelegt.',
