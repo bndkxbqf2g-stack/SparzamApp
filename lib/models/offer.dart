@@ -6,6 +6,7 @@ class Offer {
     required this.productId,
     required this.storeName,
     required this.originalPrice,
+    this.originalPriceVerified = true,
     required this.offerPrice,
     required this.validUntil,
     this.validFrom,
@@ -26,6 +27,7 @@ class Offer {
   final String productId;
   final String storeName;
   final double originalPrice;
+  final bool originalPriceVerified;
   final double offerPrice;
   final DateTime validUntil;
   final DateTime? validFrom;
@@ -51,6 +53,7 @@ class Offer {
     final productId = json['productId'] as String?;
     final storeName = json['storeName'] as String?;
     final originalPrice = _finiteDouble(json['originalPrice']);
+    final originalPriceVerified = json['originalPriceVerified'] as bool? ?? true;
     final offerPrice = _finiteDouble(json['offerPrice']);
     if (id == null ||
         id.trim().isEmpty ||
@@ -62,7 +65,7 @@ class Offer {
         originalPrice <= 0 ||
         offerPrice == null ||
         offerPrice <= 0 ||
-        offerPrice > originalPrice) {
+        (originalPriceVerified && offerPrice > originalPrice)) {
       throw const FormatException('Ungültiges Angebot');
     }
     return Offer(
@@ -70,6 +73,7 @@ class Offer {
       productId: productId,
       storeName: storeName,
       originalPrice: originalPrice,
+      originalPriceVerified: originalPriceVerified,
       offerPrice: offerPrice,
       validUntil: DateTime.parse(json['validUntil'] as String),
       validFrom: DateTime.tryParse(json['validFrom'] as String? ?? ''),
@@ -104,6 +108,7 @@ class Offer {
         'productId': productId,
         'storeName': storeName,
         'originalPrice': originalPrice,
+        'originalPriceVerified': originalPriceVerified,
         'offerPrice': offerPrice,
         'validUntil': validUntil.toIso8601String(),
         'validFrom': validFrom?.toIso8601String(),

@@ -7,7 +7,7 @@ class OfferImportRecord {
     required this.sourceId,
     required this.productLabel,
     required this.storeName,
-    required this.originalPrice,
+    this.originalPrice,
     required this.offerPrice,
     required this.validUntil,
     this.validFrom,
@@ -19,7 +19,7 @@ class OfferImportRecord {
   final String sourceId;
   final String productLabel;
   final String storeName;
-  final double originalPrice;
+  final double? originalPrice;
   final double offerPrice;
   final DateTime validUntil;
   final DateTime? validFrom;
@@ -102,7 +102,8 @@ OfferImportResolution resolveOfferImport(
     id: 'import|${record.source}|${record.sourceId}|${product.id}',
     productId: product.id,
     storeName: record.storeName,
-    originalPrice: record.originalPrice,
+    originalPrice: record.originalPrice ?? record.offerPrice,
+    originalPriceVerified: record.originalPrice != null,
     offerPrice: record.offerPrice,
     validFrom: record.validFrom,
     validUntil: record.validUntil,
@@ -113,9 +114,10 @@ OfferImportResolution resolveOfferImport(
   return OfferImportResolution(record: record, product: product, offer: offer);
 }
 
-bool _validPrices(OfferImportRecord record) =>
-    record.originalPrice.isFinite &&
-    record.offerPrice.isFinite &&
-    record.originalPrice > 0 &&
-    record.offerPrice > 0 &&
-    record.offerPrice <= record.originalPrice;
+bool _validPrices(OfferImportRecord record) {
+  final regular = record.originalPrice;
+  return record.offerPrice.isFinite &&
+      record.offerPrice > 0 &&
+      (regular == null ||
+          (regular.isFinite && regular > 0 && record.offerPrice <= regular));
+}

@@ -51,6 +51,26 @@ void main() {
     expect(result.offer!.proofRef, 'leaflet:lidl:2026-09-25:p1');
   });
 
+  test('offer without stated regular price stays usable without inventing one', () {
+    final result = resolveOfferImport(
+      OfferImportRecord(
+        sourceId: 'sale-only',
+        productLabel: 'Schmand',
+        storeName: 'EDEKA',
+        offerPrice: 0.69,
+        validUntil: DateTime(2026, 9, 26),
+        source: 'retailerWebsite',
+        proofRef: 'https://www.edeka.de/maerkte/example',
+      ),
+      catalog,
+    );
+
+    expect(result.isResolved, isTrue);
+    expect(result.offer!.offerPrice, 0.69);
+    expect(result.offer!.originalPrice, 0.69);
+    expect(result.offer!.originalPriceVerified, isFalse);
+  });
+
   test('resolved external offer without proof stays untrusted', () {
     final result = resolveOfferImport(
       OfferImportRecord(
