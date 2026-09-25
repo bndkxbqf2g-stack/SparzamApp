@@ -57,9 +57,32 @@ Datum 23.07.26
       draft: draft,
       review: review,
       assignedProductIds: {item.line: 'hackfleisch'},
+      confirmedProductLines: {item.line},
     );
 
     expect(observations.single.productId, 'hackfleisch');
     expect(observations.single.familyKey, 'hackfleisch');
+    expect(observations.single.identityConfirmed, isTrue);
+  });
+
+  test('automatic catalog assignment is not treated as confirmed identity', () {
+    final draft = parseReceiptLedger('''
+Kaufland
+Preis EUR
+Unbekannte Spezialität 2,49 B
+Summe 2,49
+Datum 23.07.26
+''');
+    final review = reviewReceiptPrices(draft, const <Product>[]);
+    final item =
+        draft.rows.firstWhere((row) => row.kind == ReceiptRowKind.item);
+    final observations = buildReceiptObservations(
+      draft: draft,
+      review: review,
+      assignedProductIds: {item.line: 'receipt_auto_specialitaet'},
+    );
+
+    expect(observations.single.productId, 'receipt_auto_specialitaet');
+    expect(observations.single.identityConfirmed, isFalse);
   });
 }
