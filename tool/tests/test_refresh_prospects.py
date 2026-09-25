@@ -185,6 +185,56 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(offers[0]["originalPrice"], 0.49)
 
 
+    def test_lidl_overview_reads_active_flyer_metadata(self):
+        payload = """
+        {
+          "categories": [
+            {
+              "subcategories": [
+                {
+                  "flyers": [
+                    {
+                      "id": "019f-test",
+                      "name": "Aktionsprospekt",
+                      "title": "28.09.2026 – 03.10.2026",
+                      "offerStartDate": "2026-09-28",
+                      "offerEndDate": "2026-10-03",
+                      "status": "next",
+                      "pdfUrl": "https://assets.leaflets.schwarz/test.pdf",
+                      "thumbnailUrl": "https://imgproxy.leaflets.schwarz/test.jpg",
+                      "flyerUrlAbsolute": "https://www.lidl.de/l/prospekte/aktionsprospekt-28-09-2026-03-10-2026-321560/ar/0",
+                      "regions": [{"code": 0}]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+        """
+        prospects = refresh.parse_lidl_overview(payload)
+        self.assertEqual(len(prospects), 1)
+        self.assertEqual(
+            prospects[0]["title"],
+            "Aktionsprospekt 28.09.2026 – 03.10.2026",
+        )
+        self.assertEqual(prospects[0]["offerStartDate"], "2026-09-28")
+        self.assertEqual(prospects[0]["offerEndDate"], "2026-10-03")
+        self.assertIn(
+            "flyer_identifier=aktionsprospekt-28-09-2026-03-10-2026-321560",
+            prospects[0]["apiUrl"],
+        )
+        self.assertIn("region_code=0", prospects[0]["apiUrl"])
+
+    def test_lidl_detail_url_prefers_explicit_flyer_json(self):
+        url = refresh._lidl_detail_url({
+            "flyerJson": "https://endpoints.leaflets.schwarz/v4/flyer?flyer_identifier=abc"
+        })
+        self.assertEqual(
+            url,
+            "https://endpoints.leaflets.schwarz/v4/flyer?flyer_identifier=abc",
+        )
+
     def test_penny_market_region_uses_exact_market(self):
         payload = """
         [

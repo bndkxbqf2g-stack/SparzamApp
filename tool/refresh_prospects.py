@@ -19,7 +19,7 @@ SOURCES = (
     ("aldi_sued", "ALDI Süd", "https://www.aldi-sued.de/", "aldi_api"),
     ("edeka_zellingen", "EDEKA", "https://www.edeka.de/maerkte/023738/", "edeka_api"),
     ("kaufland_grombuehl", "Kaufland", "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html", "kaufland"),
-    ("lidl_zellingen", "Lidl", "https://www.lidl.de/c/online-prospekte/s10005610/", "lidl"),
+    ("lidl_zellingen", "Lidl", "https://www.lidl.de/c/online-prospekte/s10005610/", "lidl_api"),
     ("penny_retzbach", "PENNY", "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1", "penny_api"),
     ("netto_thuengersheim", "Netto", "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371", "netto"),
     ("rewe_veitshoechheim", "REWE", "https://www.rewe.de/api/stationary-offers/461683", "rewe_api"),
@@ -527,6 +527,184 @@ def parse_kaufland(html_text, base_url):
                 offers.append(record("Kaufland", label, sale, valid_from, valid_until, urljoin(base_url, href)))
     return dedupe(offers), []
 
+LIDL_OVERVIEW_URLS = (
+    "https://endpoints.leaflets.schwarz/v4/overview?client_locale=lidl/de-DE",
+    "https://endpoints.leaflets.schwarz/v4/overview?client_locale=de-DE",
+)
+
+
+def _lidl_detail_url(flyer):
+    explicit = clean(str(flyer.get("flyerJson") or ""))
+    if explicit.startswith("https://"):
+        return explicit
+
+    viewer = clean(str(
+        flyer.get("flyerUrlAbsolute")
+        or flyer.get("url")
+        or ""
+    ))
+    slug = ""
+    region = "0"
+    match = re.search(r"/l/(?:de/)?prospekte/([^/]+)/ar/(\\d+)", viewer)
+    if match:
+        slug = match.group(1)
+        region = match.group(2)
+    if not slug:
+        slug = clean(str(flyer.get("slug") or flyer.get("id") or ""))
+    regions = flyer.get("regions")
+    if isinstance(regions, list) and regions:
+        first = regions[0]
+        if isinstance(first, dict):
+            candidate = clean(str(first.get("code") or ""))
+            if candidate:
+                region = candidate
+    if not slug:
+        return ""
+    return (
+        "https://endpoints.leaflets.schwarz/v4/flyer"
+        "?version=4&client=lidl&flyer_identifier="
+        + quote(slug)
+        + "&region_id=" + quote(region)
+        + "&region_code=" + quote(region)
+    )
+
+
+def parse_lidl_overview(json_text):
+    payload = json.loads(json_text)
+    if not isinstance(payload, dict):
+        raise ValueError("Lidl overview: ungültige Antwort")
+    root = payload.get("overview", payload)
+    categories = root.get("categories", []) if isinstance(root, dict) else []
+    if not isinstance(categories, list):
+        raise ValueError("Lidl overview: categories ist keine Liste")
+
+    prospects = []
+    seen = set()
+    for category in categories:
+        if not isinstance(category, dict):
+            continue
+        subcategories = category.get("subcategories", [])
+        if not isinstance(subcategories, list):
+            continue
+        for subcategory in subcategories:
+            if not isinstance(subcategory, dict):
+                continue
+            flyers = subcategory.get("flyers", [])
+            if not isinstance(flyers, list):
+                continue
+            for flyer in flyers:
+                if not isinstance(flyer, dict):
+                    continue
+                flyer_id = clean(str(flyer.get("id") or flyer.get("slug") or ""))
+                viewer = clean(str(
+                    flyer.get("flyerUrlAbsolute")
+                    or flyer.get("url")
+                    or ""
+                ))
+                key = flyer_id or viewer
+                if not key or key in seen:
+                    continue
+                seen.add(key)
+                name = clean(str(flyer.get("name") or ""))
+                title = clean(str(flyer.get("title") or ""))
+                label = clean(" ".join(value for value in (name, title) if value))
+                api_url = _lidl_detail_url(flyer)
+                item = {
+                    "id": flyer_id,
+                    "title": label or flyer_id,
+                    "url": viewer,
+                    "apiUrl": api_url,
+                    "offerStartDate": flyer.get("offerStartDate") or flyer.get("startDate"),
+                    "offerEndDate": flyer.get("offerEndDate") or flyer.get("endDate"),
+                    "pdfUrl": flyer.get("pdfUrl"),
+                    "thumbnailUrl": flyer.get("thumbnailUrl"),
+                    "status": flyer.get("status"),
+                }
+                prospects.append(item)
+
+    prospects.sort(key=lambda item: clean(str(item.get("offerStartDate") or "")))
+    return prospects
+
+
+def _enrich_lidl_prospect(item):
+    api_url = clean(str(item.get("apiUrl") or ""))
+    if not api_url:
+        return item
+    payload = json.loads(fetch(api_url))
+    flyer = payload.get("flyer", payload) if isinstance(payload, dict) else {}
+    if not isinstance(flyer, dict):
+        return item
+    pages = flyer.get("pages", [])
+    products = flyer.get("products", [])
+    item = dict(item)
+    item["productCount"] = len(products) if isinstance(products, list) else 0
+    item["pageCount"] = len(pages) if isinstance(pages, list) else 0
+    item["offerStartDate"] = flyer.get("offerStartDate") or item.get("offerStartDate")
+    item["offerEndDate"] = flyer.get("offerEndDate") or item.get("offerEndDate")
+    item["pdfUrl"] = flyer.get("pdfUrl") or item.get("pdfUrl")
+    item["hiResPdfUrl"] = flyer.get("hiResPdfUrl")
+    item["clientLocale"] = flyer.get("clientLocale")
+    item["category"] = flyer.get("category")
+    item["subcategory"] = flyer.get("subcategory")
+    if isinstance(pages, list) and pages:
+        samples = []
+        for page_data in pages[:5]:
+            if not isinstance(page_data, dict):
+                continue
+            samples.append({
+                "number": page_data.get("number"),
+                "altText": clean(str(page_data.get("altText") or ""))[:320],
+                "keyWords": clean(str(page_data.get("keyWords") or ""))[:900],
+                "image": page_data.get("image"),
+                "zoom": page_data.get("zoom"),
+            })
+        item["pageSamples"] = samples
+    return item
+
+
+def fetch_lidl_api_prospects():
+    last_error = None
+    prospects = []
+    for overview_url in LIDL_OVERVIEW_URLS:
+        try:
+            prospects = parse_lidl_overview(fetch(overview_url))
+        except Exception as error:
+            last_error = error
+            continue
+        if prospects:
+            break
+    if not prospects:
+        raise ValueError(
+            "Lidl overview API lieferte keine Prospekte"
+            + (": " + clean(str(last_error)) if last_error else "")
+        )
+
+    today = date.today().isoformat()
+    relevant = []
+    for item in prospects:
+        end = clean(str(item.get("offerEndDate") or ""))
+        if end and end[:10] < today:
+            continue
+        marker = " ".join([
+            clean(str(item.get("title") or "")),
+            clean(str(item.get("url") or "")),
+        ]).lower()
+        if "aktionsprospekt" not in marker:
+            continue
+        try:
+            item = _enrich_lidl_prospect(item)
+        except Exception as error:
+            item = dict(item)
+            item["apiError"] = clean(str(error))[:240]
+        relevant.append(item)
+        if len(relevant) >= 8:
+            break
+
+    if not relevant:
+        raise ValueError("Lidl overview API enthält keine aktiven Aktionsprospekte")
+    return [], relevant
+
+
 def parse_lidl(html_text, base_url):
     page = parsed(html_text)
     prospects = []
@@ -984,10 +1162,19 @@ def main():
                     body = fetch(url)
                     offers, prospects = parse_penny(body, url)
                     source_mode = "website_fallback"
+            elif parser_name == "lidl_api":
+                try:
+                    offers, prospects = fetch_lidl_api_prospects()
+                    source_mode = "structured_api"
+                    body = ""
+                except Exception:
+                    body = fetch(url)
+                    offers, prospects = parse_lidl(body, url)
+                    source_mode = "website_fallback"
             else:
                 body = fetch(url)
                 offers, prospects = PARSERS[parser_name](body, url)
-            metadata_only = parser_name == "lidl"
+            metadata_only = parser_name in ("lidl", "lidl_api")
             if not offers and not metadata_only:
                 lower_body = body.lower()
                 marker = lower_body.find("festpreis")
