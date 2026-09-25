@@ -554,5 +554,39 @@ void main() {
     expect(compatibleProductIdentity(generic, sauce), isFalse);
     expect(compatibleProductIdentity(generic, passata), isFalse);
   });
+  test('weighed bananas normalize receipt total to requested kilogram basis', () {
+    const product = Product(
+      id: 'bananen',
+      name: 'Bananen',
+      unit: '1 kg',
+      group: 'obst',
+      packageAmount: 1,
+      packageUnit: 'kg',
+    );
+    final prices = receiptFamilyMarketPrices(
+      items: [ListItem(product: product)],
+      observations: [
+        ReceiptObservation(
+          id: 'kaufland-bananas',
+          receiptFingerprint: 'kaufland-230726',
+          rowLine: 1,
+          rawLabel: 'Bananen kg',
+          familyKey: 'bananen',
+          storeName: 'Kaufland',
+          observedAt: DateTime(2026, 7, 23),
+          totalPrice: 0.64,
+          quantity: 0.498,
+          quantityUnit: 'kg',
+          unitPrice: null,
+          discounted: false,
+        ),
+      ],
+      now: DateTime(2026, 7, 24),
+    );
+
+    expect(prices, hasLength(1));
+    expect(prices.single.price, closeTo(0.64 / 0.498, 0.0001));
+  });
+
 }
 
