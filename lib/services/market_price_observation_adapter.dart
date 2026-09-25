@@ -50,8 +50,10 @@ List<MarketPrice> marketPricesFromObservations(
   final productsById = {for (final product in products) product.id: product};
   return observations
         .where((entry) =>
+            entry.isValid &&
             entry.productId?.isNotEmpty == true &&
             entry.identityConfidence >= 1 &&
+            (entry.validFrom == null || !entry.validFrom!.isAfter(today)) &&
             (entry.validUntil == null || !entry.validUntil!.isBefore(today)) &&
             _sourceAllowed(entry, settings, today) &&
             _matchesProductPackage(entry, productsById[entry.productId]) &&
