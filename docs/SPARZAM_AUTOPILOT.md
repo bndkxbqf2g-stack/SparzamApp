@@ -43,9 +43,14 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [ ] Marktpreis-Konfidenz und Preisbasis vereinheitlichen
 - [ ] Quellpriorität vollständig mit Tests absichern
 - [ ] Angebotspreise vs. Normalpreise konsistent behandeln
+- [ ] Angebotsquellen automatisiert importieren: Händler, Bild, Gültigkeit, Produktidentität
+- [ ] Angebote per + direkt in die Einkaufsliste übernehmen
+- [ ] ausgewiesenen Normalpreis eines Angebots nur als bestätigte Preisbasis speichern
 - [ ] UI klar zwischen historischem Hinweis und route-tauglichem Planungspreis unterscheiden
 
 ### Phase 3 – Einkaufslisten- und Preis-Matrix
+- [ ] hierarchischen Produktkatalog aus Oberbegriff → Produktfamilie → Variante aufbauen
+- [ ] Suchbegriff zeigt alle passenden Interpretationen (z. B. Tomate → frisch/Rispe/Party, getrennt von Tomatenmark/-sauce)
 - [ ] für jede Position alle belastbaren Marktpreise aufbauen
 - [ ] fehlende Preise explizit markieren
 - [ ] Produkt×Markt-Matrix als interne Diagnose-/Teststruktur
@@ -127,4 +132,8 @@ Der End-to-End-Audit hat drei konkrete Identitäts-Bypässe geschlossen: Eine bl
 
 Die reale Bon-Matrix ist in `docs/REAL_RECEIPT_MATRIX.md` begonnen. Der im Repository eindeutig belegte Kaufland-Schmand-Fall vom 23.07.2026 wird jetzt über `ReceiptObservation → PriceObservation → MarketPrice → planningMarketPrices → RoutePriceResolver → RouteOptimizer` getestet. Für sechs weitere Originalbons fehlen im Repository weiterhin eindeutig rekonstruierbare Original-Fixtures; deshalb bleibt der Roadmap-Punkt „sieben reale Bons“ offen und es wurden keine fehlenden Preise ergänzt.
 
-Nächster sicherer Schritt nach grüner CI: fehlende/mehrdeutige Produktidentitäten weiter auditieren und Quellpriorität sowie Angebot/Normalpreis absichern. Die sechs fehlenden Originalbelege bleiben ein Datenblocker nur für die vollständige reale Produkt×Markt-Matrix und daraus abgeleitete reale 1/2/3-Markt-Tests.
+Die Einkaufsliste muss als primäre Preisoberfläche dieselben route-tauglichen `planningMarketPrices` anzeigen wie der Optimierer. Familienpreise aus Bons dürfen deshalb nicht nur intern in der Route existieren. Die Tomatenidentität trennt frische Tomatenvarianten von Tomatenmark, Tomatensauce und Konserven; generische frische Tomaten dürfen passende frische Varianten bündeln.
+
+Zielbild für die nächsten Blöcke: hierarchischer, erweiterbarer Produktkatalog statt einer endlosen flachen Aliasliste; Suche liefert mögliche Interpretationen; bekannte Bon-/Preis-/Angebotsdaten werden darunter eingeordnet. Danach Angebotsimport mit Bild und Gültigkeit sowie +‑Übernahme in die Einkaufsliste und expliziter Normalpreisbestätigung. Die Route bewertet den gesamten Warenkorb gegen 1/2/3 Märkte inklusive Fahrtkosten und Angebotsvorteil.
+
+Nächster sicherer Schritt nach grüner CI: den Such-/Katalogpfad auf diese hierarchische Produktauflösung umstellen und Quellpriorität sowie Angebot/Normalpreis absichern. Die sechs fehlenden Originalbelege bleiben ein Datenblocker nur für die vollständige reale Produkt×Markt-Matrix und daraus abgeleitete reale 1/2/3-Markt-Tests.
