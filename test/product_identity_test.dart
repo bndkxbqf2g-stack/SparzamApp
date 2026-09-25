@@ -48,23 +48,20 @@ void main() {
     expect(identifyProduct('Wa.Stein.Pizza Mozz. 350g').familyKey, 'pizza');
     expect(compatibleProductIdentity(identifyProduct('Mozzarella'), identifyProduct('Wa.Stein.Pizza Mozz. 350g')), isFalse);
   });
-}
 
-
-test('fresh tomato request is not compatible with preserved tomato products', () {
+  test('fresh tomato request is not compatible with preserved tomato products', () {
   final fresh=identifyProduct('Tomaten');
   final passata=identifyProduct('Passata');
   expect(compatibleProductIdentity(fresh, passata), isFalse);
-});
+  });
 
-
-test('preserved tomato request still accepts preserved tomato evidence', () {
+  test('preserved tomato request still accepts preserved tomato evidence', () {
   expect(compatibleProductIdentity(identifyProduct('Passata'), identifyProduct('Gehackte Tomaten')), isTrue);
+  });
+
   test('explicit mince variant is not a generic family request', () {
     expect(identifyProduct('Hackfleisch').isGeneric, isTrue);
     expect(identifyProduct('Hackfleisch gemischt').isGeneric, isFalse);
     expect(identifyProduct('Rinderhackfleisch').isGeneric, isFalse);
   });
-
-
-});
+}
