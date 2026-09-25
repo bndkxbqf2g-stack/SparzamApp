@@ -147,8 +147,8 @@ void main() {
     expect(inferReceiptFamily('G&G Schmand 200 G'), 'schmand');
     expect(inferReceiptFamily('Milbona Schmand'), 'schmand');
     expect(inferReceiptFamily('Schmand'), 'schmand');
-    expect(inferReceiptFamily('KLC Geh. Tomaten'), 'tomaten');
-    expect(inferReceiptFamily('Passata 500g'), 'tomaten');
+    expect(inferReceiptFamily('KLC Geh. Tomaten'), 'tomatenkonserve');
+    expect(inferReceiptFamily('Passata 500g'), 'tomatenkonserve');
     expect(inferReceiptFamily('Tomaten'), 'tomaten');
   });
 
