@@ -473,6 +473,112 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(offers[0]["validFrom"], "2026-09-21")
         self.assertEqual(offers[0]["validUntil"], "2026-09-27")
 
+    def test_kaufland_selector_reads_store_code(self):
+        self.assertEqual(
+            refresh._kaufland_selector(
+                "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html"
+            ),
+            "DE5103",
+        )
+
+    def test_kaufland_structured_offer_reads_price_old_price_and_image(self):
+        payload = {
+            "component": "OfferTemplate",
+            "props": {
+                "offerData": {
+                    "cycles": [
+                        {
+                            "categories": [
+                                {
+                                    "offers": [
+                                        {
+                                            "offerId": "offer-1",
+                                            "klNr": "123",
+                                            "dateFrom": "2026-09-24",
+                                            "dateTo": "2026-09-30",
+                                            "title": "Kerrygold",
+                                            "subtitle": "Butter",
+                                            "unit": "je 250-g-Packung",
+                                            "formattedPrice": "1,99",
+                                            "formattedOldPrice": "2,49",
+                                            "listImage": "https://example.test/butter.jpg"
+                                        },
+                                        {
+                                            "offerId": "offer-xtra-only",
+                                            "klNr": "456",
+                                            "dateFrom": "2026-09-24",
+                                            "dateTo": "2026-09-30",
+                                            "title": "XTRA Produkt",
+                                            "formattedPrice": "0,00",
+                                            "loyaltyFormattedPrice": "1,49"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+        html = "<script>window.SSR['offers'] = " + refresh.json.dumps(payload) + ";</script>"
+        offers, _ = refresh.parse_kaufland_api(
+            html,
+            refresh.KAUFLAND_OVERVIEW_URL,
+            {"123", "456"},
+        )
+        self.assertEqual(len(offers), 1)
+        self.assertEqual(
+            offers[0]["productLabel"],
+            "Kerrygold Butter je 250-g-Packung",
+        )
+        self.assertEqual(offers[0]["offerPrice"], 1.99)
+        self.assertEqual(offers[0]["originalPrice"], 2.49)
+        self.assertEqual(offers[0]["validFrom"], "2026-09-24")
+        self.assertEqual(offers[0]["validUntil"], "2026-09-30")
+        self.assertEqual(
+            offers[0]["imageUrl"],
+            "https://example.test/butter.jpg",
+        )
+
+    def test_kaufland_structured_offer_respects_store_availability(self):
+        payload = {
+            "component": "OfferTemplate",
+            "props": {
+                "offerData": {
+                    "cycles": [{
+                        "categories": [{
+                            "offers": [
+                                {
+                                    "offerId": "local",
+                                    "klNr": "111",
+                                    "dateFrom": "2026-09-24",
+                                    "dateTo": "2026-09-30",
+                                    "title": "Lokales Produkt",
+                                    "formattedPrice": "0,88"
+                                },
+                                {
+                                    "offerId": "other",
+                                    "klNr": "222",
+                                    "dateFrom": "2026-09-24",
+                                    "dateTo": "2026-09-30",
+                                    "title": "Andere Region",
+                                    "formattedPrice": "0,69"
+                                }
+                            ]
+                        }]
+                    }]
+                }
+            }
+        }
+        html = refresh.json.dumps(payload)
+        offers, _ = refresh.parse_kaufland_api(
+            html,
+            refresh.KAUFLAND_OVERVIEW_URL,
+            {"111"},
+        )
+        self.assertEqual(len(offers), 1)
+        self.assertEqual(offers[0]["productLabel"], "Lokales Produkt")
+
     def test_kaufland_extracts_sale_and_regular_price(self):
         html = """<p>Gültig vom 24.09.2026 bis 30.09.2026</p><a href="/angebot/bananen">Ecuador./kolumb. Bananen, lose je kg-31%0.88 1.29</a>"""
         offers, _ = refresh.parse_kaufland(html, "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html")

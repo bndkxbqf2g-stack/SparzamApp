@@ -18,7 +18,7 @@ UA = "SparzamApp/1.0 (+https://github.com/bndkxbqf2g-stack/SparzamApp)"
 SOURCES = (
     ("aldi_sued", "ALDI Süd", "https://www.aldi-sued.de/", "aldi_api"),
     ("edeka_zellingen", "EDEKA", "https://www.edeka.de/maerkte/023738/", "edeka_api"),
-    ("kaufland_grombuehl", "Kaufland", "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html", "kaufland"),
+    ("kaufland_grombuehl", "Kaufland", "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html", "kaufland_api"),
     ("lidl_zellingen", "Lidl", "https://www.lidl.de/c/online-prospekte/s10005610/", "lidl_api"),
     ("penny_retzbach", "PENNY", "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1", "penny_api"),
     ("netto_thuengersheim", "Netto", "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371", "netto"),
@@ -66,12 +66,14 @@ class VisibleTextParser(HTMLParser):
 def clean(value):
     return re.sub(r"\s+", " ", html.unescape(value or "")).strip()
 
-def fetch(url):
+def fetch(url, extra_headers=None):
     headers = {
         "User-Agent": UA,
         "Accept-Language": "de-DE,de;q=0.9",
         "Accept": "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8",
     }
+    if extra_headers:
+        headers.update(extra_headers)
     request = Request(url, headers=headers)
     try:
         with urlopen(request, timeout=30) as response:
@@ -497,6 +499,171 @@ def parse_edeka(html_text, base_url):
             candidates[key] = item
 
     return list(candidates.values()), []
+
+KAUFLAND_OVERVIEW_URL = (
+    "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-week=current"
+)
+
+
+def _kaufland_selector(store_url):
+    match = re.search(r"storeName%3D(DE\d+)", store_url, flags=re.I)
+    if match:
+        return match.group(1).upper()
+    match = re.search(r"storeName=(DE\d+)", store_url, flags=re.I)
+    return match.group(1).upper() if match else ""
+
+
+def _kaufland_available_ids(json_text):
+    payload = json.loads(json_text)
+    if not isinstance(payload, list):
+        raise ValueError("Kaufland Verfügbarkeitsdaten: ungültige Antwort")
+    result = set()
+    today = date.today()
+    horizon = today + timedelta(days=14)
+    for item in payload:
+        if not isinstance(item, dict):
+            continue
+        kl_nr = clean(str(item.get("klNr") or ""))
+        valid_from = _lidl_offer_date(item.get("dateFrom"))
+        valid_until = _lidl_offer_date(item.get("dateTo"))
+        if not kl_nr or valid_from is None or valid_until is None:
+            continue
+        if valid_until < today or valid_from > horizon:
+            continue
+        result.add(kl_nr)
+    return result
+
+
+def _kaufland_ssr_payload(html_text):
+    marker = '{"component":"OfferTemplate"'
+    start = html_text.find(marker)
+    if start >= 0:
+        try:
+            payload, _ = json.JSONDecoder().raw_decode(html_text[start:])
+            if isinstance(payload, dict):
+                return payload
+        except json.JSONDecodeError:
+            pass
+
+    match = re.search(
+        r"window\.SSR\[[^\]]+\]\s*=\s*(\{.*?\});?\s*</script>",
+        html_text,
+        flags=re.I | re.S,
+    )
+    if match:
+        payload = json.loads(match.group(1))
+        if isinstance(payload, dict):
+            return payload
+    raise ValueError("Kaufland Angebotsseite enthält keine strukturierten Angebotsdaten")
+
+
+def parse_kaufland_api(html_text, base_url, available_ids=None):
+    payload = _kaufland_ssr_payload(html_text)
+    props = payload.get("props", {})
+    offer_data = props.get("offerData", {}) if isinstance(props, dict) else {}
+    cycles = offer_data.get("cycles", []) if isinstance(offer_data, dict) else []
+    if not isinstance(cycles, list):
+        raise ValueError("Kaufland Angebotsdaten: cycles ist keine Liste")
+
+    today = date.today()
+    horizon = today + timedelta(days=14)
+    offers = []
+    seen_offer_ids = set()
+    for cycle in cycles:
+        if not isinstance(cycle, dict):
+            continue
+        for category in cycle.get("categories", []):
+            if not isinstance(category, dict):
+                continue
+            for raw in category.get("offers", []):
+                if not isinstance(raw, dict):
+                    continue
+                kl_nr = clean(str(raw.get("klNr") or ""))
+                if available_ids and kl_nr not in available_ids:
+                    continue
+
+                offer_id = clean(str(raw.get("offerId") or ""))
+                if offer_id and offer_id in seen_offer_ids:
+                    continue
+
+                valid_from = _lidl_offer_date(raw.get("dateFrom"))
+                valid_until = _lidl_offer_date(raw.get("dateTo"))
+                if valid_from is None or valid_until is None:
+                    continue
+                if valid_until < today or valid_from > horizon:
+                    continue
+
+                sale = _json_money(
+                    raw.get("formattedPrice")
+                    if raw.get("formattedPrice") is not None
+                    else raw.get("price")
+                )
+                if sale is None or sale <= 0:
+                    continue
+
+                title = clean(str(raw.get("title") or ""))
+                subtitle = clean(str(raw.get("subtitle") or ""))
+                label = clean(" ".join(value for value in (title, subtitle) if value))
+                unit = clean(str(raw.get("unit") or ""))
+                if unit and unit.lower() not in label.lower():
+                    label = clean(label + " " + unit)
+                if len(label) < 2:
+                    continue
+
+                regular = _json_money(raw.get("formattedOldPrice"))
+                if regular is None:
+                    regular = _json_money(raw.get("oldPrice"))
+                if regular is not None and regular < sale:
+                    regular = None
+
+                image = clean(str(raw.get("listImage") or ""))
+                proof = base_url
+                if offer_id:
+                    proof += "#offer-" + offer_id
+                    seen_offer_ids.add(offer_id)
+
+                offers.append(record(
+                    "Kaufland",
+                    label,
+                    sale,
+                    valid_from,
+                    valid_until,
+                    proof,
+                    regular,
+                    image,
+                ))
+
+    return dedupe(offers), []
+
+
+def fetch_kaufland_api_offers(store_url):
+    selector = _kaufland_selector(store_url)
+    if not selector:
+        raise ValueError("Kaufland Filialkennung fehlt")
+    availability_url = (
+        "https://filiale.kaufland.de/.kloffers.storeName="
+        + selector
+        + ".json"
+    )
+    available_ids = None
+    try:
+        available_ids = _kaufland_available_ids(fetch(availability_url))
+    except Exception:
+        available_ids = None
+
+    page = fetch(
+        KAUFLAND_OVERVIEW_URL,
+        {"Cookie": "x-aem-variant=" + selector},
+    )
+    offers, _ = parse_kaufland_api(
+        page,
+        KAUFLAND_OVERVIEW_URL,
+        available_ids,
+    )
+    if not offers:
+        raise ValueError("Kaufland Strukturdaten lieferten keine Angebote")
+    return offers, []
+
 
 def parse_kaufland(html_text, base_url):
     page = parsed(html_text)
@@ -1353,6 +1520,15 @@ def main():
                 except Exception:
                     body = fetch(url)
                     offers, prospects = parse_penny(body, url)
+                    source_mode = "website_fallback"
+            elif parser_name == "kaufland_api":
+                try:
+                    offers, prospects = fetch_kaufland_api_offers(url)
+                    source_mode = "structured_api"
+                    body = ""
+                except Exception:
+                    body = fetch(url)
+                    offers, prospects = parse_kaufland(body, url)
                     source_mode = "website_fallback"
             elif parser_name == "lidl_api":
                 try:
