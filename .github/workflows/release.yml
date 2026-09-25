@@ -15,6 +15,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  pages-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure Pages uses workflow builds
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method PUT "repos/${GITHUB_REPOSITORY}/pages" -f build_type=workflow
+
   web:
     runs-on: ubuntu-latest
     steps:
@@ -79,17 +87,12 @@ jobs:
           retention-days: 14
 
   deploy:
-    needs: web
+    needs: [pages-source, web]
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Ensure Pages uses workflow builds
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh api --method PUT "repos/${GITHUB_REPOSITORY}/pages" -f build_type=workflow
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
