@@ -570,7 +570,7 @@ class ProspectParserTest(unittest.TestCase):
                 }
             }
         }
-        html = refresh.json.dumps(payload)
+        html = "<script>window.SSR[\'offers\'] = " + refresh.json.dumps(payload) + ";</script>"
         offers, _ = refresh.parse_kaufland_api(
             html,
             refresh.KAUFLAND_OVERVIEW_URL,
