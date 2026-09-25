@@ -301,5 +301,31 @@ void main() {
     );
     expect(prices.map((price) => price.storeName).toSet(), {'Netto', 'Lidl'});
   });
+  test('generic Hackfleisch resolves retailer labels across markets', () {
+    const product = Product(id: 'hack-generic', name: 'Hackfleisch', unit: 'Stück', group: 'fleisch');
+    final prices = receiptFamilyMarketPrices(
+      items: [ListItem(product: product)],
+      observations: [
+        for (final entry in [('Netto', 'Hackfl. gem.', 4.49), ('Kaufland', 'R-Hackfleisch', 4.99)])
+          ReceiptObservation(
+            id: 'hack-${entry.$1}',
+            receiptFingerprint: 'h-${entry.$1}',
+            rowLine: 1,
+            rawLabel: entry.$2,
+            familyKey: 'hackfleisch',
+            storeName: entry.$1,
+            observedAt: DateTime(2026, 9, 20),
+            totalPrice: entry.$3,
+            quantity: null,
+            quantityUnit: '',
+            unitPrice: null,
+            discounted: false,
+          ),
+      ],
+      now: DateTime(2026, 9, 24),
+    );
+    expect({for (final price in prices) price.storeName: price.price},
+        {'Netto': 4.49, 'Kaufland': 4.99});
+  });
 
 }
