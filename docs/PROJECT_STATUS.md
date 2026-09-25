@@ -188,3 +188,11 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Für Produkte ohne EAN kann Open Food Facts konservativ zur EAN-Suche genutzt werden. Automatisch entdeckte EANs sind zunächst nur Retrieval-Evidenz und erzeugen keinen exakten Routenpreis ohne bestätigte Identität.
 - Auch automatische Bon-Vorschläge gelten nicht mehr als bestätigte exakte Produktidentität; nur explizite Zuordnungen dürfen diese Sicherheit herstellen.
 - Aktueller nächster großer Prüfschritt: End-to-End-Audit der Preis- und Routenlogik aus der WORK QUEUE.
+
+
+## Update 25.09.2026 – Bonimport-Review und gewichtete Originalpreise
+- Im Bonimport werden vollständig geprüfte Bons vor gesperrten Bons angezeigt; gesperrte Bons starten eingeklappt. Eine Zusammenfassung zeigt, wie viele ausgewählte Bons tatsächlich übernehmbar sind.
+- Unzugeordnete Artikelpreise stehen lesbar direkt unter dem Artikelnamen statt gequetscht am rechten Rand. Bei Gewichtsartikeln ohne gedruckten Grundpreis wird nur Masse plus Gesamtpreis gezeigt; ein nicht belegter Einzel-/Kilopreis wird nicht vorgetäuscht.
+- Kaufland-Zeilen wie `Bananen kg 0,498 kg 0,64 B` behalten jetzt die gekaufte Masse als `0,498 kg`. Die Familienpreislogik kann daraus bei eindeutig gewünschter Kilobasis den vergleichbaren Preis mathematisch normieren.
+- Der letzte Quellen-Upload wurde gegen den Parser auditiert: die drei enthaltenen Kaufland-Bons und zwei Netto-Bons ergeben jeweils exakt ihre gedruckte Bonsumme. Die reale Bon-Matrix dokumentiert diese Originalquellen nun ausdrücklich.
+- Die im UI sichtbaren Dateien `Kassenbon_2026-07-24_19.19.pdf` und `Kassenbon_2026-01-16_11.53.pdf` fehlen weiterhin als Originaldateien; deren konkrete Summenabweichung wird deshalb nicht durch Annahmen überbrückt.
