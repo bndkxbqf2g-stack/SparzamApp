@@ -25,12 +25,40 @@ Datum:23.07.26 Zeit: 12:52
       draft: draft,
       row: draft.rows.first,
       product: product,
+      identityConfirmed: true,
     );
 
     expect(draft.balances, isTrue);
     expect(price, isNotNull);
     expect(price!.price, 0.79);
     expect(price.storeName, 'Kaufland');
+  });
+
+  test('automatic exact alias does not become a direct market price', () {
+    final draft = parseReceiptLedger('''
+Kaufland
+Preis EUR
+Mystery Produkt 2,49 B
+Summe 2,49
+Datum:23.07.26 Zeit: 12:52
+''');
+    const product = Product(
+      id: 'receipt_auto_mystery',
+      name: 'Mystery Produkt',
+      unit: 'Stück',
+      group: 'mystery',
+      aliases: ['Mystery Produkt'],
+    );
+
+    expect(
+      assignedReceiptPrice(
+        draft: draft,
+        row: draft.rows.first,
+        product: product,
+        identityConfirmed: false,
+      ),
+      isNull,
+    );
   });
 
   test('broad family identity does not become an exact direct price', () {
@@ -53,6 +81,7 @@ Datum:23.07.26 Zeit: 12:52
         draft: draft,
         row: draft.rows.first,
         product: generic,
+        identityConfirmed: true,
       ),
       isNull,
     );
