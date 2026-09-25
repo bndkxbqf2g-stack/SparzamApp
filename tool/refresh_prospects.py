@@ -307,6 +307,17 @@ def parse_lidl(html_text, base_url):
                     }
                 if isinstance(pages, list) and pages and isinstance(pages[0], dict):
                     item["pageKeys"] = sorted(pages[0].keys())
+                    if not prospects:
+                        samples = []
+                        for page_data in pages[:5]:
+                            if not isinstance(page_data, dict):
+                                continue
+                            samples.append({
+                                "number": page_data.get("number"),
+                                "altText": clean(str(page_data.get("altText") or ""))[:320],
+                                "keyWords": clean(str(page_data.get("keyWords") or ""))[:900],
+                            })
+                        item["pageSamples"] = samples
             except Exception as error:
                 item["apiError"] = clean(str(error))[:240]
         prospects.append(item)
