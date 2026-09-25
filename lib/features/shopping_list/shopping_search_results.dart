@@ -9,6 +9,7 @@ class ShoppingSearchResults extends StatelessWidget {
     super.key,
     required this.query,
     required this.suggestions,
+    required this.relatedInterpretations,
     required this.preferredProductByGroup,
     required this.recentPurchases,
     required this.onAdd,
@@ -17,6 +18,7 @@ class ShoppingSearchResults extends StatelessWidget {
 
   final String query;
   final List<Product> suggestions;
+  final List<Product> relatedInterpretations;
   final Map<String, String> preferredProductByGroup;
   final List<RecentPurchase> recentPurchases;
   final ValueChanged<Product> onAdd;
@@ -39,26 +41,22 @@ class ShoppingSearchResults extends StatelessWidget {
         child: Column(
           children: [
             for (final product in suggestions)
-              ListTile(
-                onTap: () => onAdd(product),
-                leading: CircleAvatar(
-                  radius: 18,
-                  child: Icon(
-                    preferredProductByGroup[product.group] == product.id
-                        ? Icons.auto_awesome
-                        : Icons.add,
-                    size: 18,
+              _productTile(product),
+            if (relatedInterpretations.isNotEmpty) ...[
+              const Divider(height: 1),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(16, 12, 16, 4),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Weitere Interpretationen',
+                    style: TextStyle(fontWeight: FontWeight.w700),
                   ),
                 ),
-                title: Text(
-                  preferredProductByGroup[product.group] == product.id
-                      ? '${product.name} · deine Auswahl'
-                      : product.name,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                subtitle: Text(_subtitle(product)),
-                trailing: const Icon(Icons.chevron_right),
               ),
+              for (final product in relatedInterpretations)
+                _productTile(product, related: true),
+            ],
             ListTile(
               onTap: onAddCustom,
               leading: const CircleAvatar(
@@ -79,6 +77,30 @@ class ShoppingSearchResults extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _productTile(Product product, {bool related = false}) {
+    final preferred = preferredProductByGroup[product.group] == product.id;
+    return ListTile(
+      onTap: () => onAdd(product),
+      leading: CircleAvatar(
+        radius: 18,
+        child: Icon(
+          related
+              ? Icons.alt_route
+              : preferred
+                  ? Icons.auto_awesome
+                  : Icons.add,
+          size: 18,
+        ),
+      ),
+      title: Text(
+        preferred ? '${product.name} · deine Auswahl' : product.name,
+        style: const TextStyle(fontWeight: FontWeight.w600),
+      ),
+      subtitle: Text(_subtitle(product)),
+      trailing: const Icon(Icons.chevron_right),
     );
   }
 
