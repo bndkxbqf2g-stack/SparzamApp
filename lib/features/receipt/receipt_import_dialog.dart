@@ -307,9 +307,16 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
         final draft = entry.draft;
         final review = reviewReceiptPrices(draft, availableProducts);
         final assigned = <int, String>{};
+        final confirmedLines = <int>{};
         for (final row in draft.rows) {
-          final productId = assignedProducts[_rowKey(draft, row)];
-          if (productId != null) assigned[row.line] = productId;
+          final key = _rowKey(draft, row);
+          final productId = assignedProducts[key];
+          if (productId != null) {
+            assigned[row.line] = productId;
+            if (!automaticProductAssignments.contains(key)) {
+              confirmedLines.add(row.line);
+            }
+          }
         }
         for (final row in draft.rows) {
           final productId = assigned[row.line];
@@ -329,6 +336,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
             draft: draft,
             review: review,
             assignedProductIds: assigned,
+            confirmedProductLines: confirmedLines,
           ),
         );
       }
