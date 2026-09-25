@@ -36,6 +36,7 @@ import '../../services/shopping_list_store.dart';
 import '../../services/sequential_write_queue.dart';
 import '../../services/diagnostic_log_service.dart';
 import '../budget/budget_screen.dart';
+import '../offers/offer_import.dart';
 import '../catalog/product_catalog_screen.dart';
 import '../home/dashboard_data.dart';
 import '../profile/mobility_settings_screen.dart';
@@ -283,10 +284,8 @@ class _AppShellState extends State<AppShell> {
       widget.diagnosticLogService.record(
         category: 'Prospekte',
         message: 'Automatische Prospektangebote aktualisiert.',
-        details: feed.records.length.toString() +
-            ' Rohangebote · ' +
-            resolved.length.toString() +
-            ' sicher zugeordnet',
+        details:
+            '${feed.records.length} Rohangebote · ${resolved.length} sicher zugeordnet',
       );
     } catch (error) {
       widget.diagnosticLogService.record(
