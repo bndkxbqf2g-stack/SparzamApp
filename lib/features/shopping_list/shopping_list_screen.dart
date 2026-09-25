@@ -151,6 +151,13 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         catalogProducts: widget.catalogProducts,
       );
 
+  List<Product> get relatedInterpretations =>
+      buildRelatedProductInterpretations(
+        query: controller.text,
+        primarySuggestions: suggestions,
+        catalogProducts: widget.catalogProducts,
+      );
+
   List<Product> get quickProducts => buildQuickProducts(
         widget.preferredProductByGroup,
         catalogProducts: widget.catalogProducts,
@@ -405,6 +412,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 ShoppingSearchResults(
                   query: controller.text.trim(),
                   suggestions: suggestions,
+                  relatedInterpretations: relatedInterpretations,
                   preferredProductByGroup: widget.preferredProductByGroup,
                   recentPurchases: widget.recentPurchases,
                   onAdd: add,
