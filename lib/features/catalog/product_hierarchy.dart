@@ -35,6 +35,24 @@ ProductHierarchyLabel productHierarchyLabel(Product product) {
   );
 }
 
+String? productHierarchyRoot(ProductIdentity identity) => switch (identity.familyKey) {
+      'tomaten' ||
+      'tomatenmark' ||
+      'tomatenkonserve' ||
+      'tomatensauce' =>
+        'tomate',
+      final family => family,
+    };
+
+bool sharesProductHierarchy(
+  ProductIdentity left,
+  ProductIdentity right,
+) {
+  final leftRoot = productHierarchyRoot(left);
+  final rightRoot = productHierarchyRoot(right);
+  return leftRoot != null && leftRoot == rightRoot;
+}
+
 String _familyLabel(String key) => switch (key) {
       'aepfel' => 'Äpfel',
       'kaese' => 'Käse',
