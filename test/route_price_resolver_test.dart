@@ -39,6 +39,27 @@ void main() {
     expect(quote.usesOffer, isTrue);
   });
 
+  test('does not activate an offer before validFrom', () {
+    final offer = Offer(
+      id: 'future',
+      productId: 'test',
+      storeName: 'Markt',
+      originalPrice: 2,
+      offerPrice: 1,
+      validFrom: DateTime(2026, 9, 26),
+      validUntil: DateTime(2026, 9, 30),
+    );
+    final before = RoutePriceResolver([offer], now: DateTime(2026, 9, 25))
+        .quote(store, ListItem(product: product));
+    final active = RoutePriceResolver([offer], now: DateTime(2026, 9, 26))
+        .quote(store, ListItem(product: product));
+
+    expect(before!.total, 2);
+    expect(before.usesOffer, isFalse);
+    expect(active!.total, 1);
+    expect(active.usesOffer, isTrue);
+  });
+
   test('applies 3 for 2 to requested quantity', () {
     final offer = Offer(
       id: '2',
