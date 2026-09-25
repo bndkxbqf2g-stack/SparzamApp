@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-25T20:53:36.953830Z",
+  "generatedAt": "2026-09-25T20:55:20.552539Z",
   "sources": [
     {
       "id": "aldi_sued",
@@ -23,7 +23,7 @@
       "storeName": "Kaufland",
       "url": "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html",
       "status": "ok",
-      "recordCount": 27,
+      "recordCount": 22,
       "prospects": []
     },
     {
@@ -290,16 +290,6 @@
       "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=01187000"
     },
     {
-      "sourceId": "1b1009db08202d269a24",
-      "productLabel": "KNÜLLER NESTLÉ SCHÖLLER Eisgenuss je 4 - 9 St. = 280 - 840-ml-Packg. (1 l = 2.37 - 7.11) / (1 l = 2.14 - 6.40)** nur 1.99 Mit Kaufland Card XTRA **",
-      "storeName": "Kaufland",
-      "offerPrice": 1.79,
-      "validFrom": "2026-09-24",
-      "validUntil": "2026-09-30",
-      "source": "retailerWebsite",
-      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=00903468"
-    },
-    {
       "sourceId": "9b34e4ac705cc1a4d6d5",
       "productLabel": "KNÜLLER IGLO Schlemmer-Filet je 380-g-Packg. (1 kg = 7.87)",
       "storeName": "Kaufland",
@@ -310,16 +300,6 @@
       "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=00804575"
     },
     {
-      "sourceId": "4aa591e4691c9a5183c0",
-      "productLabel": "KNÜLLER IGLO Fischstäbchen je 360 - 450-g-Packg. (1 kg = 6.65 - 8.31) / (1 kg = 5.54 - 6.92)** nur 2.99 Mit Kaufland Card XTRA **",
-      "storeName": "Kaufland",
-      "offerPrice": 2.49,
-      "validFrom": "2026-09-24",
-      "validUntil": "2026-09-30",
-      "source": "retailerWebsite",
-      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=00804377"
-    },
-    {
       "sourceId": "90dd4bd3cf0ffa87fcfa",
       "productLabel": "KNÜLLER KINDER Maxi King je 3 St. = 105-g-Packg. (1 kg = 14.19)",
       "storeName": "Kaufland",
@@ -328,17 +308,6 @@
       "validUntil": "2026-09-30",
       "source": "retailerWebsite",
       "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=00414219"
-    },
-    {
-      "sourceId": "c376f5651bcdca4b1467",
-      "productLabel": "KERRYGOLD Extra XXL je 400-g-Becher (1 kg = 6.23) / (1 kg = 4.98)** -46% 2.49 4.69 Mit Kaufland Card XTRA **",
-      "storeName": "Kaufland",
-      "offerPrice": 1.99,
-      "validFrom": "2026-09-24",
-      "validUntil": "2026-09-30",
-      "source": "retailerWebsite",
-      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=01108705",
-      "originalPrice": 4.69
     },
     {
       "sourceId": "4ad0493685f34ca8c4ff",
@@ -382,17 +351,6 @@
       "source": "retailerWebsite",
       "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=20656889",
       "originalPrice": 1.99
-    },
-    {
-      "sourceId": "d0f9366e98fc7052206b",
-      "productLabel": "K-CLASSIC Sonnenblumenöl je 1-l-Fl. -21% 1.49 1.89 Mit Kaufland Card XTRA **",
-      "storeName": "Kaufland",
-      "offerPrice": 1.33,
-      "validFrom": "2026-09-24",
-      "validUntil": "2026-09-30",
-      "source": "retailerWebsite",
-      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=20671877",
-      "originalPrice": 1.89
     },
     {
       "sourceId": "a19b459d5d5ad025bc5b",
@@ -457,17 +415,6 @@
       "source": "retailerWebsite",
       "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=02083687",
       "originalPrice": 1.99
-    },
-    {
-      "sourceId": "af8923f584504597c6e4",
-      "productLabel": "TULLAMORE DEW Irish Whiskey je 0,7-l-Fl. (1 l = 19.99) / (1 l = 18.56)** -26% 13.99 18.99 Mit Kaufland Card XTRA **",
-      "storeName": "Kaufland",
-      "offerPrice": 12.99,
-      "validFrom": "2026-09-24",
-      "validUntil": "2026-09-30",
-      "source": "retailerWebsite",
-      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-category=135_Foodknueller&kloffer-articleID=02181014",
-      "originalPrice": 18.99
     },
     {
       "sourceId": "f7d6ddca469594e8be25",
