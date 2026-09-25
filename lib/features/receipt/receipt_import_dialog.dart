@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../models/market_price.dart';
 import '../../models/product.dart';
+import '../../models/receipt_identity.dart';
 import '../../services/receipt_observation_store.dart';
 import '../../services/receipt_alias_store.dart';
 import 'receipt_auto_product.dart';
@@ -66,6 +67,31 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
     final day = date.day.toString().padLeft(2, '0');
     final month = date.month.toString().padLeft(2, '0');
     return '$day.$month.${date.year}';
+  }
+
+  ReceiptIdentityAssessment _suggestionIdentity(
+    ReceiptDraft draft,
+    ReceiptPriceSuggestion suggestion,
+  ) =>
+      assessReceiptIdentity(
+        productId: suggestion.product.id,
+        identityConfirmed: selectedReceiptPrices.contains(
+          _priceKey(draft.fingerprint, suggestion.product.id),
+        ),
+        familyKey: inferReceiptFamily(suggestion.row.label),
+      );
+
+  ReceiptIdentityAssessment _assignedIdentity(
+    ReceiptDraft draft,
+    ReceiptRow row,
+  ) {
+    final key = _rowKey(draft, row);
+    return assessReceiptIdentity(
+      productId: assignedProducts[key],
+      identityConfirmed: assignedProducts.containsKey(key) &&
+          !automaticProductAssignments.contains(key),
+      familyKey: inferReceiptFamily(row.label),
+    );
   }
 
   Future<void> pickReceiptDate() async {
@@ -463,7 +489,8 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                 subtitle: Text(
                                   '${suggestion.row.label} · '
                                   '${suggestion.row.quantity == null ? '1 Stück' : '${suggestion.row.quantity} ${suggestion.row.quantityUnit}'} · '
-                                  '${suggestion.price.price.toStringAsFixed(2).replaceAll('.', ',')} € je ${suggestion.product.unit}',
+                                  '${suggestion.price.price.toStringAsFixed(2).replaceAll('.', ',')} € je ${suggestion.product.unit}\n'
+                                  '${_suggestionIdentity(draft, suggestion).summary}',
                                 ),
                               ),
                           if (review.unmatchedItems > 0)
@@ -493,7 +520,8 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                               '${((row.unitCents ?? row.cents) / 100).toStringAsFixed(2).replaceAll('.', ',')} €'),
                                         if (assignedProducts.containsKey(_rowKey(draft, row)))
                                           Text(
-                                            'Zuordnung: ${availableProducts.where((p) => p.id == assignedProducts[_rowKey(draft, row)]).first.name} · wird gelernt',
+                                            'Zuordnung: ${availableProducts.where((p) => p.id == assignedProducts[_rowKey(draft, row)]).first.name}\n'
+                                            '${_assignedIdentity(draft, row).summary}',
                                             style: const TextStyle(fontWeight: FontWeight.w600),
                                           ),
                                         Align(
