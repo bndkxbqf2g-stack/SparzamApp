@@ -149,6 +149,35 @@ void main() {
     expect(observationFromReceipt(restored).identityConfidence, 0);
   });
 
+  test('legacy receipt price observations default to unconfirmed identity', () {
+    final restored = PriceObservation.fromJson({
+      'id': 'receipt|legacy',
+      'productId': 'schmand',
+      'familyKey': 'schmand',
+      'storeName': 'Lidl',
+      'price': 0.69,
+      'observedAt': '2026-09-24T00:00:00.000',
+      'source': 'receipt',
+    });
+
+    expect(restored.identityConfidence, 0);
+    expect(marketPricesFromObservations([restored]), isEmpty);
+  });
+
+  test('legacy non-receipt price observations keep exact identity', () {
+    final restored = PriceObservation.fromJson({
+      'id': 'manual|legacy',
+      'productId': 'schmand',
+      'storeName': 'Lidl',
+      'price': 0.79,
+      'observedAt': '2026-09-24T00:00:00.000',
+      'source': 'manual',
+    });
+
+    expect(restored.identityConfidence, 1);
+    expect(marketPricesFromObservations([restored]), hasLength(1));
+  });
+
   test('offer adapter carries validity into observation', () {
     final observation = observationFromOffer(
       Offer(id: 'o1', productId: 'schmand', storeName: 'Lidl',
