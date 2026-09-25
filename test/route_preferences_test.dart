@@ -3,6 +3,7 @@ import 'package:sparzamapp/features/route/route_optimizer.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/market_price.dart';
+import 'package:sparzamapp/models/offer.dart';
 
 void main() {
   const milk = Product(
@@ -82,6 +83,42 @@ void main() {
         isTrue,
       );
     }
+  });
+
+  test('Angebot rechtfertigt zweiten Markt nur bei Gesamtvorteil inkl Fahrt', () {
+    final offer = Offer(
+      id: 'lidl-milk-special',
+      productId: 'milch_35',
+      storeName: 'Lidl',
+      originalPrice: 1.29,
+      offerPrice: 0.10,
+      validFrom: DateTime(2026, 9, 25),
+      validUntil: DateTime(2026, 9, 26),
+      source: 'leaflet',
+    );
+
+    final withoutTravel = RouteOptimizer(
+      items(),
+      [offer],
+      now: DateTime(2026, 9, 25),
+      euroPerKm: 0,
+      maxStores: 2,
+      enabledStoreNames: const ['Lidl', 'Kaufland'],
+    ).bestPlan()!;
+
+    final withTravel = RouteOptimizer(
+      items(),
+      [offer],
+      now: DateTime(2026, 9, 25),
+      euroPerKm: 0.22,
+      maxStores: 2,
+      enabledStoreNames: const ['Lidl', 'Kaufland'],
+    ).bestPlan()!;
+
+    expect(withoutTravel.stores.map((store) => store.name).toSet(),
+        {'Lidl', 'Kaufland'});
+    expect(withTravel.stores, hasLength(1));
+    expect(withTravel.stores.single.name, 'Lidl');
   });
 
   test('deaktivierte Märkte werden aus der Optimierung entfernt', () {
