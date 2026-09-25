@@ -132,14 +132,28 @@ ProductIdentity identifyProduct(String value) {
 }
 
 bool compatibleProductIdentity(ProductIdentity request, ProductIdentity candidate) {
-  if (!request.isKnown || request.familyKey != candidate.familyKey) { return false; }
-  if (request.productType != null && request.productType != candidate.productType) { return false; }
-  if (request.fatPercent != null && request.fatPercent != candidate.fatPercent) return false;
-  if (request.color != null && request.color != candidate.color) return false;
-  if (request.shape != null && request.shape != candidate.shape) return false;
-  if (request.meatType != null && request.meatType != candidate.meatType) return false;
+  if (!request.isKnown || request.familyKey != candidate.familyKey) {
+    return false;
+  }
+  if (request.productType != null && request.productType != candidate.productType) {
+    return false;
+  }
+  if (request.fatPercent != null && request.fatPercent != candidate.fatPercent) {
+    return false;
+  }
+  if (request.color != null && request.color != candidate.color) {
+    return false;
+  }
+  if (request.shape != null && request.shape != candidate.shape) {
+    return false;
+  }
+  if (request.meatType != null && request.meatType != candidate.meatType) {
+    return false;
+  }
   if (request.variant != null && candidate.variant != null &&
-      request.variant != candidate.variant) return false;
+      request.variant != candidate.variant) {
+    return false;
+  }
   return true;
 }
 
