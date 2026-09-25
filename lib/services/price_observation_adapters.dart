@@ -36,9 +36,33 @@ PriceObservation observationFromOffer(Offer offer, {required DateTime observedAt
       storeName: offer.storeName,
       price: offer.offerPrice,
       observedAt: observedAt,
-      source: PriceObservationSource.manual,
+      source: _offerSource(offer),
       kind: PriceObservationKind.offer,
+      validFrom: offer.validFrom,
       validUntil: offer.validUntil,
-      proofRef: 'offer:${offer.id}',
+      proofRef: offer.proofRef ?? 'offer:${offer.id}',
       discounted: true,
     );
+
+
+PriceObservation regularObservationFromOffer(
+  Offer offer, {
+  required DateTime observedAt,
+}) =>
+    PriceObservation(
+      id: 'offer-regular|${offer.id}|${offer.originalPrice.toStringAsFixed(4)}',
+      productId: offer.productId,
+      storeName: offer.storeName,
+      price: offer.originalPrice,
+      observedAt: observedAt,
+      source: _offerSource(offer),
+      kind: PriceObservationKind.regular,
+      proofRef: offer.proofRef ?? 'offer:${offer.id}',
+    );
+
+PriceObservationSource _offerSource(Offer offer) => switch (offer.source) {
+      'retailer' => PriceObservationSource.retailer,
+      'retailerWebsite' => PriceObservationSource.retailerWebsite,
+      'leaflet' => PriceObservationSource.leaflet,
+      _ => PriceObservationSource.manual,
+    };
