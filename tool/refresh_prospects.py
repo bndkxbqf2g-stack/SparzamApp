@@ -4,6 +4,7 @@ import html
 import json
 import re
 import sys
+import time
 from datetime import date, datetime, timedelta, timezone
 from html.parser import HTMLParser
 from pathlib import Path
@@ -14,7 +15,7 @@ from urllib.request import Request, urlopen
 OUTPUT = Path("assets/prospects/current.json")
 UA = "SparzamApp/1.0 (+https://github.com/bndkxbqf2g-stack/SparzamApp)"
 SOURCES = (
-    ("aldi_sued", "ALDI Süd", "https://www.aldi-sued.de/", "aldi"),
+    ("aldi_sued", "ALDI Süd", "https://www.aldi-sued.de/", "aldi_api"),
     ("edeka_zellingen", "EDEKA", "https://www.edeka.de/maerkte/023738/", "edeka"),
     ("kaufland_grombuehl", "Kaufland", "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html", "kaufland"),
     ("lidl_zellingen", "Lidl", "https://www.lidl.de/c/online-prospekte/s10005610/", "lidl"),
@@ -127,6 +128,124 @@ def record(store, label, offer_price, valid_from, valid_until, proof, original=N
     if original is not None and original >= offer_price:
         result["originalPrice"] = round(float(original), 2)
     return result
+
+ALDI_API_URL = "https://api.aldi-sued.de/v3/product-search"
+
+
+def _aldi_api_url(promotion_day, offset=0):
+    return (
+        ALDI_API_URL
+        + "?serviceType=walk-in"
+        + "&servicePoint=B384"
+        + "&currency=EUR"
+        + "&limit=60"
+        + "&offset=" + str(offset)
+        + "&sort=relevance"
+        + "&promotionKey=" + promotion_day.isoformat()
+    )
+
+
+def parse_aldi_api_page(json_text, promotion_day):
+    payload = json.loads(json_text)
+    if not isinstance(payload, dict):
+        raise ValueError("ALDI API: ungültige Antwort")
+    errors = payload.get("errors")
+    if isinstance(errors, list) and errors:
+        message = "; ".join(
+            clean(str(item.get("message") or item.get("code") or "API-Fehler"))
+            for item in errors
+            if isinstance(item, dict)
+        )
+        raise ValueError("ALDI API: " + (message or "unbekannter Fehler"))
+
+    data = payload.get("data", [])
+    meta = payload.get("meta", {})
+    pagination = meta.get("pagination", {}) if isinstance(meta, dict) else {}
+    total_count = pagination.get("totalCount", 0) if isinstance(pagination, dict) else 0
+    if not isinstance(data, list):
+        raise ValueError("ALDI API: data ist keine Liste")
+
+    valid_until = promotion_day + timedelta(
+        days=(5 - promotion_day.weekday()) % 7,
+    )
+    offers = []
+    for item in data:
+        if not isinstance(item, dict):
+            continue
+        price = item.get("price", {})
+        if not isinstance(price, dict):
+            continue
+        cents = price.get("amountRelevant")
+        if not isinstance(cents, (int, float)) or cents <= 0:
+            cents = price.get("amount")
+        if not isinstance(cents, (int, float)) or cents <= 0:
+            continue
+
+        brand = clean(str(item.get("brandName") or ""))
+        name = clean(str(item.get("name") or ""))
+        label = clean(" ".join(value for value in (brand, name) if value))
+        if len(label) < 2:
+            continue
+
+        regular = None
+        was_price = price.get("wasPriceDisplay")
+        if isinstance(was_price, str):
+            match = re.search(r"(\d+[,.]\d{2})", was_price)
+            if match:
+                regular = money(match.group(1))
+
+        sku = clean(str(item.get("sku") or ""))
+        slug = clean(str(item.get("urlSlugText") or "")).strip("/")
+        if slug and sku:
+            proof = "https://www.aldi-sued.de/produkt/" + slug + "-" + sku
+        else:
+            proof = "https://www.aldi-sued.de/angebote/" + promotion_day.isoformat()
+
+        offers.append(record(
+            "ALDI Süd",
+            label,
+            float(cents) / 100,
+            promotion_day,
+            valid_until,
+            proof,
+            regular,
+        ))
+
+    return dedupe(offers), int(total_count or len(data))
+
+
+def fetch_aldi_api_offers():
+    today = date.today()
+    start = today - timedelta(days=today.weekday())
+    end = start + timedelta(days=12)
+    all_offers = []
+    successful_days = 0
+
+    day = start
+    while day <= end:
+        offset = 0
+        day_found = False
+        while True:
+            try:
+                body = fetch(_aldi_api_url(day, offset))
+                page_offers, total_count = parse_aldi_api_page(body, day)
+            except Exception:
+                break
+            day_found = True
+            all_offers.extend(page_offers)
+            offset += 60
+            if total_count <= offset:
+                break
+            time.sleep(0.4)
+        if day_found:
+            successful_days += 1
+        day += timedelta(days=1)
+        time.sleep(0.4)
+
+    if successful_days == 0 or not all_offers:
+        raise ValueError("ALDI API lieferte keine verwertbaren Aktionstage")
+    return dedupe(all_offers), []
+
 
 def parse_aldi(html_text, base_url):
     page = parsed(html_text)
@@ -531,6 +650,7 @@ def dedupe(offers):
 
 PARSERS = {
     "aldi": parse_aldi,
+    "aldi_api": parse_aldi_api_page,
     "edeka": parse_edeka,
     "kaufland": parse_kaufland,
     "lidl": parse_lidl,
@@ -557,8 +677,19 @@ def main():
     all_offers, sources = [], []
     for source_id, store, url, parser_name in SOURCES:
         try:
-            body = fetch(url)
-            offers, prospects = PARSERS[parser_name](body, url)
+            source_mode = parser_name
+            if parser_name == "aldi_api":
+                try:
+                    offers, prospects = fetch_aldi_api_offers()
+                    source_mode = "structured_api"
+                    body = ""
+                except Exception:
+                    body = fetch(url)
+                    offers, prospects = parse_aldi(body, url)
+                    source_mode = "website_fallback"
+            else:
+                body = fetch(url)
+                offers, prospects = PARSERS[parser_name](body, url)
             metadata_only = parser_name == "lidl"
             if not offers and not metadata_only:
                 lower_body = body.lower()
@@ -571,7 +702,7 @@ def main():
                 diagnostics = "edeka-sample=" + snippet[:220]
                 raise ValueError("keine sicher extrahierbaren Angebote gefunden; " + diagnostics)
             all_offers.extend(offers)
-            sources.append({"id": source_id, "storeName": store, "url": url, "status": "metadata_only" if metadata_only else "ok", "recordCount": len(offers), "prospects": prospects})
+            sources.append({"id": source_id, "storeName": store, "url": url, "status": "metadata_only" if metadata_only else "ok", "recordCount": len(offers), "mode": source_mode, "prospects": prospects})
         except Exception as error:
             kept = active_previous(previous, store)
             all_offers.extend(kept)

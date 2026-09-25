@@ -55,6 +55,65 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(offers[0]["validFrom"], "2026-09-24")
         self.assertEqual(offers[0]["validUntil"], "2026-09-26")
 
+    def test_aldi_api_reads_structured_offer_and_regular_price(self):
+        payload = """
+        {
+          "meta": {"pagination": {"offset": 0, "limit": 60, "totalCount": 2}},
+          "data": [
+            {
+              "sku": "000000000000297348",
+              "name": "Orangensaft 1 l",
+              "brandName": "VALENSINA",
+              "urlSlugText": "valensina-orangensaft-1-l",
+              "price": {
+                "amount": 149,
+                "amountRelevant": 149,
+                "amountRelevantDisplay": "1,49 €",
+                "wasPriceDisplay": "2,49 €"
+              }
+            },
+            {
+              "sku": "000000000000111111",
+              "name": "Bananen",
+              "brandName": "",
+              "urlSlugText": "bananen",
+              "price": {
+                "amount": 88,
+                "amountRelevant": 88,
+                "amountRelevantDisplay": "0,88 €",
+                "wasPriceDisplay": ""
+              }
+            }
+          ]
+        }
+        """
+        offers, total = refresh.parse_aldi_api_page(
+            payload,
+            refresh.date(2026, 9, 21),
+        )
+        self.assertEqual(total, 2)
+        self.assertEqual(len(offers), 2)
+        self.assertEqual(offers[0]["productLabel"], "VALENSINA Orangensaft 1 l")
+        self.assertEqual(offers[0]["offerPrice"], 1.49)
+        self.assertEqual(offers[0]["originalPrice"], 2.49)
+        self.assertEqual(offers[0]["validFrom"], "2026-09-21")
+        self.assertEqual(offers[0]["validUntil"], "2026-09-26")
+        self.assertTrue(
+            offers[0]["proofRef"].endswith(
+                "valensina-orangensaft-1-l-000000000000297348"
+            )
+        )
+        self.assertEqual(offers[1]["offerPrice"], 0.88)
+        self.assertNotIn("originalPrice", offers[1])
+
+    def test_aldi_api_url_is_scoped_and_paginated(self):
+        url = refresh._aldi_api_url(refresh.date(2026, 9, 24), 60)
+        self.assertIn("serviceType=walk-in", url)
+        self.assertIn("servicePoint=B384", url)
+        self.assertIn("limit=60", url)
+        self.assertIn("offset=60", url)
+        self.assertIn("promotionKey=2026-09-24", url)
+
     def test_aldi_keeps_stated_regular_price(self):
         html = """<a href="/produkt/joghurt">Kühlung MILSANI Premium-Joghurt 200 g Spare 20 % 0,39 € 0,49 €</a>"""
         offers, _ = refresh.parse_aldi(html, "https://www.aldi-sued.de/")
