@@ -1,12 +1,14 @@
 import '../models/offer.dart';
 import '../models/price_observation.dart';
 import '../models/receipt_observation.dart';
+import '../features/catalog/product_identity.dart';
 
 PriceObservation observationFromReceipt(ReceiptObservation receipt) =>
     PriceObservation(
       id: 'receipt|${receipt.id}',
       productId: receipt.productId,
       familyKey: receipt.familyKey,
+      variant: identifyProduct(receipt.rawLabel).variantKey,
       storeName: receipt.storeName,
       price: receipt.totalPrice,
       quantity: receipt.quantity?.toDouble(),

@@ -1,22 +1,14 @@
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/receipt_observation.dart';
-import '../receipt/receipt_observation_builder.dart';
-import '../catalog/product_family.dart';
+import '../catalog/product_identity.dart';
 import '../../services/quantity_normalizer.dart';
 
-/// Bridges receipt history into the common market-price pipeline used by the
-/// shopping list and route optimizer.
-///
-/// Exact product prices remain preferred elsewhere. This fallback is only
-/// created when the shopping-list product and receipt row resolve to the same
-/// conservative product family. The newest observation per store is used.
+/// Bridges receipt history into the common market-price pipeline.
 List<MarketPrice> receiptFamilyMarketPrices({
   required Iterable<ListItem> items,
   required Iterable<ReceiptObservation> observations,
   DateTime? now,
-  // Keep this aligned with MarketPrice.isUsable: receipt evidence is only
-  // strong enough for route planning for the first 30 days.
   int maxAgeDays = 30,
 }) {
   final today = now ?? DateTime.now();
@@ -25,28 +17,27 @@ List<MarketPrice> receiptFamilyMarketPrices({
   final result = <String, MarketPrice>{};
 
   for (final item in items) {
-    final family = inferReceiptFamily(item.product.name);
-    if (family.isEmpty) continue;
-    final productName = _normalize(item.product.name);
-    final isGenericRequest = productName == family ||
-        isGenericFamilyRequest(item.product.name) ||
-        _isSafeGenericReceiptFamily(productName, family);
+    final request = identifyProduct(item.product.name);
+    final normalizedRequest = normalizeIdentityText(item.product.name);
+    if (!request.isKnown && normalizedRequest.isEmpty) continue;
 
     for (final observation in observations) {
-      if (observation.observedAt.isBefore(cutoff) ||
-          inferReceiptFamily(observation.rawLabel) != family) {
-        continue;
-      }
-      final raw = _normalize(observation.rawLabel);
-      final exactIdentity = productName == raw ||
-          item.product.aliases.any((alias) => _normalize(alias) == raw);
-      if (!isGenericRequest && !exactIdentity) continue;
+      if (observation.observedAt.isBefore(cutoff)) continue;
+      final candidate = identifyProduct(observation.rawLabel);
+      final normalizedCandidate = normalizeIdentityText(observation.rawLabel);
+      final exact = normalizedRequest == normalizedCandidate ||
+          item.product.aliases.any(
+            (alias) => normalizeIdentityText(alias) == normalizedCandidate,
+          );
+      final compatible = request.isKnown &&
+          compatibleProductIdentity(request, candidate);
+      if (!exact && !compatible) continue;
+
       final price = _comparablePrice(item, observation);
       if (price == null || !price.isFinite || price <= 0) continue;
       final key = '${observation.storeName}|${item.product.id}';
       final previous = result[key];
-      if (previous == null ||
-          observation.observedAt.isAfter(previous.updatedAt)) {
+      if (previous == null || observation.observedAt.isAfter(previous.updatedAt)) {
         result[key] = MarketPrice(
           productId: item.product.id,
           storeName: observation.storeName,
@@ -61,24 +52,10 @@ List<MarketPrice> receiptFamilyMarketPrices({
   return result.values.toList();
 }
 
-bool _isSafeGenericReceiptFamily(String productName, String family) =>
-    const {'schmand', 'joghurt', 'eier', 'kartoffeln', 'bananen', 'paprika', 'tomaten', 'milch', 'hackfleisch'}
-        .contains(family) &&
-    productName == family;
-
-String _normalize(String value) => value
-    .toLowerCase()
-    .replaceAll(RegExp(r'[._-]+'), ' ')
-    .replaceAll(RegExp(r'\s+'), ' ')
-    .trim();
-
-
 double? _comparablePrice(ListItem item, ReceiptObservation observation) {
   final packageAmount = item.product.packageAmount;
   final packageUnit = item.product.packageUnit;
   if (packageAmount == null || packageUnit == null) {
-    // A receipt row without package metadata represents one observed retail
-    // unit and can safely price a generic piece-based shopping request.
     if (observation.quantity == null && observation.quantityUnit.isEmpty) {
       return observation.totalPrice;
     }
@@ -89,9 +66,7 @@ double? _comparablePrice(ListItem item, ReceiptObservation observation) {
   if (receiptAmount == null || receiptUnit.isEmpty) return null;
   final wanted = normalizeQuantity(packageAmount, packageUnit);
   final seen = normalizeQuantity(receiptAmount, receiptUnit);
-  if (wanted == null || seen == null || wanted.dimension != seen.dimension) {
-    return null;
-  }
+  if (wanted == null || seen == null || wanted.dimension != seen.dimension) return null;
   final perBase = normalizedUnitPrice(
     price: observation.totalPrice,
     amount: receiptAmount,

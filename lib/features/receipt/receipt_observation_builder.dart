@@ -11,8 +11,6 @@ List<ReceiptObservation> buildReceiptObservations({
   if (!draft.balances || draft.retailer == null || draft.receiptDate == null) {
     return const <ReceiptObservation>[];
   }
-  // Only an explicit user assignment establishes exact product identity.
-  // Automatic review suggestions remain family evidence until confirmed.
   final matched = <int, String>{...assignedProductIds};
   final discountedLines = draft.rows
       .where((row) => row.kind == ReceiptRowKind.discount)
@@ -40,29 +38,11 @@ List<ReceiptObservation> buildReceiptObservations({
       .toList();
 }
 
-/// Conservative family inference. It enables generic shopping-list terms without
-/// pretending that an abbreviated receipt line identifies a precise variant.
+/// Family inference is a projection of the general identity resolver.
 String inferReceiptFamily(String label) {
-  final value = label
-      .toLowerCase()
-      .replaceAll(RegExp(r'[._-]+'), ' ')
-      .replaceAll(RegExp(r'\s+'), ' ')
-      .trim();
-
-  final broad = broadProductFamily(value);
-  if (broad != null) return broad;
-
-  const families = <String, List<String>>{
-    'weintrauben': ['weintrauben', 'trauben'],
-    'fischstäbchen': ['fischstäbchen'],
-    'toast': ['sandwichtoast', 'toast'],
-  };
-  for (final entry in families.entries) {
-    if (entry.value.any(value.contains)) return entry.key;
-  }
-
-  // Unknown items remain searchable by a stable normalized receipt label.
-  return value
+  final identity = identifyProduct(label);
+  if (identity.familyKey != null) return identity.familyKey!;
+  return normalizeIdentityText(label)
       .replaceAll(RegExp(r'\b\d+(?:[,.]\d+)?\s*(?:g|kg|ml|l)\b'), '')
       .replaceAll(RegExp(r'\s+'), ' ')
       .trim();
