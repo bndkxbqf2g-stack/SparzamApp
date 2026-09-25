@@ -185,6 +185,61 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(offers[0]["originalPrice"], 0.49)
 
 
+    def test_penny_market_region_uses_exact_market(self):
+        payload = """
+        [
+          {"wwIdent": "111111", "sellingRegion": "15-999"},
+          {"wwIdent": "230061", "sellingRegion": "15-001"}
+        ]
+        """
+        self.assertEqual(
+            refresh._penny_market_region(payload, "230061"),
+            "15-001",
+        )
+
+    def test_penny_catalog_meta_reads_week_and_categories(self):
+        html = """
+        <div data-current-week="2026-39" data-category-name="top-angebote"></div>
+        <div data-current-week="2026-39" data-category-name="kuehlregal"></div>
+        """
+        categories, week = refresh._penny_catalog_meta(html)
+        self.assertEqual(week, "2026-39")
+        self.assertEqual(categories, ["top-angebote", "kuehlregal"])
+        start, end = refresh._penny_week_dates(week)
+        self.assertEqual(start.isoformat(), "2026-09-21")
+        self.assertEqual(end.isoformat(), "2026-09-26")
+
+    def test_penny_api_reads_offer_regular_price_quantity_and_image(self):
+        payload = """
+        {
+          "offerTiles": [
+            {
+              "title": "MILPRIMA Schmand",
+              "quantity": "je 200 g",
+              "price": "0.69*",
+              "crossOutPrice": "0.79",
+              "uuid": "43a5c357-b337-48e2-8a9c-c1f4fa6a86f8",
+              "imageRendition": {
+                "tileLg": "https://cdn.penny.de/schmand.png"
+              }
+            }
+          ]
+        }
+        """
+        offers, _ = refresh.parse_penny_api(
+            payload,
+            "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1",
+            refresh.date(2026, 9, 21),
+            refresh.date(2026, 9, 26),
+        )
+        self.assertEqual(len(offers), 1)
+        self.assertEqual(offers[0]["productLabel"], "MILPRIMA Schmand je 200 g")
+        self.assertEqual(offers[0]["offerPrice"], 0.69)
+        self.assertEqual(offers[0]["originalPrice"], 0.79)
+        self.assertEqual(offers[0]["imageUrl"], "https://cdn.penny.de/schmand.png")
+        self.assertEqual(offers[0]["validFrom"], "2026-09-21")
+        self.assertEqual(offers[0]["validUntil"], "2026-09-26")
+
     def test_penny_keeps_public_offer_and_stated_regular_price(self):
         html = """
         <a href="/angebot/gyros">

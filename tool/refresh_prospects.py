@@ -20,7 +20,7 @@ SOURCES = (
     ("edeka_zellingen", "EDEKA", "https://www.edeka.de/maerkte/023738/", "edeka_api"),
     ("kaufland_grombuehl", "Kaufland", "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html", "kaufland"),
     ("lidl_zellingen", "Lidl", "https://www.lidl.de/c/online-prospekte/s10005610/", "lidl"),
-    ("penny_retzbach", "PENNY", "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1", "penny"),
+    ("penny_retzbach", "PENNY", "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1", "penny_api"),
     ("netto_thuengersheim", "Netto", "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371", "netto"),
     ("rewe_veitshoechheim", "REWE", "https://www.rewe.de/api/stationary-offers/461683", "rewe_api"),
 )
@@ -599,6 +599,156 @@ def parse_lidl(html_text, base_url):
     return [], prospects[:8]
 
 
+PENNY_MARKETS_URL = "https://www.penny.de/.rest/market"
+PENNY_OFFERS_PAGE = "https://www.penny.de/angebote"
+
+
+def _penny_market_id(base_url):
+    match = re.search(r"/markt/[^/]+/(\d+)/", base_url)
+    if match is None:
+        raise ValueError("PENNY Markt-ID fehlt in der Markt-URL")
+    return match.group(1)
+
+
+def _penny_market_region(json_text, market_id):
+    payload = json.loads(json_text)
+    if not isinstance(payload, list):
+        raise ValueError("PENNY Marktliste ist kein JSON-Array")
+    for market in payload:
+        if not isinstance(market, dict):
+            continue
+        if clean(str(market.get("wwIdent") or "")) != market_id:
+            continue
+        region = clean(str(market.get("sellingRegion") or ""))
+        if region:
+            return region
+    raise ValueError("PENNY sellingRegion für Markt " + market_id + " nicht gefunden")
+
+
+def _penny_catalog_meta(html_text):
+    categories = []
+    seen = set()
+    for value in re.findall(
+        r'data-category-name=["\']([^"\']+)["\']',
+        html_text,
+        flags=re.I,
+    ):
+        value = clean(value)
+        if value and value not in seen:
+            seen.add(value)
+            categories.append(value)
+    week_match = re.search(
+        r'data-current-week=["\']([^"\']+)["\']',
+        html_text,
+        flags=re.I,
+    )
+    week = clean(week_match.group(1)) if week_match else ""
+    if not categories or not week:
+        raise ValueError("PENNY Angebotsseite enthält keine Kategorien/Woche")
+    return categories, week
+
+
+def _penny_week_dates(week):
+    match = re.fullmatch(r"(\d{4})-(\d{1,2})", week)
+    if match is None:
+        raise ValueError("PENNY Wochenformat ungültig: " + week)
+    monday = date.fromisocalendar(int(match.group(1)), int(match.group(2)), 1)
+    return monday, monday + timedelta(days=5)
+
+
+def _penny_offer_url(week, category, region):
+    return (
+        "https://www.penny.de/.rest/offers/by-category/"
+        + quote(week)
+        + "/"
+        + quote(category, safe="")
+        + "?region="
+        + quote(region, safe="")
+    )
+
+
+def parse_penny_api(json_text, base_url, valid_from, valid_until):
+    payload = json.loads(json_text)
+    tiles = payload.get("offerTiles", []) if isinstance(payload, dict) else []
+    if not isinstance(tiles, list):
+        raise ValueError("PENNY offerTiles ist keine Liste")
+
+    offers = []
+    for index, tile in enumerate(tiles):
+        if not isinstance(tile, dict):
+            continue
+        primary_type = clean(str(tile.get("primaryType") or ""))
+        if primary_type and primary_type.lower() != "offer":
+            continue
+
+        title = clean(str(tile.get("title") or ""))
+        quantity = clean(str(tile.get("quantity") or ""))
+        label = clean(" ".join(value for value in (title, quantity) if value))
+        sale = _json_money(tile.get("price"))
+        if len(label) < 2 or sale is None or sale <= 0:
+            continue
+
+        regular = None
+        for key in ("listPrice", "crossOutPrice", "originalPrice"):
+            candidate = _json_money(tile.get(key))
+            if candidate is not None and candidate >= sale:
+                regular = candidate
+                break
+
+        rendition = tile.get("imageRendition", {})
+        image = ""
+        if isinstance(rendition, dict):
+            for key in ("tileXl", "tileLg", "tileMd", "tileSm", "tileXs"):
+                candidate = clean(str(rendition.get(key) or ""))
+                if candidate:
+                    image = candidate
+                    break
+
+        raw_id = clean(str(tile.get("uuid") or index))
+        proof = base_url + "#offer-" + raw_id
+        offers.append(record(
+            "PENNY",
+            label,
+            sale,
+            valid_from,
+            valid_until,
+            proof,
+            regular,
+            image,
+        ))
+    return dedupe(offers), []
+
+
+def fetch_penny_api_offers(base_url):
+    market_id = _penny_market_id(base_url)
+    market_body = fetch(PENNY_MARKETS_URL)
+    region = _penny_market_region(market_body, market_id)
+    catalog_html = fetch(PENNY_OFFERS_PAGE)
+    categories, week = _penny_catalog_meta(catalog_html)
+    valid_from, valid_until = _penny_week_dates(week)
+
+    all_offers = []
+    successful_categories = 0
+    for category in categories:
+        try:
+            body = fetch(_penny_offer_url(week, category, region))
+            offers, _ = parse_penny_api(
+                body,
+                base_url,
+                valid_from,
+                valid_until,
+            )
+        except Exception:
+            continue
+        successful_categories += 1
+        all_offers.extend(offers)
+        time.sleep(0.25)
+
+    if successful_categories == 0 or not all_offers:
+        raise ValueError("PENNY API lieferte keine verwertbaren Kategorien")
+    return dedupe(all_offers), []
+
+
 def parse_penny(html_text, base_url):
     page = parsed(html_text)
     valid_from, valid_until = current_week()
@@ -781,6 +931,7 @@ PARSERS = {
     "kaufland": parse_kaufland,
     "lidl": parse_lidl,
     "penny": parse_penny,
+    "penny_api": parse_penny_api,
     "netto": parse_netto,
     "rewe": parse_rewe,
     "rewe_api": parse_rewe_api,
@@ -823,6 +974,15 @@ def main():
                 except Exception:
                     body = fetch(url)
                     offers, prospects = parse_edeka(body, url)
+                    source_mode = "website_fallback"
+            elif parser_name == "penny_api":
+                try:
+                    offers, prospects = fetch_penny_api_offers(url)
+                    source_mode = "structured_api"
+                    body = ""
+                except Exception:
+                    body = fetch(url)
+                    offers, prospects = parse_penny(body, url)
                     source_mode = "website_fallback"
             else:
                 body = fetch(url)
