@@ -42,6 +42,7 @@ PriceObservation observationFromOffer(Offer offer, {required DateTime observedAt
       validUntil: offer.validUntil,
       proofRef: offer.proofRef ?? 'offer:${offer.id}',
       discounted: true,
+      identityConfidence: _offerIdentityConfidence(offer),
     );
 
 
@@ -58,7 +59,13 @@ PriceObservation regularObservationFromOffer(
       source: _offerSource(offer),
       kind: PriceObservationKind.regular,
       proofRef: offer.proofRef ?? 'offer:${offer.id}',
+      identityConfidence: _offerIdentityConfidence(offer),
     );
+
+double _offerIdentityConfidence(Offer offer) {
+  if (offer.source == 'manual') return 1;
+  return offer.proofRef?.trim().isNotEmpty == true ? 1 : 0;
+}
 
 PriceObservationSource _offerSource(Offer offer) => switch (offer.source) {
       'retailer' => PriceObservationSource.retailer,
