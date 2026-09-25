@@ -143,6 +143,10 @@ class RoutePriceResolver {
     final selected = <String, MarketPrice>{};
     for (final price in input) {
       if (!price.price.isFinite || price.price <= 0) continue;
+      if (price.source == MarketPriceSource.receipt &&
+          !price.isUsable(now: now, openPricesMaxAgeDays: 36500)) {
+        continue;
+      }
       final previous = selected[price.key];
       final score = price.price *
           (1 + marketPriceQuality(price, now).uncertaintyRate);
