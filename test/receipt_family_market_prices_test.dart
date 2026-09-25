@@ -32,6 +32,7 @@ void main() {
           unitPrice: null,
           discounted: true,
           productId: 'receipt_auto_schmand',
+          identityConfirmed: true,
         ),
       ],
       now: DateTime(2026, 9, 24),
@@ -42,6 +43,38 @@ void main() {
     expect(prices.single.storeName, 'Kaufland');
     expect(prices.single.price, 0.79);
     expect(prices.single.discounted, isTrue);
+  });
+
+  test('provisional auto product cannot become a family route price', () {
+    const product = Product(
+      id: 'shopping_schmand',
+      name: 'Schmand',
+      unit: 'Stück',
+      group: 'sonstiges',
+    );
+    final prices = receiptFamilyMarketPrices(
+      items: [ListItem(product: product)],
+      observations: [
+        ReceiptObservation(
+          id: 'auto-schmand',
+          receiptFingerprint: 'receipt-auto',
+          rowLine: 1,
+          rawLabel: 'Schmand',
+          familyKey: 'schmand',
+          storeName: 'Lidl',
+          observedAt: DateTime(2026, 9, 24),
+          totalPrice: 0.59,
+          quantity: null,
+          quantityUnit: '',
+          unitPrice: null,
+          discounted: false,
+          productId: 'receipt_auto_schmand',
+        ),
+      ],
+      now: DateTime(2026, 9, 25),
+    );
+
+    expect(prices, isEmpty);
   });
 
   test('specific milk variant does not consume ambiguous family history', () {
