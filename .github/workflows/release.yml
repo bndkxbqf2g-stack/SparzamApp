@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Run tests
+        run: flutter test
+
       - name: Build web for GitHub Pages
         # Keep the Material Icons font stable across deployments. A tree-shaken
         # font keeps the same URL while its glyph subset changes, which can
