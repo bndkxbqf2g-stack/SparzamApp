@@ -56,3 +56,8 @@ test('fresh tomato request is not compatible with preserved tomato products', ()
   final passata=identifyProduct('Passata');
   expect(compatibleProductIdentity(fresh, passata), isFalse);
 });
+
+
+test('preserved tomato request still accepts preserved tomato evidence', () {
+  expect(compatibleProductIdentity(identifyProduct('Passata'), identifyProduct('Gehackte Tomaten')), isTrue);
+});
