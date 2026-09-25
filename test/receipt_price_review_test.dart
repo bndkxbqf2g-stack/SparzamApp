@@ -94,7 +94,7 @@ Datum 14.07.24
     expect(suggestion.row.quantity, 0.464);
   });
 
-  test('weight without a printed unit price remains unmatched', () {
+  test('weight without a printed unit price preserves purchased mass', () {
     final draft = parseReceiptLedger('''
 Kaufland
 Preis EUR
@@ -103,6 +103,9 @@ Summe 0,64
 Datum 14.07.24
 ''');
     expect(draft.balances, isTrue);
+    expect(draft.rows.single.quantity, closeTo(0.498, 0.000001));
+    expect(draft.rows.single.quantityUnit, 'kg');
+    expect(draft.rows.single.unitCents, isNull);
     expect(reviewReceiptPrices(draft, products).suggestions, isEmpty);
   });
 
