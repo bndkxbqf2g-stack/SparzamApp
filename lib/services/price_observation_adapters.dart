@@ -19,7 +19,7 @@ PriceObservation observationFromReceipt(ReceiptObservation receipt) =>
       kind: receipt.discounted ? PriceObservationKind.offer : PriceObservationKind.unknown,
       proofRef: 'receipt:${receipt.receiptFingerprint}',
       discounted: receipt.discounted,
-      identityConfidence: receipt.productId == null ? 0.0 : 1.0,
+      identityConfidence: receipt.identityConfirmed ? 1.0 : 0.0,
     );
 
 PriceObservation observationFromOffer(Offer offer, {required DateTime observedAt}) =>
