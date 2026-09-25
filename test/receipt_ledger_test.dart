@@ -89,6 +89,12 @@ AUF WIEDERSEHEN BEI EDEKA
 
     expect(draft.retailer, 'EDEKA');
     expect(draft.receiptDate, DateTime(2026, 1, 17));
+    final cremeLegere = draft.rows.firstWhere(
+      (row) => row.label == 'OETK.CREME LEGERE',
+    );
+    expect(cremeLegere.quantity, 2);
+    expect(cremeLegere.unitCents, 139);
+    expect(cremeLegere.cents, 278);
     expect(draft.totalCents, 2565);
     expect(draft.calculatedCents, 2565);
     expect(draft.unresolvedLines, isEmpty);
