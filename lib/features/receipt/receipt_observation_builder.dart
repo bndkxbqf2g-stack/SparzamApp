@@ -9,6 +9,7 @@ List<ReceiptObservation> buildReceiptObservations({
   required ReceiptDraft draft,
   required ReceiptPriceReview review,
   Map<int, String> assignedProductIds = const <int, String>{},
+  Set<int> confirmedProductLines = const <int>{},
 }) {
   if (!draft.balances || draft.retailer == null || draft.receiptDate == null) {
     return const <ReceiptObservation>[];
@@ -37,6 +38,7 @@ List<ReceiptObservation> buildReceiptObservations({
             unitPrice: row.unitCents == null ? null : row.unitCents! / 100,
             discounted: discountedLines.contains(row.line),
             productId: matched[row.line],
+            identityConfirmed: confirmedProductLines.contains(row.line),
           ))
       .toList();
 }
