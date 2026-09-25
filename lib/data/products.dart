@@ -1,0 +1,68 @@
+import '../models/product.dart';
+
+const products = <Product>[
+  Product(
+    id: 'butter_streichzart',
+    name: 'Streichzart ungesalzen',
+    unit: '250 g',
+    group: 'butter',
+    ean: '2990000000019',
+    aliases: ['butter'],
+    isFavorite: true,
+  ),
+  Product(
+    id: 'butter_block',
+    name: 'Butterblock',
+    unit: '250 g',
+    group: 'butter',
+    ean: '2990000000026',
+    aliases: ['butter', 'backen'],
+  ),
+  Product(
+    id: 'milch_35',
+    name: 'Vollmilch 3,5 %',
+    unit: '1 l',
+    group: 'milch',
+    ean: '2990000000033',
+    aliases: ['milch'],
+  ),
+  Product(
+    id: 'milch_15',
+    name: 'Milch 1,5 %',
+    unit: '1 l',
+    group: 'milch',
+    aliases: ['fettarme Milch 1,5 %'],
+  ),
+  Product(
+    id: 'bananen',
+    name: 'Bananen',
+    unit: '1 kg',
+    group: 'obst',
+    ean: '2990000000040',
+    aliases: ['banane'],
+  ),
+  Product(
+    id: 'weintrauben',
+    name: 'Weintrauben',
+    unit: '500 g',
+    group: 'obst',
+    ean: '2990000000057',
+    aliases: ['trauben', 'weintraube'],
+  ),
+  Product(
+    id: 'hackfleisch',
+    name: 'Hackfleisch gemischt',
+    unit: '500 g',
+    group: 'fleisch',
+    ean: '2990000000064',
+    aliases: ['hack', 'hackfleisch'],
+  ),
+  Product(
+    id: 'nudeln',
+    name: 'Spaghetti',
+    unit: '500 g',
+    group: 'nudeln',
+    ean: '2990000000071',
+    aliases: ['nudeln', 'pasta'],
+  ),
+];
