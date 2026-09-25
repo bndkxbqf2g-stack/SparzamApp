@@ -129,7 +129,6 @@ ProductIdentity identifyProduct(String value) {
     return ProductIdentity(
       familyKey: 'tomaten',
       variant: _tomatoVariant(text),
-      productType: 'frisch',
     );
   }
   if (_hasAny(text, const ['weintrauben', 'trauben'])) {
