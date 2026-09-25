@@ -15,7 +15,9 @@ List<MarketPrice> receiptFamilyMarketPrices({
   required Iterable<ListItem> items,
   required Iterable<ReceiptObservation> observations,
   DateTime? now,
-  int maxAgeDays = 90,
+  // Keep this aligned with MarketPrice.isUsable: receipt evidence is only
+  // strong enough for route planning for the first 30 days.
+  int maxAgeDays = 30,
 }) {
   final today = now ?? DateTime.now();
   final cutoff = DateTime(today.year, today.month, today.day)

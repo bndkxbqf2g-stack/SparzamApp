@@ -276,6 +276,41 @@ void main() {
     expect({for (final price in prices) price.storeName: price.price},
         {'Kaufland': 0.59, 'Lidl': 0.79});
   });
+
+  test('does not route receipt family prices older than the receipt freshness window', () {
+    final now = DateTime(2026, 9, 25);
+    final prices = receiptFamilyMarketPrices(
+      now: now,
+      items: [
+        const ListItem(
+          product: Product(
+            id: 'schmand',
+            name: 'Schmand',
+            unit: 'Becher',
+            group: 'milchprodukte',
+          ),
+        ),
+      ],
+      observations: [
+        ReceiptObservation(
+          id: 'old-schmand',
+          receiptFingerprint: 'old-receipt',
+          rowLine: 1,
+          rawLabel: 'Schmand',
+          familyKey: 'schmand',
+          storeName: 'Lidl',
+          observedAt: now.subtract(const Duration(days: 31)),
+          totalPrice: 0.69,
+          quantity: null,
+          quantityUnit: '',
+          unitPrice: null,
+          discounted: false,
+        ),
+      ],
+    );
+
+    expect(prices, isEmpty);
+  });
   test('generic yoghurt aliases create separate market prices', () {
     const product = Product(id: 'joghurt-generic', name: 'Joghurt', unit: 'Stück', group: 'milch');
     final prices = receiptFamilyMarketPrices(
