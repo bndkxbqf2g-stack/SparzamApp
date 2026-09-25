@@ -314,8 +314,8 @@ void main() {
     final prices = receiptFamilyMarketPrices(
       now: now,
       items: [
-        const ListItem(
-          product: Product(
+        ListItem(
+          product: const Product(
             id: 'schmand',
             name: 'Schmand',
             unit: 'Becher',
