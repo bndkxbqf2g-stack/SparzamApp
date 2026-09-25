@@ -48,7 +48,7 @@ class ReceiptDraft {
       unresolvedLines.isEmpty;
 }
 
-/// Handles text-layout exports from Kaufland, EDEKA and Netto. No product matching,
+/// Handles text-layout exports from Kaufland, EDEKA, Netto and Lidl. No product matching,
 /// discount allocation or account metadata is inferred from the receipt.
 ReceiptDraft parseReceiptLedger(String text) {
   final lines = text.split(RegExp(r'\r?\n'));
@@ -56,7 +56,7 @@ ReceiptDraft parseReceiptLedger(String text) {
   final unresolved = <int>[];
   final amount = RegExp(r'(-?\d+[,.]\d{2})(?:\*?\s*[AB])?\s*$');
   final total = RegExp(
-    r'^\s*(?:Summe|SUMME\s*\[\d+\])\s*(?:€|EUR)?\s+(\d+[,.]\d{2})\s*$',
+    r'^\s*(?:Summe|SUMME\s*\[\d+\]|zu zahlen)\s*(?:€|EUR)?\s+(\d+[,.]\d{2})\s*$',
     caseSensitive: false,
   );
   final quantityBefore = RegExp(r'^\s*(\d+)\s*x\s*(\d+[,.]\d{2})\s*$');
@@ -235,6 +235,7 @@ String? _receiptRetailer(String text) {
   // EDEKA receipts can contain "Netto" as a tax/accounting label. Prefer the
   // explicit retailer marker before the ambiguous generic term.
   if (lower.contains('edeka')) return 'EDEKA';
+  if (lower.contains('lidl')) return 'Lidl';
   if (lower.contains('netto')) return 'Netto';
   return null;
 }
@@ -247,12 +248,19 @@ int _cents(String value) {
 }
 
 DateTime? _receiptDate(String text) {
-  final match = RegExp(r'\bDatum\s*:?\s*(\d{2})[.](\d{2})[.](\d{2})\b')
-      .firstMatch(text);
+  final labeled = RegExp(
+    r'\bDatum\s*:?\s*(\d{2})[.](\d{2})[.](\d{2,4})\b',
+    caseSensitive: false,
+  ).firstMatch(text);
+  final timed = RegExp(
+    r'\b(\d{2})[.](\d{2})[.](\d{2,4})\s+\d{2}:\d{2}\b',
+  ).firstMatch(text);
+  final match = labeled ?? timed;
   if (match == null) return null;
   final day = int.parse(match.group(1)!);
   final month = int.parse(match.group(2)!);
-  final year = 2000 + int.parse(match.group(3)!);
+  final rawYear = int.parse(match.group(3)!);
+  final year = rawYear < 100 ? 2000 + rawYear : rawYear;
   final date = DateTime(year, month, day);
   if (date.year != year || date.month != month || date.day != day) {
     return null;
