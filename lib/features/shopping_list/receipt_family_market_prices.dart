@@ -56,9 +56,21 @@ double? _comparablePrice(ListItem item, ReceiptObservation observation) {
   final packageAmount = item.product.packageAmount;
   final packageUnit = item.product.packageUnit;
   if (packageAmount == null || packageUnit == null) {
-    if (observation.quantity == null && observation.quantityUnit.isEmpty) {
+    // A normal single receipt row has no explicit quantity but still carries
+    // the parser's default "Stück" unit. It is a valid observed package price.
+    if (observation.quantity == null) {
       return observation.totalPrice;
     }
+    // "2 x 2,49" describes two identical purchased packages. For a generic
+    // shopping-list item compare one package, not the summed receipt line.
+    if (observation.quantityUnit == 'Stück' &&
+        observation.unitPrice != null &&
+        observation.unitPrice!.isFinite &&
+        observation.unitPrice! > 0) {
+      return observation.unitPrice;
+    }
+    // Weight/volume observations cannot be projected to a generic product
+    // without a requested package basis.
     return null;
   }
   final receiptAmount = observation.quantity?.toDouble();

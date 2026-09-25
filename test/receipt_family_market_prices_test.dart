@@ -394,4 +394,54 @@ void main() {
         {'Netto': 4.49, 'Kaufland': 4.99});
   });
 
+
+  test('generic receipt rows with default Stück unit become market prices', () {
+    const eggs = Product(
+      id: 'eggs-generic',
+      name: 'Eier',
+      unit: 'Artikel',
+      group: 'eier',
+    );
+    final now = DateTime(2026, 9, 25);
+    final prices = receiptFamilyMarketPrices(
+      items: [ListItem(product: eggs)],
+      now: now,
+      observations: [
+        ReceiptObservation(
+          id: 'netto-eggs',
+          receiptFingerprint: 'netto',
+          rowLine: 1,
+          rawLabel: 'VL Eier BH 10ST',
+          familyKey: 'eier',
+          storeName: 'Netto',
+          observedAt: DateTime(2026, 9, 20),
+          totalPrice: 2.49,
+          quantity: null,
+          quantityUnit: 'Stück',
+          unitPrice: null,
+          discounted: false,
+        ),
+        ReceiptObservation(
+          id: 'kaufland-eggs',
+          receiptFingerprint: 'kaufland',
+          rowLine: 2,
+          rawLabel: 'Eier Bodenhaltung',
+          familyKey: 'eier',
+          storeName: 'Kaufland',
+          observedAt: DateTime(2026, 9, 21),
+          totalPrice: 4.98,
+          quantity: 2,
+          quantityUnit: 'Stück',
+          unitPrice: 2.49,
+          discounted: false,
+        ),
+      ],
+    );
+
+    expect({for (final price in prices) price.storeName: price.price}, {
+      'Netto': 2.49,
+      'Kaufland': 2.49,
+    });
+  });
+
 }
