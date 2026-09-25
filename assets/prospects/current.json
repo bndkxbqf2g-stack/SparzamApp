@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-25T21:21:15.618552Z",
+  "generatedAt": "2026-09-25T21:22:06.037989Z",
   "sources": [
     {
       "id": "aldi_sued",
@@ -116,6 +116,33 @@
             "type",
             "width",
             "zoom"
+          ],
+          "pageSamples": [
+            {
+              "number": 1,
+              "altText": "Werbeprospekt-Titelseite von Lidl mit verschiedenen Rabattaktionen für Lebensmittel, Parkside-Werkzeuge und Haushaltsartikel.",
+              "keyWords": "Lidl Plus -16% Italiamo Kirsch Tomaten Sauce Normalpreis -36% Uvp Bären- Marke Haltbare Milch Parkside Akku-Drehschlagschrauber Typ „Passk 20-Li Stück Tiefpreis Garantie -49% Ooono Auto- Verkehrs- Warner Modell „Co-Driver Ultimate Speed Hydraulik- Rangier- Wagenheber Letzter Preis Drucktermin -50% Gültig Ladegerät Deutscher Mini Romana Salat Klasse Deutsc Dwir Tsc -33% Aktion Bon Gelati Eis-Croissant -42% Persil Waschmittel Pulver Gel Wasch- Ladungen -39% Italienische Woche Trend Food- Filial-Angebote Dienstleistung & Kg Bonfelder Bad Namen Anschrift Regional Tätigen Unternehmen Nonfood-Aktionsartikel Kleinstfilialen -Angebote Digital Deutschland Straße Bio-Zertifiziert Angebot Ausschließlich Nutzer Gelten Infos Ausgabe Hhz – 1030"
+            },
+            {
+              "number": 2,
+              "altText": "Lidl-Angebote für frisches Obst und Gemüse, darunter Mini-Romana-Salat, rote Paprika und Avocados mit dem YouGov-Frische-Sieger-Logo.",
+              "keyWords": "Großer Frische-Sieger Winziger Preis Bewusst Ernähren Wigald Boning Kg- Eis Deutscher Mini Romana Salat Klasse Stück Rote Paprika Ursprung Deut Tsc Ft- -10% -33% Avocado Lose Hhz – Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst- Gemüseangebot Verschiedenen Handelsgruppen Einschließlich Kategorie Discount Kategorien Gegensatz Preisen Einzelne Geschäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Discounterhal- Informationen Awards 2016 2017 2019 2020 2021 2022 2023 Artikel Begrenzter Vorratsmenge Laufe Angebotstages Ausverkauft 1250"
+            },
+            {
+              "number": 3,
+              "altText": "Saisonale Obst- und Gemüse-Highlights bei Lidl wie Granatäpfel, Radieschen, Trauben und Mangos sowie ein Lidl-Plus-Gewinnspiel.",
+              "keyWords": "Saison Highlight Woche Lidl Plus Aktion Kg- Eis Granatapfel Ursprung Klasse Stück Deutsche Radieschen Bund Deutscher Mini Romana Salat Deutsc Dwir Tsc Trauben Mix Klasse I Nektarinen Lose Kg-Preis Große Früchte Mango Kolumbien Drehen & Gewinnen Einkaufen Coupon Sichern Nächsten Einkauf Einlösen ’S Roulette-Rad Teilnahme Scannen Downloaden Gratis- Rabatt- Coupons Angebot Ausschließlich Nutzer Gelten Infos Aktionszeitraum Verbindung App Gewinne Zeitlich Begrenzte Rabatt-Coupons Prozentuale Rabatte Obst Gemüse Gewähren Gratis-Coupons Artikel Rettertüte Tabakwaren Zeitschriften Zeitungen Säuglingsanfangsnahrung Bücher Pfand Co2 Zylinder Telefon- Gutschein- Identifizieren Tagen Mehrfachteilnahme Gleichen Tag Coupon-Ausspielung Erfolgt Einlösung Jeweiligen Mindesteinkaufswerte Einmalig Barauszahlung Rechtsweg Aktionsartikel Begrenzter Vorratsmenge Laufe Angebotstages Ausverkauft Abgebildete Ve"
+            },
+            {
+              "number": 4,
+              "altText": "Dauerhaft reduzierte Preise für Schokolade, Kekse und Reiswaffeln der Lidl-Eigenmarken Fin Carré, Sondey und Vemondo.",
+              "keyWords": "Fin Carré Tafelschokolade Sondey Doppelkekse Vemondo Vegane Karamellkekse Reiswaffeln Reduzieren Dauerhaft Preise Günstiger! Leben Preisführer Dhz –"
+            },
+            {
+              "number": 5,
+              "altText": "Süßgebäck und Schokoriegel von Sondey und Mister Choc mit einem Hinweis auf die Auszeichnung als „Deutschlands Preisfavorit“.",
+              "keyWords": "Sondey Butterkeks Waffel- Mischung Schoko- Butterkekse Schoko-Keks Sticks Röllchen Waffeln Mister Choc Schokoriegel Jaffa Cake Servicevalue Kooperation Wirtschaftswoche Studie „Deutschlands Preisfavoriten 2026“ Verbraucher November Dezember -Access-Panel Befragt Wel- Che Genannten Unternehmen Verschiedenen Branchen Grund Preisgünstigkeit Leistungen Produkte Insgesamt Verbraucherurteile Lidl Besten Ergebnisses Branche „Lebensmittel-Discounter“ Auszeichnung „Höchste Empfehlung“ Zweiten Folge Ge- Samtsieger Ergebnisse Informationen Vorjahresstudie Dhz –"
+            }
           ]
         },
         {
