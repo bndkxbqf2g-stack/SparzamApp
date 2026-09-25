@@ -7,7 +7,7 @@ String normalizeProductText(String value) => value
 const _familyTerms = <String, List<String>>{
   'schmand': ['schmand'],
   'milch': ['milch', 'h milch', 'vollmilch'],
-  'joghurt': ['joghurt', 'jogurt'],
+  'joghurt': ['joghurt', 'jogurt', 'naturjoghurt', 'naturjogurt'],
   'eier': ['eier'],
   'kartoffeln': ['kartoffeln'],
   'bananen': ['bananen'],
