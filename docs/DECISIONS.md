@@ -133,3 +133,5 @@ Familienbeobachtungen dürfen erst dann als Planungs-/Routenpreis verwendet werd
 
 ## D035 – Automatische Identitätserkennung ist Retrieval-Evidenz, keine Bestätigung
 Automatische Bon-Vorschläge und über Open Food Facts entdeckte EAN-Kandidaten dürfen Recherche, Matching und weitere Datenabfragen unterstützen, gelten aber nicht allein als bestätigte exakte Produktidentität. Ein daraus abgerufener Preis darf erst nach ausreichend bestätigter Identität in den exakten Routenpreisstrom gelangen. Damit bleibt die Identitäts-Confidence von Quellenqualität und Preisaktualität getrennt.
+
+- Tomato receipt evidence may share the broad historical family, but route planning keeps fresh tomatoes separate from preserved tomato products such as passata or chopped tomatoes.
