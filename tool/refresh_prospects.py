@@ -16,7 +16,7 @@ SOURCES = (
     ("aldi_sued", "ALDI Süd", "https://www.aldi-sued.de/", "aldi"),
     ("edeka_zellingen", "EDEKA", "https://www.edeka.de/maerkte/023738/", "edeka"),
     ("kaufland_grombuehl", "Kaufland", "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html", "kaufland"),
-    ("lidl_zellingen", "Lidl", "https://www.lidl.de/s/de-DE/filialen/zellingen/am-guessgraben-2/", "lidl"),
+    ("lidl_zellingen", "Lidl", "https://www.lidl.de/c/online-prospekte/s10005610/", "lidl"),
 )
 
 class VisibleTextParser(HTMLParser):
