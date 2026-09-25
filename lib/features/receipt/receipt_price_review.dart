@@ -47,7 +47,9 @@ ReceiptPriceReview reviewReceiptPrices(
     final unitCents = row.quantity == null ? row.cents : row.unitCents;
     if (unitCents == null || unitCents <= 0 ||
         (row.quantity != null &&
-            (row.quantity! * unitCents).round() != row.cents)) continue;
+            (row.quantity! * unitCents).round() != row.cents)) {
+      continue;
+    }
     candidates.add(ReceiptPriceSuggestion(
       product: product,
       row: row,

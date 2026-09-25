@@ -133,7 +133,7 @@ ProductIdentity identifyProduct(String value) {
 
 bool compatibleProductIdentity(ProductIdentity request, ProductIdentity candidate) {
   if (!request.isKnown || request.familyKey != candidate.familyKey) return false;
-  if (request.productType != null && request.productType != candidate.productType) return false;
+  if (request.productType != null && request.productType != candidate.productType) { return false; }
   if (request.fatPercent != null && request.fatPercent != candidate.fatPercent) return false;
   if (request.color != null && request.color != candidate.color) return false;
   if (request.shape != null && request.shape != candidate.shape) return false;
