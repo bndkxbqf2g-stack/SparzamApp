@@ -190,6 +190,31 @@ void main() {
     expect(observation.discounted, isTrue);
   });
 
+  test('leaflet preserves regular price as separate evidence', () {
+    final offer = Offer(
+      id: 'leaflet-1', productId: 'chocolate', storeName: 'Lidl',
+      originalPrice: 2.19, offerPrice: 1.99,
+      validFrom: DateTime(2026, 9, 25),
+      validUntil: DateTime(2026, 9, 26),
+      source: 'leaflet', proofRef: 'leaflet:lidl:2026-09-25:p1',
+    );
+    final regular = regularObservationFromOffer(
+      offer, observedAt: DateTime(2026, 9, 25),
+    );
+    final discounted = observationFromOffer(
+      offer, observedAt: DateTime(2026, 9, 25),
+    );
+
+    expect(regular.price, 2.19);
+    expect(regular.kind, PriceObservationKind.regular);
+    expect(regular.source, PriceObservationSource.leaflet);
+    expect(regular.proofRef, offer.proofRef);
+    expect(discounted.price, 1.99);
+    expect(discounted.kind, PriceObservationKind.offer);
+    expect(discounted.validFrom, DateTime(2026, 9, 25));
+    expect(discounted.source, PriceObservationSource.leaflet);
+  });
+
   test('exact route projection rejects a different declared package size', () {
     const product = Product(
       id: 'schmand-200', name: 'Schmand 200 g', unit: '200 g',
