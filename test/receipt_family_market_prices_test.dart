@@ -159,6 +159,38 @@ void main() {
     });
   });
 
+
+  test('normalizes repeated whitespace before exact receipt identity matching', () {
+    const product = Product(
+      id: 'schmand-200',
+      name: 'Schmand 200 g',
+      unit: '200 g',
+      group: 'milchprodukte',
+    );
+    final prices = receiptFamilyMarketPrices(
+      items: [ListItem(product: product)],
+      observations: [
+        ReceiptObservation(
+          id: 'spaced-schmand',
+          receiptFingerprint: 'receipt',
+          rowLine: 1,
+          rawLabel: 'Schmand   200 g',
+          familyKey: 'schmand',
+          storeName: 'Lidl',
+          observedAt: DateTime(2026, 9, 24),
+          totalPrice: 0.69,
+          quantity: null,
+          quantityUnit: '',
+          unitPrice: null,
+          discounted: false,
+        ),
+      ],
+      now: DateTime(2026, 9, 25),
+    );
+
+    expect(prices, hasLength(1));
+    expect(prices.single.price, 0.69);
+  });
   test('unrelated families are never bridged', () {
     const product = Product(
       id: 'shopping_schmand',

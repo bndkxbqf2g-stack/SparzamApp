@@ -69,7 +69,7 @@ bool _isSafeGenericReceiptFamily(String productName, String family) =>
 String _normalize(String value) => value
     .toLowerCase()
     .replaceAll(RegExp(r'[._-]+'), ' ')
-    .replaceAll(RegExp(r'\\s+'), ' ')
+    .replaceAll(RegExp(r'\s+'), ' ')
     .trim();
 
 
