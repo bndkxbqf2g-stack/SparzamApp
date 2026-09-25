@@ -60,4 +60,11 @@ test('fresh tomato request is not compatible with preserved tomato products', ()
 
 test('preserved tomato request still accepts preserved tomato evidence', () {
   expect(compatibleProductIdentity(identifyProduct('Passata'), identifyProduct('Gehackte Tomaten')), isTrue);
+  test('explicit mince variant is not a generic family request', () {
+    expect(identifyProduct('Hackfleisch').isGeneric, isTrue);
+    expect(identifyProduct('Hackfleisch gemischt').isGeneric, isFalse);
+    expect(identifyProduct('Rinderhackfleisch').isGeneric, isFalse);
+  });
+
+
 });

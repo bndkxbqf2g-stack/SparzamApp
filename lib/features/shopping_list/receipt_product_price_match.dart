@@ -9,14 +9,19 @@ List<ReceiptPriceStat> receiptStatsForProduct(
   Product product,
   Iterable<ReceiptPriceStat> stats,
 ) {
-  final exact = stats.where((stat) => stat.productId == product.id).toList();
-  if (exact.isNotEmpty) return exact;
-
   final family = inferReceiptFamily(product.name);
-  if (family.isEmpty || !isGenericFamilyRequest(product.name)) {
-    return const <ReceiptPriceStat>[];
+  final generic = family.isNotEmpty && isGenericFamilyRequest(product.name);
+
+  // A generic shopping request represents the whole product family. Do not
+  // stop at exact product IDs, otherwise older receipt rows that were assigned
+  // to provisional/sibling catalog IDs disappear from the family history.
+  if (generic) {
+    return stats.where((stat) => stat.familyKey == family).toList();
   }
-  return stats.where((stat) => stat.familyKey == family).toList();
+
+  // Specific variants may only use their exact assigned history. Falling back
+  // to a broad family here would let e.g. mixed mince satisfy beef mince.
+  return stats.where((stat) => stat.productId == product.id).toList();
 }
 
 ReceiptPriceStat? preferredReceiptStatForProduct(

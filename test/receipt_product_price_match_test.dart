@@ -63,7 +63,7 @@ void main() {
     expect(result.single.productId, 'gouda');
   });
 
-  test('finds historical hackfleisch price despite older product identity', () {
+  test('specific mince variant does not inherit unknown sibling history', () {
     final result = receiptStatsForProduct(mixedMince, [
       stat(
         family: 'hackfleisch',
@@ -73,8 +73,7 @@ void main() {
       ),
     ]);
 
-    expect(result, hasLength(1));
-    expect(result.single.medianPrice, 4.79);
+    expect(result, isEmpty);
   });
 
   test('exact product history still wins over family fallback', () {
@@ -115,4 +114,37 @@ void main() {
 
     expect(result?.medianPrice, 9.99);
   });
+  test('generic family includes exact and provisional receipt identities', () {
+    const eggs = Product(
+      id: 'eggs',
+      name: 'Eier',
+      unit: 'Artikel',
+      group: 'eier',
+    );
+    final result = receiptStatsForProduct(eggs, [
+      stat(
+        family: 'eier',
+        productId: 'eggs',
+        price: 2.49,
+        date: DateTime(2026, 9, 20),
+      ),
+      stat(
+        family: 'eier',
+        productId: 'receipt_auto_bodenhaltung',
+        price: 2.29,
+        date: DateTime(2026, 9, 21),
+      ),
+      stat(
+        family: 'eier',
+        productId: null,
+        price: 2.19,
+        date: DateTime(2026, 9, 22),
+      ),
+    ]);
+
+    expect(result, hasLength(3));
+    expect(result.map((item) => item.medianPrice).toSet(), {2.49, 2.29, 2.19});
+  });
+
+
 }
