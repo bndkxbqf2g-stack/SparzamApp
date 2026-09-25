@@ -31,7 +31,15 @@ jobs:
         run: flutter pub get
 
       - name: Build web for GitHub Pages
-        run: flutter build web --release --base-href "/SparzamApp/"
+        # Keep the Material Icons font stable across deployments. A tree-shaken
+        # font keeps the same URL while its glyph subset changes, which can
+        # leave iOS/Safari with boxes when cached JS and font versions differ.
+        run: flutter build web --release --no-tree-shake-icons --base-href "/SparzamApp/"
+
+      - name: Verify full Material Icons font
+        run: |
+          test -f build/web/assets/fonts/MaterialIcons-Regular.otf
+          test "$(stat -c%s build/web/assets/fonts/MaterialIcons-Regular.otf)" -gt 100000
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
