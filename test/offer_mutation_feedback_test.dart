@@ -57,12 +57,11 @@ void main() {
       onAddToShoppingList: (product) => added = product,
     ));
 
-    await tester.scrollUntilVisible(
-      find.text('Zur Einkaufsliste'),
-      150,
-      scrollable: find.byType(Scrollable).first,
+    await tester.ensureVisible(find.text('Zur Einkaufsliste'));
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.widgetWithText(FilledButton, 'Zur Einkaufsliste'),
     );
-    await tester.tap(find.text('Zur Einkaufsliste'));
     await tester.pump();
 
     expect(added?.id, product.id);
