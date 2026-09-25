@@ -3,12 +3,8 @@ import '../../models/receipt_price_stat.dart';
 import '../receipt/receipt_observation_builder.dart';
 import '../catalog/product_family.dart';
 
-/// Finds receipt statistics for a shopping-list product without pretending
-/// that a broader family observation is an exact variant match.
-///
-/// Exact product history wins. Otherwise an unassigned family observation may
-/// be used as a conservative historical hint for the same family, including
-/// older observations already linked to a different concrete catalog identity.
+/// Finds receipt statistics for a shopping-list product while preserving the
+/// distinction between generic family requests and specific variants.
 List<ReceiptPriceStat> receiptStatsForProduct(
   Product product,
   Iterable<ReceiptPriceStat> stats,
@@ -16,15 +12,11 @@ List<ReceiptPriceStat> receiptStatsForProduct(
   final exact = stats.where((stat) => stat.productId == product.id).toList();
   if (exact.isNotEmpty) return exact;
 
-  final broadFamily = broadProductFamily(product.name);
-  if (broadFamily != null && !isGenericFamilyRequest(product.name)) {
+  final family = inferReceiptFamily(product.name);
+  if (family.isEmpty || !isGenericFamilyRequest(product.name)) {
     return const <ReceiptPriceStat>[];
   }
-
-  final family = inferReceiptFamily(product.name);
-  return stats
-      .where((stat) => stat.familyKey == family)
-      .toList();
+  return stats.where((stat) => stat.familyKey == family).toList();
 }
 
 ReceiptPriceStat? preferredReceiptStatForProduct(
@@ -40,7 +32,6 @@ ReceiptPriceStat? preferredReceiptStatForProduct(
     return comparable.first;
   }
 
-  // A non-comparable pack price must not become a fake "cheapest" result.
   matches.sort((a, b) => b.latestAt.compareTo(a.latestAt));
   return matches.first;
 }

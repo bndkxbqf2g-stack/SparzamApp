@@ -53,7 +53,7 @@ ProductIdentity identifyProduct(String value) {
   if (_hasAny(text, const ['milch', 'h milch', 'vollmilch'])) {
     return ProductIdentity(
       familyKey: 'milch',
-      variant: _hasWord(text, 'h milch') ? 'h' : 'milch',
+      variant: _hasWord(text, 'h milch') ? 'h' : null,
       fatPercent: _percent(text),
     );
   }
@@ -65,17 +65,17 @@ ProductIdentity identifyProduct(String value) {
           : null,
     );
   }
-  if (_hasAny(text, const ['hackfleisch', 'hackfl', 'rinderhack', 'gem hack'])) {
+  if (_hasAny(text, const ['hackfleisch', 'hackfl', 'rinderhack', 'rinderhackfleisch', 'gem hack'])) {
     return ProductIdentity(
       familyKey: 'hackfleisch',
-      meatType: _hasAny(text, const ['rinderhack', 'rind hack', 'rind'])
+      meatType: _hasAny(text, const ['rinderhack', 'rinderhackfleisch', 'rind hack', 'rind'])
           ? 'rind'
-          : _hasAny(text, const ['gemischt', 'gem hack', 'hackfl gem'])
+          : _hasAny(text, const ['gemischt', 'gemischtes', 'gem hack', 'hackfl gem'])
               ? 'gemischt'
               : null,
     );
   }
-  if (_hasWord(text, 'paprika')) {
+  if (_hasAny(text, const ['paprika', 'spitzpaprika'])) {
     return ProductIdentity(
       familyKey: 'paprika',
       color: _color(text),
@@ -120,13 +120,13 @@ ProductIdentity identifyProduct(String value) {
     'käse', 'kaese', 'gouda', 'edamer', 'emmentaler', 'bergkäse',
     'bergkaese', 'butterkäse', 'butterkaese', 'tilsiter',
   ])) {
-    return const ProductIdentity(familyKey: 'kaese');
+    return ProductIdentity(familyKey: 'kaese', variant: _cheeseVariant(text));
   }
   if (_hasAny(text, const [
     'wurst', 'salami', 'lyoner', 'schinkenwurst', 'fleischwurst',
     'mortadella', 'cervelat',
   ])) {
-    return const ProductIdentity(familyKey: 'wurst');
+    return ProductIdentity(familyKey: 'wurst', variant: _sausageVariant(text));
   }
   return const ProductIdentity(familyKey: null);
 }
@@ -180,6 +180,24 @@ bool _hasAny(String text, List<String> words) => words.any((word) => _hasWord(te
 double? _percent(String text) {
   final match = RegExp(r'(\d+(?:[,.]\d+)?)\s*%').firstMatch(text);
   return match == null ? null : double.tryParse(match.group(1)!.replaceAll(',', '.'));
+}
+
+String? _cheeseVariant(String text) {
+  for (final term in const [
+    'gouda', 'edamer', 'emmentaler', 'bergkaese', 'butterkaese', 'tilsiter',
+  ]) {
+    if (_hasWord(text, term)) return term;
+  }
+  return null;
+}
+
+String? _sausageVariant(String text) {
+  for (final term in const [
+    'salami', 'lyoner', 'schinkenwurst', 'fleischwurst', 'mortadella', 'cervelat',
+  ]) {
+    if (_hasWord(text, term)) return term;
+  }
+  return null;
 }
 
 String? _color(String text) {
