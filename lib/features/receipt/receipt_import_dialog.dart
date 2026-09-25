@@ -399,6 +399,20 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
     super.dispose();
   }
 
+  List<({String name, ReceiptDraft draft})> get _displayReceiptDrafts {
+    final drafts = [...receiptDrafts];
+    drafts.sort((a, b) {
+      final balanceCompare =
+          (b.draft.balances ? 1 : 0).compareTo(a.draft.balances ? 1 : 0);
+      if (balanceCompare != 0) return balanceCompare;
+      return a.name.compareTo(b.name);
+    });
+    return drafts;
+  }
+
+  int get _importableReceiptCount =>
+      receiptDrafts.where((entry) => entry.draft.balances).length;
+
   @override
   Widget build(BuildContext context) => AlertDialog(
         title: const Text('Kassenbon übernehmen'),
@@ -433,19 +447,40 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                   ),
                 ),
               ],
+              if (receiptDrafts.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '$_importableReceiptCount von ${receiptDrafts.length} '
+                    'Bon(s) vollständig geprüft und übernehmbar',
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ],
               if (duplicateReceipts > 0)
                 Text('$duplicateReceipts doppelte(r) PDF-Beleg(e) übersprungen.'),
               if (receiptDrafts.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 const Text('Erkannte Bonpreise',
                     style: TextStyle(fontWeight: FontWeight.w700)),
-                for (final entry in receiptDrafts)
+                for (final entry in _displayReceiptDrafts)
                   Builder(builder: (context) {
                     final draft = entry.draft;
                     final review = reviewReceiptPrices(draft, availableProducts);
                     return Card(
                       child: ExpansionTile(
-                        initiallyExpanded: true,
+                        initiallyExpanded: draft.balances,
                         title: Text(
                           '${draft.retailer ?? 'Unbekannter Markt'} · '
                           '${_dateLabel(draft.receiptDate)}',
@@ -512,14 +547,25 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                       (suggestion) => suggestion.row.line == row.line),
                                 ))
                                   ListTile(
-                                    dense: true,
-                                    title: Text(row.label),
-                                    trailing: Text(
-                                      '${(row.cents / 100).toStringAsFixed(2).replaceAll('.', ',')} €',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w800,
-                                        fontSize: 16,
-                                      ),
+                                    dense: false,
+                                    title: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          row.label,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          '${(row.cents / 100).toStringAsFixed(2).replaceAll('.', ',')} €',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w800,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     subtitle: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
