@@ -123,6 +123,8 @@ Nur **Status prüfen**. Keine neue Feature-Entwicklung und keine eigenständige 
 - `U`: nur Status beider aktiven Projekte prüfen
 
 ## Wiedereinstieg nach dem aktuellen Entwicklungsblock
-Store-Namen werden für Bonbeobachtungen und Open-Prices-Importe auf konfigurierte Märkte aufgelöst; ähnliche, nicht passende Namen werden abgelehnt. Mengenangaben normalisieren zusätzlich gebräuchliche metrische Langformen und Stück-Schreibweisen, ohne unbekannte Packungsarten vergleichbar zu machen.
+Der End-to-End-Audit hat drei konkrete Identitäts-Bypässe geschlossen: Eine bloße `productId` auf einer Bonbeobachtung gilt nicht mehr automatisch als bestätigte Identität; automatisch angelegte Bonprodukte dürfen keinen direkten `MarketPrice` erzeugen; automatische Preisvorschläge starten unselektiert und werden erst nach expliziter Nutzerbestätigung als exakter Marktpreis übernommen. Alte `receipt_auto_*`-Beobachtungen werden konservativ als unbestätigt gelesen.
 
-Als Nächstes die **sieben realen Bons** als strukturierte Produkt×Markt-Testmatrix absichern. Dafür die vorhandenen Belege/Fixtures verwenden und fehlende Originalbelege anfordern statt Preise zu ergänzen. Danach Identitäts-Konfidenz und Ablehnungsgrund sichtbar/testbar machen und realistische Mehrmarkt-End-to-End-Tests aus denselben belegten Daten ergänzen.
+Die reale Bon-Matrix ist in `docs/REAL_RECEIPT_MATRIX.md` begonnen. Der im Repository eindeutig belegte Kaufland-Schmand-Fall vom 23.07.2026 wird jetzt über `ReceiptObservation → PriceObservation → MarketPrice → planningMarketPrices → RoutePriceResolver → RouteOptimizer` getestet. Für sechs weitere Originalbons fehlen im Repository weiterhin eindeutig rekonstruierbare Original-Fixtures; deshalb bleibt der Roadmap-Punkt „sieben reale Bons“ offen und es wurden keine fehlenden Preise ergänzt.
+
+Nächster sicherer Schritt nach grüner CI: die sechs fehlenden Originalbelege ergänzen, danach die vollständige Produkt×Markt-Matrix und realistische 1/2/3-Markt-End-to-End-Tests daraus ableiten. Unabhängig davon kann die sichtbare Identitäts-Konfidenz/Ablehnungsbegründung weiter ausgebaut werden.
