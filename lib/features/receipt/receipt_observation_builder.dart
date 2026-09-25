@@ -53,12 +53,6 @@ String inferReceiptFamily(String label) {
   if (broad != null) return broad;
 
   const families = <String, List<String>>{
-    'hackfleisch': [
-      'hackfleisch',
-      'hackfl gem',
-      'r hackfleisch',
-      'rinderhack',
-    ],
     'weintrauben': ['weintrauben', 'trauben'],
     'fischstäbchen': ['fischstäbchen'],
     'toast': ['sandwichtoast', 'toast'],
