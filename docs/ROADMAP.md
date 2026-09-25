@@ -73,7 +73,7 @@ Work wird nur für Aufgaben eingesetzt, bei denen eine längere, selbstständige
 
 | Status | Aufgabe | Warum Work | Startvoraussetzung |
 | --- | --- | --- | --- |
-| READY | End-to-End-Audit der Preis- und Routenlogik | Repo-weite Prüfung des vollständigen Datenflusses und selbstständige Korrekturen über mehrere Module | Mengen-/Packungs-/Variantenvergleich abgeschlossen |
+| DONE | End-to-End-Audit der Preis- und Routenlogik | Identitäts-Bypässe, Projektion und Preis-/Routenfluss repo-weit geprüft; belegte Fehler mit Regressionen geschlossen | abgeschlossen 25.09.2026 |
 | WAITING | Reale Preisdatenquellen und Provider-Adapter | Recherche, Quellenprüfung, Mapping, Implementierung und Validierung als zusammenhängender Arbeitslauf | Beobachtungs-/Confidence-Schnittstellen stabil |
 | WAITING | Migration auf PriceObservation als direkte Planungsbasis | Größeres Refactoring über Stores, Route und UI mit Rückbau von Übergangsschnittstellen | PriceObservation deckt Bon, Angebot, fehlende Preise und Vergleichbarkeit ab |
 | WAITING | Meilenstein-Qualitätssicherung | App-/Repo-weite Tests, CI, Datenflussprüfung, Fehlerbehebung und Dokumentationsabgleich | vor dem nächsten größeren Produktmeilenstein |
@@ -95,3 +95,11 @@ Work wird nur für Aufgaben eingesetzt, bei denen eine längere, selbstständige
 
 ### WORK QUEUE Statusänderung
 Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ ist erfüllt. Der Eintrag **End-to-End-Audit der Preis- und Routenlogik** ist damit **READY**. Beim nächsten Work-Lauf soll dieser Audit als erstes freigegebenes Paket bearbeitet werden. Die übrigen Einträge bleiben WAITING, bis ihre jeweiligen Voraussetzungen erfüllt sind.
+
+
+## Update 25.09.2026 – End-to-End-Audit abgeschlossen
+- Der Audit des Datenflusses `ReceiptObservation → PriceObservation → MarketPrice → planningMarketPrices → RoutePriceResolver → RouteOptimizer` ist für die aktuell vorhandenen, belegten Daten abgeschlossen.
+- Identitäts-Bypässe aus automatischen Bonzuordnungen wurden geschlossen; unbestätigte automatische Identitäten dürfen nicht als exakte Routenpreise auftreten.
+- Ein im Audit verbliebener Projektionsfehler wurde behoben: mehrere exakte Beobachtungen derselben Produkt×Markt-Kombination werden vor der Route nicht mehr blind auf den neuesten Zeitstempel reduziert. Die Auswahl verwendet jetzt zentral denselben qualitätsbereinigten Preiswert wie der Route-Resolver.
+- Die vollständige Sieben-Bon-Matrix bleibt separat offen, weil zwei im UI sichtbare Originalbelege weiterhin nicht als Quelldatei vorliegen. Dieser Datenblocker wird nicht durch erfundene Parserannahmen umgangen.
+- Nächster Featureblock nach nachweislich grüner CI: hierarchische Produkt-/Suchauflösung sowie weitere Absicherung von Quellpriorität und Angebot/Normalpreis.
