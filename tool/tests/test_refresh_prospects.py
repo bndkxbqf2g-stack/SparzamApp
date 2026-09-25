@@ -114,6 +114,54 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(offers[0]["productLabel"], "Dr. Oetker Ristorante Pizza Salame")
         self.assertEqual(offers[0]["offerPrice"], 1.79)
 
+
+    def test_rewe_api_reads_current_market_offers(self):
+        payload = """
+        {
+          "data": {
+            "offers": {
+              "current": {
+                "available": true,
+                "fromDate": "2026-09-21",
+                "untilDate": "2026-09-27",
+                "categories": [
+                  {
+                    "offers": [
+                      {
+                        "title": "Dr. Oetker Ristorante Pizza Salame",
+                        "priceData": {
+                          "price": "1,79 €",
+                          "regularPrice": "2,99 €"
+                        },
+                        "rawValues": {"nan": "1234567"}
+                      },
+                      {
+                        "title": "Red Bull Energy Drink",
+                        "priceData": {
+                          "price": "0,88 €",
+                          "regularPrice": "Aktion"
+                        },
+                        "rawValues": {"nan": "7654321"}
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+        """
+        offers, _ = refresh.parse_rewe_api(
+            payload,
+            "https://www.rewe.de/api/stationary-offers/461683",
+        )
+        self.assertEqual(len(offers), 2)
+        self.assertEqual(offers[0]["offerPrice"], 1.79)
+        self.assertEqual(offers[0]["originalPrice"], 2.99)
+        self.assertNotIn("originalPrice", offers[1])
+        self.assertEqual(offers[0]["validFrom"], "2026-09-21")
+        self.assertEqual(offers[0]["validUntil"], "2026-09-27")
+
     def test_kaufland_extracts_sale_and_regular_price(self):
         html = """<p>Gültig vom 24.09.2026 bis 30.09.2026</p><a href="/angebot/bananen">Ecuador./kolumb. Bananen, lose je kg-31%0.88 1.29</a>"""
         offers, _ = refresh.parse_kaufland(html, "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html")

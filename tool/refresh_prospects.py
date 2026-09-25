@@ -20,7 +20,7 @@ SOURCES = (
     ("lidl_zellingen", "Lidl", "https://www.lidl.de/c/online-prospekte/s10005610/", "lidl"),
     ("penny_retzbach", "PENNY", "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1", "penny"),
     ("netto_thuengersheim", "Netto", "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371", "netto"),
-    ("rewe_veitshoechheim", "REWE", "https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1/", "rewe"),
+    ("rewe_veitshoechheim", "REWE", "https://www.rewe.de/api/stationary-offers/461683", "rewe_api"),
 )
 
 class VisibleTextParser(HTMLParser):
@@ -473,6 +473,55 @@ def parse_rewe(html_text, base_url):
     return dedupe(offers), []
 
 
+
+def _rewe_price(value):
+    if not isinstance(value, str):
+        return None
+    match = re.search(r"(\d+[,.]\d{2})", value)
+    return money(match.group(1)) if match else None
+
+
+def parse_rewe_api(json_text, base_url):
+    payload = json.loads(json_text)
+    data = payload.get("data", {}) if isinstance(payload, dict) else {}
+    weeks = data.get("offers", {}) if isinstance(data, dict) else {}
+    current = weeks.get("current", {}) if isinstance(weeks, dict) else {}
+    if not isinstance(current, dict) or not current.get("available", False):
+        return [], []
+
+    valid_from = date.fromisoformat(current["fromDate"])
+    valid_until = date.fromisoformat(current["untilDate"])
+    offers = []
+    for category in current.get("categories", []):
+        if not isinstance(category, dict):
+            continue
+        for item in category.get("offers", []):
+            if not isinstance(item, dict):
+                continue
+            label = clean(str(item.get("title") or ""))
+            price_data = item.get("priceData", {})
+            if not isinstance(price_data, dict):
+                continue
+            sale = _rewe_price(price_data.get("price"))
+            if not label or sale is None:
+                continue
+            regular = _rewe_price(price_data.get("regularPrice"))
+            if regular is not None and regular < sale:
+                regular = None
+            raw_values = item.get("rawValues", {})
+            article = raw_values.get("nan") if isinstance(raw_values, dict) else None
+            proof = (
+                "https://www.rewe.de/angebote/veitshoechheim/461683/"
+                "rewe-markt-pont-leveque-allee-1/"
+            )
+            if article:
+                proof += "#article-" + str(article)
+            offers.append(record(
+                "REWE", label, sale, valid_from, valid_until, proof, regular,
+            ))
+    return dedupe(offers), []
+
+
 def dedupe(offers):
     unique = {}
     for item in offers:
@@ -488,6 +537,7 @@ PARSERS = {
     "penny": parse_penny,
     "netto": parse_netto,
     "rewe": parse_rewe,
+    "rewe_api": parse_rewe_api,
 }
 
 def load_previous():
