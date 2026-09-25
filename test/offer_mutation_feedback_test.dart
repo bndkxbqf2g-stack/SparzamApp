@@ -19,7 +19,10 @@ void main() {
     storeName: 'Lidl',
     originalPrice: 2,
     offerPrice: 1,
-    validUntil: DateTime.now().add(const Duration(days: 7)),
+    validFrom: DateTime(2026, 9, 21),
+    validUntil: DateTime(2026, 9, 27),
+    source: 'leaflet',
+    proofRef: 'prospekt-kw39',
   );
 
   Widget screen({
@@ -48,6 +51,17 @@ void main() {
     await tester.tap(find.text(action).last);
     await tester.pumpAndSettle();
   }
+
+  testWidgets('Angebot zeigt Quelle, Beleg und Gültigkeitszeitraum', (tester) async {
+    await tester.pumpWidget(screen(
+      onSave: (_) async => [offer],
+      onDelete: (_) async => [],
+    ));
+
+    expect(find.text('Quelle: Prospekt'), findsOneWidget);
+    expect(find.text('Gültig 21.09.2026–27.09.2026'), findsOneWidget);
+    expect(find.text('Beleg: prospekt-kw39'), findsOneWidget);
+  });
 
   testWidgets('Angebot kann kanonischen Artikel zur Einkaufsliste hinzufügen', (tester) async {
     Product? added;
