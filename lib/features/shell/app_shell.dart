@@ -44,6 +44,7 @@ import '../profile/diagnostic_log_screen.dart';
 import '../route/route_optimizer.dart';
 import '../route/route_screen.dart';
 import '../scanner/scanner_screen.dart';
+import '../receipt/receipt_observation_migration.dart';
 import '../shopping_list/replenishment_analyzer.dart';
 import '../shopping_list/receipt_family_market_prices.dart';
 import '../shopping_list/planning_market_prices.dart' as planning_prices;
@@ -243,12 +244,17 @@ class _AppShellState extends State<AppShell> {
   }
 
   Future<void> _loadReceiptObservations() async {
-    final loaded = await ReceiptObservationStore().load();
-    await priceObservationStore.append(loaded.map(observationFromReceipt));
+    final store = ReceiptObservationStore();
+    final loaded = await store.load();
+    final reinterpreted = reinterpretReceiptObservations(loaded);
+    await store.addMany(reinterpreted);
+    await priceObservationStore.upsertById(
+      reinterpreted.map(observationFromReceipt),
+    );
     final historical = await priceObservationStore.load();
     if (!mounted) return;
     setState(() {
-      receiptObservations = loaded;
+      receiptObservations = reinterpreted;
       historicalPriceObservations = historical;
     });
   }
@@ -715,8 +721,10 @@ class _AppShellState extends State<AppShell> {
 
   Future<List<Offer>> saveOffer(Offer offer) async {
     final next = await widget.offerStore.upsert(offer, offers);
+    final observedAt = DateTime.now();
     await priceObservationStore.append([
-      observationFromOffer(offer, observedAt: DateTime.now()),
+      regularObservationFromOffer(offer, observedAt: observedAt),
+      observationFromOffer(offer, observedAt: observedAt),
     ]);
     if (mounted) setState(() => offers = next);
     await _loadPriceObservations();
