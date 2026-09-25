@@ -279,6 +279,8 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
           draft: draft,
           row: row,
           product: products.single,
+          identityConfirmed:
+              !automaticProductAssignments.contains(_rowKey(draft, row)),
         );
         if (price != null && usedProducts.add(id)) {
           prices.add(price);
