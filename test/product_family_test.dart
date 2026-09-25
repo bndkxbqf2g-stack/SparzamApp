@@ -25,4 +25,8 @@ void main() {
   test('unrelated compound words are not matched by a family substring', () {
     expect(broadProductFamily('Milchreis'), isNull);
   });
+
+  test('whole family terms still match inside descriptive labels', () {
+    expect(broadProductFamily('Naturjoghurt'), 'joghurt');
+  });
 }
