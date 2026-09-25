@@ -23,6 +23,10 @@ List<MarketPrice> receiptFamilyMarketPrices({
 
     for (final observation in observations) {
       if (observation.observedAt.isBefore(cutoff)) continue;
+      if (observation.productId?.isNotEmpty == true &&
+          !observation.identityConfirmed) {
+        continue;
+      }
       final candidate = identifyProduct(observation.rawLabel);
       final normalizedCandidate = normalizeIdentityText(observation.rawLabel);
       final exact = normalizedRequest == normalizedCandidate ||
