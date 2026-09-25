@@ -113,9 +113,17 @@ bool _sourceAllowed(
   PriceDataSettings settings,
   DateTime now,
 ) {
-  if (observation.source != PriceObservationSource.openPrices) return true;
-  if (!settings.openPricesEnabled) return false;
+  final maxAgeDays = switch (observation.source) {
+    PriceObservationSource.receipt => 30,
+    PriceObservationSource.openPrices => settings.openPricesMaxAgeDays,
+    _ => null,
+  };
+  if (observation.source == PriceObservationSource.openPrices &&
+      !settings.openPricesEnabled) {
+    return false;
+  }
+  if (maxAgeDays == null) return true;
   return !observation.observedAt.isBefore(
-    now.subtract(Duration(days: settings.openPricesMaxAgeDays)),
+    now.subtract(Duration(days: maxAgeDays)),
   );
 }

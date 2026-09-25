@@ -173,6 +173,21 @@ void main() {
     expect(projected, isEmpty);
   });
 
+
+  test('old exact receipt history is excluded from route price projection', () {
+    final projected = marketPricesFromObservations([
+      PriceObservation(
+        id: 'old-receipt',
+        productId: 'schmand',
+        storeName: 'Lidl',
+        price: 0.69,
+        observedAt: DateTime(2026, 8, 24),
+        source: PriceObservationSource.receipt,
+      ),
+    ], now: DateTime(2026, 9, 25));
+
+    expect(projected, isEmpty);
+  });
   test('source confidence and age confidence are separate', () {
     final old = MarketPrice(productId: 'x', storeName: 'Lidl',
         price: 0.79, updatedAt: DateTime(2026, 7, 23),
