@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-25T21:22:06.037989Z",
+  "generatedAt": "2026-09-25T21:23:28.568644Z",
   "sources": [
     {
       "id": "aldi_sued",
@@ -103,6 +103,9 @@
           ],
           "productCount": 0,
           "pageCount": 66,
+          "offerStartDate": "2026-09-21",
+          "offerEndDate": "2026-09-26",
+          "pdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0d41a-8da5-7a68-a4a7-f6cd77face50/Aktionsprospekt-21-09-2026-26-09-2026-00.pdf",
           "pageKeys": [
             "altText",
             "height",
@@ -121,27 +124,37 @@
             {
               "number": 1,
               "altText": "Werbeprospekt-Titelseite von Lidl mit verschiedenen Rabattaktionen für Lebensmittel, Parkside-Werkzeuge und Haushaltsartikel.",
-              "keyWords": "Lidl Plus -16% Italiamo Kirsch Tomaten Sauce Normalpreis -36% Uvp Bären- Marke Haltbare Milch Parkside Akku-Drehschlagschrauber Typ „Passk 20-Li Stück Tiefpreis Garantie -49% Ooono Auto- Verkehrs- Warner Modell „Co-Driver Ultimate Speed Hydraulik- Rangier- Wagenheber Letzter Preis Drucktermin -50% Gültig Ladegerät Deutscher Mini Romana Salat Klasse Deutsc Dwir Tsc -33% Aktion Bon Gelati Eis-Croissant -42% Persil Waschmittel Pulver Gel Wasch- Ladungen -39% Italienische Woche Trend Food- Filial-Angebote Dienstleistung & Kg Bonfelder Bad Namen Anschrift Regional Tätigen Unternehmen Nonfood-Aktionsartikel Kleinstfilialen -Angebote Digital Deutschland Straße Bio-Zertifiziert Angebot Ausschließlich Nutzer Gelten Infos Ausgabe Hhz – 1030"
+              "keyWords": "Lidl Plus -16% Italiamo Kirsch Tomaten Sauce Normalpreis -36% Uvp Bären- Marke Haltbare Milch Parkside Akku-Drehschlagschrauber Typ „Passk 20-Li Stück Tiefpreis Garantie -49% Ooono Auto- Verkehrs- Warner Modell „Co-Driver Ultimate Speed Hydraulik- Rangier- Wagenheber Letzter Preis Drucktermin -50% Gültig Ladegerät Deutscher Mini Romana Salat Klasse Deutsc Dwir Tsc -33% Aktion Bon Gelati Eis-Croissant -42% Persil Waschmittel Pulver Gel Wasch- Ladungen -39% Italienische Woche Trend Food- Filial-Angebote Dienstleistung & Kg Bonfelder Bad Namen Anschrift Regional Tätigen Unternehmen Nonfood-Aktionsartikel Kleinstfilialen -Angebote Digital Deutschland Straße Bio-Zertifiziert Angebot Ausschließlich Nutzer Gelten Infos Ausgabe Hhz – 1030",
+              "image": "https://imgproxy.leaflets.schwarz/yaxwK7gmH4sZQja-lhOr-Jg4B9QA-f6s_iDQblIAyJ8/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGQ0MWEtOGRhNS03YTY4LWE0YTctZjZjZDc3ZmFjZTUwL3BhZ2UtMDFfNjRkMGRlZTEyZTU1ODUyOTQ4MzNjMTRjYTFiZjY1OGMucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/wwMrvFF5UeBgTx5XCfik6G4-M0-OxkNPFcbC2MKREA8/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGQ0MWEtOGRhNS03YTY4LWE0YTctZjZjZDc3ZmFjZTUwL3BhZ2UtMDFfNjRkMGRlZTEyZTU1ODUyOTQ4MzNjMTRjYTFiZjY1OGMucG5n.jpg"
             },
             {
               "number": 2,
               "altText": "Lidl-Angebote für frisches Obst und Gemüse, darunter Mini-Romana-Salat, rote Paprika und Avocados mit dem YouGov-Frische-Sieger-Logo.",
-              "keyWords": "Großer Frische-Sieger Winziger Preis Bewusst Ernähren Wigald Boning Kg- Eis Deutscher Mini Romana Salat Klasse Stück Rote Paprika Ursprung Deut Tsc Ft- -10% -33% Avocado Lose Hhz – Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst- Gemüseangebot Verschiedenen Handelsgruppen Einschließlich Kategorie Discount Kategorien Gegensatz Preisen Einzelne Geschäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Discounterhal- Informationen Awards 2016 2017 2019 2020 2021 2022 2023 Artikel Begrenzter Vorratsmenge Laufe Angebotstages Ausverkauft 1250"
+              "keyWords": "Großer Frische-Sieger Winziger Preis Bewusst Ernähren Wigald Boning Kg- Eis Deutscher Mini Romana Salat Klasse Stück Rote Paprika Ursprung Deut Tsc Ft- -10% -33% Avocado Lose Hhz – Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst- Gemüseangebot Verschiedenen Handelsgruppen Einschließlich Kategorie Discount Kategorien Gegensatz Preisen Einzelne Geschäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Discounterhal- Informationen Awards 2016 2017 2019 2020 2021 2022 2023 Artikel Begrenzter Vorratsmenge Laufe Angebotstages Ausverkauft 1250",
+              "image": "https://imgproxy.leaflets.schwarz/PZrI77wBdHbfApCaSHiyo_rQzmSZz7ejVr9kBKISLhg/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGQ0MWEtOGRhNS03YTY4LWE0YTctZjZjZDc3ZmFjZTUwL3BhZ2UtMDJfZTVmM2NkNDgzZmZhMzVhZmRmZDQ5MWE2ZDNjNTk1ZGMucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/avn-xfbHxXi8CAC_tsaUk52QhSIRWKCr1n1fk5MnuCA/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGQ0MWEtOGRhNS03YTY4LWE0YTctZjZjZDc3ZmFjZTUwL3BhZ2UtMDJfZTVmM2NkNDgzZmZhMzVhZmRmZDQ5MWE2ZDNjNTk1ZGMucG5n.jpg"
             },
             {
               "number": 3,
               "altText": "Saisonale Obst- und Gemüse-Highlights bei Lidl wie Granatäpfel, Radieschen, Trauben und Mangos sowie ein Lidl-Plus-Gewinnspiel.",
-              "keyWords": "Saison Highlight Woche Lidl Plus Aktion Kg- Eis Granatapfel Ursprung Klasse Stück Deutsche Radieschen Bund Deutscher Mini Romana Salat Deutsc Dwir Tsc Trauben Mix Klasse I Nektarinen Lose Kg-Preis Große Früchte Mango Kolumbien Drehen & Gewinnen Einkaufen Coupon Sichern Nächsten Einkauf Einlösen ’S Roulette-Rad Teilnahme Scannen Downloaden Gratis- Rabatt- Coupons Angebot Ausschließlich Nutzer Gelten Infos Aktionszeitraum Verbindung App Gewinne Zeitlich Begrenzte Rabatt-Coupons Prozentuale Rabatte Obst Gemüse Gewähren Gratis-Coupons Artikel Rettertüte Tabakwaren Zeitschriften Zeitungen Säuglingsanfangsnahrung Bücher Pfand Co2 Zylinder Telefon- Gutschein- Identifizieren Tagen Mehrfachteilnahme Gleichen Tag Coupon-Ausspielung Erfolgt Einlösung Jeweiligen Mindesteinkaufswerte Einmalig Barauszahlung Rechtsweg Aktionsartikel Begrenzter Vorratsmenge Laufe Angebotstages Ausverkauft Abgebildete Ve"
+              "keyWords": "Saison Highlight Woche Lidl Plus Aktion Kg- Eis Granatapfel Ursprung Klasse Stück Deutsche Radieschen Bund Deutscher Mini Romana Salat Deutsc Dwir Tsc Trauben Mix Klasse I Nektarinen Lose Kg-Preis Große Früchte Mango Kolumbien Drehen & Gewinnen Einkaufen Coupon Sichern Nächsten Einkauf Einlösen ’S Roulette-Rad Teilnahme Scannen Downloaden Gratis- Rabatt- Coupons Angebot Ausschließlich Nutzer Gelten Infos Aktionszeitraum Verbindung App Gewinne Zeitlich Begrenzte Rabatt-Coupons Prozentuale Rabatte Obst Gemüse Gewähren Gratis-Coupons Artikel Rettertüte Tabakwaren Zeitschriften Zeitungen Säuglingsanfangsnahrung Bücher Pfand Co2 Zylinder Telefon- Gutschein- Identifizieren Tagen Mehrfachteilnahme Gleichen Tag Coupon-Ausspielung Erfolgt Einlösung Jeweiligen Mindesteinkaufswerte Einmalig Barauszahlung Rechtsweg Aktionsartikel Begrenzter Vorratsmenge Laufe Angebotstages Ausverkauft Abgebildete Ve",
+              "image": "https://imgproxy.leaflets.schwarz/UoXlgrlWYSymb6C66v1pGWq8ZMre2CJvQNBFxSZ6Ufw/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGQ0MWEtOGRhNS03YTY4LWE0YTctZjZjZDc3ZmFjZTUwL3BhZ2UtMDNfZWJlMmMzYjljYzQyNTk2NTA4MjA4NzEwNjg5M2U1MjIucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/ilB52JGpduAw2ytpeL7JcA7SGP5koTjiF9INt1kV_mQ/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGQ0MWEtOGRhNS03YTY4LWE0YTctZjZjZDc3ZmFjZTUwL3BhZ2UtMDNfZWJlMmMzYjljYzQyNTk2NTA4MjA4NzEwNjg5M2U1MjIucG5n.jpg"
             },
             {
               "number": 4,
               "altText": "Dauerhaft reduzierte Preise für Schokolade, Kekse und Reiswaffeln der Lidl-Eigenmarken Fin Carré, Sondey und Vemondo.",
-              "keyWords": "Fin Carré Tafelschokolade Sondey Doppelkekse Vemondo Vegane Karamellkekse Reiswaffeln Reduzieren Dauerhaft Preise Günstiger! Leben Preisführer Dhz –"
+              "keyWords": "Fin Carré Tafelschokolade Sondey Doppelkekse Vemondo Vegane Karamellkekse Reiswaffeln Reduzieren Dauerhaft Preise Günstiger! Leben Preisführer Dhz –",
+              "image": "https://imgproxy.leaflets.schwarz/lRMTsdSfetksLoCV1K4iAZBYU2PtForWOk5LRMjgW5c/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGQ0MWEtOGRhNS03YTY4LWE0YTctZjZjZDc3ZmFjZTUwL3BhZ2UtMDRfYTg5YzViZTkwYzBkMWM4YTQ5YTc5MDZlYTAxYzIwMzcucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/UaCLYohEOP02jlce6wW1d3t3XKZVMGon7ruulOJOH0c/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGQ0MWEtOGRhNS03YTY4LWE0YTctZjZjZDc3ZmFjZTUwL3BhZ2UtMDRfYTg5YzViZTkwYzBkMWM4YTQ5YTc5MDZlYTAxYzIwMzcucG5n.jpg"
             },
             {
               "number": 5,
               "altText": "Süßgebäck und Schokoriegel von Sondey und Mister Choc mit einem Hinweis auf die Auszeichnung als „Deutschlands Preisfavorit“.",
-              "keyWords": "Sondey Butterkeks Waffel- Mischung Schoko- Butterkekse Schoko-Keks Sticks Röllchen Waffeln Mister Choc Schokoriegel Jaffa Cake Servicevalue Kooperation Wirtschaftswoche Studie „Deutschlands Preisfavoriten 2026“ Verbraucher November Dezember -Access-Panel Befragt Wel- Che Genannten Unternehmen Verschiedenen Branchen Grund Preisgünstigkeit Leistungen Produkte Insgesamt Verbraucherurteile Lidl Besten Ergebnisses Branche „Lebensmittel-Discounter“ Auszeichnung „Höchste Empfehlung“ Zweiten Folge Ge- Samtsieger Ergebnisse Informationen Vorjahresstudie Dhz –"
+              "keyWords": "Sondey Butterkeks Waffel- Mischung Schoko- Butterkekse Schoko-Keks Sticks Röllchen Waffeln Mister Choc Schokoriegel Jaffa Cake Servicevalue Kooperation Wirtschaftswoche Studie „Deutschlands Preisfavoriten 2026“ Verbraucher November Dezember -Access-Panel Befragt Wel- Che Genannten Unternehmen Verschiedenen Branchen Grund Preisgünstigkeit Leistungen Produkte Insgesamt Verbraucherurteile Lidl Besten Ergebnisses Branche „Lebensmittel-Discounter“ Auszeichnung „Höchste Empfehlung“ Zweiten Folge Ge- Samtsieger Ergebnisse Informationen Vorjahresstudie Dhz –",
+              "image": "https://imgproxy.leaflets.schwarz/RhrCjgyQMmhC-Vl2DEx9gP1GA9zimSM14juXUmoIwZI/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGQ0MWEtOGRhNS03YTY4LWE0YTctZjZjZDc3ZmFjZTUwL3BhZ2UtMDVfMjFiMjFkMjFhNWQ0MjAyMDU0OGVkZmMwYTBmZWZhZDAucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/sSh_m6jB0jfzM73Yi2GWrucXSF046VKkxljKtFeHxoQ/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGQ0MWEtOGRhNS03YTY4LWE0YTctZjZjZDc3ZmFjZTUwL3BhZ2UtMDVfMjFiMjFkMjFhNWQ0MjAyMDU0OGVkZmMwYTBmZWZhZDAucG5n.jpg"
             }
           ]
         },
@@ -215,6 +228,9 @@
           ],
           "productCount": 0,
           "pageCount": 71,
+          "offerStartDate": "2026-09-28",
+          "offerEndDate": "2026-10-03",
+          "pdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0b4ba-89c7-74df-8a8d-6ba597a38812/Aktionsprospekt-28-09-2026-03-10-2026-03.pdf",
           "pageKeys": [
             "altText",
             "height",
@@ -300,6 +316,9 @@
           ],
           "productCount": 0,
           "pageCount": 28,
+          "offerStartDate": "2026-10-05",
+          "offerEndDate": "2026-10-10",
+          "pdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0b545-5988-7b5b-83cc-918569a445e2/Aktionsprospekt-05-10-2026-10-10-2026-01.pdf",
           "pageKeys": [
             "altText",
             "height",
