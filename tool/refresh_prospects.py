@@ -145,19 +145,17 @@ def parse_edeka(html_text, base_url):
         valid_until = parse_date(validity.group(2)) or valid_until
     offers = []
     for index, line in enumerate(page.lines):
-        if not line.startswith("Angebot:"):
+        if "Angebot:" not in line:
             continue
-        label = clean(line[len("Angebot:"):])
-        block = page.lines[index + 1:index + 18]
+        label = clean(line.split("Angebot:", 1)[1])
+        block_text = " ".join(page.lines[index + 1:index + 28])
         start, price = valid_from, None
-        for part in block:
-            match = re.search(r"Gültig ab\s+(\d{2}\.\d{2}\.\d{4})", part)
-            if match:
-                start = parse_date(match.group(1)) or start
-            match = re.search(r"Festpreis von\s+(\d+[,.]\d{2})\s*€", part)
-            if match:
-                price = money(match.group(1))
-                break
+        match = re.search(r"Gültig ab\s+(\d{2}\.\d{2}\.\d{4})", block_text)
+        if match:
+            start = parse_date(match.group(1)) or start
+        match = re.search(r"Festpreis von\s+(\d+[,.]\d{2})\s*€", block_text)
+        if match:
+            price = money(match.group(1))
         if label and price is not None:
             proof = base_url + "#offer-" + stable_id("EDEKA", base_url, label)
             offers.append(record("EDEKA", label, price, start, valid_until, proof))
@@ -175,6 +173,10 @@ def parse_kaufland(html_text, base_url):
     percent = re.compile(r"^(.*?)-\d{1,2}%\s*(\d+[,.]\d{2})\s+(\d+[,.]\d{2})$")
     only = re.compile(r"^(.*?)\bnur\s+(\d+[,.]\d{2})$", re.I)
     for href, text in page.anchors:
+        # XTRA/App prices are conditional and must not become universally
+        # routable until loyalty-card conditions are modelled explicitly.
+        if "kaufland card xtra" in text.lower():
+            continue
         match = percent.match(text)
         if match:
             label, sale, regular = clean(match.group(1)), money(match.group(2)), money(match.group(3))

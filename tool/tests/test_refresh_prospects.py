@@ -30,5 +30,10 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(offers[0]["offerPrice"], 0.88)
         self.assertEqual(offers[0]["originalPrice"], 1.29)
 
+    def test_kaufland_card_xtra_price_is_not_universal(self):
+        html = """<p>Gültig vom 24.09.2026 bis 30.09.2026</p><a href="/angebot/butter">KERRYGOLD Extra XXL -46% 2.49 4.69 Mit Kaufland Card XTRA ** 1.99</a>"""
+        offers, _ = refresh.parse_kaufland(html, "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html")
+        self.assertEqual(offers, [])
+
 if __name__ == "__main__":
     unittest.main()
