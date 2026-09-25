@@ -319,7 +319,7 @@ class _ShoppingItemTile extends StatelessWidget {
 }
 
 String shoppingGroupLabel(String group) => switch (group) {
-      'milch' => 'Milch & Käse',
+      'milch' || 'butter' => 'Milch & Käse',
       'obst' => 'Obst & Gemüse',
       'fleisch' => 'Fleisch',
       'nudeln' => 'Nudeln & Beilagen',
