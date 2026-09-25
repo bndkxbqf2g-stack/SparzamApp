@@ -8,6 +8,10 @@ class Offer {
     required this.originalPrice,
     required this.offerPrice,
     required this.validUntil,
+    this.validFrom,
+    this.source = 'manual',
+    this.proofRef,
+    this.imageUrl,
     this.buyQuantity,
     this.payQuantity,
     this.coupon = false,
@@ -24,6 +28,10 @@ class Offer {
   final double originalPrice;
   final double offerPrice;
   final DateTime validUntil;
+  final DateTime? validFrom;
+  final String source;
+  final String? proofRef;
+  final String? imageUrl;
   final int? buyQuantity;
   final int? payQuantity;
   final bool coupon;
@@ -64,6 +72,10 @@ class Offer {
       originalPrice: originalPrice,
       offerPrice: offerPrice,
       validUntil: DateTime.parse(json['validUntil'] as String),
+      validFrom: DateTime.tryParse(json['validFrom'] as String? ?? ''),
+      source: json['source'] as String? ?? 'manual',
+      proofRef: json['proofRef'] as String?,
+      imageUrl: json['imageUrl'] as String?,
       buyQuantity: (json['buyQuantity'] as num?)?.toInt(),
       payQuantity: (json['payQuantity'] as num?)?.toInt(),
       coupon: json['coupon'] as bool? ?? false,
@@ -94,6 +106,10 @@ class Offer {
         'originalPrice': originalPrice,
         'offerPrice': offerPrice,
         'validUntil': validUntil.toIso8601String(),
+        'validFrom': validFrom?.toIso8601String(),
+        'source': source,
+        'proofRef': proofRef,
+        'imageUrl': imageUrl,
         'buyQuantity': buyQuantity,
         'payQuantity': payQuantity,
         'coupon': coupon,
