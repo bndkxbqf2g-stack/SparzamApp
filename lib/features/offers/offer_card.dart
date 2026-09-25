@@ -116,12 +116,12 @@ class OfferCard extends StatelessWidget {
               spacing: 8,
               runSpacing: 6,
               children: [
-                _Tag('bis ${_date(offer.validUntil)}'),
                 if (offer.hasMultiBuy) _Tag('${offer.buyQuantity} für ${offer.payQuantity}'),
                 if (offer.hasCoupon) _Tag(couponLabel(offer)),
                 if (offer.hasCashback) _Tag(cashbackLabel(offer)),
               ],
             ),
+            OfferEvidence(offer: offer),
             if (product != null && onAddToShoppingList != null) ...[
               const SizedBox(height: 10),
               Align(
@@ -139,8 +139,6 @@ class OfferCard extends StatelessWidget {
     );
   }
 
-  String _date(DateTime date) =>
-      '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}';
 }
 
 class _Price extends StatelessWidget {
