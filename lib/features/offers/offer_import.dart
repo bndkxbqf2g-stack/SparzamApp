@@ -93,6 +93,11 @@ OfferImportResolution resolveOfferImport(
     product = compatible.single;
   }
 
+  if (record.source != 'manual' &&
+      record.proofRef?.trim().isNotEmpty != true) {
+    return OfferImportResolution(record: record, reason: 'missing_proof');
+  }
+
   final offer = Offer(
     id: 'import|${record.source}|${record.sourceId}|${product.id}',
     productId: product.id,
