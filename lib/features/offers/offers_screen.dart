@@ -17,6 +17,7 @@ class OffersScreen extends StatefulWidget {
     required this.onSave,
     required this.onDelete,
     required this.catalogProducts,
+    this.onAddToShoppingList,
   });
 
   final List<Offer> offers;
@@ -24,6 +25,7 @@ class OffersScreen extends StatefulWidget {
   final Future<List<Offer>> Function(Offer offer) onSave;
   final Future<List<Offer>> Function(Offer offer) onDelete;
   final List<Product> catalogProducts;
+  final ValueChanged<Product>? onAddToShoppingList;
 
   @override
   State<OffersScreen> createState() => _OffersScreenState();
@@ -167,6 +169,7 @@ class _OffersScreenState extends State<OffersScreen> {
                 catalogProducts: widget.catalogProducts,
                 onEdit: busy ? null : () => _edit(visible[index]),
                 onDelete: busy ? null : () => _delete(visible[index]),
+                onAddToShoppingList: widget.onAddToShoppingList,
               ),
               if (index < visible.length - 1) const SizedBox(height: 10),
             ],
