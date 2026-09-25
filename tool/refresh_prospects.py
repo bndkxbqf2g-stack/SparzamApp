@@ -531,6 +531,198 @@ LIDL_OVERVIEW_URLS = (
     "https://endpoints.leaflets.schwarz/v4/overview?client_locale=lidl/de-DE",
     "https://endpoints.leaflets.schwarz/v4/overview?client_locale=de-DE",
 )
+LIDL_STORE_SEARCH_URL = "https://stores.lidlplus.com/api/v1/autocomplete/DE"
+LIDL_OFFERS_BASE_URL = "https://offers.lidlplus.com/app/api/v4/DE"
+LIDL_ZELLINGEN_STORE_PAGE = (
+    "https://www.lidl.de/s/de-DE/filialen/zellingen/am-guessgraben-2/"
+)
+LIDL_ZELLINGEN_POSTAL_CODE = "97225"
+LIDL_ZELLINGEN_LAT = 49.91009
+LIDL_ZELLINGEN_LONG = 9.81492
+
+
+def _lidl_store_search_url():
+    return (
+        LIDL_STORE_SEARCH_URL
+        + "?input=" + quote(LIDL_ZELLINGEN_POSTAL_CODE)
+        + "&language=de"
+        + "&latitude=" + str(LIDL_ZELLINGEN_LAT)
+        + "&longitude=" + str(LIDL_ZELLINGEN_LONG)
+    )
+
+
+def _lidl_store_key(json_text):
+    payload = json.loads(json_text)
+    stores = payload if isinstance(payload, list) else (
+        payload.get("stores", []) if isinstance(payload, dict) else []
+    )
+    if not isinstance(stores, list):
+        raise ValueError("Lidl Filialsuche: ungültige Antwort")
+
+    candidates = [item for item in stores if isinstance(item, dict)]
+    if not candidates:
+        raise ValueError("Lidl Filialsuche: keine Filiale gefunden")
+
+    def exact_score(item):
+        postal = clean(str(item.get("postalCode") or ""))
+        locality = clean(str(
+            item.get("locality")
+            or item.get("city")
+            or item.get("name")
+            or ""
+        )).lower()
+        return (
+            0 if postal == LIDL_ZELLINGEN_POSTAL_CODE else 1,
+            0 if "zellingen" in locality else 1,
+            float(item.get("distance") or 10**12),
+        )
+
+    candidates.sort(key=exact_score)
+    store_key = clean(str(candidates[0].get("storeKey") or ""))
+    if not store_key:
+        raise ValueError("Lidl Filialsuche: storeKey fehlt")
+    return store_key
+
+
+def _lidl_offer_date(value):
+    if not isinstance(value, str):
+        return None
+    raw = value.strip()
+    if len(raw) < 10:
+        return None
+    try:
+        return date.fromisoformat(raw[:10])
+    except ValueError:
+        return None
+
+
+def _lidl_package_label(packaging):
+    if not isinstance(packaging, str):
+        return ""
+    for line in packaging.splitlines():
+        line = clean(line)
+        if not line:
+            continue
+        if line.lower().startswith(("normalpreis", "uvp", "1 kg", "1 l")):
+            continue
+        line = re.sub(r"\s*\(Max\.\s*[^)]*\)\s*$", "", line, flags=re.I)
+        return clean(line)
+    return ""
+
+
+def _lidl_regular_price(raw, sale):
+    packaging = raw.get("packaging")
+    if isinstance(packaging, str):
+        match = re.search(
+            r"\bNormalpreis\s*:\s*(\d+[,.]\d{1,2})",
+            packaging,
+            flags=re.I,
+        )
+        if match:
+            value = money(match.group(1))
+            if value >= sale:
+                return value
+
+    box = raw.get("priceBox", {})
+    if isinstance(box, dict) and box.get("strikethrough"):
+        candidate = box.get("smallPartNumeric")
+        if isinstance(candidate, (int, float)) and candidate >= sale:
+            return float(candidate)
+    return None
+
+
+def parse_lidl_store_offers(json_text, proof_url=LIDL_ZELLINGEN_STORE_PAGE):
+    payload = json.loads(json_text)
+    raw_offers = payload.get("offers", []) if isinstance(payload, dict) else []
+    if not isinstance(raw_offers, list):
+        raise ValueError("Lidl Angebote: offers ist keine Liste")
+
+    offers = []
+    for raw in raw_offers:
+        if not isinstance(raw, dict):
+            continue
+
+        # Prozentaktionen besitzen keinen belastbaren Stückpreis. X-for-Y
+        # benötigt eine eigene Mehrfachkauf-Semantik und darf bis dahin nicht
+        # als universeller Einzelpreis in die Route gelangen.
+        offer_type = clean(str(raw.get("offerType") or ""))
+        if "percentage" in offer_type.lower() or "xfory" in offer_type.lower():
+            continue
+        redemption = clean(str(raw.get("redemptionChannel") or ""))
+        if redemption and redemption.lower() != "store":
+            continue
+
+        box = raw.get("priceBox", {})
+        if not isinstance(box, dict):
+            continue
+        sale = box.get("largePartNumeric")
+        if not isinstance(sale, (int, float)) or sale <= 0:
+            continue
+        sale = float(sale)
+
+        title = clean(str(raw.get("title") or ""))
+        brand = clean(str(raw.get("brand") or ""))
+        if not title:
+            title = brand
+        if not title:
+            continue
+        if brand and not title.lower().startswith(brand.lower()):
+            label = brand + " " + title
+        else:
+            label = title
+
+        package = _lidl_package_label(raw.get("packaging"))
+        if package and package.lower() not in label.lower():
+            label = clean(label + " " + package)
+
+        valid_from = _lidl_offer_date(
+            raw.get("startValidityDate")
+            or raw.get("startValidityDateUTC")
+        )
+        valid_until = _lidl_offer_date(
+            raw.get("endValidityDate")
+            or raw.get("endValidityDateUTC")
+        )
+        if valid_from is None or valid_until is None:
+            continue
+
+        raw_id = clean(str(raw.get("id") or raw.get("offerId") or ""))
+        proof = proof_url
+        if raw_id:
+            proof += "#offer-" + raw_id
+        image = clean(str(raw.get("imageUrl") or ""))
+        offers.append(record(
+            "Lidl",
+            label,
+            sale,
+            valid_from,
+            valid_until,
+            proof,
+            _lidl_regular_price(raw, sale),
+            image,
+        ))
+
+    return dedupe(offers), []
+
+
+def fetch_lidl_store_offers():
+    stores = fetch(_lidl_store_search_url())
+    store_key = _lidl_store_key(stores)
+    offers_url = (
+        LIDL_OFFERS_BASE_URL
+        + "/"
+        + quote(store_key, safe="")
+        + "/offers"
+    )
+    offers, _ = parse_lidl_store_offers(fetch(offers_url))
+    today = date.today().isoformat()
+    offers = [
+        item for item in offers
+        if item.get("validUntil", "") >= today
+    ]
+    if not offers:
+        raise ValueError("LidlPlus API lieferte keine nutzbaren Festpreisangebote")
+    return offers, store_key
 
 
 def _lidl_detail_url(flyer):
@@ -1164,9 +1356,18 @@ def main():
                     source_mode = "website_fallback"
             elif parser_name == "lidl_api":
                 try:
-                    offers, prospects = fetch_lidl_api_prospects()
-                    source_mode = "structured_api"
+                    _, prospects = fetch_lidl_api_prospects()
                     body = ""
+                    try:
+                        offers, store_key = fetch_lidl_store_offers()
+                        source_mode = "structured_api"
+                        if prospects:
+                            prospects[0]["storeKey"] = store_key
+                    except Exception as error:
+                        offers = []
+                        source_mode = "structured_leaflet"
+                        if prospects:
+                            prospects[0]["offerApiError"] = clean(str(error))[:240]
                 except Exception:
                     body = fetch(url)
                     offers, prospects = parse_lidl(body, url)
@@ -1174,7 +1375,7 @@ def main():
             else:
                 body = fetch(url)
                 offers, prospects = PARSERS[parser_name](body, url)
-            metadata_only = parser_name in ("lidl", "lidl_api")
+            metadata_only = parser_name in ("lidl", "lidl_api") and not offers
             if not offers and not metadata_only:
                 lower_body = body.lower()
                 marker = lower_body.find("festpreis")

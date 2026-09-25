@@ -185,6 +185,91 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(offers[0]["originalPrice"], 0.49)
 
 
+    def test_lidl_store_search_prefers_zellingen_postal_code(self):
+        payload = """
+        [
+          {"storeKey": "SK-near", "postalCode": "97753", "name": "Karlstadt", "distance": 500},
+          {"storeKey": "SK-zellingen", "postalCode": "97225", "name": "Zellingen", "distance": 7300}
+        ]
+        """
+        self.assertEqual(
+            refresh._lidl_store_key(payload),
+            "SK-zellingen",
+        )
+        url = refresh._lidl_store_search_url()
+        self.assertIn("input=97225", url)
+        self.assertIn("latitude=49.91009", url)
+        self.assertIn("longitude=9.81492", url)
+
+    def test_lidl_store_offer_reads_price_normal_price_dates_and_pack(self):
+        payload = """
+        {
+          "offers": [
+            {
+              "id": "fe494b54",
+              "offerType": "StoreSpecialPriceDiscount",
+              "redemptionChannel": "Store",
+              "imageUrl": "https://static-coupons.lidlplus.com/thunfisch.jpg",
+              "priceBox": {
+                "strikethrough": true,
+                "largePartNumeric": 3.79,
+                "smallPartNumeric": 5.79
+              },
+              "title": "Saupiquet MSC Thunfisch-Salat",
+              "brand": "SAUPIQUET",
+              "startValidityDate": "2026-09-24T00:00:01+00:00",
+              "endValidityDate": "2026-09-26T23:59:59+00:00",
+              "startValidityDateUTC": "2026-09-23T22:00:01Z",
+              "endValidityDateUTC": "2026-09-26T21:59:59Z",
+              "packaging": "Je 2x 160 g (Max. 24 Stück)\\nNormalpreis: 3.99\\n1 kg = 12.47"
+            }
+          ]
+        }
+        """
+        offers, _ = refresh.parse_lidl_store_offers(payload)
+        self.assertEqual(len(offers), 1)
+        self.assertEqual(
+            offers[0]["productLabel"],
+            "Saupiquet MSC Thunfisch-Salat Je 2x 160 g",
+        )
+        self.assertEqual(offers[0]["offerPrice"], 3.79)
+        self.assertEqual(offers[0]["originalPrice"], 3.99)
+        self.assertEqual(offers[0]["validFrom"], "2026-09-24")
+        self.assertEqual(offers[0]["validUntil"], "2026-09-26")
+        self.assertEqual(
+            offers[0]["imageUrl"],
+            "https://static-coupons.lidlplus.com/thunfisch.jpg",
+        )
+
+    def test_lidl_store_offer_skips_percentage_and_x_for_y(self):
+        payload = """
+        {
+          "offers": [
+            {
+              "id": "percent",
+              "offerType": "StorePercentageOnProductDiscount",
+              "redemptionChannel": "Store",
+              "priceBox": {"largePartNumeric": null, "largePartString": "-15%"},
+              "title": "auf alle Frischkäse",
+              "startValidityDate": "2026-09-24T00:00:01+00:00",
+              "endValidityDate": "2026-09-26T23:59:59+00:00"
+            },
+            {
+              "id": "multi",
+              "offerType": "StoreXforYDiscount",
+              "redemptionChannel": "Store",
+              "priceBox": {"largePartNumeric": 1.30},
+              "title": "Schokobrötchen",
+              "packaging": "Je 3 Stück",
+              "startValidityDate": "2026-09-24T00:00:01+00:00",
+              "endValidityDate": "2026-09-26T23:59:59+00:00"
+            }
+          ]
+        }
+        """
+        offers, _ = refresh.parse_lidl_store_offers(payload)
+        self.assertEqual(offers, [])
+
     def test_lidl_overview_reads_active_flyer_metadata(self):
         payload = """
         {
