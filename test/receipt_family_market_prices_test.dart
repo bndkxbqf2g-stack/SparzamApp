@@ -25,7 +25,7 @@ void main() {
           rawLabel: 'K.Frischer Schmand',
           familyKey: 'legacy-wrong-family',
           storeName: 'Kaufland',
-          observedAt: DateTime(2026, 7, 23),
+          observedAt: DateTime(2026, 9, 10),
           totalPrice: 0.79,
           quantity: 1,
           quantityUnit: 'Stück',
