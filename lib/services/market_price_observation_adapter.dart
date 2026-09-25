@@ -57,9 +57,7 @@ List<MarketPrice> marketPricesFromObservations(
             (entry.validUntil == null || !entry.validUntil!.isBefore(today)) &&
             _sourceAllowed(entry, settings, today) &&
             _matchesProductPackage(entry, productsById[entry.productId]) &&
-            (entry.source == PriceObservationSource.manual ||
-                entry.source == PriceObservationSource.receipt ||
-                entry.source == PriceObservationSource.openPrices))
+            _projectsToLegacyMarketPrice(entry.source))
         .map((entry) => MarketPrice(
               productId: entry.productId!,
               storeName: entry.storeName,
@@ -129,3 +127,15 @@ bool _sourceAllowed(
     now.subtract(Duration(days: maxAgeDays)),
   );
 }
+
+
+bool _projectsToLegacyMarketPrice(PriceObservationSource source) => switch (source) {
+      PriceObservationSource.manual ||
+      PriceObservationSource.receipt ||
+      PriceObservationSource.openPrices ||
+      PriceObservationSource.retailer ||
+      PriceObservationSource.retailerWebsite ||
+      PriceObservationSource.leaflet =>
+        true,
+      _ => false,
+    };
