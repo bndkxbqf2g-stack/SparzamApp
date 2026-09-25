@@ -286,7 +286,7 @@ EDEKA_API_URL = "https://www.edeka.de/eh/service/eh/offers"
 
 
 def _edeka_api_url(base_url):
-    match = re.search(r"/maerkte/(\\d+)/", base_url)
+    match = re.search(r"/maerkte/(\d+)/", base_url)
     if match is None:
         raise ValueError("EDEKA Markt-ID fehlt in der Markt-URL")
     return EDEKA_API_URL + "?marketId=" + quote(match.group(1)) + "&limit=99999"
@@ -297,7 +297,7 @@ def _json_money(value):
         return float(value)
     if not isinstance(value, str):
         return None
-    match = re.search(r"(\\d+[,.]\\d{1,2})", value)
+    match = re.search(r"(\d+[,.]\d{1,2})", value)
     return money(match.group(1)) if match else None
 
 
