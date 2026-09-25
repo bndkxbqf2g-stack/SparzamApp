@@ -196,3 +196,11 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Kaufland-Zeilen wie `Bananen kg 0,498 kg 0,64 B` behalten jetzt die gekaufte Masse als `0,498 kg`. Die Familienpreislogik kann daraus bei eindeutig gewünschter Kilobasis den vergleichbaren Preis mathematisch normieren.
 - Der letzte Quellen-Upload wurde gegen den Parser auditiert: die drei enthaltenen Kaufland-Bons und zwei Netto-Bons ergeben jeweils exakt ihre gedruckte Bonsumme. Die reale Bon-Matrix dokumentiert diese Originalquellen nun ausdrücklich.
 - Die im UI sichtbaren Dateien `Kassenbon_2026-07-24_19.19.pdf` und `Kassenbon_2026-01-16_11.53.pdf` fehlen weiterhin als Originaldateien; deren konkrete Summenabweichung wird deshalb nicht durch Annahmen überbrückt.
+
+
+## Update 25.09.2026 – Qualitätsranking bleibt durch die Planungsprojektion erhalten
+- Die append-only Beobachtungshistorie wird nicht mehr vorzeitig nach dem Prinzip „neuester exakter Preis gewinnt“ reduziert.
+- `planningMarketPrices` und `RoutePriceResolver` verwenden dieselbe zentrale Auswahl je Produkt×Markt: Preis plus D025-Unsicherheitsaufschlag, bei Gleichstand der jüngere Beleg.
+- Exakte Produktidentität behält weiterhin Vorrang vor Familien-Fallback.
+- Ein Regressionstest sichert ab, dass ein älterer, qualitätsbereinigt günstigerer exakter Preis nicht von einem neueren, schlechter bewerteten Preis verdrängt wird.
+- Der End-to-End-Audit der aktuellen Preis-/Routenpipeline ist damit bis zu den dokumentierten Originaldaten-Grenzen abgeschlossen. Die vollständige Sieben-Bon-Matrix bleibt wegen fehlender Originalbelege separat offen.
