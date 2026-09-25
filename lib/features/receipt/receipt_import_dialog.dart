@@ -459,7 +459,8 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                             const ListTile(
                               title: Text('Bon nicht vollständig geprüft'),
                               subtitle: Text('Die Positionen ergeben nicht den Bonbetrag. '
-                                  'Daraus werden keine Preise übernommen.'),
+                                  'Dieser Bon bleibt gesperrt; seine erkannten Preise werden nur angezeigt. '
+                                  'Andere vollständig geprüfte Bons können trotzdem übernommen werden.'),
                             )
                           else if (review.suggestions.isEmpty)
                             const ListTile(
@@ -485,7 +486,11 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                     }
                                   });
                                 },
-                                title: Text(suggestion.product.name),
+                                title: Text(
+                                  '${suggestion.product.name} · '
+                                  '${suggestion.price.price.toStringAsFixed(2).replaceAll('.', ',')} €',
+                                  style: const TextStyle(fontWeight: FontWeight.w700),
+                                ),
                                 subtitle: Text(
                                   '${suggestion.row.label} · '
                                   '${suggestion.row.quantity == null ? '1 Stück' : '${suggestion.row.quantity} ${suggestion.row.quantityUnit}'} · '
@@ -495,8 +500,9 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                               ),
                           if (review.unmatchedItems > 0)
                             ExpansionTile(
+                              initiallyExpanded: true,
                               title: Text(
-                                  '${review.unmatchedItems} weitere erkannte Positionen'),
+                                  '${review.unmatchedItems} weitere erkannte Artikelpreise'),
                               subtitle: const Text(
                                   'Noch keinem Katalogprodukt sicher zugeordnet'),
                               children: [
@@ -510,14 +516,26 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                     title: Text(row.label),
                                     trailing: Text(
                                       '${(row.cents / 100).toStringAsFixed(2).replaceAll('.', ',')} €',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 16,
+                                      ),
                                     ),
                                     subtitle: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(row.quantity == null
-                                            ? 'Bonposition'
-                                            : '${row.quantity} ${row.quantityUnit} × '
-                                              '${((row.unitCents ?? row.cents) / 100).toStringAsFixed(2).replaceAll('.', ',')} €'),
+                                        Text(
+                                          row.quantity == null
+                                              ? 'Preis laut Bon · 1 Position'
+                                              : 'Preis laut Bon · ${row.quantity} ${row.quantityUnit} × '
+                                                '${((row.unitCents ?? row.cents) / 100).toStringAsFixed(2).replaceAll('.', ',')} €',
+                                          style: const TextStyle(fontWeight: FontWeight.w600),
+                                        ),
+                                        Text(
+                                          draft.balances
+                                              ? 'Wird beim Speichern als Bonbeobachtung übernommen.'
+                                              : 'Nur Vorschau – Bon muss rechnerisch noch geprüft werden.',
+                                        ),
                                         if (assignedProducts.containsKey(_rowKey(draft, row)))
                                           Text(
                                             'Zuordnung: ${availableProducts.where((p) => p.id == assignedProducts[_rowKey(draft, row)]).first.name}\n'
@@ -583,10 +601,9 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                     );
                   }),
                 const Text(
-                  'Preisvorschläge werden erst nach aktivem Anhaken als exakte Marktpreise übernommen. '
-                  'Alle erkannten Produktpositionen werden automatisch in den Produktkatalog aufgenommen und als Bonbeobachtungen gespeichert. '
-                  'Unklare Varianten bleiben zunächst unter ihrer Bonbezeichnung offen und können später präzisiert werden. '
-                  'Pfand und reine Rabattzeilen werden nicht als Produkte angelegt.',
+                  'Bei vollständig geprüften Bons werden alle erkannten Artikelpreise als Bonbeobachtungen übernommen. '
+                  'Ein Häkchen bestätigt zusätzlich eine vorgeschlagene exakte Produktzuordnung und erzeugt daraus einen direkten Marktpreis. '
+                  'Unklare Varianten bleiben prüfbar; Pfand und reine Rabattzeilen werden nicht als Produkte behandelt.',
                   style: TextStyle(fontSize: 12),
                 ),
               ],
@@ -638,7 +655,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
           ),
           FilledButton(
             onPressed: saving || importing ? null : save,
-            child: Text(saving ? 'Speichern …' : 'Ausgewählte Preise übernehmen'),
+            child: Text(saving ? 'Speichern …' : 'Bonpreise übernehmen'),
           ),
         ],
       );
