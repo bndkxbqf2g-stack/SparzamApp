@@ -125,7 +125,8 @@ class OpenPricesService {
     if (labels.isEmpty) return null;
 
     for (final store in stores) {
-      if (_normalize(store.location.split('·').first) != _normalize(city)) {
+      if (normalizeStoreIdentityText(store.location.split('·').first) !=
+          normalizeStoreIdentityText(city)) {
         continue;
       }
       final storePostcode = RegExp(r'\b\d{5}\b').firstMatch(store.address);

@@ -6,12 +6,12 @@ import '../models/store.dart';
 /// by the configured town. Arbitrary substring matches can assign another
 /// business' prices to a market.
 String? canonicalStoreName(String? label, Iterable<Store> knownStores) {
-  final normalizedLabel = _normalize(label ?? '');
+  final normalizedLabel = normalizeStoreIdentityText(label ?? '');
   if (normalizedLabel.isEmpty) return null;
 
   for (final store in knownStores) {
-    final name = _normalize(store.name);
-    final town = _normalize(store.location.split('·').first);
+    final name = normalizeStoreIdentityText(store.name);
+    final town = normalizeStoreIdentityText(store.location.split('·').first);
     if (normalizedLabel == name ||
         town.isNotEmpty && normalizedLabel == '$name$town') {
       return store.name;
@@ -20,7 +20,7 @@ String? canonicalStoreName(String? label, Iterable<Store> knownStores) {
   return null;
 }
 
-String _normalize(String value) => value
+String normalizeStoreIdentityText(String value) => value
     .toLowerCase()
     .replaceAll('ä', 'a')
     .replaceAll('ö', 'o')
