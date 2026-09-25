@@ -136,30 +136,79 @@ def parse_aldi(html_text, base_url):
     return dedupe(offers), []
 
 def parse_edeka(html_text, base_url):
-    page = parsed(html_text)
-    whole = "\n".join(page.lines)
-    validity = re.search(r"Gültig vom\s+(\d{2}\.\d{2}\.\d{4})\s+bis zum\s+(\d{2}\.\d{2}\.\d{4})", whole)
+    # EDEKA currently embeds part of the offer markup inside script/template
+    # payloads. HTMLParser intentionally skips scripts, so scan a tag-stripped
+    # copy of the raw response as the canonical fallback.
+    raw_text = clean(re.sub(r"<[^>]+>", " ", html_text))
     valid_from, valid_until = current_week()
+
+    validity = re.search(
+        r"Gültig vom\s+(\d{2}\.\d{2}\.\d{4})\s+bis zum\s+(\d{2}\.\d{2}\.\d{4})",
+        raw_text,
+    )
     if validity:
         valid_from = parse_date(validity.group(1)) or valid_from
         valid_until = parse_date(validity.group(2)) or valid_until
-    offers = []
-    for index, line in enumerate(page.lines):
-        if "Angebot:" not in line:
+    else:
+        legal_end = re.search(
+            r"Alle Angebote gültig bis Samstag,\s*den\s+(\d{2}\.\d{2}\.\d{4})",
+            raw_text,
+        )
+        if legal_end:
+            parsed_end = parse_date(legal_end.group(1))
+            if parsed_end is not None:
+                valid_until = parsed_end
+                valid_from = parsed_end - timedelta(days=parsed_end.weekday())
+
+    markers = list(re.finditer(r"Angebot:\s*", raw_text))
+    candidates = {}
+    for index, marker in enumerate(markers):
+        end = markers[index + 1].start() if index + 1 < len(markers) else len(raw_text)
+        segment = raw_text[marker.end():end]
+        fixed = re.search(r"Festpreis von\s+(\d+[,.]\d{2})\s*€", segment)
+        if fixed is None:
             continue
-        label = clean(line.split("Angebot:", 1)[1])
-        block_text = " ".join(page.lines[index + 1:index + 28])
-        start, price = valid_from, None
-        match = re.search(r"Gültig ab\s+(\d{2}\.\d{2}\.\d{4})", block_text)
-        if match:
-            start = parse_date(match.group(1)) or start
-        match = re.search(r"Festpreis von\s+(\d+[,.]\d{2})\s*€", block_text)
-        if match:
-            price = money(match.group(1))
-        if label and price is not None:
-            proof = base_url + "#offer-" + stable_id("EDEKA", base_url, label)
-            offers.append(record("EDEKA", label, price, start, valid_until, proof))
-    return dedupe(offers), []
+
+        price = money(fixed.group(1))
+        before_price = segment[:fixed.start()].strip()
+        before_price = re.sub(r"\s+\d+[,.]\d{2}\s*$", "", before_price)
+        before_price = re.sub(
+            r"\s+\d+[,.]\d{2}\s+App\s+App Preis von\s+"
+            r"\d+[,.]\d{2}\s*€\s*$",
+            "",
+            before_price,
+            flags=re.I,
+        )
+
+        explicit_start = re.search(
+            r"\bGültig ab\s+(\d{2}\.\d{2}\.\d{4})",
+            before_price,
+        )
+        start = valid_from
+        label_text = before_price
+        if explicit_start:
+            start = parse_date(explicit_start.group(1)) or start
+            label_text = before_price[:explicit_start.start()]
+
+        # PAYBACK / points text is a condition, not part of the product name.
+        label_text = re.split(
+            r"\s+\d+\s+Extra\s+°?P\b|\s+Mit PAYBACK\b",
+            label_text,
+            maxsplit=1,
+            flags=re.I,
+        )[0]
+        label = clean(label_text)
+        if len(label) < 2:
+            continue
+
+        proof = base_url + "#offer-" + stable_id("EDEKA", base_url, label)
+        item = record("EDEKA", label, price, start, valid_until, proof)
+        key = (label.lower(), price, valid_until.isoformat())
+        previous = candidates.get(key)
+        if previous is None or explicit_start is not None:
+            candidates[key] = item
+
+    return list(candidates.values()), []
 
 def parse_kaufland(html_text, base_url):
     page = parsed(html_text)
