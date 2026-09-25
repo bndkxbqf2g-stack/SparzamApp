@@ -152,9 +152,8 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
             }
           }
         }
-        // Suggestions remain unselected until the user explicitly confirms
-        // the concrete product-price identity in this review.
-        reviewReceiptPrices(draft, availableProducts);
+        // Price suggestions are rendered later and deliberately start
+        // unselected; only an explicit checkbox action confirms them.
       }
       setState(() {
         importedFileNames.addAll(result.files.map((file) => file.name));
