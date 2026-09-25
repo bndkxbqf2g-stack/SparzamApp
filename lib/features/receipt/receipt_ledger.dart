@@ -48,7 +48,7 @@ class ReceiptDraft {
       unresolvedLines.isEmpty;
 }
 
-/// Handles text-layout exports from Kaufland and Netto. No product matching,
+/// Handles text-layout exports from Kaufland, EDEKA and Netto. No product matching,
 /// discount allocation or account metadata is inferred from the receipt.
 ReceiptDraft parseReceiptLedger(String text) {
   final lines = text.split(RegExp(r'\r?\n'));
@@ -203,8 +203,10 @@ ReceiptDraft parseReceiptLedger(String text) {
 String? _receiptRetailer(String text) {
   final lower = text.toLowerCase();
   if (lower.contains('kaufland')) return 'Kaufland';
-  if (lower.contains('netto')) return 'Netto';
+  // EDEKA receipts can contain "Netto" as a tax/accounting label. Prefer the
+  // explicit retailer marker before the ambiguous generic term.
   if (lower.contains('edeka')) return 'EDEKA';
+  if (lower.contains('netto')) return 'Netto';
   return null;
 }
 
