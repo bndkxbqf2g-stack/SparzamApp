@@ -215,6 +215,36 @@ void main() {
     expect(observation.discounted, isTrue);
   });
 
+  test('external offer observations without proof cannot become exact route prices', () {
+    final offer = Offer(
+      id: 'leaflet-unproven',
+      productId: 'schmand',
+      storeName: 'Lidl',
+      originalPrice: 0.89,
+      offerPrice: 0.69,
+      validUntil: DateTime(2026, 9, 27),
+      source: 'leaflet',
+    );
+    final regular = regularObservationFromOffer(
+      offer,
+      observedAt: DateTime(2026, 9, 25),
+    );
+    final discounted = observationFromOffer(
+      offer,
+      observedAt: DateTime(2026, 9, 25),
+    );
+
+    expect(regular.identityConfidence, 0);
+    expect(discounted.identityConfidence, 0);
+    expect(
+      marketPricesFromObservations(
+        [regular, discounted],
+        now: DateTime(2026, 9, 25),
+      ),
+      isEmpty,
+    );
+  });
+
   test('leaflet preserves regular price as separate evidence', () {
     final offer = Offer(
       id: 'leaflet-1', productId: 'chocolate', storeName: 'Lidl',
