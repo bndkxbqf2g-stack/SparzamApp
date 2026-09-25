@@ -51,6 +51,24 @@ void main() {
     expect(result.offer!.proofRef, 'leaflet:lidl:2026-09-25:p1');
   });
 
+  test('resolved external offer without proof stays untrusted', () {
+    final result = resolveOfferImport(
+      OfferImportRecord(
+        sourceId: 'page-without-proof',
+        productLabel: 'Schmand',
+        storeName: 'Lidl',
+        originalPrice: 0.89,
+        offerPrice: 0.69,
+        validUntil: DateTime(2026, 9, 26),
+        source: 'leaflet',
+      ),
+      catalog,
+    );
+
+    expect(result.isResolved, isFalse);
+    expect(result.reason, 'missing_proof');
+  });
+
   test('generic leaflet identity stays unresolved when variants are ambiguous', () {
     final result = resolveOfferImport(
       OfferImportRecord(
