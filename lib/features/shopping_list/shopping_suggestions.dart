@@ -1,6 +1,7 @@
 import '../../data/products.dart';
 import '../../models/product.dart';
 import '../../models/recent_purchase.dart';
+import '../catalog/product_identity.dart';
 
 List<Product> buildSuggestions({
   required String query,
@@ -15,11 +16,21 @@ List<Product> buildSuggestions({
   final learnedMatches = knownItems
       .map((item) => item.toProduct())
       .where((product) => product.name.toLowerCase().contains(normalized));
-  final catalogMatches = catalogProducts.where((product) => [
-        product.name,
-        product.group,
-        ...product.aliases,
-      ].any((value) => value.toLowerCase().contains(normalized)));
+  final queryIdentity = identifyProduct(query);
+  final catalogMatches = catalogProducts.where((product) {
+    final textMatch = [
+      product.name,
+      product.group,
+      ...product.aliases,
+    ].any((value) => value.toLowerCase().contains(normalized));
+    if (textMatch) return true;
+    if (!queryIdentity.isKnown) return false;
+
+    return [product.name, ...product.aliases].any((value) {
+      final candidate = identifyProduct(value);
+      return compatibleProductIdentity(queryIdentity, candidate);
+    });
+  });
 
   final seen = <String>{};
   final matches = <Product>[...catalogMatches, ...learnedMatches]
