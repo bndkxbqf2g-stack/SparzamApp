@@ -292,6 +292,9 @@ def parse_lidl(html_text, base_url):
                 item["flyerKeys"] = sorted(flyer.keys()) if isinstance(flyer, dict) else []
                 item["productCount"] = len(products) if isinstance(products, list) else 0
                 item["pageCount"] = len(pages) if isinstance(pages, list) else 0
+                item["offerStartDate"] = flyer.get("offerStartDate") if isinstance(flyer, dict) else None
+                item["offerEndDate"] = flyer.get("offerEndDate") if isinstance(flyer, dict) else None
+                item["pdfUrl"] = flyer.get("pdfUrl") if isinstance(flyer, dict) else None
                 if isinstance(products, list) and products and isinstance(products[0], dict):
                     sample = products[0]
                     item["productKeys"] = sorted(sample.keys())
@@ -316,6 +319,8 @@ def parse_lidl(html_text, base_url):
                                 "number": page_data.get("number"),
                                 "altText": clean(str(page_data.get("altText") or ""))[:320],
                                 "keyWords": clean(str(page_data.get("keyWords") or ""))[:900],
+                                "image": page_data.get("image"),
+                                "zoom": page_data.get("zoom"),
                             })
                         item["pageSamples"] = samples
             except Exception as error:
