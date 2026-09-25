@@ -11,7 +11,8 @@ Map<String, List<ListItem>> groupShoppingItems(
 }) {
   final grouped = <String, List<ListItem>>{};
   for (final item in items) {
-    grouped.putIfAbsent(item.product.group, () => []).add(item);
+    final group = shoppingGroupBucket(item.product.group);
+    grouped.putIfAbsent(group, () => []).add(item);
   }
   for (final entry in grouped.entries) {
     grouped[entry.key] = prioritizeOfferItems(
@@ -23,3 +24,12 @@ Map<String, List<ListItem>> groupShoppingItems(
   }
   return grouped;
 }
+
+
+String shoppingGroupBucket(String group) => switch (group) {
+      'butter' || 'milch' => 'milch',
+      'obst' => 'obst',
+      'fleisch' => 'fleisch',
+      'nudeln' => 'nudeln',
+      _ => 'other',
+    };
