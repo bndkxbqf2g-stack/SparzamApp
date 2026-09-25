@@ -3,27 +3,44 @@
 Stand: 2026-09-25
 
 ## Zweck
-Diese Matrix enthält ausschließlich Boninformationen, die im Repository eindeutig durch vorhandene Test-Fixtures oder dokumentierte Originaldaten belegt sind. Fehlende Originalbelege werden nicht durch angenommene Produkte, Märkte oder Preise ergänzt.
+Diese Matrix enthält ausschließlich Boninformationen, die durch vorhandene Regressionstests oder die im Projekt bereitgestellten Originalbelege belegt sind. Fehlende Produkte, Preise, Märkte oder Daten werden nicht ergänzt oder geschätzt.
 
-## Aktuell belegte Matrix
+## Automatisch abgesicherte Originalfälle
 
-| Bon | Markt / Datum | Belegte Position | Betrag | Besonderheit | Pipeline-Test |
-| --- | --- | --- | ---: | --- | --- |
-| 1 | Kaufland · 23.07.2026 | K.Frischer Schmand | 0,79 € | nachfolgender K-Card-Artikelrabatt; Produktzeilenpreis bleibt historische Evidenz | `test/real_receipt_evidence_e2e_test.dart` |\n| 2 | EDEKA Frischemarkt · 17.01.2026 | 9 erkannte Artikelzeilen, Bonsumme 25,65 € | vollständig aus Originalbeleg rekonstruiert | enthält `NETTO` nur in der Steuerübersicht und `1,39 € x 2` als kompaktes Mengenformat | `test/real_edeka_receipt_evidence_test.dart` |
+| Originalfall | Markt / Datum | Belegte Daten | Besonderheit | Regression |
+| --- | --- | --- | --- | --- |
+| Kaufland-Originalbon | Kaufland Würzburg-Grombühl · 23.07.2026 | Bonsumme 94,99 €; u. a. K.Frischer Schmand 0,79 € | K-Card-Artikelrabatt nach Produktzeile; Produktzeilenpreis bleibt historische Evidenz | `test/real_receipt_evidence_e2e_test.dart` |
+| EDEKA `Kassenbon_2026-01-17_10.45.pdf` | EDEKA Frischemarkt · 17.01.2026 | 9 Artikelzeilen; Bonsumme 25,65 € | `NETTO` steht nur in der Steuerübersicht; `1,39 € x 2 = 2,78 €` wird als Menge/Einzelpreis gelesen | `test/real_edeka_receipt_evidence_test.dart` |
+| gewichtete Kaufland-Bananen | Kaufland · 23.07.2026 | `Bananen kg 0,498 kg 0,64 €` | gekaufte Masse bleibt erhalten; kein nicht gedruckter Grundpreis wird erfunden; 1-kg-Vergleich wird mathematisch aus Gesamtpreis/Masse normiert | `test/receipt_price_review_test.dart`, `test/receipt_family_market_prices_test.dart` |
 
-Der End-to-End-Test verfolgt den belegten Schmand-Fall durch:
+Der Schmand-End-to-End-Test verfolgt die belegte Kette:
 `ReceiptObservation → PriceObservation → MarketPrice → planningMarketPrices → RoutePriceResolver → RouteOptimizer`.
 
-Er prüft außerdem die 30-Tage-Grenze: derselbe historische Bon bleibt als Evidenz erhalten, darf nach Ablauf des Routenfensters aber nicht mehr als exakter aktueller Routenpreis projiziert werden.
+Die zentrale 30-Tage-Grenze bleibt erhalten: ältere Bons bleiben Evidenz, werden aber nicht als aktuelle exakte Routenpreise projiziert.
 
-## Fehlende Originalbelege
+## Weitere Originalbelege im letzten Quellenpaket
 
-Für Bon 3 bis Bon 7 ist im aktuellen Repository kein vollständiger Originalbeleg bzw. keine eindeutig rekonstruierbare vollständige Fixture vorhanden, aus der eine belastbare Produkt×Markt-Matrix ohne Annahmen aufgebaut werden könnte.
+Die folgenden Dateien liegen im zuletzt bereitgestellten Quellen-ZIP. Sie wurden beim Quellen-Audit mit dem aktuellen Parser gegen ihre gedruckte Bonsumme geprüft und balancieren vollständig; sie sind jedoch noch nicht jeweils als vollständige Repository-Fixture eingecheckt.
 
-Daher gilt bis zur Bereitstellung der Originaldaten:
+| Datei | Markt / Datum | Bonsumme | Belegtes Formatmerkmal |
+| --- | --- | ---: | --- |
+| `20260923_100433.pdf` | Kaufland Würzburg · 19.09.2026 | 32,47 € | Mengenzeile `2 * 0,88 = 1,76 €`; Artikel-/Mengenrabatte |
+| `20260923_100457.pdf` | Kaufland Würzburg · 23.07.2026 | 94,99 € | zahlreiche K-Card-Rabatte; Inline- und Folgezeilenmengen; gewichtete Bananen |
+| `20260923_100506.pdf` | Kaufland Würzburg-Grombühl · 26.05.2026 | 184,08 € | große Mischbon-Struktur mit Pfand, Rabatten und Mehrfachmengen |
+| `Netto_Kassenbon_20260731-170322.pdf` | Netto Thüngersheim · 31.07.2026 | 54,81 € | vorangestellte Mengen; gewichtete Bananen mit gedrucktem `EUR/kg`; Warenkorbrabatt |
+| `Netto_Kassenbon_20260824-131113.pdf` | Netto Thüngersheim · 24.08.2026 | 49,76 € | vorangestellte Mengen, Pfand und Rabattzeilen |
+
+## Noch nicht rekonstruierbare UI-Fälle
+
+Im aktuellen App-Screenshot werden zusätzlich diese beiden Dateien verwendet:
+- `Kassenbon_2026-07-24_19.19.pdf`
+- `Kassenbon_2026-01-16_11.53.pdf`
+
+Diese beiden Original-PDFs befinden sich weder in den aktuellen Gesprächsdateien noch im letzten Quellen-ZIP. Deshalb wird für ihre derzeitige Summenabweichung kein Parser-Fix geraten oder aus dem Screenshot erfunden. Sobald die Originaltexte verfügbar sind, werden die fehlenden Zeilenformate gezielt als Regression ergänzt.
+
+## Regeln
 - keine fehlenden Produkte ergänzen,
 - keine Preise schätzen,
-- keine Märkte oder Daten aus Beispielen als reale Bonwerte übernehmen,
-- vorhandene synthetische Regressionstests nicht als Originalbon deklarieren.
-
-Sobald die fünf fehlenden Originalbelege verfügbar sind, werden sie in dieselbe Matrix aufgenommen und jeweils bis zur Preis- und Routenlogik abgesichert.
+- synthetische Tests nicht als Originalbon deklarieren,
+- unbalancierte Bons nicht als belastbare Preisbeobachtung speichern,
+- Originalbelege schrittweise als Regressionen in die Parser-/Preis-/Routenpipeline überführen.
