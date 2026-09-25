@@ -117,7 +117,8 @@ class PriceObservation {
       observedAt: DateTime.parse(json['observedAt'] as String),
       source: source,
       identityConfidence:
-          (json['identityConfidence'] as num?)?.toDouble() ?? 1,
+          (json['identityConfidence'] as num?)?.toDouble() ??
+              (source == PriceObservationSource.receipt ? 0 : 1),
       proofRef: json['proofRef'] as String?,
       discounted: json['discounted'] as bool? ?? false,
     );
