@@ -234,14 +234,10 @@ def main():
                 marker = lower_body.find("festpreis")
                 snippet = ""
                 if marker >= 0:
-                    snippet = clean(re.sub(r"<[^>]+>", " ", body[max(0, marker - 180):marker + 260]))
-                diagnostics = (
-                    "html=" + str(len(body)) +
-                    ", angebot=" + str(lower_body.count("angebot")) +
-                    ", festpreis=" + str(lower_body.count("festpreis")) +
-                    ", offer=" + str(lower_body.count("offer")) +
-                    ", sample=" + snippet[:120]
-                )
+                    before = clean(re.sub(r"<[^>]+>", " ", body[max(0, marker - 1800):marker]))
+                    after = clean(re.sub(r"<[^>]+>", " ", body[marker:marker + 220]))
+                    snippet = before[-150:] + " || " + after[:70]
+                diagnostics = "edeka-sample=" + snippet[:220]
                 raise ValueError("keine sicher extrahierbaren Angebote gefunden; " + diagnostics)
             all_offers.extend(offers)
             sources.append({"id": source_id, "storeName": store, "url": url, "status": "metadata_only" if metadata_only else "ok", "recordCount": len(offers), "prospects": prospects})
