@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-25T21:47:26.557146Z",
+  "generatedAt": "2026-09-25T21:52:41.193639Z",
   "sources": [
     {
       "id": "aldi_sued",
       "storeName": "ALDI Süd",
       "url": "https://www.aldi-sued.de/",
       "status": "ok",
-      "recordCount": 233,
+      "recordCount": 322,
       "mode": "structured_api",
       "prospects": []
     },
@@ -16,8 +16,8 @@
       "storeName": "EDEKA",
       "url": "https://www.edeka.de/maerkte/023738/",
       "status": "ok",
-      "recordCount": 11,
-      "mode": "edeka",
+      "recordCount": 15,
+      "mode": "structured_api",
       "prospects": []
     },
     {
@@ -2725,114 +2725,1059 @@
       "proofRef": "https://www.aldi-sued.de/produkt/casalux-3-in-1-nachtlicht-vertikal-000000000768180001"
     },
     {
-      "sourceId": "b5d4df204f74a30820d8",
-      "productLabel": "Havana Club Rum",
+      "sourceId": "3b61a5a56aca1682cdb7",
+      "productLabel": "ARLA Finello 225 g, Pizzakäse",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/arla-finello-225-g-pizzakaese-000000000542642001"
+    },
+    {
+      "sourceId": "ff8dd7c57e28847efab1",
+      "productLabel": "GOLDEN SEAFOOD Garnelen 720 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 7.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/golden-seafood-garnelen-720-g-000000000000191673"
+    },
+    {
+      "sourceId": "e5142fd276a8c12b0f95",
+      "productLabel": "ALL SEASONS Tiefkühl-Himbeeren XXL 1 kg",
+      "storeName": "ALDI Süd",
+      "offerPrice": 7.59,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/all-seasons-tiefkuehl-himbeeren-xxl-1-kg-000000000000191950"
+    },
+    {
+      "sourceId": "caacb7c79e2f9d2456b8",
+      "productLabel": "GERVAIS Hüttenkäse 400 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.22,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gervais-huettenkaese-400-g-000000000000204788"
+    },
+    {
+      "sourceId": "7ea53f8f1a8a868506a5",
+      "productLabel": "DANONE Actimel XXL 12 x 100 ml, Erdbeere",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.79,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/danone-actimel-xxl-12-x-100-ml-erdbeere-000000000000206029"
+    },
+    {
+      "sourceId": "dba2dce3793b7aba55de",
+      "productLabel": "GOLDEN SEAFOOD XXL Lachsfiletportionen 500 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 7.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/golden-seafood-xxl-lachsfiletportionen-500-g-000000000000267461"
+    },
+    {
+      "sourceId": "24d29a7dcc84b4695a50",
+      "productLabel": "DIAMANT Hagelzucker",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.29,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/diamant-hagelzucker-000000000000277089"
+    },
+    {
+      "sourceId": "09091db760b7e557c4c2",
+      "productLabel": "DANONE Actimel XXL 12x100ml, Classic",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.79,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/danone-actimel-xxl-12x100ml-classic-000000000000281336"
+    },
+    {
+      "sourceId": "745b4d5a7a39de082479",
+      "productLabel": "GUT DREI EICHEN Kochschinken 250 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.49,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gut-drei-eichen-kochschinken-250-g-000000000000318380"
+    },
+    {
+      "sourceId": "5e7a9f473fa400688910",
+      "productLabel": "SPEISEZEIT Pommes Frites 2,5 kg",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/speisezeit-pommes-frites-2-5-kg-000000000000444704"
+    },
+    {
+      "sourceId": "d0b9554b16de41cfa5b1",
+      "productLabel": "SPEISEZEIT Wellenschnittpommes 2,5 kg",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/speisezeit-wellenschnittpommes-2-5-kg-000000000000444802"
+    },
+    {
+      "sourceId": "52f973366c51953d0344",
+      "productLabel": "SCHÄTZE DES ORIENTS Geröstete Paprika 580 ml",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/schaetze-des-orients-geroestete-paprika-580-ml-000000000000484048"
+    },
+    {
+      "sourceId": "d70d308d0c631efd1221",
+      "productLabel": "LANDBECK XXL Schinkenbockwurst 720 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.49,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/landbeck-xxl-schinkenbockwurst-720-g-000000000000492686"
+    },
+    {
+      "sourceId": "f138125766e0892de01d",
+      "productLabel": "BACK FAMILY Weizenmehl Type 405 2 kg",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/back-family-weizenmehl-type-405-2-kg-000000000000509135"
+    },
+    {
+      "sourceId": "a5229fd4236371ca8f19",
+      "productLabel": "FARMER NATURALS Walnusskerne natur XXL 500 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 4.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/farmer-naturals-walnusskerne-natur-xxl-500-g-000000000000514330"
+    },
+    {
+      "sourceId": "a836666d13885bb8e027",
+      "productLabel": "LOTUS BISCOFF Keks 279 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/lotus-biscoff-keks-279-g-000000000000525048"
+    },
+    {
+      "sourceId": "049c823649800e988733",
+      "productLabel": "DIAMANT Zimtstreuer 200 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.19,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/diamant-zimtstreuer-200-g-000000000000598618"
+    },
+    {
+      "sourceId": "d403dbff59ab69f4db12",
+      "productLabel": "DIAMANT Feinster Zucker 1 kg",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.69,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/diamant-feinster-zucker-1-kg-000000000000598627"
+    },
+    {
+      "sourceId": "00644f6157da2e09389c",
+      "productLabel": "DIADEM Zucker 2 kg",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.69,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/diadem-zucker-2-kg-000000000000623342"
+    },
+    {
+      "sourceId": "4d7da23aabf8bb269fb3",
+      "productLabel": "JACK´S FARM XXL Chicken Nuggets 1,5 kg",
+      "storeName": "ALDI Süd",
+      "offerPrice": 8.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/jack-s-farm-xxl-chicken-nuggets-1-5-kg-000000000000655465"
+    },
+    {
+      "sourceId": "0115034cdc18b9d12bf0",
+      "productLabel": "FARMER NATURALS XXL Mandeln natur 500 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.49,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/farmer-naturals-xxl-mandeln-natur-500-g-000000000000683682"
+    },
+    {
+      "sourceId": "a73c160ec20d5e77ea17",
+      "productLabel": "FARMER NATURALS XXL Studentenfutter 500 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 4.49,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/farmer-naturals-xxl-studentenfutter-500-g-000000000000695351"
+    },
+    {
+      "sourceId": "65aa6331fd60b3e55f16",
+      "productLabel": "ARLA Skyr Natur 1 kg",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/arla-skyr-natur-1-kg-000000000000712606"
+    },
+    {
+      "sourceId": "5f7e51bf2a52d5a9eee6",
+      "productLabel": "CUCINA Spaghetti XXL 1 kg",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/cucina-spaghetti-xxl-1-kg-000000000000727927"
+    },
+    {
+      "sourceId": "c67a96bcb56c0d5268be",
+      "productLabel": "WEIHENSTEPHAN Die Extrazarte 400 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/weihenstephan-die-extrazarte-400-g-000000000000739013"
+    },
+    {
+      "sourceId": "4e0766f05c10b2d9b489",
+      "productLabel": "IRONMAXX Cooking Protein Plant 500 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 14.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-cooking-protein-plant-500-g-000000000000758434"
+    },
+    {
+      "sourceId": "7a82126f32e9eea35c2a",
+      "productLabel": "IRONMAXX GlowMaxx 300 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 14.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-glowmaxx-300-g-000000000000758435"
+    },
+    {
+      "sourceId": "737ff63b85c3a7038126",
+      "productLabel": "BON-RI Basmati Reis XXL 2 kg",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/bon-ri-basmati-reis-xxl-2-kg-000000000000763567"
+    },
+    {
+      "sourceId": "a2d7bf10f1c5c2de1f57",
+      "productLabel": "CUCINA Maccheroni XXL 1 kg",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.19,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/cucina-maccheroni-xxl-1-kg-000000000000765927"
+    },
+    {
+      "sourceId": "737016be9aeafe894a19",
+      "productLabel": "MAZZETTI Condimento Bianco 500 ml",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/mazzetti-condimento-bianco-500-ml-000000000000776094"
+    },
+    {
+      "sourceId": "38254fc0fd046ad027cb",
+      "productLabel": "MAZZETTI Bio Apfelessig 500 ml",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.79,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/mazzetti-bio-apfelessig-500-ml-000000000000776976"
+    },
+    {
+      "sourceId": "3930880849636d97ad72",
+      "productLabel": "MAZZETTI Insalata Salatwürze 500 ml",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.49,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/mazzetti-insalata-salatwuerze-500-ml-000000000000776992"
+    },
+    {
+      "sourceId": "2d2f7e7ab80b02addca0",
+      "productLabel": "MAZZETTI Balsamico Tino Tipico 500 ml",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/mazzetti-balsamico-tino-tipico-500-ml-000000000000777001"
+    },
+    {
+      "sourceId": "d4b4856be7cf71abf23e",
+      "productLabel": "MILRAM Käsescheiben 260 g, Sylter",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.59,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/milram-kaesescheiben-260-g-sylter-000000000203996001"
+    },
+    {
+      "sourceId": "18d7f64787f206dc0241",
+      "productLabel": "MILRAM Käsescheiben 260 g, Müritzer",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.59,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/milram-kaesescheiben-260-g-mueritzer-000000000203996003"
+    },
+    {
+      "sourceId": "21d9abc0c75be3c39c25",
+      "productLabel": "MILRAM Käsescheiben 260 g, Benjamin",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.59,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/milram-kaesescheiben-260-g-benjamin-000000000203996007"
+    },
+    {
+      "sourceId": "3124837049b605894aa0",
+      "productLabel": "GUT DREI EICHEN Dauerwurst Aufschnitt 240 g, Salami",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.49,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gut-drei-eichen-dauerwurst-aufschnitt-240-g-salami-000000000205198001"
+    },
+    {
+      "sourceId": "ce40e87d7f638c0996a1",
+      "productLabel": "DR. OETKER Löffelglück 500 g, Schokopudding",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-oetker-loeffelglueck-500-g-schokopudding-000000000205615001"
+    },
+    {
+      "sourceId": "d01cc76daef7a0f63513",
+      "productLabel": "DR. OETKER Löffelglück 500 g, Vanillepudding",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-oetker-loeffelglueck-500-g-vanillepudding-000000000205615002"
+    },
+    {
+      "sourceId": "c0a4c0b6b2e928e1da6c",
+      "productLabel": "DR. OETKER Löffelglück 500 g, Grießpudding",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-oetker-loeffelglueck-500-g-griesspudding-000000000205615004"
+    },
+    {
+      "sourceId": "20acba9b72b619a9cb4b",
+      "productLabel": "GIOVANNI RANA Tortelloni Big Pack 500 g, Ricotta-Spinat",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/giovanni-rana-tortelloni-big-pack-500-g-ricotta-spinat-000000000210997003"
+    },
+    {
+      "sourceId": "6cd470a64d1920dd3cbd",
+      "productLabel": "GIOVANNI RANA Tortelloni Big Pack 500 g, Funghi Porcini",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/giovanni-rana-tortelloni-big-pack-500-g-funghi-porcini-000000000210997004"
+    },
+    {
+      "sourceId": "d2050ee2593925aec2fc",
+      "productLabel": "GIOVANNI RANA Tortelloni Big Pack 500 g, Prosciutto di Parma",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/giovanni-rana-tortelloni-big-pack-500-g-prosciutto-di-parma-000000000210997005"
+    },
+    {
+      "sourceId": "9ca2c223cdf52e923726",
+      "productLabel": "MILKANA Schale 190 g, Sahne",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/milkana-schale-190-g-sahne-000000000482334001"
+    },
+    {
+      "sourceId": "0c84dff276356e62ba58",
+      "productLabel": "MILKANA Schale 190 g, Kräuter",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/milkana-schale-190-g-kraeuter-000000000482334002"
+    },
+    {
+      "sourceId": "076c72b2df1ecfefe97c",
+      "productLabel": "MILKANA Schale 190 g, Leicht",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/milkana-schale-190-g-leicht-000000000482334003"
+    },
+    {
+      "sourceId": "25796682b7bc0d2c4925",
+      "productLabel": "MILKANA Schale 190 g, Gouda",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/milkana-schale-190-g-gouda-000000000482334004"
+    },
+    {
+      "sourceId": "39682bef0c5da9b7d354",
+      "productLabel": "MILKANA Schale 190 g, Emmentaler",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/milkana-schale-190-g-emmentaler-000000000482334007"
+    },
+    {
+      "sourceId": "1a92bbb058e45cba9c76",
+      "productLabel": "LANDBECK Salametti XXL 200 g, Klassik",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.49,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/landbeck-salametti-xxl-200-g-klassik-000000000486152001"
+    },
+    {
+      "sourceId": "a20ce11ce7e380adbe2d",
+      "productLabel": "LANDBECK Salametti XXL 200 g, Paprika",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.49,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/landbeck-salametti-xxl-200-g-paprika-000000000486152002"
+    },
+    {
+      "sourceId": "f30b49de19ae5e32afc6",
+      "productLabel": "LANDBECK Salametti XXL 200 g, Schwarzer Pfeffer",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.49,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/landbeck-salametti-xxl-200-g-schwarzer-pfeffer-000000000486152003"
+    },
+    {
+      "sourceId": "2ab50ef929cf0fe0b2be",
+      "productLabel": "ARLA Finello 225 g, Gratinkäse",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/arla-finello-225-g-gratinkaese-000000000542642002"
+    },
+    {
+      "sourceId": "a2d605a692ae7e0d5923",
+      "productLabel": "TEEKANNE Verführerische Früchte 45 g, Heiße Liebe",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-45-g-heisse-liebe-000000000569178001"
+    },
+    {
+      "sourceId": "ab9b2fa6f8e02b02acbf",
+      "productLabel": "TEEKANNE Verführerische Früchte 45 g, Frecher Flirt",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-45-g-frecher-flirt-000000000569178002"
+    },
+    {
+      "sourceId": "5527b5984aede6fac6b5",
+      "productLabel": "TEEKANNE Verführerische Früchte 45 g, Herzkirsche",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-45-g-herzkirsche-000000000569178003"
+    },
+    {
+      "sourceId": "9ace5ea4a4a3587e02c7",
+      "productLabel": "TEEKANNE Verführerische Früchte 45 g, Sweet Kiss",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-45-g-sweet-kiss-000000000569178004"
+    },
+    {
+      "sourceId": "b46386be6d75de9fd3ad",
+      "productLabel": "TEEKANNE Verführerische Früchte 45 g, Kleine Sünde",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-45-g-kleine-suende-000000000569178005"
+    },
+    {
+      "sourceId": "5435dfdf8e33cfacd0fb",
+      "productLabel": "TEEKANNE Verführerische Früchte 45 g, Heißer Hugo",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-45-g-heisser-hugo-000000000569178006"
+    },
+    {
+      "sourceId": "2f2b05684712a8b0c22e",
+      "productLabel": "TEEKANNE Verführerische Früchte 41 g, Freches Bienchen",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-41-g-freches-bienchen-000000000569178007"
+    },
+    {
+      "sourceId": "832fd5c7816df9d6cbcc",
+      "productLabel": "AOSTE Aoste, Stickado, Classique, 70g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/aoste-aoste-stickado-classique-70g-000000000583783001"
+    },
+    {
+      "sourceId": "277c6543ac9c6c3cd0ea",
+      "productLabel": "AOSTE Aoste, Stickado, Pikanto, 70g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/aoste-aoste-stickado-pikanto-70g-000000000583783002"
+    },
+    {
+      "sourceId": "117c7d18b837d1651f77",
+      "productLabel": "AOSTE Aoste, Stickado, Walnuss, 70g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/aoste-aoste-stickado-walnuss-70g-000000000583783003"
+    },
+    {
+      "sourceId": "db567e2622e68e4d25f6",
+      "productLabel": "AOSTE Stickado 60 g, Hähnchen",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/aoste-stickado-60-g-haehnchen-000000000583783004"
+    },
+    {
+      "sourceId": "2e7c5dbe0771504ab482",
+      "productLabel": "AOSTE Aoste, Stickado, High Protein, 60g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/aoste-aoste-stickado-high-protein-60g-000000000583783006"
+    },
+    {
+      "sourceId": "7a265ba5f1117c8d5a27",
+      "productLabel": "MILKA Großtafeln 300 g, Erdbeer Käsekuche",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.79,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/milka-grosstafeln-300-g-erdbeer-kaesekuche-000000000669217003"
+    },
+    {
+      "sourceId": "ca4341c5702797bba7b8",
+      "productLabel": "MILKA Großtafeln 300 g, Oreo",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.79,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/milka-grosstafeln-300-g-oreo-000000000669217004"
+    },
+    {
+      "sourceId": "43c0c91f4ec49c875b8b",
+      "productLabel": "MILKA Großtafeln 300 g, Toffee Nuss",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.79,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/milka-grosstafeln-300-g-toffee-nuss-000000000669217006"
+    },
+    {
+      "sourceId": "0747377a8685b4c6c6d8",
+      "productLabel": "IRONMAXX Proteccino Plant Pulver 500 g, Dark Cookie Crumble",
+      "storeName": "ALDI Süd",
+      "offerPrice": 14.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-proteccino-plant-pulver-500-g-dark-cookie-crumble-000000000700345003"
+    },
+    {
+      "sourceId": "a4f363d856d8f91cbb9e",
+      "productLabel": "YUMYUM Instant Nudeln Multipack 300 g, 5er-Pack, Huhn",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.39,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/yumyum-instant-nudeln-multipack-300-g-5er-pack-huhn-000000000708954001"
+    },
+    {
+      "sourceId": "785d26463a4e6edd4c04",
+      "productLabel": "YUMYUM Instant Nudeln Multipack 300 g, 5er-Pack, Ente",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.39,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/yumyum-instant-nudeln-multipack-300-g-5er-pack-ente-000000000708954002"
+    },
+    {
+      "sourceId": "1aa9dcea4fb26eaa794e",
+      "productLabel": "YUMYUM Instant Nudeln Multipack 300 g, 5er-Pack, Gemüse",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.39,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/yumyum-instant-nudeln-multipack-300-g-5er-pack-gemuese-000000000708954003"
+    },
+    {
+      "sourceId": "8f00bf37fb3c82ddc304",
+      "productLabel": "IRONMAXX Light Sauce 285 ml, Smokey BBQ",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-light-sauce-285-ml-smokey-bbq-000000000759374001"
+    },
+    {
+      "sourceId": "e9ec2e6781d09dcd2f7d",
+      "productLabel": "IRONMAXX Light Sauce 285 ml, Burger Sauce",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-light-sauce-285-ml-burger-sauce-000000000759374002"
+    },
+    {
+      "sourceId": "9f14004f20a4e6820ef9",
+      "productLabel": "IRONMAXX Light Sauce 285 ml, Honey Mustard",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-light-sauce-285-ml-honey-mustard-000000000759374003"
+    },
+    {
+      "sourceId": "19f3d26a62e8c9f7d338",
+      "productLabel": "IRONMAXX Cooking Oil Spray 200 ml, Neutral",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-cooking-oil-spray-200-ml-neutral-000000000759394001"
+    },
+    {
+      "sourceId": "3680c13cd997e02d587e",
+      "productLabel": "IRONMAXX Cooking Oil Spray 200 ml, Butter Flavour",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-cooking-oil-spray-200-ml-butter-flavour-000000000759394002"
+    },
+    {
+      "sourceId": "ed8c4b8ef4c2c10fcce9",
+      "productLabel": "IRONMAXX Protein Porridge 60 g, Milchreis",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-protein-porridge-60-g-milchreis-000000000759440001"
+    },
+    {
+      "sourceId": "7998936ca67845a8419e",
+      "productLabel": "IRONMAXX Protein Porridge 60 g, Grießpudding",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-protein-porridge-60-g-griesspudding-000000000759440002"
+    },
+    {
+      "sourceId": "c5c5193aef0d2b953fa8",
+      "productLabel": "IRONMAXX Protein Porridge 60 g, Neutral",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-protein-porridge-60-g-neutral-000000000759440003"
+    },
+    {
+      "sourceId": "17eebca1dc050b275875",
+      "productLabel": "IRONMAXX Chunked 150 g, Vanille",
+      "storeName": "ALDI Süd",
+      "offerPrice": 8.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-chunked-150-g-vanille-000000000759480001"
+    },
+    {
+      "sourceId": "66d1bef2c68375f739f3",
+      "productLabel": "IRONMAXX Chunked 150 g, Butterkeks",
+      "storeName": "ALDI Süd",
+      "offerPrice": 8.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-chunked-150-g-butterkeks-000000000759480002"
+    },
+    {
+      "sourceId": "e5f86f3cbb19e64534b3",
+      "productLabel": "IRONMAXX Chunked 150 g, Milchreis-Zimt",
+      "storeName": "ALDI Süd",
+      "offerPrice": 8.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-chunked-150-g-milchreis-zimt-000000000759480003"
+    },
+    {
+      "sourceId": "cae72090cf5449f27843",
+      "productLabel": "IRONMAXX SqueeBarista 65 ml, Salted Caramel",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-squeebarista-65-ml-salted-caramel-000000000759556001"
+    },
+    {
+      "sourceId": "2c0fc42280131171269c",
+      "productLabel": "IRONMAXX SqueeBarista 65 ml, Vanilla Dream",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-squeebarista-65-ml-vanilla-dream-000000000759556002"
+    },
+    {
+      "sourceId": "3ae16deb66ed14f6c612",
+      "productLabel": "IRONMAXX SqueeBarista 65 ml, Hazelnut Bliss",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-squeebarista-65-ml-hazelnut-bliss-000000000759556003"
+    },
+    {
+      "sourceId": "b5d7ba3a0f956893508a",
+      "productLabel": "IRONMAXX SqueeBarista 65 ml, Pumpkin Spice",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-squeebarista-65-ml-pumpkin-spice-000000000759556004"
+    },
+    {
+      "sourceId": "536d8121b8efda01a8ca",
+      "productLabel": "IRONMAXX SqueeBarista 65 ml, Dark Chocolate",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-squeebarista-65-ml-dark-chocolate-000000000759556005"
+    },
+    {
+      "sourceId": "25d55d24beb1b1d74e3a",
+      "productLabel": "RAMA Cremefine haltbar 500 ml, 24 %",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/rama-cremefine-haltbar-500-ml-24-000000000778275001"
+    },
+    {
+      "sourceId": "40ba4f8e492ffbdd1068",
+      "productLabel": "RAMA Cremefine haltbar 500 ml, 7 %",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-10-02",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/rama-cremefine-haltbar-500-ml-7-000000000778275002"
+    },
+    {
+      "sourceId": "386a2f209014e46a735c",
+      "productLabel": "Kulturheidelbeeren",
       "storeName": "EDEKA",
-      "offerPrice": 10.99,
+      "offerPrice": 1.49,
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-70bcf87c9d1250bb4a46"
+      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-500000473",
+      "imageUrl": "https://offer-images.api.edeka/c08b37fe-49c7-43ec-8c6c-65e413cb074d_Kulturheidelbeeren.png"
     },
     {
-      "sourceId": "5f24cec096f7bd0cbb4d",
-      "productLabel": "Rotkäppchen Sekt, Fruchtsecco oder Alkoholfrei",
+      "sourceId": "db55bb13b4fbc123fccf",
+      "productLabel": "Dr. Oetker Die Ofenfrische, Pizza Tradizionale oder La Mia Pinsa",
+      "storeName": "EDEKA",
+      "offerPrice": 1.79,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-500000474",
+      "imageUrl": "https://offer-images.api.edeka/bb589d6c-1075-476d-be21-a4586c9f6896_oetker_pizza.png"
+    },
+    {
+      "sourceId": "aece16d1c48dfd5edcf2",
+      "productLabel": "Haribo Fruchtgummi oder Lakritz",
+      "storeName": "EDEKA",
+      "offerPrice": 0.79,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-500000475",
+      "imageUrl": "https://offer-images.api.edeka/2b8a18a8-9d1d-4881-9304-974624afd954_haribo.png"
+    },
+    {
+      "sourceId": "de1931cdbe31b1d4ddcb",
+      "productLabel": "Fruchtsaft oder Nektar",
+      "storeName": "EDEKA",
+      "offerPrice": 1.11,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-500000476",
+      "imageUrl": "https://offer-images.api.edeka/218f16e2-24f3-434a-961e-ab11ca95aaa3_fruchtsaft.png"
+    },
+    {
+      "sourceId": "1aaa107d7462dfee05dd",
+      "productLabel": "Eisbergsalat",
+      "storeName": "EDEKA",
+      "offerPrice": 0.79,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-500000478",
+      "imageUrl": "https://offer-images.api.edeka/65871ad7-da2c-4c7e-a937-cb3226ea0d76_eisbergsalat.png"
+    },
+    {
+      "sourceId": "de74c7062166ce1ebe3f",
+      "productLabel": "Müllermilch",
+      "storeName": "EDEKA",
+      "offerPrice": 0.69,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-500000480",
+      "imageUrl": "https://offer-images.api.edeka/7924ca96-f3e2-408f-9086-4282f79c7970_muellermilch.png"
+    },
+    {
+      "sourceId": "47c0d361af6e3237b554",
+      "productLabel": "Nergi Kiwibeeren",
+      "storeName": "EDEKA",
+      "offerPrice": 1.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-500000481",
+      "imageUrl": "https://offer-images.api.edeka/b3fd8e51-7a44-420d-8301-8e25be2ca0b1_kiwibeeren.png"
+    },
+    {
+      "sourceId": "7c0fd23d3ecb81744981",
+      "productLabel": "Tafeltrauben hell",
       "storeName": "EDEKA",
       "offerPrice": 1.0,
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-fd26998a0360245cf8a1"
+      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-500000483",
+      "imageUrl": "https://offer-images.api.edeka/33ef27a5-74a6-430c-8fa1-8d437ed01fa1_Tafeltrauben.png"
     },
     {
-      "sourceId": "a432f4182f2d0478480f",
-      "productLabel": "Asbach Uralt Weinbrand, Coffee & Cream oder Aperitif Rosé*",
+      "sourceId": "feac20b2c0d9dd20a8bc",
+      "productLabel": "Kerrygold Original Irische Butter oder Extra",
       "storeName": "EDEKA",
-      "offerPrice": 9.99,
+      "offerPrice": 1.59,
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-ae4860a8914313e40a3a"
+      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-500000486",
+      "imageUrl": "https://offer-images.api.edeka/699ad994-327d-4190-ab98-6e8bbad6f92d_kerrygold.png"
     },
     {
-      "sourceId": "0f9c9ed75aa579865304",
-      "productLabel": "MM Extra Sekt",
+      "sourceId": "f22f733db440c77370f7",
+      "productLabel": "Philadelphia",
       "storeName": "EDEKA",
-      "offerPrice": 2.77,
-      "validFrom": "2026-09-24",
-      "validUntil": "2026-09-26",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-3eeaacc927748db44d3e"
-    },
-    {
-      "sourceId": "ad106e1f92a00d1a0e7f",
-      "productLabel": "Aperol Spritz",
-      "storeName": "EDEKA",
-      "offerPrice": 6.99,
+      "offerPrice": 1.11,
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-f52e8631b7e83a834d50"
+      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-500000487",
+      "imageUrl": "https://offer-images.api.edeka/87d395eb-5edc-442f-ae64-ceccb39c0a91_philadelphia.png"
     },
     {
-      "sourceId": "83de3d7d6b743ff3c356",
-      "productLabel": "Sarti Aperitif Rosa",
+      "sourceId": "3d0dc10284657da460d9",
+      "productLabel": "Schwartau Fruchtaufstrich",
       "storeName": "EDEKA",
-      "offerPrice": 14.99,
+      "offerPrice": 1.99,
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-e0284cde0a83b9c2006e"
+      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-500000488",
+      "imageUrl": "https://offer-images.api.edeka/9bd9d93b-2ffa-4fd7-915f-dc4568e356f4_schwartau.png"
     },
     {
-      "sourceId": "cb0197c73217152a123b",
-      "productLabel": "Three Sixty Vodka",
+      "sourceId": "7fbe6171b565262d7a51",
+      "productLabel": "Melitta Barista Crema",
       "storeName": "EDEKA",
-      "offerPrice": 9.99,
+      "offerPrice": 12.99,
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-e5fa0faa19c2dbb62a3f"
+      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-500000489",
+      "imageUrl": "https://offer-images.api.edeka/bcffd9fe-03e2-4c9d-8bca-51afb214774f_melitta.png"
     },
     {
-      "sourceId": "143f501bbbe3a5bfd669",
-      "productLabel": "Southern Comfort Likör mit Whiskey",
+      "sourceId": "36428de95cc46ba6fda2",
+      "productLabel": "Dr. Oetker Backmischung",
       "storeName": "EDEKA",
-      "offerPrice": 9.99,
+      "offerPrice": 2.49,
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-9d304dd655c213feabd2"
+      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-500000490",
+      "imageUrl": "https://offer-images.api.edeka/c6b664f6-eb0c-4619-ab2d-d6cb77fddd3e_oetker_backischung.png"
     },
     {
-      "sourceId": "0ec037051a189ef71a44",
-      "productLabel": "Brut Dargent Sekt",
+      "sourceId": "1d2bc02716795060bdfe",
+      "productLabel": "Lorenz Crunchips",
       "storeName": "EDEKA",
-      "offerPrice": 5.99,
+      "offerPrice": 0.99,
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-6b7e7748ac5009a51bd4"
+      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-500000491",
+      "imageUrl": "https://offer-images.api.edeka/5bc0f45d-3c9f-42ae-9ac2-b49a70df7bab_lorenz.png"
     },
     {
-      "sourceId": "7c9f3d60b022e241b9e7",
-      "productLabel": "GWF Franken Prädikatswein",
+      "sourceId": "b51284499c8aabfa68c5",
+      "productLabel": "Coca-Cola Cola oder Limonade",
       "storeName": "EDEKA",
-      "offerPrice": 4.99,
+      "offerPrice": 1.11,
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-95d9f189c7983a5c3516"
-    },
-    {
-      "sourceId": "69ca1942daa8d7b32a26",
-      "productLabel": "Novantaceppi Primitivo Puglia, Rosato, Bio, Rosso Puglia Appassimento oder Pinot Grigio",
-      "storeName": "EDEKA",
-      "offerPrice": 4.99,
-      "validFrom": "2026-09-21",
-      "validUntil": "2026-09-26",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-9c32cd45712b3eb8dfa0"
+      "proofRef": "https://www.edeka.de/maerkte/023738/#offer-500000492",
+      "imageUrl": "https://offer-images.api.edeka/0e5f624a-4fb6-47db-abf0-20538c820eae_cola.png"
     },
     {
       "sourceId": "3223b243df5bc6812378",
