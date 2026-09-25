@@ -30,4 +30,53 @@ void main() {
           0.79);
     });
   }
+
+  test('planning keeps quality ranking instead of blindly taking newest exact price', () {
+    final now = DateTime(2026, 9, 25);
+    final prices = planningMarketPrices(
+      exactPrices: [
+        MarketPrice(
+          productId: 'schmand',
+          storeName: 'Lidl',
+          price: 0.79,
+          updatedAt: DateTime(2026, 8, 20),
+          source: MarketPriceSource.manual,
+        ),
+        MarketPrice(
+          productId: 'schmand',
+          storeName: 'Lidl',
+          price: 0.89,
+          updatedAt: DateTime(2026, 9, 25),
+          source: MarketPriceSource.openPrices,
+        ),
+      ],
+      familyPrices: const [],
+      now: now,
+    );
+
+    expect(prices, hasLength(1));
+    expect(prices.single.price, 0.79);
+
+    const store = Store(
+      name: 'Lidl',
+      location: 'Ort',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    const product = Product(
+      id: 'schmand',
+      name: 'Schmand',
+      unit: 'Stück',
+      group: 'schmand',
+    );
+    final quote = RoutePriceResolver(
+      const [],
+      marketPrices: prices,
+      now: now,
+    ).quote(store, ListItem(product: product));
+
+    expect(quote, isNotNull);
+    expect(quote!.total, 0.79);
+  });
+
 }
