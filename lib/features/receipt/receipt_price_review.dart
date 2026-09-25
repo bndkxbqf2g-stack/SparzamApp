@@ -49,7 +49,7 @@ ReceiptPriceReview reviewReceiptPrices(
         (row.quantity != null &&
             (row.quantity! * unitCents).round() != row.cents) ||
         (row.quantity == null &&
-            RegExp(r'\\b\\d+[,.]\\d+\\s*kg\\b').hasMatch(row.label))) {
+            RegExp(r'\b\d+[,.]\d+\s*kg\b').hasMatch(row.label))) {
       continue;
     }
     candidates.add(ReceiptPriceSuggestion(

@@ -26,7 +26,8 @@ class ProductIdentity {
       fatPercent == null &&
       color == null &&
       shape == null &&
-      meatType == null;
+      meatType == null ||
+      (familyKey == 'hackfleisch' && meatType == 'gemischt');
 
   String get variantKey => <String>[
         if (variant != null) 'variant:$variant',
