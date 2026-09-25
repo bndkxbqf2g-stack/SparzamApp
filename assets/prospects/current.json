@@ -1,13 +1,14 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-25T21:36:31.486512Z",
+  "generatedAt": "2026-09-25T21:47:26.557146Z",
   "sources": [
     {
       "id": "aldi_sued",
       "storeName": "ALDI Süd",
       "url": "https://www.aldi-sued.de/",
       "status": "ok",
-      "recordCount": 20,
+      "recordCount": 233,
+      "mode": "structured_api",
       "prospects": []
     },
     {
@@ -16,6 +17,7 @@
       "url": "https://www.edeka.de/maerkte/023738/",
       "status": "ok",
       "recordCount": 11,
+      "mode": "edeka",
       "prospects": []
     },
     {
@@ -24,6 +26,7 @@
       "url": "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html",
       "status": "ok",
       "recordCount": 22,
+      "mode": "kaufland",
       "prospects": []
     },
     {
@@ -32,6 +35,7 @@
       "url": "https://www.lidl.de/c/online-prospekte/s10005610/",
       "status": "metadata_only",
       "recordCount": 0,
+      "mode": "lidl",
       "prospects": [
         {
           "title": "Aktionsprospekt 21.09.2026 – 26.09.2026",
@@ -362,6 +366,7 @@
       "url": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1",
       "status": "ok",
       "recordCount": 9,
+      "mode": "penny",
       "prospects": []
     },
     {
@@ -383,8 +388,18 @@
   ],
   "offers": [
     {
-      "sourceId": "fd0f0152ba6af2508918",
-      "productLabel": "ALPINA Universal Raum-Weiß 10 l (/1 l) ¹",
+      "sourceId": "83629135809602dd5232",
+      "productLabel": "HOME CREATION Bastelmix, Holographisches",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-bastelmix-holographisches-000000000698318011"
+    },
+    {
+      "sourceId": "81c01305e21d3a29390d",
+      "productLabel": "ALPINA Universal Raum-Weiß",
       "storeName": "ALDI Süd",
       "offerPrice": 15.99,
       "validFrom": "2026-09-21",
@@ -393,41 +408,1005 @@
       "proofRef": "https://www.aldi-sued.de/produkt/alpina-universal-raum-weiss-000000000000564402"
     },
     {
-      "sourceId": "18583f1a42de967f4318",
-      "productLabel": "MEINE METZGEREI Hähnchenbrustfilet Teilstück 1 kg",
+      "sourceId": "e6088daa05e8100b4d58",
+      "productLabel": "WORKZONE Akku-LED-Arbeitsstrahler",
       "storeName": "ALDI Süd",
-      "offerPrice": 8.19,
+      "offerPrice": 14.99,
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/meine-metzgerei-haehnchenbrustfilet-teilstueck-1-kg-000000000000211078",
+      "proofRef": "https://www.aldi-sued.de/produkt/workzone-akku-led-arbeitsstrahler-000000000000725121"
+    },
+    {
+      "sourceId": "22e185eb227e270cb837",
+      "productLabel": "WORKZONE Silikon-Bearbeitungsset",
+      "storeName": "ALDI Süd",
+      "offerPrice": 4.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/workzone-silikon-bearbeitungsset-000000000000734741"
+    },
+    {
+      "sourceId": "d818e1e2474cbf8acb7a",
+      "productLabel": "DECO CRAFT Abdeckfolien-Set",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/deco-craft-abdeckfolien-set-000000000000737268"
+    },
+    {
+      "sourceId": "07c8e1835c83cb3a95d7",
+      "productLabel": "GARDENLINE Trio Harmonie®",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-trio-harmonie-000000000000752548"
+    },
+    {
+      "sourceId": "d1d53b01c1acebb3593a",
+      "productLabel": "GARDENLINE Heidemischung",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.79,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-heidemischung-000000000000752562"
+    },
+    {
+      "sourceId": "b3a1aa9a2048c1dd235c",
+      "productLabel": "GARDENLINE Colour Crown®",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.79,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-colour-crown-000000000000752576"
+    },
+    {
+      "sourceId": "433b47c857c3ee66bb7a",
+      "productLabel": "GARDENLINE Quattro",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.79,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-quattro-000000000000752577"
+    },
+    {
+      "sourceId": "91ba49b7113979ffbf02",
+      "productLabel": "GARDENLINE Uni",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-uni-000000000000752578"
+    },
+    {
+      "sourceId": "a617d68961248b0a8a6e",
+      "productLabel": "IRONMAXX Whey Protein Pulver 500 g, Dark Cookie Salted Caramel",
+      "storeName": "ALDI Süd",
+      "offerPrice": 13.49,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-whey-protein-pulver-500-g-dark-cookie-salted-caramel-000000000505349017",
+      "originalPrice": 14.99
+    },
+    {
+      "sourceId": "b9fbe8aff42856e91413",
+      "productLabel": "IRONMAXX Whey Protein Pulver 500 g, Strawberry Ice Cream",
+      "storeName": "ALDI Süd",
+      "offerPrice": 13.49,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-whey-protein-pulver-500-g-strawberry-ice-cream-000000000505349019",
+      "originalPrice": 14.99
+    },
+    {
+      "sourceId": "7d65c37160fa1e13dcb7",
+      "productLabel": "IRONMAXX Lava Bar 40 g, Cookies & Cream",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.69,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-lava-bar-40-g-cookies-cream-000000000516755002"
+    },
+    {
+      "sourceId": "316836f9940795ae92f7",
+      "productLabel": "EXPERTIZ Radierbarer Tintenroller, 4 Stifte, Blau/Schwarz/Rot",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/expertiz-radierbarer-tintenroller-4-stifte-blau-schwarz-rot-000000000557667001"
+    },
+    {
+      "sourceId": "00d810cf0f7fc65be00d",
+      "productLabel": "MARABU Künstler Bedarf, Acrylfarben, 12x12",
+      "storeName": "ALDI Süd",
+      "offerPrice": 4.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/marabu-kuenstler-bedarf-acrylfarben-12x12-000000000653912001"
+    },
+    {
+      "sourceId": "212e8d370f4bf32b65e5",
+      "productLabel": "HOME CREATION Heißklebepistole und Folienstift, Heißklebepistole, Pink",
+      "storeName": "ALDI Süd",
+      "offerPrice": 4.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-heissklebepistole-und-folienstift-heissklebepistole-pink-000000000677638001"
+    },
+    {
+      "sourceId": "75d5d2352156f8fbcb94",
+      "productLabel": "IRONMAXX Maxxers Protein Riegel, 49 g, White Chocolate Pistachio",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-maxxers-protein-riegel-49-g-white-chocolate-pistachio-000000000700346002"
+    },
+    {
+      "sourceId": "a327ab7f13ff87cd1334",
+      "productLabel": "IRONMAXX 100 % Milk Protein Pulver 500 g, Vanilla",
+      "storeName": "ALDI Süd",
+      "offerPrice": 14.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-100-milk-protein-pulver-500-g-vanilla-000000000709106002"
+    },
+    {
+      "sourceId": "091015166dfa14decb39",
+      "productLabel": "EXPERTIZ All-in-one Spiralblock, Pink",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/expertiz-all-in-one-spiralblock-pink-000000000724935001"
+    },
+    {
+      "sourceId": "7f152676c1ccdf8f051a",
+      "productLabel": "IRONMAXX Wafix Riegel 39 g, White Peanut Caramel",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-wafix-riegel-39-g-white-peanut-caramel-000000000726037001",
+      "originalPrice": 1.99
+    },
+    {
+      "sourceId": "aa378bcb10195dc56bc8",
+      "productLabel": "IRONMAXX Wafix Riegel 39 g, Peanut Caramel",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-wafix-riegel-39-g-peanut-caramel-000000000726037002",
+      "originalPrice": 1.99
+    },
+    {
+      "sourceId": "13ca85974ab79f07c8c7",
+      "productLabel": "IRONMAXX Prococo Riegel 48 g, Coconut Caramel",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-prococo-riegel-48-g-coconut-caramel-000000000726055002"
+    },
+    {
+      "sourceId": "449fc26f34a2a7890902",
+      "productLabel": "EXPERTIZ Locher und Tacker, Tacker, Schwarz",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.49,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/expertiz-locher-und-tacker-tacker-schwarz-000000000732010001"
+    },
+    {
+      "sourceId": "63d7f8b5aa513e4d5c86",
+      "productLabel": "CASALUX Leuchte mit Bewegungsmelder, Weiß",
+      "storeName": "ALDI Süd",
+      "offerPrice": 8.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/casalux-leuchte-mit-bewegungsmelder-weiss-000000000734480001"
+    },
+    {
+      "sourceId": "ada148260624befccea3",
+      "productLabel": "PATTEX Montage-Kleber oder Maler-Acryl, Metylan Acryl",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/pattex-montage-kleber-oder-maler-acryl-metylan-acryl-000000000736702001"
+    },
+    {
+      "sourceId": "dfac2963779e23940ab0",
+      "productLabel": "PATTEX Kleben statt Bohren, Kristall-Klar",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/pattex-kleben-statt-bohren-kristall-klar-000000000736898001"
+    },
+    {
+      "sourceId": "65be7f0936eab6477e4b",
+      "productLabel": "HOME CREATION Tisch-Whiteboard oder -Korktafel, Korktafel, Schwarz",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-tisch-whiteboard-oder-korktafel-korktafel-schwarz-000000000737677001"
+    },
+    {
+      "sourceId": "0da3f2cfa07b078b505c",
+      "productLabel": "FERREX Elektrozubehör, Drahtbürsten",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ferrex-elektrozubehoer-drahtbuersten-000000000737839001"
+    },
+    {
+      "sourceId": "f675c9f485889eccb0b5",
+      "productLabel": "HOME CREATION Aquarell-Malzubehör, Buntstifte",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-aquarell-malzubehoer-buntstifte-000000000740701001"
+    },
+    {
+      "sourceId": "9b39fb4c3d85676861c3",
+      "productLabel": "DECO CRAFT Pinselset Für Farbe oder Lacke, Pinselset Farbe",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/deco-craft-pinselset-fuer-farbe-oder-lacke-pinselset-farbe-000000000741023001"
+    },
+    {
+      "sourceId": "cdb6fb0175ffba2add85",
+      "productLabel": "HOME CREATION Künstler-Set oder Farbstifte, Skizzenset",
+      "storeName": "ALDI Süd",
+      "offerPrice": 4.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kuenstler-set-oder-farbstifte-skizzenset-000000000741062001"
+    },
+    {
+      "sourceId": "013dd834221a74500052",
+      "productLabel": "DECO CRAFT Profi-Walzen, 2er-Set, Große Walzen",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/deco-craft-profi-walzen-2er-set-grosse-walzen-000000000741778001"
+    },
+    {
+      "sourceId": "fbc1c43ce381e46b4f62",
+      "productLabel": "HOME CREATION Geschenkverpackungs-Set, Bänder und Schleifen",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-geschenkverpackungs-set-baender-und-schleifen-000000000741801001"
+    },
+    {
+      "sourceId": "18f6470623ae7b3cc5ed",
+      "productLabel": "HOME CREATION Grußkarte, Hochzeit",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-grusskarte-hochzeit-000000000742007001"
+    },
+    {
+      "sourceId": "610095252fa5e46b8125",
+      "productLabel": "HOME CREATION Kreativ-Set, Matcha",
+      "storeName": "ALDI Süd",
+      "offerPrice": 4.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kreativ-set-matcha-000000000742617001"
+    },
+    {
+      "sourceId": "344c7fa3215728b92ca3",
+      "productLabel": "HOME CREATION 3D-Holz-Bastelsets, Holz Kürbis",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-3d-holz-bastelsets-holz-kuerbis-000000000745892001"
+    },
+    {
+      "sourceId": "2c10bf866172703fa242",
+      "productLabel": "HOME CREATION Doppelseitige Marker, Basic 1",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.49,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-doppelseitige-marker-basic-1-000000000746954001"
+    },
+    {
+      "sourceId": "a852366fa833dcea08aa",
+      "productLabel": "DECO CRAFT Multifunktions-Wandfarbe, Cappuccino",
+      "storeName": "ALDI Süd",
+      "offerPrice": 9.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/deco-craft-multifunktions-wandfarbe-cappuccino-000000000750146001",
+      "originalPrice": 12.99
+    },
+    {
+      "sourceId": "6c9cc5393a14cbb487e3",
+      "productLabel": "GARDENLINE Blumenzwiebeln, Tulpen Einfache",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.49,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-blumenzwiebeln-tulpen-einfache-000000000750463002"
+    },
+    {
+      "sourceId": "7e3fe293dd696a5bcca5",
+      "productLabel": "GARDENLINE Blumenzwiebeln XXL im Jutebag, Allium Mischung",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.49,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-blumenzwiebeln-xxl-im-jutebag-allium-mischung-000000000750467001"
+    },
+    {
+      "sourceId": "4c41b522e593a76b819a",
+      "productLabel": "GARDENLINE Pfingstrose, Shirley Temple",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-pfingstrose-shirley-temple-000000000750468001"
+    },
+    {
+      "sourceId": "aab8c96aa13390b9a3ae",
+      "productLabel": "GARDENLINE Blumenzwiebeln in Tragetasche, Mischung",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-blumenzwiebeln-in-tragetasche-mischung-000000000750477001"
+    },
+    {
+      "sourceId": "5754afbee595c05e115b",
+      "productLabel": "GARDENLINE Frühlingsblumenzwiebel, Narzissen Mischung",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-fruehlingsblumenzwiebel-narzissen-mischung-000000000750492007"
+    },
+    {
+      "sourceId": "8c4c8c7cf5c7ae2526d0",
+      "productLabel": "HOME CREATION Sprühlack, Weiß Glanz",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-spruehlack-weiss-glanz-000000000750584001"
+    },
+    {
+      "sourceId": "8f04bed99f3f0765ba42",
+      "productLabel": "HOME CREATION Kunstharzlackspray, Heizkörperlack Weiß",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kunstharzlackspray-heizkoerperlack-weiss-000000000751413001"
+    },
+    {
+      "sourceId": "409756ebe1fedf1856ca",
+      "productLabel": "DECO CRAFT Metallschutzlack, Weiß",
+      "storeName": "ALDI Süd",
+      "offerPrice": 7.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/deco-craft-metallschutzlack-weiss-000000000752874001",
       "originalPrice": 9.99
     },
     {
-      "sourceId": "c0409d4e44e0f2b7c211",
-      "productLabel": "MEINE METZGEREI Rind Hamburger 400 g 0,4 kg (10,98 €/1 kg)",
+      "sourceId": "06721612392735514dee",
+      "productLabel": "IRONMAXX Matcha Bites 2 × 23 g, Strawberry Flavour",
       "storeName": "ALDI Süd",
-      "offerPrice": 4.39,
+      "offerPrice": 1.99,
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/meine-metzgerei-rind-hamburger-400-g-000000000000642554",
-      "originalPrice": 5.49
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-matcha-bites-2-23-g-strawberry-flavour-000000000756556001"
     },
     {
-      "sourceId": "bcce74cad2cfc6693a6b",
-      "productLabel": "MEINE METZGEREI Puten Geschnetzeltes 400 g 0,4 kg (9,73 €/1 kg)",
+      "sourceId": "6f6cf194dd16cdac5b27",
+      "productLabel": "IRONMAXX Cup mit Griff 1,2 l, Leo Print Weiß",
       "storeName": "ALDI Süd",
-      "offerPrice": 3.89,
+      "offerPrice": 14.99,
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/meine-metzgerei-puten-geschnetzeltes-400-g-000000000000717842",
-      "originalPrice": 4.69
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-cup-mit-griff-1-2-l-leo-print-weiss-000000000758879001"
     },
     {
-      "sourceId": "6d879b3a4645ecb23115",
-      "productLabel": "FERRERO Maxi King 105 g 0,11 kg (/1 kg) ¹",
+      "sourceId": "dbe09ccd5e8146c09dda",
+      "productLabel": "IRONMAXX MaxxWave Shaker 700 ml, Antharzit",
+      "storeName": "ALDI Süd",
+      "offerPrice": 11.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-maxxwave-shaker-700-ml-antharzit-000000000758899001",
+      "originalPrice": 14.99
+    },
+    {
+      "sourceId": "7da75042d45b1bbb166b",
+      "productLabel": "IRONMAXX Shaker Deep Black 700 ml",
+      "storeName": "ALDI Süd",
+      "offerPrice": 4.99,
+      "validFrom": "2026-09-21",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-shaker-deep-black-700-ml-000000000758928001"
+    },
+    {
+      "sourceId": "726a7dea43ac84c0cc3c",
+      "productLabel": "UP2FASHION WOMEN Damen Leichtsteppjacke, Braun, S 36/38",
+      "storeName": "ALDI Süd",
+      "offerPrice": 14.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-leichtsteppjacke-braun-s-36-38-000000000734404001"
+    },
+    {
+      "sourceId": "f845a54a5f29a61b7149",
+      "productLabel": "BAUHN Retro-Digitalkamera, Braun",
+      "storeName": "ALDI Süd",
+      "offerPrice": 29.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/bauhn-retro-digitalkamera-braun-000000000735421001"
+    },
+    {
+      "sourceId": "9b6c2b5e68d5a759b714",
+      "productLabel": "EXPERTIZ Kopierpapier",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/expertiz-kopierpapier-000000000000698759"
+    },
+    {
+      "sourceId": "214a0164e941c1c01aec",
+      "productLabel": "GARDENLINE Garten Kombigerät 5 in 1",
+      "storeName": "ALDI Süd",
+      "offerPrice": 19.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-garten-kombigeraet-5-in-1-000000000000710718"
+    },
+    {
+      "sourceId": "f38b824ebd29821cec1f",
+      "productLabel": "GARDENLINE Getriebe-Astschere",
+      "storeName": "ALDI Süd",
+      "offerPrice": 9.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-getriebe-astschere-000000000000736611"
+    },
+    {
+      "sourceId": "faec76cc5361253d05f4",
+      "productLabel": "GARDENLINE Betonschale oval",
+      "storeName": "ALDI Süd",
+      "offerPrice": 6.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-betonschale-oval-000000000000751758"
+    },
+    {
+      "sourceId": "012fb575c168356e9a9f",
+      "productLabel": "GARDENLINE Orchidee im Übertopf",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-orchidee-im-uebertopf-000000000000751770"
+    },
+    {
+      "sourceId": "c636fcc45df85052db63",
+      "productLabel": "GARDENLINE Grauer Textilkorb mit Henkel",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-grauer-textilkorb-mit-henkel-000000000000751774"
+    },
+    {
+      "sourceId": "ec81b3f5b5f4ed8caeb2",
+      "productLabel": "GARDENLINE Cyclamen-Trio",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.79,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-cyclamen-trio-000000000000751880"
+    },
+    {
+      "sourceId": "15e559df91d10984e1ec",
+      "productLabel": "GARDENLINE Chrysantheme-Trio Schale",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-chrysantheme-trio-schale-000000000000751892"
+    },
+    {
+      "sourceId": "08f87ee1d30de1efa97b",
+      "productLabel": "CASALUX LED-Strahler, Schwarz, Batteriebtrieben",
+      "storeName": "ALDI Süd",
+      "offerPrice": 14.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/casalux-led-strahler-schwarz-batteriebtrieben-000000000721872001"
+    },
+    {
+      "sourceId": "1c9d68f81d3d0fae0fc0",
+      "productLabel": "HOME CREATION Kabelbox, Schwarz",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kabelbox-schwarz-000000000724301001"
+    },
+    {
+      "sourceId": "bc76e2bda2d2552b8da3",
+      "productLabel": "GARDENLINE Flexibler Korb, Dunkelgrün",
+      "storeName": "ALDI Süd",
+      "offerPrice": 4.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-flexibler-korb-dunkelgruen-000000000725730001"
+    },
+    {
+      "sourceId": "283471b65227a6e59ef8",
+      "productLabel": "GARDENLINE Pflanzenroller, Eckig, Braun",
+      "storeName": "ALDI Süd",
+      "offerPrice": 6.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-pflanzenroller-eckig-braun-000000000726719001"
+    },
+    {
+      "sourceId": "ee5f49b17152d3e021c3",
+      "productLabel": "UP2FASHION WOMEN Damen Pullover, Creme, S 36/38",
+      "storeName": "ALDI Süd",
+      "offerPrice": 4.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-pullover-creme-s-36-38-000000000728326001"
+    },
+    {
+      "sourceId": "8d7cd5ef337f6e4297ff",
+      "productLabel": "HOME CREATION Thermodecke, Grün",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-thermodecke-gruen-000000000728828001"
+    },
+    {
+      "sourceId": "2742174b524ca0df2612",
+      "productLabel": "EXPERTIZ Briefordner oder Sammelmappe, Briefordner, Lila",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/expertiz-briefordner-oder-sammelmappe-briefordner-lila-000000000728957001"
+    },
+    {
+      "sourceId": "41bf2f0ab641216d86c8",
+      "productLabel": "GARDENLINE Gartengeräte, Besen",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-gartengeraete-besen-000000000729687001"
+    },
+    {
+      "sourceId": "0e7cd7fed80b22a2fbbc",
+      "productLabel": "GARDENLINE Garten-Abfallsack, Grün",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-garten-abfallsack-gruen-000000000729948001"
+    },
+    {
+      "sourceId": "6d98bc8bb8950255f6ab",
+      "productLabel": "BAUHN Kabelloser Over-Ear-Kopfhörer, Grau",
+      "storeName": "ALDI Süd",
+      "offerPrice": 16.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/bauhn-kabelloser-over-ear-kopfhoerer-grau-000000000731002001"
+    },
+    {
+      "sourceId": "b180e8658f72bfcf0bdf",
+      "productLabel": "GARDENLINE Herren Sweatshirt, Braun, M",
+      "storeName": "ALDI Süd",
+      "offerPrice": 9.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-herren-sweatshirt-braun-m-000000000731032001"
+    },
+    {
+      "sourceId": "fa7df98df602f9c08432",
+      "productLabel": "GARDENLINE Spaten oder Schaufel, Spaten",
+      "storeName": "ALDI Süd",
+      "offerPrice": 7.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-spaten-oder-schaufel-spaten-000000000731642001"
+    },
+    {
+      "sourceId": "c0e4552fcadb0f8b3f8c",
+      "productLabel": "UP2FASHION WOMEN Damen Shapewear-Unterwäsche, Schwarz, 2er-Set Slips, S 36/38",
+      "storeName": "ALDI Süd",
+      "offerPrice": 6.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-shapewear-unterwaesche-schwarz-2er-set-slips-s-36-38-000000000732127001"
+    },
+    {
+      "sourceId": "632786de3dc4103f5a4e",
+      "productLabel": "UP2FASHION WOMEN Damen Shapewear-Unterwäsche, Schwarz, Shorts, S 36/38",
+      "storeName": "ALDI Süd",
+      "offerPrice": 6.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-shapewear-unterwaesche-schwarz-shorts-s-36-38-000000000732127005"
+    },
+    {
+      "sourceId": "ec4ad24cb8bcd2650cb3",
+      "productLabel": "UP2FASHION WOMEN Damen Shapewear-Unterwäsche, Schwarz, Oberteil, S 36/38",
+      "storeName": "ALDI Süd",
+      "offerPrice": 6.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-shapewear-unterwaesche-schwarz-oberteil-s-36-38-000000000732127009"
+    },
+    {
+      "sourceId": "7b7001d78014e80852cb",
+      "productLabel": "UP2FASHION WOMEN Damen Jeans, Mittelblau, 36",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-jeans-mittelblau-36-000000000733651001"
+    },
+    {
+      "sourceId": "d80ef48c92e42d5a5311",
+      "productLabel": "GARDENLINE Teleskop-Besen, Allzweckbesen",
+      "storeName": "ALDI Süd",
+      "offerPrice": 7.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-teleskop-besen-allzweckbesen-000000000734332001"
+    },
+    {
+      "sourceId": "82057188278f50dfce89",
+      "productLabel": "UP2FASHION WOMEN Damen Pyjama, Marineblau, S 36/38",
+      "storeName": "ALDI Süd",
+      "offerPrice": 12.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-pyjama-marineblau-s-36-38-000000000734535001"
+    },
+    {
+      "sourceId": "22dc0be4a3252738a1a0",
+      "productLabel": "UP2FASHION Damen und Herren Clogs, Damen, Beige, 37",
+      "storeName": "ALDI Süd",
+      "offerPrice": 6.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-damen-und-herren-clogs-damen-beige-37-000000000735491001"
+    },
+    {
+      "sourceId": "a0fe90ef19562685ab44",
+      "productLabel": "FERREX Akku-Heckenscheren, Heckenschere",
+      "storeName": "ALDI Süd",
+      "offerPrice": 24.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ferrex-akku-heckenscheren-heckenschere-000000000744092001"
+    },
+    {
+      "sourceId": "8d3703d829cbc817d9e1",
+      "productLabel": "GARDENLINE Henkelkorb, Eckig",
+      "storeName": "ALDI Süd",
+      "offerPrice": 12.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-henkelkorb-eckig-000000000751768001"
+    },
+    {
+      "sourceId": "72263d94a3c108c78e86",
+      "productLabel": "GARDENLINE Herbstpflanzen-Mix im Übertopf, Cyclame",
+      "storeName": "ALDI Süd",
+      "offerPrice": 4.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-herbstpflanzen-mix-im-uebertopf-cyclame-000000000751786001"
+    },
+    {
+      "sourceId": "f753d1d0b6d2bfc6870b",
+      "productLabel": "GARDENLINE Chrysanthemen, Carousel Splash",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.59,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-chrysanthemen-carousel-splash-000000000751825001"
+    },
+    {
+      "sourceId": "f787a908f6e3e04fb3dd",
+      "productLabel": "GARDENLINE Kalanchoe-Schale, Rosa",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.49,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-kalanchoe-schale-rosa-000000000751831001"
+    },
+    {
+      "sourceId": "2aefb779eecf8ae0ccaa",
+      "productLabel": "GARDENLINE Korb oder Rindengefäß, Korb eckig",
+      "storeName": "ALDI Süd",
+      "offerPrice": 9.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-korb-oder-rindengefaess-korb-eckig-000000000751866001"
+    },
+    {
+      "sourceId": "097ce693f9855fc4b529",
+      "productLabel": "GARDENLINE Autumn Lights, Viola 6er-Tray, Blau",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-autumn-lights-viola-6er-tray-blau-000000000751895001"
+    },
+    {
+      "sourceId": "45e88192994661e9867c",
+      "productLabel": "GARDENLINE Gräser-Schätze, Hameln",
+      "storeName": "ALDI Süd",
+      "offerPrice": 9.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-graeser-schaetze-hameln-000000000751896001"
+    },
+    {
+      "sourceId": "dc392da99ada2de887cc",
+      "productLabel": "Beschäftigungsbuch Lizenz, PAW Patrol",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-24",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/no-brand-beschaeftigungsbuch-lizenz-paw-patrol-000000000751932001"
+    },
+    {
+      "sourceId": "4d08c5913ec24ecc99e7",
+      "productLabel": "FRANTASTIQUE! Mini französisches Feingebäck, Pains au Choc",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.49,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/frantastique-mini-franzoesisches-feingebaeck-pains-au-choc-000000000542909001"
+    },
+    {
+      "sourceId": "408c975b31e379a423db",
+      "productLabel": "FRANTASTIQUE! Mini französisches Feingebäck, Croissant",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.49,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/frantastique-mini-franzoesisches-feingebaeck-croissant-000000000542909002"
+    },
+    {
+      "sourceId": "7c24fdb4334b8d5f87f9",
+      "productLabel": "LANDLIEBE Butter 250 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.29,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-butter-250-g-000000000000203920"
+    },
+    {
+      "sourceId": "c4eb334acd2b4abdc933",
+      "productLabel": "LANDLIEBE Haltbare Milch 1,5 % 1 l",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.95,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-haltbare-milch-1-5-1-l-000000000000204375"
+    },
+    {
+      "sourceId": "dd57ea73c87df91ea3ef",
+      "productLabel": "LANDLIEBE Haltbare Milch 3,5 % 1 l",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.95,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-haltbare-milch-3-5-1-l-000000000000693417"
+    },
+    {
+      "sourceId": "da763c313d64403b321b",
+      "productLabel": "WIESBAUER Aufschnitt 200 g, Frühstück",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/wiesbauer-aufschnitt-200-g-fruehstueck-000000000273985001"
+    },
+    {
+      "sourceId": "c706897326b9fb6557f7",
+      "productLabel": "WIESBAUER Aufschnitt 200 g, Knackermix",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/wiesbauer-aufschnitt-200-g-knackermix-000000000273985002"
+    },
+    {
+      "sourceId": "a1003be95eb239b37b1d",
+      "productLabel": "HERTA Kochschinken 140 g, Saftschinken",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/herta-kochschinken-140-g-saftschinken-000000000599613001"
+    },
+    {
+      "sourceId": "9e94e6c81adedb00acd3",
+      "productLabel": "HERTA Kochschinken 140 g, Grillschinken",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/herta-kochschinken-140-g-grillschinken-000000000599613002"
+    },
+    {
+      "sourceId": "e1e3fd0c451b0639a774",
+      "productLabel": "FOL EPI Fol Epi 235 g, Classic",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/fol-epi-fol-epi-235-g-classic-000000000654182001"
+    },
+    {
+      "sourceId": "d4378b36b13d1e354718",
+      "productLabel": "FOL EPI Fol Epi 210 g, Caractere",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/fol-epi-fol-epi-210-g-caractere-000000000654182002"
+    },
+    {
+      "sourceId": "750f317dbd56bfa00fe6",
+      "productLabel": "FOL EPI Fol Epi 210 g, Cremig",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/fol-epi-fol-epi-210-g-cremig-000000000654182003"
+    },
+    {
+      "sourceId": "74fd37e230499f8b6e6f",
+      "productLabel": "FOL EPI Fol Epi 210 g, Kürbiskern",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/fol-epi-fol-epi-210-g-kuerbiskern-000000000654182004"
+    },
+    {
+      "sourceId": "69335b4251efa5305342",
+      "productLabel": "FERRERO Maxi King 105 g",
       "storeName": "ALDI Süd",
       "offerPrice": 1.49,
       "validFrom": "2026-09-25",
@@ -436,8 +1415,78 @@
       "proofRef": "https://www.aldi-sued.de/produkt/ferrero-maxi-king-105-g-000000000000107055"
     },
     {
-      "sourceId": "01a6d9cc831524dcfdbf",
-      "productLabel": "ALDI SPORTS Protein Matcha Latte 250 g 0,25 kg (/1 kg) ¹",
+      "sourceId": "a0794f3079bed24870e0",
+      "productLabel": "Pastis de Marseille 700 ml",
+      "storeName": "ALDI Süd",
+      "offerPrice": 8.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/no-brand-pastis-de-marseille-700-ml-000000000000183438"
+    },
+    {
+      "sourceId": "2f0c53cdfc670eec3431",
+      "productLabel": "Alpensalz 1 kg",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/no-brand-alpensalz-1-kg-000000000000271510"
+    },
+    {
+      "sourceId": "ba2b5d335cc0e8162951",
+      "productLabel": "· FAIR&GUT · Rindergulasch XXL",
+      "storeName": "ALDI Süd",
+      "offerPrice": 10.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/-fair-gut-rindergulasch-xxl-000000000000543043"
+    },
+    {
+      "sourceId": "fcc715c734808ea4e800",
+      "productLabel": "COUPERNE Calvados V.S 700 ml",
+      "storeName": "ALDI Süd",
+      "offerPrice": 9.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/couperne-calvados-v-s-700-ml-000000000000582306"
+    },
+    {
+      "sourceId": "f471567f90a9e26a533d",
+      "productLabel": "FEBREZE 3Volution Duftstecker Starterkit 20 ml",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/febreze-3volution-duftstecker-starterkit-20-ml-000000000000639996"
+    },
+    {
+      "sourceId": "bdca65291f5c3a9cb5ec",
+      "productLabel": "PAPERMAKERS Toilettenpapier mit Dekor und Duft, 3-lagig",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/papermakers-toilettenpapier-mit-dekor-und-duft-3-lagig-000000000000641292"
+    },
+    {
+      "sourceId": "411b93c6982fd947e08d",
+      "productLabel": "FERRERO Rocher 250 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ferrero-rocher-250-g-000000000000697061"
+    },
+    {
+      "sourceId": "c3e85c0562d86e966cc9",
+      "productLabel": "ALDI SPORTS Protein Matcha Latte 250 g",
       "storeName": "ALDI Süd",
       "offerPrice": 9.95,
       "validFrom": "2026-09-25",
@@ -446,8 +1495,8 @@
       "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-protein-matcha-latte-250-g-000000000000700241"
     },
     {
-      "sourceId": "dfb9c89340702b60e8e4",
-      "productLabel": "LENOR Weichspüler Luftfrisch Alpensee 1,064 l 76 WL (/1 WL) ¹",
+      "sourceId": "fca0847d191b97647144",
+      "productLabel": "LENOR Weichspüler Luftfrisch Alpensee 1,064 l",
       "storeName": "ALDI Süd",
       "offerPrice": 4.95,
       "validFrom": "2026-09-25",
@@ -456,8 +1505,58 @@
       "proofRef": "https://www.aldi-sued.de/produkt/lenor-weichspueler-luftfrisch-alpensee-1-064-l-000000000000723870"
     },
     {
-      "sourceId": "3243803b24592e49c182",
-      "productLabel": "Tiefkühlung DR. OETKER Rustica 3-Salame 0,49 kg (/1 kg) ¹",
+      "sourceId": "b9618b76101d9faad023",
+      "productLabel": "MEINE METZGEREI Hackfleisch gemischt 1 kg",
+      "storeName": "ALDI Süd",
+      "offerPrice": 6.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/meine-metzgerei-hackfleisch-gemischt-1-kg-000000000000730931"
+    },
+    {
+      "sourceId": "360ce9b1e2a07b232d0b",
+      "productLabel": "BENEDIKTINER HELL Benediktiner Hell 5-l-Fass",
+      "storeName": "ALDI Süd",
+      "offerPrice": 8.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/benediktiner-hell-benediktiner-hell-5-l-fass-000000000000745939"
+    },
+    {
+      "sourceId": "9784c0ac39d7853df9da",
+      "productLabel": "ALDI SPORTS High Protein Sahne Pulver 350 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 9.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-high-protein-sahne-pulver-350-g-000000000000746715"
+    },
+    {
+      "sourceId": "fa8d69dbf258cb177957",
+      "productLabel": "ELMEX Elmex & Aronal Duo 2 x 75 ml",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/elmex-elmex-aronal-duo-2-x-75-ml-000000000000758227"
+    },
+    {
+      "sourceId": "8956f3f9a911eb08730e",
+      "productLabel": "DR. OETKER Rustica 5-Cheese 505 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-oetker-rustica-5-cheese-505-g-000000000000770126"
+    },
+    {
+      "sourceId": "edcc0c65c56090158ec2",
+      "productLabel": "DR. OETKER Rustica 3-Salame",
       "storeName": "ALDI Süd",
       "offerPrice": 3.99,
       "validFrom": "2026-09-25",
@@ -466,8 +1565,68 @@
       "proofRef": "https://www.aldi-sued.de/produkt/dr-oetker-rustica-3-salame-000000000000770163"
     },
     {
-      "sourceId": "0efc95ca7d203e0ee8b0",
-      "productLabel": "ROUGETTE Ofenkäse 320 g, Würzig 0,32 kg (/1 kg) ¹",
+      "sourceId": "928fd8ce89d1c49896a6",
+      "productLabel": "MÜLLER Milchreis 200 g, Pur",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.39,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-pur-000000000203329001"
+    },
+    {
+      "sourceId": "82e12d60c2764382a41f",
+      "productLabel": "MÜLLER Milchreis 200 g, Schokolade",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.39,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-schokolade-000000000203329002"
+    },
+    {
+      "sourceId": "397de9db7c5dfc312eca",
+      "productLabel": "MÜLLER Milchreis 200 g, Zimt",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.39,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-zimt-000000000203329003"
+    },
+    {
+      "sourceId": "a0e2e902b1aea774bcf0",
+      "productLabel": "MÜLLER Milchreis 200 g, Vanille",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.39,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-vanille-000000000203329009"
+    },
+    {
+      "sourceId": "5e40585be4597bd81a7e",
+      "productLabel": "ROUGETTE Ofenkäse 320 g, Mild-cremig",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/rougette-ofenkaese-320-g-mild-cremig-000000000204421001"
+    },
+    {
+      "sourceId": "fbfbecab75a2f5378011",
+      "productLabel": "ROUGETTE Ofenkäse 320 g, Kräuter",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/rougette-ofenkaese-320-g-kraeuter-000000000204421002"
+    },
+    {
+      "sourceId": "3d4a990c30c822fffba0",
+      "productLabel": "ROUGETTE Ofenkäse 320 g, Würzig",
       "storeName": "ALDI Süd",
       "offerPrice": 3.99,
       "validFrom": "2026-09-25",
@@ -476,8 +1635,38 @@
       "proofRef": "https://www.aldi-sued.de/produkt/rougette-ofenkaese-320-g-wuerzig-000000000204421003"
     },
     {
-      "sourceId": "25717f1e72685f637505",
-      "productLabel": "FEBREZE Bad-Lufterfrischer Duo 16 ml, Vanille 0,02 l (/1 l) ¹",
+      "sourceId": "80de1838df56cf1c8b56",
+      "productLabel": "Apfel Cidre aus der Normandie 750 ml, Herb",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.49,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/no-brand-apfel-cidre-aus-der-normandie-750-ml-herb-000000000265012001"
+    },
+    {
+      "sourceId": "12eddd85998acc190beb",
+      "productLabel": "Apfel Cidre aus der Normandie 750 ml, Mild",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.49,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/no-brand-apfel-cidre-aus-der-normandie-750-ml-mild-000000000265012002"
+    },
+    {
+      "sourceId": "0c1a59b2413e4b39919d",
+      "productLabel": "CHOCEUR Nussknacker Vollmilch 300 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.49,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/choceur-nussknacker-vollmilch-300-g-000000000473232001"
+    },
+    {
+      "sourceId": "95ba5b16dd08a275c468",
+      "productLabel": "FEBREZE Bad-Lufterfrischer Duo 16 ml, Vanille",
       "storeName": "ALDI Süd",
       "offerPrice": 5.99,
       "validFrom": "2026-09-25",
@@ -486,8 +1675,48 @@
       "proofRef": "https://www.aldi-sued.de/produkt/febreze-bad-lufterfrischer-duo-16-ml-vanille-000000000505830002"
     },
     {
-      "sourceId": "8c3bade9c40a35c9978f",
-      "productLabel": "MEISTER PROPER Reiniger-Spray 0,8 l, Bad 0,8 l (/1 l) ¹",
+      "sourceId": "f41866240b7de65de19e",
+      "productLabel": "FEBREZE Duftstecker Starterkit, Vanille",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/febreze-duftstecker-starterkit-vanille-000000000505879002"
+    },
+    {
+      "sourceId": "a3df3b2e9fdd3dce4fb0",
+      "productLabel": "FEBREZE 3Volution Duftstecker Nachfüllflakon 40 ml, Pure Frische",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/febreze-3volution-duftstecker-nachfuellflakon-40-ml-pure-frische-000000000523156001"
+    },
+    {
+      "sourceId": "3a247c0d3ce1ae50bd53",
+      "productLabel": "FEBREZE 3Volution Duftstecker Nachfüllflakon 40 ml, Vanille Duo",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/febreze-3volution-duftstecker-nachfuellflakon-40-ml-vanille-duo-000000000523156003"
+    },
+    {
+      "sourceId": "380bb762540e5223a84e",
+      "productLabel": "HEAD & SHOULDERS Shampoo 800 ml, Classic Clean",
+      "storeName": "ALDI Süd",
+      "offerPrice": 8.88,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/head-shoulders-shampoo-800-ml-classic-clean-000000000595964001"
+    },
+    {
+      "sourceId": "e487c62e10560e39930f",
+      "productLabel": "MEISTER PROPER Reiniger-Spray 0,8 l, Bad",
       "storeName": "ALDI Süd",
       "offerPrice": 2.29,
       "validFrom": "2026-09-25",
@@ -496,8 +1725,48 @@
       "proofRef": "https://www.aldi-sued.de/produkt/meister-proper-reiniger-spray-0-8-l-bad-000000000604927001"
     },
     {
-      "sourceId": "245e35dc44f27d0fc28f",
-      "productLabel": "FUNNY FRISCH Chipsfrisch 250 g, Ungarisch 0,25 kg (/1 kg) ¹",
+      "sourceId": "a51cd1eea441dec09649",
+      "productLabel": "LANDLIEBE Fruchtjoghurt 500 g, Vanille",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.11,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-fruchtjoghurt-500-g-vanille-000000000613946001"
+    },
+    {
+      "sourceId": "5d29cca7eca6759707aa",
+      "productLabel": "LANDLIEBE Fruchtjoghurt 500 g, Erdbeere",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.11,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-fruchtjoghurt-500-g-erdbeere-000000000613946002"
+    },
+    {
+      "sourceId": "1ed9ea7e9ea2939c5e05",
+      "productLabel": "LANDLIEBE Fruchtjoghurt 500 g, Heidelbeere",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.11,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-fruchtjoghurt-500-g-heidelbeere-000000000613946003"
+    },
+    {
+      "sourceId": "270422ff22e53f35aee8",
+      "productLabel": "LANDLIEBE Fruchtjoghurt 500 g, Pfirsich",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.11,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-fruchtjoghurt-500-g-pfirsich-000000000613946005"
+    },
+    {
+      "sourceId": "ea0ef9f155d3354c161b",
+      "productLabel": "FUNNY FRISCH Chipsfrisch 250 g, Ungarisch",
       "storeName": "ALDI Süd",
       "offerPrice": 1.79,
       "validFrom": "2026-09-25",
@@ -506,8 +1775,108 @@
       "proofRef": "https://www.aldi-sued.de/produkt/funny-frisch-chipsfrisch-250-g-ungarisch-000000000697776001"
     },
     {
-      "sourceId": "dba7a5df624299be1c2f",
-      "productLabel": "ALDI SPORTS Kreatin Pulver 200g, Waldbeere 0,2 kg (/1 kg) ¹",
+      "sourceId": "5b64718b9dee5a551e5c",
+      "productLabel": "FUNNY FRISCH Chipsfrisch 250 g, Oriental",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/funny-frisch-chipsfrisch-250-g-oriental-000000000697776002"
+    },
+    {
+      "sourceId": "450ed4952bc6bf579a09",
+      "productLabel": "ALDI SPORTS Veganer Proteinriegel 55 g, Lemon Cake",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.29,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-veganer-proteinriegel-55-g-lemon-cake-000000000700189001"
+    },
+    {
+      "sourceId": "a34cef1df56fc0c8d786",
+      "productLabel": "ALDI SPORTS Veganer Proteinriegel 55 g, Cookies & Cream",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.29,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-veganer-proteinriegel-55-g-cookies-cream-000000000700189002"
+    },
+    {
+      "sourceId": "b1db011eb3afa28b60f8",
+      "productLabel": "ALDI SPORTS Flavor Powder 120 g, Salty Caramel",
+      "storeName": "ALDI Süd",
+      "offerPrice": 6.49,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-flavor-powder-120-g-salty-caramel-000000000700218001"
+    },
+    {
+      "sourceId": "e50bd516c4b9fd2f8511",
+      "productLabel": "ALDI SPORTS Flavor Powder 120 g, Strawberry",
+      "storeName": "ALDI Süd",
+      "offerPrice": 6.49,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-flavor-powder-120-g-strawberry-000000000700218002"
+    },
+    {
+      "sourceId": "395bda185b0378ab80ab",
+      "productLabel": "ALDI SPORTS Flavor Powder 120 g, Vanilla",
+      "storeName": "ALDI Süd",
+      "offerPrice": 6.49,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-flavor-powder-120-g-vanilla-000000000700218003"
+    },
+    {
+      "sourceId": "df9c87d62927b4405e40",
+      "productLabel": "ALDI SPORTS Flavor Powder 120 g, Chocolate Brownie",
+      "storeName": "ALDI Süd",
+      "offerPrice": 6.49,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-flavor-powder-120-g-chocolate-brownie-000000000700218004"
+    },
+    {
+      "sourceId": "7eaf83a6d5c0f40e0c3f",
+      "productLabel": "MÜLLER Milchreis 200 g Limitiert, Bienenstich",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.39,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-limitiert-bienenstich-000000000734384004"
+    },
+    {
+      "sourceId": "5d60720fc17fa55c90e3",
+      "productLabel": "MÜLLER Milchreis 200 g Limitiert, Schoko Banane",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.39,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-limitiert-schoko-banane-000000000734384005"
+    },
+    {
+      "sourceId": "74c151e4441b9f34f260",
+      "productLabel": "MÜLLER Milchreis 200 g Limitiert, Orange Vanille",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.39,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-limitiert-orange-vanille-000000000734384006"
+    },
+    {
+      "sourceId": "3d7453f383a74b3a9fd5",
+      "productLabel": "ALDI SPORTS Kreatin Pulver 200g, Waldbeere",
       "storeName": "ALDI Süd",
       "offerPrice": 5.99,
       "validFrom": "2026-09-25",
@@ -516,81 +1885,844 @@
       "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-kreatin-pulver-200g-waldbeere-000000000746387001"
     },
     {
-      "sourceId": "ef3d9278999bb8533b56",
-      "productLabel": "Vegetarisch HOFBURGER Gouda jung 450 g 0,45 kg (6,67 €/1 kg)",
+      "sourceId": "52acd15109f6ddb44711",
+      "productLabel": "ALDI SPORTS Kreatin Pulver 200g, Orange",
       "storeName": "ALDI Süd",
-      "offerPrice": 3.0,
-      "validFrom": "2026-09-21",
+      "offerPrice": 5.99,
+      "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/hofburger-gouda-jung-450-g-000000000000204237",
-      "originalPrice": 3.79
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-kreatin-pulver-200g-orange-000000000746387002"
     },
     {
-      "sourceId": "0572f471e19b735c870c",
-      "productLabel": "CUCINA XXL-Pizzateig 550 g 0,55 kg (1,82 €/1 kg)",
+      "sourceId": "14530f4a7388aeedcb76",
+      "productLabel": "ALDI SPORTS Protein Riegel Kreatin 50 g, Pistacchio White Chocolate",
       "storeName": "ALDI Süd",
-      "offerPrice": 1.0,
-      "validFrom": "2026-09-21",
+      "offerPrice": 1.29,
+      "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/cucina-xxl-pizzateig-550-g-000000000000211639",
-      "originalPrice": 1.29
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-protein-riegel-kreatin-50-g-pistacchio-white-chocolate-000000000746393001"
     },
     {
-      "sourceId": "9025d1e6176f30adccc7",
-      "productLabel": "Vegan KING'S CROWN Rote Bete 430 g 0,43 KG/ATG (1,84 €/1 KG/ATG)",
+      "sourceId": "2ab593a954a24fb633a5",
+      "productLabel": "ALDI SPORTS Protein Riegel Kreatin 50 g, Nougat Dark Chocolate",
       "storeName": "ALDI Süd",
-      "offerPrice": 0.79,
-      "validFrom": "2026-09-21",
+      "offerPrice": 1.29,
+      "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/king-s-crown-rote-bete-430-g-000000000000273493",
-      "originalPrice": 1.09
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-protein-riegel-kreatin-50-g-nougat-dark-chocolate-000000000746393002"
     },
     {
-      "sourceId": "147d4f51ba46b95cb136",
-      "productLabel": "Vegan KING'S CROWN Tomatenmark 200 g 0,2 kg (3,45 €/1 kg)",
+      "sourceId": "2275a44b1dc8882b4f1c",
+      "productLabel": "HOUDEK Kabanos Wiesn, Klassik 200 g",
       "storeName": "ALDI Süd",
-      "offerPrice": 0.69,
-      "validFrom": "2026-09-21",
+      "offerPrice": 2.39,
+      "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/king-s-crown-tomatenmark-200-g-000000000000381423",
-      "originalPrice": 0.89
+      "proofRef": "https://www.aldi-sued.de/produkt/houdek-kabanos-wiesn-klassik-200-g-000000000768031001"
     },
     {
-      "sourceId": "5eff71b89420ca22b97f",
-      "productLabel": "Vegan DELIKATO Tomaten-Ketchup 500 ml 0,5 l (2,00 €/1 l)",
+      "sourceId": "a296f82c77b828f28acf",
+      "productLabel": "HOUDEK Kabanos Wiesn, Klassik 180 g",
       "storeName": "ALDI Süd",
-      "offerPrice": 1.0,
-      "validFrom": "2026-09-21",
+      "offerPrice": 2.39,
+      "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/delikato-tomaten-ketchup-500-ml-000000000000575313",
-      "originalPrice": 1.29
+      "proofRef": "https://www.aldi-sued.de/produkt/houdek-kabanos-wiesn-klassik-180-g-000000000768031002"
     },
     {
-      "sourceId": "b927fe79f494aa612726",
-      "productLabel": "Vegetarisch MILSANI Back-Camembert mit Wildpreiselbeer-Dip 350 g 0,35 kg (6,54 €/1 kg)",
+      "sourceId": "cc487c068a8b239b3935",
+      "productLabel": "HOUDEK Kabanos Wiesn, Käse 180 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.39,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/houdek-kabanos-wiesn-kaese-180-g-000000000768031003"
+    },
+    {
+      "sourceId": "180c236a596d38a102eb",
+      "productLabel": "HOUDEK Kabanos Wiesn, Paprika 180 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.39,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/houdek-kabanos-wiesn-paprika-180-g-000000000768031004"
+    },
+    {
+      "sourceId": "0a22592272fbb9eb7197",
+      "productLabel": "PRESIDENT Président Carré Gourmet 200 g, Classic",
       "storeName": "ALDI Süd",
       "offerPrice": 2.29,
-      "validFrom": "2026-09-21",
+      "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/milsani-back-camembert-mit-wildpreiselbeer-dip-350-g-000000000000589034",
-      "originalPrice": 2.99
+      "proofRef": "https://www.aldi-sued.de/produkt/president-president-carre-gourmet-200-g-classic-000000000772412001"
     },
     {
-      "sourceId": "ec12bf5ef3514e60f023",
-      "productLabel": "MEINE BACKWELT Pizzastick Salami",
+      "sourceId": "2fd067eca2ba50490daa",
+      "productLabel": "PRESIDENT Président Snack 180g, mild-cremig",
       "storeName": "ALDI Süd",
-      "offerPrice": 0.69,
-      "validFrom": "2026-09-21",
+      "offerPrice": 2.29,
+      "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/meine-backwelt-pizzastick-salami-000000000000671184",
-      "originalPrice": 0.99
+      "proofRef": "https://www.aldi-sued.de/produkt/president-president-snack-180g-mild-cremig-000000000772583001"
+    },
+    {
+      "sourceId": "aa1cca6569f90ae33d31",
+      "productLabel": "PRESIDENT Président Snack 180g, fein-würzig",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.29,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/president-president-snack-180g-fein-wuerzig-000000000772583002"
+    },
+    {
+      "sourceId": "203b59a8338d94c5eb3d",
+      "productLabel": "ARIEL Waschmittel 0,9 kg, Pulver Universal",
+      "storeName": "ALDI Süd",
+      "offerPrice": 4.99,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ariel-waschmittel-0-9-kg-pulver-universal-000000000781974001"
+    },
+    {
+      "sourceId": "beee774aa91f85ee7446",
+      "productLabel": "FAIRY Fairy Handgeschirrspülmittel 450ml, Granatapfel",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.29,
+      "validFrom": "2026-09-25",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/fairy-fairy-handgeschirrspuelmittel-450ml-granatapfel-000000000783043001"
+    },
+    {
+      "sourceId": "081f79847b9688d4a285",
+      "productLabel": "UP2FASHION WOMEN Damen Hose, Braun, S (36/38)",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-26",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-hose-braun-s-36-38-000000000730280001"
+    },
+    {
+      "sourceId": "7d390e6ac0598c3f47fa",
+      "productLabel": "UP2FASHION WOMEN Damen Cardigan, Schwarz, S (36/38)",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.99,
+      "validFrom": "2026-09-26",
+      "validUntil": "2026-09-26",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-cardigan-schwarz-s-36-38-000000000730807001"
+    },
+    {
+      "sourceId": "7273c5ee3fb4dab9e960",
+      "productLabel": "L&D Regenmantel, Gelb, 122/128",
+      "storeName": "ALDI Süd",
+      "offerPrice": 12.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/l-d-regenmantel-gelb-122-128-000000000730742007"
+    },
+    {
+      "sourceId": "995951c802a8a0347c89",
+      "productLabel": "MATTEL ALDImania Barbie",
+      "storeName": "ALDI Süd",
+      "offerPrice": 12.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/mattel-aldimania-barbie-000000000000764619"
+    },
+    {
+      "sourceId": "6066bf7e1a95cff698dc",
+      "productLabel": "LILY & DAN Regenjacke, Rosa, 86/92",
+      "storeName": "ALDI Süd",
+      "offerPrice": 9.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/lily-dan-regenjacke-rosa-86-92-000000000731042001"
+    },
+    {
+      "sourceId": "fb61323026c801861515",
+      "productLabel": "LILY & DAN Freizeitanzug, Blau Dino, 110/116",
+      "storeName": "ALDI Süd",
+      "offerPrice": 4.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/lily-dan-freizeitanzug-blau-dino-110-116-000000000732007001"
+    },
+    {
+      "sourceId": "b80984147429b054fa75",
+      "productLabel": "LILY & DAN Pyjama, Lila, 98/104",
+      "storeName": "ALDI Süd",
+      "offerPrice": 6.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/lily-dan-pyjama-lila-98-104-000000000733360001"
+    },
+    {
+      "sourceId": "bbe4d07fa8cf3c3d121d",
+      "productLabel": "LILY & DAN Outdoor-Hose, Dunkelblau, 98",
+      "storeName": "ALDI Süd",
+      "offerPrice": 4.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/lily-dan-outdoor-hose-dunkelblau-98-000000000735278006"
+    },
+    {
+      "sourceId": "e02d5ead51c6a53f0a74",
+      "productLabel": "LILY & DAN Kinder Regenstiefel, Dinosaurier, 25",
+      "storeName": "ALDI Süd",
+      "offerPrice": 8.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/lily-dan-kinder-regenstiefel-dinosaurier-25-000000000737360001"
+    },
+    {
+      "sourceId": "62f2df7ba7b3d21ef83f",
+      "productLabel": "L&D Kinder-Regenstiefel, Blitz, 33",
+      "storeName": "ALDI Süd",
+      "offerPrice": 8.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/l-d-kinder-regenstiefel-blitz-33-000000000737380001"
+    },
+    {
+      "sourceId": "e595a16ebba6558eec15",
+      "productLabel": "LILY & DAN Regenhose, Marineblau, 86/92",
+      "storeName": "ALDI Süd",
+      "offerPrice": 7.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/lily-dan-regenhose-marineblau-86-92-000000000743062001"
+    },
+    {
+      "sourceId": "c83949f3dabdcdea3f9f",
+      "productLabel": "L&D Regenhose für Kinder, Gelb, 122/128",
+      "storeName": "ALDI Süd",
+      "offerPrice": 6.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/l-d-regenhose-fuer-kinder-gelb-122-128-000000000743644001"
+    },
+    {
+      "sourceId": "4e2686dcdb7e4752f84b",
+      "productLabel": "HOME CREATION Fußmatte, Sweet Home",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-fussmatte-sweet-home-000000000728671001"
+    },
+    {
+      "sourceId": "7d98a58246d715818876",
+      "productLabel": "HOME CREATION Herbstliche Glaskürbisse, Orange",
+      "storeName": "ALDI Süd",
+      "offerPrice": 4.49,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-herbstliche-glaskuerbisse-orange-000000000730025002"
+    },
+    {
+      "sourceId": "98265c9f323b7706213a",
+      "productLabel": "HOME CREATION Kuscheldecke Hoch Tief Struktur, Grün",
+      "storeName": "ALDI Süd",
+      "offerPrice": 6.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kuscheldecke-hoch-tief-struktur-gruen-000000000731338001"
+    },
+    {
+      "sourceId": "f4931a14492cddefb162",
+      "productLabel": "HOME CREATION Kunstfellteppich, Moonbeam Bubble",
+      "storeName": "ALDI Süd",
+      "offerPrice": 14.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kunstfellteppich-moonbeam-bubble-000000000733670001"
+    },
+    {
+      "sourceId": "ba7313f37114c7b40cd0",
+      "productLabel": "HOME CREATION Herbst-Kissen, Boucle, Orange",
+      "storeName": "ALDI Süd",
+      "offerPrice": 4.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-herbst-kissen-boucle-orange-000000000735192001"
+    },
+    {
+      "sourceId": "dafdacec80999d0387a7",
+      "productLabel": "HOME CREATION Kunstfell Sitzkissen, Rund, Weiß",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kunstfell-sitzkissen-rund-weiss-000000000737314001"
+    },
+    {
+      "sourceId": "d7836f31d410a35598a4",
+      "productLabel": "HOME CREATION Kunstfell Sitzkissen, Eckig, Beige",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kunstfell-sitzkissen-eckig-beige-000000000737314002"
+    },
+    {
+      "sourceId": "c7d0b3beba59936a34fc",
+      "productLabel": "HOME CREATION Herbstkranz, Braunen Kürbis",
+      "storeName": "ALDI Süd",
+      "offerPrice": 4.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-herbstkranz-braunen-kuerbis-000000000742747001"
+    },
+    {
+      "sourceId": "426ec126913b85bef040",
+      "productLabel": "DR. BECKMANN Waschmaschinen Frische-Reiniger 60 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.65,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-waschmaschinen-frische-reiniger-60-g-000000000000513806"
+    },
+    {
+      "sourceId": "88c2a515a8a477ffe46c",
+      "productLabel": "DR. BECKMANN Spülmaschinen-Reiniger-Caps 60 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-spuelmaschinen-reiniger-caps-60-g-000000000000578989"
+    },
+    {
+      "sourceId": "10f60239b629fe7ab26b",
+      "productLabel": "DR. BECKMANN Waschmaschinen-Pflege 250 ml",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.65,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-waschmaschinen-pflege-250-ml-000000000000601358"
+    },
+    {
+      "sourceId": "c2ad6483e8b5d5356974",
+      "productLabel": "DR. BECKMANN Waschmaschinen Komplett-Pflege Floral 250 ml",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.65,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-waschmaschinen-komplett-pflege-floral-250-ml-000000000000728048"
+    },
+    {
+      "sourceId": "9e3a36a175aa3ff341e1",
+      "productLabel": "GARDENLINE Callunen Pink Girls",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.89,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-callunen-pink-girls-000000000000740353"
+    },
+    {
+      "sourceId": "fdfe3a3e584f70e57698",
+      "productLabel": "DR. BECKMANN Bad & Anti-Kalk Wonder Gel 450 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-bad-anti-kalk-wonder-gel-450-g-000000000000768981"
+    },
+    {
+      "sourceId": "a974a02cf54f0d48a977",
+      "productLabel": "KOKETT Herbstservietten 40 Stück, 24 x 24 cm, Gespenst",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/kokett-herbstservietten-40-stueck-24-x-24-cm-gespenst-000000000211015001"
+    },
+    {
+      "sourceId": "2f7e0b4907f43fa25cd9",
+      "productLabel": "DR. BECKMANN Magic Leaves 50WL, Universal",
+      "storeName": "ALDI Süd",
+      "offerPrice": 6.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-magic-leaves-50wl-universal-000000000602591001"
+    },
+    {
+      "sourceId": "3796cc29e42a1a3a04c3",
+      "productLabel": "CROFTON Küchenutensilien mit Standfuß 6er-Set, Schwarz",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/crofton-kuechenutensilien-mit-standfuss-6er-set-schwarz-000000000728108001"
+    },
+    {
+      "sourceId": "1b6122ec85aa862bc25d",
+      "productLabel": "UP2FASHION WOMEN Regenjacke, Schwarz, M 40/42",
+      "storeName": "ALDI Süd",
+      "offerPrice": 17.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-regenjacke-schwarz-m-40-42-000000000730646001"
+    },
+    {
+      "sourceId": "4d973fea4d4ae8fb2ac7",
+      "productLabel": "UP2FASHION Allterrain-Schuhe, Beige, 37",
+      "storeName": "ALDI Süd",
+      "offerPrice": 17.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-allterrain-schuhe-beige-37-000000000734536001"
+    },
+    {
+      "sourceId": "7d76b74e65046ca0dab2",
+      "productLabel": "UP2FASHION WOMEN Chelsea-Gummistiefel, Schwarz, 37",
+      "storeName": "ALDI Süd",
+      "offerPrice": 9.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-chelsea-gummistiefel-schwarz-37-000000000735752001"
+    },
+    {
+      "sourceId": "a32b6931e6aea5d8d39d",
+      "productLabel": "UP2FASHION Taschen- oder Stockschirm, Taschenschirm, Schottenstoff",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-taschen-oder-stockschirm-taschenschirm-schottenstoff-000000000736226001"
+    },
+    {
+      "sourceId": "966955f450b75b8763bf",
+      "productLabel": "RIDE+GO Fahrradhelm, Erwachsene, Weiß, S/M",
+      "storeName": "ALDI Süd",
+      "offerPrice": 12.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ride-go-fahrradhelm-erwachsene-weiss-s-m-000000000738869001"
+    },
+    {
+      "sourceId": "560981cfb4a44f655a91",
+      "productLabel": "GARDENLINE Chrysantheme, Weiß",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.59,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-chrysantheme-weiss-000000000740338002"
+    },
+    {
+      "sourceId": "5ef3b4f2d532d669a8a5",
+      "productLabel": "GARDENLINE Heidekraut, Golden Berries",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-heidekraut-golden-berries-000000000740354001"
+    },
+    {
+      "sourceId": "d851ae0095d49bf03c4b",
+      "productLabel": "GARDENLINE Herbst-Pflanzen, Set 1",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-herbst-pflanzen-set-1-000000000740362001"
+    },
+    {
+      "sourceId": "6612b3b1dbc449dc14ef",
+      "productLabel": "GARDENLINE Herbst-Pflanzen, Colour Garden 1",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.69,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-herbst-pflanzen-colour-garden-1-000000000740374001"
+    },
+    {
+      "sourceId": "f9025eb5d9194a8fa253",
+      "productLabel": "CASALUX LED-Tischleuchte, Silber",
+      "storeName": "ALDI Süd",
+      "offerPrice": 7.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/casalux-led-tischleuchte-silber-000000000742629001"
+    },
+    {
+      "sourceId": "09ce8f0193779634302b",
+      "productLabel": "JES COLLECTION Alltagshelfer, Seil 10 m",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.0,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/jes-collection-alltagshelfer-seil-10-m-000000000744390001"
+    },
+    {
+      "sourceId": "71ea26873cf9b1f77de8",
+      "productLabel": "Teelichte, Duft- oder Maxi-Teelichte, Teelichter",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.49,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/no-brand-teelichte-duft-oder-maxi-teelichte-teelichter-000000000748599001"
+    },
+    {
+      "sourceId": "731508113b32b65e2332",
+      "productLabel": "DR. BECKMANN WC Reiniger Pulver, Citrus Breeze",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.65,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-wc-reiniger-pulver-citrus-breeze-000000000753100001"
+    },
+    {
+      "sourceId": "104d71410a80afbfad88",
+      "productLabel": "IPURO Raumspray, Cotton Fields",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/ipuro-raumspray-cotton-fields-000000000769278001"
+    },
+    {
+      "sourceId": "9926fc5e29c031119744",
+      "productLabel": "GOLDEN SEAFOOD Norwegische Lachsfilet-Portionen 1 kg",
+      "storeName": "ALDI Süd",
+      "offerPrice": 15.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/golden-seafood-norwegische-lachsfilet-portionen-1-kg-000000000000212738"
+    },
+    {
+      "sourceId": "b86385b8f7c31d9e7d29",
+      "productLabel": "MEINE METZGEREI Pute Minifilet XXL 1 kg",
+      "storeName": "ALDI Süd",
+      "offerPrice": 9.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/meine-metzgerei-pute-minifilet-xxl-1-kg-000000000000499432"
+    },
+    {
+      "sourceId": "80c042d631b8d87d339c",
+      "productLabel": "MEINE METZGEREI Hähnchen Schnitte High Protein, 400 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/meine-metzgerei-haehnchen-schnitte-high-protein-400-g-000000000000782863"
+    },
+    {
+      "sourceId": "1060d00f42b6c2ba0250",
+      "productLabel": "HOME CREATION Kunstfell-Decke, Beige",
+      "storeName": "ALDI Süd",
+      "offerPrice": 14.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kunstfell-decke-beige-000000000741649003"
+    },
+    {
+      "sourceId": "5d54ad0cfbe609954a76",
+      "productLabel": "NOVITESSE Jersey-Spannbetttuch Boxspring-Doppelbett, Hellgrau",
+      "storeName": "ALDI Süd",
+      "offerPrice": 12.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-jersey-spannbetttuch-boxspring-doppelbett-hellgrau-000000000732053001"
+    },
+    {
+      "sourceId": "d5f789d840208778764b",
+      "productLabel": "NOVITESSE Jersey-Spannbetttuch Komfortgröße Boxspring, Hellgrau",
+      "storeName": "ALDI Süd",
+      "offerPrice": 9.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-jersey-spannbetttuch-komfortgroesse-boxspring-hellgrau-000000000732128001"
+    },
+    {
+      "sourceId": "143d1e427e9b26d36edd",
+      "productLabel": "NOVITESSE Jersey-Spannbetttuch Normalgröße 2er-Set, Hellgrau",
+      "storeName": "ALDI Süd",
+      "offerPrice": 9.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-jersey-spannbetttuch-normalgroesse-2er-set-hellgrau-000000000732935001"
+    },
+    {
+      "sourceId": "9fbb75293cc90a1d59d1",
+      "productLabel": "NOVITESSE Jersey-Spannbetttuch Komfortgröße, Hellgrau",
+      "storeName": "ALDI Süd",
+      "offerPrice": 7.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-jersey-spannbetttuch-komfortgroesse-hellgrau-000000000733323001"
+    },
+    {
+      "sourceId": "08f904e576aa5dabadd0",
+      "productLabel": "NOVITESSE Winter-Seersucker-Bettwäsche Normalgröße, Streifen",
+      "storeName": "ALDI Süd",
+      "offerPrice": 17.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-winter-seersucker-bettwaesche-normalgroesse-streifen-000000000735672001"
+    },
+    {
+      "sourceId": "0ae0deb57702f65b495d",
+      "productLabel": "NOVITESSE Frottier-Handtücher 6er-Set, Beige",
+      "storeName": "ALDI Süd",
+      "offerPrice": 14.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-frottier-handtuecher-6er-set-beige-000000000741005001"
+    },
+    {
+      "sourceId": "29cc0ee02d8053a8da55",
+      "productLabel": "NOVITESSE Kassetten-Feder-/Daunenbett, 135 x 200 cm",
+      "storeName": "ALDI Süd",
+      "offerPrice": 39.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-kassetten-feder-daunenbett-135-x-200-cm-000000000741666001"
+    },
+    {
+      "sourceId": "5351e7b953f46bd7436a",
+      "productLabel": "NOVITESSE Federkissen, 80 x 80 cm",
+      "storeName": "ALDI Süd",
+      "offerPrice": 14.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-federkissen-80-x-80-cm-000000000741994001"
+    },
+    {
+      "sourceId": "ac1c1affebe8bf11e25f",
+      "productLabel": "GARDENLINE Herbstmix 6er-Tray",
+      "storeName": "ALDI Süd",
+      "offerPrice": 5.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-herbstmix-6er-tray-000000000000755300"
+    },
+    {
+      "sourceId": "285b45e3f7216d8b0729",
+      "productLabel": "GARDENLINE Aster-Trio 6er-Tray",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.49,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-aster-trio-6er-tray-000000000000755306"
+    },
+    {
+      "sourceId": "3a95c75456f661ccc708",
+      "productLabel": "GARDENLINE Calluna Beauty Ladies® High Five®",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.79,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-calluna-beauty-ladies-high-five-000000000000755312"
+    },
+    {
+      "sourceId": "06d252e9b809bfb06800",
+      "productLabel": "GARDENLINE Zierkürbisse im Spankorb",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-zierkuerbisse-im-spankorb-000000000000755314"
+    },
+    {
+      "sourceId": "45879cd37cb2fc8cf51e",
+      "productLabel": "GARDENLINE Calluna Beauty Ladies®",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.29,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-calluna-beauty-ladies-000000000000755315"
+    },
+    {
+      "sourceId": "266d8117956284f0c848",
+      "productLabel": "CASALUX LED-Streifen Bewegungsmelder, 3 m",
+      "storeName": "ALDI Süd",
+      "offerPrice": 7.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/casalux-led-streifen-bewegungsmelder-3-m-000000000693917001"
+    },
+    {
+      "sourceId": "c1709c8db442038ccfd1",
+      "productLabel": "PERWOLL Waschmittel XXL, Flüssig Color",
+      "storeName": "ALDI Süd",
+      "offerPrice": 12.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/perwoll-waschmittel-xxl-fluessig-color-000000000695040001"
+    },
+    {
+      "sourceId": "da0ec88fc63890626e62",
+      "productLabel": "HOME CREATION Klapptritt, Blau",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.49,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-klapptritt-blau-000000000723032001"
+    },
+    {
+      "sourceId": "ca2ec76aab7e4b1ca3c2",
+      "productLabel": "HOME CREATION Beflockte Kleiderbügel 6er-Pack, Grau",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.49,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-beflockte-kleiderbuegel-6er-pack-grau-000000000733769001"
+    },
+    {
+      "sourceId": "d167c066f05d344b9588",
+      "productLabel": "HOME CREATION Vakuum-Aufbewahrungsbeutel, 2er-Set, 60 x 100 cm",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-vakuum-aufbewahrungsbeutel-2er-set-60-x-100-cm-000000000735149001"
+    },
+    {
+      "sourceId": "5de8ec4b3e1f2dea3cbf",
+      "productLabel": "HOME CREATION Kunstfell-Kissen, Anthrazit",
+      "storeName": "ALDI Süd",
+      "offerPrice": 3.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kunstfell-kissen-anthrazit-000000000739576001"
+    },
+    {
+      "sourceId": "a63d05069cc2704556ac",
+      "productLabel": "HOME CREATION Textil-Organizer, Korb 2er-Set",
+      "storeName": "ALDI Süd",
+      "offerPrice": 6.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-textil-organizer-korb-2er-set-000000000741923001"
+    },
+    {
+      "sourceId": "dde06ff17678a0ffb8f2",
+      "productLabel": "HOME CREATION Teddy- Fleece-Teppich, Beige strukturiert",
+      "storeName": "ALDI Süd",
+      "offerPrice": 19.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-teddy-fleece-teppich-beige-strukturiert-000000000742960001"
+    },
+    {
+      "sourceId": "4c5310446bddacb8373a",
+      "productLabel": "HOME CREATION Struktur-Fußmatte, Beige, 60 x 120 cm",
+      "storeName": "ALDI Süd",
+      "offerPrice": 7.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-struktur-fussmatte-beige-60-x-120-cm-000000000743248001"
+    },
+    {
+      "sourceId": "99dc58379efa271b1453",
+      "productLabel": "UP2FASHION BASICS D Gefüttert Clogs, Rosa, 38",
+      "storeName": "ALDI Süd",
+      "offerPrice": 7.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-basics-d-gefuettert-clogs-rosa-38-000000000745923001"
+    },
+    {
+      "sourceId": "3f9b127f1e4be3c1ddb7",
+      "productLabel": "GARDENLINE Viola F1 6er-Tray, Blau",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-viola-f1-6er-tray-blau-000000000755313001"
+    },
+    {
+      "sourceId": "a5717a8066ee9b5f5cea",
+      "productLabel": "CASALUX 3-in-1-Nachtlicht, Vertikal",
+      "storeName": "ALDI Süd",
+      "offerPrice": 7.99,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/casalux-3-in-1-nachtlicht-vertikal-000000000768180001"
     },
     {
       "sourceId": "b5d4df204f74a30820d8",
