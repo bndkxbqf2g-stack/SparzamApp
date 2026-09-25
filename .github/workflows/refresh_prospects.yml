@@ -1,0 +1,40 @@
+name: Refresh retailer prospects
+
+on:
+  schedule:
+    - cron: '15 4 * * 1,4'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'tool/refresh_prospects.py'
+      - 'tool/tests/test_refresh_prospects.py'
+      - '.github/workflows/refresh_prospects.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Test parsers
+        run: python -m unittest discover -s tool/tests -p 'test_*.py'
+      - name: Refresh official retailer feed
+        run: python tool/refresh_prospects.py
+      - name: Commit refreshed feed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/prospects/current.json
+          if git diff --cached --quiet; then
+            echo "No prospect changes."
+          else
+            git commit -m "data: refresh retailer prospects"
+            git push
+          fi

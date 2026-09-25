@@ -25,6 +25,7 @@ import '../../services/price_data_settings_store.dart';
 import '../../services/price_history_store.dart';
 import '../../services/price_observation_store.dart';
 import '../../services/price_observation_adapters.dart';
+import '../../services/prospect_feed_service.dart';
 import '../../services/market_price_observation_adapter.dart';
 import '../../services/recent_purchase_store.dart';
 import '../../services/receipt_observation_store.dart';
@@ -177,6 +178,7 @@ class _AppShellState extends State<AppShell> {
     _loadNamedShoppingLists();
     _loadReceiptObservations();
     _loadPriceObservations();
+    _loadProspectOffers();
   }
 
   List<ListItem> _copyItems(List<ListItem> items) => items
@@ -241,6 +243,58 @@ class _AppShellState extends State<AppShell> {
     final loaded = await priceObservationStore.load();
     if (!mounted) return;
     setState(() => historicalPriceObservations = loaded);
+  }
+
+  Future<void> _loadProspectOffers() async {
+    try {
+      final feed = await ProspectFeedService().load();
+      final resolved = feed.records
+          .map((record) => resolveOfferImport(record, catalogProducts))
+          .where((result) => result.isResolved)
+          .map((result) => result.offer!)
+          .toList(growable: false);
+      if (resolved.isEmpty) {
+        widget.diagnosticLogService.record(
+          category: 'Prospekte',
+          message: 'Prospektfeed geladen, aber noch keine Angebote sicher zugeordnet.',
+          details: feed.records.length.toString(),
+        );
+        return;
+      }
+      final refreshedStores = feed.refreshedStores.toSet();
+      final retained = offers.where((offer) {
+        final imported = offer.id.startsWith('import|');
+        return !imported || !refreshedStores.contains(offer.storeName);
+      }).toList();
+      final next = [...retained, ...resolved];
+      await widget.offerStore.save(next);
+      final observedAt = feed.generatedAt ?? DateTime.now();
+      await priceObservationStore.append(
+        resolved.expand(
+          (offer) => observationsFromOffer(offer, observedAt: observedAt),
+        ),
+      );
+      final historical = await priceObservationStore.load();
+      if (!mounted) return;
+      setState(() {
+        offers = next;
+        historicalPriceObservations = historical;
+      });
+      widget.diagnosticLogService.record(
+        category: 'Prospekte',
+        message: 'Automatische Prospektangebote aktualisiert.',
+        details: feed.records.length.toString() +
+            ' Rohangebote · ' +
+            resolved.length.toString() +
+            ' sicher zugeordnet',
+      );
+    } catch (error) {
+      widget.diagnosticLogService.record(
+        category: 'Prospekte',
+        message: 'Automatischer Prospektabruf fehlgeschlagen.',
+        details: error.toString(),
+      );
+    }
   }
 
   Future<void> _loadReceiptObservations() async {

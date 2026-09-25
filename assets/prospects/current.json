@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-25T00:00:00Z",
+  "sources": [
+    {"id":"aldi_sued","storeName":"ALDI Süd","url":"https://www.aldi-sued.de/","status":"pending","recordCount":0},
+    {"id":"edeka_zellingen","storeName":"EDEKA","url":"https://www.edeka.de/maerkte/023738/","status":"pending","recordCount":0},
+    {"id":"kaufland_grombuehl","storeName":"Kaufland","url":"https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html","status":"pending","recordCount":0},
+    {"id":"lidl_zellingen","storeName":"Lidl","url":"https://www.lidl.de/s/de-DE/filialen/zellingen/am-guessgraben-2/","status":"metadata_only","recordCount":0}
+  ],
+  "offers": []
+}
