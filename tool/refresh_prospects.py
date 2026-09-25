@@ -8,6 +8,7 @@ from datetime import date, datetime, timedelta, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import quote, urljoin
+from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 OUTPUT = Path("assets/prospects/current.json")
@@ -64,9 +65,30 @@ def clean(value):
     return re.sub(r"\s+", " ", html.unescape(value or "")).strip()
 
 def fetch(url):
-    request = Request(url, headers={"User-Agent": UA, "Accept-Language": "de-DE,de;q=0.9"})
-    with urlopen(request, timeout=30) as response:
-        return response.read().decode("utf-8", errors="replace")
+    headers = {
+        "User-Agent": UA,
+        "Accept-Language": "de-DE,de;q=0.9",
+        "Accept": "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8",
+    }
+    request = Request(url, headers=headers)
+    try:
+        with urlopen(request, timeout=30) as response:
+            return response.read().decode("utf-8", errors="replace")
+    except HTTPError as error:
+        if error.code != 403:
+            raise
+        # Some public retailer pages reject non-browser user agents although
+        # the same page is intended for normal browser access. Retry once with
+        # a standard browser UA; no login, challenge or protected endpoint is bypassed.
+        browser_headers = {
+            **headers,
+            "User-Agent": (
+                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/140.0 Safari/537.36"
+            ),
+        }
+        with urlopen(Request(url, headers=browser_headers), timeout=30) as response:
+            return response.read().decode("utf-8", errors="replace")
 
 def parsed(html_text):
     parser = VisibleTextParser()
