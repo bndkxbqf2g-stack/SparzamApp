@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/receipt/receipt_observation_builder.dart';
+import 'package:sparzamapp/features/catalog/product_identity.dart';
 import 'package:sparzamapp/features/shopping_list/receipt_family_market_prices.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/product.dart';
@@ -532,4 +533,26 @@ void main() {
     expect(prices, hasLength(1));
     expect(prices.single.price, 1.49);
   });
+
+  test('tomato identity separates fresh variants from processed products', () {
+    final generic = identifyProduct('Tomate');
+    final rispen = identifyProduct('Rispentomaten');
+    final party = identifyProduct('Partytomaten');
+    final mark = identifyProduct('Tomatenmark');
+    final sauce = identifyProduct('Tomatensauce');
+    final passata = identifyProduct('Passata');
+
+    expect(generic.familyKey, 'tomaten');
+    expect(rispen.familyKey, 'tomaten');
+    expect(party.familyKey, 'tomaten');
+    expect(compatibleProductIdentity(generic, rispen), isTrue);
+    expect(compatibleProductIdentity(generic, party), isTrue);
+    expect(mark.familyKey, 'tomatenmark');
+    expect(sauce.familyKey, 'tomatensauce');
+    expect(passata.familyKey, 'tomatenkonserve');
+    expect(compatibleProductIdentity(generic, mark), isFalse);
+    expect(compatibleProductIdentity(generic, sauce), isFalse);
+    expect(compatibleProductIdentity(generic, passata), isFalse);
+  });
 }
+
