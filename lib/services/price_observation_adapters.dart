@@ -1,26 +1,33 @@
 import '../models/offer.dart';
 import '../models/price_observation.dart';
 import '../models/receipt_observation.dart';
+import '../models/receipt_identity.dart';
 import '../features/catalog/product_identity.dart';
 
-PriceObservation observationFromReceipt(ReceiptObservation receipt) =>
-    PriceObservation(
-      id: 'receipt|${receipt.id}',
-      productId: receipt.productId,
-      familyKey: receipt.familyKey,
-      variant: identifyProduct(receipt.rawLabel).variantKey,
-      storeName: receipt.storeName,
-      price: receipt.totalPrice,
-      quantity: receipt.quantity?.toDouble(),
-      unit: receipt.quantityUnit,
-      unitPrice: receipt.unitPrice,
-      observedAt: receipt.observedAt,
-      source: PriceObservationSource.receipt,
-      kind: receipt.discounted ? PriceObservationKind.offer : PriceObservationKind.unknown,
-      proofRef: 'receipt:${receipt.receiptFingerprint}',
-      discounted: receipt.discounted,
-      identityConfidence: receipt.identityConfirmed ? 1.0 : 0.0,
-    );
+PriceObservation observationFromReceipt(ReceiptObservation receipt) {
+  final identity = assessReceiptIdentity(
+    productId: receipt.productId,
+    identityConfirmed: receipt.identityConfirmed,
+    familyKey: receipt.familyKey,
+  );
+  return PriceObservation(
+    id: 'receipt|${receipt.id}',
+    productId: receipt.productId,
+    familyKey: receipt.familyKey,
+    variant: identifyProduct(receipt.rawLabel).variantKey,
+    storeName: receipt.storeName,
+    price: receipt.totalPrice,
+    quantity: receipt.quantity?.toDouble(),
+    unit: receipt.quantityUnit,
+    unitPrice: receipt.unitPrice,
+    observedAt: receipt.observedAt,
+    source: PriceObservationSource.receipt,
+    kind: receipt.discounted ? PriceObservationKind.offer : PriceObservationKind.unknown,
+    proofRef: 'receipt:${receipt.receiptFingerprint}',
+    discounted: receipt.discounted,
+    identityConfidence: identity.confidence,
+  );
+}
 
 PriceObservation observationFromOffer(Offer offer, {required DateTime observedAt}) =>
     PriceObservation(
