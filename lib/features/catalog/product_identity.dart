@@ -98,13 +98,38 @@ ProductIdentity identifyProduct(String value) {
   if (_hasAny(text, const ['kartoffel', 'kartoffeln'])) {
     return const ProductIdentity(familyKey: 'kartoffeln');
   }
-  if (_hasAny(text, const ['tomate', 'tomaten', 'passata'])) {
+  // Tomato products must be classified before fresh tomatoes. Matching the
+  // token "tomate" alone must never turn tomato paste/sauce into fresh produce.
+  if (_hasAny(text, const ['tomatenmark', 'tomaten mark'])) {
+    return const ProductIdentity(
+      familyKey: 'tomatenmark',
+      productType: 'mark',
+    );
+  }
+  if (_hasAny(text, const [
+    'passata', 'geh tomaten', 'gehackte tomaten', 'dosentomaten',
+    'dosen tomaten',
+  ])) {
+    return const ProductIdentity(
+      familyKey: 'tomatenkonserve',
+      productType: 'konserve',
+    );
+  }
+  if (_hasAny(text, const ['tomatensauce', 'tomaten sauce'])) {
+    return const ProductIdentity(
+      familyKey: 'tomatensauce',
+      productType: 'sauce',
+    );
+  }
+  if (_hasAny(text, const [
+    'tomate', 'tomaten', 'rispentomaten', 'rispen tomaten',
+    'partytomaten', 'party tomaten', 'cherrytomaten', 'cherry tomaten',
+    'cocktailtomaten', 'cocktail tomaten',
+  ])) {
     return ProductIdentity(
       familyKey: 'tomaten',
-      productType: _hasWord(text, 'passata') ||
-              _hasAny(text, const ['geh tomaten', 'gehackte tomaten'])
-          ? 'konserve'
-          : null,
+      variant: _tomatoVariant(text),
+      productType: 'frisch',
     );
   }
   if (_hasAny(text, const ['weintrauben', 'trauben'])) {
@@ -197,6 +222,16 @@ String? _sausageVariant(String text) {
     'salami', 'lyoner', 'schinkenwurst', 'fleischwurst', 'mortadella', 'cervelat',
   ]) {
     if (_hasWord(text, term)) return term;
+  }
+  return null;
+}
+
+String? _tomatoVariant(String text) {
+  if (_hasAny(text, const ['rispentomaten', 'rispen tomaten'])) return 'rispe';
+  if (_hasAny(text, const ['partytomaten', 'party tomaten'])) return 'party';
+  if (_hasAny(text, const ['cherrytomaten', 'cherry tomaten'])) return 'cherry';
+  if (_hasAny(text, const ['cocktailtomaten', 'cocktail tomaten'])) {
+    return 'cocktail';
   }
   return null;
 }
