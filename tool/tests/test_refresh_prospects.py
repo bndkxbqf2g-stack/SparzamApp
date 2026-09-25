@@ -38,6 +38,23 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(by_name["MM Extra Sekt"]["offerPrice"], 2.77)
         self.assertEqual(by_name["MM Extra Sekt"]["validFrom"], "2026-09-24")
 
+    def test_edeka_normalizes_accessible_short_start_date(self):
+        html = """
+        <script>
+          Angebot: MM Extra Sekt 2.77 Festpreis von 2.77€
+          Angebot: MM Extra Sekt ab 24.09. 2.77 Festpreis von 2.77€
+          Alle Angebote gültig bis Samstag, den 26.09.2026, KW39/2026.
+        </script>
+        """
+        offers, _ = refresh.parse_edeka(
+            html,
+            "https://www.edeka.de/maerkte/023738/",
+        )
+        self.assertEqual(len(offers), 1)
+        self.assertEqual(offers[0]["productLabel"], "MM Extra Sekt")
+        self.assertEqual(offers[0]["validFrom"], "2026-09-24")
+        self.assertEqual(offers[0]["validUntil"], "2026-09-26")
+
     def test_aldi_keeps_stated_regular_price(self):
         html = """<a href="/produkt/joghurt">Kühlung MILSANI Premium-Joghurt 200 g Spare 20 % 0,39 € 0,49 €</a>"""
         offers, _ = refresh.parse_aldi(html, "https://www.aldi-sued.de/")

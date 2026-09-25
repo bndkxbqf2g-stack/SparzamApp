@@ -186,9 +186,28 @@ def parse_edeka(html_text, base_url):
         )
         start = valid_from
         label_text = before_price
+        has_specific_start = False
         if explicit_start:
             start = parse_date(explicit_start.group(1)) or start
             label_text = before_price[:explicit_start.start()]
+            has_specific_start = True
+
+        # Some card variants expose the start date inside the accessible label
+        # as "... ab 24.09." instead of a separate "Gültig ab" node.
+        short_start = re.search(
+            r"\s+ab\s+(\d{2})\.(\d{2})\.\s*$",
+            label_text,
+            flags=re.I,
+        )
+        if short_start:
+            day = int(short_start.group(1))
+            month = int(short_start.group(2))
+            try:
+                start = date(valid_until.year, month, day)
+                has_specific_start = True
+            except ValueError:
+                pass
+            label_text = label_text[:short_start.start()]
 
         # PAYBACK / points text is a condition, not part of the product name.
         label_text = re.split(
@@ -205,7 +224,7 @@ def parse_edeka(html_text, base_url):
         item = record("EDEKA", label, price, start, valid_until, proof)
         key = (label.lower(), price, valid_until.isoformat())
         previous = candidates.get(key)
-        if previous is None or explicit_start is not None:
+        if previous is None or has_specific_start:
             candidates[key] = item
 
     return list(candidates.values()), []
