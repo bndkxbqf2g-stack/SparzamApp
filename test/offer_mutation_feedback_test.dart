@@ -25,6 +25,7 @@ void main() {
   Widget screen({
     required Future<List<Offer>> Function(Offer) onSave,
     required Future<List<Offer>> Function(Offer) onDelete,
+    ValueChanged<Product>? onAddToShoppingList,
   }) => MaterialApp(
         home: OffersScreen(
           offers: [offer],
@@ -32,6 +33,7 @@ void main() {
           catalogProducts: const [product],
           onSave: onSave,
           onDelete: onDelete,
+          onAddToShoppingList: onAddToShoppingList,
         ),
       );
 
@@ -46,6 +48,25 @@ void main() {
     await tester.tap(find.text(action).last);
     await tester.pumpAndSettle();
   }
+
+  testWidgets('Angebot kann kanonischen Artikel zur Einkaufsliste hinzufügen', (tester) async {
+    Product? added;
+    await tester.pumpWidget(screen(
+      onSave: (_) async => [offer],
+      onDelete: (_) async => [],
+      onAddToShoppingList: (product) => added = product,
+    ));
+
+    await tester.scrollUntilVisible(
+      find.text('Zur Einkaufsliste'),
+      150,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text('Zur Einkaufsliste'));
+    await tester.pump();
+
+    expect(added?.id, product.id);
+  });
 
   testWidgets('fehlgeschlagenes Löschen erhält das Angebot', (tester) async {
     final pending = Completer<List<Offer>>();
