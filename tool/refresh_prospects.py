@@ -230,7 +230,13 @@ def main():
             offers, prospects = PARSERS[parser_name](body, url)
             metadata_only = parser_name == "lidl"
             if not offers and not metadata_only:
-                raise ValueError("keine sicher extrahierbaren Angebote gefunden")
+                diagnostics = (
+                    "html=" + str(len(body)) +
+                    ", angebot=" + str(body.lower().count("angebot")) +
+                    ", festpreis=" + str(body.lower().count("festpreis")) +
+                    ", offer=" + str(body.lower().count("offer"))
+                )
+                raise ValueError("keine sicher extrahierbaren Angebote gefunden; " + diagnostics)
             all_offers.extend(offers)
             sources.append({"id": source_id, "storeName": store, "url": url, "status": "metadata_only" if metadata_only else "ok", "recordCount": len(offers), "prospects": prospects})
         except Exception as error:
