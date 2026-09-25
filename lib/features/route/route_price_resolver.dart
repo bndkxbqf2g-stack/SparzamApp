@@ -4,7 +4,7 @@ import '../../models/offer.dart';
 import '../../models/store.dart';
 import '../../models/product.dart';
 import '../offers/effective_price.dart';
-import 'market_price_quality.dart';
+import 'market_price_selection.dart';
 
 class RoutePriceQuote {
   const RoutePriceQuote({
@@ -35,7 +35,8 @@ class RoutePriceResolver {
     this.offers, {
     this.now,
     List<MarketPrice> marketPrices = const <MarketPrice>[],
-  }) : marketPrices = _preferredPrices(marketPrices, now ?? DateTime.now()),
+  }) : marketPrices = preferredMarketPricesByKey(
+            marketPrices, now ?? DateTime.now()),
         observedProductPrices =
             _observedPrices(marketPrices, now ?? DateTime.now());
 
@@ -130,30 +131,6 @@ class RoutePriceResolver {
       }
     }
     return best;
-  }
-
-  static Map<String, MarketPrice> _preferredPrices(
-      List<MarketPrice> input, DateTime now) {
-    final selected = <String, MarketPrice>{};
-    for (final price in input) {
-      if (!price.price.isFinite || price.price <= 0) continue;
-      if (price.source == MarketPriceSource.receipt &&
-          !price.isUsable(now: now, openPricesMaxAgeDays: 36500)) {
-        continue;
-      }
-      final previous = selected[price.key];
-      final score = price.price *
-          (1 + marketPriceQuality(price, now).uncertaintyRate);
-      final previousScore = previous == null ? double.infinity :
-          previous.price *
-              (1 + marketPriceQuality(previous, now).uncertaintyRate);
-      if (score < previousScore ||
-          (score == previousScore && previous != null &&
-              price.updatedAt.isAfter(previous.updatedAt))) {
-        selected[price.key] = price;
-      }
-    }
-    return selected;
   }
 
   static Map<String, List<double>> _observedPrices(
