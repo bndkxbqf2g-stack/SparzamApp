@@ -501,4 +501,35 @@ void main() {
     });
   });
 
+  test('generic fresh tomatoes accept fresh variants but reject tomato products', () {
+    const product = Product(
+      id: 'tomaten-frisch',
+      name: 'Tomaten',
+      unit: 'Packung',
+      group: 'obst',
+    );
+    final prices = receiptFamilyMarketPrices(
+      items: [ListItem(product: product)],
+      observations: [
+        ReceiptObservation(
+          id: 'rispen', receiptFingerprint: 'r1', rowLine: 1,
+          rawLabel: 'Rispentomaten', familyKey: 'tomaten',
+          storeName: 'Lidl', observedAt: DateTime(2026, 9, 24),
+          totalPrice: 1.49, quantity: null, quantityUnit: '',
+          unitPrice: null, discounted: false,
+        ),
+        ReceiptObservation(
+          id: 'mark', receiptFingerprint: 'r2', rowLine: 1,
+          rawLabel: 'Tomatenmark', familyKey: 'tomatenmark',
+          storeName: 'Lidl', observedAt: DateTime(2026, 9, 24),
+          totalPrice: 0.89, quantity: null, quantityUnit: '',
+          unitPrice: null, discounted: false,
+        ),
+      ],
+      now: DateTime(2026, 9, 25),
+    );
+
+    expect(prices, hasLength(1));
+    expect(prices.single.price, 1.49);
+  });
 }
