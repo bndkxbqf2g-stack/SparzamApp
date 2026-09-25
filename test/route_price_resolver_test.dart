@@ -162,6 +162,29 @@ void main() {
     }
   });
 
+  test('receipt older than 30 days is not routable even when passed directly', () {
+    const noCatalogPrice = Store(
+      name: 'Markt',
+      location: 'Ort',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    final quote = RoutePriceResolver(const [], marketPrices: [
+      MarketPrice(
+        productId: 'test',
+        storeName: 'Markt',
+        price: 0.79,
+        updatedAt: DateTime(2026, 7, 1),
+        source: MarketPriceSource.receipt,
+        discounted: true,
+      ),
+    ], now: DateTime(2026, 9, 24))
+        .quote(noCatalogPrice, ListItem(product: product));
+
+    expect(quote!.isEstimated, isTrue);
+    expect(quote.observation, isNull);
+  });
+
   test('old discounted receipt cannot beat a fresh confirmed price', () {
     final quote = RoutePriceResolver(const [], marketPrices: [
       MarketPrice(productId: 'test', storeName: 'Markt', price: 0.79,
