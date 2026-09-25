@@ -13,6 +13,7 @@ class ReceiptObservation {
     required this.unitPrice,
     required this.discounted,
     this.productId,
+    this.identityConfirmed = false,
   });
 
   final String id;
@@ -28,6 +29,9 @@ class ReceiptObservation {
   final double? unitPrice;
   final bool discounted;
   final String? productId;
+  /// True only when the concrete catalog identity was explicitly confirmed
+  /// (directly or through previously learned confirmations).
+  final bool identityConfirmed;
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -43,22 +47,31 @@ class ReceiptObservation {
         'unitPrice': unitPrice,
         'discounted': discounted,
         'productId': productId,
+        'identityConfirmed': identityConfirmed,
       };
 
-  factory ReceiptObservation.fromJson(Map<String, dynamic> json) =>
-      ReceiptObservation(
-        id: json['id'] as String,
-        receiptFingerprint: json['receiptFingerprint'] as String,
-        rowLine: (json['rowLine'] as num).toInt(),
-        rawLabel: json['rawLabel'] as String,
-        familyKey: json['familyKey'] as String? ?? '',
-        storeName: json['storeName'] as String,
-        observedAt: DateTime.parse(json['observedAt'] as String),
-        totalPrice: (json['totalPrice'] as num).toDouble(),
-        quantity: json['quantity'] as num?,
-        quantityUnit: json['quantityUnit'] as String? ?? 'Stück',
-        unitPrice: (json['unitPrice'] as num?)?.toDouble(),
-        discounted: json['discounted'] as bool? ?? false,
-        productId: json['productId'] as String?,
-      );
+  factory ReceiptObservation.fromJson(Map<String, dynamic> json) {
+    final productId = json['productId'] as String?;
+    // Legacy automatic receipt products used this stable ID prefix. Keep those
+    // conservative when migrating records that predate identityConfirmed.
+    final legacyConfirmed = productId != null &&
+        !productId.startsWith('receipt_auto_');
+    return ReceiptObservation(
+      id: json['id'] as String,
+      receiptFingerprint: json['receiptFingerprint'] as String,
+      rowLine: (json['rowLine'] as num).toInt(),
+      rawLabel: json['rawLabel'] as String,
+      familyKey: json['familyKey'] as String? ?? '',
+      storeName: json['storeName'] as String,
+      observedAt: DateTime.parse(json['observedAt'] as String),
+      totalPrice: (json['totalPrice'] as num).toDouble(),
+      quantity: json['quantity'] as num?,
+      quantityUnit: json['quantityUnit'] as String? ?? 'Stück',
+      unitPrice: (json['unitPrice'] as num?)?.toDouble(),
+      discounted: json['discounted'] as bool? ?? false,
+      productId: productId,
+      identityConfirmed:
+          json['identityConfirmed'] as bool? ?? legacyConfirmed,
+    );
+  }
 }
