@@ -45,7 +45,7 @@ class OfferEvidence extends StatelessWidget {
                 height: 96,
                 width: 140,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
+                errorBuilder: (context, error, stackTrace) => Container(
                   height: 72,
                   width: 140,
                   alignment: Alignment.center,
