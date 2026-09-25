@@ -271,7 +271,7 @@ def parse_lidl(html_text, base_url):
         seen.add(absolute)
 
         item = {"title": text[:160], "url": absolute}
-        match = re.search(r"/l/prospekte/([^/]+)/ar/(\\d+)", absolute)
+        match = re.search(r"/l/prospekte/([^/]+)/ar/(\d+)", absolute)
         if match and "aktionsprospekt" in text.lower():
             slug, region = match.group(1), match.group(2)
             api_url = (
