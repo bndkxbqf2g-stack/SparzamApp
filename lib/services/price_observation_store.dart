@@ -44,4 +44,36 @@ class PriceObservationStore {
     _pending = result.then<void>((_) {}, onError: (Object _) {});
     return result;
   }
+
+  /// Replaces evidence with the same stable ID. This is reserved for
+  /// deterministic derived observations (for example reinterpreted receipts),
+  /// so identity improvements do not leave stale projections behind.
+  Future<List<PriceObservation>> upsertById(
+      Iterable<PriceObservation> incoming) {
+    final valid = incoming.where((entry) => entry.isValid).toList();
+    final result = _pending.then((_) async {
+      final existing = await load();
+      final byId = <String, PriceObservation>{
+        for (final entry in existing) entry.id: entry,
+      };
+      var changed = false;
+      for (final entry in valid) {
+        final previous = byId[entry.id];
+        final previousJson =
+            previous == null ? null : jsonEncode(previous.toJson());
+        final nextJson = jsonEncode(entry.toJson());
+        if (previousJson != nextJson) changed = true;
+        byId[entry.id] = entry;
+      }
+      if (!changed) return existing;
+      final next = byId.values.toList(growable: false);
+      await _preferences.setStringList(
+        storageKey,
+        next.map((entry) => jsonEncode(entry.toJson())).toList(),
+      );
+      return next;
+    });
+    _pending = result.then<void>((_) {}, onError: (Object _) {});
+    return result;
+  }
 }
