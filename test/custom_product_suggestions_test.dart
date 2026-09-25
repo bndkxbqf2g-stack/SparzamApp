@@ -26,6 +26,27 @@ void main() {
     expect(result.single.id, 'custom_coffee');
   });
 
+  test('generische Tomate findet frische Varianten aber keine Tomatenprodukte', () {
+    const catalog = [
+      Product(id: 'tomate_rispe', name: 'Rispentomaten', unit: '500 g', group: 'obst_gemuese'),
+      Product(id: 'tomate_party', name: 'Partytomaten', unit: '250 g', group: 'obst_gemuese'),
+      Product(id: 'tomatenmark', name: 'Tomatenmark', unit: '200 g', group: 'vorrat'),
+      Product(id: 'passata', name: 'Passata', unit: '500 g', group: 'vorrat'),
+    ];
+
+    final result = buildSuggestions(
+      query: 'Tomate',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: catalog,
+    );
+
+    expect(result.map((product) => product.id), containsAll(['tomate_rispe', 'tomate_party']));
+    expect(result.map((product) => product.id), isNot(contains('tomatenmark')));
+    expect(result.map((product) => product.id), isNot(contains('passata')));
+  });
+
   test('eigene Favoriten erscheinen beim Schnellhinzufügen', () {
     const custom = Product(
       id: 'custom_coffee',
