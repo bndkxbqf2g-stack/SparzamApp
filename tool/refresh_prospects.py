@@ -412,12 +412,11 @@ def parse_netto(html_text, base_url):
 
 
 def parse_rewe(html_text, base_url):
-    page = parsed(html_text)
+    raw_text = clean(re.sub(r"<[^>]+>", " ", html_text))
     valid_from, valid_until = current_week()
-    whole = "\n".join(page.lines)
     validity = re.search(
         r"(\d{1,2}\.\d{1,2}\.)\s*bis\s*(\d{1,2}\.\d{1,2}\.)",
-        whole,
+        raw_text,
         flags=re.I,
     )
     if validity:
@@ -427,17 +426,23 @@ def parse_rewe(html_text, base_url):
         valid_from, valid_until = start, end
 
     offers = []
-    for index, line in enumerate(page.lines):
-        if not line.startswith("### "):
-            continue
-        label = clean(line[4:])
+    headings = list(re.finditer(
+        r"<h3\b[^>]*>(.*?)</h3>",
+        html_text,
+        flags=re.I | re.S,
+    ))
+    for index, heading in enumerate(headings):
+        label = clean(re.sub(r"<[^>]+>", " ", heading.group(1)))
         if not label or label.lower().startswith(("gültig", "der angebots", "top-")):
             continue
-        block = " ".join(page.lines[index + 1:index + 7])
+        end = headings[index + 1].start() if index + 1 < len(headings) else min(
+            len(html_text), heading.end() + 2400,
+        )
+        block = clean(re.sub(r"<[^>]+>", " ", html_text[heading.end():end]))
+        if "aktion" not in block.lower() and "knaller" not in block.lower():
+            continue
         price = re.search(r"\b(\d+[,.]\d{2})\s*€", block)
         if price is None:
-            continue
-        if "aktion" not in block.lower() and "knaller" not in block.lower():
             continue
         proof = base_url + "#offer-" + stable_id("REWE", base_url, label)
         offers.append(record(
