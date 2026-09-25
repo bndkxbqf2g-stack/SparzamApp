@@ -18,6 +18,7 @@ import '../home/home_screen.dart';
 import '../catalog/prices_hub_screen.dart';
 import '../prospects/prospects_screen.dart';
 import 'more_screen.dart';
+import '../offers/offer_import.dart';
 import '../offers/offers_screen.dart';
 import '../profile/profile_screen.dart';
 import '../receipt/receipt_screen.dart';
@@ -46,6 +47,7 @@ List<Widget> buildShellPages({
   required void Function(Set<String> productIds) onClearPurchased,
   required ShoppingListStore shoppingListStore,
   required List<Offer> offers,
+  required List<OfferImportRecord> prospectRecords,
   required List<PricePoint> priceHistory,
   required MobilitySettings mobility,
   required List<Product> catalogProducts,
@@ -121,7 +123,7 @@ List<Widget> buildShellPages({
         catalogProducts: catalogProducts,
         onAddToShoppingList: onAddProduct,
       ),
-      const ProspectsScreen(),
+      ProspectsScreen(records: prospectRecords),
       PricesHubScreen(
         onOpenCatalog: onOpenCatalog,
         onOpenSettings: onEditPriceData,

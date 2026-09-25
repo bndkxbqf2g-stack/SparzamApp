@@ -130,6 +130,7 @@ class _AppShellState extends State<AppShell> {
   late List<MarketPrice> marketPrices;
   List<ReceiptObservation> receiptObservations = const <ReceiptObservation>[];
   List<PriceObservation> historicalPriceObservations = const <PriceObservation>[];
+  List<OfferImportRecord> prospectRecords = const <OfferImportRecord>[];
   final priceObservationStore = PriceObservationStore();
   late PriceDataSettings priceDataSettings;
   late List<PricePoint> priceHistory;
@@ -249,6 +250,9 @@ class _AppShellState extends State<AppShell> {
   Future<void> _loadProspectOffers() async {
     try {
       final feed = await ProspectFeedService().load();
+      if (mounted) {
+        setState(() => prospectRecords = feed.records);
+      }
       final resolved = feed.records
           .map((record) => resolveOfferImport(record, catalogProducts))
           .where((result) => result.isResolved)
@@ -907,6 +911,7 @@ class _AppShellState extends State<AppShell> {
       onClearPurchased: clearPurchasedItems,
       shoppingListStore: widget.shoppingListStore,
       offers: offers,
+      prospectRecords: prospectRecords,
       priceHistory: priceHistory,
       mobility: mobility,
       catalogProducts: catalogProducts,
