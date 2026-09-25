@@ -38,7 +38,8 @@ PriceEvaluation evaluatePrice(
     now: now,
   );
 
-  final normal = stats.normal90 ?? offer.originalPrice;
+  final normal = stats.normal90 ??
+      (offer.originalPriceVerified ? offer.originalPrice : current);
   final best = stats.best90 ?? current;
   final saving =
       normal <= 0 ? 0.0 : ((normal - current) / normal) * 100;

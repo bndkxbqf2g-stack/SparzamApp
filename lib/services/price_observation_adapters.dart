@@ -59,8 +59,20 @@ PriceObservation regularObservationFromOffer(
       source: _offerSource(offer),
       kind: PriceObservationKind.regular,
       proofRef: offer.proofRef ?? 'offer:${offer.id}',
-      identityConfidence: _offerIdentityConfidence(offer),
+      identityConfidence: offer.originalPriceVerified
+          ? _offerIdentityConfidence(offer)
+          : 0,
     );
+
+Iterable<PriceObservation> observationsFromOffer(
+  Offer offer, {
+  required DateTime observedAt,
+}) sync* {
+  if (offer.originalPriceVerified) {
+    yield regularObservationFromOffer(offer, observedAt: observedAt);
+  }
+  yield observationFromOffer(offer, observedAt: observedAt);
+}
 
 double _offerIdentityConfidence(Offer offer) {
   if (offer.source == 'manual') return 1;

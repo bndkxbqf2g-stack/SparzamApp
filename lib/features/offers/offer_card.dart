@@ -85,7 +85,9 @@ class OfferCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 4),
-            Text('${offer.storeName} · statt ${offer.originalPrice.toStringAsFixed(2)} €'),
+            Text(offer.originalPriceVerified
+                ? '${offer.storeName} · statt ${offer.originalPrice.toStringAsFixed(2)} €'
+                : '${offer.storeName} · Aktionspreis'),
             const SizedBox(height: 10),
             Row(
               children: [

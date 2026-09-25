@@ -722,10 +722,9 @@ class _AppShellState extends State<AppShell> {
   Future<List<Offer>> saveOffer(Offer offer) async {
     final next = await widget.offerStore.upsert(offer, offers);
     final observedAt = DateTime.now();
-    await priceObservationStore.append([
-      regularObservationFromOffer(offer, observedAt: observedAt),
-      observationFromOffer(offer, observedAt: observedAt),
-    ]);
+    await priceObservationStore.append(
+      observationsFromOffer(offer, observedAt: observedAt),
+    );
     if (mounted) setState(() => offers = next);
     await _loadPriceObservations();
     return next;

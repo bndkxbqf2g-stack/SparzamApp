@@ -50,7 +50,11 @@ class RoutePriceResolver {
     final customPrice = marketPrices['${store.name}|${item.product.id}'];
     final observed = customPrice?.price ??
         store.prices[item.product.id] ??
-        offer?.originalPrice;
+        (offer == null
+            ? null
+            : offer.originalPriceVerified
+                ? offer.originalPrice
+                : offer.offerPrice);
     final regular = observed ?? _estimate(item.product);
     final isEstimated = observed == null;
     if (offer == null) {
@@ -68,7 +72,7 @@ class RoutePriceResolver {
     final offerTotal = effective * paidUnits;
     final regularTotal = regular * item.quantity;
 
-    if (offerTotal >= regularTotal) {
+    if (offerTotal >= regularTotal && offer.originalPriceVerified) {
       return RoutePriceQuote(
         unitPrice: regular,
         total: regularTotal,
