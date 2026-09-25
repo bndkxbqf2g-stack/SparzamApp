@@ -96,39 +96,31 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [ ] Dokumentation
 - [ ] finaler CI-/UX-/Datenqualitäts-Audit
 
-## Maximal-Befehl
+## Gemeinsame Chat-Befehle
 
-### `A Sparzam`
-Wenn der Nutzer nur `A Sparzam` sendet, arbeitet ChatGPT ausschließlich an SparzamApp und führt innerhalb des aktuellen Chat-Turns so viel sichere Arbeit wie möglich aus.
+### `A`
+Wenn der Nutzer nur `A` sendet, arbeitet ChatGPT im aktuellen Chat-Turn maximal selbstständig an **beiden aktiven Projekten**: SparzamApp und FamSchicht.
 
-Ablauf:
-1. Aktuellen `main`-Stand und neueste Flutter-CI/Release/Pages prüfen.
-2. Bei roter CI ausschließlich Ursache beheben, Regressionstest ergänzen und neue CI starten.
-3. Bei grüner CI den obersten noch offenen Roadmap-Punkt mit dem größten Nutzen für die Kernpipeline wählen.
-4. Vor jeder Änderung den betroffenen Datenfluss vollständig prüfen.
-5. Mehrere kleine, getrennte Commits selbstständig umsetzen.
-6. Nach kohärenten Teilblöcken relevante Tests/CI starten.
-7. Solange CI grün ist und Tool-/Turn-Laufzeit sinnvoll reicht, mit dem nächsten Teilblock fortfahren.
-8. Roadmap-Checkboxen nur nach belegter Umsetzung aktualisieren.
-9. Bei Architektur-/Datenmodelländerungen kleinere sichere Blöcke bevorzugen.
-10. Abschlussmeldung nur mit Ampelstatus, erledigtem Bereich und nächstem Roadmap-Punkt.
+Das gilt ausdrücklich auch für Problembehebung:
+1. CI und aktuellen Stand beider Projekte prüfen.
+2. Fehler nicht nur melden, sondern selbstständig analysieren.
+3. Eindeutig belegte Ursachen direkt korrigieren.
+4. Regressionstests ergänzen oder anpassen.
+5. Änderungen committen und pushen.
+6. CI erneut prüfen.
+7. Solange sichere weitere Korrekturen oder Roadmap-Schritte möglich sind, im selben Turn weiterarbeiten.
+8. Erst bei grüner CI oder einer echten externen Grenze stoppen.
 
-Typischer Umfang pro `A Sparzam`-Turn: deutlich größer als `N`; mehrere Entwicklungsblöcke und häufig etwa 10–25 kleine Änderungen/Commits, soweit CI, Tool-Laufzeit und Sicherheitsgrenzen dies erlauben. Die tatsächliche Zahl ist nicht garantiert.
+### `N`
+Normaler Entwicklungsblock für **beide aktiven Projekte**: typischerweise bis zu 5 logisch zusammengehörige Schritte pro Projekt, danach relevante CI.
 
-Stop-Bedingungen:
-- rote CI, die erst weiter analysiert werden muss
-- riskante oder schwer rückrollbare Datenmigration
-- fehlende externe Credentials/API-Konfiguration
-- kostenpflichtiger externer Dienst ohne Freigabe
-- unklare Produkt-/Preisannahme, die reale Daten erfordert
-- Tool-/Turn-Grenze
+### `U`
+Nur **Status prüfen**. Keine neue Feature-Entwicklung und keine eigenständige Problembehebung starten.
 
 ## Bestehende Kurzbefehle
-- `N`: normaler nächster 5-Schritte-Block in den aktiven Projekten nach bisheriger Regel
-- `N Sparzam`: normaler 5-Schritte-Block nur SparzamApp
-- `U`: CI/aktuellen Block prüfen oder Fehler weiter beheben
-- `A`: maximaler FamSchicht-Autopilot
-- `A Sparzam`: maximaler SparzamApp-Autopilot
+- `A`: maximal selbstständige Umsetzung **und Problembehebung** in SparzamApp + FamSchicht
+- `N`: normaler Entwicklungsblock für beide aktiven Projekte
+- `U`: nur Status beider aktiven Projekte prüfen
 
 ## Aktueller nächster Schwerpunkt
 Nach grüner CI: Produkt-/Markt-Evidenzmatrix auf Basis der realen Bons weiter absichern, Store-Namen kanonisieren und anschließend realistische Mehrmarkt-End-to-End-Routentests ergänzen.
