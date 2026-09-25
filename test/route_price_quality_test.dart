@@ -17,14 +17,14 @@ void main() {
   const lidl = Store(name: 'Lidl', location: 'Zellingen', distanceKm: 1,
       prices: {});
 
-  test('historical discounted receipt adds an explicit planning margin', () {
+  test('fresh discounted receipt adds an explicit planning margin', () {
     final price = MarketPrice(productId: 'schmand', storeName: 'Lidl',
-        price: 0.69, updatedAt: DateTime(2026, 7, 23),
+        price: 0.79, updatedAt: DateTime(2026, 9, 23),
         source: MarketPriceSource.receipt, discounted: true);
     final quote = RoutePriceResolver(const [], now: today,
         marketPrices: [price]).quote(lidl, ListItem(product: schmand))!;
-    expect(quote.total, 0.69);
-    expect(priceUncertaintyReserve(quote, today), closeTo(0.69 * 0.35, 0.00001));
+    expect(quote.total, 0.79);
+    expect(priceUncertaintyReserve(quote, today), closeTo(0.79 * 0.15, 0.00001));
     expect(MarketPrice.fromJson(price.toJson()).discounted, isTrue);
   });
 
@@ -40,8 +40,8 @@ void main() {
 
   test('whole basket can outweigh uncertainty on one receipt item', () {
     final prices = [
-      MarketPrice(productId: 'schmand', storeName: 'Lidl', price: 0.69,
-          updatedAt: DateTime(2026, 7, 23),
+      MarketPrice(productId: 'schmand', storeName: 'Lidl', price: 0.79,
+          updatedAt: DateTime(2026, 9, 23),
           source: MarketPriceSource.receipt, discounted: true),
       MarketPrice(productId: 'schmand', storeName: 'EDEKA', price: 0.89,
           updatedAt: today),
@@ -61,6 +61,6 @@ void main() {
       ListItem(product: schmand), ListItem(product: noodles),
     ]);
     expect(wholeBasket.bestPlan()!.stores.single.name, lidl.name);
-    expect(wholeBasket.bestPlan()!.basket, closeTo(1.58, 0.00001));
+    expect(wholeBasket.bestPlan()!.basket, closeTo(1.68, 0.00001));
   });
 }
