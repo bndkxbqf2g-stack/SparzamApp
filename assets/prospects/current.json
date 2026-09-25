@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-25T20:55:20.552539Z",
+  "generatedAt": "2026-09-25T20:56:15.323994Z",
   "sources": [
     {
       "id": "aldi_sued",
@@ -16,7 +16,7 @@
       "url": "https://www.edeka.de/maerkte/023738/",
       "status": "error",
       "recordCount": 0,
-      "error": "keine sicher extrahierbaren Angebote gefunden"
+      "error": "keine sicher extrahierbaren Angebote gefunden; html=379530, angebot=146, festpreis=22, offer=25"
     },
     {
       "id": "kaufland_grombuehl",
