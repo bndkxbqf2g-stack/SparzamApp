@@ -35,6 +35,25 @@ class ProspectPage {
   final String keyWords;
 }
 
+String? _officialProspectUrl(String storeName, String? fallback) {
+  switch (storeName) {
+    case 'ALDI Süd':
+      return 'https://www.aldi-sued.de/prospekte';
+    case 'EDEKA':
+      return 'https://www.edeka.de/markt-id/8002976/prospekt.jsp';
+    case 'Kaufland':
+      return 'https://filiale.kaufland.de/prospekte.html';
+    case 'PENNY':
+      return 'https://www.penny.de/angebote';
+    case 'Netto':
+      return 'https://www.netto-online.de/angebote';
+    case 'REWE':
+      return 'https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1/';
+    default:
+      return fallback;
+  }
+}
+
 class ProspectFeedService {
   ProspectFeedService({http.Client? client}) : _client = client ?? http.Client();
 
@@ -113,7 +132,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw) {
           storeName: storeName,
           title: 'Aktionsprospekt',
           pages: const <ProspectPage>[],
-          url: availableStoreUrls[storeName],
+          url: _officialProspectUrl(storeName, availableStoreUrls[storeName]),
         ),
       );
     }
