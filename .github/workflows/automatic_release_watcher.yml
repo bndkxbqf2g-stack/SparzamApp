@@ -1,0 +1,40 @@
+name: Automatic release watcher
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start release when main changed
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          current_sha="${GITHUB_SHA}"
+
+          running_shas="$(gh api \
+            "repos/${REPOSITORY}/actions/workflows/release.yml/runs?branch=main&per_page=20" \
+            --jq '.workflow_runs[] | select(.status == "queued" or .status == "in_progress") | .head_sha')"
+          if printf '%s\n' "${running_shas}" | grep -Fxq "${current_sha}"; then
+            echo "Release für ${current_sha} läuft bereits."
+            exit 0
+          fi
+
+          successful_sha="$(gh api \
+            "repos/${REPOSITORY}/actions/workflows/release.yml/runs?branch=main&status=success&per_page=1" \
+            --jq '.workflow_runs[0].head_sha // ""')"
+          if [ "${successful_sha}" = "${current_sha}" ]; then
+            echo "main ist bereits veröffentlicht: ${current_sha}"
+            exit 0
+          fi
+
+          echo "Starte automatischen Release für ${current_sha}."
+          gh workflow run release.yml --ref main
