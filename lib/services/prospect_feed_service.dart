@@ -35,7 +35,17 @@ class ProspectPage {
   final String keyWords;
 }
 
-String? _officialProspectUrl(String storeName, String? fallback) {
+const configuredProspectStores = <String>[
+  'Lidl',
+  'ALDI Süd',
+  'EDEKA',
+  'Kaufland',
+  'PENNY',
+  'Netto',
+  'REWE',
+];
+
+String? officialProspectUrl(String storeName, [String? fallback]) {
   switch (storeName) {
     case 'ALDI Süd':
       return 'https://prospekt.aldi-sued.de/kw39-26-op-mp/page/1';
@@ -132,7 +142,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw) {
           storeName: storeName,
           title: 'Aktionsprospekt',
           pages: const <ProspectPage>[],
-          url: _officialProspectUrl(storeName, availableStoreUrls[storeName]),
+          url: officialProspectUrl(storeName, availableStoreUrls[storeName]),
         ),
       );
     }
