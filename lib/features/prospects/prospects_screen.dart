@@ -243,7 +243,7 @@ class _ProspectViewer extends StatelessWidget {
                 final result = resolveOfferImport(record, catalogProducts);
                 final product = result.product ??
                     Product(
-                      id: 'prospect|' + record.storeName + '|' + record.sourceId,
+                      id: '${record.storeName}|${record.sourceId}',
                       name: record.productLabel,
                       unit: 'Stück',
                       group: 'Sonstiges',
@@ -353,12 +353,3 @@ class _ProspectProductCard extends StatelessWidget {
   }
 }
 
-String _offerPriceLabel(OfferImportRecord record) {
-  final offer = record.offerPrice.toStringAsFixed(2).replaceAll('.', ',');
-  final regular = record.originalPrice;
-  if (regular != null) {
-    final normal = regular.toStringAsFixed(2).replaceAll('.', ',');
-    return 'Angebot $offer € · Normalpreis $normal €';
-  }
-  return 'Angebot $offer €';
-}
