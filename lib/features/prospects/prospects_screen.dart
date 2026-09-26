@@ -132,7 +132,7 @@ class _ProspectCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(12),
                 child: Text(
-                  `${issue.storeName}\n${issue.title}`,
+                  '${issue.storeName}\n${issue.title}',
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontWeight: FontWeight.w700),
