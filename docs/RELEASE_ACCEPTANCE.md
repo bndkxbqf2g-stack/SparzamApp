@@ -4,6 +4,16 @@ Diese Checkliste ergänzt die automatisierte CI. Sie wird auf mindestens einem
 echten Android- oder iOS-Gerät ausgefüllt; ein Web-Build ersetzt weder den
 Kamera- noch den Neustarttest.
 
+## Verbindliche Autopilot-Regel: sichtbare Ergebnisprüfung
+
+Bei jeder Änderung aufgrund eines Nutzerwunsches gilt zusätzlich zur CI:
+
+1. Die gewünschte sichtbare UI und die erwartete Bedienung werden als konkrete Abnahmekriterien formuliert.
+2. Ein Widget-/Integrationstest prüft, dass die relevanten Texte, Karten, Daten und Aktionen tatsächlich gerendert werden.
+3. Wenn das Verhalten geräte- oder plattformabhängig ist, wird ein echter Web-/Android-/iOS-Sichttest ergänzt.
+4. Ein grüner Build ohne sichtbare Erfüllung gilt als **nicht abgeschlossen**.
+5. Bei Abweichungen wird automatisch nachgebessert und erneut getestet, bis die Abnahmekriterien erfüllt sind.
+
 ## Testdaten und Vorbereitung
 
 - Datum: `____________________`
