@@ -22,7 +22,7 @@ SOURCES = (
     ("lidl_zellingen", "Lidl", "https://www.lidl.de/c/online-prospekte/s10005610/", "lidl_api"),
     ("penny_retzbach", "PENNY", "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1", "penny_api"),
     ("netto_thuengersheim", "Netto", "https://www.netto-online.de/ueber-netto/Online-Prospekte.chtm/4371", "netto"),
-    ("rewe_veitshoechheim", "REWE", "https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1/", "rewe"),
+    ("rewe_veitshoechheim", "REWE", "https://www.rewe.de/marktseite/veitshoechheim/461683/rewe-markt-pont-l-eveque-allee-1/", "rewe"),
 )
 
 class VisibleTextParser(HTMLParser):
