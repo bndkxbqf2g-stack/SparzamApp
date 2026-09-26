@@ -92,7 +92,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw) {
 
   final generatedAt = DateTime.tryParse(json['generatedAt'] as String? ?? '');
   final refreshedStores = <String>[];
-  final availableStores = <String>[];
+  final availableStores = <String>[...configuredProspectStores];
   final availableStoreUrls = <String, String>{};
   for (final source in (json['sources'] as List<dynamic>? ?? const [])) {
     if (source is! Map<String, dynamic>) continue;
