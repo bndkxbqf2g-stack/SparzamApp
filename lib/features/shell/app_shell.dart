@@ -26,6 +26,7 @@ import '../../services/price_history_store.dart';
 import '../../services/price_observation_store.dart';
 import '../../services/price_observation_adapters.dart';
 import '../../services/prospect_feed_service.dart';
+import '../../services/prospect_import_module.dart';
 import '../../services/market_price_observation_adapter.dart';
 import '../../services/recent_purchase_store.dart';
 import '../../services/receipt_observation_store.dart';
@@ -251,7 +252,7 @@ class _AppShellState extends State<AppShell> {
 
   Future<void> _loadProspectOffers() async {
     try {
-      final feed = await ProspectFeedService().load();
+      final feed = await ProspectImportModule().execute();
       if (mounted) {
         setState(() {
           prospectRecords = feed.records;
