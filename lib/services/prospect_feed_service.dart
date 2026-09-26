@@ -38,7 +38,7 @@ class ProspectPage {
 String? _officialProspectUrl(String storeName, String? fallback) {
   switch (storeName) {
     case 'ALDI Süd':
-      return 'https://www.aldi-sued.de/prospekte';
+      return 'https://prospekt.aldi-sued.de/kw39-26-op-mp/page/1';
     case 'EDEKA':
       return 'https://www.edeka.de/markt-id/8002976/prospekt.jsp';
     case 'Kaufland':
@@ -46,7 +46,7 @@ String? _officialProspectUrl(String storeName, String? fallback) {
     case 'PENNY':
       return 'https://www.penny.de/angebote';
     case 'Netto':
-      return 'https://www.netto-online.de/angebote';
+      return 'https://www.netto-online.de/ueber-netto/Online-Prospekte.chtm/4371';
     case 'REWE':
       return 'https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1/';
     default:
