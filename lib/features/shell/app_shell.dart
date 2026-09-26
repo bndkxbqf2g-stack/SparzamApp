@@ -38,6 +38,7 @@ import '../../services/diagnostic_log_service.dart';
 import '../budget/budget_screen.dart';
 import '../offers/offer_import.dart';
 import '../catalog/product_catalog_screen.dart';
+import '../catalog/product_identity.dart';
 import '../home/dashboard_data.dart';
 import '../profile/mobility_settings_screen.dart';
 import '../profile/price_data_settings_screen.dart';
@@ -278,10 +279,35 @@ class _AppShellState extends State<AppShell> {
       }
 
       final observedAt = feed.generatedAt ?? DateTime.now();
-      // Angebotspreise bleiben im Angebotsbestand. In die normale
-      // Preisdatenbank werden ausschließlich belegte Normalpreise übernommen.
-      final regularObservations = resolved
-          .where((offer) => offer.originalPriceVerified)
+      // Angebotspreise bleiben im Angebotsbestand. Für die normale
+      // Preisdatenbank wird aber jeder belegte Normalpreis übernommen,
+      // auch wenn das Produkt noch nicht im Katalog vorhanden ist.
+      final regularOffers = <Offer>[];
+      for (final record in feed.records) {
+        final regular = record.originalPrice;
+        if (regular == null) continue;
+        final resolution = resolveOfferImport(record, catalogProducts);
+        if (resolution.offer != null) {
+          regularOffers.add(resolution.offer!);
+          continue;
+        }
+        final identity = normalizeIdentityText(record.productLabel);
+        if (identity.isEmpty) continue;
+        regularOffers.add(
+          Offer(
+            id: 'prospect-regular|\${record.sourceId}',
+            productId: 'prospect|\$identity',
+            storeName: record.storeName,
+            originalPrice: regular,
+            offerPrice: record.offerPrice,
+            validFrom: record.validFrom,
+            validUntil: record.validUntil,
+            source: record.source,
+            proofRef: record.proofRef,
+          ),
+        );
+      }
+      final regularObservations = regularOffers
           .map(
             (offer) => regularObservationFromOffer(
               offer,
