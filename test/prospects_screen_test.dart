@@ -1,46 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/features/prospects/prospects_screen.dart';
+import 'package:sparzamapp/services/prospect_feed_service.dart';
 
 void main() {
-  testWidgets('shows raw prospect records and verified regular prices',
+  testWidgets('shows market prospect cards instead of raw article summary',
       (tester) async {
-    final records = [
-      OfferImportRecord(
-        sourceId: 'aldi-gouda',
-        productLabel: 'HOFBURGER Gouda jung 450 g',
+    const prospects = [
+      ProspectIssue(
         storeName: 'ALDI Süd',
-        originalPrice: 3.79,
-        offerPrice: 3.00,
-        validFrom: DateTime.now().subtract(const Duration(days: 1)),
-        validUntil: DateTime.now().add(const Duration(days: 3)),
-        source: 'retailerWebsite',
-        proofRef: 'https://example.test/aldi',
+        title: 'Aktionsprospekt',
+        pages: [],
       ),
-      OfferImportRecord(
-        sourceId: 'edeka-sekt',
-        productLabel: 'MM Extra Sekt',
+      ProspectIssue(
         storeName: 'EDEKA',
-        offerPrice: 2.77,
-        validFrom: DateTime.now(),
-        validUntil: DateTime.now().add(const Duration(days: 2)),
-        source: 'retailerWebsite',
-        proofRef: 'https://example.test/edeka',
+        title: 'Aktionsprospekt',
+        pages: [],
+      ),
+      ProspectIssue(
+        storeName: 'Kaufland',
+        title: 'Aktionsprospekt',
+        pages: [],
+      ),
+      ProspectIssue(
+        storeName: 'Lidl',
+        title: 'Aktionsprospekt',
+        pages: [],
+      ),
+      ProspectIssue(
+        storeName: 'PENNY',
+        title: 'Aktionsprospekt',
+        pages: [],
+      ),
+      ProspectIssue(
+        storeName: 'Netto',
+        title: 'Aktionsprospekt',
+        pages: [],
+      ),
+      ProspectIssue(
+        storeName: 'REWE',
+        title: 'Aktionsprospekt',
+        pages: [],
       ),
     ];
 
     await tester.pumpWidget(
-      MaterialApp(home: Scaffold(body: ProspectsScreen(records: records))),
+      const MaterialApp(
+        home: Scaffold(
+          body: ProspectsScreen(records: [], prospects: prospects),
+        ),
+      ),
     );
 
-    expect(find.text('2 aktuelle Prospektartikel aus 2 Märkten'), findsOneWidget);
-    expect(find.text('ALDI Süd · 1'), findsOneWidget);
-    expect(find.text('EDEKA · 1'), findsOneWidget);
-    expect(find.text('HOFBURGER Gouda jung 450 g'), findsOneWidget);
-    expect(find.text('MM Extra Sekt'), findsOneWidget);
-    expect(find.text('Normalpreis 3.79 €'), findsOneWidget);
-    expect(find.text('3.00 €'), findsOneWidget);
-    expect(find.text('2.77 €'), findsOneWidget);
+    expect(find.text('Prospekte'), findsOneWidget);
+    expect(find.text('Alle Märkte'), findsOneWidget);
+    expect(
+      find.text('Aktuelle Prospekte. Produkte antippen und vormerken.'),
+      findsOneWidget,
+    );
+    expect(find.text('1854 aktuelle Prospektartikel aus 5 Märkten'), findsNothing);
+
+    await tester.tap(find.textContaining('ALDI Süd'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('ALDI Süd'), findsWidgets);
+    expect(
+      find.textContaining('Für diesen Markt sind derzeit noch keine Bildseiten'),
+      findsOneWidget,
+    );
   });
 }
