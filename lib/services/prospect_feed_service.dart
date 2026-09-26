@@ -48,7 +48,7 @@ String? _officialProspectUrl(String storeName, String? fallback) {
     case 'Netto':
       return 'https://www.netto-online.de/ueber-netto/Online-Prospekte.chtm/4371';
     case 'REWE':
-      return 'https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1/';
+      return 'https://www.rewe.de/marktseite/veitshoechheim/461683/rewe-markt-pont-l-eveque-allee-1/';
     default:
       return fallback;
   }
