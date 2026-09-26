@@ -15,7 +15,37 @@ class ProspectImportModule {
   final ProspectFeedService _feedService;
   final ProspectBranchResolver _branchResolver = const ProspectBranchResolver();
 
-  Future<ProspectFeedLoadResult> execute() => _feedService.load();
+  Future<ProspectFeedLoadResult> execute({String? startAddress}) async {
+    final feed = await _feedService.load();
+    if (startAddress == null || startAddress.trim().isEmpty) return feed;
+
+    final branches = resolveBranches(startAddress);
+    final urls = <String, String>{
+      for (final branch in branches) branch.storeName: branch.officialUrl,
+    };
+    final prospects = feed.prospects
+        .map(
+          (issue) => urls.containsKey(issue.storeName)
+              ? ProspectIssue(
+                  storeName: issue.storeName,
+                  title: issue.title,
+                  pages: issue.pages,
+                  url: urls[issue.storeName],
+                  thumbnailUrl: issue.thumbnailUrl,
+                  sourceStatus: issue.sourceStatus,
+                  recordCount: issue.recordCount,
+                )
+              : issue,
+        )
+        .toList(growable: false);
+
+    return ProspectFeedLoadResult(
+      records: feed.records,
+      refreshedStores: feed.refreshedStores,
+      generatedAt: feed.generatedAt,
+      prospects: prospects,
+    );
+  }
 
   List<ProspectBranch> resolveBranches(String address, {
     Iterable<ProspectBranch> current = configuredProspectBranches,
