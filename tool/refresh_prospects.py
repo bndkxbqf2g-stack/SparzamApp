@@ -21,8 +21,8 @@ SOURCES = (
     ("kaufland_grombuehl", "Kaufland", "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html", "kaufland_api"),
     ("lidl_zellingen", "Lidl", "https://www.lidl.de/c/online-prospekte/s10005610/", "lidl_api"),
     ("penny_retzbach", "PENNY", "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1", "penny_api"),
-    ("netto_thuengersheim", "Netto", "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371", "netto"),
-    ("rewe_veitshoechheim", "REWE", "https://www.rewe.de/api/stationary-offers/461683", "rewe_api"),
+    ("netto_thuengersheim", "Netto", "https://www.netto-online.de/ueber-netto/Online-Prospekte.chtm/4371", "netto"),
+    ("rewe_veitshoechheim", "REWE", "https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1/", "rewe"),
 )
 
 class VisibleTextParser(HTMLParser):
