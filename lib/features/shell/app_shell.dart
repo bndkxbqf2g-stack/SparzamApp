@@ -295,8 +295,8 @@ class _AppShellState extends State<AppShell> {
         if (identity.isEmpty) continue;
         regularOffers.add(
           Offer(
-            id: 'prospect-regular|\${record.sourceId}',
-            productId: 'prospect|\$identity',
+            id: 'prospect-regular|${record.sourceId}',
+            productId: 'prospect|$identity',
             storeName: record.storeName,
             originalPrice: regular,
             offerPrice: record.offerPrice,
