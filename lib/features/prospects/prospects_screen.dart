@@ -187,6 +187,18 @@ class _ProspectViewer extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(12),
         children: [
+          if (issue.url != null)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: OutlinedButton.icon(
+                onPressed: () => launchUrl(
+                  Uri.parse(issue.url!),
+                  mode: LaunchMode.externalApplication,
+                ),
+                icon: const Icon(Icons.open_in_new),
+                label: const Text('Offiziellen Prospekt öffnen'),
+              ),
+            ),
           if (issue.pages.isEmpty)
             Card(
               child: Padding(
@@ -208,17 +220,6 @@ class _ProspectViewer extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    if (issue.url != null) ...[
-                      const SizedBox(height: 12),
-                      OutlinedButton.icon(
-                        onPressed: () => launchUrl(
-                          Uri.parse(issue.url!),
-                          mode: LaunchMode.externalApplication,
-                        ),
-                        icon: const Icon(Icons.open_in_new),
-                        label: const Text('Offiziellen Prospekt öffnen'),
-                      ),
-                    ],
                   ],
                 ),
               ),
