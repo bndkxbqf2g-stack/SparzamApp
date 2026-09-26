@@ -153,8 +153,7 @@ String _sourceStatusLabel(ProspectIssue issue) {
         'Der offizielle Prospekt bleibt direkt erreichbar.';
   }
   if (issue.sourceStatus == 'ok' && issue.recordCount > 0) {
-    return issue.recordCount.toString() +
-        ' Angebote automatisch geladen. '
+    return '${issue.recordCount} Angebote automatisch geladen. '
         'Prospektseiten werden beim Händler geöffnet, wenn keine Bildseiten vorliegen.';
   }
   if (issue.sourceStatus == 'metadata_only') {
