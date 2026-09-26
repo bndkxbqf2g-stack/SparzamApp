@@ -24,6 +24,27 @@ Datum 23.07.26
     expect(observations.last.familyKey, 'kartoffeln');
   });
 
+  test('keeps valid item observations when the receipt total is incomplete', () {
+    final draft = parseReceiptLedger('''
+EDEKA
+Preis EUR
+Milch 3,5% 1,09 B
+Summe 1,19
+Datum 17.01.26
+''');
+    final review = reviewReceiptPrices(draft, const <Product>[]);
+
+    final observations = buildReceiptObservations(
+      draft: draft,
+      review: review,
+    );
+
+    expect(draft.balances, isFalse);
+    expect(observations, hasLength(1));
+    expect(observations.single.rawLabel, 'Milch 3,5%');
+    expect(observations.single.totalPrice, 1.09);
+  });
+
   test('deposits and discounts never become product observations', () {
     final draft = parseReceiptLedger('''
 Kaufland

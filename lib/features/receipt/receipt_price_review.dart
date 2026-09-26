@@ -30,7 +30,10 @@ ReceiptPriceReview reviewReceiptPrices(
   List<Product> products,
 ) {
   final items = draft.rows.where((row) => row.kind == ReceiptRowKind.item).toList();
-  if (!draft.balances || draft.retailer == null || draft.receiptDate == null) {
+  // A receipt can have a missing/unreadable line or a total mismatch while
+  // still containing individually trustworthy item prices. Review each row
+  // independently instead of discarding the complete receipt.
+  if (draft.retailer == null || draft.receiptDate == null) {
     return ReceiptPriceReview(suggestions: const [], unmatchedItems: items.length);
   }
   final discounted = draft.rows

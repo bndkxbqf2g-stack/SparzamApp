@@ -11,7 +11,10 @@ List<ReceiptObservation> buildReceiptObservations({
   Map<int, String> assignedProductIds = const <int, String>{},
   Set<int> confirmedProductLines = const <int>{},
 }) {
-  if (!draft.balances || draft.retailer == null || draft.receiptDate == null) {
+  // A total mismatch must not discard otherwise valid item observations. The
+  // ledger already marks unusable rows via unresolvedLines and the price
+  // review filters those rows individually.
+  if (draft.retailer == null || draft.receiptDate == null) {
     return const <ReceiptObservation>[];
   }
   final matched = <int, String>{...assignedProductIds};
@@ -20,10 +23,12 @@ List<ReceiptObservation> buildReceiptObservations({
       .map((row) => row.linkedItemLine)
       .whereType<int>()
       .toSet();
+  final unresolvedLines = draft.unresolvedLines.toSet();
   final storeName = canonicalStoreName(draft.retailer, stores) ?? draft.retailer!;
 
   return draft.rows
-      .where((row) => row.kind == ReceiptRowKind.item)
+      .where((row) => row.kind == ReceiptRowKind.item &&
+          !unresolvedLines.contains(row.line))
       .map((row) => ReceiptObservation(
             id: '${draft.fingerprint}|${row.line}',
             receiptFingerprint: draft.fingerprint,

@@ -220,8 +220,6 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
 
     for (final entry in receiptDrafts) {
       final draft = entry.draft;
-      if (!draft.balances) continue;
-
       final review = reviewReceiptPrices(draft, availableProducts);
       final matchedLines = review.suggestions
           .map((suggestion) => suggestion.row.line)
@@ -486,10 +484,10 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                             const ListTile(
                               title: Text('Bon nicht vollständig geprüft'),
                               subtitle: Text('Die Positionen ergeben nicht den Bonbetrag. '
-                                  'Dieser Bon bleibt gesperrt; seine erkannten Preise werden nur angezeigt. '
-                                  'Andere vollständig geprüfte Bons können trotzdem übernommen werden.'),
-                            )
-                          else if (review.suggestions.isEmpty)
+                                  'Eindeutig lesbare und zugeordnete Positionen können trotzdem '
+                                  'einzeln ausgewählt und übernommen werden.'),
+                            ),
+                          if (review.suggestions.isEmpty)
                             const ListTile(
                               title: Text('Keine eindeutige Katalogzuordnung'),
                               subtitle: Text('Die Artikel und Preise wurden gelesen. '
@@ -572,11 +570,10 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                                     '${(row.unitCents! / 100).toStringAsFixed(2).replaceAll('.', ',')} €',
                                           style: const TextStyle(fontWeight: FontWeight.w600),
                                         ),
-                                        Text(
-                                          draft.balances
-                                              ? 'Wird beim Speichern als Bonbeobachtung übernommen.'
-                                              : 'Nur Vorschau – Bon muss rechnerisch noch geprüft werden.',
-                                        ),
+                                          Text(
+                                            'Wird beim Speichern als einzelne '
+                                            'Bonbeobachtung übernommen.',
+                                          ),
                                         if (assignedProducts.containsKey(_rowKey(draft, row)))
                                           Text(
                                             'Zuordnung: ${availableProducts.where((p) => p.id == assignedProducts[_rowKey(draft, row)]).first.name}\n'

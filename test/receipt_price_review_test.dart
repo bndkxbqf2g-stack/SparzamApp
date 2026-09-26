@@ -58,7 +58,7 @@ Datum 24.08.24
     expect(matches.last.price.price, 4.39);
   });
 
-  test('discounted products and unbalanced receipts cannot be promoted', () {
+  test('discounted products stay excluded but valid rows from an unbalanced receipt remain usable', () {
     final discounted = parseReceiptLedger('''
 Kaufland
 Preis EUR
@@ -75,7 +75,11 @@ Trauben 500g hell 1,73 B
 Summe 1,93
 Datum 23.07.24
 ''');
-    expect(reviewReceiptPrices(broken, products).suggestions, isEmpty);
+    expect(broken.balances, isFalse);
+    final brokenReview = reviewReceiptPrices(broken, products);
+    expect(brokenReview.suggestions, hasLength(1));
+    expect(brokenReview.suggestions.single.product.id, 'weintrauben');
+    expect(brokenReview.suggestions.single.price.price, 1.73);
   });
 
   test('Netto kilogram price after item gives exact banana unit price', () {
