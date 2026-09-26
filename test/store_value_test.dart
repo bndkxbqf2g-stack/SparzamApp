@@ -61,4 +61,11 @@ void main() {
     expect(value.netAdvantage, lessThan(0));
     expect(value.isWorthIt, isFalse);
   });
+  test('alle konfigurierten Märkte haben eine belegte Markt-ID', () {
+    expect(stores, hasLength(7));
+    final branchIds = stores.map((store) => store.branchId).toList();
+    expect(branchIds, everyElement(isNotNull));
+    expect(branchIds.toSet(), hasLength(7));
+  });
+
 }
