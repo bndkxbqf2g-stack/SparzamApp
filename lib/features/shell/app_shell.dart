@@ -252,7 +252,9 @@ class _AppShellState extends State<AppShell> {
 
   Future<void> _loadProspectOffers() async {
     try {
-      final feed = await ProspectImportModule().execute();
+      final feed = await ProspectImportModule().execute(
+        startAddress: mobility.startAddress,
+      );
       if (mounted) {
         setState(() {
           prospectRecords = feed.records;
