@@ -65,7 +65,7 @@ void main() {
 
     expect(find.text('ALDI Süd'), findsWidgets);
     expect(
-      find.textContaining('Für diesen Markt sind derzeit noch keine Bildseiten'),
+      find.textContaining('Aktuelle Angebote dieses Marktes'),
       findsOneWidget,
     );
   });
