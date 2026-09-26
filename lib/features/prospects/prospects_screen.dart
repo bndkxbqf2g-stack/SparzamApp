@@ -198,7 +198,7 @@ class _ProspectViewer extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8),
-                      child: Text('Seite ' + page.number.toString()),
+                      child: Text('Seite ${page.number}'),
                     ),
                   ],
                 ),
