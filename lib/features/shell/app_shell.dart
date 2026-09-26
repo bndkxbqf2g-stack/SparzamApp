@@ -131,6 +131,7 @@ class _AppShellState extends State<AppShell> {
   List<ReceiptObservation> receiptObservations = const <ReceiptObservation>[];
   List<PriceObservation> historicalPriceObservations = const <PriceObservation>[];
   List<OfferImportRecord> prospectRecords = const <OfferImportRecord>[];
+  List<ProspectIssue> prospectIssues = const <ProspectIssue>[];
   final priceObservationStore = PriceObservationStore();
   late PriceDataSettings priceDataSettings;
   late List<PricePoint> priceHistory;
@@ -251,7 +252,7 @@ class _AppShellState extends State<AppShell> {
     try {
       final feed = await ProspectFeedService().load();
       if (mounted) {
-        setState(() => prospectRecords = feed.records);
+        setState(() { prospectRecords = feed.records; prospectIssues = feed.prospects; });
       }
       final resolved = feed.records
           .map((record) => resolveOfferImport(record, catalogProducts))
@@ -274,11 +275,12 @@ class _AppShellState extends State<AppShell> {
       final next = [...retained, ...resolved];
       await widget.offerStore.save(next);
       final observedAt = feed.generatedAt ?? DateTime.now();
-      await priceObservationStore.append(
-        resolved.expand(
-          (offer) => observationsFromOffer(offer, observedAt: observedAt),
-        ),
-      );
+      // Angebotspreise gehören ausschließlich in den Angebotsbestand. Für die
+      // normale Preisdatenbank wird nur der belegte Normalpreis übernommen.
+      final regularObservations = resolved
+          .where((offer) => offer.originalPriceVerified)
+          .map((offer) => regularObservationFromOffer(offer, observedAt: observedAt));
+      await priceObservationStore.append(regularObservations);
       final historical = await priceObservationStore.load();
       if (!mounted) return;
       setState(() {
@@ -912,6 +914,7 @@ class _AppShellState extends State<AppShell> {
       shoppingListStore: widget.shoppingListStore,
       offers: offers,
       prospectRecords: prospectRecords,
+      prospectIssues: prospectIssues,
       priceHistory: priceHistory,
       mobility: mobility,
       catalogProducts: catalogProducts,
