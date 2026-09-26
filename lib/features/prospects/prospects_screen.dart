@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../design/sparzam_theme.dart';
 import '../offers/offer_import.dart';
@@ -171,12 +172,28 @@ class _ProspectViewer extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         children: [
           if (issue.pages.isEmpty)
-            const Card(
+            Card(
               child: Padding(
-                padding: EdgeInsets.all(20),
-                child: Text(
-                  'Aktuelle Angebote dieses Marktes. Durchblättern und '
-                  'Produkte antippen, um sie zur Einkaufsliste hinzuzufügen.',
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Aktuelle Angebote dieses Marktes. Durchblättern und '
+                      'Produkte antippen, um sie zur Einkaufsliste hinzuzufügen.',
+                    ),
+                    if (issue.url != null) ...[
+                      const SizedBox(height: 12),
+                      OutlinedButton.icon(
+                        onPressed: () => launchUrl(
+                          Uri.parse(issue.url!),
+                          mode: LaunchMode.externalApplication,
+                        ),
+                        icon: const Icon(Icons.open_in_new),
+                        label: const Text('Offiziellen Prospekt öffnen'),
+                      ),
+                    ],
+                  ],
                 ),
               ),
             )
