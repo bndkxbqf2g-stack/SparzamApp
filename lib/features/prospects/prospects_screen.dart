@@ -123,7 +123,7 @@ class _ProspectCard extends StatelessWidget {
                       )
                     : const Center(
                         child: Icon(
-                          Icons.menu_book_outlined,
+                          Icons.local_offer_outlined,
                           size: 56,
                           color: SparzamTheme.deepGreen,
                         ),
@@ -132,7 +132,7 @@ class _ProspectCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(12),
                 child: Text(
-                  '${issue.storeName}\n${issue.title}',
+                  issue.storeName + '\n' + issue.title,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontWeight: FontWeight.w700),
@@ -175,8 +175,8 @@ class _ProspectViewer extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.all(20),
                 child: Text(
-                  'Für diesen Markt sind derzeit noch keine Bildseiten '
-                  'verfügbar. Die Marktdaten werden automatisch aktualisiert.',
+                  'Aktuelle Angebote dieses Marktes. Durchblättern und '
+                  'Produkte antippen, um sie zur Einkaufsliste hinzuzufügen.',
                 ),
               ),
             )
@@ -198,7 +198,7 @@ class _ProspectViewer extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8),
-                      child: Text('Seite ${page.number}'),
+                      child: Text('Seite ' + page.number.toString()),
                     ),
                   ],
                 ),
