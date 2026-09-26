@@ -63,11 +63,15 @@ ProspectFeedLoadResult parseProspectFeed(String raw) {
 
   final generatedAt = DateTime.tryParse(json['generatedAt'] as String? ?? '');
   final refreshedStores = <String>[];
+  final availableStores = <String>[];
   for (final source in (json['sources'] as List<dynamic>? ?? const [])) {
     if (source is! Map<String, dynamic>) continue;
-    if (source['status'] != 'ok') continue;
     final storeName = source['storeName'] as String?;
-    if (storeName != null && storeName.trim().isNotEmpty) {
+    if (storeName == null || storeName.trim().isEmpty) continue;
+    if (!availableStores.contains(storeName)) {
+      availableStores.add(storeName);
+    }
+    if (source['status'] == 'ok' && !refreshedStores.contains(storeName)) {
       refreshedStores.add(storeName);
     }
   }
@@ -93,6 +97,22 @@ ProspectFeedLoadResult parseProspectFeed(String raw) {
       }
     }
   }
+  // Jeder konfigurierte Markt bleibt in der Prospektansicht sichtbar.
+  // Einige Händler liefern aktuell nur strukturierte Angebote, aber noch keine
+  // Bildseiten. Für diese Märkte zeigt die App eine informative Platzhalterkarte.
+  final storesWithPages = prospects.map((issue) => issue.storeName).toSet();
+  for (final storeName in availableStores) {
+    if (!storesWithPages.contains(storeName)) {
+      prospects.add(
+        ProspectIssue(
+          storeName: storeName,
+          title: 'Aktionsprospekt',
+          pages: const <ProspectPage>[],
+        ),
+      );
+    }
+  }
+
   for (final value in (json['offers'] as List<dynamic>? ?? const [])) {
     if (value is! Map<String, dynamic>) continue;
     final sourceId = value['sourceId'] as String?;
