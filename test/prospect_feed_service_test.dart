@@ -33,6 +33,38 @@ void main() {
       "proofRef": "https://example.test/e1"
     }
   ]
+
+  test('keeps all seven configured retailers visible when a source has no data', () {
+    final result = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-09-26T04:15:00Z",
+  "sources": [
+    {"storeName": "Lidl", "status": "ok", "url": "https://lidl.example"},
+    {"storeName": "Netto", "status": "error"},
+    {"storeName": "REWE", "status": "error"}
+  ],
+  "offers": []
+}
+''');
+
+    expect(
+      result.prospects.map((item) => item.storeName).toSet(),
+      containsAll(configuredProspectStores),
+    );
+    expect(
+      result.prospects.map((item) => item.storeName).toSet(),
+      hasLength(configuredProspectStores.length),
+    );
+    expect(
+      result.prospects.firstWhere((item) => item.storeName == 'Netto').url,
+      officialProspectUrl('Netto'),
+    );
+    expect(
+      result.prospects.firstWhere((item) => item.storeName == 'REWE').url,
+      officialProspectUrl('REWE'),
+    );
+  });
+
 }
 ''');
     expect(result.records, hasLength(2));
