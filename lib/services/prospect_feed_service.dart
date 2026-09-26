@@ -9,11 +9,30 @@ class ProspectFeedLoadResult {
     required this.records,
     required this.refreshedStores,
     this.generatedAt,
+    this.prospects = const <ProspectIssue>[],
   });
 
   final List<OfferImportRecord> records;
   final List<String> refreshedStores;
   final DateTime? generatedAt;
+  final List<ProspectIssue> prospects;
+}
+
+class ProspectIssue {
+  const ProspectIssue({required this.storeName, required this.title, required this.pages, this.url, this.thumbnailUrl});
+  final String storeName;
+  final String title;
+  final List<ProspectPage> pages;
+  final String? url;
+  final String? thumbnailUrl;
+}
+
+class ProspectPage {
+  const ProspectPage({required this.number, required this.imageUrl, this.zoomUrl, this.keyWords = ''});
+  final int number;
+  final String imageUrl;
+  final String? zoomUrl;
+  final String keyWords;
 }
 
 class ProspectFeedService {
@@ -54,6 +73,26 @@ ProspectFeedLoadResult parseProspectFeed(String raw) {
   }
 
   final records = <OfferImportRecord>[];
+  final prospects = <ProspectIssue>[];
+  for (final source in (json['sources'] as List<dynamic>? ?? const [])) {
+    if (source is! Map<String, dynamic>) continue;
+    final storeName = source['storeName'] as String?;
+    for (final raw in (source['prospects'] as List<dynamic>? ?? const [])) {
+      if (storeName == null || raw is! Map<String, dynamic>) continue;
+      final pages = <ProspectPage>[];
+      for (final page in (raw['pageSamples'] as List<dynamic>? ?? const [])) {
+        if (page is! Map<String, dynamic>) continue;
+        final image = page['image'] as String?;
+        final number = (page['number'] as num?)?.toInt();
+        if (image != null && number != null) {
+          pages.add(ProspectPage(number: number, imageUrl: image, zoomUrl: page['zoom'] as String?, keyWords: page['keyWords'] as String? ?? ''));
+        }
+      }
+      if (pages.isNotEmpty) {
+        prospects.add(ProspectIssue(storeName: storeName, title: raw['title'] as String? ?? 'Prospekt', pages: pages, url: raw['url'] as String?, thumbnailUrl: raw['thumbnailUrl'] as String?));
+      }
+    }
+  }
   for (final value in (json['offers'] as List<dynamic>? ?? const [])) {
     if (value is! Map<String, dynamic>) continue;
     final sourceId = value['sourceId'] as String?;
@@ -99,5 +138,6 @@ ProspectFeedLoadResult parseProspectFeed(String raw) {
     records: records,
     refreshedStores: refreshedStores,
     generatedAt: generatedAt,
+    prospects: prospects,
   );
 }
