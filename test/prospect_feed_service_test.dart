@@ -71,5 +71,13 @@ void main() {
       result.prospects.firstWhere((item) => item.storeName == 'REWE').url,
       officialProspectUrl('REWE'),
     );
+    expect(
+      result.prospects.firstWhere((item) => item.storeName == 'Netto').sourceStatus,
+      'error',
+    );
+    expect(
+      result.prospects.firstWhere((item) => item.storeName == 'REWE').sourceStatus,
+      'error',
+    );
   });
 }
