@@ -125,7 +125,7 @@ void main() {
     );
 
     await tester.tap(find.textContaining('Lidl'));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
   });
