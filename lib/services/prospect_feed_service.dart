@@ -19,12 +19,22 @@ class ProspectFeedLoadResult {
 }
 
 class ProspectIssue {
-  const ProspectIssue({required this.storeName, required this.title, required this.pages, this.url, this.thumbnailUrl});
+  const ProspectIssue({
+    required this.storeName,
+    required this.title,
+    required this.pages,
+    this.url,
+    this.thumbnailUrl,
+    this.sourceStatus = 'unknown',
+    this.recordCount = 0,
+  });
   final String storeName;
   final String title;
   final List<ProspectPage> pages;
   final String? url;
   final String? thumbnailUrl;
+  final String sourceStatus;
+  final int recordCount;
 }
 
 class ProspectPage {
@@ -94,6 +104,8 @@ ProspectFeedLoadResult parseProspectFeed(String raw) {
   final refreshedStores = <String>[];
   final availableStores = <String>[...configuredProspectStores];
   final availableStoreUrls = <String, String>{};
+  final sourceStatuses = <String, String>{};
+  final sourceRecordCounts = <String, int>{};
   for (final source in (json['sources'] as List<dynamic>? ?? const [])) {
     if (source is! Map<String, dynamic>) continue;
     final storeName = source['storeName'] as String?;
@@ -101,6 +113,8 @@ ProspectFeedLoadResult parseProspectFeed(String raw) {
     if (!availableStores.contains(storeName)) {
       availableStores.add(storeName);
     }
+    sourceStatuses[storeName] = source['status'] as String? ?? 'unknown';
+    sourceRecordCounts[storeName] = (source['recordCount'] as num?)?.toInt() ?? 0;
     final sourceUrl = source['url'] as String?;
     if (sourceUrl != null && sourceUrl.trim().isNotEmpty) {
       availableStoreUrls[storeName] = sourceUrl;
@@ -127,7 +141,15 @@ ProspectFeedLoadResult parseProspectFeed(String raw) {
         }
       }
       if (pages.isNotEmpty) {
-        prospects.add(ProspectIssue(storeName: storeName, title: raw['title'] as String? ?? 'Prospekt', pages: pages, url: raw['url'] as String?, thumbnailUrl: raw['thumbnailUrl'] as String?));
+        prospects.add(ProspectIssue(
+          storeName: storeName,
+          title: raw['title'] as String? ?? 'Prospekt',
+          pages: pages,
+          url: raw['url'] as String?,
+          thumbnailUrl: raw['thumbnailUrl'] as String?,
+          sourceStatus: sourceStatuses[storeName] ?? 'unknown',
+          recordCount: sourceRecordCounts[storeName] ?? 0,
+        ));
       }
     }
   }
@@ -143,6 +165,8 @@ ProspectFeedLoadResult parseProspectFeed(String raw) {
           title: 'Aktionsprospekt',
           pages: const <ProspectPage>[],
           url: officialProspectUrl(storeName, availableStoreUrls[storeName]),
+          sourceStatus: sourceStatuses[storeName] ?? 'unavailable',
+          recordCount: sourceRecordCounts[storeName] ?? 0,
         ),
       );
     }
