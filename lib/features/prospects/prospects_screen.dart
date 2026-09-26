@@ -110,7 +110,7 @@ class _ProspectCard extends StatelessWidget {
   final ProspectIssue issue;
   final VoidCallback onTap;
   @override
-  Widget build(BuildContext context) => SizedBox(width: 250, child: Card(clipBehavior: Clip.antiAlias, child: InkWell(onTap: onTap, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Expanded(child: Image.network(issue.thumbnailUrl ?? issue.pages.first.imageUrl, fit: BoxFit.cover, width: double.infinity, errorBuilder: (_, _, _) => const Icon(Icons.menu_book, size: 56))), Padding(padding: const EdgeInsets.all(12), child: Text('${issue.storeName}\n${issue.title}', maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w700)))]))));
+  Widget build(BuildContext context) => SizedBox(width: 250, child: Card(clipBehavior: Clip.antiAlias, child: InkWell(onTap: onTap, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Expanded(child: Image.network(issue.pages.first.imageUrl, fit: BoxFit.cover, width: double.infinity, errorBuilder: (_, _, _) => const Icon(Icons.menu_book, size: 56))), Padding(padding: const EdgeInsets.all(12), child: Text('${issue.storeName}\n${issue.title}', maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w700)))]))));
 }
 
 class _ProspectViewer extends StatelessWidget {
