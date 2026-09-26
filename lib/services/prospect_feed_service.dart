@@ -64,12 +64,17 @@ ProspectFeedLoadResult parseProspectFeed(String raw) {
   final generatedAt = DateTime.tryParse(json['generatedAt'] as String? ?? '');
   final refreshedStores = <String>[];
   final availableStores = <String>[];
+  final availableStoreUrls = <String, String>{};
   for (final source in (json['sources'] as List<dynamic>? ?? const [])) {
     if (source is! Map<String, dynamic>) continue;
     final storeName = source['storeName'] as String?;
     if (storeName == null || storeName.trim().isEmpty) continue;
     if (!availableStores.contains(storeName)) {
       availableStores.add(storeName);
+    }
+    final sourceUrl = source['url'] as String?;
+    if (sourceUrl != null && sourceUrl.trim().isNotEmpty) {
+      availableStoreUrls[storeName] = sourceUrl;
     }
     if (source['status'] == 'ok' && !refreshedStores.contains(storeName)) {
       refreshedStores.add(storeName);
@@ -108,6 +113,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw) {
           storeName: storeName,
           title: 'Aktionsprospekt',
           pages: const <ProspectPage>[],
+          url: availableStoreUrls[storeName],
         ),
       );
     }
