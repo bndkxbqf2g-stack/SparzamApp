@@ -232,17 +232,20 @@ class _ProspectViewer extends StatelessWidget {
               Builder(
                 builder: (context) {
                   final result = resolveOfferImport(record, catalogProducts);
+                  final product = result.product ??
+                      Product(
+                        id: 'prospect|' + record.storeName + '|' + record.sourceId,
+                        name: record.productLabel,
+                        unit: 'Stück',
+                        group: 'Sonstiges',
+                      );
                   return ListTile(
                     title: Text(record.productLabel),
-                    subtitle: result.isResolved
-                        ? const Text('Zur Einkaufsliste hinzufügen')
-                        : const Text('Noch nicht eindeutig zugeordnet'),
-                    trailing: result.isResolved
-                        ? const Icon(Icons.add_shopping_cart)
-                        : null,
-                    onTap: result.isResolved
-                        ? () => onAddProduct?.call(result.product!)
-                        : null,
+                    subtitle: Text(_offerPriceLabel(record)),
+                    trailing: const Icon(Icons.add_shopping_cart),
+                    onTap: onAddProduct == null
+                        ? null
+                        : () => onAddProduct!(product),
                   );
                 },
               ),
@@ -251,4 +254,15 @@ class _ProspectViewer extends StatelessWidget {
       ),
     );
   }
+}
+
+
+String _offerPriceLabel(OfferImportRecord record) {
+  final offer = record.offerPrice.toStringAsFixed(2).replaceAll('.', ',');
+  final regular = record.originalPrice;
+  if (regular != null) {
+    final normal = regular.toStringAsFixed(2).replaceAll('.', ',');
+    return 'Angebot $offer € · Normalpreis $normal €';
+  }
+  return 'Angebot $offer €';
 }
