@@ -252,35 +252,47 @@ class _AppShellState extends State<AppShell> {
     try {
       final feed = await ProspectFeedService().load();
       if (mounted) {
-        setState(() { prospectRecords = feed.records; prospectIssues = feed.prospects; });
+        setState(() {
+          prospectRecords = feed.records;
+          prospectIssues = feed.prospects;
+        });
       }
-      final resolved = feed.records
+
+      final resolutions = feed.records
           .map((record) => resolveOfferImport(record, catalogProducts))
+          .toList(growable: false);
+      final resolved = resolutions
           .where((result) => result.isResolved)
           .map((result) => result.offer!)
           .toList(growable: false);
-      if (resolved.isEmpty) {
-        widget.diagnosticLogService.record(
-          category: 'Prospekte',
-          message: 'Prospektfeed geladen, aber noch keine Angebote sicher zugeordnet.',
-          details: feed.records.length.toString(),
-        );
-        return;
-      }
+
       final refreshedStores = feed.refreshedStores.toSet();
       final retained = offers.where((offer) {
         final imported = offer.id.startsWith('import|');
         return !imported || !refreshedStores.contains(offer.storeName);
       }).toList();
       final next = [...retained, ...resolved];
-      await widget.offerStore.save(next);
+
+      if (resolved.isNotEmpty) {
+        await widget.offerStore.save(next);
+      }
+
       final observedAt = feed.generatedAt ?? DateTime.now();
-      // Angebotspreise gehören ausschließlich in den Angebotsbestand. Für die
-      // normale Preisdatenbank wird nur der belegte Normalpreis übernommen.
+      // Angebotspreise bleiben im Angebotsbestand. In die normale
+      // Preisdatenbank werden ausschließlich belegte Normalpreise übernommen.
       final regularObservations = resolved
           .where((offer) => offer.originalPriceVerified)
-          .map((offer) => regularObservationFromOffer(offer, observedAt: observedAt));
-      await priceObservationStore.append(regularObservations);
+          .map(
+            (offer) => regularObservationFromOffer(
+              offer,
+              observedAt: observedAt,
+            ),
+          )
+          .toList(growable: false);
+      if (regularObservations.isNotEmpty) {
+        await priceObservationStore.append(regularObservations);
+      }
+
       final historical = await priceObservationStore.load();
       if (!mounted) return;
       setState(() {
@@ -289,9 +301,11 @@ class _AppShellState extends State<AppShell> {
       });
       widget.diagnosticLogService.record(
         category: 'Prospekte',
-        message: 'Automatische Prospektangebote aktualisiert.',
+        message: 'Prospektdatenbank aktualisiert.',
         details:
-            '${feed.records.length} Rohangebote · ${resolved.length} sicher zugeordnet',
+            '${feed.records.length} Rohangebote · '
+            '${resolved.length} zugeordnet · '
+            '${regularObservations.length} Normalpreise übernommen',
       );
     } catch (error) {
       widget.diagnosticLogService.record(
