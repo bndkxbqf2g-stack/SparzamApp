@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../../design/sparzam_theme.dart';
 import '../offers/offer_import.dart';
+import '../../models/product.dart';
+import '../../services/prospect_feed_service.dart';
 
 class ProspectsScreen extends StatelessWidget {
-  const ProspectsScreen({super.key, required this.records});
+  const ProspectsScreen({super.key, required this.records, this.prospects = const [], this.catalogProducts = const [], this.onAddProduct});
 
   final List<OfferImportRecord> records;
+  final List<ProspectIssue> prospects;
+  final List<Product> catalogProducts;
+  final ValueChanged<Product>? onAddProduct;
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +59,20 @@ class ProspectsScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
+        if (prospects.isNotEmpty) ...[
+          Text('Aktuelle Prospekte', style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: 8),
+          SizedBox(
+            height: 210,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: prospects.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 12),
+              itemBuilder: (context, index) => _ProspectCard(issue: prospects[index], onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => _ProspectViewer(issue: prospects[index], records: active, catalogProducts: catalogProducts, onAddProduct: onAddProduct)))),
+            ),
+          ),
+          const SizedBox(height: 18),
+        ],
         if (active.isEmpty)
           const Card(
             child: Padding(
@@ -83,6 +102,27 @@ class ProspectsScreen extends StatelessWidget {
           ],
       ],
     );
+  }
+}
+
+class _ProspectCard extends StatelessWidget {
+  const _ProspectCard({required this.issue, required this.onTap});
+  final ProspectIssue issue;
+  final VoidCallback onTap;
+  @override
+  Widget build(BuildContext context) => SizedBox(width: 250, child: Card(clipBehavior: Clip.antiAlias, child: InkWell(onTap: onTap, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Expanded(child: Image.network(issue.thumbnailUrl ?? issue.pages.first.imageUrl, fit: BoxFit.cover, width: double.infinity, errorBuilder: (_, __, ___) => const Icon(Icons.menu_book, size: 56))), Padding(padding: const EdgeInsets.all(12), child: Text('${issue.storeName}\n${issue.title}', maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w700)))]))));
+}
+
+class _ProspectViewer extends StatelessWidget {
+  const _ProspectViewer({required this.issue, required this.records, required this.catalogProducts, this.onAddProduct});
+  final ProspectIssue issue;
+  final List<OfferImportRecord> records;
+  final List<Product> catalogProducts;
+  final ValueChanged<Product>? onAddProduct;
+  @override
+  Widget build(BuildContext context) {
+    final items = records.where((r) => r.storeName == issue.storeName).toList();
+    return Scaffold(appBar: AppBar(title: Text(issue.storeName)), body: ListView(padding: const EdgeInsets.all(12), children: [for (final page in issue.pages) Card(clipBehavior: Clip.antiAlias, child: Column(children: [Image.network(page.zoomUrl ?? page.imageUrl, fit: BoxFit.contain, errorBuilder: (_, __, ___) => const SizedBox(height: 180, child: Icon(Icons.broken_image)),), Padding(padding: const EdgeInsets.all(8), child: Text('Seite ${page.number}'))])), if (items.isNotEmpty) ...[const Padding(padding: EdgeInsets.only(top: 12, bottom: 6), child: Text('Erkannte Produkte antippen und zur Einkaufsliste hinzufügen', style: TextStyle(fontWeight: FontWeight.w700))), for (final record in items) Builder(builder: (context) { final result = resolveOfferImport(record, catalogProducts); return ListTile(title: Text(record.productLabel), subtitle: result.isResolved ? const Text('Zur Einkaufsliste hinzufügen') : const Text('Noch nicht eindeutig im Katalog zugeordnet'), trailing: result.isResolved ? const Icon(Icons.add_shopping_cart) : null, onTap: result.isResolved ? () => onAddProduct?.call(result.product!) : null); })]]));
   }
 }
 
