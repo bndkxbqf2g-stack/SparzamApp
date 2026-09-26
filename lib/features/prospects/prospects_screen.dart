@@ -222,40 +222,136 @@ class _ProspectViewer extends StatelessWidget {
               ),
           if (items.isNotEmpty) ...[
             const Padding(
-              padding: EdgeInsets.only(top: 12, bottom: 6),
+              padding: EdgeInsets.only(top: 12, bottom: 10),
               child: Text(
                 'Produkte antippen und zur Einkaufsliste hinzufügen',
                 style: TextStyle(fontWeight: FontWeight.w700),
               ),
             ),
-            for (final record in items)
-              Builder(
-                builder: (context) {
-                  final result = resolveOfferImport(record, catalogProducts);
-                  final product = result.product ??
-                      Product(
-                        id: 'prospect|' + record.storeName + '|' + record.sourceId,
-                        name: record.productLabel,
-                        unit: 'Stück',
-                        group: 'Sonstiges',
-                      );
-                  return ListTile(
-                    title: Text(record.productLabel),
-                    subtitle: Text(_offerPriceLabel(record)),
-                    trailing: const Icon(Icons.add_shopping_cart),
-                    onTap: onAddProduct == null
-                        ? null
-                        : () => onAddProduct!(product),
-                  );
-                },
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: items.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 12,
+                childAspectRatio: 0.68,
               ),
-          ],
-        ],
+              itemBuilder: (context, index) {
+                final record = items[index];
+                final result = resolveOfferImport(record, catalogProducts);
+                final product = result.product ??
+                    Product(
+                      id: 'prospect|' + record.storeName + '|' + record.sourceId,
+                      name: record.productLabel,
+                      unit: 'Stück',
+                      group: 'Sonstiges',
+                    );
+                return _ProspectProductCard(
+                  record: record,
+                  onTap: onAddProduct == null
+                      ? null
+                      : () => onAddProduct!(product),
+                );
+              },
+            ),
+          ],        ],
       ),
     );
   }
 }
 
+
+class _ProspectProductCard extends StatelessWidget {
+  const _ProspectProductCard({required this.record, required this.onTap});
+
+  final OfferImportRecord record;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final oldPrice = record.originalPrice;
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: record.imageUrl != null
+                        ? Image.network(
+                            record.imageUrl!,
+                            webHtmlElementStrategy:
+                                WebHtmlElementStrategy.prefer,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                const Center(
+                              child: Icon(Icons.local_offer_outlined, size: 42),
+                            ),
+                          )
+                        : const Center(
+                            child: Icon(Icons.local_offer_outlined, size: 42),
+                          ),
+                  ),
+                  Positioned(
+                    right: 8,
+                    bottom: 8,
+                    child: CircleAvatar(
+                      radius: 23,
+                      backgroundColor: Colors.green.shade400,
+                      child: const Icon(Icons.add, color: Colors.white, size: 30),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${record.offerPrice.toStringAsFixed(2).replaceAll('.', ',')} €',
+                    style: const TextStyle(
+                      color: Color(0xffdf5963),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  Text(
+                    record.storeName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                  Text(
+                    record.productLabel,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  if (oldPrice != null)
+                    Text(
+                      '${oldPrice.toStringAsFixed(2).replaceAll('.', ',')} €',
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 String _offerPriceLabel(OfferImportRecord record) {
   final offer = record.offerPrice.toStringAsFixed(2).replaceAll('.', ',');
