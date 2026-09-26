@@ -68,7 +68,10 @@ class _StoreSelectionScreenState extends State<StoreSelectionScreen> {
                         });
                       },
                       title: Text(stores[index].name),
-                      subtitle: Text(stores[index].location),
+                      subtitle: Text(
+                        '${stores[index].location} · '
+                        'Markt-ID: ${stores[index].branchId ?? 'nicht hinterlegt'}',
+                      ),
                       secondary: const Icon(Icons.storefront_outlined),
                     ),
                     if (index < stores.length - 1)
