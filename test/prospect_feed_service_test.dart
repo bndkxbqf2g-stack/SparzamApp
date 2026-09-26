@@ -33,6 +33,14 @@ void main() {
       "proofRef": "https://example.test/e1"
     }
   ]
+}
+''');
+
+    expect(result.records, hasLength(2));
+    expect(result.refreshedStores, ['ALDI Süd']);
+    expect(result.records.first.originalPrice, 0.89);
+    expect(result.records.last.originalPrice, isNull);
+  });
 
   test('keeps all seven configured retailers visible when a source has no data', () {
     final result = parseProspectFeed(r'''
@@ -63,13 +71,5 @@ void main() {
       result.prospects.firstWhere((item) => item.storeName == 'REWE').url,
       officialProspectUrl('REWE'),
     );
-  });
-
-}
-''');
-    expect(result.records, hasLength(2));
-    expect(result.refreshedStores, ['ALDI Süd']);
-    expect(result.records.first.originalPrice, 0.89);
-    expect(result.records.last.originalPrice, isNull);
   });
 }
