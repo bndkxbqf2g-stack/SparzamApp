@@ -3,6 +3,7 @@ class Store {
     required this.name,
     required this.location,
     this.address = '',
+    this.branchId,
     required this.distanceKm,
     required this.prices,
     this.isBigShop = false,
@@ -11,6 +12,7 @@ class Store {
   final String name;
   final String location;
   final String address;
+  final String? branchId;
   final double distanceKm;
   final Map<String, double> prices;
   final bool isBigShop;
