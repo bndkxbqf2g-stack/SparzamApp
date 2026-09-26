@@ -101,4 +101,33 @@ void main() {
     await tester.pump();
     expect(added, isTrue);
   });
+  testWidgets('keeps official opening action for a browsable prospect',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: const [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: [
+                ProspectPage(
+                  number: 1,
+                  imageUrl: 'https://example.test/page.png',
+                ),
+              ],
+              url: 'https://example.test/official-prospect',
+            ),
+          ],
+        ),
+      ),
+    );
+
+    await tester.tap(find.textContaining('Lidl'));
+    await tester.pump();
+
+    expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
+  });
+
 }
