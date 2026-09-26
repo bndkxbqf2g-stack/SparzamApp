@@ -92,7 +92,11 @@ void main() {
     expect(find.text('2,39 €'), findsOneWidget);
     expect(find.text('2,99 €'), findsOneWidget);
 
-    await tester.scrollUntilVisible(find.text('2,39 €'), 300);
+    await tester.scrollUntilVisible(
+      find.text('2,39 €'),
+      300,
+      scrollable: find.byType(Scrollable).last,
+    );
     await tester.tap(find.text('2,39 €'));
     await tester.pump();
     expect(added, isTrue);
