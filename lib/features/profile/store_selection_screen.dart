@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/stores.dart';
 import '../../models/mobility_settings.dart';
+import '../../services/prospect_branch_resolver.dart';
 
 class StoreSelectionScreen extends StatefulWidget {
   const StoreSelectionScreen({
@@ -49,6 +50,29 @@ class _StoreSelectionScreenState extends State<StoreSelectionScreen> {
             const Text(
               'Nur aktivierte Märkte werden für Routenvorschläge und '
               'Angebotshinweise berücksichtigt.',
+            ),
+            const SizedBox(height: 12),
+            Builder(
+              builder: (context) {
+                final resolved = const ProspectBranchResolver().resolve(
+                  widget.initialSettings.startAddress,
+                );
+                return Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.location_searching_outlined),
+                    title: Text(
+                      resolved.isEmpty
+                          ? 'Keine neue Filiale sicher ermittelt'
+                          : '${resolved.length} Filialen für den Startort erkannt',
+                    ),
+                    subtitle: Text(
+                      resolved.isEmpty
+                          ? 'Gespeicherte offizielle Markt-IDs bleiben erhalten.'
+                          : 'Nur offiziell hinterlegte Markt-IDs werden verwendet.',
+                    ),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 12),
             Card(
