@@ -147,6 +147,22 @@ class _ProspectCard extends StatelessWidget {
   }
 }
 
+String _sourceStatusLabel(ProspectIssue issue) {
+  if (issue.sourceStatus == 'error') {
+    return 'Automatischer Abruf aktuell nicht verfügbar. '
+        'Der offizielle Prospekt bleibt direkt erreichbar.';
+  }
+  if (issue.sourceStatus == 'ok' && issue.recordCount > 0) {
+    return issue.recordCount.toString() +
+        ' Angebote automatisch geladen. '
+        'Prospektseiten werden beim Händler geöffnet, wenn keine Bildseiten vorliegen.';
+  }
+  if (issue.sourceStatus == 'metadata_only') {
+    return 'Prospektquelle gefunden; strukturierte Produktdaten fehlen aktuell.';
+  }
+  return 'Offizielle Prospektquelle verfügbar.';
+}
+
 class _ProspectViewer extends StatelessWidget {
   const _ProspectViewer({
     required this.issue,
@@ -181,6 +197,16 @@ class _ProspectViewer extends StatelessWidget {
                     const Text(
                       'Aktuelle Angebote dieses Marktes. Durchblättern und '
                       'Produkte antippen, um sie zur Einkaufsliste hinzuzufügen.',
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      _sourceStatusLabel(issue),
+                      style: TextStyle(
+                        color: issue.sourceStatus == 'error'
+                            ? Colors.orange.shade900
+                            : Colors.black54,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     if (issue.url != null) ...[
                       const SizedBox(height: 12),
