@@ -293,9 +293,21 @@ class _ProspectOfferCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(record.productLabel,
-                      maxLines: 2, overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontWeight: FontWeight.w700)),
+                  Text(
+                    product?.name ?? record.productLabel,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    record.storeName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                   Text('${record.offerPrice.toStringAsFixed(2).replaceAll('.', ',')} €',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             color: SparzamTheme.deepGreen,
