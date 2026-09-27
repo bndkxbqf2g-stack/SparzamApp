@@ -97,7 +97,10 @@ List<ShoppingCandidate> buildShoppingCandidates({
         observedAt: price.updatedAt,
       ));
     }
-    final productStats = receiptStatsForProduct(product, receiptPriceStats).where(
+    final productStats = (identity.isGeneric
+            ? receiptPriceStats.where((stat) => stat.familyKey == identity.familyKey)
+            : receiptStatsForProduct(product, receiptPriceStats))
+        .where(
       (stat) =>
           stat.storeName.isNotEmpty &&
           stat.latestAt.isAfter(cutoff) &&
