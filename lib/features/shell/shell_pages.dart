@@ -119,6 +119,7 @@ List<Widget> buildShellPages({
       ),
       OffersScreen(
         offers: offers,
+        prospectRecords: prospectRecords,
         priceHistory: priceHistory,
         onSave: onSaveOffer,
         onDelete: onDeleteOffer,
