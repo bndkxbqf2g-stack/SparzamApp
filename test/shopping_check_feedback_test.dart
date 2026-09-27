@@ -27,6 +27,8 @@ void main() {
     );
     final pending = Completer<void>();
     var calls = 0;
+    final shoppingListStore = ShoppingListStore();
+    await shoppingListStore.saveTileView(false);
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
         body: ShoppingListScreen(
@@ -40,7 +42,7 @@ void main() {
             return calls == 1 ? pending.future : Future<void>.value();
           },
           onClearPurchased: (_) {},
-          shoppingListStore: ShoppingListStore(),
+          shoppingListStore: shoppingListStore,
           onOpenScanner: () {},
           offers: const [],
           priceHistory: const [],
