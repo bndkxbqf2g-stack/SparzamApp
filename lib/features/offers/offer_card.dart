@@ -45,7 +45,10 @@ class OfferCard extends StatelessWidget {
       currentPrice: price.finalPrice,
     );
     final name = product?.name ?? offer.productId;
-    final imageUrl = offer.imageUrl?.trim();
+    final imageUrl = (offer.imageUrl?.trim().isNotEmpty == true
+            ? offer.imageUrl
+            : product?.imageUrl)
+        ?.trim();
 
     return Card(
       child: Padding(

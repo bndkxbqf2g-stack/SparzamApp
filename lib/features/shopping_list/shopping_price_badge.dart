@@ -93,6 +93,19 @@ class ShoppingPriceBadge extends StatelessWidget {
             children: [
               Text(item.product.name,
                   style: Theme.of(context).textTheme.titleLarge),
+              if (item.product.imageUrl?.trim().isNotEmpty == true) ...[
+                const SizedBox(height: 10),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    item.product.imageUrl!,
+                    height: 130,
+                    width: double.infinity,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+                  ),
+                ),
+              ],
               const SizedBox(height: 6),
               const Text(
                 'Bonpreise zeigen einen vergangenen Einkauf. '
@@ -107,6 +120,19 @@ class ShoppingPriceBadge extends StatelessWidget {
                     final quote = quotes[index];
                     return ListTile(
                       contentPadding: EdgeInsets.zero,
+                      leading: quote.offer?.imageUrl?.trim().isNotEmpty == true
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                quote.offer!.imageUrl!,
+                                width: 54,
+                                height: 54,
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    const Icon(Icons.local_offer_outlined),
+                              ),
+                            )
+                          : const Icon(Icons.local_offer_outlined),
                       title: Text(quote.storeName),
                       subtitle: Text(quote.sourceLabel),
                       trailing: Text(quote.amountLabel,
