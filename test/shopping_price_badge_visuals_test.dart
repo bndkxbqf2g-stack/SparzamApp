@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:sparzam/features/shopping_list/shopping_price_badge.dart';
-import 'package:sparzam/models/list_item.dart';
-import 'package:sparzam/models/market_price.dart';
-import 'package:sparzam/models/offer.dart';
-import 'package:sparzam/models/product.dart';
+import 'package:sparzamapp/features/shopping_list/shopping_price_badge.dart';
+import 'package:sparzamapp/models/list_item.dart';
+import 'package:sparzamapp/models/market_price.dart';
+import 'package:sparzamapp/models/offer.dart';
+import 'package:sparzamapp/models/product.dart';
 
 void main() {
   testWidgets('Preisfenster zeigt Produktbild und Angebotsbild', (tester) async {
