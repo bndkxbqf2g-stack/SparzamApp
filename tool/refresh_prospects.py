@@ -214,7 +214,13 @@ def parse_aldi_api_page(json_text, promotion_day):
                     continue
                 candidate = clean(str(asset.get("url") or ""))
                 if candidate:
-                    image = candidate.replace("{width}", "600")
+                    # ALDI returns rendition templates. Persisting {slug}
+                    # leaves a broken/non-deterministic image source in the app.
+                    image = (
+                        candidate
+                        .replace("{width}", "600")
+                        .replace("{slug}", "image.jpg")
+                    )
                     break
 
         offers.append(record(

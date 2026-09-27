@@ -8,6 +8,31 @@ refresh = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(refresh)
 
 class ProspectParserTest(unittest.TestCase):
+    def test_aldi_api_resolves_image_rendition_placeholders(self):
+        payload = """
+        {
+          "meta": {"pagination": {"totalCount": 1}},
+          "data": [{
+            "brandName": "KÄSE",
+            "name": "Bergkäse",
+            "sku": "123456",
+            "urlSlugText": "bergkaese",
+            "price": {"amountRelevant": 199},
+            "assets": [{
+              "url": "https://images.example/scaleWidth/{width}/id/{slug}"
+            }]
+          }]
+        }
+        """
+        offers, _ = refresh.parse_aldi_api_page(
+            payload,
+            refresh.date(2026, 9, 28),
+        )
+        self.assertEqual(
+            offers[0]["imageUrl"],
+            "https://images.example/scaleWidth/600/id/image.jpg",
+        )
+
     def test_edeka_api_reads_market_offers_and_dates(self):
         payload = """
         {
