@@ -288,29 +288,36 @@ class _ProspectViewer extends StatelessWidget {
                   style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
                 ),
               ),
-              GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: groupedItems[category]!.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 0.68,
-                ),
-                itemBuilder: (context, index) {
-                  final record = groupedItems[category]![index];
-                  final result = resolveOfferImport(record, catalogProducts);
-                  final product = result.product ?? Product(
-                    id: '${record.storeName}|${record.sourceId}',
-                    name: record.productLabel,
-                    unit: 'Stück',
-                    group: category,
-                  );
-                  return _ProspectProductCard(
-                    record: record,
-                    category: category,
-                    onTap: onAddProduct == null ? null : () => onAddProduct!(product),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final width = (constraints.maxWidth - 10) / 2;
+                  return Wrap(
+                    spacing: 10,
+                    runSpacing: 12,
+                    children: [
+                      for (final record in groupedItems[category]!)
+                        SizedBox(
+                          width: width,
+                          child: Builder(
+                            builder: (context) {
+                              final result = resolveOfferImport(record, catalogProducts);
+                              final product = result.product ?? Product(
+                                id: '${record.storeName}|${record.sourceId}',
+                                name: record.productLabel,
+                                unit: 'Stück',
+                                group: category,
+                              );
+                              return _ProspectProductCard(
+                                record: record,
+                                category: category,
+                                onTap: onAddProduct == null
+                                    ? null
+                                    : () => onAddProduct!(product),
+                              );
+                            },
+                          ),
+                        ),
+                    ],
                   );
                 },
               ),

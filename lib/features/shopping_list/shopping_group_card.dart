@@ -55,30 +55,33 @@ class ShoppingGroupCard extends StatelessWidget {
           ),
           if (tileView)
             LayoutBuilder(
-              builder: (context, constraints) => GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: constraints.maxWidth >= 650 ? 3 : 2,
-                childAspectRatio: 0.95,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                children: [
-                  for (final item in items)
-                    _ShoppingItemCard(
-                      item: item,
-                      offers: offers,
-                      marketPrices: marketPrices,
-                      priceObservations: priceObservations,
-                      receiptPriceStats: receiptPriceStats,
-                      enabledStoreNames: enabledStoreNames,
-                      onOpenOffer: onOpenOffer,
-                      checked: checkedProductIds.contains(item.product.id),
-                      onToggle: onToggle,
-                      onChangeQuantity: onChangeQuantity,
-                      onEditDetails: onEditDetails,
-                    ),
-                ],
-              ),
+              builder: (context, constraints) {
+                final columns = constraints.maxWidth >= 650 ? 3 : 2;
+                final width = (constraints.maxWidth - (columns - 1) * 8) / columns;
+                return Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final item in items)
+                      SizedBox(
+                        width: width,
+                        child: _ShoppingItemCard(
+                          item: item,
+                          offers: offers,
+                          marketPrices: marketPrices,
+                          priceObservations: priceObservations,
+                          receiptPriceStats: receiptPriceStats,
+                          enabledStoreNames: enabledStoreNames,
+                          onOpenOffer: onOpenOffer,
+                          checked: checkedProductIds.contains(item.product.id),
+                          onToggle: onToggle,
+                          onChangeQuantity: onChangeQuantity,
+                          onEditDetails: onEditDetails,
+                        ),
+                      ),
+                  ],
+                );
+              },
             )
           else
             Card(
