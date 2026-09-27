@@ -45,6 +45,7 @@ class OfferCard extends StatelessWidget {
       currentPrice: price.finalPrice,
     );
     final name = product?.name ?? offer.productId;
+    final imageUrl = offer.imageUrl?.trim();
 
     return Card(
       child: Padding(
@@ -52,6 +53,19 @@ class OfferCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (imageUrl != null && imageUrl.isNotEmpty) ...[
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  imageUrl,
+                  height: 150,
+                  width: double.infinity,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+                ),
+              ),
+              const SizedBox(height: 10),
+            ],
             Row(
               children: [
                 Expanded(
@@ -125,14 +139,18 @@ class OfferCard extends StatelessWidget {
               ],
             ),
             OfferEvidence(offer: offer),
-            if (product != null && onAddToShoppingList != null) ...[
+            if (onAddToShoppingList != null) ...[
               const SizedBox(height: 10),
               Align(
                 alignment: Alignment.centerRight,
                 child: FilledButton.tonalIcon(
-                  onPressed: () => onAddToShoppingList!(product),
+                  onPressed: product == null
+                      ? null
+                      : () => onAddToShoppingList!(product),
                   icon: const Icon(Icons.add_shopping_cart_outlined),
-                  label: const Text('Zur Einkaufsliste'),
+                  label: Text(product == null
+                      ? 'Artikel nicht eindeutig zugeordnet'
+                      : 'Zur Einkaufsliste'),
                 ),
               ),
             ],
