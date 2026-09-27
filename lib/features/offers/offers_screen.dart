@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../design/sparzam_theme.dart';
 import '../../models/offer.dart';
 import '../../models/price_point.dart';
 import '../../models/product.dart';
@@ -282,7 +283,8 @@ class _ProspectOfferCard extends StatelessWidget {
             height: 88,
             child: record.imageUrl?.isNotEmpty == true
                 ? Image.network(record.imageUrl!, fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Icon(_categoryIcon(_offerCategory(record.productLabel))))
+                    errorBuilder: (context, error, stackTrace) =>
+                        Icon(_categoryIcon(_offerCategory(record.productLabel))))
                 : Icon(_categoryIcon(_offerCategory(record.productLabel))),
           ),
           Expanded(
