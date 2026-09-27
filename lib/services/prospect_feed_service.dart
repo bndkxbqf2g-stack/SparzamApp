@@ -88,7 +88,7 @@ class ProspectFeedService {
         .get(Uri.parse(feedUrl))
         .timeout(const Duration(seconds: 10));
     if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw StateError('Prospektfeed HTTP \${response.statusCode}');
+      throw StateError('Prospektfeed HTTP ${response.statusCode}');
     }
     return parseProspectFeed(response.body);
   }

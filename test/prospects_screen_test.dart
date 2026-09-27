@@ -13,6 +13,7 @@ void main() {
         title: 'Aktionsprospekt',
         pages: [],
         url: 'https://example.test/aldi-prospekt',
+        recordCount: 322,
       ),
       ProspectIssue(
         storeName: 'EDEKA',
@@ -74,6 +75,7 @@ void main() {
 
     expect(find.text('Prospekte'), findsOneWidget);
     expect(find.text('Alle Märkte'), findsOneWidget);
+    expect(find.text('322 Angebote geladen'), findsOneWidget);
     expect(
       find.text('Aktuelle Prospekte. Produkte antippen und vormerken.'),
       findsOneWidget,

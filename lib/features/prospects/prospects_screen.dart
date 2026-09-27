@@ -132,11 +132,29 @@ class _ProspectCard extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.all(12),
-                child: Text(
-                  '${issue.storeName}\\n${issue.title}',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontWeight: FontWeight.w700),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      issue.storeName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                    Text(
+                      issue.recordCount > 0
+                          ? '${issue.recordCount} Angebote geladen'
+                          : _sourceStatusLabel(issue),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: issue.sourceStatus == 'error'
+                            ? Colors.orange.shade900
+                            : Colors.black54,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -378,4 +396,3 @@ class _ProspectProductCard extends StatelessWidget {
     );
   }
 }
-
