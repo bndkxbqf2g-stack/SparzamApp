@@ -100,6 +100,7 @@ void main() {
       const Offset(0, -420),
     );
     await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('2,39 €'));
     await tester.tap(find.text('2,39 €'));
     await tester.pump();
     expect(added, isTrue);

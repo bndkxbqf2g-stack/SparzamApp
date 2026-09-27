@@ -149,6 +149,7 @@ class _ShoppingItemCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                _ProductImage(product: item.product, height: 96),
                 Row(
                   children: [
                     Icon(
@@ -321,10 +322,44 @@ class _ShoppingItemTile extends StatelessWidget {
   }
 }
 
+class _ProductImage extends StatelessWidget {
+  const _ProductImage({required this.product, required this.height});
+
+  final Product product;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    final imageUrl = product.imageUrl?.trim();
+    return SizedBox(
+      height: height,
+      width: double.infinity,
+      child: imageUrl == null || imageUrl.isEmpty
+          ? Icon(Icons.local_grocery_store_outlined,
+              size: 42, color: Colors.green.shade700)
+          : Image.network(
+              imageUrl,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) => Icon(
+                Icons.local_grocery_store_outlined,
+                size: 42,
+                color: Colors.green.shade700,
+              ),
+            ),
+    );
+  }
+}
+
 String shoppingGroupLabel(String group) => switch (group) {
       'milch' || 'butter' => 'Milch & Käse',
       'obst' => 'Obst & Gemüse',
-      'fleisch' => 'Fleisch',
-      'nudeln' => 'Nudeln & Beilagen',
+      'fleisch' => 'Fleisch & Fisch',
+      'backwaren' => 'Backwaren',
+      'getraenke' => 'Getränke',
+      'nudeln' || 'vorrat' => 'Vorrat',
+      'tiefkuehl' => 'Tiefkühl',
+      'haushalt' => 'Haushalt',
+      'drogerie' => 'Drogerie',
+      'nonfood' => 'Non-Food',
       _ => 'Weitere Produkte',
     };

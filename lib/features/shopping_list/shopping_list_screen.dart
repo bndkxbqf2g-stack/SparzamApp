@@ -97,7 +97,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   final Set<String> purchasingProductIds = <String>{};
   List<RecentPurchase> knownItems = <RecentPurchase>[];
   List<String> aisleOrder = <String>[];
-  bool tileView = false;
+  bool tileView = true;
   List<ReceiptPriceStat> receiptPriceStats = const <ReceiptPriceStat>[];
 
   @override
@@ -180,6 +180,9 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   ) {
     final entries = grouped.entries.toList();
     entries.sort((a, b) {
+      final aRank = shoppingGroupRank(a.key);
+      final bRank = shoppingGroupRank(b.key);
+      if (aRank != bRank) return aRank.compareTo(bRank);
       final aIndex = aisleOrder.indexOf(a.key);
       final bIndex = aisleOrder.indexOf(b.key);
       if (aIndex < 0 && bIndex < 0) return 0;

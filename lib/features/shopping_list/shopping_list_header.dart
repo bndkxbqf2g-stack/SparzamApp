@@ -12,7 +12,7 @@ class ShoppingListHeader extends StatelessWidget {
     this.onSelectList,
     this.onCreateList,
     this.onEditAisleOrder,
-    this.tileView = false,
+    this.tileView = true,
     this.onToggleView,
   });
 

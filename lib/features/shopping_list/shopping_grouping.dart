@@ -31,5 +31,27 @@ String shoppingGroupBucket(String group) => switch (group) {
       'obst' => 'obst',
       'fleisch' => 'fleisch',
       'nudeln' => 'nudeln',
+      'backwaren' || 'brot' => 'backwaren',
+      'getraenke' || 'getränke' => 'getraenke',
+      'vorrat' || 'konserven' => 'vorrat',
+      'tiefkuehl' || 'tiefkühl' => 'tiefkuehl',
+      'haushalt' => 'haushalt',
+      'drogerie' => 'drogerie',
+      'non-food' || 'nonfood' => 'nonfood',
       _ => 'other',
     };
+
+int shoppingGroupRank(String group) => const {
+      'obst': 0,
+      'milch': 1,
+      'fleisch': 2,
+      'backwaren': 3,
+      'getraenke': 4,
+      'nudeln': 5,
+      'vorrat': 5,
+      'tiefkuehl': 6,
+      'haushalt': 7,
+      'drogerie': 7,
+      'nonfood': 8,
+      'other': 9,
+    }[group] ?? 99;

@@ -99,6 +99,7 @@ class ShoppingListStore {
               unit: json['unit'] as String,
               group: json['group'] as String,
               ean: json['ean'] as String?,
+              imageUrl: json['imageUrl'] as String?,
             ),
             quantity: (json['quantity'] as num?)?.toInt() ?? 1,
             note: json['note'] as String? ?? '',
@@ -121,6 +122,7 @@ class ShoppingListStore {
         'unit': item.product.unit,
         'group': item.product.group,
         'ean': item.product.ean,
+        'imageUrl': item.product.imageUrl,
         'quantity': item.quantity,
         'note': item.note,
         'checked': item.checked,
@@ -159,7 +161,7 @@ class ShoppingListStore {
       _preferences.setStringList(_aisleOrderStorageKey, groups);
 
   Future<bool> loadTileView() async =>
-      await _preferences.getBool(_tileViewStorageKey) ?? false;
+      await _preferences.getBool(_tileViewStorageKey) ?? true;
 
   Future<void> saveTileView(bool enabled) =>
       _preferences.setBool(_tileViewStorageKey, enabled);

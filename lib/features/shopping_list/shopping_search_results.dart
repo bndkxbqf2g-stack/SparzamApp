@@ -84,17 +84,7 @@ class ShoppingSearchResults extends StatelessWidget {
     final preferred = preferredProductByGroup[product.group] == product.id;
     return ListTile(
       onTap: () => onAdd(product),
-      leading: CircleAvatar(
-        radius: 18,
-        child: Icon(
-          related
-              ? Icons.alt_route
-              : preferred
-                  ? Icons.auto_awesome
-                  : Icons.add,
-          size: 18,
-        ),
-      ),
+      leading: _ProductSuggestionImage(product: product, related: related),
       title: Text(
         preferred ? '${product.name} · deine Auswahl' : product.name,
         style: const TextStyle(fontWeight: FontWeight.w600),
@@ -112,5 +102,34 @@ class ShoppingSearchResults extends StatelessWidget {
     return quantity > 1
         ? '$hierarchy · ${product.unit} · meist ×$quantity'
         : '$hierarchy · ${product.unit}';
+  }
+}
+
+class _ProductSuggestionImage extends StatelessWidget {
+  const _ProductSuggestionImage({required this.product, required this.related});
+
+  final Product product;
+  final bool related;
+
+  @override
+  Widget build(BuildContext context) {
+    final imageUrl = product.imageUrl?.trim();
+    if (imageUrl == null || imageUrl.isEmpty) {
+      return CircleAvatar(
+        radius: 22,
+        child: Icon(related ? Icons.alt_route : Icons.add, size: 18),
+      );
+    }
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: Image.network(
+        imageUrl,
+        width: 44,
+        height: 44,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) =>
+            const Icon(Icons.image_not_supported_outlined),
+      ),
+    );
   }
 }
