@@ -206,6 +206,17 @@ def parse_aldi_api_page(json_text, promotion_day):
         else:
             proof = "https://www.aldi-sued.de/angebote/" + promotion_day.isoformat()
 
+        image = None
+        assets = item.get("assets")
+        if isinstance(assets, list):
+            for asset in assets:
+                if not isinstance(asset, dict):
+                    continue
+                candidate = clean(str(asset.get("url") or ""))
+                if candidate:
+                    image = candidate.replace("{width}", "600")
+                    break
+
         offers.append(record(
             "ALDI Süd",
             label,
@@ -214,6 +225,7 @@ def parse_aldi_api_page(json_text, promotion_day):
             valid_until,
             proof,
             regular,
+            image,
         ))
 
     return dedupe(offers), int(total_count or len(data))

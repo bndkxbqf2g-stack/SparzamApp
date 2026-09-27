@@ -127,6 +127,7 @@ class ProspectParserTest(unittest.TestCase):
               "name": "Orangensaft 1 l",
               "brandName": "VALENSINA",
               "urlSlugText": "valensina-orangensaft-1-l",
+              "assets": [{"url": "https://img.example/{width}/orangensaft.jpg"}],
               "price": {
                 "amount": 149,
                 "amountRelevant": 149,
@@ -158,6 +159,10 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(offers[0]["productLabel"], "VALENSINA Orangensaft 1 l")
         self.assertEqual(offers[0]["offerPrice"], 1.49)
         self.assertEqual(offers[0]["originalPrice"], 2.49)
+        self.assertEqual(
+            offers[0]["imageUrl"],
+            "https://img.example/600/orangensaft.jpg",
+        )
         self.assertEqual(offers[0]["validFrom"], "2026-09-21")
         self.assertEqual(offers[0]["validUntil"], "2026-09-26")
         self.assertTrue(
