@@ -15,9 +15,16 @@ List<Offer> filterOffers(
   final normalizedQuery = query.trim().toLowerCase();
 
   final result = offers.where((offer) {
-    final active = !_day(offer.validUntil).isBefore(today);
+    final active = isOfferDateRangeActive(
+      validFrom: offer.validFrom,
+      validUntil: offer.validUntil,
+      now: now,
+    );
     if (status == OfferStatusFilter.active && !active) return false;
-    if (status == OfferStatusFilter.expired && active) return false;
+    if (status == OfferStatusFilter.expired &&
+        !_day(offer.validUntil).isBefore(today)) {
+      return false;
+    }
     if (normalizedQuery.isEmpty) return true;
 
     final product = catalogProducts
@@ -34,8 +41,16 @@ List<Offer> filterOffers(
   }).toList();
 
   result.sort((a, b) {
-    final aActive = !_day(a.validUntil).isBefore(today);
-    final bActive = !_day(b.validUntil).isBefore(today);
+    final aActive = isOfferDateRangeActive(
+      validFrom: a.validFrom,
+      validUntil: a.validUntil,
+      now: now,
+    );
+    final bActive = isOfferDateRangeActive(
+      validFrom: b.validFrom,
+      validUntil: b.validUntil,
+      now: now,
+    );
 
     if (status == OfferStatusFilter.all && aActive != bActive) {
       return aActive ? -1 : 1;
@@ -46,6 +61,18 @@ List<Offer> filterOffers(
   });
 
   return result;
+}
+
+bool isOfferDateRangeActive({
+  DateTime? validFrom,
+  required DateTime validUntil,
+  DateTime? now,
+}) {
+  final today = _day(now ?? DateTime.now());
+  final startsTodayOrEarlier =
+      validFrom == null || !_day(validFrom).isAfter(today);
+  final endsTodayOrLater = !_day(validUntil).isBefore(today);
+  return startsTodayOrEarlier && endsTodayOrLater;
 }
 
 DateTime _day(DateTime date) => DateTime(date.year, date.month, date.day);

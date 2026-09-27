@@ -80,4 +80,34 @@ void main() {
       'b',
     );
   });
+
+  test('aktive Angebote berücksichtigen Beginn und Ende des Zeitraums', () {
+    final future = Offer(
+      id: 'future',
+      productId: 'milch_35',
+      storeName: 'Lidl',
+      originalPrice: 1.49,
+      offerPrice: 0.99,
+      validFrom: DateTime(2026, 9, 23),
+      validUntil: DateTime(2026, 9, 30),
+    );
+    final active = Offer(
+      id: 'active',
+      productId: 'milch_35',
+      storeName: 'Lidl',
+      originalPrice: 1.49,
+      offerPrice: 0.99,
+      validFrom: DateTime(2026, 9, 22),
+      validUntil: DateTime(2026, 9, 22),
+    );
+
+    expect(
+      filterOffers(
+        [future, active],
+        status: OfferStatusFilter.active,
+        now: now,
+      ).map((offer) => offer.id),
+      ['active'],
+    );
+  });
 }

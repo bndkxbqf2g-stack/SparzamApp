@@ -224,7 +224,10 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     final normalizedQuery = widget.query.trim().toLowerCase();
     final byStore = <String, List<OfferImportRecord>>{};
     for (final record in widget.records) {
-      if (record.validUntil.isBefore(DateTime.now())) continue;
+      if (!isOfferDateRangeActive(
+        validFrom: record.validFrom,
+        validUntil: record.validUntil,
+      )) continue;
       final searchable = '${record.storeName} ${record.productLabel}'.toLowerCase();
       if (normalizedQuery.isNotEmpty && !searchable.contains(normalizedQuery)) continue;
       byStore.putIfAbsent(record.storeName, () => []).add(record);
