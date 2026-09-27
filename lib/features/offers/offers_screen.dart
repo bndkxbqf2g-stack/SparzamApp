@@ -313,6 +313,19 @@ class _ProspectOfferCard extends StatelessWidget {
                             color: SparzamTheme.deepGreen,
                             fontWeight: FontWeight.w800,
                           )),
+                  if (record.originalPrice != null &&
+                      record.originalPrice! > record.offerPrice)
+                    Text(
+                      '${record.originalPrice!.toStringAsFixed(2).replaceAll('.', ',')} €',
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                    ),
+                  Text(
+                    'Angebot bis ${_offerDate(record.validUntil)}',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ],
               ),
             ),
@@ -378,6 +391,8 @@ IconData _categoryIcon(String category) => switch (category) {
       'Haushalt' || 'Drogerie' => Icons.cleaning_services_outlined,
       _ => Icons.shopping_bag_outlined,
     };
+
+String _offerDate(DateTime value) => '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.${value.year}';
 
 class _EmptyOffers extends StatelessWidget {
   const _EmptyOffers({required this.filter, required this.hasQuery});
