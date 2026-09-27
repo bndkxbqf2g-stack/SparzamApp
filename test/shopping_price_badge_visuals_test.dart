@@ -42,6 +42,7 @@ void main() {
     await tester.tap(find.textContaining('Angebot Kaufland'));
     await tester.pumpAndSettle();
 
+    expect(find.text('Käse · Kaufland'), findsOneWidget);
     expect(find.text('Käse'), findsOneWidget);
     expect(find.byType(Image), findsNWidgets(2));
   });
