@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-27T02:42:23.277885Z",
+  "generatedAt": "2026-09-27T08:55:57.234093Z",
   "sources": [
     {
       "id": "aldi_sued",
@@ -507,7 +507,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-bastelmix-holographisches-000000000698318011"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-bastelmix-holographisches-000000000698318011",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/d47cec02-3141-4bd9-9581-56b50691abbd/{slug}"
     },
     {
       "sourceId": "81c01305e21d3a29390d",
@@ -517,7 +518,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/alpina-universal-raum-weiss-000000000000564402"
+      "proofRef": "https://www.aldi-sued.de/produkt/alpina-universal-raum-weiss-000000000000564402",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/471aa678-8e2a-40c5-9f86-bf2701cc898d/{slug}"
     },
     {
       "sourceId": "e6088daa05e8100b4d58",
@@ -527,7 +529,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/workzone-akku-led-arbeitsstrahler-000000000000725121"
+      "proofRef": "https://www.aldi-sued.de/produkt/workzone-akku-led-arbeitsstrahler-000000000000725121",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/8d02cc53-e5b0-4eab-981f-b6afb0dbbb9c/{slug}"
     },
     {
       "sourceId": "22e185eb227e270cb837",
@@ -537,7 +540,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/workzone-silikon-bearbeitungsset-000000000000734741"
+      "proofRef": "https://www.aldi-sued.de/produkt/workzone-silikon-bearbeitungsset-000000000000734741",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/183c15ce-b511-4cd2-9b7d-2dc8d6e22720/{slug}"
     },
     {
       "sourceId": "d818e1e2474cbf8acb7a",
@@ -547,7 +551,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/deco-craft-abdeckfolien-set-000000000000737268"
+      "proofRef": "https://www.aldi-sued.de/produkt/deco-craft-abdeckfolien-set-000000000000737268",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/6f013cae-8b75-4d4b-a82f-245875e6fd51/{slug}"
     },
     {
       "sourceId": "4a3df96624e71aad5698",
@@ -558,7 +563,8 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/gardenline-trio-harmonie-000000000000752548",
-      "originalPrice": 1.99
+      "originalPrice": 1.99,
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/0293c28f-aa22-42bd-abbc-bd48d69ea255/{slug}"
     },
     {
       "sourceId": "eb4d16ca2d73ed3f07fe",
@@ -569,7 +575,8 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/gardenline-heidemischung-000000000000752562",
-      "originalPrice": 3.79
+      "originalPrice": 3.79,
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/2938ec19-4d95-4b59-ad88-17ac47d5a270/{slug}"
     },
     {
       "sourceId": "8bb8e87b42e4ae4bf152",
@@ -580,7 +587,8 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/gardenline-colour-crown-000000000000752576",
-      "originalPrice": 2.79
+      "originalPrice": 2.79,
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/008d9b9e-b6a6-408e-923a-3fa33831b17f/{slug}"
     },
     {
       "sourceId": "af8c6b3781f15f94533f",
@@ -591,7 +599,8 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/gardenline-quattro-000000000000752577",
-      "originalPrice": 3.79
+      "originalPrice": 3.79,
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5888663c-fa49-4456-9c6c-af07f8d02c4d/{slug}"
     },
     {
       "sourceId": "399ac462bad2a196b832",
@@ -602,7 +611,8 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/gardenline-uni-000000000000752578",
-      "originalPrice": 1.99
+      "originalPrice": 1.99,
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/b31b8eb5-05b4-444c-8826-923c55140183/{slug}"
     },
     {
       "sourceId": "a617d68961248b0a8a6e",
@@ -613,7 +623,8 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-whey-protein-pulver-500-g-dark-cookie-salted-caramel-000000000505349017",
-      "originalPrice": 14.99
+      "originalPrice": 14.99,
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/e6f4914a-82dc-40e6-a9db-c06b2cc608b7/{slug}"
     },
     {
       "sourceId": "b9fbe8aff42856e91413",
@@ -624,7 +635,8 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-whey-protein-pulver-500-g-strawberry-ice-cream-000000000505349019",
-      "originalPrice": 14.99
+      "originalPrice": 14.99,
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/c9dab55d-035e-4488-ad51-d404805fb3a5/{slug}"
     },
     {
       "sourceId": "7d65c37160fa1e13dcb7",
@@ -634,7 +646,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-lava-bar-40-g-cookies-cream-000000000516755002"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-lava-bar-40-g-cookies-cream-000000000516755002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/cdecefaf-2e7b-4d4d-973b-85dd5dca6059/{slug}"
     },
     {
       "sourceId": "316836f9940795ae92f7",
@@ -644,7 +657,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/expertiz-radierbarer-tintenroller-4-stifte-blau-schwarz-rot-000000000557667001"
+      "proofRef": "https://www.aldi-sued.de/produkt/expertiz-radierbarer-tintenroller-4-stifte-blau-schwarz-rot-000000000557667001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/d217b15e-1c9c-43ae-aadc-18d2b2a6548d/{slug}"
     },
     {
       "sourceId": "00d810cf0f7fc65be00d",
@@ -654,7 +668,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/marabu-kuenstler-bedarf-acrylfarben-12x12-000000000653912001"
+      "proofRef": "https://www.aldi-sued.de/produkt/marabu-kuenstler-bedarf-acrylfarben-12x12-000000000653912001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/c817e2b2-fdbe-4a17-b6c0-8a9997c38600/{slug}"
     },
     {
       "sourceId": "212e8d370f4bf32b65e5",
@@ -664,7 +679,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-heissklebepistole-und-folienstift-heissklebepistole-pink-000000000677638001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-heissklebepistole-und-folienstift-heissklebepistole-pink-000000000677638001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/9218add1-bb08-4b9c-8396-156ed014615b/{slug}"
     },
     {
       "sourceId": "75d5d2352156f8fbcb94",
@@ -674,7 +690,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-maxxers-protein-riegel-49-g-white-chocolate-pistachio-000000000700346002"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-maxxers-protein-riegel-49-g-white-chocolate-pistachio-000000000700346002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/728253e2-52b0-4dd9-afff-a0af2be59b8c/{slug}"
     },
     {
       "sourceId": "a327ab7f13ff87cd1334",
@@ -684,7 +701,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-100-milk-protein-pulver-500-g-vanilla-000000000709106002"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-100-milk-protein-pulver-500-g-vanilla-000000000709106002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/58afc14e-abaf-4697-a36a-a298f72dfe06/{slug}"
     },
     {
       "sourceId": "091015166dfa14decb39",
@@ -694,7 +712,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/expertiz-all-in-one-spiralblock-pink-000000000724935001"
+      "proofRef": "https://www.aldi-sued.de/produkt/expertiz-all-in-one-spiralblock-pink-000000000724935001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/730e49be-30af-4943-8d7a-e61a27eb2a02/{slug}"
     },
     {
       "sourceId": "ab10ab6b06602b36d296",
@@ -705,7 +724,8 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-wafix-riegel-39-g-white-peanut-caramel-000000000726037001",
-      "originalPrice": 1.99
+      "originalPrice": 1.99,
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/f7788d89-0f9f-4126-b621-c062ab87f01a/{slug}"
     },
     {
       "sourceId": "4d301e9ecc48fb4f22e9",
@@ -716,7 +736,8 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-wafix-riegel-39-g-peanut-caramel-000000000726037002",
-      "originalPrice": 1.99
+      "originalPrice": 1.99,
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/ff63b04c-f004-45fa-a952-a8683d00cb73/{slug}"
     },
     {
       "sourceId": "13ca85974ab79f07c8c7",
@@ -726,7 +747,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-prococo-riegel-48-g-coconut-caramel-000000000726055002"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-prococo-riegel-48-g-coconut-caramel-000000000726055002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5b265588-0c88-4061-8a08-350c40eb91ab/{slug}"
     },
     {
       "sourceId": "449fc26f34a2a7890902",
@@ -736,7 +758,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/expertiz-locher-und-tacker-tacker-schwarz-000000000732010001"
+      "proofRef": "https://www.aldi-sued.de/produkt/expertiz-locher-und-tacker-tacker-schwarz-000000000732010001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/2ea4df47-c750-4127-8105-1452cbc8ce8e/{slug}"
     },
     {
       "sourceId": "63d7f8b5aa513e4d5c86",
@@ -746,7 +769,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/casalux-leuchte-mit-bewegungsmelder-weiss-000000000734480001"
+      "proofRef": "https://www.aldi-sued.de/produkt/casalux-leuchte-mit-bewegungsmelder-weiss-000000000734480001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/e3c691f4-7dd9-44e3-8347-71b42ba5eadf/{slug}"
     },
     {
       "sourceId": "ada148260624befccea3",
@@ -756,7 +780,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/pattex-montage-kleber-oder-maler-acryl-metylan-acryl-000000000736702001"
+      "proofRef": "https://www.aldi-sued.de/produkt/pattex-montage-kleber-oder-maler-acryl-metylan-acryl-000000000736702001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/233adf26-b03b-404e-932d-ddb33722e8cb/{slug}"
     },
     {
       "sourceId": "dfac2963779e23940ab0",
@@ -766,7 +791,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/pattex-kleben-statt-bohren-kristall-klar-000000000736898001"
+      "proofRef": "https://www.aldi-sued.de/produkt/pattex-kleben-statt-bohren-kristall-klar-000000000736898001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/3a4f97ed-ae46-4b89-a661-024c477c13da/{slug}"
     },
     {
       "sourceId": "65be7f0936eab6477e4b",
@@ -776,7 +802,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-tisch-whiteboard-oder-korktafel-korktafel-schwarz-000000000737677001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-tisch-whiteboard-oder-korktafel-korktafel-schwarz-000000000737677001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/27c1dffe-aa0f-4b9c-a90d-990cdc94c6a5/{slug}"
     },
     {
       "sourceId": "0da3f2cfa07b078b505c",
@@ -786,7 +813,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ferrex-elektrozubehoer-drahtbuersten-000000000737839001"
+      "proofRef": "https://www.aldi-sued.de/produkt/ferrex-elektrozubehoer-drahtbuersten-000000000737839001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/174d2622-bd4c-4ad8-a14b-85b0f140fa9a/{slug}"
     },
     {
       "sourceId": "f675c9f485889eccb0b5",
@@ -796,7 +824,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-aquarell-malzubehoer-buntstifte-000000000740701001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-aquarell-malzubehoer-buntstifte-000000000740701001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/39c32396-8941-4aee-97d6-5f922f277357/{slug}"
     },
     {
       "sourceId": "9b39fb4c3d85676861c3",
@@ -806,7 +835,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/deco-craft-pinselset-fuer-farbe-oder-lacke-pinselset-farbe-000000000741023001"
+      "proofRef": "https://www.aldi-sued.de/produkt/deco-craft-pinselset-fuer-farbe-oder-lacke-pinselset-farbe-000000000741023001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/129e2d9a-0dfb-45e6-88a1-03168a780769/{slug}"
     },
     {
       "sourceId": "cdb6fb0175ffba2add85",
@@ -816,7 +846,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kuenstler-set-oder-farbstifte-skizzenset-000000000741062001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kuenstler-set-oder-farbstifte-skizzenset-000000000741062001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/3899237e-15cc-4d57-a17a-eb81481f942f/{slug}"
     },
     {
       "sourceId": "013dd834221a74500052",
@@ -826,7 +857,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/deco-craft-profi-walzen-2er-set-grosse-walzen-000000000741778001"
+      "proofRef": "https://www.aldi-sued.de/produkt/deco-craft-profi-walzen-2er-set-grosse-walzen-000000000741778001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/9decf02b-8316-4b2c-848d-2cba870908e5/{slug}"
     },
     {
       "sourceId": "fbc1c43ce381e46b4f62",
@@ -836,7 +868,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-geschenkverpackungs-set-baender-und-schleifen-000000000741801001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-geschenkverpackungs-set-baender-und-schleifen-000000000741801001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/abff07dd-097c-45e8-ba98-05c0715092d8/{slug}"
     },
     {
       "sourceId": "18f6470623ae7b3cc5ed",
@@ -846,7 +879,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-grusskarte-hochzeit-000000000742007001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-grusskarte-hochzeit-000000000742007001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/ec96e6c2-fd39-4608-a19b-c0f344d1d01c/{slug}"
     },
     {
       "sourceId": "610095252fa5e46b8125",
@@ -856,7 +890,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kreativ-set-matcha-000000000742617001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kreativ-set-matcha-000000000742617001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/ec5b09ea-9842-4dc4-b7ff-0260e84593b8/{slug}"
     },
     {
       "sourceId": "344c7fa3215728b92ca3",
@@ -866,7 +901,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-3d-holz-bastelsets-holz-kuerbis-000000000745892001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-3d-holz-bastelsets-holz-kuerbis-000000000745892001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/203661f2-f692-4af6-a81d-22b44a82fd1a/{slug}"
     },
     {
       "sourceId": "2c10bf866172703fa242",
@@ -876,7 +912,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-doppelseitige-marker-basic-1-000000000746954001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-doppelseitige-marker-basic-1-000000000746954001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/8497c166-5e00-4d96-a2c7-947a81e1e569/{slug}"
     },
     {
       "sourceId": "a852366fa833dcea08aa",
@@ -887,7 +924,8 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/deco-craft-multifunktions-wandfarbe-cappuccino-000000000750146001",
-      "originalPrice": 12.99
+      "originalPrice": 12.99,
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/b07ab1d3-6a80-4859-b3b0-c841d5829e06/{slug}"
     },
     {
       "sourceId": "6c9cc5393a14cbb487e3",
@@ -897,7 +935,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-blumenzwiebeln-tulpen-einfache-000000000750463002"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-blumenzwiebeln-tulpen-einfache-000000000750463002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5cbc8994-013c-4fdd-aaea-183f7fe80570/{slug}"
     },
     {
       "sourceId": "7e3fe293dd696a5bcca5",
@@ -907,7 +946,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-blumenzwiebeln-xxl-im-jutebag-allium-mischung-000000000750467001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-blumenzwiebeln-xxl-im-jutebag-allium-mischung-000000000750467001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/f0e215ac-24d6-4a6f-b08e-df32c6f6d841/{slug}"
     },
     {
       "sourceId": "4c41b522e593a76b819a",
@@ -917,7 +957,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-pfingstrose-shirley-temple-000000000750468001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-pfingstrose-shirley-temple-000000000750468001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/9737c6b6-5657-47a3-988e-a0e55d8fcba7/{slug}"
     },
     {
       "sourceId": "aab8c96aa13390b9a3ae",
@@ -927,7 +968,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-blumenzwiebeln-in-tragetasche-mischung-000000000750477001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-blumenzwiebeln-in-tragetasche-mischung-000000000750477001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/9e4e218a-9977-4885-b2c0-ba37765a8fbe/{slug}"
     },
     {
       "sourceId": "5754afbee595c05e115b",
@@ -937,7 +979,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-fruehlingsblumenzwiebel-narzissen-mischung-000000000750492007"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-fruehlingsblumenzwiebel-narzissen-mischung-000000000750492007",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/4fafbc1e-d866-4386-9abf-4d7bfba0650d/{slug}"
     },
     {
       "sourceId": "8c4c8c7cf5c7ae2526d0",
@@ -947,7 +990,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-spruehlack-weiss-glanz-000000000750584001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-spruehlack-weiss-glanz-000000000750584001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/f99f2049-8b00-452a-80c5-21253c164f81/{slug}"
     },
     {
       "sourceId": "8f04bed99f3f0765ba42",
@@ -957,7 +1001,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kunstharzlackspray-heizkoerperlack-weiss-000000000751413001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kunstharzlackspray-heizkoerperlack-weiss-000000000751413001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/306b15f1-c8a2-45ab-9c42-7cfba77d2b90/{slug}"
     },
     {
       "sourceId": "409756ebe1fedf1856ca",
@@ -968,7 +1013,8 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/deco-craft-metallschutzlack-weiss-000000000752874001",
-      "originalPrice": 9.99
+      "originalPrice": 9.99,
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/3d340129-2c09-4f9b-9448-17bbef18fe11/{slug}"
     },
     {
       "sourceId": "06721612392735514dee",
@@ -978,7 +1024,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-matcha-bites-2-23-g-strawberry-flavour-000000000756556001"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-matcha-bites-2-23-g-strawberry-flavour-000000000756556001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/07f2f332-19fb-4e72-b969-ff7556c5a327/{slug}"
     },
     {
       "sourceId": "6f6cf194dd16cdac5b27",
@@ -988,7 +1035,8 @@
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-cup-mit-griff-1-2-l-leo-print-weiss-000000000758879001"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-cup-mit-griff-1-2-l-leo-print-weiss-000000000758879001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/0ea84f9d-bd02-4ff6-b30b-cb520282303d/{slug}"
     },
     {
       "sourceId": "73088d31babfa89319ff",
@@ -999,7 +1047,8 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-maxxwave-shaker-700-ml-antharzit-000000000758899001",
-      "originalPrice": 14.99
+      "originalPrice": 14.99,
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/7eb2a92a-0ec4-42ee-b6cd-4743aa1f9475/{slug}"
     },
     {
       "sourceId": "341f276e6a81b0a2f419",
@@ -1010,7 +1059,8 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-shaker-deep-black-700-ml-000000000758928001",
-      "originalPrice": 4.99
+      "originalPrice": 4.99,
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/d43d1b9e-d8d8-4227-956a-21e11a8599a5/{slug}"
     },
     {
       "sourceId": "726a7dea43ac84c0cc3c",
@@ -1020,7 +1070,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-leichtsteppjacke-braun-s-36-38-000000000734404001"
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-leichtsteppjacke-braun-s-36-38-000000000734404001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/68a4d8ff-902a-45ae-9651-d8852f5eeb4d/{slug}"
     },
     {
       "sourceId": "f845a54a5f29a61b7149",
@@ -1030,7 +1081,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/bauhn-retro-digitalkamera-braun-000000000735421001"
+      "proofRef": "https://www.aldi-sued.de/produkt/bauhn-retro-digitalkamera-braun-000000000735421001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/12ed0e59-bb62-4b83-acc6-5f592aa89d63/{slug}"
     },
     {
       "sourceId": "9b6c2b5e68d5a759b714",
@@ -1040,7 +1092,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/expertiz-kopierpapier-000000000000698759"
+      "proofRef": "https://www.aldi-sued.de/produkt/expertiz-kopierpapier-000000000000698759",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/fd33eac0-5727-4bd9-a4c7-5a277b2e84b1/{slug}"
     },
     {
       "sourceId": "214a0164e941c1c01aec",
@@ -1050,7 +1103,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-garten-kombigeraet-5-in-1-000000000000710718"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-garten-kombigeraet-5-in-1-000000000000710718",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/381e5aa0-5e29-4903-9694-8a654f3d5bfa/{slug}"
     },
     {
       "sourceId": "f38b824ebd29821cec1f",
@@ -1060,7 +1114,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-getriebe-astschere-000000000000736611"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-getriebe-astschere-000000000000736611",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/93f55463-4b22-4981-91cc-dbb624d0eb35/{slug}"
     },
     {
       "sourceId": "faec76cc5361253d05f4",
@@ -1070,7 +1125,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-betonschale-oval-000000000000751758"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-betonschale-oval-000000000000751758",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/da2c15d0-3ebd-41bf-84a9-26b24e7ca845/{slug}"
     },
     {
       "sourceId": "012fb575c168356e9a9f",
@@ -1080,7 +1136,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-orchidee-im-uebertopf-000000000000751770"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-orchidee-im-uebertopf-000000000000751770",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/3f234bea-3daf-443f-86d8-44f68e47cae2/{slug}"
     },
     {
       "sourceId": "c636fcc45df85052db63",
@@ -1090,7 +1147,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-grauer-textilkorb-mit-henkel-000000000000751774"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-grauer-textilkorb-mit-henkel-000000000000751774",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/838056f6-d820-4bad-9c7c-39945fdcc38b/{slug}"
     },
     {
       "sourceId": "ec81b3f5b5f4ed8caeb2",
@@ -1100,7 +1158,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-cyclamen-trio-000000000000751880"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-cyclamen-trio-000000000000751880",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/aaf837cc-aea2-43ae-9af2-720460c95c0c/{slug}"
     },
     {
       "sourceId": "15e559df91d10984e1ec",
@@ -1110,7 +1169,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-chrysantheme-trio-schale-000000000000751892"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-chrysantheme-trio-schale-000000000000751892",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/06614c0a-5586-49ba-8237-3cc054741a9b/{slug}"
     },
     {
       "sourceId": "08f87ee1d30de1efa97b",
@@ -1120,7 +1180,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/casalux-led-strahler-schwarz-batteriebtrieben-000000000721872001"
+      "proofRef": "https://www.aldi-sued.de/produkt/casalux-led-strahler-schwarz-batteriebtrieben-000000000721872001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/772a92ee-fcac-4c94-a5fc-c02e4e7435a1/{slug}"
     },
     {
       "sourceId": "1c9d68f81d3d0fae0fc0",
@@ -1130,7 +1191,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kabelbox-schwarz-000000000724301001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kabelbox-schwarz-000000000724301001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/536e6677-a96d-42eb-b558-d1f79488c140/{slug}"
     },
     {
       "sourceId": "bc76e2bda2d2552b8da3",
@@ -1140,7 +1202,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-flexibler-korb-dunkelgruen-000000000725730001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-flexibler-korb-dunkelgruen-000000000725730001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/34a7dc34-664f-47e7-bd02-ea7db803b63d/{slug}"
     },
     {
       "sourceId": "283471b65227a6e59ef8",
@@ -1150,7 +1213,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-pflanzenroller-eckig-braun-000000000726719001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-pflanzenroller-eckig-braun-000000000726719001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/adf9893a-ddc8-4b58-877a-dd4ff1a0f295/{slug}"
     },
     {
       "sourceId": "ee5f49b17152d3e021c3",
@@ -1160,7 +1224,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-pullover-creme-s-36-38-000000000728326001"
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-pullover-creme-s-36-38-000000000728326001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/b4178a14-0299-4583-8834-c1eea30340f2/{slug}"
     },
     {
       "sourceId": "8d7cd5ef337f6e4297ff",
@@ -1170,7 +1235,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-thermodecke-gruen-000000000728828001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-thermodecke-gruen-000000000728828001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/de097bf1-03ed-42c9-8e43-8234ea2ea677/{slug}"
     },
     {
       "sourceId": "2742174b524ca0df2612",
@@ -1180,7 +1246,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/expertiz-briefordner-oder-sammelmappe-briefordner-lila-000000000728957001"
+      "proofRef": "https://www.aldi-sued.de/produkt/expertiz-briefordner-oder-sammelmappe-briefordner-lila-000000000728957001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/a21e9d48-b369-45a4-8e2e-a64f561522c4/{slug}"
     },
     {
       "sourceId": "41bf2f0ab641216d86c8",
@@ -1190,7 +1257,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-gartengeraete-besen-000000000729687001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-gartengeraete-besen-000000000729687001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/89f9405d-d094-44b5-ab1b-98419c105a2e/{slug}"
     },
     {
       "sourceId": "0e7cd7fed80b22a2fbbc",
@@ -1200,7 +1268,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-garten-abfallsack-gruen-000000000729948001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-garten-abfallsack-gruen-000000000729948001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/ce046088-7168-420a-97b4-c4d938492881/{slug}"
     },
     {
       "sourceId": "6d98bc8bb8950255f6ab",
@@ -1210,7 +1279,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/bauhn-kabelloser-over-ear-kopfhoerer-grau-000000000731002001"
+      "proofRef": "https://www.aldi-sued.de/produkt/bauhn-kabelloser-over-ear-kopfhoerer-grau-000000000731002001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/ffb4fb16-1b8a-4460-ad6d-3bdba9be1a74/{slug}"
     },
     {
       "sourceId": "b180e8658f72bfcf0bdf",
@@ -1220,7 +1290,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-herren-sweatshirt-braun-m-000000000731032001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-herren-sweatshirt-braun-m-000000000731032001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/347c2879-d11b-4a31-b98b-6a40fdec7c1f/{slug}"
     },
     {
       "sourceId": "fa7df98df602f9c08432",
@@ -1230,7 +1301,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-spaten-oder-schaufel-spaten-000000000731642001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-spaten-oder-schaufel-spaten-000000000731642001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/7a5718fe-38e2-4256-aea2-189f30e350bf/{slug}"
     },
     {
       "sourceId": "c0e4552fcadb0f8b3f8c",
@@ -1240,7 +1312,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-shapewear-unterwaesche-schwarz-2er-set-slips-s-36-38-000000000732127001"
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-shapewear-unterwaesche-schwarz-2er-set-slips-s-36-38-000000000732127001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/f127549f-3875-4ebd-ac1a-2f6d7839d37e/{slug}"
     },
     {
       "sourceId": "632786de3dc4103f5a4e",
@@ -1250,7 +1323,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-shapewear-unterwaesche-schwarz-shorts-s-36-38-000000000732127005"
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-shapewear-unterwaesche-schwarz-shorts-s-36-38-000000000732127005",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/a0d7da73-3f53-43be-9ab2-cc1bc4bcb61e/{slug}"
     },
     {
       "sourceId": "ec4ad24cb8bcd2650cb3",
@@ -1260,7 +1334,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-shapewear-unterwaesche-schwarz-oberteil-s-36-38-000000000732127009"
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-shapewear-unterwaesche-schwarz-oberteil-s-36-38-000000000732127009",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/05543e20-3450-401d-8900-391fb12ec2e4/{slug}"
     },
     {
       "sourceId": "7b7001d78014e80852cb",
@@ -1270,7 +1345,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-jeans-mittelblau-36-000000000733651001"
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-jeans-mittelblau-36-000000000733651001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/ca23b1ea-9098-4eaf-9533-f9547f72eea5/{slug}"
     },
     {
       "sourceId": "d80ef48c92e42d5a5311",
@@ -1280,7 +1356,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-teleskop-besen-allzweckbesen-000000000734332001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-teleskop-besen-allzweckbesen-000000000734332001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5ae1129b-95c1-4ae0-b90a-436cdb6b114e/{slug}"
     },
     {
       "sourceId": "82057188278f50dfce89",
@@ -1290,7 +1367,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-pyjama-marineblau-s-36-38-000000000734535001"
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-pyjama-marineblau-s-36-38-000000000734535001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/a8f17d34-6ad1-4c87-b7d4-7ce724d1307c/{slug}"
     },
     {
       "sourceId": "22dc0be4a3252738a1a0",
@@ -1300,7 +1378,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-damen-und-herren-clogs-damen-beige-37-000000000735491001"
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-damen-und-herren-clogs-damen-beige-37-000000000735491001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/75d570f1-b6fd-4a35-bdcb-2e52921f2d09/{slug}"
     },
     {
       "sourceId": "a0fe90ef19562685ab44",
@@ -1310,7 +1389,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ferrex-akku-heckenscheren-heckenschere-000000000744092001"
+      "proofRef": "https://www.aldi-sued.de/produkt/ferrex-akku-heckenscheren-heckenschere-000000000744092001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/9e581240-1319-4c66-89d7-6b342caae56e/{slug}"
     },
     {
       "sourceId": "8d3703d829cbc817d9e1",
@@ -1320,7 +1400,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-henkelkorb-eckig-000000000751768001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-henkelkorb-eckig-000000000751768001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/7a4b1317-b4d7-49b9-a2ae-4413f62c6c1a/{slug}"
     },
     {
       "sourceId": "72263d94a3c108c78e86",
@@ -1330,7 +1411,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-herbstpflanzen-mix-im-uebertopf-cyclame-000000000751786001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-herbstpflanzen-mix-im-uebertopf-cyclame-000000000751786001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/78588a05-e3ef-4cea-bcaa-18271aa7d8cd/{slug}"
     },
     {
       "sourceId": "f753d1d0b6d2bfc6870b",
@@ -1340,7 +1422,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-chrysanthemen-carousel-splash-000000000751825001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-chrysanthemen-carousel-splash-000000000751825001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/d85911a8-78a2-42ad-b2b6-e01dc621a6b4/{slug}"
     },
     {
       "sourceId": "f787a908f6e3e04fb3dd",
@@ -1350,7 +1433,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-kalanchoe-schale-rosa-000000000751831001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-kalanchoe-schale-rosa-000000000751831001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/222caf52-a61f-4e23-89bb-d74e60dd4de1/{slug}"
     },
     {
       "sourceId": "2aefb779eecf8ae0ccaa",
@@ -1360,7 +1444,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-korb-oder-rindengefaess-korb-eckig-000000000751866001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-korb-oder-rindengefaess-korb-eckig-000000000751866001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/7ba9b26d-6beb-41ce-a446-68816c4c9a6e/{slug}"
     },
     {
       "sourceId": "097ce693f9855fc4b529",
@@ -1370,7 +1455,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-autumn-lights-viola-6er-tray-blau-000000000751895001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-autumn-lights-viola-6er-tray-blau-000000000751895001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/4284015b-2457-4b1c-a08b-a46fc39a7915/{slug}"
     },
     {
       "sourceId": "45e88192994661e9867c",
@@ -1380,7 +1466,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-graeser-schaetze-hameln-000000000751896001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-graeser-schaetze-hameln-000000000751896001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/0652bdd3-10b8-4e70-989d-24c983a76e71/{slug}"
     },
     {
       "sourceId": "dc392da99ada2de887cc",
@@ -1390,7 +1477,8 @@
       "validFrom": "2026-09-24",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/no-brand-beschaeftigungsbuch-lizenz-paw-patrol-000000000751932001"
+      "proofRef": "https://www.aldi-sued.de/produkt/no-brand-beschaeftigungsbuch-lizenz-paw-patrol-000000000751932001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/d5364aff-845a-4180-ab1f-55606c85da06/{slug}"
     },
     {
       "sourceId": "4d08c5913ec24ecc99e7",
@@ -1400,7 +1488,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/frantastique-mini-franzoesisches-feingebaeck-pains-au-choc-000000000542909001"
+      "proofRef": "https://www.aldi-sued.de/produkt/frantastique-mini-franzoesisches-feingebaeck-pains-au-choc-000000000542909001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/990f07ae-22e6-4049-9537-76e7959b8652/{slug}"
     },
     {
       "sourceId": "408c975b31e379a423db",
@@ -1410,7 +1499,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/frantastique-mini-franzoesisches-feingebaeck-croissant-000000000542909002"
+      "proofRef": "https://www.aldi-sued.de/produkt/frantastique-mini-franzoesisches-feingebaeck-croissant-000000000542909002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/1b3a6256-3c8b-4c13-a749-367d625400e1/{slug}"
     },
     {
       "sourceId": "7c24fdb4334b8d5f87f9",
@@ -1420,7 +1510,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-butter-250-g-000000000000203920"
+      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-butter-250-g-000000000000203920",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/224c1dc2-5091-498a-9b44-5e5f8dcd8a0f/{slug}"
     },
     {
       "sourceId": "c4eb334acd2b4abdc933",
@@ -1430,7 +1521,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-haltbare-milch-1-5-1-l-000000000000204375"
+      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-haltbare-milch-1-5-1-l-000000000000204375",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5ce57673-0d9f-4006-a1d7-4a8e7d7889b1/{slug}"
     },
     {
       "sourceId": "dd57ea73c87df91ea3ef",
@@ -1440,7 +1532,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-haltbare-milch-3-5-1-l-000000000000693417"
+      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-haltbare-milch-3-5-1-l-000000000000693417",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/9df787db-2801-4221-ae4e-ef26d201c63b/{slug}"
     },
     {
       "sourceId": "da763c313d64403b321b",
@@ -1450,7 +1543,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/wiesbauer-aufschnitt-200-g-fruehstueck-000000000273985001"
+      "proofRef": "https://www.aldi-sued.de/produkt/wiesbauer-aufschnitt-200-g-fruehstueck-000000000273985001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/fe74dbc3-48e6-4326-8209-5a4452145402/{slug}"
     },
     {
       "sourceId": "c706897326b9fb6557f7",
@@ -1460,7 +1554,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/wiesbauer-aufschnitt-200-g-knackermix-000000000273985002"
+      "proofRef": "https://www.aldi-sued.de/produkt/wiesbauer-aufschnitt-200-g-knackermix-000000000273985002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/68a7f81d-65bf-4256-9505-e10eca85e95b/{slug}"
     },
     {
       "sourceId": "a1003be95eb239b37b1d",
@@ -1470,7 +1565,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/herta-kochschinken-140-g-saftschinken-000000000599613001"
+      "proofRef": "https://www.aldi-sued.de/produkt/herta-kochschinken-140-g-saftschinken-000000000599613001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/d53f54b7-0ad1-4b6f-b6a6-6ffe23539c29/{slug}"
     },
     {
       "sourceId": "9e94e6c81adedb00acd3",
@@ -1480,7 +1576,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/herta-kochschinken-140-g-grillschinken-000000000599613002"
+      "proofRef": "https://www.aldi-sued.de/produkt/herta-kochschinken-140-g-grillschinken-000000000599613002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/9b94d499-20ad-4898-931b-f25b91c9ae21/{slug}"
     },
     {
       "sourceId": "e1e3fd0c451b0639a774",
@@ -1490,7 +1587,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/fol-epi-fol-epi-235-g-classic-000000000654182001"
+      "proofRef": "https://www.aldi-sued.de/produkt/fol-epi-fol-epi-235-g-classic-000000000654182001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/2ad13220-a0eb-44be-a2eb-a889db48a1ee/{slug}"
     },
     {
       "sourceId": "d4378b36b13d1e354718",
@@ -1500,7 +1598,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/fol-epi-fol-epi-210-g-caractere-000000000654182002"
+      "proofRef": "https://www.aldi-sued.de/produkt/fol-epi-fol-epi-210-g-caractere-000000000654182002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/0066d486-14f6-48e4-90e1-c9742607fdb5/{slug}"
     },
     {
       "sourceId": "750f317dbd56bfa00fe6",
@@ -1510,7 +1609,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/fol-epi-fol-epi-210-g-cremig-000000000654182003"
+      "proofRef": "https://www.aldi-sued.de/produkt/fol-epi-fol-epi-210-g-cremig-000000000654182003",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/9caa0b7b-fd61-4aed-8c22-4d69d9c3fb82/{slug}"
     },
     {
       "sourceId": "74fd37e230499f8b6e6f",
@@ -1520,7 +1620,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/fol-epi-fol-epi-210-g-kuerbiskern-000000000654182004"
+      "proofRef": "https://www.aldi-sued.de/produkt/fol-epi-fol-epi-210-g-kuerbiskern-000000000654182004",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/88b94d04-5c62-4524-ade4-5d08ff65927e/{slug}"
     },
     {
       "sourceId": "69335b4251efa5305342",
@@ -1530,7 +1631,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ferrero-maxi-king-105-g-000000000000107055"
+      "proofRef": "https://www.aldi-sued.de/produkt/ferrero-maxi-king-105-g-000000000000107055",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/e98b9dd3-20f6-460d-9d4c-ae28abb895a0/{slug}"
     },
     {
       "sourceId": "a0794f3079bed24870e0",
@@ -1540,7 +1642,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/no-brand-pastis-de-marseille-700-ml-000000000000183438"
+      "proofRef": "https://www.aldi-sued.de/produkt/no-brand-pastis-de-marseille-700-ml-000000000000183438",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/784aa77c-4520-43cf-9740-2febcb1b8b46/{slug}"
     },
     {
       "sourceId": "2f0c53cdfc670eec3431",
@@ -1550,7 +1653,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/no-brand-alpensalz-1-kg-000000000000271510"
+      "proofRef": "https://www.aldi-sued.de/produkt/no-brand-alpensalz-1-kg-000000000000271510",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/107043ec-03e8-4d8b-979a-642791426012/{slug}"
     },
     {
       "sourceId": "ba2b5d335cc0e8162951",
@@ -1560,7 +1664,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/-fair-gut-rindergulasch-xxl-000000000000543043"
+      "proofRef": "https://www.aldi-sued.de/produkt/-fair-gut-rindergulasch-xxl-000000000000543043",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/934cb457-c24a-4aac-8d55-3efb7673e718/{slug}"
     },
     {
       "sourceId": "fcc715c734808ea4e800",
@@ -1570,7 +1675,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/couperne-calvados-v-s-700-ml-000000000000582306"
+      "proofRef": "https://www.aldi-sued.de/produkt/couperne-calvados-v-s-700-ml-000000000000582306",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/9a27ca44-4d2b-4576-a8e1-88ca4059ffd1/{slug}"
     },
     {
       "sourceId": "f471567f90a9e26a533d",
@@ -1580,7 +1686,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/febreze-3volution-duftstecker-starterkit-20-ml-000000000000639996"
+      "proofRef": "https://www.aldi-sued.de/produkt/febreze-3volution-duftstecker-starterkit-20-ml-000000000000639996",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/3e180bbd-e289-4d35-9ee7-73aff51b18d3/{slug}"
     },
     {
       "sourceId": "bdca65291f5c3a9cb5ec",
@@ -1590,7 +1697,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/papermakers-toilettenpapier-mit-dekor-und-duft-3-lagig-000000000000641292"
+      "proofRef": "https://www.aldi-sued.de/produkt/papermakers-toilettenpapier-mit-dekor-und-duft-3-lagig-000000000000641292",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/97c8efaa-c1cf-49dd-a6ce-f4e14653ab3a/{slug}"
     },
     {
       "sourceId": "411b93c6982fd947e08d",
@@ -1600,7 +1708,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ferrero-rocher-250-g-000000000000697061"
+      "proofRef": "https://www.aldi-sued.de/produkt/ferrero-rocher-250-g-000000000000697061",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/1d9b12e6-b79d-4f0b-870f-7c3551010098/{slug}"
     },
     {
       "sourceId": "c3e85c0562d86e966cc9",
@@ -1610,7 +1719,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-protein-matcha-latte-250-g-000000000000700241"
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-protein-matcha-latte-250-g-000000000000700241",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/6a3b959e-8daa-4313-a142-4ca1979dded7/{slug}"
     },
     {
       "sourceId": "fca0847d191b97647144",
@@ -1620,7 +1730,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/lenor-weichspueler-luftfrisch-alpensee-1-064-l-000000000000723870"
+      "proofRef": "https://www.aldi-sued.de/produkt/lenor-weichspueler-luftfrisch-alpensee-1-064-l-000000000000723870",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/09b65064-cf9b-426c-8edd-11e92ed508da/{slug}"
     },
     {
       "sourceId": "b9618b76101d9faad023",
@@ -1630,7 +1741,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/meine-metzgerei-hackfleisch-gemischt-1-kg-000000000000730931"
+      "proofRef": "https://www.aldi-sued.de/produkt/meine-metzgerei-hackfleisch-gemischt-1-kg-000000000000730931",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/b9319cb9-9248-4a70-b118-2afe9a2615eb/{slug}"
     },
     {
       "sourceId": "360ce9b1e2a07b232d0b",
@@ -1640,7 +1752,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/benediktiner-hell-benediktiner-hell-5-l-fass-000000000000745939"
+      "proofRef": "https://www.aldi-sued.de/produkt/benediktiner-hell-benediktiner-hell-5-l-fass-000000000000745939",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/a4bfa202-079f-4cc0-a503-916c036448cd/{slug}"
     },
     {
       "sourceId": "9784c0ac39d7853df9da",
@@ -1650,7 +1763,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-high-protein-sahne-pulver-350-g-000000000000746715"
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-high-protein-sahne-pulver-350-g-000000000000746715",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/1970d2c5-1c7c-4130-b4d1-180078c1352d/{slug}"
     },
     {
       "sourceId": "fa8d69dbf258cb177957",
@@ -1660,7 +1774,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/elmex-elmex-aronal-duo-2-x-75-ml-000000000000758227"
+      "proofRef": "https://www.aldi-sued.de/produkt/elmex-elmex-aronal-duo-2-x-75-ml-000000000000758227",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/a4fb0b7d-f209-4a67-bb69-505b5ae4d128/{slug}"
     },
     {
       "sourceId": "8956f3f9a911eb08730e",
@@ -1670,7 +1785,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/dr-oetker-rustica-5-cheese-505-g-000000000000770126"
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-oetker-rustica-5-cheese-505-g-000000000000770126",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/9b21dae0-80ca-4348-8e93-59fa5ef89d4f/{slug}"
     },
     {
       "sourceId": "edcc0c65c56090158ec2",
@@ -1680,7 +1796,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/dr-oetker-rustica-3-salame-000000000000770163"
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-oetker-rustica-3-salame-000000000000770163",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/2adac4ac-d338-4bb1-91f2-ff15019a6a8d/{slug}"
     },
     {
       "sourceId": "928fd8ce89d1c49896a6",
@@ -1690,7 +1807,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-pur-000000000203329001"
+      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-pur-000000000203329001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/19e435cf-eb58-406e-acb0-fb87cdbbdeda/{slug}"
     },
     {
       "sourceId": "82e12d60c2764382a41f",
@@ -1700,7 +1818,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-schokolade-000000000203329002"
+      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-schokolade-000000000203329002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/712f47fb-888a-4d5f-adbb-d7258077e6ff/{slug}"
     },
     {
       "sourceId": "397de9db7c5dfc312eca",
@@ -1710,7 +1829,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-zimt-000000000203329003"
+      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-zimt-000000000203329003",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/3b274603-1be9-4475-91c7-a8dbb6727987/{slug}"
     },
     {
       "sourceId": "a0e2e902b1aea774bcf0",
@@ -1720,7 +1840,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-vanille-000000000203329009"
+      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-vanille-000000000203329009",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/39469027-2949-48ec-b6ec-275996d7efed/{slug}"
     },
     {
       "sourceId": "5e40585be4597bd81a7e",
@@ -1730,7 +1851,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/rougette-ofenkaese-320-g-mild-cremig-000000000204421001"
+      "proofRef": "https://www.aldi-sued.de/produkt/rougette-ofenkaese-320-g-mild-cremig-000000000204421001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/618eff10-5bf1-4b4e-94cf-17ef3b0ea642/{slug}"
     },
     {
       "sourceId": "fbfbecab75a2f5378011",
@@ -1740,7 +1862,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/rougette-ofenkaese-320-g-kraeuter-000000000204421002"
+      "proofRef": "https://www.aldi-sued.de/produkt/rougette-ofenkaese-320-g-kraeuter-000000000204421002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/7bf9cca1-56db-4f1f-bbca-9daa28de8ad9/{slug}"
     },
     {
       "sourceId": "3d4a990c30c822fffba0",
@@ -1750,7 +1873,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/rougette-ofenkaese-320-g-wuerzig-000000000204421003"
+      "proofRef": "https://www.aldi-sued.de/produkt/rougette-ofenkaese-320-g-wuerzig-000000000204421003",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/db70a2c1-e3f2-4ff7-b71d-98faefeed7ae/{slug}"
     },
     {
       "sourceId": "80de1838df56cf1c8b56",
@@ -1760,7 +1884,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/no-brand-apfel-cidre-aus-der-normandie-750-ml-herb-000000000265012001"
+      "proofRef": "https://www.aldi-sued.de/produkt/no-brand-apfel-cidre-aus-der-normandie-750-ml-herb-000000000265012001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/a105bea5-b126-4285-83f0-2afef0161f6f/{slug}"
     },
     {
       "sourceId": "12eddd85998acc190beb",
@@ -1770,7 +1895,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/no-brand-apfel-cidre-aus-der-normandie-750-ml-mild-000000000265012002"
+      "proofRef": "https://www.aldi-sued.de/produkt/no-brand-apfel-cidre-aus-der-normandie-750-ml-mild-000000000265012002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/33cb0d22-9787-421c-907e-d7bab56a60d2/{slug}"
     },
     {
       "sourceId": "0c1a59b2413e4b39919d",
@@ -1780,7 +1906,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/choceur-nussknacker-vollmilch-300-g-000000000473232001"
+      "proofRef": "https://www.aldi-sued.de/produkt/choceur-nussknacker-vollmilch-300-g-000000000473232001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/30d64807-f64b-44f5-bc8d-94b29dbfa00c/{slug}"
     },
     {
       "sourceId": "f0c9b594ed5d7bcc170e",
@@ -1791,7 +1918,8 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/febreze-bad-lufterfrischer-duo-16-ml-vanille-000000000505830002",
-      "originalPrice": 5.99
+      "originalPrice": 5.99,
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/bb51cd74-16ad-43a6-8bab-7e7db618c1d3/{slug}"
     },
     {
       "sourceId": "27c48beb77133efb4fc2",
@@ -1802,7 +1930,8 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/febreze-duftstecker-starterkit-vanille-000000000505879002",
-      "originalPrice": 5.99
+      "originalPrice": 5.99,
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/e85675ec-cd0b-4dd8-aa3b-fb2e005cf760/{slug}"
     },
     {
       "sourceId": "c31824e6074797c16246",
@@ -1813,7 +1942,8 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/febreze-3volution-duftstecker-nachfuellflakon-40-ml-pure-frische-000000000523156001",
-      "originalPrice": 5.99
+      "originalPrice": 5.99,
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/c9970424-6bc3-4d64-af52-243a6b9bf618/{slug}"
     },
     {
       "sourceId": "f7e061af8962a44871cc",
@@ -1824,7 +1954,8 @@
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/febreze-3volution-duftstecker-nachfuellflakon-40-ml-vanille-duo-000000000523156003",
-      "originalPrice": 5.99
+      "originalPrice": 5.99,
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/ba9a0ef1-d72f-4031-b604-c0ca09c916e6/{slug}"
     },
     {
       "sourceId": "380bb762540e5223a84e",
@@ -1834,7 +1965,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/head-shoulders-shampoo-800-ml-classic-clean-000000000595964001"
+      "proofRef": "https://www.aldi-sued.de/produkt/head-shoulders-shampoo-800-ml-classic-clean-000000000595964001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/deb44dab-9c4a-404e-8100-a7facbba3434/{slug}"
     },
     {
       "sourceId": "e487c62e10560e39930f",
@@ -1844,7 +1976,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/meister-proper-reiniger-spray-0-8-l-bad-000000000604927001"
+      "proofRef": "https://www.aldi-sued.de/produkt/meister-proper-reiniger-spray-0-8-l-bad-000000000604927001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5a7c3fb3-5830-4ce8-a274-e9a83d963a1f/{slug}"
     },
     {
       "sourceId": "a51cd1eea441dec09649",
@@ -1854,7 +1987,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-fruchtjoghurt-500-g-vanille-000000000613946001"
+      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-fruchtjoghurt-500-g-vanille-000000000613946001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/85709fd4-f88b-466b-968b-7ac1fb6ca8b9/{slug}"
     },
     {
       "sourceId": "5d29cca7eca6759707aa",
@@ -1864,7 +1998,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-fruchtjoghurt-500-g-erdbeere-000000000613946002"
+      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-fruchtjoghurt-500-g-erdbeere-000000000613946002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/61ec3185-87dc-476b-a726-124405019c16/{slug}"
     },
     {
       "sourceId": "1ed9ea7e9ea2939c5e05",
@@ -1874,7 +2009,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-fruchtjoghurt-500-g-heidelbeere-000000000613946003"
+      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-fruchtjoghurt-500-g-heidelbeere-000000000613946003",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/2edab151-e891-4fdb-8bc1-7c83c512e60e/{slug}"
     },
     {
       "sourceId": "270422ff22e53f35aee8",
@@ -1884,7 +2020,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-fruchtjoghurt-500-g-pfirsich-000000000613946005"
+      "proofRef": "https://www.aldi-sued.de/produkt/landliebe-fruchtjoghurt-500-g-pfirsich-000000000613946005",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/7a6accac-d103-4669-baf0-d74ccb6f7f10/{slug}"
     },
     {
       "sourceId": "ea0ef9f155d3354c161b",
@@ -1894,7 +2031,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/funny-frisch-chipsfrisch-250-g-ungarisch-000000000697776001"
+      "proofRef": "https://www.aldi-sued.de/produkt/funny-frisch-chipsfrisch-250-g-ungarisch-000000000697776001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/d36d700f-def3-42a3-b1ac-1a963b68210b/{slug}"
     },
     {
       "sourceId": "5b64718b9dee5a551e5c",
@@ -1904,7 +2042,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/funny-frisch-chipsfrisch-250-g-oriental-000000000697776002"
+      "proofRef": "https://www.aldi-sued.de/produkt/funny-frisch-chipsfrisch-250-g-oriental-000000000697776002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/ed0a26b3-8dc2-4d85-a379-dd84c79bd607/{slug}"
     },
     {
       "sourceId": "450ed4952bc6bf579a09",
@@ -1914,7 +2053,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-veganer-proteinriegel-55-g-lemon-cake-000000000700189001"
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-veganer-proteinriegel-55-g-lemon-cake-000000000700189001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5487eb49-0c92-48d0-b3bc-1de59a41fb87/{slug}"
     },
     {
       "sourceId": "a34cef1df56fc0c8d786",
@@ -1924,7 +2064,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-veganer-proteinriegel-55-g-cookies-cream-000000000700189002"
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-veganer-proteinriegel-55-g-cookies-cream-000000000700189002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/2b86b8af-2d53-44af-9b34-d74c2f11a1f4/{slug}"
     },
     {
       "sourceId": "b1db011eb3afa28b60f8",
@@ -1934,7 +2075,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-flavor-powder-120-g-salty-caramel-000000000700218001"
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-flavor-powder-120-g-salty-caramel-000000000700218001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/6addd819-a4b4-4fa1-85f8-78b707ff5e07/{slug}"
     },
     {
       "sourceId": "e50bd516c4b9fd2f8511",
@@ -1944,7 +2086,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-flavor-powder-120-g-strawberry-000000000700218002"
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-flavor-powder-120-g-strawberry-000000000700218002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/3d8883d1-83fa-4a9c-8ccb-f7ae609293c1/{slug}"
     },
     {
       "sourceId": "395bda185b0378ab80ab",
@@ -1954,7 +2097,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-flavor-powder-120-g-vanilla-000000000700218003"
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-flavor-powder-120-g-vanilla-000000000700218003",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5c998995-86de-4f16-b378-1cd9ddc82b90/{slug}"
     },
     {
       "sourceId": "df9c87d62927b4405e40",
@@ -1964,7 +2108,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-flavor-powder-120-g-chocolate-brownie-000000000700218004"
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-flavor-powder-120-g-chocolate-brownie-000000000700218004",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/0bff2eac-00a4-4ddc-9645-cf48c0e28f86/{slug}"
     },
     {
       "sourceId": "7eaf83a6d5c0f40e0c3f",
@@ -1974,7 +2119,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-limitiert-bienenstich-000000000734384004"
+      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-limitiert-bienenstich-000000000734384004",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/d067673d-5d7b-4efb-b97c-7fd2c396ac80/{slug}"
     },
     {
       "sourceId": "5d60720fc17fa55c90e3",
@@ -1984,7 +2130,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-limitiert-schoko-banane-000000000734384005"
+      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-limitiert-schoko-banane-000000000734384005",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/61d60ec2-7c2c-4fc9-a610-2833608cc971/{slug}"
     },
     {
       "sourceId": "74c151e4441b9f34f260",
@@ -1994,7 +2141,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-limitiert-orange-vanille-000000000734384006"
+      "proofRef": "https://www.aldi-sued.de/produkt/mueller-milchreis-200-g-limitiert-orange-vanille-000000000734384006",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/17787e50-d231-4e26-8caf-8a39a551a0aa/{slug}"
     },
     {
       "sourceId": "3d7453f383a74b3a9fd5",
@@ -2004,7 +2152,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-kreatin-pulver-200g-waldbeere-000000000746387001"
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-kreatin-pulver-200g-waldbeere-000000000746387001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/62e50d34-0953-4023-abd3-3365f1fe61e6/{slug}"
     },
     {
       "sourceId": "52acd15109f6ddb44711",
@@ -2014,7 +2163,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-kreatin-pulver-200g-orange-000000000746387002"
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-kreatin-pulver-200g-orange-000000000746387002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/12115d1f-c9d6-47ed-adf3-6da5d03fca8a/{slug}"
     },
     {
       "sourceId": "14530f4a7388aeedcb76",
@@ -2024,7 +2174,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-protein-riegel-kreatin-50-g-pistacchio-white-chocolate-000000000746393001"
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-protein-riegel-kreatin-50-g-pistacchio-white-chocolate-000000000746393001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/ccc47a47-e0db-4dbd-9001-03fcd1d86a74/{slug}"
     },
     {
       "sourceId": "2ab593a954a24fb633a5",
@@ -2034,7 +2185,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-protein-riegel-kreatin-50-g-nougat-dark-chocolate-000000000746393002"
+      "proofRef": "https://www.aldi-sued.de/produkt/aldi-sports-protein-riegel-kreatin-50-g-nougat-dark-chocolate-000000000746393002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/8131a93c-4f0d-4559-84f0-87f6c2797c70/{slug}"
     },
     {
       "sourceId": "2275a44b1dc8882b4f1c",
@@ -2044,7 +2196,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/houdek-kabanos-wiesn-klassik-200-g-000000000768031001"
+      "proofRef": "https://www.aldi-sued.de/produkt/houdek-kabanos-wiesn-klassik-200-g-000000000768031001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/05497519-6f55-4ff6-bec0-d5b737ae6108/{slug}"
     },
     {
       "sourceId": "a296f82c77b828f28acf",
@@ -2054,7 +2207,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/houdek-kabanos-wiesn-klassik-180-g-000000000768031002"
+      "proofRef": "https://www.aldi-sued.de/produkt/houdek-kabanos-wiesn-klassik-180-g-000000000768031002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/a1e8f38c-e3ed-4134-94f2-16136ff69c15/{slug}"
     },
     {
       "sourceId": "cc487c068a8b239b3935",
@@ -2064,7 +2218,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/houdek-kabanos-wiesn-kaese-180-g-000000000768031003"
+      "proofRef": "https://www.aldi-sued.de/produkt/houdek-kabanos-wiesn-kaese-180-g-000000000768031003",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/2a67d6f3-59c5-46c7-9f98-3766fe905b31/{slug}"
     },
     {
       "sourceId": "180c236a596d38a102eb",
@@ -2074,7 +2229,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/houdek-kabanos-wiesn-paprika-180-g-000000000768031004"
+      "proofRef": "https://www.aldi-sued.de/produkt/houdek-kabanos-wiesn-paprika-180-g-000000000768031004",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/377138bf-cb3a-41f2-bd95-80842b4ad4d7/{slug}"
     },
     {
       "sourceId": "0a22592272fbb9eb7197",
@@ -2084,7 +2240,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/president-president-carre-gourmet-200-g-classic-000000000772412001"
+      "proofRef": "https://www.aldi-sued.de/produkt/president-president-carre-gourmet-200-g-classic-000000000772412001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/fa7d19dd-3f35-4a46-9830-e7b74a83bcad/{slug}"
     },
     {
       "sourceId": "2fd067eca2ba50490daa",
@@ -2094,7 +2251,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/president-president-snack-180g-mild-cremig-000000000772583001"
+      "proofRef": "https://www.aldi-sued.de/produkt/president-president-snack-180g-mild-cremig-000000000772583001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/532274ba-488e-4844-b4d1-5dbd6584703b/{slug}"
     },
     {
       "sourceId": "aa1cca6569f90ae33d31",
@@ -2104,7 +2262,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/president-president-snack-180g-fein-wuerzig-000000000772583002"
+      "proofRef": "https://www.aldi-sued.de/produkt/president-president-snack-180g-fein-wuerzig-000000000772583002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/53081ca4-60cb-42d4-97fa-44fa49d5f047/{slug}"
     },
     {
       "sourceId": "203b59a8338d94c5eb3d",
@@ -2114,7 +2273,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ariel-waschmittel-0-9-kg-pulver-universal-000000000781974001"
+      "proofRef": "https://www.aldi-sued.de/produkt/ariel-waschmittel-0-9-kg-pulver-universal-000000000781974001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/4e64b5c2-458e-43c8-8ea0-bae5f5841842/{slug}"
     },
     {
       "sourceId": "beee774aa91f85ee7446",
@@ -2124,7 +2284,8 @@
       "validFrom": "2026-09-25",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/fairy-fairy-handgeschirrspuelmittel-450ml-granatapfel-000000000783043001"
+      "proofRef": "https://www.aldi-sued.de/produkt/fairy-fairy-handgeschirrspuelmittel-450ml-granatapfel-000000000783043001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/35a30d79-63c4-4e1b-a88a-74aabc4e75e8/{slug}"
     },
     {
       "sourceId": "081f79847b9688d4a285",
@@ -2134,7 +2295,8 @@
       "validFrom": "2026-09-26",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-hose-braun-s-36-38-000000000730280001"
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-hose-braun-s-36-38-000000000730280001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/45ea8df8-17b1-4fda-9bec-e574c8d0f8e0/{slug}"
     },
     {
       "sourceId": "7d390e6ac0598c3f47fa",
@@ -2144,7 +2306,8 @@
       "validFrom": "2026-09-26",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-cardigan-schwarz-s-36-38-000000000730807001"
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-damen-cardigan-schwarz-s-36-38-000000000730807001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/057a6a05-2b7a-4d80-bee6-744a06c6f6f6/{slug}"
     },
     {
       "sourceId": "7273c5ee3fb4dab9e960",
@@ -2154,7 +2317,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/l-d-regenmantel-gelb-122-128-000000000730742007"
+      "proofRef": "https://www.aldi-sued.de/produkt/l-d-regenmantel-gelb-122-128-000000000730742007",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/d1153856-d71b-47c0-9385-923900e0fd55/{slug}"
     },
     {
       "sourceId": "995951c802a8a0347c89",
@@ -2164,7 +2328,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/mattel-aldimania-barbie-000000000000764619"
+      "proofRef": "https://www.aldi-sued.de/produkt/mattel-aldimania-barbie-000000000000764619",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/506bca78-56a7-4116-882b-40029c84e2d0/{slug}"
     },
     {
       "sourceId": "6066bf7e1a95cff698dc",
@@ -2174,7 +2339,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/lily-dan-regenjacke-rosa-86-92-000000000731042001"
+      "proofRef": "https://www.aldi-sued.de/produkt/lily-dan-regenjacke-rosa-86-92-000000000731042001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/d2a30258-96e6-4fe3-a598-dbdc9ae4118a/{slug}"
     },
     {
       "sourceId": "fb61323026c801861515",
@@ -2184,7 +2350,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/lily-dan-freizeitanzug-blau-dino-110-116-000000000732007001"
+      "proofRef": "https://www.aldi-sued.de/produkt/lily-dan-freizeitanzug-blau-dino-110-116-000000000732007001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5168cb6d-772e-41da-9207-39e94704ccee/{slug}"
     },
     {
       "sourceId": "b80984147429b054fa75",
@@ -2194,7 +2361,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/lily-dan-pyjama-lila-98-104-000000000733360001"
+      "proofRef": "https://www.aldi-sued.de/produkt/lily-dan-pyjama-lila-98-104-000000000733360001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/d1ffa57c-b3ec-4ffb-ad6c-d838b033e892/{slug}"
     },
     {
       "sourceId": "bbe4d07fa8cf3c3d121d",
@@ -2204,7 +2372,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/lily-dan-outdoor-hose-dunkelblau-98-000000000735278006"
+      "proofRef": "https://www.aldi-sued.de/produkt/lily-dan-outdoor-hose-dunkelblau-98-000000000735278006",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/a87e2dc4-761f-46b1-b192-7cd8818511b0/{slug}"
     },
     {
       "sourceId": "e02d5ead51c6a53f0a74",
@@ -2214,7 +2383,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/lily-dan-kinder-regenstiefel-dinosaurier-25-000000000737360001"
+      "proofRef": "https://www.aldi-sued.de/produkt/lily-dan-kinder-regenstiefel-dinosaurier-25-000000000737360001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/16b641e5-0a81-4dab-9888-bf85ea325797/{slug}"
     },
     {
       "sourceId": "62f2df7ba7b3d21ef83f",
@@ -2224,7 +2394,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/l-d-kinder-regenstiefel-blitz-33-000000000737380001"
+      "proofRef": "https://www.aldi-sued.de/produkt/l-d-kinder-regenstiefel-blitz-33-000000000737380001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5cab5a2a-5f9d-43c6-a853-4625b60762f6/{slug}"
     },
     {
       "sourceId": "e595a16ebba6558eec15",
@@ -2234,7 +2405,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/lily-dan-regenhose-marineblau-86-92-000000000743062001"
+      "proofRef": "https://www.aldi-sued.de/produkt/lily-dan-regenhose-marineblau-86-92-000000000743062001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/27d4aa62-259e-47a4-beaa-9bebaf5e0a3a/{slug}"
     },
     {
       "sourceId": "c83949f3dabdcdea3f9f",
@@ -2244,7 +2416,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/l-d-regenhose-fuer-kinder-gelb-122-128-000000000743644001"
+      "proofRef": "https://www.aldi-sued.de/produkt/l-d-regenhose-fuer-kinder-gelb-122-128-000000000743644001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/95757394-748e-4151-b632-ae58a62f548a/{slug}"
     },
     {
       "sourceId": "4e2686dcdb7e4752f84b",
@@ -2254,7 +2427,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-fussmatte-sweet-home-000000000728671001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-fussmatte-sweet-home-000000000728671001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/e670b148-4060-4c90-b275-21aec6e904af/{slug}"
     },
     {
       "sourceId": "7d98a58246d715818876",
@@ -2264,7 +2438,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-herbstliche-glaskuerbisse-orange-000000000730025002"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-herbstliche-glaskuerbisse-orange-000000000730025002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/379ee066-229f-4c3a-9c85-5e1380d5e6d7/{slug}"
     },
     {
       "sourceId": "98265c9f323b7706213a",
@@ -2274,7 +2449,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kuscheldecke-hoch-tief-struktur-gruen-000000000731338001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kuscheldecke-hoch-tief-struktur-gruen-000000000731338001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/ec1a0052-7b45-4fa3-be03-b9927f8d6f02/{slug}"
     },
     {
       "sourceId": "f4931a14492cddefb162",
@@ -2284,7 +2460,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kunstfellteppich-moonbeam-bubble-000000000733670001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kunstfellteppich-moonbeam-bubble-000000000733670001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/983d62a2-0246-4de1-a9d5-ea5e78bad62e/{slug}"
     },
     {
       "sourceId": "ba7313f37114c7b40cd0",
@@ -2294,7 +2471,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-herbst-kissen-boucle-orange-000000000735192001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-herbst-kissen-boucle-orange-000000000735192001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/f727c8ca-ceec-4a84-ad76-807ad302aa33/{slug}"
     },
     {
       "sourceId": "dafdacec80999d0387a7",
@@ -2304,7 +2482,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kunstfell-sitzkissen-rund-weiss-000000000737314001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kunstfell-sitzkissen-rund-weiss-000000000737314001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/635f3a14-9d2f-4077-bd35-6d8301049a30/{slug}"
     },
     {
       "sourceId": "d7836f31d410a35598a4",
@@ -2314,7 +2493,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kunstfell-sitzkissen-eckig-beige-000000000737314002"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kunstfell-sitzkissen-eckig-beige-000000000737314002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/02b01c23-baa6-47de-b7fe-fc3a811e14c6/{slug}"
     },
     {
       "sourceId": "c7d0b3beba59936a34fc",
@@ -2324,7 +2504,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-herbstkranz-braunen-kuerbis-000000000742747001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-herbstkranz-braunen-kuerbis-000000000742747001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/9aa7a4d8-8bf0-4a2c-9cf7-6f744f8a5681/{slug}"
     },
     {
       "sourceId": "426ec126913b85bef040",
@@ -2334,7 +2515,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-waschmaschinen-frische-reiniger-60-g-000000000000513806"
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-waschmaschinen-frische-reiniger-60-g-000000000000513806",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/dc68a182-c070-4b3a-a736-014673d62dde/{slug}"
     },
     {
       "sourceId": "88c2a515a8a477ffe46c",
@@ -2344,7 +2526,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-spuelmaschinen-reiniger-caps-60-g-000000000000578989"
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-spuelmaschinen-reiniger-caps-60-g-000000000000578989",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/f99174f1-9396-415e-9d6f-4bcd70c42b75/{slug}"
     },
     {
       "sourceId": "10f60239b629fe7ab26b",
@@ -2354,7 +2537,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-waschmaschinen-pflege-250-ml-000000000000601358"
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-waschmaschinen-pflege-250-ml-000000000000601358",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/b32663a1-65c1-4096-b6e1-503ec9d67a7b/{slug}"
     },
     {
       "sourceId": "c2ad6483e8b5d5356974",
@@ -2364,7 +2548,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-waschmaschinen-komplett-pflege-floral-250-ml-000000000000728048"
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-waschmaschinen-komplett-pflege-floral-250-ml-000000000000728048",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/0c9bc48d-64b8-4c6b-bc62-84f1063cd52b/{slug}"
     },
     {
       "sourceId": "9e3a36a175aa3ff341e1",
@@ -2374,7 +2559,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-callunen-pink-girls-000000000000740353"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-callunen-pink-girls-000000000000740353",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/1c4f2861-fc41-41e9-bf30-65dc32fbe234/{slug}"
     },
     {
       "sourceId": "fdfe3a3e584f70e57698",
@@ -2384,7 +2570,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-bad-anti-kalk-wonder-gel-450-g-000000000000768981"
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-bad-anti-kalk-wonder-gel-450-g-000000000000768981",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/0cc53277-60d4-4e3e-b70d-079cebb9db0d/{slug}"
     },
     {
       "sourceId": "a974a02cf54f0d48a977",
@@ -2394,7 +2581,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/kokett-herbstservietten-40-stueck-24-x-24-cm-gespenst-000000000211015001"
+      "proofRef": "https://www.aldi-sued.de/produkt/kokett-herbstservietten-40-stueck-24-x-24-cm-gespenst-000000000211015001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/2db20bf5-9be2-4465-9490-1973f733394a/{slug}"
     },
     {
       "sourceId": "2f7e0b4907f43fa25cd9",
@@ -2404,7 +2592,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-magic-leaves-50wl-universal-000000000602591001"
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-magic-leaves-50wl-universal-000000000602591001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/52cac520-6271-41e1-94b4-4381a91ea1e8/{slug}"
     },
     {
       "sourceId": "3796cc29e42a1a3a04c3",
@@ -2414,7 +2603,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/crofton-kuechenutensilien-mit-standfuss-6er-set-schwarz-000000000728108001"
+      "proofRef": "https://www.aldi-sued.de/produkt/crofton-kuechenutensilien-mit-standfuss-6er-set-schwarz-000000000728108001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/4d9711f1-3a10-4786-8366-b83522c48879/{slug}"
     },
     {
       "sourceId": "1b6122ec85aa862bc25d",
@@ -2424,7 +2614,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-regenjacke-schwarz-m-40-42-000000000730646001"
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-regenjacke-schwarz-m-40-42-000000000730646001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/42b39f7a-3a33-4b06-8eb6-a4054b0bc624/{slug}"
     },
     {
       "sourceId": "4d973fea4d4ae8fb2ac7",
@@ -2434,7 +2625,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-allterrain-schuhe-beige-37-000000000734536001"
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-allterrain-schuhe-beige-37-000000000734536001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/abc28811-0ae1-4fd9-8b43-4cc005fbf8ce/{slug}"
     },
     {
       "sourceId": "7d76b74e65046ca0dab2",
@@ -2444,7 +2636,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-chelsea-gummistiefel-schwarz-37-000000000735752001"
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-women-chelsea-gummistiefel-schwarz-37-000000000735752001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/b2a6245e-b351-4543-95b1-7002672e5a08/{slug}"
     },
     {
       "sourceId": "a32b6931e6aea5d8d39d",
@@ -2454,7 +2647,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-taschen-oder-stockschirm-taschenschirm-schottenstoff-000000000736226001"
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-taschen-oder-stockschirm-taschenschirm-schottenstoff-000000000736226001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/93ccf9cc-e505-4006-b509-eeadb62c3312/{slug}"
     },
     {
       "sourceId": "966955f450b75b8763bf",
@@ -2464,7 +2658,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ride-go-fahrradhelm-erwachsene-weiss-s-m-000000000738869001"
+      "proofRef": "https://www.aldi-sued.de/produkt/ride-go-fahrradhelm-erwachsene-weiss-s-m-000000000738869001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/3fb240f5-03da-4689-90aa-7a2a212f5309/{slug}"
     },
     {
       "sourceId": "560981cfb4a44f655a91",
@@ -2474,7 +2669,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-chrysantheme-weiss-000000000740338002"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-chrysantheme-weiss-000000000740338002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/53f0cd05-40c7-4be7-95f7-4c8346f0d7f2/{slug}"
     },
     {
       "sourceId": "5ef3b4f2d532d669a8a5",
@@ -2484,7 +2680,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-heidekraut-golden-berries-000000000740354001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-heidekraut-golden-berries-000000000740354001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/bbd43228-2748-4dee-ba61-53b49fb57b0c/{slug}"
     },
     {
       "sourceId": "d851ae0095d49bf03c4b",
@@ -2494,7 +2691,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-herbst-pflanzen-set-1-000000000740362001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-herbst-pflanzen-set-1-000000000740362001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/ed198c30-3603-4895-a7eb-559cfa75eee8/{slug}"
     },
     {
       "sourceId": "6612b3b1dbc449dc14ef",
@@ -2504,7 +2702,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-herbst-pflanzen-colour-garden-1-000000000740374001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-herbst-pflanzen-colour-garden-1-000000000740374001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/992ed920-093d-4532-a6a4-d89bde9552b7/{slug}"
     },
     {
       "sourceId": "f9025eb5d9194a8fa253",
@@ -2514,7 +2713,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/casalux-led-tischleuchte-silber-000000000742629001"
+      "proofRef": "https://www.aldi-sued.de/produkt/casalux-led-tischleuchte-silber-000000000742629001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/d2635f9d-cae8-4066-a49f-69ffd518b85b/{slug}"
     },
     {
       "sourceId": "09ce8f0193779634302b",
@@ -2524,7 +2724,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/jes-collection-alltagshelfer-seil-10-m-000000000744390001"
+      "proofRef": "https://www.aldi-sued.de/produkt/jes-collection-alltagshelfer-seil-10-m-000000000744390001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/04a8f060-18bf-4c1b-a7f1-7e9400009915/{slug}"
     },
     {
       "sourceId": "71ea26873cf9b1f77de8",
@@ -2534,7 +2735,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/no-brand-teelichte-duft-oder-maxi-teelichte-teelichter-000000000748599001"
+      "proofRef": "https://www.aldi-sued.de/produkt/no-brand-teelichte-duft-oder-maxi-teelichte-teelichter-000000000748599001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/f2ea8d3c-4276-4352-b00e-367cad6893f3/{slug}"
     },
     {
       "sourceId": "731508113b32b65e2332",
@@ -2544,7 +2746,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-wc-reiniger-pulver-citrus-breeze-000000000753100001"
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-beckmann-wc-reiniger-pulver-citrus-breeze-000000000753100001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5b2b5295-9057-4368-9343-4551a6a4ead5/{slug}"
     },
     {
       "sourceId": "104d71410a80afbfad88",
@@ -2554,7 +2757,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ipuro-raumspray-cotton-fields-000000000769278001"
+      "proofRef": "https://www.aldi-sued.de/produkt/ipuro-raumspray-cotton-fields-000000000769278001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/ec75e18d-ca70-46e3-a2c3-703c27abe8c1/{slug}"
     },
     {
       "sourceId": "9926fc5e29c031119744",
@@ -2564,7 +2768,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/golden-seafood-norwegische-lachsfilet-portionen-1-kg-000000000000212738"
+      "proofRef": "https://www.aldi-sued.de/produkt/golden-seafood-norwegische-lachsfilet-portionen-1-kg-000000000000212738",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5980732d-9f83-4021-a390-0c1be91a3c3e/{slug}"
     },
     {
       "sourceId": "b86385b8f7c31d9e7d29",
@@ -2574,7 +2779,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/meine-metzgerei-pute-minifilet-xxl-1-kg-000000000000499432"
+      "proofRef": "https://www.aldi-sued.de/produkt/meine-metzgerei-pute-minifilet-xxl-1-kg-000000000000499432",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/64dee007-d9ad-4fec-9dab-22057249c0fc/{slug}"
     },
     {
       "sourceId": "80c042d631b8d87d339c",
@@ -2584,7 +2790,8 @@
       "validFrom": "2026-09-28",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/meine-metzgerei-haehnchen-schnitte-high-protein-400-g-000000000000782863"
+      "proofRef": "https://www.aldi-sued.de/produkt/meine-metzgerei-haehnchen-schnitte-high-protein-400-g-000000000000782863",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/f552ac57-40be-463d-9087-606c4543d167/{slug}"
     },
     {
       "sourceId": "1060d00f42b6c2ba0250",
@@ -2594,7 +2801,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kunstfell-decke-beige-000000000741649003"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kunstfell-decke-beige-000000000741649003",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/7047634a-1f81-4cf6-bd81-737edf4d9b00/{slug}"
     },
     {
       "sourceId": "5d54ad0cfbe609954a76",
@@ -2604,7 +2812,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-jersey-spannbetttuch-boxspring-doppelbett-hellgrau-000000000732053001"
+      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-jersey-spannbetttuch-boxspring-doppelbett-hellgrau-000000000732053001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/b71e143c-0a37-498e-9b00-2e60014ccaeb/{slug}"
     },
     {
       "sourceId": "d5f789d840208778764b",
@@ -2614,7 +2823,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-jersey-spannbetttuch-komfortgroesse-boxspring-hellgrau-000000000732128001"
+      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-jersey-spannbetttuch-komfortgroesse-boxspring-hellgrau-000000000732128001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/a272beda-14db-4d0f-a41c-9a2a06a39d1f/{slug}"
     },
     {
       "sourceId": "143d1e427e9b26d36edd",
@@ -2624,7 +2834,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-jersey-spannbetttuch-normalgroesse-2er-set-hellgrau-000000000732935001"
+      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-jersey-spannbetttuch-normalgroesse-2er-set-hellgrau-000000000732935001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/1d0c7a89-5bc6-4308-b8ed-ece091833b58/{slug}"
     },
     {
       "sourceId": "9fbb75293cc90a1d59d1",
@@ -2634,7 +2845,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-jersey-spannbetttuch-komfortgroesse-hellgrau-000000000733323001"
+      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-jersey-spannbetttuch-komfortgroesse-hellgrau-000000000733323001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/456fa4b2-cabc-4607-a360-20ab98002f23/{slug}"
     },
     {
       "sourceId": "08f904e576aa5dabadd0",
@@ -2644,7 +2856,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-winter-seersucker-bettwaesche-normalgroesse-streifen-000000000735672001"
+      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-winter-seersucker-bettwaesche-normalgroesse-streifen-000000000735672001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/0ba382e0-2eca-44dd-800c-c89927193915/{slug}"
     },
     {
       "sourceId": "0ae0deb57702f65b495d",
@@ -2654,7 +2867,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-frottier-handtuecher-6er-set-beige-000000000741005001"
+      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-frottier-handtuecher-6er-set-beige-000000000741005001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/cfb342ff-cfac-4b9d-8087-6a82cfa67fbb/{slug}"
     },
     {
       "sourceId": "29cc0ee02d8053a8da55",
@@ -2664,7 +2878,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-kassetten-feder-daunenbett-135-x-200-cm-000000000741666001"
+      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-kassetten-feder-daunenbett-135-x-200-cm-000000000741666001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/0740b68d-bf48-4599-a8c6-805911c97ebf/{slug}"
     },
     {
       "sourceId": "5351e7b953f46bd7436a",
@@ -2674,7 +2889,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-federkissen-80-x-80-cm-000000000741994001"
+      "proofRef": "https://www.aldi-sued.de/produkt/novitesse-federkissen-80-x-80-cm-000000000741994001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/9925f5f5-4f9e-4bb9-b242-b37286a4935c/{slug}"
     },
     {
       "sourceId": "ac1c1affebe8bf11e25f",
@@ -2684,7 +2900,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-herbstmix-6er-tray-000000000000755300"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-herbstmix-6er-tray-000000000000755300",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/c059b494-e89f-4147-ab65-24e834b692c8/{slug}"
     },
     {
       "sourceId": "285b45e3f7216d8b0729",
@@ -2694,7 +2911,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-aster-trio-6er-tray-000000000000755306"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-aster-trio-6er-tray-000000000000755306",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/45c7019e-7778-4781-994e-771fe26b547d/{slug}"
     },
     {
       "sourceId": "3a95c75456f661ccc708",
@@ -2704,7 +2922,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-calluna-beauty-ladies-high-five-000000000000755312"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-calluna-beauty-ladies-high-five-000000000000755312",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/9ec33f3b-e953-45b4-ac13-c4d61c202e21/{slug}"
     },
     {
       "sourceId": "06d252e9b809bfb06800",
@@ -2714,7 +2933,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-zierkuerbisse-im-spankorb-000000000000755314"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-zierkuerbisse-im-spankorb-000000000000755314",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5753f171-d603-4d76-956d-0c9951ab3fe4/{slug}"
     },
     {
       "sourceId": "45879cd37cb2fc8cf51e",
@@ -2724,7 +2944,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-calluna-beauty-ladies-000000000000755315"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-calluna-beauty-ladies-000000000000755315",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/ceef8c3e-fb78-40c3-998f-d06c238d5337/{slug}"
     },
     {
       "sourceId": "266d8117956284f0c848",
@@ -2734,7 +2955,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/casalux-led-streifen-bewegungsmelder-3-m-000000000693917001"
+      "proofRef": "https://www.aldi-sued.de/produkt/casalux-led-streifen-bewegungsmelder-3-m-000000000693917001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/c2f0e196-d887-4ce6-9c40-720a503ab6ab/{slug}"
     },
     {
       "sourceId": "c1709c8db442038ccfd1",
@@ -2744,7 +2966,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/perwoll-waschmittel-xxl-fluessig-color-000000000695040001"
+      "proofRef": "https://www.aldi-sued.de/produkt/perwoll-waschmittel-xxl-fluessig-color-000000000695040001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/02148361-f6e0-4a2e-a4c6-ee6ef1b53154/{slug}"
     },
     {
       "sourceId": "da0ec88fc63890626e62",
@@ -2754,7 +2977,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-klapptritt-blau-000000000723032001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-klapptritt-blau-000000000723032001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/8d0c5164-74f2-4fd5-b4e7-1ba46c10f3a0/{slug}"
     },
     {
       "sourceId": "ca2ec76aab7e4b1ca3c2",
@@ -2764,7 +2988,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-beflockte-kleiderbuegel-6er-pack-grau-000000000733769001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-beflockte-kleiderbuegel-6er-pack-grau-000000000733769001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/dcbd2e68-e849-48aa-9b12-7c86c44eb4d2/{slug}"
     },
     {
       "sourceId": "d167c066f05d344b9588",
@@ -2774,7 +2999,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-vakuum-aufbewahrungsbeutel-2er-set-60-x-100-cm-000000000735149001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-vakuum-aufbewahrungsbeutel-2er-set-60-x-100-cm-000000000735149001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5a18f1cc-b304-4681-9852-c63554b42877/{slug}"
     },
     {
       "sourceId": "5de8ec4b3e1f2dea3cbf",
@@ -2784,7 +3010,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kunstfell-kissen-anthrazit-000000000739576001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-kunstfell-kissen-anthrazit-000000000739576001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/b9218d6a-4552-476c-8f00-bd7d8b078e07/{slug}"
     },
     {
       "sourceId": "a63d05069cc2704556ac",
@@ -2794,7 +3021,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-textil-organizer-korb-2er-set-000000000741923001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-textil-organizer-korb-2er-set-000000000741923001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/8d6f789e-1f58-4c7f-b65e-22f19db74bb7/{slug}"
     },
     {
       "sourceId": "dde06ff17678a0ffb8f2",
@@ -2804,7 +3032,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-teddy-fleece-teppich-beige-strukturiert-000000000742960001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-teddy-fleece-teppich-beige-strukturiert-000000000742960001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5c1a8d26-ad23-456f-addb-d4b083b67cda/{slug}"
     },
     {
       "sourceId": "4c5310446bddacb8373a",
@@ -2814,7 +3043,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-struktur-fussmatte-beige-60-x-120-cm-000000000743248001"
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-struktur-fussmatte-beige-60-x-120-cm-000000000743248001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/f1c2a98c-1934-4970-afd1-bf06e05b0d17/{slug}"
     },
     {
       "sourceId": "99dc58379efa271b1453",
@@ -2824,7 +3054,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-basics-d-gefuettert-clogs-rosa-38-000000000745923001"
+      "proofRef": "https://www.aldi-sued.de/produkt/up2fashion-basics-d-gefuettert-clogs-rosa-38-000000000745923001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/1754e4dd-07b7-47a7-99af-3950abde2823/{slug}"
     },
     {
       "sourceId": "3f9b127f1e4be3c1ddb7",
@@ -2834,7 +3065,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-viola-f1-6er-tray-blau-000000000755313001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gardenline-viola-f1-6er-tray-blau-000000000755313001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/ad096b74-78e9-4360-9efc-e9f8e22b4a14/{slug}"
     },
     {
       "sourceId": "a5717a8066ee9b5f5cea",
@@ -2844,7 +3076,8 @@
       "validFrom": "2026-10-01",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/casalux-3-in-1-nachtlicht-vertikal-000000000768180001"
+      "proofRef": "https://www.aldi-sued.de/produkt/casalux-3-in-1-nachtlicht-vertikal-000000000768180001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/bdadefee-c95b-4a54-a33a-b5a67ba2172c/{slug}"
     },
     {
       "sourceId": "3b61a5a56aca1682cdb7",
@@ -2854,7 +3087,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/arla-finello-225-g-pizzakaese-000000000542642001"
+      "proofRef": "https://www.aldi-sued.de/produkt/arla-finello-225-g-pizzakaese-000000000542642001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/cba21c20-fed8-4930-a77e-02df05fdc1ff/{slug}"
     },
     {
       "sourceId": "ff8dd7c57e28847efab1",
@@ -2864,7 +3098,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/golden-seafood-garnelen-720-g-000000000000191673"
+      "proofRef": "https://www.aldi-sued.de/produkt/golden-seafood-garnelen-720-g-000000000000191673",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/26f95013-7e44-438d-b26f-3b0c8bf7ab99/{slug}"
     },
     {
       "sourceId": "e5142fd276a8c12b0f95",
@@ -2874,7 +3109,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/all-seasons-tiefkuehl-himbeeren-xxl-1-kg-000000000000191950"
+      "proofRef": "https://www.aldi-sued.de/produkt/all-seasons-tiefkuehl-himbeeren-xxl-1-kg-000000000000191950",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/a2fd41aa-5e56-48e7-9111-de0d6ccbc2eb/{slug}"
     },
     {
       "sourceId": "caacb7c79e2f9d2456b8",
@@ -2884,7 +3120,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gervais-huettenkaese-400-g-000000000000204788"
+      "proofRef": "https://www.aldi-sued.de/produkt/gervais-huettenkaese-400-g-000000000000204788",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/99804b87-bcc6-4893-9acf-798e61a7f598/{slug}"
     },
     {
       "sourceId": "7ea53f8f1a8a868506a5",
@@ -2894,7 +3131,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/danone-actimel-xxl-12-x-100-ml-erdbeere-000000000000206029"
+      "proofRef": "https://www.aldi-sued.de/produkt/danone-actimel-xxl-12-x-100-ml-erdbeere-000000000000206029",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/d32f4586-dd46-4311-a9be-c0ab4d8b47b6/{slug}"
     },
     {
       "sourceId": "dba2dce3793b7aba55de",
@@ -2904,7 +3142,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/golden-seafood-xxl-lachsfiletportionen-500-g-000000000000267461"
+      "proofRef": "https://www.aldi-sued.de/produkt/golden-seafood-xxl-lachsfiletportionen-500-g-000000000000267461",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/64e2ff0f-8ba4-4ec6-9d5c-3bed39c420fe/{slug}"
     },
     {
       "sourceId": "24d29a7dcc84b4695a50",
@@ -2914,7 +3153,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/diamant-hagelzucker-000000000000277089"
+      "proofRef": "https://www.aldi-sued.de/produkt/diamant-hagelzucker-000000000000277089",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/19a98be6-e77b-4771-80f4-49e4b1eefe2e/{slug}"
     },
     {
       "sourceId": "09091db760b7e557c4c2",
@@ -2924,7 +3164,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/danone-actimel-xxl-12x100ml-classic-000000000000281336"
+      "proofRef": "https://www.aldi-sued.de/produkt/danone-actimel-xxl-12x100ml-classic-000000000000281336",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/d02b5432-23d4-4347-aa89-634231451113/{slug}"
     },
     {
       "sourceId": "745b4d5a7a39de082479",
@@ -2934,7 +3175,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gut-drei-eichen-kochschinken-250-g-000000000000318380"
+      "proofRef": "https://www.aldi-sued.de/produkt/gut-drei-eichen-kochschinken-250-g-000000000000318380",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/e0a6194d-c4e0-42c8-aa3e-10a7ffab8fcd/{slug}"
     },
     {
       "sourceId": "5e7a9f473fa400688910",
@@ -2944,7 +3186,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/speisezeit-pommes-frites-2-5-kg-000000000000444704"
+      "proofRef": "https://www.aldi-sued.de/produkt/speisezeit-pommes-frites-2-5-kg-000000000000444704",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/77ce5e73-f749-4530-b460-cb7821b9bace/{slug}"
     },
     {
       "sourceId": "d0b9554b16de41cfa5b1",
@@ -2954,7 +3197,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/speisezeit-wellenschnittpommes-2-5-kg-000000000000444802"
+      "proofRef": "https://www.aldi-sued.de/produkt/speisezeit-wellenschnittpommes-2-5-kg-000000000000444802",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/ccf31893-6c81-4ab3-8c85-c3ab5b43ea70/{slug}"
     },
     {
       "sourceId": "52f973366c51953d0344",
@@ -2964,7 +3208,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/schaetze-des-orients-geroestete-paprika-580-ml-000000000000484048"
+      "proofRef": "https://www.aldi-sued.de/produkt/schaetze-des-orients-geroestete-paprika-580-ml-000000000000484048",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/e12d6b62-ef8d-4820-8cca-be0403127616/{slug}"
     },
     {
       "sourceId": "d70d308d0c631efd1221",
@@ -2974,7 +3219,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/landbeck-xxl-schinkenbockwurst-720-g-000000000000492686"
+      "proofRef": "https://www.aldi-sued.de/produkt/landbeck-xxl-schinkenbockwurst-720-g-000000000000492686",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/471b791a-31df-4964-9a02-914b3cbca688/{slug}"
     },
     {
       "sourceId": "f138125766e0892de01d",
@@ -2984,7 +3230,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/back-family-weizenmehl-type-405-2-kg-000000000000509135"
+      "proofRef": "https://www.aldi-sued.de/produkt/back-family-weizenmehl-type-405-2-kg-000000000000509135",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/8a3abee5-251d-4619-8ce8-8a0ea933479d/{slug}"
     },
     {
       "sourceId": "a5229fd4236371ca8f19",
@@ -2994,7 +3241,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/farmer-naturals-walnusskerne-natur-xxl-500-g-000000000000514330"
+      "proofRef": "https://www.aldi-sued.de/produkt/farmer-naturals-walnusskerne-natur-xxl-500-g-000000000000514330",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/918e0867-d9ee-4a39-97ae-73a2c53129b1/{slug}"
     },
     {
       "sourceId": "a836666d13885bb8e027",
@@ -3004,7 +3252,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/lotus-biscoff-keks-279-g-000000000000525048"
+      "proofRef": "https://www.aldi-sued.de/produkt/lotus-biscoff-keks-279-g-000000000000525048",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/d41a71ff-2f38-44c9-b4c4-d48f28cc3e11/{slug}"
     },
     {
       "sourceId": "049c823649800e988733",
@@ -3014,7 +3263,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/diamant-zimtstreuer-200-g-000000000000598618"
+      "proofRef": "https://www.aldi-sued.de/produkt/diamant-zimtstreuer-200-g-000000000000598618",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5f3c5f82-9fbe-426b-a82c-f7bf08d6ffa6/{slug}"
     },
     {
       "sourceId": "d403dbff59ab69f4db12",
@@ -3024,7 +3274,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/diamant-feinster-zucker-1-kg-000000000000598627"
+      "proofRef": "https://www.aldi-sued.de/produkt/diamant-feinster-zucker-1-kg-000000000000598627",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/66527ea0-0f51-45e5-9e23-6396d344ac15/{slug}"
     },
     {
       "sourceId": "00644f6157da2e09389c",
@@ -3034,7 +3285,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/diadem-zucker-2-kg-000000000000623342"
+      "proofRef": "https://www.aldi-sued.de/produkt/diadem-zucker-2-kg-000000000000623342",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/de8e6f6f-fbfb-4056-b271-ab9be5a27904/{slug}"
     },
     {
       "sourceId": "4d7da23aabf8bb269fb3",
@@ -3044,7 +3296,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/jack-s-farm-xxl-chicken-nuggets-1-5-kg-000000000000655465"
+      "proofRef": "https://www.aldi-sued.de/produkt/jack-s-farm-xxl-chicken-nuggets-1-5-kg-000000000000655465",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/e36f0ab7-25fd-4a1c-a0b1-ec7af647c593/{slug}"
     },
     {
       "sourceId": "0115034cdc18b9d12bf0",
@@ -3054,7 +3307,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/farmer-naturals-xxl-mandeln-natur-500-g-000000000000683682"
+      "proofRef": "https://www.aldi-sued.de/produkt/farmer-naturals-xxl-mandeln-natur-500-g-000000000000683682",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/12f282dc-38c1-446e-8564-bf1bc0993d69/{slug}"
     },
     {
       "sourceId": "a73c160ec20d5e77ea17",
@@ -3064,7 +3318,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/farmer-naturals-xxl-studentenfutter-500-g-000000000000695351"
+      "proofRef": "https://www.aldi-sued.de/produkt/farmer-naturals-xxl-studentenfutter-500-g-000000000000695351",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/37c58d7d-8f3e-4026-88e7-7d7ccfa25c2f/{slug}"
     },
     {
       "sourceId": "65aa6331fd60b3e55f16",
@@ -3074,7 +3329,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/arla-skyr-natur-1-kg-000000000000712606"
+      "proofRef": "https://www.aldi-sued.de/produkt/arla-skyr-natur-1-kg-000000000000712606",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/b45ec74b-f05a-4e7d-91c3-5f53ccb9e3b1/{slug}"
     },
     {
       "sourceId": "5f7e51bf2a52d5a9eee6",
@@ -3084,7 +3340,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/cucina-spaghetti-xxl-1-kg-000000000000727927"
+      "proofRef": "https://www.aldi-sued.de/produkt/cucina-spaghetti-xxl-1-kg-000000000000727927",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/0c1ff05e-3d55-46e7-a90b-f2fc344fe0e7/{slug}"
     },
     {
       "sourceId": "c67a96bcb56c0d5268be",
@@ -3094,7 +3351,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/weihenstephan-die-extrazarte-400-g-000000000000739013"
+      "proofRef": "https://www.aldi-sued.de/produkt/weihenstephan-die-extrazarte-400-g-000000000000739013",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/598d1448-f66e-4e3a-9ec5-eaf8109a1bf0/{slug}"
     },
     {
       "sourceId": "4e0766f05c10b2d9b489",
@@ -3104,7 +3362,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-cooking-protein-plant-500-g-000000000000758434"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-cooking-protein-plant-500-g-000000000000758434",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/f6da07a8-700f-43fc-926b-699731799b74/{slug}"
     },
     {
       "sourceId": "7a82126f32e9eea35c2a",
@@ -3114,7 +3373,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-glowmaxx-300-g-000000000000758435"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-glowmaxx-300-g-000000000000758435",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/1c6626d8-519b-49a1-b004-542902dd0079/{slug}"
     },
     {
       "sourceId": "737ff63b85c3a7038126",
@@ -3124,7 +3384,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/bon-ri-basmati-reis-xxl-2-kg-000000000000763567"
+      "proofRef": "https://www.aldi-sued.de/produkt/bon-ri-basmati-reis-xxl-2-kg-000000000000763567",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/12a0c785-7d72-49a4-ae0a-031147a39c46/{slug}"
     },
     {
       "sourceId": "a2d7bf10f1c5c2de1f57",
@@ -3134,7 +3395,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/cucina-maccheroni-xxl-1-kg-000000000000765927"
+      "proofRef": "https://www.aldi-sued.de/produkt/cucina-maccheroni-xxl-1-kg-000000000000765927",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/e34940a5-a0c7-4c17-bd46-5aae6dc31b02/{slug}"
     },
     {
       "sourceId": "737016be9aeafe894a19",
@@ -3144,7 +3406,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/mazzetti-condimento-bianco-500-ml-000000000000776094"
+      "proofRef": "https://www.aldi-sued.de/produkt/mazzetti-condimento-bianco-500-ml-000000000000776094",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/4c36bd7a-a085-45f4-b953-dd6c7182b517/{slug}"
     },
     {
       "sourceId": "38254fc0fd046ad027cb",
@@ -3154,7 +3417,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/mazzetti-bio-apfelessig-500-ml-000000000000776976"
+      "proofRef": "https://www.aldi-sued.de/produkt/mazzetti-bio-apfelessig-500-ml-000000000000776976",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/ff99d4d3-8583-4a9e-b2c2-d61b53385894/{slug}"
     },
     {
       "sourceId": "3930880849636d97ad72",
@@ -3164,7 +3428,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/mazzetti-insalata-salatwuerze-500-ml-000000000000776992"
+      "proofRef": "https://www.aldi-sued.de/produkt/mazzetti-insalata-salatwuerze-500-ml-000000000000776992",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/7ca76d2b-88d6-4dbf-967a-5ed2f5ccf257/{slug}"
     },
     {
       "sourceId": "2d2f7e7ab80b02addca0",
@@ -3174,7 +3439,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/mazzetti-balsamico-tino-tipico-500-ml-000000000000777001"
+      "proofRef": "https://www.aldi-sued.de/produkt/mazzetti-balsamico-tino-tipico-500-ml-000000000000777001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/e51b7b9e-7c49-4ff0-8db8-6d90bb70322b/{slug}"
     },
     {
       "sourceId": "d4b4856be7cf71abf23e",
@@ -3184,7 +3450,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/milram-kaesescheiben-260-g-sylter-000000000203996001"
+      "proofRef": "https://www.aldi-sued.de/produkt/milram-kaesescheiben-260-g-sylter-000000000203996001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/05b51db4-d9ea-458d-a6be-d8f0f3e3301e/{slug}"
     },
     {
       "sourceId": "18d7f64787f206dc0241",
@@ -3194,7 +3461,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/milram-kaesescheiben-260-g-mueritzer-000000000203996003"
+      "proofRef": "https://www.aldi-sued.de/produkt/milram-kaesescheiben-260-g-mueritzer-000000000203996003",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/ae820139-afaa-4110-8214-d816f4b383b5/{slug}"
     },
     {
       "sourceId": "21d9abc0c75be3c39c25",
@@ -3204,7 +3472,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/milram-kaesescheiben-260-g-benjamin-000000000203996007"
+      "proofRef": "https://www.aldi-sued.de/produkt/milram-kaesescheiben-260-g-benjamin-000000000203996007",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/29e269bf-c536-4819-9135-087413b6158c/{slug}"
     },
     {
       "sourceId": "3124837049b605894aa0",
@@ -3214,7 +3483,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/gut-drei-eichen-dauerwurst-aufschnitt-240-g-salami-000000000205198001"
+      "proofRef": "https://www.aldi-sued.de/produkt/gut-drei-eichen-dauerwurst-aufschnitt-240-g-salami-000000000205198001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/b62faf4a-f5ba-4f0b-9b0c-38025adb26d3/{slug}"
     },
     {
       "sourceId": "ce40e87d7f638c0996a1",
@@ -3224,7 +3494,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/dr-oetker-loeffelglueck-500-g-schokopudding-000000000205615001"
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-oetker-loeffelglueck-500-g-schokopudding-000000000205615001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5a13918d-2ed8-4670-abb7-a931b1fcf3d5/{slug}"
     },
     {
       "sourceId": "d01cc76daef7a0f63513",
@@ -3234,7 +3505,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/dr-oetker-loeffelglueck-500-g-vanillepudding-000000000205615002"
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-oetker-loeffelglueck-500-g-vanillepudding-000000000205615002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/887d14c1-c802-413b-8171-dc52d1041577/{slug}"
     },
     {
       "sourceId": "c0a4c0b6b2e928e1da6c",
@@ -3244,7 +3516,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/dr-oetker-loeffelglueck-500-g-griesspudding-000000000205615004"
+      "proofRef": "https://www.aldi-sued.de/produkt/dr-oetker-loeffelglueck-500-g-griesspudding-000000000205615004",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/8ce57a80-e8d0-42f7-9455-a353a19c29ce/{slug}"
     },
     {
       "sourceId": "20acba9b72b619a9cb4b",
@@ -3254,7 +3527,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/giovanni-rana-tortelloni-big-pack-500-g-ricotta-spinat-000000000210997003"
+      "proofRef": "https://www.aldi-sued.de/produkt/giovanni-rana-tortelloni-big-pack-500-g-ricotta-spinat-000000000210997003",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/09c80a84-134b-4a1a-a914-d4d5707e2b86/{slug}"
     },
     {
       "sourceId": "6cd470a64d1920dd3cbd",
@@ -3264,7 +3538,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/giovanni-rana-tortelloni-big-pack-500-g-funghi-porcini-000000000210997004"
+      "proofRef": "https://www.aldi-sued.de/produkt/giovanni-rana-tortelloni-big-pack-500-g-funghi-porcini-000000000210997004",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/bb9fadba-1e35-43f1-bc77-f2bc95430a36/{slug}"
     },
     {
       "sourceId": "d2050ee2593925aec2fc",
@@ -3274,7 +3549,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/giovanni-rana-tortelloni-big-pack-500-g-prosciutto-di-parma-000000000210997005"
+      "proofRef": "https://www.aldi-sued.de/produkt/giovanni-rana-tortelloni-big-pack-500-g-prosciutto-di-parma-000000000210997005",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/96007458-8759-4209-a429-909ffd9105f9/{slug}"
     },
     {
       "sourceId": "9ca2c223cdf52e923726",
@@ -3284,7 +3560,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/milkana-schale-190-g-sahne-000000000482334001"
+      "proofRef": "https://www.aldi-sued.de/produkt/milkana-schale-190-g-sahne-000000000482334001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/fe6d3716-e87e-4b52-8821-1323446ff756/{slug}"
     },
     {
       "sourceId": "0c84dff276356e62ba58",
@@ -3294,7 +3571,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/milkana-schale-190-g-kraeuter-000000000482334002"
+      "proofRef": "https://www.aldi-sued.de/produkt/milkana-schale-190-g-kraeuter-000000000482334002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/6c442286-7898-4abb-a00f-07ed3a99cd03/{slug}"
     },
     {
       "sourceId": "076c72b2df1ecfefe97c",
@@ -3304,7 +3582,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/milkana-schale-190-g-leicht-000000000482334003"
+      "proofRef": "https://www.aldi-sued.de/produkt/milkana-schale-190-g-leicht-000000000482334003",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/201c0436-381c-4632-826e-06c27296ca47/{slug}"
     },
     {
       "sourceId": "25796682b7bc0d2c4925",
@@ -3314,7 +3593,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/milkana-schale-190-g-gouda-000000000482334004"
+      "proofRef": "https://www.aldi-sued.de/produkt/milkana-schale-190-g-gouda-000000000482334004",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/1d07e676-2161-48ee-9cd3-3f085f4d173c/{slug}"
     },
     {
       "sourceId": "39682bef0c5da9b7d354",
@@ -3324,7 +3604,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/milkana-schale-190-g-emmentaler-000000000482334007"
+      "proofRef": "https://www.aldi-sued.de/produkt/milkana-schale-190-g-emmentaler-000000000482334007",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/119d3767-892b-40db-9996-a1477f980f14/{slug}"
     },
     {
       "sourceId": "1a92bbb058e45cba9c76",
@@ -3334,7 +3615,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/landbeck-salametti-xxl-200-g-klassik-000000000486152001"
+      "proofRef": "https://www.aldi-sued.de/produkt/landbeck-salametti-xxl-200-g-klassik-000000000486152001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/c4175f42-5737-464f-8e81-4d82ebf437e7/{slug}"
     },
     {
       "sourceId": "a20ce11ce7e380adbe2d",
@@ -3344,7 +3626,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/landbeck-salametti-xxl-200-g-paprika-000000000486152002"
+      "proofRef": "https://www.aldi-sued.de/produkt/landbeck-salametti-xxl-200-g-paprika-000000000486152002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/9655222c-117d-4294-8a57-c4e6d544fdba/{slug}"
     },
     {
       "sourceId": "f30b49de19ae5e32afc6",
@@ -3354,7 +3637,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/landbeck-salametti-xxl-200-g-schwarzer-pfeffer-000000000486152003"
+      "proofRef": "https://www.aldi-sued.de/produkt/landbeck-salametti-xxl-200-g-schwarzer-pfeffer-000000000486152003",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/8a95bceb-d95b-48e6-905d-e430d630bc44/{slug}"
     },
     {
       "sourceId": "2ab50ef929cf0fe0b2be",
@@ -3364,7 +3648,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/arla-finello-225-g-gratinkaese-000000000542642002"
+      "proofRef": "https://www.aldi-sued.de/produkt/arla-finello-225-g-gratinkaese-000000000542642002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/4e3044e2-6a13-447d-9950-e835cbad6318/{slug}"
     },
     {
       "sourceId": "a2d605a692ae7e0d5923",
@@ -3374,7 +3659,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-45-g-heisse-liebe-000000000569178001"
+      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-45-g-heisse-liebe-000000000569178001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/edc6cdbf-db08-43e2-929d-50302a76996e/{slug}"
     },
     {
       "sourceId": "ab9b2fa6f8e02b02acbf",
@@ -3384,7 +3670,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-45-g-frecher-flirt-000000000569178002"
+      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-45-g-frecher-flirt-000000000569178002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/7737e4b6-11f0-475c-ba41-98f4bb69d58f/{slug}"
     },
     {
       "sourceId": "5527b5984aede6fac6b5",
@@ -3394,7 +3681,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-45-g-herzkirsche-000000000569178003"
+      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-45-g-herzkirsche-000000000569178003",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/f4012b6c-f38e-43aa-ba73-f8d74fcbce89/{slug}"
     },
     {
       "sourceId": "9ace5ea4a4a3587e02c7",
@@ -3404,7 +3692,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-45-g-sweet-kiss-000000000569178004"
+      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-45-g-sweet-kiss-000000000569178004",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/0a16daeb-0dc7-4779-9da1-7a9e46564855/{slug}"
     },
     {
       "sourceId": "b46386be6d75de9fd3ad",
@@ -3414,7 +3703,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-45-g-kleine-suende-000000000569178005"
+      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-45-g-kleine-suende-000000000569178005",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5abdf321-eb29-4063-8df6-5e9464b5e65a/{slug}"
     },
     {
       "sourceId": "5435dfdf8e33cfacd0fb",
@@ -3424,7 +3714,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-45-g-heisser-hugo-000000000569178006"
+      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-45-g-heisser-hugo-000000000569178006",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/ee1f4c23-df1a-47d5-9157-bb1501a2592f/{slug}"
     },
     {
       "sourceId": "2f2b05684712a8b0c22e",
@@ -3434,7 +3725,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-41-g-freches-bienchen-000000000569178007"
+      "proofRef": "https://www.aldi-sued.de/produkt/teekanne-verfuehrerische-fruechte-41-g-freches-bienchen-000000000569178007",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/acbd1771-aa0b-40c6-a586-eebc4ca17a97/{slug}"
     },
     {
       "sourceId": "832fd5c7816df9d6cbcc",
@@ -3444,7 +3736,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/aoste-aoste-stickado-classique-70g-000000000583783001"
+      "proofRef": "https://www.aldi-sued.de/produkt/aoste-aoste-stickado-classique-70g-000000000583783001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/50368a67-37fa-402d-8fab-fa411c502cb4/{slug}"
     },
     {
       "sourceId": "277c6543ac9c6c3cd0ea",
@@ -3454,7 +3747,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/aoste-aoste-stickado-pikanto-70g-000000000583783002"
+      "proofRef": "https://www.aldi-sued.de/produkt/aoste-aoste-stickado-pikanto-70g-000000000583783002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/3f2ea6fa-faa3-460d-878b-d25f91c51df2/{slug}"
     },
     {
       "sourceId": "117c7d18b837d1651f77",
@@ -3464,7 +3758,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/aoste-aoste-stickado-walnuss-70g-000000000583783003"
+      "proofRef": "https://www.aldi-sued.de/produkt/aoste-aoste-stickado-walnuss-70g-000000000583783003",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/c32e942d-f2b2-4db8-8854-803a2bebb679/{slug}"
     },
     {
       "sourceId": "db567e2622e68e4d25f6",
@@ -3474,7 +3769,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/aoste-stickado-60-g-haehnchen-000000000583783004"
+      "proofRef": "https://www.aldi-sued.de/produkt/aoste-stickado-60-g-haehnchen-000000000583783004",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/9623611b-3f28-4f36-8253-d559581db2e2/{slug}"
     },
     {
       "sourceId": "2e7c5dbe0771504ab482",
@@ -3484,7 +3780,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/aoste-aoste-stickado-high-protein-60g-000000000583783006"
+      "proofRef": "https://www.aldi-sued.de/produkt/aoste-aoste-stickado-high-protein-60g-000000000583783006",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/0ea6e173-fbbf-4349-be1b-cccf654e828b/{slug}"
     },
     {
       "sourceId": "7a265ba5f1117c8d5a27",
@@ -3494,7 +3791,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/milka-grosstafeln-300-g-erdbeer-kaesekuche-000000000669217003"
+      "proofRef": "https://www.aldi-sued.de/produkt/milka-grosstafeln-300-g-erdbeer-kaesekuche-000000000669217003",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/b0db7426-60bf-4340-bb87-94d488c61eaa/{slug}"
     },
     {
       "sourceId": "ca4341c5702797bba7b8",
@@ -3504,7 +3802,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/milka-grosstafeln-300-g-oreo-000000000669217004"
+      "proofRef": "https://www.aldi-sued.de/produkt/milka-grosstafeln-300-g-oreo-000000000669217004",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/09d730fc-30a9-42f9-904f-ff33c9235f99/{slug}"
     },
     {
       "sourceId": "43c0c91f4ec49c875b8b",
@@ -3514,7 +3813,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/milka-grosstafeln-300-g-toffee-nuss-000000000669217006"
+      "proofRef": "https://www.aldi-sued.de/produkt/milka-grosstafeln-300-g-toffee-nuss-000000000669217006",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/0b597a44-5147-4009-901e-f91c85e1fd31/{slug}"
     },
     {
       "sourceId": "0747377a8685b4c6c6d8",
@@ -3524,7 +3824,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-proteccino-plant-pulver-500-g-dark-cookie-crumble-000000000700345003"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-proteccino-plant-pulver-500-g-dark-cookie-crumble-000000000700345003",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/c9a12876-e7fa-4cc1-b289-46d9c8798925/{slug}"
     },
     {
       "sourceId": "a4f363d856d8f91cbb9e",
@@ -3534,7 +3835,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/yumyum-instant-nudeln-multipack-300-g-5er-pack-huhn-000000000708954001"
+      "proofRef": "https://www.aldi-sued.de/produkt/yumyum-instant-nudeln-multipack-300-g-5er-pack-huhn-000000000708954001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/f40eb11f-ad79-4f28-b85f-a9762bc1c414/{slug}"
     },
     {
       "sourceId": "785d26463a4e6edd4c04",
@@ -3544,7 +3846,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/yumyum-instant-nudeln-multipack-300-g-5er-pack-ente-000000000708954002"
+      "proofRef": "https://www.aldi-sued.de/produkt/yumyum-instant-nudeln-multipack-300-g-5er-pack-ente-000000000708954002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/51848d18-5f1d-4941-a0db-4f019af17e4f/{slug}"
     },
     {
       "sourceId": "1aa9dcea4fb26eaa794e",
@@ -3554,7 +3857,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/yumyum-instant-nudeln-multipack-300-g-5er-pack-gemuese-000000000708954003"
+      "proofRef": "https://www.aldi-sued.de/produkt/yumyum-instant-nudeln-multipack-300-g-5er-pack-gemuese-000000000708954003",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/809038e8-e0f9-4760-a63f-aebda61fed40/{slug}"
     },
     {
       "sourceId": "8f00bf37fb3c82ddc304",
@@ -3564,7 +3868,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-light-sauce-285-ml-smokey-bbq-000000000759374001"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-light-sauce-285-ml-smokey-bbq-000000000759374001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/62d4003b-ddc9-42d7-a0f8-182dca88db73/{slug}"
     },
     {
       "sourceId": "e9ec2e6781d09dcd2f7d",
@@ -3574,7 +3879,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-light-sauce-285-ml-burger-sauce-000000000759374002"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-light-sauce-285-ml-burger-sauce-000000000759374002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/cabe2d5f-7a9b-46da-909c-241f7f8f081f/{slug}"
     },
     {
       "sourceId": "9f14004f20a4e6820ef9",
@@ -3584,7 +3890,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-light-sauce-285-ml-honey-mustard-000000000759374003"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-light-sauce-285-ml-honey-mustard-000000000759374003",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/ef9e0eb8-3f8a-4840-b4c0-96c0e46a2944/{slug}"
     },
     {
       "sourceId": "19f3d26a62e8c9f7d338",
@@ -3594,7 +3901,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-cooking-oil-spray-200-ml-neutral-000000000759394001"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-cooking-oil-spray-200-ml-neutral-000000000759394001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/d07870d0-e619-47da-abd3-2451846a008f/{slug}"
     },
     {
       "sourceId": "3680c13cd997e02d587e",
@@ -3604,7 +3912,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-cooking-oil-spray-200-ml-butter-flavour-000000000759394002"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-cooking-oil-spray-200-ml-butter-flavour-000000000759394002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/7b7b1677-06a7-4cda-af88-1c3ba4a538eb/{slug}"
     },
     {
       "sourceId": "ed8c4b8ef4c2c10fcce9",
@@ -3614,7 +3923,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-protein-porridge-60-g-milchreis-000000000759440001"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-protein-porridge-60-g-milchreis-000000000759440001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/2d9d3ec5-51fc-409e-a1c6-57918411f36a/{slug}"
     },
     {
       "sourceId": "7998936ca67845a8419e",
@@ -3624,7 +3934,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-protein-porridge-60-g-griesspudding-000000000759440002"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-protein-porridge-60-g-griesspudding-000000000759440002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/e8bf51d4-3054-44fa-b3e7-ff7b776cb578/{slug}"
     },
     {
       "sourceId": "c5c5193aef0d2b953fa8",
@@ -3634,7 +3945,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-protein-porridge-60-g-neutral-000000000759440003"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-protein-porridge-60-g-neutral-000000000759440003",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/e68dcdc0-171d-40bd-9c7e-59ead0284432/{slug}"
     },
     {
       "sourceId": "17eebca1dc050b275875",
@@ -3644,7 +3956,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-chunked-150-g-vanille-000000000759480001"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-chunked-150-g-vanille-000000000759480001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/3787d8e7-6225-40c2-8dc2-a6b3ad4afeb7/{slug}"
     },
     {
       "sourceId": "66d1bef2c68375f739f3",
@@ -3654,7 +3967,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-chunked-150-g-butterkeks-000000000759480002"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-chunked-150-g-butterkeks-000000000759480002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/6afe1033-1541-4ac9-bb72-45604c79130c/{slug}"
     },
     {
       "sourceId": "e5f86f3cbb19e64534b3",
@@ -3664,7 +3978,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-chunked-150-g-milchreis-zimt-000000000759480003"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-chunked-150-g-milchreis-zimt-000000000759480003",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/7227be0e-f16d-42a0-8257-112304a5e529/{slug}"
     },
     {
       "sourceId": "cae72090cf5449f27843",
@@ -3674,7 +3989,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-squeebarista-65-ml-salted-caramel-000000000759556001"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-squeebarista-65-ml-salted-caramel-000000000759556001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5c9645ad-6e44-4c1b-bca5-89a8d797d6d3/{slug}"
     },
     {
       "sourceId": "2c0fc42280131171269c",
@@ -3684,7 +4000,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-squeebarista-65-ml-vanilla-dream-000000000759556002"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-squeebarista-65-ml-vanilla-dream-000000000759556002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/00701e53-7b91-444d-8677-d0ad91168daf/{slug}"
     },
     {
       "sourceId": "3ae16deb66ed14f6c612",
@@ -3694,7 +4011,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-squeebarista-65-ml-hazelnut-bliss-000000000759556003"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-squeebarista-65-ml-hazelnut-bliss-000000000759556003",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/166e071b-1773-4d93-bb4c-698e11381d5a/{slug}"
     },
     {
       "sourceId": "b5d7ba3a0f956893508a",
@@ -3704,7 +4022,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-squeebarista-65-ml-pumpkin-spice-000000000759556004"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-squeebarista-65-ml-pumpkin-spice-000000000759556004",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/8c84827f-c0ad-4212-8aaa-f217266d8e8e/{slug}"
     },
     {
       "sourceId": "536d8121b8efda01a8ca",
@@ -3714,7 +4033,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-squeebarista-65-ml-dark-chocolate-000000000759556005"
+      "proofRef": "https://www.aldi-sued.de/produkt/ironmaxx-squeebarista-65-ml-dark-chocolate-000000000759556005",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/4089dc32-801d-4aca-a575-8608654484a7/{slug}"
     },
     {
       "sourceId": "25d55d24beb1b1d74e3a",
@@ -3724,7 +4044,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/rama-cremefine-haltbar-500-ml-24-000000000778275001"
+      "proofRef": "https://www.aldi-sued.de/produkt/rama-cremefine-haltbar-500-ml-24-000000000778275001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/6a15161e-f3af-4b47-866d-1bd87119e618/{slug}"
     },
     {
       "sourceId": "40ba4f8e492ffbdd1068",
@@ -3734,7 +4055,8 @@
       "validFrom": "2026-10-02",
       "validUntil": "2026-10-03",
       "source": "retailerWebsite",
-      "proofRef": "https://www.aldi-sued.de/produkt/rama-cremefine-haltbar-500-ml-7-000000000778275002"
+      "proofRef": "https://www.aldi-sued.de/produkt/rama-cremefine-haltbar-500-ml-7-000000000778275002",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/325824b8-e228-4893-b5f0-019cd5ad60ae/{slug}"
     },
     {
       "sourceId": "54f4d17d832322da32fa",
