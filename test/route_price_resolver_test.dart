@@ -102,6 +102,21 @@ void main() {
     expect(quote.isEstimated, isTrue);
   });
 
+  test('does not route an unresolved generic custom shopping request', () {
+    const generic = Product(
+      id: 'custom_kaese',
+      name: 'Käse',
+      unit: 'Artikel',
+      group: 'kaese',
+    );
+    final quote = RoutePriceResolver(const []).quote(
+      store,
+      ListItem(product: generic),
+    );
+
+    expect(quote, isNull);
+  });
+
   test('uses the median of observed prices for an unknown store', () {
     const missingStore = Store(
       name: 'Unbekannt',

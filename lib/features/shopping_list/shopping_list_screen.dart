@@ -41,6 +41,7 @@ class ShoppingListScreen extends StatefulWidget {
     this.onCreateShoppingList,
     required this.onAdd,
     required this.onChangeQuantity,
+    this.onSelectFamily,
     this.onUpdateItemNote,
     this.onUpdateItemChecked,
     required this.preferredProductByGroup,
@@ -68,6 +69,7 @@ class ShoppingListScreen extends StatefulWidget {
   final Future<void> Function(String name)? onCreateShoppingList;
   final ValueChanged<Product> onAdd;
   final void Function(String productId, int delta) onChangeQuantity;
+  final ValueChanged<ListItem>? onSelectFamily;
   final void Function(String productId, String note)? onUpdateItemNote;
   final void Function(String productId, bool checked)? onUpdateItemChecked;
   final Map<String, String> preferredProductByGroup;
@@ -460,6 +462,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     priceObservations: widget.priceObservations,
                     receiptPriceStats: receiptPriceStats,
                     onToggle: toggleChecked,
+                    onSelectFamily: widget.onSelectFamily,
                     onChangeQuantity: widget.onChangeQuantity,
                     onEditDetails: editItemDetails,
                     tileView: tileView,

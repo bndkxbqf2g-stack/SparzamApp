@@ -4,6 +4,7 @@ import '../../models/offer.dart';
 import '../../models/store.dart';
 import '../../models/product.dart';
 import '../offers/effective_price.dart';
+import '../shopping_list/shopping_intent.dart';
 import 'market_price_selection.dart';
 
 class RoutePriceQuote {
@@ -46,6 +47,7 @@ class RoutePriceResolver {
   final Map<String, List<double>> observedProductPrices;
 
   RoutePriceQuote? quote(Store store, ListItem item) {
+    if (isGenericShoppingIntent(item.product)) return null;
     final offer = _bestOffer(store, item.product, item.quantity);
     final customPrice = marketPrices['${store.name}|${item.product.id}'];
     final observed = customPrice?.price ??

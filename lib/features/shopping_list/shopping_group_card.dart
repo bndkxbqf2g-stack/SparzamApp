@@ -7,6 +7,7 @@ import '../../models/product.dart';
 import '../../models/receipt_price_stat.dart';
 import 'shopping_price_badge.dart';
 import 'receipt_family_price_hint.dart';
+import '../catalog/product_identity.dart';
 
 class ShoppingGroupCard extends StatelessWidget {
   const ShoppingGroupCard({
@@ -20,6 +21,7 @@ class ShoppingGroupCard extends StatelessWidget {
     required this.priceObservations,
     this.receiptPriceStats = const <ReceiptPriceStat>[],
     required this.onToggle,
+    this.onSelectFamily,
     required this.onChangeQuantity,
     required this.onEditDetails,
     this.tileView = false,
@@ -35,6 +37,7 @@ class ShoppingGroupCard extends StatelessWidget {
   final List<MarketPrice> priceObservations;
   final List<ReceiptPriceStat> receiptPriceStats;
   final ValueChanged<Product> onToggle;
+  final ValueChanged<ListItem>? onSelectFamily;
   final void Function(String productId, int delta) onChangeQuantity;
   final ValueChanged<ListItem> onEditDetails;
   final bool tileView;
@@ -75,6 +78,7 @@ class ShoppingGroupCard extends StatelessWidget {
                           onOpenOffer: onOpenOffer,
                           checked: checkedProductIds.contains(item.product.id),
                           onToggle: onToggle,
+                          onSelectFamily: onSelectFamily,
                           onChangeQuantity: onChangeQuantity,
                           onEditDetails: onEditDetails,
                         ),
@@ -100,6 +104,7 @@ class ShoppingGroupCard extends StatelessWidget {
                     priceObservations: priceObservations,
                     receiptPriceStats: receiptPriceStats,
                     onToggle: onToggle,
+                    onSelectFamily: onSelectFamily,
                     onChangeQuantity: onChangeQuantity,
                     onEditDetails: onEditDetails,
                     onOpenOffer: onOpenOffer,
@@ -125,6 +130,7 @@ class _ShoppingItemCard extends StatelessWidget {
     required this.enabledStoreNames,
     required this.onOpenOffer,
     required this.onToggle,
+    this.onSelectFamily,
     required this.onChangeQuantity,
     required this.onEditDetails,
   });
@@ -138,6 +144,7 @@ class _ShoppingItemCard extends StatelessWidget {
   final List<String> enabledStoreNames;
   final ValueChanged<Offer> onOpenOffer;
   final ValueChanged<Product> onToggle;
+  final ValueChanged<ListItem>? onSelectFamily;
   final void Function(String productId, int delta) onChangeQuantity;
   final ValueChanged<ListItem> onEditDetails;
 
@@ -145,7 +152,7 @@ class _ShoppingItemCard extends StatelessWidget {
   Widget build(BuildContext context) => Card(
         clipBehavior: Clip.antiAlias,
         child: InkWell(
-          onTap: () => onToggle(item.product),
+          onTap: () => _tapItem(item, onToggle, onSelectFamily),
           onLongPress: () => onEditDetails(item),
           child: Padding(
             padding: const EdgeInsets.all(10),
@@ -227,6 +234,7 @@ class _ShoppingItemTile extends StatelessWidget {
     required this.priceObservations,
     required this.receiptPriceStats,
     required this.onToggle,
+    this.onSelectFamily,
     required this.onChangeQuantity,
     required this.onEditDetails,
     required this.onOpenOffer,
@@ -240,6 +248,7 @@ class _ShoppingItemTile extends StatelessWidget {
   final List<MarketPrice> priceObservations;
   final List<ReceiptPriceStat> receiptPriceStats;
   final ValueChanged<Product> onToggle;
+  final ValueChanged<ListItem>? onSelectFamily;
   final void Function(String productId, int delta) onChangeQuantity;
   final ValueChanged<ListItem> onEditDetails;
   final ValueChanged<Offer> onOpenOffer;
@@ -247,7 +256,7 @@ class _ShoppingItemTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () => onToggle(item.product),
+      onTap: () => _tapItem(item, onToggle, onSelectFamily),
       onLongPress: () => onEditDetails(item),
       leading: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
@@ -366,3 +375,17 @@ String shoppingGroupLabel(String group) => switch (group) {
       'nonfood' => 'Non-Food',
       _ => 'Weitere Produkte',
     };
+
+void _tapItem(
+  ListItem item,
+  ValueChanged<Product> onToggle,
+  ValueChanged<ListItem>? onSelectFamily,
+) {
+  final isGenericCustom = item.product.id.startsWith('custom_') &&
+      identifyProduct(item.product.name).isGeneric;
+  if (isGenericCustom && onSelectFamily != null) {
+    onSelectFamily(item);
+  } else {
+    onToggle(item.product);
+  }
+}

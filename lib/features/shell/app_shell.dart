@@ -51,6 +51,8 @@ import '../scanner/scanner_screen.dart';
 import '../receipt/receipt_observation_migration.dart';
 import '../shopping_list/replenishment_analyzer.dart';
 import '../shopping_list/receipt_family_market_prices.dart';
+import '../shopping_list/shopping_candidate_selector.dart';
+import '../receipt/receipt_price_statistics.dart';
 import '../shopping_list/planning_market_prices.dart' as planning_prices;
 import '../shopping_list/shopping_list_updates.dart';
 import 'shell_catalog.dart';
@@ -473,6 +475,52 @@ class _AppShellState extends State<AppShell> {
       category: 'Einkaufsliste',
       message: 'Artikel hinzugefügt.',
       details: product.name,
+    );
+  }
+
+  Future<void> selectShoppingFamily(ListItem item) async {
+    final selected = await showShoppingCandidateSelector(
+      context: context,
+      request: item.product.name,
+      catalogProducts: catalogProducts,
+      offers: offers,
+      marketPrices: [
+        ...activeMarketPrices,
+        ...historicalMarketPrices,
+      ],
+      receiptPriceStats: buildReceiptPriceStats(
+        receiptObservations,
+        maxAgeDays: 60,
+      ),
+      enabledStores: mobility.enabledStoreNames,
+    );
+    if (!mounted || selected == null || selected.isEmpty) return;
+    final index = shoppingList.indexWhere(
+      (candidate) => candidate.product.id == item.product.id,
+    );
+    if (index < 0) return;
+    setState(() {
+      shoppingList.removeAt(index);
+      shoppingList.insertAll(
+        index,
+        selected.map(
+          (product) => ListItem(
+            product: product,
+            quantity: item.quantity,
+            note: 'Auswahl aus „${item.product.name}“',
+          ),
+        ),
+      );
+    });
+    persistShoppingListWithFeedback();
+    for (final product in selected) {
+      widget.shoppingListStore.saveKnownItem(product);
+      ensureCatalogProduct(product);
+    }
+    widget.diagnosticLogService.record(
+      category: 'Einkaufsliste',
+      message: 'Generische Anfrage konkretisiert.',
+      details: '${item.product.name}: ${selected.map((product) => product.name).join(', ')}',
     );
   }
 
@@ -948,6 +996,7 @@ class _AppShellState extends State<AppShell> {
       onCreateShoppingList: createShoppingList,
       onAddProduct: addProduct,
       onChangeQuantity: changeQuantity,
+      onSelectFamily: selectShoppingFamily,
       onUpdateItemNote: updateItemNote,
       onUpdateItemChecked: updateItemChecked,
       preferredProductByGroup: preferredProductByGroup,
