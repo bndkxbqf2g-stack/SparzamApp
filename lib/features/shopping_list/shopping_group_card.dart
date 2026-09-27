@@ -189,7 +189,7 @@ class _ShoppingItemCard extends StatelessWidget {
                   enabledStores: enabledStoreNames,
                   onOpenOffer: onOpenOffer,
                 ),
-                const Spacer(),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [

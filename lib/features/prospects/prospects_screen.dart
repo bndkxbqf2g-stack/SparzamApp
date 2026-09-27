@@ -385,7 +385,8 @@ class _ProspectProductCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
+            SizedBox(
+              height: 130,
               child: Stack(
                 children: [
                   Positioned.fill(
