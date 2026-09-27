@@ -93,6 +93,7 @@ void main() {
     expect(find.textContaining('Offiziellen Prospekt öffnen'), findsOneWidget);
     expect(find.text('2,39 €'), findsOneWidget);
     expect(find.text('2,99 €'), findsOneWidget);
+    expect(find.text('Weitere Angebote'), findsOneWidget);
 
     await tester.drag(
       find.byType(Scrollable).last,

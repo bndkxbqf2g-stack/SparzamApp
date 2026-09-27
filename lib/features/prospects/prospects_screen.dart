@@ -198,6 +198,13 @@ class _ProspectViewer extends StatelessWidget {
     final items = records
         .where((record) => record.storeName == issue.storeName)
         .toList(growable: false);
+    final groupedItems = <String, List<OfferImportRecord>>{};
+    for (final record in items) {
+      groupedItems.putIfAbsent(_prospectCategory(record.productLabel), () => [])
+          .add(record);
+    }
+    final categories = groupedItems.keys.toList()
+      ..sort((a, b) => _prospectCategoryOrder(a).compareTo(_prospectCategoryOrder(b)));
 
     return Scaffold(
       appBar: AppBar(title: Text(issue.storeName)),
@@ -272,45 +279,93 @@ class _ProspectViewer extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.w700),
               ),
             ),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: items.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 12,
-                childAspectRatio: 0.68,
+            for (final category in categories) ...[
+              Padding(
+                padding: const EdgeInsets.only(top: 12, bottom: 8),
+                child: Text(
+                  category,
+                  key: ValueKey('prospect-category-$category'),
+                  style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
+                ),
               ),
-              itemBuilder: (context, index) {
-                final record = items[index];
-                final result = resolveOfferImport(record, catalogProducts);
-                final product = result.product ??
-                    Product(
-                      id: '${record.storeName}|${record.sourceId}',
-                      name: record.productLabel,
-                      unit: 'Stück',
-                      group: 'Sonstiges',
-                    );
-                return _ProspectProductCard(
-                  record: record,
-                  onTap: onAddProduct == null
-                      ? null
-                      : () => onAddProduct!(product),
-                );
-              },
-            ),
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: groupedItems[category]!.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 0.68,
+                ),
+                itemBuilder: (context, index) {
+                  final record = groupedItems[category]![index];
+                  final result = resolveOfferImport(record, catalogProducts);
+                  final product = result.product ?? Product(
+                    id: '${record.storeName}|${record.sourceId}',
+                    name: record.productLabel,
+                    unit: 'Stück',
+                    group: category,
+                  );
+                  return _ProspectProductCard(
+                    record: record,
+                    category: category,
+                    onTap: onAddProduct == null ? null : () => onAddProduct!(product),
+                  );
+                },
+              ),
+            ],
           ],        ],
       ),
     );
   }
 }
 
+const _prospectCategoryRanks = <String, int>{
+  'Obst & Gemüse': 0,
+  'Milchprodukte': 1,
+  'Fleisch & Fisch': 2,
+  'Backwaren': 3,
+  'Getränke': 4,
+  'Vorrat & Konserven': 5,
+  'Tiefkühl': 6,
+  'Haushalt': 20,
+  'Drogerie': 21,
+  'Non-Food': 30,
+  'Weitere Angebote': 40,
+};
+
+int _prospectCategoryOrder(String category) =>
+    _prospectCategoryRanks[category] ?? 50;
+
+String _prospectCategory(String label) {
+  final value = label.toLowerCase();
+  if (RegExp(r'gemüse|salat|tomat|gurk|kartoff|obst|apfel|banane|traube').hasMatch(value)) {
+    return 'Obst & Gemüse';
+  }
+  if (RegExp(r'milch|joghurt|käse|schmand|sahne|quark|butter').hasMatch(value)) {
+    return 'Milchprodukte';
+  }
+  if (RegExp(r'hack|fleisch|wurst|schinken|fisch|lachs|hähnchen').hasMatch(value)) {
+    return 'Fleisch & Fisch';
+  }
+  if (RegExp(r'brot|bröt|toast|backwaren|croissant').hasMatch(value)) return 'Backwaren';
+  if (RegExp(r'getränk|wasser|saft|cola|bier|wein|kaffee|tee').hasMatch(value)) return 'Getränke';
+  if (RegExp(r'tiefkühl|tk |pizza|eis ').hasMatch(value)) return 'Tiefkühl';
+  if (RegExp(r'reis|nudel|mehl|zucker|dose|konserve|sauce|öl|gewürz').hasMatch(value)) {
+    return 'Vorrat & Konserven';
+  }
+  if (RegExp(r'seife|shampoo|zahnpasta|deo|waschmittel|reiniger').hasMatch(value)) return 'Drogerie';
+  if (RegExp(r'küche|haushalt|müll|papier|lampe|werkzeug|akku|bastel|raum-weiß').hasMatch(value)) return 'Haushalt';
+  if (RegExp(r'non-food|bekleidung|schuh|spielzeug|dekoration').hasMatch(value)) return 'Non-Food';
+  return 'Weitere Angebote';
+}
 
 class _ProspectProductCard extends StatelessWidget {
-  const _ProspectProductCard({required this.record, required this.onTap});
+  const _ProspectProductCard({required this.record, required this.category, required this.onTap});
 
   final OfferImportRecord record;
+  final String category;
   final VoidCallback? onTap;
 
   @override
@@ -334,12 +389,10 @@ class _ProspectProductCard extends StatelessWidget {
                                 WebHtmlElementStrategy.prefer,
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) =>
-                                const Center(
-                              child: Icon(Icons.local_offer_outlined, size: 42),
-                            ),
+                                Center(child: Icon(_categoryIcon(category), size: 42)),
                           )
-                        : const Center(
-                            child: Icon(Icons.local_offer_outlined, size: 42),
+                        : Center(
+                            child: Icon(_categoryIcon(category), size: 42),
                           ),
                   ),
                   Positioned(
@@ -394,5 +447,18 @@ class _ProspectProductCard extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+IconData _categoryIcon(String category) {
+  switch (category) {
+    case 'Obst & Gemüse': return Icons.eco_outlined;
+    case 'Milchprodukte': return Icons.local_drink_outlined;
+    case 'Fleisch & Fisch': return Icons.restaurant_outlined;
+    case 'Getränke': return Icons.local_bar_outlined;
+    case 'Haushalt': return Icons.home_outlined;
+    case 'Drogerie': return Icons.clean_hands_outlined;
+    case 'Non-Food': return Icons.shopping_bag_outlined;
+    default: return Icons.local_offer_outlined;
   }
 }
