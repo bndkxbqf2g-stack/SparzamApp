@@ -198,7 +198,7 @@ class _OffersScreenState extends State<OffersScreen> {
   }
 }
 
-class _ProspectOffers extends StatelessWidget {
+class _ProspectOffers extends StatefulWidget {
   const _ProspectOffers({
     required this.records,
     required this.query,
@@ -212,10 +212,18 @@ class _ProspectOffers extends StatelessWidget {
   final ValueChanged<Product>? onAddToShoppingList;
 
   @override
+  State<_ProspectOffers> createState() => _ProspectOffersState();
+}
+
+class _ProspectOffersState extends State<_ProspectOffers> {
+  final expandedStores = <String>{};
+  final expandedCategories = <String>{};
+
+  @override
   Widget build(BuildContext context) {
-    final normalizedQuery = query.trim().toLowerCase();
+    final normalizedQuery = widget.query.trim().toLowerCase();
     final byStore = <String, List<OfferImportRecord>>{};
-    for (final record in records) {
+    for (final record in widget.records) {
       if (record.validUntil.isBefore(DateTime.now())) continue;
       final searchable = '${record.storeName} ${record.productLabel}'.toLowerCase();
       if (normalizedQuery.isNotEmpty && !searchable.contains(normalizedQuery)) continue;
@@ -227,34 +235,53 @@ class _ProspectOffers extends StatelessWidget {
     }
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (final entry in byStore.entries) ...[
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Text(entry.key,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    )),
+        for (final entry in byStore.entries)
+          ExpansionTile(
+            key: PageStorageKey('prospect-store-${entry.key}'),
+            initiallyExpanded: false,
+            title: Text(entry.key,
+                style: const TextStyle(fontWeight: FontWeight.w800)),
+            subtitle: Text('${entry.value.length} Angebote'),
+            onExpansionChanged: (expanded) => setState(() {
+              if (expanded) {
+                expandedStores.add(entry.key);
+              } else {
+                expandedStores.remove(entry.key);
+              }
+            }),
+            children: expandedStores.contains(entry.key)
+                ? [
+                    for (final category in _grouped(entry.value).entries)
+                      ExpansionTile(
+                        key: PageStorageKey(
+                            'prospect-category-${entry.key}-${category.key}'),
+                        title: Text(category.key),
+                        subtitle: Text('${category.value.length} Artikel'),
+                        onExpansionChanged: (expanded) => setState(() {
+                          final key = '${entry.key}|${category.key}';
+                          if (expanded) {
+                            expandedCategories.add(key);
+                          } else {
+                            expandedCategories.remove(key);
+                          }
+                        }),
+                        children: expandedCategories
+                                .contains('${entry.key}|${category.key}')
+                            ? [
+                                for (final record in category.value)
+                                  _ProspectOfferCard(
+                                    record: record,
+                                    catalogProducts: widget.catalogProducts,
+                                    onAddToShoppingList:
+                                        widget.onAddToShoppingList,
+                                  ),
+                              ]
+                            : const [],
+                      ),
+                  ]
+                : const [],
           ),
-          ..._grouped(entry.value).entries.expand((category) => [
-                Padding(
-                  padding: const EdgeInsets.only(top: 6, bottom: 6),
-                  child: Text(category.key,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          )),
-                ),
-                for (final record in category.value)
-                  _ProspectOfferCard(
-                    record: record,
-                    catalogProducts: catalogProducts,
-                    onAddToShoppingList: onAddToShoppingList,
-                  ),
-                const SizedBox(height: 8),
-              ]),
-          const SizedBox(height: 8),
-        ],
       ],
     );
   }
@@ -293,39 +320,14 @@ class _ProspectOfferCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    product?.name ?? record.productLabel,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    record.storeName,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
+                  Text(record.productLabel,
+                      maxLines: 2, overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontWeight: FontWeight.w700)),
                   Text('${record.offerPrice.toStringAsFixed(2).replaceAll('.', ',')} €',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             color: SparzamTheme.deepGreen,
                             fontWeight: FontWeight.w800,
                           )),
-                  if (record.originalPrice != null &&
-                      record.originalPrice! > record.offerPrice)
-                    Text(
-                      '${record.originalPrice!.toStringAsFixed(2).replaceAll('.', ',')} €',
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        decoration: TextDecoration.lineThrough,
-                      ),
-                    ),
-                  Text(
-                    'Angebot bis ${_offerDate(record.validUntil)}',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
                 ],
               ),
             ),
@@ -391,8 +393,6 @@ IconData _categoryIcon(String category) => switch (category) {
       'Haushalt' || 'Drogerie' => Icons.cleaning_services_outlined,
       _ => Icons.shopping_bag_outlined,
     };
-
-String _offerDate(DateTime value) => '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.${value.year}';
 
 class _EmptyOffers extends StatelessWidget {
   const _EmptyOffers({required this.filter, required this.hasQuery});
