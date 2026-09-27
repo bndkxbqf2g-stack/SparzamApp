@@ -133,7 +133,11 @@ class ShoppingPriceBadge extends StatelessWidget {
                               ),
                             )
                           : const Icon(Icons.local_offer_outlined),
-                      title: Text(quote.storeName),
+                      title: Text(
+                        '${item.product.name} · ${quote.storeName}',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       subtitle: Text(quote.sourceLabel),
                       trailing: Text(quote.amountLabel,
                           style: const TextStyle(fontWeight: FontWeight.w700)),
