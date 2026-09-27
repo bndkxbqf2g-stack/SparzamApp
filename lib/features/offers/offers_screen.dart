@@ -227,9 +227,13 @@ class _ProspectOffersState extends State<_ProspectOffers> {
       if (!isOfferDateRangeActive(
         validFrom: record.validFrom,
         validUntil: record.validUntil,
-      )) continue;
+      )) {
+        continue;
+      }
       final searchable = '${record.storeName} ${record.productLabel}'.toLowerCase();
-      if (normalizedQuery.isNotEmpty && !searchable.contains(normalizedQuery)) continue;
+      if (normalizedQuery.isNotEmpty && !searchable.contains(normalizedQuery)) {
+        continue;
+      }
       byStore.putIfAbsent(record.storeName, () => []).add(record);
     }
 
