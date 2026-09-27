@@ -55,7 +55,7 @@ const configuredProspectBranches = <ProspectBranch>[
     branchId: '4371',
     postalCode: '97291',
     location: 'Thüngersheim',
-    officialUrl: 'https://www.netto-online.de/ueber-netto/Online-Prospekte.chtm/4371',
+    officialUrl: 'https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371',
   ),
   ProspectBranch(
     storeName: 'REWE',
@@ -63,7 +63,7 @@ const configuredProspectBranches = <ProspectBranch>[
     postalCode: '97209',
     location: 'Veitshöchheim',
     officialUrl:
-        'https://www.rewe.de/marktseite/veitshoechheim/461683/rewe-markt-pont-l-eveque-allee-1/',
+        'https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1/',
   ),
 ];
 
