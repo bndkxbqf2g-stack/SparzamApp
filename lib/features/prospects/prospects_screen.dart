@@ -440,6 +440,10 @@ class _ProspectProductCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(fontSize: 16),
                   ),
+                  Text(
+                    'Angebot bis ${_prospectDate(record.validUntil)}',
+                    style: const TextStyle(fontSize: 12, color: Colors.black54),
+                  ),
                   if (oldPrice != null)
                     Text(
                       '${oldPrice.toStringAsFixed(2).replaceAll('.', ',')} €',
@@ -457,6 +461,8 @@ class _ProspectProductCard extends StatelessWidget {
     );
   }
 }
+
+String _prospectDate(DateTime value) => '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.${value.year}';
 
 IconData _categoryIcon(String category) {
   switch (category) {
