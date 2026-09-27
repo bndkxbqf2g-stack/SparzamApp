@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/shopping_list/shopping_candidate_service.dart';
-import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/receipt_price_stat.dart';
