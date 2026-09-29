@@ -299,26 +299,3 @@ IconData _categoryIcon(String category) => switch (category) {
       'Haushalt' || 'Drogerie' => Icons.cleaning_services_outlined,
       _ => Icons.shopping_bag_outlined,
     };
-
-class _EmptyOffers extends StatelessWidget {
-  const _EmptyOffers({required this.filter, required this.hasQuery});
-
-  final OfferStatusFilter filter;
-  final bool hasQuery;
-
-  @override
-  Widget build(BuildContext context) {
-    final text = hasQuery
-        ? 'Keine passenden Angebote gefunden.'
-        : switch (filter) {
-            OfferStatusFilter.active => 'Keine aktiven Angebote.',
-            OfferStatusFilter.expired => 'Keine abgelaufenen Angebote.',
-            OfferStatusFilter.all => 'Noch keine Angebote gespeichert.',
-          };
-
-    return Padding(
-      padding: const EdgeInsets.only(top: 48),
-      child: Center(child: Text(text)),
-    );
-  }
-}
