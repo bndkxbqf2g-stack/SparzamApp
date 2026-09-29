@@ -7,7 +7,9 @@ on:
   push:
     paths:
       - 'tool/refresh_prospects.py'
+      - 'tool/bring_prospects.py'
       - 'tool/tests/test_refresh_prospects.py'
+      - 'tool/tests/test_bring_prospects.py'
       - '.github/workflows/refresh_prospects.yml'
 
 permissions:
