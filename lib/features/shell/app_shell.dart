@@ -27,7 +27,6 @@ import '../../services/price_observation_store.dart';
 import '../../services/price_observation_adapters.dart';
 import '../../services/prospect_feed_service.dart';
 import '../../services/prospect_import_module.dart';
-import '../offers/offer_import.dart';
 import '../../services/market_price_observation_adapter.dart';
 import '../../services/recent_purchase_store.dart';
 import '../../services/receipt_observation_store.dart';
