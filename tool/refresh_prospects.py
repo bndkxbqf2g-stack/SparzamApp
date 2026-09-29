@@ -1546,7 +1546,7 @@ def dedupe(offers):
 
 
 def merge_prefer_primary(primary, supplemental):
-    """Merge equivalent evidence while preserving the primary source record."""
+    """Merge equivalent evidence; the primary record wins dedupe identity collisions."""
     return dedupe([*supplemental, *primary])
 
 PARSERS = {
