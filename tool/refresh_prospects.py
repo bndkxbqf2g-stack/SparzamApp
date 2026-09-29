@@ -13,7 +13,12 @@ from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
 
-from tool.bring_prospects import fetch_current_bring_prospects
+try:
+    from bring_prospects import fetch_current_bring_prospects
+except ModuleNotFoundError:
+    # unittest loads this module from the repository root, whereas
+    # `python tool/refresh_prospects.py` puts tool/ itself on sys.path.
+    from tool.bring_prospects import fetch_current_bring_prospects
 
 OUTPUT = Path("assets/prospects/current.json")
 UA = "SparzamApp/1.0 (+https://github.com/bndkxbqf2g-stack/SparzamApp)"
