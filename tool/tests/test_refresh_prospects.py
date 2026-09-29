@@ -8,6 +8,26 @@ refresh = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(refresh)
 
 class ProspectParserTest(unittest.TestCase):
+    def test_current_prospect_offers_drop_overlapping_old_periods(self):
+        offers = [
+            {"storeName": "Kaufland", "validFrom": "2026-09-24", "validUntil": "2026-09-30", "productLabel": str(i), "offerPrice": 1.0}
+            for i in range(3)
+        ] + [{"storeName": "Kaufland", "validFrom": "2026-08-23", "validUntil": "2026-09-30", "productLabel": "old", "offerPrice": 1.0}]
+        result = refresh.current_prospect_offers(offers, refresh.date(2026, 9, 29))
+        self.assertEqual(len(result), 3)
+
+    def test_netto_parses_official_reader_proxy_text(self):
+        offers, _ = refresh.parse_netto(
+            "gültig von Montag, 28.09.26 - Freitag, 02.10.26\n"
+            "Minipflaumentomaten 500 g Schale\n3.98 / kg\nUVP 2.79 1.99*\n"
+            "Milka Schokolade 87 g - 110 g\nstatt 1.99 0.88*\n",
+            "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371",
+        )
+        self.assertEqual(len(offers), 2)
+        self.assertEqual(offers[0]["storeName"], "Netto")
+        self.assertEqual(offers[0]["validUntil"], "2026-10-02")
+        self.assertEqual(offers[1]["offerPrice"], 0.88)
+
     def test_official_record_wins_over_matching_bring_hotspot(self):
         shared = {
             "storeName": "Lidl", "productLabel": "Schmand 200 g",
@@ -16,7 +36,7 @@ class ProspectParserTest(unittest.TestCase):
         }
         bring = {**shared, "source": "leaflet", "proofRef": "bring-page"}
         official = {**shared, "source": "retailer", "proofRef": "lidl-product"}
-        merged = refresh.merge_prefer_primary([official], [bring])
+        merged = refresh.dedupe([bring, official])
         self.assertEqual(len(merged), 1)
         self.assertEqual(merged[0]["proofRef"], "lidl-product")
 

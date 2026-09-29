@@ -1424,9 +1424,6 @@ def parse_netto(html_text, base_url):
         offers.append(record(
             "Netto", label, sale, valid_from, valid_until, proof, regular, image,
         ))
-    if offers:
-        return dedupe(offers), []
-
     trailing = re.compile(
         r"^(.*?)(?:-\d{1,2}\s*%\s*)?(?:statt|UVP)\s+"
         r"(\d+[,.]\d{2})\s+(\d+(?:[,.]\d{2}|[.–-]))\*?$",
@@ -1444,6 +1441,24 @@ def parse_netto(html_text, base_url):
         offers.append(record(
             "Netto", label, sale, valid_from, valid_until,
             urljoin(base_url, href), regular,
+        ))
+    # Netto intermittently protects the page with HTTP 403. The Jina reader
+    # proxy exposes the same public official page as plain text.
+    lines = [clean(line) for line in html_text.splitlines() if clean(line)]
+    for index, line in enumerate(lines):
+        price = re.search(r"(?:UVP|statt)\s+(\d+[,.]\d{2})\s+(\d+[,.]\d{2})", line, flags=re.I)
+        if price is None:
+            continue
+        label = ""
+        for candidate in reversed(lines[max(0, index - 3):index]):
+            if not re.search(r"\d+[,.]?\d*\s*(?:/\s*kg|€)|gültig|angebot", candidate, re.I):
+                label = candidate
+                break
+        if not label:
+            continue
+        offers.append(record(
+            "Netto", label, _netto_money(price.group(2)), valid_from, valid_until,
+            base_url + "#filialangebote", _netto_money(price.group(1)),
         ))
     return dedupe(offers), []
 
@@ -1545,9 +1560,30 @@ def dedupe(offers):
     return list(unique.values())
 
 
-def merge_prefer_primary(primary, supplemental):
-    """Merge equivalent evidence; the primary record wins dedupe identity collisions."""
-    return dedupe([*supplemental, *primary])
+def current_prospect_offers(offers, today=None):
+    """Keep only the dominant currently valid leaflet period per retailer."""
+    reference = today or date.today()
+    active = []
+    for item in offers:
+        try:
+            start = date.fromisoformat(str(item.get("validFrom", ""))[:10])
+            end = date.fromisoformat(str(item.get("validUntil", ""))[:10])
+        except ValueError:
+            continue
+        if start <= reference <= end:
+            active.append(item)
+    groups = {}
+    for item in active:
+        key = (item.get("storeName"), item.get("validFrom"), item.get("validUntil"))
+        groups.setdefault(key, []).append(item)
+    selected = set()
+    by_store = {}
+    for key, values in groups.items():
+        by_store.setdefault(key[0], []).append((len(values), key[1], key[2], key))
+    for candidates in by_store.values():
+        candidates.sort(key=lambda value: (value[0], value[1], value[2]), reverse=True)
+        selected.add(candidates[0][3])
+    return dedupe([item for item in active if (item.get("storeName"), item.get("validFrom"), item.get("validUntil")) in selected])
 
 PARSERS = {
     "aldi": parse_aldi,
@@ -1658,13 +1694,19 @@ def main(selected_source_ids=None):
                     offers, prospects = parse_lidl(body, url)
                     source_mode = "website_fallback"
             else:
-                body = fetch(url)
+                try:
+                    body = fetch(url)
+                except Exception:
+                    if parser_name == "netto":
+                        body = fetch("https://r.jina.ai/http://" + url.removeprefix("https://"))
+                    else:
+                        raise
                 offers, prospects = PARSERS[parser_name](body, url)
             bring_data = bring_by_store.get(store)
             if bring_data:
-                # Retailer evidence stays primary; Bring fills only gaps while
-                # contributing the richer brochure pages below.
-                offers = merge_prefer_primary(offers, bring_data.get("offers", []))
+                # dedupe keeps the last matching record. The retailer's
+                # structured record must win over the same Bring hotspot.
+                offers = dedupe([*bring_data.get("offers", []), *offers])
                 bring_prospect = bring_data.get("prospect")
                 if isinstance(bring_prospect, dict):
                     bring_id = clean(str(bring_prospect.get("id") or ""))
@@ -1714,7 +1756,8 @@ def main(selected_source_ids=None):
             kept = active_previous(previous, store)
             all_offers.extend(kept)
             sources.append({"id": source_id, "storeName": store, "url": url, "status": "error", "recordCount": len(kept), "error": clean(str(error))[:240]})
-    payload = {"schemaVersion": 1, "generatedAt": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"), "sources": sources, "offers": dedupe(all_offers)}
+    all_offers = current_prospect_offers(all_offers)
+    payload = {"schemaVersion": 1, "generatedAt": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"), "sources": sources, "offers": all_offers}
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("Prospektfeed:", len(payload["offers"]), "Angebote")
