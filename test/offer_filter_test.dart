@@ -127,7 +127,7 @@ void main() {
         productLabel: 'Butter',
         storeName: 'Lidl',
         offerPrice: 1.49,
-        validUntil: DateTime(2026, 9, 28),
+        validUntil: DateTime(2026, 9, 20),
       ),
     ];
 
