@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-29T14:07:59.898720Z",
+  "generatedAt": "2026-09-29T18:27:23.782299Z",
   "sources": [
     {
       "id": "aldi_sued",
       "storeName": "ALDI Süd",
       "url": "https://www.aldi-sued.de/",
       "status": "ok",
-      "recordCount": 214,
+      "recordCount": 216,
       "mode": "structured_api",
       "prospects": []
     },
@@ -44,50 +44,50 @@
           "apiUrl": "https://endpoints.leaflets.schwarz/v4/flyer?version=4&flyer_identifier=aktionsprospekt-28-09-2026-03-10-2026-918b16&client=lidl",
           "offerStartDate": "2026-09-28",
           "offerEndDate": "2026-10-03",
-          "pdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd6c-981f-789f-91a0-503709cdfdcd/Aktionsprospekt-28-09-2026-03-10-2026-02.pdf",
-          "thumbnailUrl": "https://imgproxy.leaflets.schwarz/Q4gxFUz7cUp7yCGyhx5wQRDtIrsp0_gKv1pHhc0JxXM/rs:fit:400:400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDFfODQxM2MyOTM4NDc3NjRmNTdhMTJhYzE4MjQ2MTc3NjcucG5n.jpg",
+          "pdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd6c-981f-789f-91a0-503709cdfdcd/Aktionsprospekt-28-09-2026-03-10-2026-03.pdf",
+          "thumbnailUrl": "https://imgproxy.leaflets.schwarz/xLm2AbndF1dZU4gpmEwwgPXJCoxBSA7F_g7_JQw1vFQ/rs:fit:400:400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDFfOWU3ZjcwMDc3ZmQ5MmY2ZWVjYjYxNWEwYjg5MzdjYzIucG5n.jpg",
           "status": "current",
           "productCount": 0,
           "pageCount": 73,
-          "hiResPdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd6c-981f-789f-91a0-503709cdfdcd/Aktionsprospekt-28-09-2026-03-10-2026-02.pdf",
+          "hiResPdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd6c-981f-789f-91a0-503709cdfdcd/Aktionsprospekt-28-09-2026-03-10-2026-03.pdf",
           "clientLocale": "lidl/de-DE",
           "category": "Filial-Angebote",
           "subcategory": "Unsere Aktionsprospekte",
           "pageSamples": [
             {
               "number": 1,
-              "altText": "Lidl Retail Award Auszeichnungen für das beste Obst- und Gemüseangebot der Jahre 2016 bis 2023.",
+              "altText": "Werbeseite für den Lidl Retail Award als „Frischekönig“ in der Kategorie Obst und Gemüse für die Jahre 2016 bis 2023.",
               "keyWords": "Frischekönig Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst- Gemüseangebot Verschiedenen Handels- Gruppen Einschließlich Kategorie Discount Kategorien Gegensatz Preisen Einzelne Geschäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 2023 1412",
-              "image": "https://imgproxy.leaflets.schwarz/x5nDQqhn5j2f0YE3Ili_VVcREuCvgAeMXr7P5rI8ws8/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDFfODQxM2MyOTM4NDc3NjRmNTdhMTJhYzE4MjQ2MTc3NjcucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/AoK_wGtkXUDUaNr1U8R3P-iYWu25lojkqV6C695yhXo/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDFfODQxM2MyOTM4NDc3NjRmNTdhMTJhYzE4MjQ2MTc3NjcucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/Tg1cvMbRMvqQlZqekMJWWx0tdkLfXGacrtWjhHMcU_g/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDFfOWU3ZjcwMDc3ZmQ5MmY2ZWVjYjYxNWEwYjg5MzdjYzIucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/2XuiQEZjaYQE2GSAoK5I2IlWqAUo4w1_vzr0GG03i6Q/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDFfOWU3ZjcwMDc3ZmQ5MmY2ZWVjYjYxNWEwYjg5MzdjYzIucG5n.jpg"
             },
             {
               "number": 2,
-              "altText": "Lidl Frische-Versprechen für täglich frischen Eisbergsalat aus deutschem Anbau in Bio-Qualität.",
+              "altText": "Werbe- und Angebotsseite für frischen deutschen Eisbergsalat mit dem Hinweis auf den Lidl Retail Award als „Frischekönig“.",
               "keyWords": "Aktion Eisbergsalat Ursprung Klasse Stück Frischesieger Versprechen Täglich Frische Auswahl Artikel 45% Deutscher Ernte Bio-Qualität Deutschland & Bio Mehrmals Team Kontrolliert Geprüfte Frischequalität Shh – Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst Gemüseangebot Verschiedenen Handelsgruppen Einschließlich Kategorie Discount Kategorien Gegensatz Preisen Einzelne Geschäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 1449",
-              "image": "https://imgproxy.leaflets.schwarz/CUv7Uwy7Vq2CwAEItxjrJrgYjf_MY9d698o5mbCHRyA/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDJfYzFhNGRmZGRkOGNlYzZhZjk4MjYzMjYwYmIzOGUzNDMucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/e6kM7o2CrFAig0HFCZfpRXR5TeDxtzY3X1m-kMCjTGc/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDJfYzFhNGRmZGRkOGNlYzZhZjk4MjYzMjYwYmIzOGUzNDMucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/86_ZBVwlnDFB3VMLcRNfg1j4KzIXY-Oe5Ond7new5yo/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDJfNzRiYmJhYTdmMzQ2NWEzNTZhYjkzYTZlNWI3NjE0MTMucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/8VPxYPbK1fhGD2WmSksvEbsyz0M-HO0sgTJ6N2UnUO4/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDJfNzRiYmJhYTdmMzQ2NWEzNTZhYjkzYTZlNWI3NjE0MTMucG5n.jpg"
             },
             {
               "number": 3,
-              "altText": "Frische-Angebote bei Lidl mit Rabatten auf Kiwis, Bio-Gurken, Pflaumen, Speisekartoffeln, Zitronen, Feigen und Granatäpfel.",
+              "altText": "Übersicht aktueller Obst- und Gemüseangebote bei Lidl, darunter Kiwis, Bio-Gurken, Pflaumen, Kartoffeln, Zitronen und Granatäpfel.",
               "keyWords": "Deuts Cher Ern Kiwi Lose Ursprung Neuseeland Klasse Stück Bio Gurken Spanien Dunkle Pflaumen Deutsche Speisekartoffeln Vorwiegend Festkochend Qualität Kg Eisbergsalat Aktion 5-Kg-Netz -10% Zitronen Argentinien Feigen Türkei 500-G-Netz Lidl Plus -28% -19% Granatapfel Deutsc Dwir Tsc Frische Artikel Begrenzter Vorratsmenge Laufe Angebotstages Ausverkauft Angebot Ausschließlich Nutzer Gelten Infos Shh – 1502",
-              "image": "https://imgproxy.leaflets.schwarz/DpgIbJJQy-w0O3gtt6wFYFv4Jf6t7A7LZPdyvdL5gnE/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDNfYjFjNGQ1Zjg2MjE1OTNkYjc0ZjMyMWRiOGIyNGMzNGIucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/baf6NzhCveJyU0ad3Fvno-wk062MBbX_11IdzR28wsw/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDNfYjFjNGQ1Zjg2MjE1OTNkYjc0ZjMyMWRiOGIyNGMzNGIucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/uBB2L1VsbJM3RSwJQ8AvnVnJXPOp0CCrkJ5pxGNBJRU/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDNfZjY2MzQyMzBjYzRlMTlkZjVhMGRmNzM3NDY0Mzc3NTcucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/lwxLRqNPnheOpt-x3kZWKtn0kKRlhnA90yHDq3gX5bs/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDNfZjY2MzQyMzBjYzRlMTlkZjVhMGRmNzM3NDY0Mzc3NTcucG5n.jpg"
             },
             {
               "number": 4,
-              "altText": "Lidl wirbt als dauerhafter Frischesieger in der Kategorie Obst und Gemüse mit dem Retail Award.",
+              "altText": "Werbeseite für Lidl als dauerhaften „Frischesieger“ im Bereich Obst und Gemüse laut Fruchthandel Magazin Retail Award.",
               "keyWords": "Frisc Kategorie Motiviert Täglicher Frische & Dauerhafter Frischesieger Dhz – Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst- Gemüseangebot Verschiedenen Handelsgruppen Einschließlich Discount Kategorien Gegensatz Preisen Einzelne Ge- Schäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 2023 1105",
-              "image": "https://imgproxy.leaflets.schwarz/T-SiXuO01PvDiwiiRXvU1_yv7h2lo-sSY6kC3W74iPQ/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDRfYzU5YjM4N2NiOTIxNTYzZDY2OTcxNTRmODNlNDQ0NTYucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/LaixVQFUEBKN_q65rh676Fb6b1kw_o5nSh-jiKA7BxE/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDRfYzU5YjM4N2NiOTIxNTYzZDY2OTcxNTRmODNlNDQ0NTYucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/mnIzDEwBaZj4koEuqPTmZBc410klG-EAhsPovurB8JA/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDRfN2JhNzMzN2M1ZGUyMDQxMjk5MmY2YTMyMmNjOTE1NWYucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/Y9Ykik7TLCATkTl3sSSjPhqmTbaFPDg9ooXkUMJGoo4/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDRfN2JhNzMzN2M1ZGUyMDQxMjk5MmY2YTMyMmNjOTE1NWYucG5n.jpg"
             },
             {
               "number": 5,
-              "altText": "Lidl setzt auf tägliche Frischekontrollen, Vielfalt und umweltbewusste Verpackungen wie Karton, Papier und Silphie-Papier für Obst und Gemüse.",
+              "altText": "Informationsseite über das Frische-Versprechen von Lidl mit Fokus auf tägliche Qualitätskontrollen, saisonale deutsche Produkte und umweltfreundliche Verpackungen.",
               "keyWords": "Frische Kategorie Discount Einsatz Tägliche Vielfalt Täglich Obst- & Frische-Kontrol- Len Filialen Sichern 45% Gemüseartikel Saisonal Stammen Deutscher Deutsc Dwir Tsc Bewusster Verpackung Wähle Obst Gemüse Karton Papier Silphie- – Nutze Wiederverwendbaren Dhz Durchschnittswert 1105",
-              "image": "https://imgproxy.leaflets.schwarz/09ULgQSdUkcs1lchuvaCcB2GebCvPvZkQ0KJOmXo6zU/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDVfN2U0NWMxMWEzMzU4OGUzYWRmOWE2MDQ2OTM1NGExMDAucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/VzHecr62jkN_Mt4-SVur5g6Nj6KGnLEQSvnveyLWSK8/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDVfN2U0NWMxMWEzMzU4OGUzYWRmOWE2MDQ2OTM1NGExMDAucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/QbzdPSAF885FGJN6AQlBCW2EoYrBS3yRjmx3vRtT6Kk/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDVfMDUwNzYyYWU4MTBiOTViNGJjMGIwYmY0NjFhNjZmYjMucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/c72dtjcQ7qGK8fCBLbCYxp-l5fTb8KbpAYZTuutKeB0/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNmMtOTgxZi03ODlmLTkxYTAtNTAzNzA5Y2RmZGNkL3BhZ2UtMDVfMDUwNzYyYWU4MTBiOTViNGJjMGIwYmY0NjFhNjZmYjMucG5n.jpg"
             }
           ],
           "storeKey": "DE3708"
@@ -99,50 +99,50 @@
           "apiUrl": "https://endpoints.leaflets.schwarz/v4/flyer?version=4&flyer_identifier=aktionsprospekt-28-09-2026-03-10-2026-d1cd9a&client=lidl",
           "offerStartDate": "2026-09-28",
           "offerEndDate": "2026-10-03",
-          "pdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd72-4c2e-74b7-935b-57f4e10c28b5/Aktionsprospekt-28-09-2026-03-10-2026-02.pdf",
-          "thumbnailUrl": "https://imgproxy.leaflets.schwarz/_eMaftOwF0a1fjspwtKnJMf2mJ8iEtGfK51HoFkV8ng/rs:fit:400:400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDFfMTJjYjcxM2I5NWE1MzNhMWFmYWRjMGQyODU3M2ZjZjcucG5n.jpg",
+          "pdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd72-4c2e-74b7-935b-57f4e10c28b5/Aktionsprospekt-28-09-2026-03-10-2026-03.pdf",
+          "thumbnailUrl": "https://imgproxy.leaflets.schwarz/Zzs0gLBNX8oQNnPj9JgfNZWAw4iDREq5083gh6EObHY/rs:fit:400:400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDFfMzk5ZmU3NDhkZGU4Njk5Mzc1ODYxN2ZkN2U1ZjlmMzkucG5n.jpg",
           "status": "current",
           "productCount": 0,
           "pageCount": 73,
-          "hiResPdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd72-4c2e-74b7-935b-57f4e10c28b5/Aktionsprospekt-28-09-2026-03-10-2026-02.pdf",
+          "hiResPdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd72-4c2e-74b7-935b-57f4e10c28b5/Aktionsprospekt-28-09-2026-03-10-2026-03.pdf",
           "clientLocale": "lidl/de-DE",
           "category": "Filial-Angebote",
           "subcategory": "Unsere Aktionsprospekte",
           "pageSamples": [
             {
               "number": 1,
-              "altText": "Werbeanzeige für den Lidl Retail Award als \"Frischekönig\" im Fruchthandel Magazin für die Jahre 2016 bis 2023.",
+              "altText": "Werbeseite für den Lidl Retail Award als „Frischekönig“ in der Kategorie Obst und Gemüse, basierend auf einer YouGov-Umfrage.",
               "keyWords": "Frischekönig Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst- Gemüseangebot Verschiedenen Handels- Gruppen Einschließlich Kategorie Discount Kategorien Gegensatz Preisen Einzelne Geschäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 2023 1412",
-              "image": "https://imgproxy.leaflets.schwarz/wbRD771niGgswNGDIkDqcmOco6jitjeVp-p5KstYB4I/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDFfMTJjYjcxM2I5NWE1MzNhMWFmYWRjMGQyODU3M2ZjZjcucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/GHuAoDRXWqfWv1zUYn6OnZXLAcHgxsydP9xPa0kEqoY/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDFfMTJjYjcxM2I5NWE1MzNhMWFmYWRjMGQyODU3M2ZjZjcucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/dhf_9orZ10zqJR98FUfebgYrJK3ap6DtqxfUBumQ9Rc/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDFfMzk5ZmU3NDhkZGU4Njk5Mzc1ODYxN2ZkN2U1ZjlmMzkucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/Bk64ShWFgCYlZNB8t9EGQnJLqknrw3vsGxytBhKN9UI/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDFfMzk5ZmU3NDhkZGU4Njk5Mzc1ODYxN2ZkN2U1ZjlmMzkucG5n.jpg"
             },
             {
               "number": 2,
-              "altText": "Werbeseite für frischen Eisbergsalat aus deutschem Bio-Anbau mit Hinweis auf den Lidl Retail Award.",
+              "altText": "Werbeseite für frischen deutschen Eisbergsalat bei Lidl mit dem Hinweis auf den Retail Award als Frische-Sieger.",
               "keyWords": "Aktion Eisbergsalat Ursprung Klasse Stück Frischesieger Versprechen Täglich Frische Auswahl Artikel 45% Deutscher Ernte Bio-Qualität Deutschland & Bio Mehrmals Team Kontrolliert Geprüfte Frischequalität Shh – Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst Gemüseangebot Verschiedenen Handelsgruppen Einschließlich Kategorie Discount Kategorien Gegensatz Preisen Einzelne Geschäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 1449",
-              "image": "https://imgproxy.leaflets.schwarz/Q096V9C_Egr8eiiY50CMlDIJXnZj6ZLwfL6-yh_b-rA/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDJfODJhYzA0NDRiODY0NmY4NGFjZTc0ZGY4YzY1ZmE3MzcucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/yl6IPrG5L73dJYer9AbGsyYI3lssrbpetJZb_WwlOYs/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDJfODJhYzA0NDRiODY0NmY4NGFjZTc0ZGY4YzY1ZmE3MzcucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/locEp_E3eSw860wXKLoBJcgUZWnxvLr-UXsA2-ZT7wk/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDJfYWVmMGI1MjFjZGQ3ZGJiOWI0NWYzYzRlMWYzOTY1YjcucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/6rYoSghoaxveN-U4EHXX-8VCxC8jpXjaWsF8-phjD0o/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDJfYWVmMGI1MjFjZGQ3ZGJiOWI0NWYzYzRlMWYzOTY1YjcucG5n.jpg"
             },
             {
               "number": 3,
-              "altText": "Übersicht über verschiedene frische Obst- und Gemüsesorten im Angebot, darunter Kiwis, Bio-Gurken, Pflaumen, Kartoffeln, Zitronen und Granatäpfel.",
+              "altText": "Übersicht von frischen Obst- und Gemüseangeboten bei Lidl, darunter Kiwis, Bio-Gurken, Pflaumen, Kartoffeln und Zitronen.",
               "keyWords": "Deuts Cher Ern Kiwi Lose Ursprung Neuseeland Klasse Stück Bio Gurken Spanien Dunkle Pflaumen Deutsche Speisekartoffeln Vorwiegend Festkochend Qualität Kg Eisbergsalat Aktion 5-Kg-Netz -10% Zitronen Argentinien Feigen Türkei 500-G-Netz Lidl Plus -28% -19% Granatapfel Deutsc Dwir Tsc Frische Artikel Begrenzter Vorratsmenge Laufe Angebotstages Ausverkauft Angebot Ausschließlich Nutzer Gelten Infos Shh – 1502",
-              "image": "https://imgproxy.leaflets.schwarz/y922N5ZEoUrKN5vx3p8iJkucW-pj_E1pv69FdizOlow/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDNfODQ0YjkyZDNhYjgzMzYyYzQ0NjEwNTQ1ZjJmY2RmYTUucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/wlvvbRp-YjRPE7FfmYNT9hhMlTPDJalK_doS0LbA5_c/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDNfODQ0YjkyZDNhYjgzMzYyYzQ0NjEwNTQ1ZjJmY2RmYTUucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/5gQ-MjgRqQd0Qez1eMY3rpuWk0EPG7SPUyE9W7JATFU/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDNfZmYwZWIxMjU2ZDhmMDIwZTVhYTkyNGE1MjQ5MTc1ZTkucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/GGyqrxVkVjTNvbQalxe1fjyVrZpnNv5xQ60nqo_c2A0/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDNfZmYwZWIxMjU2ZDhmMDIwZTVhYTkyNGE1MjQ5MTc1ZTkucG5n.jpg"
             },
             {
               "number": 4,
-              "altText": "Werbeseite zur Auszeichnung von Lidl als dauerhafter Frischesieger im Bereich Obst und Gemüse bei den Retail Awards.",
+              "altText": "Werbeseite zur Auszeichnung von Lidl als dauerhafter Frischesieger im Bereich Obst und Gemüse beim Retail Award.",
               "keyWords": "Frisc Kategorie Motiviert Täglicher Frische & Dauerhafter Frischesieger Dhz – Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst- Gemüseangebot Verschiedenen Handelsgruppen Einschließlich Discount Kategorien Gegensatz Preisen Einzelne Ge- Schäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 2023 1105",
-              "image": "https://imgproxy.leaflets.schwarz/DVgfoRlsJ9K3KUTI_4K9fEL_xabeDaL4X3JiAFQDVmI/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDRfZTEwMjZmNGQxOTE1YTI4MGRmNDAwMjU3OWZiZjI2YjQucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/YM7xy1gWlPW2fUlU7xrW5qZnYbhRIgJJaFLG4nBDyIE/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDRfZTEwMjZmNGQxOTE1YTI4MGRmNDAwMjU3OWZiZjI2YjQucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/vkUdF1aS18hzKDP4yynlmXWTvc23WnfbrJS4NsgK-RE/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDRfNjQ2MjFlM2FiYTdhOTlkNGYyMDBjM2NlNDcwODBhY2YucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/9sJs_OSvgjiVSwTztjUJl1m9lPsT2tzySbs84xFIyeQ/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDRfNjQ2MjFlM2FiYTdhOTlkNGYyMDBjM2NlNDcwODBhY2YucG5n.jpg"
             },
             {
               "number": 5,
-              "altText": "Informationsseite über das tägliche Frische-Versprechen von Lidl mit Fokus auf regionalem Obst und Gemüse sowie umweltfreundlichen Verpackungen.",
+              "altText": "Informationsseite über die tägliche Frische-Kontrolle, den hohen Anteil an deutschem Gemüse und umweltfreundliche Verpackungen bei Lidl.",
               "keyWords": "Frische Kategorie Discount Einsatz Tägliche Vielfalt Täglich Obst- & Frische-Kontrol- Len Filialen Sichern 45% Gemüseartikel Saisonal Stammen Deutscher Deutsc Dwir Tsc Bewusster Verpackung Wähle Obst Gemüse Karton Papier Silphie- – Nutze Wiederverwendbaren Dhz Durchschnittswert 1105",
-              "image": "https://imgproxy.leaflets.schwarz/mSfwNXHJ_TV1h2HZwCq21fcPOXlmNq6J-rFLC7d6kiA/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDVfYzYyYTc1NTE5OGI3YWZkMTQ2YThiNWIzNzE3NmI1ZTMucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/_3ZFuGf_QOQCzj0PtzpUkvlML9ItygZ-jJlboNhbvSQ/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDVfYzYyYTc1NTE5OGI3YWZkMTQ2YThiNWIzNzE3NmI1ZTMucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/N8p6ScYN2RB_Jg9Pr3CJjgOwanGLrv8YBt2jBXEKcjk/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDVfM2RiNzRhYTY2NTA2ZWFiOTIyNzc5MWE0YzkwMjFlYjAucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/IHX7eHqO3XDzFPE2Xg4JSxpl-989YT5ED4uxyxKSapM/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItNGMyZS03NGI3LTkzNWItNTdmNGUxMGMyOGI1L3BhZ2UtMDVfM2RiNzRhYTY2NTA2ZWFiOTIyNzc5MWE0YzkwMjFlYjAucG5n.jpg"
             }
           ]
         },
@@ -153,50 +153,50 @@
           "apiUrl": "https://endpoints.leaflets.schwarz/v4/flyer?version=4&flyer_identifier=aktionsprospekt-28-09-2026-03-10-2026-d572e5&client=lidl",
           "offerStartDate": "2026-09-28",
           "offerEndDate": "2026-10-03",
-          "pdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd72-8d7b-7aea-98f9-2f1d0a29c387/Aktionsprospekt-28-09-2026-03-10-2026-02.pdf",
-          "thumbnailUrl": "https://imgproxy.leaflets.schwarz/zZ_q0elEnTPvc5QMoWJXG9NxkpZlB3M0wNPGDox3B78/rs:fit:400:400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDFfNzQyNDczODI5MjYwZTllOGIwY2I4Mzg1M2JlMmNiNzgucG5n.jpg",
+          "pdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd72-8d7b-7aea-98f9-2f1d0a29c387/Aktionsprospekt-28-09-2026-03-10-2026-03.pdf",
+          "thumbnailUrl": "https://imgproxy.leaflets.schwarz/PAw5OnhY_iFiAl98YCQm_wr4KOY1NeAr74LjspQ1kRE/rs:fit:400:400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDFfYzVmNGYyNjMwYmM2NGIzZjFjNDUzZWViNjc1ZWNmZmIucG5n.jpg",
           "status": "current",
           "productCount": 0,
           "pageCount": 73,
-          "hiResPdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd72-8d7b-7aea-98f9-2f1d0a29c387/Aktionsprospekt-28-09-2026-03-10-2026-02.pdf",
+          "hiResPdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd72-8d7b-7aea-98f9-2f1d0a29c387/Aktionsprospekt-28-09-2026-03-10-2026-03.pdf",
           "clientLocale": "lidl/de-DE",
           "category": "Filial-Angebote",
           "subcategory": "Unsere Aktionsprospekte",
           "pageSamples": [
             {
               "number": 1,
-              "altText": "Werbeanzeige für den Lidl Retail Award als „Frischekönig“ im Fruchthandel Magazin für die Jahre 2016 bis 2023.",
+              "altText": "Werbeseite für den Lidl Retail Award als „Frischekönig“ im Fruchthandel für das beste Obst- und Gemüseangebot.",
               "keyWords": "Frischekönig Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst- Gemüseangebot Verschiedenen Handels- Gruppen Einschließlich Kategorie Discount Kategorien Gegensatz Preisen Einzelne Geschäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 2023 1412",
-              "image": "https://imgproxy.leaflets.schwarz/XZSV55oR2qKmwOegxqT5uMHBiU4rhbeel9fTc7d7IXQ/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDFfNzQyNDczODI5MjYwZTllOGIwY2I4Mzg1M2JlMmNiNzgucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/p0spOpKJ8zVlsf4BnNN0ELaSt6ZyfoEVZuvYMD2jKcE/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDFfNzQyNDczODI5MjYwZTllOGIwY2I4Mzg1M2JlMmNiNzgucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/xh_0qyhVper3UAEGP9TI-EEW-XCBwVjEjxD5ZF9INJg/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDFfYzVmNGYyNjMwYmM2NGIzZjFjNDUzZWViNjc1ZWNmZmIucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/Tg2soUMnS5pO9KNjKFoOV6BMiuQ3PDQroRv9VgRHZ48/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDFfYzVmNGYyNjMwYmM2NGIzZjFjNDUzZWViNjc1ZWNmZmIucG5n.jpg"
             },
             {
               "number": 2,
-              "altText": "Werbeseite für frischen deutschen Eisbergsalat bei Lidl mit Hinweis auf den Retail Award als Frische-Sieger.",
+              "altText": "Lidl-Werbeseite für frischen deutschen Eisbergsalat in Bio-Qualität mit Hinweis auf den Retail Award.",
               "keyWords": "Aktion Eisbergsalat Ursprung Klasse Stück Frischesieger Versprechen Täglich Frische Auswahl Artikel 45% Deutscher Ernte Bio-Qualität Deutschland & Bio Mehrmals Team Kontrolliert Geprüfte Frischequalität Shh – Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst Gemüseangebot Verschiedenen Handelsgruppen Einschließlich Kategorie Discount Kategorien Gegensatz Preisen Einzelne Geschäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 1449",
-              "image": "https://imgproxy.leaflets.schwarz/1w1R0S-QxPt5XFksrv6K90zv-rvpcT5uSe_17h0R15Y/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDJfMTE5MzU3OTA4OGJkYjA3ZTVhZjI0ZDNmY2RhYmY4YjQucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/9ogAiRw1oYjZwejQA1fAIAZjGYAqIKKl307mFGXNDl0/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDJfMTE5MzU3OTA4OGJkYjA3ZTVhZjI0ZDNmY2RhYmY4YjQucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/V3FSdKh7Fx9L5rG7iA_9XtQkmQwEwZxcv7SaYaeyiwI/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDJfMDQ5MzJjZWE0YzhmNzk1ZTdlNGJlODMyMzVlZGY1MWIucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/xek1AnjtVvawsf8HyIUv3r0PG9Ab85ESGsFrV7cjUl8/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDJfMDQ5MzJjZWE0YzhmNzk1ZTdlNGJlODMyMzVlZGY1MWIucG5n.jpg"
             },
             {
               "number": 3,
-              "altText": "Übersicht über frische Obst- und Gemüseangebote bei Lidl, darunter Kiwis, Bio-Gurken, Pflaumen, Kartoffeln und Zitronen mit Rabatten.",
+              "altText": "Übersicht von frischem Obst und Gemüse im Angebot, darunter Kiwis, Bio-Gurken, Pflaumen, Kartoffeln und Zitronen.",
               "keyWords": "Deuts Cher Ern Kiwi Lose Ursprung Neuseeland Klasse Stück Bio Gurken Spanien Dunkle Pflaumen Deutsche Speisekartoffeln Vorwiegend Festkochend Qualität Kg Eisbergsalat Aktion 5-Kg-Netz -10% Zitronen Argentinien Feigen Türkei 500-G-Netz Lidl Plus -28% -19% Granatapfel Deutsc Dwir Tsc Frische Artikel Begrenzter Vorratsmenge Laufe Angebotstages Ausverkauft Angebot Ausschließlich Nutzer Gelten Infos Shh – 1502",
-              "image": "https://imgproxy.leaflets.schwarz/637ODfo_Q_LpBScT1qJkLkWDjfQ6Vju9-8gSwNQB9kM/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDNfMGM0YmQ5OTNjZTMwOGY3ODA1MzdlNWRmM2Q4M2MwM2QucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/CBz_xoUQxC6Q8RLAK3uaqgnfuq7WdjeXxdU9cbg5V-Q/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDNfMGM0YmQ5OTNjZTMwOGY3ODA1MzdlNWRmM2Q4M2MwM2QucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/H9sDXYBZD1i4SHexdjlwG3zBDHaWwdjevNdY6wj4-J8/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDNfMmY3OWU0NDJkYzFhMGRmNTFhZTg4NTIxOWI5OWMwMDEucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/86KhXmzIOExO60jUGWJ3sItyT9j5uyEpi-bxkvtJVxc/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDNfMmY3OWU0NDJkYzFhMGRmNTFhZTg4NTIxOWI5OWMwMDEucG5n.jpg"
             },
             {
               "number": 4,
-              "altText": "Werbeseite zur Auszeichnung von Lidl als dauerhafter Frischesieger in der Kategorie Obst und Gemüse bei den Retail Awards.",
+              "altText": "Werbeseite für Lidl als dauerhaften Frischesieger der Kategorie Discount beim Retail Award.",
               "keyWords": "Frisc Kategorie Motiviert Täglicher Frische & Dauerhafter Frischesieger Dhz – Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst- Gemüseangebot Verschiedenen Handelsgruppen Einschließlich Discount Kategorien Gegensatz Preisen Einzelne Ge- Schäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 2023 1105",
-              "image": "https://imgproxy.leaflets.schwarz/0o6rczqlw2Y-sUGqXWsEFUiZ34dRQ7-FFo_GJPvSnWE/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDRfMGMxMGUxYjdiY2ZmMWYwNjEwMDQ0NDA3ZGYzZjNiODYucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/D1YqH0xpjrMelKCb3BPgmVBLS11CFAHNbxQ12bxn_7I/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDRfMGMxMGUxYjdiY2ZmMWYwNjEwMDQ0NDA3ZGYzZjNiODYucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/igNfD1uS6mCZnHVTPVy3Zi7f_u44xeV9SmgqA9QD1-g/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDRfOWMzZjhlYWU3NTk1MTlkY2I2NjdmZmU3NDRhNzBlMTEucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/PBrMCd24q_N7bueD_AmYX59BrV-Knu4OZCkq2-T6QJ0/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDRfOWMzZjhlYWU3NTk1MTlkY2I2NjdmZmU3NDRhNzBlMTEucG5n.jpg"
             },
             {
               "number": 5,
-              "altText": "Informationsseite über Lidls tägliche Frische-Kontrollen und den hohen Anteil an saisonalem Obst und Gemüse aus deutschem Anbau.",
+              "altText": "Informationsseite über das täglich kontrollierte Obst- und Gemüsesortiment bei Lidl mit Fokus auf deutsche Herkunft und umweltfreundliche Verpackungen.",
               "keyWords": "Frische Kategorie Discount Einsatz Tägliche Vielfalt Täglich Obst- & Frische-Kontrol- Len Filialen Sichern 45% Gemüseartikel Saisonal Stammen Deutscher Deutsc Dwir Tsc Bewusster Verpackung Wähle Obst Gemüse Karton Papier Silphie- – Nutze Wiederverwendbaren Dhz Durchschnittswert 1105",
-              "image": "https://imgproxy.leaflets.schwarz/R7b2tPufnxopHB5qGQq_lzJLgjnxju_tM5mwthibmnQ/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDVfNzBjMjc2NTBlNTQwODJjNzAxYTkzMzA3OGVmNDg4OGUucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/MEiu53FjHVk4jDN8p-GsjtwhdmlsImbPGLqoee3PYaw/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDVfNzBjMjc2NTBlNTQwODJjNzAxYTkzMzA3OGVmNDg4OGUucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/jRr-4JKuIJ6p8-DiXoN7-A17O_rA4qK-OtI1s9oQtQU/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDVfMzgyMjAxNzFiZGY0ZTI3OThkNWFlZTlhMDQ2Nzc0OWYucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/bQtreYCrNo_xJhB2LOIXjHGuXCgfH00EjUoCs6-SkJg/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItOGQ3Yi03YWVhLTk4ZjktMmYxZDBhMjljMzg3L3BhZ2UtMDVfMzgyMjAxNzFiZGY0ZTI3OThkNWFlZTlhMDQ2Nzc0OWYucG5n.jpg"
             }
           ]
         },
@@ -207,50 +207,50 @@
           "apiUrl": "https://endpoints.leaflets.schwarz/v4/flyer?version=4&flyer_identifier=aktionsprospekt-28-09-2026-03-10-2026-674157&client=lidl",
           "offerStartDate": "2026-09-28",
           "offerEndDate": "2026-10-03",
-          "pdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd72-cec2-7414-8258-495f462f9a7f/Aktionsprospekt-28-09-2026-03-10-2026-02.pdf",
-          "thumbnailUrl": "https://imgproxy.leaflets.schwarz/rTe0uhV2O7KVbhhHsNws0GoyUclihoMZzM3nVlzybfc/rs:fit:400:400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDFfNDM5YWI4YTlmNWJlOTY2N2NhYzA5MGVlNjBmNWEzNGYucG5n.jpg",
+          "pdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd72-cec2-7414-8258-495f462f9a7f/Aktionsprospekt-28-09-2026-03-10-2026-03.pdf",
+          "thumbnailUrl": "https://imgproxy.leaflets.schwarz/fB9VveA1fXD3B7WTGBy_qyERUSkO6PMfYWqLkoo_5K0/rs:fit:400:400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDFfOWIzOTY4YzhjNDRkYTk4NWZiZTkzZjVjZDFjODZhMzcucG5n.jpg",
           "status": "current",
           "productCount": 0,
           "pageCount": 73,
-          "hiResPdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd72-cec2-7414-8258-495f462f9a7f/Aktionsprospekt-28-09-2026-03-10-2026-02.pdf",
+          "hiResPdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd72-cec2-7414-8258-495f462f9a7f/Aktionsprospekt-28-09-2026-03-10-2026-03.pdf",
           "clientLocale": "lidl/de-DE",
           "category": "Filial-Angebote",
           "subcategory": "Unsere Aktionsprospekte",
           "pageSamples": [
             {
               "number": 1,
-              "altText": "Lidl Retail Award Auszeichnungen für den Frischekönig im Fruchthandel von 2016 bis 2023.",
+              "altText": "Lidl Retail Award Auszeichnungen für das beste Obst- und Gemüseangebot der Jahre 2016 bis 2023.",
               "keyWords": "Frischekönig Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst- Gemüseangebot Verschiedenen Handels- Gruppen Einschließlich Kategorie Discount Kategorien Gegensatz Preisen Einzelne Geschäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 2023 1412",
-              "image": "https://imgproxy.leaflets.schwarz/XjO4QIikYU-jqWArsi2IpHtV9zqMKJOUn-ChFfppzFc/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDFfNDM5YWI4YTlmNWJlOTY2N2NhYzA5MGVlNjBmNWEzNGYucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/w84fhsXnVNAdEcJN9giWZM_txqZZemEkg3SLxQOToVM/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDFfNDM5YWI4YTlmNWJlOTY2N2NhYzA5MGVlNjBmNWEzNGYucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/WMN5Yxr6VDHQgrbZ6EdIvRGsHBpdbUg47BcTCXUgOeg/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDFfOWIzOTY4YzhjNDRkYTk4NWZiZTkzZjVjZDFjODZhMzcucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/AJUjvcmg1WsVQdob62xMiFMcryYCZ5zHzg7CPPE3keU/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDFfOWIzOTY4YzhjNDRkYTk4NWZiZTkzZjVjZDFjODZhMzcucG5n.jpg"
             },
             {
               "number": 2,
-              "altText": "Lidl Frischesieger-Versprechen mit Angeboten für Eisbergsalat und Bio-Qualität aus Deutschland.",
+              "altText": "Frische-Angebote bei Lidl mit täglich frischer Auswahl, Bio-Qualität und dem Lidl Retail Award.",
               "keyWords": "Aktion Eisbergsalat Ursprung Klasse Stück Frischesieger Versprechen Täglich Frische Auswahl Artikel 45% Deutscher Ernte Bio-Qualität Deutschland & Bio Mehrmals Team Kontrolliert Geprüfte Frischequalität Shh – Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst Gemüseangebot Verschiedenen Handelsgruppen Einschließlich Kategorie Discount Kategorien Gegensatz Preisen Einzelne Geschäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 1449",
-              "image": "https://imgproxy.leaflets.schwarz/_LV0aAG019RsOgLri0B5ipifKPAgp54zaVnNz0NS0Oo/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDJfYTg0M2UyOGNjYzAxM2UzMTJjMGYyNTFmNWM4MTg2Y2IucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/x4d9kgpO_iS5VJPViJ2vhNMD1cRVUJgAAjj_wOreu5Y/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDJfYTg0M2UyOGNjYzAxM2UzMTJjMGYyNTFmNWM4MTg2Y2IucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/bH-Y3eT0QG7XD0EXKYLrA8F388omoRYGdtMTnnXIZ2M/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDJfNjA1Y2FjMWQ2NjY2NzgzZWRjNDA2YjI5MjZhYjRmNDIucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/-nm13Vz-JU2HtUXE7nc6NRfrp0x8AwkZArksmlk9GfA/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDJfNjA1Y2FjMWQ2NjY2NzgzZWRjNDA2YjI5MjZhYjRmNDIucG5n.jpg"
             },
             {
               "number": 3,
-              "altText": "Frische Obst- und Gemüseangebote bei Lidl, darunter Kiwi, Bio-Gurken, Pflaumen, Kartoffeln und Zitronen.",
+              "altText": "Frische Lebensmittel wie Kiwis, Bio-Gurken, Pflaumen, Kartoffeln, Zitronen und Granatäpfel im Angebot bei Lidl.",
               "keyWords": "Deuts Cher Ern Kiwi Lose Ursprung Neuseeland Klasse Stück Bio Gurken Spanien Dunkle Pflaumen Deutsche Speisekartoffeln Vorwiegend Festkochend Qualität Kg Eisbergsalat Aktion 5-Kg-Netz -10% Zitronen Argentinien Feigen Türkei 500-G-Netz Lidl Plus -28% -19% Granatapfel Deutsc Dwir Tsc Frische Artikel Begrenzter Vorratsmenge Laufe Angebotstages Ausverkauft Angebot Ausschließlich Nutzer Gelten Infos Shh – 1502",
-              "image": "https://imgproxy.leaflets.schwarz/kQSYTxTwA88taFC3SQzCKGgWDR2wU-ZU5nKHqDyVi8U/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDNfOTdmMDcxNzI2ZGM5MzQ1MmEyYjViOTczOGQyMmNjY2UucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/F72ATH0UK5Dfa3bt87E55_UakdY_MwF_3vd575Zo7iM/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDNfOTdmMDcxNzI2ZGM5MzQ1MmEyYjViOTczOGQyMmNjY2UucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/FdWcLt35jFEOczXXGLBtY-M2nZ-bgseJ-I6yOOWkQnA/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDNfODM2NWRlNjk4ZDkwYjU2NTBjMzk1Nzc5YmMwOGQ0ZGEucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/6JQY6Nu857gyC8k_uxMTACz3Ia4DLAGRanK1p0aOr6U/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDNfODM2NWRlNjk4ZDkwYjU2NTBjMzk1Nzc5YmMwOGQ0ZGEucG5n.jpg"
             },
             {
               "number": 4,
-              "altText": "Lidl als dauerhafter Frischesieger in der Kategorie Obst und Gemüse beim Retail Award.",
+              "altText": "Lidl als dauerhafter Frischesieger in der Kategorie Obst und Gemüse laut Fruchthandel Magazin.",
               "keyWords": "Frisc Kategorie Motiviert Täglicher Frische & Dauerhafter Frischesieger Dhz – Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst- Gemüseangebot Verschiedenen Handelsgruppen Einschließlich Discount Kategorien Gegensatz Preisen Einzelne Ge- Schäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 2023 1105",
-              "image": "https://imgproxy.leaflets.schwarz/XZ2VeQw8mJKSs8snpayrdUHT2Vo4l4GyxlXg2-NZNi4/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDRfNzAwNTBhMWJjZGZlYjIwMjY5ODk0M2M3MjFjNzI3ZjgucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/_mzIPdLQPUqu9ZO-JgPYRZK8_6yFMtOFaRLS-AUNOrc/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDRfNzAwNTBhMWJjZGZlYjIwMjY5ODk0M2M3MjFjNzI3ZjgucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/sCVT9fNtIFSkDxWahHBdzY1c26Ie2nWEAmv72FHCho8/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDRfYzQ5ZWFkNjkyODhmMTA2YzM5ODBiMzU2OTNmZTA1MzcucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/6nv0RzNXzKb_uQQdMQ8mAs8F027U18ZN8pZB4iK3Y2Y/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDRfYzQ5ZWFkNjkyODhmMTA2YzM5ODBiMzU2OTNmZTA1MzcucG5n.jpg"
             },
             {
               "number": 5,
-              "altText": "Lidl Frische-Versprechen mit täglicher Vielfalt, Qualitätskontrollen und umweltfreundlichen Verpackungen.",
+              "altText": "Frische-Versprechen von Lidl mit täglichen Kontrollen und umweltfreundlichen Verpackungen aus Karton, Papier oder Silphie.",
               "keyWords": "Frische Kategorie Discount Einsatz Tägliche Vielfalt Täglich Obst- & Frische-Kontrol- Len Filialen Sichern 45% Gemüseartikel Saisonal Stammen Deutscher Deutsc Dwir Tsc Bewusster Verpackung Wähle Obst Gemüse Karton Papier Silphie- – Nutze Wiederverwendbaren Dhz Durchschnittswert 1105",
-              "image": "https://imgproxy.leaflets.schwarz/NbchTo0emCz6zgGTNYJGMv4pjSd7feLuPXE_I5Azt3U/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDVfOWRiMTUwZDE5YjU5NWYyMTU4OGNlNmZjOTU4OGRiYTMucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/yRRZlV_8PgLlUOJAJT3m_dLjyJK45P-fZVDfWABhMLg/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDVfOWRiMTUwZDE5YjU5NWYyMTU4OGNlNmZjOTU4OGRiYTMucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/54BcNhikzVC47TR-_dKvfCRwd8JbKBHwHsnrGd6LHxQ/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDVfMDcyNWE3NmFkZjE4YWM5NTc3YzZhYzM5MWEwOGJjNWEucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/uYeIukOa-GDjjUFnjsPJqlv1O--sMhtqTepg6tEgiOc/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzItY2VjMi03NDE0LTgyNTgtNDk1ZjQ2MmY5YTdmL3BhZ2UtMDVfMDcyNWE3NmFkZjE4YWM5NTc3YzZhYzM5MWEwOGJjNWEucG5n.jpg"
             }
           ]
         },
@@ -261,50 +261,50 @@
           "apiUrl": "https://endpoints.leaflets.schwarz/v4/flyer?version=4&flyer_identifier=aktionsprospekt-28-09-2026-03-10-2026-e5d794&client=lidl",
           "offerStartDate": "2026-09-28",
           "offerEndDate": "2026-10-03",
-          "pdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd73-1976-7dae-990b-90cbef5fa2e8/Aktionsprospekt-28-09-2026-03-10-2026-02.pdf",
-          "thumbnailUrl": "https://imgproxy.leaflets.schwarz/gmtJv0Wr0VWU_AhBVRofgBFnnD0joYf2HDPVEGppoGo/rs:fit:400:400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDFfN2JmYjM5YThlOTg3OTJlNjIyMTA3M2MwOWNhMzNjZTAucG5n.jpg",
+          "pdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd73-1976-7dae-990b-90cbef5fa2e8/Aktionsprospekt-28-09-2026-03-10-2026-03.pdf",
+          "thumbnailUrl": "https://imgproxy.leaflets.schwarz/OG0yA4dQJXKnk5joSeNp9TTBc36_UlaHehZjErMD9ik/rs:fit:400:400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDFfYzJhNGQ2MWE2ZWY2MDkyZTg3Y2NlMDFhYWEyMjY4NjUucG5n.jpg",
           "status": "current",
           "productCount": 0,
           "pageCount": 73,
-          "hiResPdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd73-1976-7dae-990b-90cbef5fa2e8/Aktionsprospekt-28-09-2026-03-10-2026-02.pdf",
+          "hiResPdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd73-1976-7dae-990b-90cbef5fa2e8/Aktionsprospekt-28-09-2026-03-10-2026-03.pdf",
           "clientLocale": "lidl/de-DE",
           "category": "Filial-Angebote",
           "subcategory": "Unsere Aktionsprospekte",
           "pageSamples": [
             {
               "number": 1,
-              "altText": "Lidl Retail Award Auszeichnungen für den Frischekönig im Obst- und Gemüseangebot der Jahre 2016 bis 2023.",
+              "altText": "Seite 1 - Aktionsprospekt - 28.09.2026 – 03.10.2026",
               "keyWords": "Frischekönig Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst- Gemüseangebot Verschiedenen Handels- Gruppen Einschließlich Kategorie Discount Kategorien Gegensatz Preisen Einzelne Geschäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 2023 1412",
-              "image": "https://imgproxy.leaflets.schwarz/iMNPqCYbbns_aqcyncTRWdxKss7-1RzTMx2-suYDKJM/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDFfN2JmYjM5YThlOTg3OTJlNjIyMTA3M2MwOWNhMzNjZTAucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/VW6e-mlAeln0RuyNF2ICk0cOnbNgINT5h5kbiSK7pM8/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDFfN2JmYjM5YThlOTg3OTJlNjIyMTA3M2MwOWNhMzNjZTAucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/d3sgbVUhr6fGP2Yo5dxl19V1urFa66muuQrPKVaqw2I/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDFfYzJhNGQ2MWE2ZWY2MDkyZTg3Y2NlMDFhYWEyMjY4NjUucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/EEzq27igldxWF8mB6ecHDKValv92iOEOiApZt7umAlE/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDFfYzJhNGQ2MWE2ZWY2MDkyZTg3Y2NlMDFhYWEyMjY4NjUucG5n.jpg"
             },
             {
               "number": 2,
-              "altText": "Werbeplakat für frischen Eisbergsalat aus deutscher Ernte in Bio-Qualität bei Lidl.",
+              "altText": "Seite 2 - Aktionsprospekt - 28.09.2026 – 03.10.2026",
               "keyWords": "Aktion Eisbergsalat Ursprung Klasse Stück Frischesieger Versprechen Täglich Frische Auswahl Artikel 45% Deutscher Ernte Bio-Qualität Deutschland & Bio Mehrmals Team Kontrolliert Geprüfte Frischequalität Shh – Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst Gemüseangebot Verschiedenen Handelsgruppen Einschließlich Kategorie Discount Kategorien Gegensatz Preisen Einzelne Geschäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 1449",
-              "image": "https://imgproxy.leaflets.schwarz/nXsarAmQDARwGh3HM0wZgt8PrWNnnnj4RDwmmrL1mQA/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDJfYmUyZGJmY2NlMTdmNDJlYjVkMWUwMjY2NjZjYjE1NjUucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/G9CGw8Oxa214jsK1gPbYPOpA9u8xc2Nu3e9su5HCR1k/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDJfYmUyZGJmY2NlMTdmNDJlYjVkMWUwMjY2NjZjYjE1NjUucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/9DdKVCLPjv4BZsoJqZv_jVSNNOClTXfD5iLCCJ300qo/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDJfM2FlNjU0YmNmOTUxYzA4MjVmNWJlY2ZlY2MzYzQ5YmYucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/iEYBOLvtBjBmmQZq6gkj1lZJBoD-DBhTnFIbzSkZzHg/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDJfM2FlNjU0YmNmOTUxYzA4MjVmNWJlY2ZlY2MzYzQ5YmYucG5n.jpg"
             },
             {
               "number": 3,
-              "altText": "Wochenangebote für frisches Obst und Gemüse wie Kiwis, Bio-Gurken, Pflaumen, Kartoffeln, Zitronen und Granatäpfel.",
+              "altText": "Seite 3 - Aktionsprospekt - 28.09.2026 – 03.10.2026",
               "keyWords": "Deuts Cher Ern Kiwi Lose Ursprung Neuseeland Klasse Stück Bio Gurken Spanien Dunkle Pflaumen Deutsche Speisekartoffeln Vorwiegend Festkochend Qualität Kg Eisbergsalat Aktion 5-Kg-Netz -10% Zitronen Argentinien Feigen Türkei 500-G-Netz Lidl Plus -28% -19% Granatapfel Deutsc Dwir Tsc Frische Artikel Begrenzter Vorratsmenge Laufe Angebotstages Ausverkauft Angebot Ausschließlich Nutzer Gelten Infos Shh – 1502",
-              "image": "https://imgproxy.leaflets.schwarz/eysQtmc7Yl13BjvNTCPfPQmFwA_NiJLin8wCZMX6SiE/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDNfYjU1MzE3OGM1NmY0MTQwZDc3ZTkzNjMyZWI0MGU3MGMucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/BCi0b-4qLMckmt555QcWhxZR-lFPC8pC2w0iuaoG0_8/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDNfYjU1MzE3OGM1NmY0MTQwZDc3ZTkzNjMyZWI0MGU3MGMucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/iWsje3P2uBLM6MbIrnYpeooz9UBvhOqdBgQysbu6oHM/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDNfMmZmYTZjYzBlZWRmNTRmYmZkYzc4NDY5MjlhMWU4MWYucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/Qd3O3auOpegstSOLuCpWdoKyYe-qI3l9gANmIrJMxaU/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDNfMmZmYTZjYzBlZWRmNTRmYmZkYzc4NDY5MjlhMWU4MWYucG5n.jpg"
             },
             {
               "number": 4,
-              "altText": "Lidl-Werbeseite zur Auszeichnung als dauerhafter Frischesieger im Bereich Obst und Gemüse.",
+              "altText": "Seite 4 - Aktionsprospekt - 28.09.2026 – 03.10.2026",
               "keyWords": "Frisc Kategorie Motiviert Täglicher Frische & Dauerhafter Frischesieger Dhz – Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst- Gemüseangebot Verschiedenen Handelsgruppen Einschließlich Discount Kategorien Gegensatz Preisen Einzelne Ge- Schäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 2023 1105",
-              "image": "https://imgproxy.leaflets.schwarz/wmvb4OPukwCsZbIAKKEPWhYAgwzqV8AWJAoiFW52g6o/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDRfNjE1MWVhMTlhZjk5MzlkMTEwMTA4NzQxNGM5MGU2NWUucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/qOihKwJPF5dY6TsoHR3mpXxrqorrvr-B3G_9qX0LuuA/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDRfNjE1MWVhMTlhZjk5MzlkMTEwMTA4NzQxNGM5MGU2NWUucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/QZQnjplnhYxrk1sQtVJjz0sze8DNnuAZYqb_jYphaYw/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDRfNGEyNzE2ZDAxMGViZWJjMWUzOTg0NGRiYjBjMzhlNzgucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/irCFcWjHHZ_c5HKp-FJrEy9vdoRdn82jer4fkGhhdhA/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDRfNGEyNzE2ZDAxMGViZWJjMWUzOTg0NGRiYjBjMzhlNzgucG5n.jpg"
             },
             {
               "number": 5,
-              "altText": "Übersicht über das tägliche Frische-Versprechen bei Lidl mit Fokus auf regionalem Gemüse und umweltfreundlichen Verpackungen.",
+              "altText": "Seite 5 - Aktionsprospekt - 28.09.2026 – 03.10.2026",
               "keyWords": "Frische Kategorie Discount Einsatz Tägliche Vielfalt Täglich Obst- & Frische-Kontrol- Len Filialen Sichern 45% Gemüseartikel Saisonal Stammen Deutscher Deutsc Dwir Tsc Bewusster Verpackung Wähle Obst Gemüse Karton Papier Silphie- – Nutze Wiederverwendbaren Dhz Durchschnittswert 1105",
-              "image": "https://imgproxy.leaflets.schwarz/_ycK_cx8GAYoeWSxK9pHF3Ar_mMV5SeAbqAd2KNRwmM/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDVfMmVhZWMzNDk1ZDIwNjA2NzExYWYzYjI4NzMzZTk4NmQucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/vgU_zGvbovY0uW-jc9l7Cb_9vapG-nC1WK9vphoAvRs/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDVfMmVhZWMzNDk1ZDIwNjA2NzExYWYzYjI4NzMzZTk4NmQucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/shTbTm5x9GqOyEGh2bONrwL5XAk3QMpImggqv9t9Wdo/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDVfZjU4MDZhZGE2ODljZDUzYmYxZDI4ZDkwZWQ0MDY2NTMucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/4iQwWLegQ_59jJ39GLhhQIv4gzfa3qf2wcMxoc-k6Z8/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtMTk3Ni03ZGFlLTk5MGItOTBjYmVmNWZhMmU4L3BhZ2UtMDVfZjU4MDZhZGE2ODljZDUzYmYxZDI4ZDkwZWQ0MDY2NTMucG5n.jpg"
             }
           ]
         },
@@ -315,50 +315,50 @@
           "apiUrl": "https://endpoints.leaflets.schwarz/v4/flyer?version=4&flyer_identifier=aktionsprospekt-28-09-2026-03-10-2026-a32c67&client=lidl",
           "offerStartDate": "2026-09-28",
           "offerEndDate": "2026-10-03",
-          "pdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd73-5a9f-7bac-a0d6-3c0d74ec331c/Aktionsprospekt-28-09-2026-03-10-2026-02.pdf",
-          "thumbnailUrl": "https://imgproxy.leaflets.schwarz/Bd9wx1R3KbZLV9lAvBznKjjBcZrMi5GCmIgmT7Z5iZc/rs:fit:400:400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDFfYjE5ZjM5YWUzYTdkMzdmYTljN2U2ZWRjMmVkMDNiMGQucG5n.jpg",
+          "pdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd73-5a9f-7bac-a0d6-3c0d74ec331c/Aktionsprospekt-28-09-2026-03-10-2026-03.pdf",
+          "thumbnailUrl": "https://imgproxy.leaflets.schwarz/N947Wc7l5auxpSnZB486O7kvCPiQhcG_txO4OEj4r-k/rs:fit:400:400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDFfYzdiMTBmNjIwZjI5MDU2NWY3MjRlZWI0NzFmMWJkMDEucG5n.jpg",
           "status": "current",
           "productCount": 0,
           "pageCount": 73,
-          "hiResPdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd73-5a9f-7bac-a0d6-3c0d74ec331c/Aktionsprospekt-28-09-2026-03-10-2026-02.pdf",
+          "hiResPdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd73-5a9f-7bac-a0d6-3c0d74ec331c/Aktionsprospekt-28-09-2026-03-10-2026-03.pdf",
           "clientLocale": "lidl/de-DE",
           "category": "Filial-Angebote",
           "subcategory": "Unsere Aktionsprospekte",
           "pageSamples": [
             {
               "number": 1,
-              "altText": "Werbeseite für den Lidl Retail Award als „Frischekönig“ in der Kategorie Obst und Gemüse für die Jahre 2016 bis 2023.",
+              "altText": "Lidl Retail Award Auszeichnungen für das beste Obst- und Gemüseangebot der Jahre 2016 bis 2023.",
               "keyWords": "Frischekönig Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst- Gemüseangebot Verschiedenen Handels- Gruppen Einschließlich Kategorie Discount Kategorien Gegensatz Preisen Einzelne Geschäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 2023 1412",
-              "image": "https://imgproxy.leaflets.schwarz/8mosOr_wmKhfz-udJi0jd7KQNEQS1AsNv-0TL0fda6U/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDFfYjE5ZjM5YWUzYTdkMzdmYTljN2U2ZWRjMmVkMDNiMGQucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/BBpEu6EMD2zZ-f_Tlg5KSkFeoRYvHO2cfX6WJ3kOAqE/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDFfYjE5ZjM5YWUzYTdkMzdmYTljN2U2ZWRjMmVkMDNiMGQucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/Y9hPYcZuxh7wzekoyw5FKEqK4GLkUl54ViTHiR0eQW8/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDFfYzdiMTBmNjIwZjI5MDU2NWY3MjRlZWI0NzFmMWJkMDEucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/T8EnYYgK7-R9Ft9Bkf1w7wI3SJHcvVKT2K082mfnEIE/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDFfYzdiMTBmNjIwZjI5MDU2NWY3MjRlZWI0NzFmMWJkMDEucG5n.jpg"
             },
             {
               "number": 2,
-              "altText": "Lidl-Werbeseite für frischen deutschen Eisbergsalat in Bio-Qualität mit Verweis auf den Retail Award als Frische-Sieger.",
+              "altText": "Lidl-Frischeversprechen für täglich frischen Eisbergsalat aus deutschem Anbau in Bio-Qualität.",
               "keyWords": "Aktion Eisbergsalat Ursprung Klasse Stück Frischesieger Versprechen Täglich Frische Auswahl Artikel 45% Deutscher Ernte Bio-Qualität Deutschland & Bio Mehrmals Team Kontrolliert Geprüfte Frischequalität Shh – Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst Gemüseangebot Verschiedenen Handelsgruppen Einschließlich Kategorie Discount Kategorien Gegensatz Preisen Einzelne Geschäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 1449",
-              "image": "https://imgproxy.leaflets.schwarz/pBoPqlFz4F4xQ1xkwFZgP7689jlzzYHMexBCQ5ue2ng/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDJfNjZhMTc4NTIwNjY1NWUyODFkMzA3MDcwZmJiYmU4NjIucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/T5xkG4yWAEyde3GOim1ejHRNLc9a5uSn_vUpoP7HTXk/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDJfNjZhMTc4NTIwNjY1NWUyODFkMzA3MDcwZmJiYmU4NjIucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/N9JDMbQq8FGmkIJsaL8kDWYJERtpCwFaoxX_WBdPo28/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDJfNTUzMjhmYzgwNWNkMTkzMDlkMzRiZmJmY2MzYjJkZGMucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/G0COaxzCOIhXNj3Q6IcrO6hZNf7IgcCE7nOToAeqydo/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDJfNTUzMjhmYzgwNWNkMTkzMDlkMzRiZmJmY2MzYjJkZGMucG5n.jpg"
             },
             {
               "number": 3,
-              "altText": "Übersicht von Lidl-Frische-Angeboten für Obst und Gemüse, darunter Kiwis, Bio-Gurken, Pflaumen, Kartoffeln, Zitronen und Granatäpfel.",
+              "altText": "Frische Obst- und Gemüseangebote bei Lidl, darunter Kiwis, Bio-Gurken, Pflaumen, Speisekartoffeln und Zitronen mit Lidl Plus Rabatten.",
               "keyWords": "Deuts Cher Ern Kiwi Lose Ursprung Neuseeland Klasse Stück Bio Gurken Spanien Dunkle Pflaumen Deutsche Speisekartoffeln Vorwiegend Festkochend Qualität Kg Eisbergsalat Aktion 5-Kg-Netz -10% Zitronen Argentinien Feigen Türkei 500-G-Netz Lidl Plus -28% -19% Granatapfel Deutsc Dwir Tsc Frische Artikel Begrenzter Vorratsmenge Laufe Angebotstages Ausverkauft Angebot Ausschließlich Nutzer Gelten Infos Shh – 1502",
-              "image": "https://imgproxy.leaflets.schwarz/h9KC6conZu5a7Kw2D_RfOUXryIdhh8fcKbby2WJx_LA/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDNfNjc2N2IyNzdlOTIxYzE0NzcyZmIwMjI2YTE3NzgxYzIucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/sr6QKUef3F0zHIbH5qebhuV7hS3FpLPp0NWv7Zf-s0I/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDNfNjc2N2IyNzdlOTIxYzE0NzcyZmIwMjI2YTE3NzgxYzIucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/T8GHTJvV-mL6HMViqdIkodF8Cd2lEEU4Hu2RxiP5Mhw/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDNfNmU3ZjczOTJiNzgwMTEwOTY2MjlkNTA1ODE3NmI3NGYucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/yv-WHP-1CE5rDSUZhAZoHbBmWM-2s6xeCtEx5cDGcto/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDNfNmU3ZjczOTJiNzgwMTEwOTY2MjlkNTA1ODE3NmI3NGYucG5n.jpg"
             },
             {
               "number": 4,
-              "altText": "Werbeseite von Lidl zur Auszeichnung als dauerhafter Frischesieger im Bereich Obst und Gemüse laut Fruchthandel Magazin.",
+              "altText": "Lidl als dauerhafter Frischesieger in der Kategorie Obst und Gemüse beim Retail Award.",
               "keyWords": "Frisc Kategorie Motiviert Täglicher Frische & Dauerhafter Frischesieger Dhz – Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst- Gemüseangebot Verschiedenen Handelsgruppen Einschließlich Discount Kategorien Gegensatz Preisen Einzelne Ge- Schäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 2023 1105",
-              "image": "https://imgproxy.leaflets.schwarz/vvtSqxkiCpUi8O3vOKQ9d2exyZCwTwZ_vaIzdk0tqxE/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDRfMjkwNTFjZTBhNzQ1YmMyNDkyYWNiOGE5MGYxMDRhNmUucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/A7kubLBD5yuF1MKF1FumzsTSaxcqMDyyWYTkOmH-iV8/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDRfMjkwNTFjZTBhNzQ1YmMyNDkyYWNiOGE5MGYxMDRhNmUucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/MmxCfykpCntLprbY8Ttxk9ENIqc-9oK4HNtsnv9kukY/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDRfZDZjZjY3MTM5ZWNjMGUwOWNiZTZjODU4MmQ2YWI2OWQucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/AfUCOfXOQWuYu7potwI-9M2eu-YJaWlk8Xx6rouT8eA/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDRfZDZjZjY3MTM5ZWNjMGUwOWNiZTZjODU4MmQ2YWI2OWQucG5n.jpg"
             },
             {
               "number": 5,
-              "altText": "Lidl-Informationsseite über die tägliche Frische-Kontrolle, den hohen Anteil an regionalem deutschen Gemüse sowie umweltfreundliche Verpackungen.",
+              "altText": "Übersicht über die tägliche Frischekontrolle und den hohen Anteil an saisonalem, deutschem Obst und Gemüse bei Lidl sowie umweltfreundliche Verpackungen.",
               "keyWords": "Frische Kategorie Discount Einsatz Tägliche Vielfalt Täglich Obst- & Frische-Kontrol- Len Filialen Sichern 45% Gemüseartikel Saisonal Stammen Deutscher Deutsc Dwir Tsc Bewusster Verpackung Wähle Obst Gemüse Karton Papier Silphie- – Nutze Wiederverwendbaren Dhz Durchschnittswert 1105",
-              "image": "https://imgproxy.leaflets.schwarz/ltzLDDb61stvv3p_qz88YKtDLaIJXRYF0XxWaNZnlp4/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDVfYmIwMTI2NDBjYjE2Y2NlZmE0ZTJkNzMxZDQ1NzZhNmQucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/nK_UZRCjehUdlPFWHX2BqGtF7ybS6L0ACkBGSR7IIG8/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDVfYmIwMTI2NDBjYjE2Y2NlZmE0ZTJkNzMxZDQ1NzZhNmQucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/a9Aaa_Td_u4rmgW1FudNlv-b8C1_F1Pap3iqLOawXEM/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDVfMWI0NmU4ZDMwNmFjODgxMDE2NWM1M2VkZWYxNWJlNDAucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/K2lnvWO5jK4BXg0R_RJ0GmZ8lu9gD1U96we9AgrtfBM/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtNWE5Zi03YmFjLWEwZDYtM2MwZDc0ZWMzMzFjL3BhZ2UtMDVfMWI0NmU4ZDMwNmFjODgxMDE2NWM1M2VkZWYxNWJlNDAucG5n.jpg"
             }
           ]
         },
@@ -369,50 +369,50 @@
           "apiUrl": "https://endpoints.leaflets.schwarz/v4/flyer?version=4&flyer_identifier=aktionsprospekt-28-09-2026-03-10-2026-5788ab&client=lidl",
           "offerStartDate": "2026-09-28",
           "offerEndDate": "2026-10-03",
-          "pdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd73-aa3b-7521-8265-1ec80fafabc7/Aktionsprospekt-28-09-2026-03-10-2026-02.pdf",
-          "thumbnailUrl": "https://imgproxy.leaflets.schwarz/RKjWB1GVY7g5CVzcOQ1WfVkd4ymvBmX-avUEyBrb_eQ/rs:fit:400:400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDFfMWVlZTdmNTgyYjI4ZWY4YTEzNWU1YTA3YjhkMzhhZTMucG5n.jpg",
+          "pdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd73-aa3b-7521-8265-1ec80fafabc7/Aktionsprospekt-28-09-2026-03-10-2026-03.pdf",
+          "thumbnailUrl": "https://imgproxy.leaflets.schwarz/OEvzGtTkNmLRIx-PDtSZs4Bv70VxFLz0IqGCFKS0tzE/rs:fit:400:400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDFfYzdiOGNiMmU5NWRhZDFkYTZiMDFiMDJiYWZhMTE3NWIucG5n.jpg",
           "status": "current",
           "productCount": 0,
           "pageCount": 73,
-          "hiResPdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd73-aa3b-7521-8265-1ec80fafabc7/Aktionsprospekt-28-09-2026-03-10-2026-02.pdf",
+          "hiResPdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd73-aa3b-7521-8265-1ec80fafabc7/Aktionsprospekt-28-09-2026-03-10-2026-03.pdf",
           "clientLocale": "lidl/de-DE",
           "category": "Filial-Angebote",
           "subcategory": "Unsere Aktionsprospekte",
           "pageSamples": [
             {
               "number": 1,
-              "altText": "Lidl Retail Award Auszeichnungen als Frischekönig für Obst und Gemüse von 2016 bis 2023.",
+              "altText": "Werbeseite für den Lidl Retail Award als „Frischekönig“ in der Kategorie Obst und Gemüse für die Jahre 2016 bis 2023.",
               "keyWords": "Frischekönig Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst- Gemüseangebot Verschiedenen Handels- Gruppen Einschließlich Kategorie Discount Kategorien Gegensatz Preisen Einzelne Geschäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 2023 1412",
-              "image": "https://imgproxy.leaflets.schwarz/waO2Va2UONb3f_THv2jYxjG_aUNd9sZUEpeVRf8Pafk/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDFfMWVlZTdmNTgyYjI4ZWY4YTEzNWU1YTA3YjhkMzhhZTMucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/CtJthZiiTU5jZdzk035L5pJF9PyBa3ugOxUoAc2DVcA/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDFfMWVlZTdmNTgyYjI4ZWY4YTEzNWU1YTA3YjhkMzhhZTMucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/HDFiE2wOEr5WpoBTRbbpLmk-DBYSBLN4Of225cYRrYU/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDFfYzdiOGNiMmU5NWRhZDFkYTZiMDFiMDJiYWZhMTE3NWIucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/eg6zBFcv2NzoN2WPKX_-Rr_VmXj9AZy3S2yJ6tfMbdw/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDFfYzdiOGNiMmU5NWRhZDFkYTZiMDFiMDJiYWZhMTE3NWIucG5n.jpg"
             },
             {
               "number": 2,
-              "altText": "Werbeseite für frischen deutschen Eisbergsalat in Bio-Qualität mit Hinweis auf den Lidl Retail Award.",
+              "altText": "Werbeseite für frischen deutschen Eisbergsalat bei Lidl mit dem Hinweis auf den Retail Award als Frischesieger.",
               "keyWords": "Aktion Eisbergsalat Ursprung Klasse Stück Frischesieger Versprechen Täglich Frische Auswahl Artikel 45% Deutscher Ernte Bio-Qualität Deutschland & Bio Mehrmals Team Kontrolliert Geprüfte Frischequalität Shh – Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst Gemüseangebot Verschiedenen Handelsgruppen Einschließlich Kategorie Discount Kategorien Gegensatz Preisen Einzelne Geschäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 1449",
-              "image": "https://imgproxy.leaflets.schwarz/J61jfwQLy7w_MRMpULX6BpqY2mR_HhzG8Jsz8KnRe_s/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDJfZGIzZGIzYjNhNDY0NDA4OGFiNGYyMzgyNTdiYzMxZWUucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/DZ8X3i-zOhKf_IjluFd11_qyGJyTJOjyIl9FmiZCbXg/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDJfZGIzZGIzYjNhNDY0NDA4OGFiNGYyMzgyNTdiYzMxZWUucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/SCoSdIfIRPRqOg6ZjOgy1Dn-WuJTFKSq0l5wDc3ThXY/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDJfZTI0MDRkOTdmMWY0MjBkOGU2ZjVhZTk5Yzg5NTQyYmEucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/AT0GW28ZnxM6PW6fV-OImxIYs0sUI2Wfg7EIPUe1_o4/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDJfZTI0MDRkOTdmMWY0MjBkOGU2ZjVhZTk5Yzg5NTQyYmEucG5n.jpg"
             },
             {
               "number": 3,
-              "altText": "Wochenangebote für frisches Obst und Gemüse wie Kiwis, Bio-Gurken, Pflaumen, Kartoffeln, Zitronen und Granatäpfel.",
+              "altText": "Prospektseite mit verschiedenen Obst- und Gemüseangeboten wie Kiwis, Bio-Gurken, Pflaumen, Kartoffeln, Zitronen und Granatäpfeln.",
               "keyWords": "Deuts Cher Ern Kiwi Lose Ursprung Neuseeland Klasse Stück Bio Gurken Spanien Dunkle Pflaumen Deutsche Speisekartoffeln Vorwiegend Festkochend Qualität Kg Eisbergsalat Aktion 5-Kg-Netz -10% Zitronen Argentinien Feigen Türkei 500-G-Netz Lidl Plus -28% -19% Granatapfel Deutsc Dwir Tsc Frische Artikel Begrenzter Vorratsmenge Laufe Angebotstages Ausverkauft Angebot Ausschließlich Nutzer Gelten Infos Shh – 1502",
-              "image": "https://imgproxy.leaflets.schwarz/m11reqL-yzE_61tLsYvwjUDAZnZVPv13l6XbvQmV-fs/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDNfMjY2YmE4ZmViYTZjZjcyNmQwMjU2NTliNWEwMzVhMWMucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/bAXMwOod_ra9CE4oBNAH8CFfD0745WW5LveXDZ94-dE/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDNfMjY2YmE4ZmViYTZjZjcyNmQwMjU2NTliNWEwMzVhMWMucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/jilKStimgXQ160_6RRNA82lRVWo2Y3dlvoSHngOU3ME/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDNfYWUyODM5Nzc2MzQwNmI4NjljYzlmOGRlZGFkYWM4N2QucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/EosC74JFUxhUHkbDCWpdh7LjqkfTuoT-jE3OnLwuWrI/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDNfYWUyODM5Nzc2MzQwNmI4NjljYzlmOGRlZGFkYWM4N2QucG5n.jpg"
             },
             {
               "number": 4,
-              "altText": "Werbeseite zur Auszeichnung von Lidl als dauerhafter Frischesieger im Bereich Obst und Gemüse.",
+              "altText": "Werbeseite von Lidl zur Auszeichnung als dauerhafter Frischesieger im Bereich Obst und Gemüse bei den Retail Awards.",
               "keyWords": "Frisc Kategorie Motiviert Täglicher Frische & Dauerhafter Frischesieger Dhz – Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst- Gemüseangebot Verschiedenen Handelsgruppen Einschließlich Discount Kategorien Gegensatz Preisen Einzelne Ge- Schäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 2023 1105",
-              "image": "https://imgproxy.leaflets.schwarz/r8x5vl1OFIA_hjbHYeorVkcfFPSoEvPytr6jOBPBDjk/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDRfZjkzMzYxODVmYzJhMDQ1YzQ0Mjk0NWIwYjNiZmIzYWMucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/yGOFyhc7_6Sn3r8I3V9z5Tj6otzf-TET_T1lV2Fhd-k/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDRfZjkzMzYxODVmYzJhMDQ1YzQ0Mjk0NWIwYjNiZmIzYWMucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/GY3SZLPV83CY2_9ulD6E1DprNRtgLBvxoE73wUvxWN8/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDRfZDg3NzVjMjg5YWY0MmU4ZjJiZjFhNmVhMDQ3NDUyMjcucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/-cKLxfAZm-MICx4Ppw4gKrwpeymQKSL0sXZMcCvX8mc/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDRfZDg3NzVjMjg5YWY0MmU4ZjJiZjFhNmVhMDQ3NDUyMjcucG5n.jpg"
             },
             {
               "number": 5,
-              "altText": "Übersicht zur täglichen Frische-Kontrolle und dem hohen Anteil an saisonalem, deutschem Obst und Gemüse bei Lidl.",
+              "altText": "Informationsseite über das tägliche Frische-Versprechen von Lidl mit Fokus auf regionalem Obst und Gemüse sowie umweltfreundlichen Verpackungen.",
               "keyWords": "Frische Kategorie Discount Einsatz Tägliche Vielfalt Täglich Obst- & Frische-Kontrol- Len Filialen Sichern 45% Gemüseartikel Saisonal Stammen Deutscher Deutsc Dwir Tsc Bewusster Verpackung Wähle Obst Gemüse Karton Papier Silphie- – Nutze Wiederverwendbaren Dhz Durchschnittswert 1105",
-              "image": "https://imgproxy.leaflets.schwarz/OoIoRE5sRs3ZATTB4V6-OdvwUZuxG7tYL18aiP_2cww/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDVfYWM2NTM2YjdkMGYyNDZkMjM0N2Q0Yzc2NTlmMzFiZTMucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/RS9CPn0Rif1EpehfRAA6fxNfKD8HxsIe2O5vQKVaTfc/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDVfYWM2NTM2YjdkMGYyNDZkMjM0N2Q0Yzc2NTlmMzFiZTMucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/a4rbLgh5kMcWzcF3Vx4U1n8o8n0H_ymZ3QDHaA5xTnU/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDVfOWNjMzJmYzEzNjFiNDY5NzM2ZWZkOWZkMGQ0YjRiMGMucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/98T7fEEqFqv-qYJG-CuyEqrvcHV1I8OYA1ZNZjycCYk/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtYWEzYi03NTIxLTgyNjUtMWVjODBmYWZhYmM3L3BhZ2UtMDVfOWNjMzJmYzEzNjFiNDY5NzM2ZWZkOWZkMGQ0YjRiMGMucG5n.jpg"
             }
           ]
         },
@@ -423,50 +423,50 @@
           "apiUrl": "https://endpoints.leaflets.schwarz/v4/flyer?version=4&flyer_identifier=aktionsprospekt-28-09-2026-03-10-2026-7e3564&client=lidl",
           "offerStartDate": "2026-09-28",
           "offerEndDate": "2026-10-03",
-          "pdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd73-e8df-7ed6-83ef-7a97cc50e037/Aktionsprospekt-28-09-2026-03-10-2026-02.pdf",
-          "thumbnailUrl": "https://imgproxy.leaflets.schwarz/2YVJfwGiIlvA0Q2Vf0P4QuZI3Z957GBtbY6cya_yDpk/rs:fit:400:400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDFfNTgwMWIwNGFmN2MzODBmZWE4MmJhMmNjOTdkY2MyMDgucG5n.jpg",
+          "pdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd73-e8df-7ed6-83ef-7a97cc50e037/Aktionsprospekt-28-09-2026-03-10-2026-03.pdf",
+          "thumbnailUrl": "https://imgproxy.leaflets.schwarz/4OBI6XLaiihL9nmOpT9UZcOvmdchNDQ8JHKWrzaEEqM/rs:fit:400:400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDFfYTZmNWI4OWJmMTc3MGFlZTdhMjIwNDU2MDdjNTE2Y2QucG5n.jpg",
           "status": "current",
           "productCount": 0,
           "pageCount": 73,
-          "hiResPdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd73-e8df-7ed6-83ef-7a97cc50e037/Aktionsprospekt-28-09-2026-03-10-2026-02.pdf",
+          "hiResPdfUrl": "https://assets.leaflets.schwarz/leaflets/pdfs/01a0cd73-e8df-7ed6-83ef-7a97cc50e037/Aktionsprospekt-28-09-2026-03-10-2026-03.pdf",
           "clientLocale": "lidl/de-DE",
           "category": "Filial-Angebote",
           "subcategory": "Unsere Aktionsprospekte",
           "pageSamples": [
             {
               "number": 1,
-              "altText": "Werbeseite für den Lidl Retail Award als „Frischekönig“ in der Kategorie Obst und Gemüse für die Jahre 2016 bis 2023.",
+              "altText": "Werbeseite für den Lidl Retail Award als „Frischekönig“ in der Kategorie Obst und Gemüse, basierend auf einer YouGov-Umfrage.",
               "keyWords": "Frischekönig Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst- Gemüseangebot Verschiedenen Handels- Gruppen Einschließlich Kategorie Discount Kategorien Gegensatz Preisen Einzelne Geschäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 2023 1412",
-              "image": "https://imgproxy.leaflets.schwarz/hIgpTjEBUbhPPrTtMFR1W-HuLNwymu1X6Z-KKupXELs/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDFfNTgwMWIwNGFmN2MzODBmZWE4MmJhMmNjOTdkY2MyMDgucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/F-95M5DtGGUHrPEZqlujeoiLn4-UJdQaWFQPLJxGaVA/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDFfNTgwMWIwNGFmN2MzODBmZWE4MmJhMmNjOTdkY2MyMDgucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/r5nFNQ-9_g2re9QsxwOXGnhhhTlVbqzQQl6HDF1ZQ7s/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDFfYTZmNWI4OWJmMTc3MGFlZTdhMjIwNDU2MDdjNTE2Y2QucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/QxEx08swu1AuJXHR7EkB9WNzat12dK6Po4Qi1OvmnNM/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDFfYTZmNWI4OWJmMTc3MGFlZTdhMjIwNDU2MDdjNTE2Y2QucG5n.jpg"
             },
             {
               "number": 2,
-              "altText": "Werbeseite für frischen deutschen Eisbergsalat bei Lidl mit dem Hinweis auf den Retail Award als Frischesieger.",
+              "altText": "Lidl-Werbeseite für frischen Eisbergsalat aus deutschem Anbau mit dem „Frischesieger“-Logo und Hinweis auf den Retail Award.",
               "keyWords": "Aktion Eisbergsalat Ursprung Klasse Stück Frischesieger Versprechen Täglich Frische Auswahl Artikel 45% Deutscher Ernte Bio-Qualität Deutschland & Bio Mehrmals Team Kontrolliert Geprüfte Frischequalität Shh – Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst Gemüseangebot Verschiedenen Handelsgruppen Einschließlich Kategorie Discount Kategorien Gegensatz Preisen Einzelne Geschäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 1449",
-              "image": "https://imgproxy.leaflets.schwarz/KLRH-rQGQs5uR1MyGLUuNmMgOrmv9far6nrbN0qFmTk/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDJfNzZhZGFkMWZlY2RhM2YyMDJlMjkzYzNlMDI4OWQ1MTgucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/KFyeuinSanxR3NyAUwfaoQOVuYw1tdnr7SoG3HHj5VI/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDJfNzZhZGFkMWZlY2RhM2YyMDJlMjkzYzNlMDI4OWQ1MTgucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/zDCA_dy4xpzEFvjAJpMoR62ocIkUFXsTNRAyT3SKulo/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDJfMTE3Yjk0NDBkOTUwZmI3ODhiMGFiZThlZDAzNGIzOTYucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/3bdxAQlPESGmTRXW_rybh0NAB3ja7nAy2wF8MjW9EQM/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDJfMTE3Yjk0NDBkOTUwZmI3ODhiMGFiZThlZDAzNGIzOTYucG5n.jpg"
             },
             {
               "number": 3,
-              "altText": "Prospektseite mit verschiedenen Obst- und Gemüseangeboten wie Kiwis, Bio-Gurken, Pflaumen, Kartoffeln, Zitronen und Granatäpfeln.",
+              "altText": "Lidl-Angebotsseite für frisches Obst und Gemüse wie Kiwis, Bio-Gurken, Pflaumen, Kartoffeln, Zitronen und Granatäpfel mit Rabatten.",
               "keyWords": "Deuts Cher Ern Kiwi Lose Ursprung Neuseeland Klasse Stück Bio Gurken Spanien Dunkle Pflaumen Deutsche Speisekartoffeln Vorwiegend Festkochend Qualität Kg Eisbergsalat Aktion 5-Kg-Netz -10% Zitronen Argentinien Feigen Türkei 500-G-Netz Lidl Plus -28% -19% Granatapfel Deutsc Dwir Tsc Frische Artikel Begrenzter Vorratsmenge Laufe Angebotstages Ausverkauft Angebot Ausschließlich Nutzer Gelten Infos Shh – 1502",
-              "image": "https://imgproxy.leaflets.schwarz/V3nsoCAJJVYshDB9acXcOdlzhpWXJFC0U77b6-dneL4/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDNfNjgxYmYxZjYyN2UyZmIyYzQ1MTMxMzg5OTYyNzIzYTEucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/JFqdWl5U7LfyrUuf5gaBum-yrqlqkDswsXoxKqZ6KNk/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDNfNjgxYmYxZjYyN2UyZmIyYzQ1MTMxMzg5OTYyNzIzYTEucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/WEkCFpOXpxR8AqS_gYH4eeapkR0dO2lX2nv6Ise9SJ8/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDNfMGFmY2U4MjhjMDMwNzcxNmY1NGJmNTkxZGJiMWFmZGYucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/4VrKkLw8bB8EIV4PloCjL1X68UHBEFK5wFZ4hJqFryI/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDNfMGFmY2U4MjhjMDMwNzcxNmY1NGJmNTkxZGJiMWFmZGYucG5n.jpg"
             },
             {
               "number": 4,
-              "altText": "Werbeseite zur Auszeichnung von Lidl als dauerhafter Frischesieger im Bereich Obst und Gemüse von 2016 bis 2023.",
+              "altText": "Werbeseite für Lidl als dauerhaften „Frischesieger“ im Bereich Obst und Gemüse mit Erwähnung des Retail Awards von 2016 bis 2023.",
               "keyWords": "Frisc Kategorie Motiviert Täglicher Frische & Dauerhafter Frischesieger Dhz – Auftrag Fruchthandel Magazin Yougov Frühjahr Insgesamt Haushalte Meinung Obst- Gemüseangebot Verschiedenen Handelsgruppen Einschließlich Discount Kategorien Gegensatz Preisen Einzelne Ge- Schäft Abteilung Leistung Gesamten Handelsgruppe Lidl Retail Award Informationen Awards 2016 2017 2019 2020 2021 2022 2023 1105",
-              "image": "https://imgproxy.leaflets.schwarz/Prchvu3v2NAH6pXWI9kNY8RMNHGsERDlQeqCo6CcXFI/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDRfZTkxZmVkMzQ4OTQzZDk0OTg1M2RhNGNiZDNhYzU0NzEucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/r7uPY4O4EpgB6x3qwD1xDdJDzCMWOIj9elWwKey667g/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDRfZTkxZmVkMzQ4OTQzZDk0OTg1M2RhNGNiZDNhYzU0NzEucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/O7iFEkOe9XXNzbzXimckc9t-t3OqgKtt_-3dOnyYX4U/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDRfMWYyOGVjMTA1MjM4OWIxYjdkZjYyMzkwOWE0NjNmMzkucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/sKJ7zG4tjsseIN9DrT37CiA1EswuuTAikvGNxv1JVOo/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDRfMWYyOGVjMTA1MjM4OWIxYjdkZjYyMzkwOWE0NjNmMzkucG5n.jpg"
             },
             {
               "number": 5,
-              "altText": "Informationsseite über die tägliche Frischekontrolle und den hohen Anteil an saisonalem deutschen Obst und Gemüse bei Lidl.",
+              "altText": "Informationsseite über das Lidl-Frische-Versprechen mit Fokus auf tägliche Qualitätskontrollen, saisonale deutsche Produkte und umweltfreundliche Verpackungen.",
               "keyWords": "Frische Kategorie Discount Einsatz Tägliche Vielfalt Täglich Obst- & Frische-Kontrol- Len Filialen Sichern 45% Gemüseartikel Saisonal Stammen Deutscher Deutsc Dwir Tsc Bewusster Verpackung Wähle Obst Gemüse Karton Papier Silphie- – Nutze Wiederverwendbaren Dhz Durchschnittswert 1105",
-              "image": "https://imgproxy.leaflets.schwarz/Naq4eKg99xYGHer7APeGzWZh0P-qYrxO0HeSwWZttbg/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDVfNGNlMjQ2ZWNkMjNiNThiZDZkMTI1MjA4YTcwODhhMTYucG5n.jpg",
-              "zoom": "https://imgproxy.leaflets.schwarz/OspPD0Xj_iGlhQo_odYoa5InTFZAlKNWNsihKA66DcQ/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDVfNGNlMjQ2ZWNkMjNiNThiZDZkMTI1MjA4YTcwODhhMTYucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/_Dkt0XbOQOhlNNcm4mQBsP1LI_ZXsVBYbQymReO4zqo/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDVfY2U4N2ExYjcxZmY1MjhlNGQzODM1YWQyMzNlM2M4MDIucG5n.jpg",
+              "zoom": "https://imgproxy.leaflets.schwarz/DF-pYT2Zfs_8B0GR50zfxF7zgcvkDUVB26fSehsl_t4/rs:fit:2400:2400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMGNkNzMtZThkZi03ZWQ2LTgzZWYtN2E5N2NjNTBlMDM3L3BhZ2UtMDVfY2U4N2ExYjcxZmY1MjhlNGQzODM1YWQyMzNlM2M4MDIucG5n.jpg"
             }
           ]
         }
@@ -657,6 +657,17 @@
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/f727c8ca-ceec-4a84-ad76-807ad302aa33/image.jpg"
     },
     {
+      "sourceId": "01a6643d2e627ca12fb9",
+      "productLabel": "HOME CREATION Laternen Kaminkerze, Champagner, 140x78 + 200x78",
+      "storeName": "ALDI Süd",
+      "offerPrice": 4.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-laternen-kaminkerze-champagner-140x78-200x78-000000000736400001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5241353e-5def-422f-8478-27b6eadb1cf1/image.jpg"
+    },
+    {
       "sourceId": "dafdacec80999d0387a7",
       "productLabel": "HOME CREATION Kunstfell Sitzkissen, Rund, Weiß",
       "storeName": "ALDI Süd",
@@ -688,6 +699,17 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/home-creation-herbstkranz-braunen-kuerbis-000000000742747001",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/9aa7a4d8-8bf0-4a2c-9cf7-6f744f8a5681/image.jpg"
+    },
+    {
+      "sourceId": "355c46fa5569a64e0cc9",
+      "productLabel": "HOME CREATION Dekorativer Kürbis, Orange, Pumpkin Spice",
+      "storeName": "ALDI Süd",
+      "offerPrice": 7.99,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/home-creation-dekorativer-kuerbis-orange-pumpkin-spice-000000000747583001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/8bb19181-5356-47c4-add8-c3e4a887cfe5/image.jpg"
     },
     {
       "sourceId": "426ec126913b85bef040",
