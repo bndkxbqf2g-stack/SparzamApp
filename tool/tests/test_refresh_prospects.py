@@ -16,7 +16,7 @@ class ProspectParserTest(unittest.TestCase):
         }
         bring = {**shared, "source": "leaflet", "proofRef": "bring-page"}
         official = {**shared, "source": "retailer", "proofRef": "lidl-product"}
-        merged = refresh.dedupe([bring, official])
+        merged = refresh.merge_prefer_primary([official], [bring])
         self.assertEqual(len(merged), 1)
         self.assertEqual(merged[0]["proofRef"], "lidl-product")
 

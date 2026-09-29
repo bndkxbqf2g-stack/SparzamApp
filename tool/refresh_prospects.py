@@ -1544,6 +1544,11 @@ def dedupe(offers):
         unique[key] = item
     return list(unique.values())
 
+
+def merge_prefer_primary(primary, supplemental):
+    """Merge equivalent evidence while preserving the primary source record."""
+    return dedupe([*supplemental, *primary])
+
 PARSERS = {
     "aldi": parse_aldi,
     "aldi_api": parse_aldi_api_page,
@@ -1657,9 +1662,9 @@ def main(selected_source_ids=None):
                 offers, prospects = PARSERS[parser_name](body, url)
             bring_data = bring_by_store.get(store)
             if bring_data:
-                # dedupe keeps the last matching record. The retailer's
-                # structured record must win over the same Bring hotspot.
-                offers = dedupe([*bring_data.get("offers", []), *offers])
+                # Retailer evidence stays primary; Bring fills only gaps while
+                # contributing the richer brochure pages below.
+                offers = merge_prefer_primary(offers, bring_data.get("offers", []))
                 bring_prospect = bring_data.get("prospect")
                 if isinstance(bring_prospect, dict):
                     bring_id = clean(str(bring_prospect.get("id") or ""))
