@@ -27,6 +27,7 @@ import '../../services/price_observation_store.dart';
 import '../../services/price_observation_adapters.dart';
 import '../../services/prospect_feed_service.dart';
 import '../../services/prospect_import_module.dart';
+import '../offers/offer_import.dart';
 import '../../services/market_price_observation_adapter.dart';
 import '../../services/recent_purchase_store.dart';
 import '../../services/receipt_observation_store.dart';
@@ -259,12 +260,15 @@ class _AppShellState extends State<AppShell> {
       );
       if (mounted) {
         setState(() {
-          prospectRecords = feed.records;
+          // The Angebotsbereich and its import pipeline only need offers from
+          // the currently valid prospect. Historical observations remain in
+          // the price observation store, but must not be loaded as tiles.
+          prospectRecords = currentProspectRecords(feed.records);
           prospectIssues = feed.prospects;
         });
       }
 
-      final resolutions = feed.records
+      final resolutions = currentProspectRecords(feed.records)
           .map((record) => resolveOfferImport(record, catalogProducts))
           .toList(growable: false);
       final resolved = resolutions
