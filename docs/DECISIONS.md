@@ -148,3 +148,7 @@ Familienbeobachtungen dürfen erst dann als Planungs-/Routenpreis verwendet werd
 Automatische Bon-Vorschläge und über Open Food Facts entdeckte EAN-Kandidaten dürfen Recherche, Matching und weitere Datenabfragen unterstützen, gelten aber nicht allein als bestätigte exakte Produktidentität. Ein daraus abgerufener Preis darf erst nach ausreichend bestätigter Identität in den exakten Routenpreisstrom gelangen. Damit bleibt die Identitäts-Confidence von Quellenqualität und Preisaktualität getrennt.
 
 - Tomato receipt evidence may share the broad historical family, but route planning keeps fresh tomatoes separate from preserved tomato products such as passata or chopped tomatoes.
+
+
+## D036 – Bring-Share-Links sind Prospektausgaben, keine dauerhaften Aktualitätslinks
+Ein geteilter Bring!-Link enthält eine konkrete `offersbrochure`-BRN und darf deshalb nur als Nachweis genau dieser Prospektausgabe behandelt werden. Neue Wochen werden standortbezogen neu entdeckt; alte BRNs werden nicht als „aktuelles Prospekt“ weiterverwendet. Der Bring-Adapter läuft ausschließlich im serverseitigen Refresh mit Secrets. Nur strukturierte Hotspots mit belegter Gültigkeit und Preis werden als `leaflet`-Angebot in die Preisbeobachtung übernommen. Prospektbilder ohne solchen Datensatz bleiben visuelle Evidenz und erzeugen keinen erfundenen Preis.

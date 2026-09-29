@@ -13,6 +13,8 @@ from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
 
+from tool.bring_prospects import fetch_current_bring_prospects
+
 OUTPUT = Path("assets/prospects/current.json")
 UA = "SparzamApp/1.0 (+https://github.com/bndkxbqf2g-stack/SparzamApp)"
 SOURCES = (
@@ -1564,6 +1566,12 @@ def active_previous(previous, store):
 def main(selected_source_ids=None):
     previous = load_previous()
     all_offers, sources = [], []
+    try:
+        bring_by_store = fetch_current_bring_prospects()
+    except Exception:
+        # Bring is an optional evidence source. Official retailer adapters keep
+        # working if credentials expire or the external API is unavailable.
+        bring_by_store = {}
     selected = set(selected_source_ids or ())
     source_list = (
         tuple(source for source in SOURCES if source[0] in selected)
@@ -1642,6 +1650,25 @@ def main(selected_source_ids=None):
             else:
                 body = fetch(url)
                 offers, prospects = PARSERS[parser_name](body, url)
+            bring_data = bring_by_store.get(store)
+            if bring_data:
+                offers = dedupe([*offers, *bring_data.get("offers", [])])
+                bring_prospect = bring_data.get("prospect")
+                if isinstance(bring_prospect, dict):
+                    bring_id = clean(str(bring_prospect.get("id") or ""))
+                    prospects = [
+                        bring_prospect,
+                        *[
+                            item for item in prospects
+                            if not (
+                                isinstance(item, dict)
+                                and bring_id
+                                and clean(str(item.get("id") or "")) == bring_id
+                            )
+                        ],
+                    ]
+                source_mode += "+bring_brochure"
+
             metadata_only = parser_name in ("lidl", "lidl_api") and not offers
             if not offers and not metadata_only:
                 lower_body = body.lower()
@@ -1656,6 +1683,22 @@ def main(selected_source_ids=None):
             all_offers.extend(offers)
             sources.append({"id": source_id, "storeName": store, "url": url, "status": "metadata_only" if metadata_only else "ok", "recordCount": len(offers), "mode": source_mode, "prospects": prospects})
         except Exception as error:
+            bring_data = bring_by_store.get(store)
+            if bring_data:
+                bring_offers = dedupe(bring_data.get("offers", []))
+                bring_prospect = bring_data.get("prospect")
+                all_offers.extend(bring_offers)
+                sources.append({
+                    "id": source_id,
+                    "storeName": store,
+                    "url": url,
+                    "status": "ok" if bring_offers else "metadata_only",
+                    "recordCount": len(bring_offers),
+                    "mode": "bring_brochure_fallback",
+                    "prospects": [bring_prospect] if isinstance(bring_prospect, dict) else [],
+                    "retailerError": clean(str(error))[:240],
+                })
+                continue
             kept = active_previous(previous, store)
             all_offers.extend(kept)
             sources.append({"id": source_id, "storeName": store, "url": url, "status": "error", "recordCount": len(kept), "error": clean(str(error))[:240]})

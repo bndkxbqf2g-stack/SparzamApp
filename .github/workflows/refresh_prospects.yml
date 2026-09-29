@@ -30,6 +30,10 @@ jobs:
       - name: Test parsers
         run: python -m unittest discover -s tool/tests -p 'test_*.py'
       - name: Refresh official retailer feed
+        env:
+          BRING_AUTH_TOKEN: ${{ secrets.BRING_AUTH_TOKEN }}
+          BRING_API_KEY: ${{ secrets.BRING_API_KEY }}
+          BRING_USER_UUID: ${{ secrets.BRING_USER_UUID }}
         run: python tool/refresh_prospects.py
       - name: Commit refreshed feed
         run: |

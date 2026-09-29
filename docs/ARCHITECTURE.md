@@ -78,3 +78,10 @@ Technische Wahrheit bleibt GitHub. Kleine Änderungen werden inkrementell umgese
 - Die Open-Prices-Pipeline arbeitet demand-driven von der aktuellen Einkaufsliste. Bekannte EANs können direkt abgefragt werden.
 - `open_food_facts_product_discovery.dart` darf bei fehlender EAN konservativ einen Kandidaten zum Abruf finden. Ein Discovery-Treffer bestätigt die Produktidentität jedoch nicht und darf deshalb noch keinen exakten Routenpreis erzeugen.
 - Automatische Bon-Reviews und externe Discovery folgen damit derselben Grenze: Erkennung/Recherche ist Evidenz, explizit bestätigte Identität ist Voraussetzung für exakte Preisprojektion.
+
+
+## Bring-Prospektquelle – 29.09.2026
+- Bring wird ausschließlich als optionaler serverseitiger Refresh-Adapter verwendet; Zugangsdaten gelangen weder in Flutter noch in das Repository.
+- Geteilte Bring-URLs sind Ausgabe-Referenzen. Die dauerhafte Aktualisierung erfolgt über standortbezogene Ermittlung der jeweils aktuellen Prospekt-BRN.
+- Die Adaptergrenze übersetzt strukturierte `discounts[]` in den bestehenden `OfferImportRecord`-/`PriceObservation`-Vertrag. Produkttext, Bild, Angebots-/Normalpreis, Gültigkeit und `proofRef` bleiben getrennt nachvollziehbar.
+- Seitenbilder ohne strukturierten Hotspot werden im Prospektreader gezeigt, aber nicht automatisch als routenfähiger Preis interpretiert. Damit bleibt D028/D030/D031 erhalten.

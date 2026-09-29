@@ -242,3 +242,11 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Der Bonparser erkennt jetzt Lidl als Händler, `zu zahlen` als Bonsumme und Lidl-Datumszeilen ohne vorangestelltes `Datum`.
 - Die Regressionen decken gewichtete Ware mit gedrucktem €/kg-Preis, Mehrfachmengen, mehrere aufeinanderfolgende Lidl-Plus-Rabatte, Preisvorteile und Pfand ab.
 - Beide Original-PDFs sind bildbasiert und enthalten keine extrahierbare Textebene. Parserunterstützung und OCR sind deshalb bewusst getrennt: Das Lidl-Layout ist jetzt abgesichert, automatische OCR für Bild-PDFs bleibt ein eigenes offenes Paket.
+
+
+## Update 29.09.2026 – Bring-Prospektadapter
+- Die vom Nutzer geteilten Bring!-Links wurden strukturell ausgewertet. Sie enthalten eine feste Prospekt-BRN (z. B. `brn:bring-de:offersbrochure:218970`) und ein Coverbild und sind damit Referenzen auf genau diese Prospektausgabe, nicht auf automatisch nachfolgende Wochen.
+- Ein optionaler `tool/bring_prospects.py`-Adapter entdeckt deshalb aktuelle Prospekte standortbezogen neu, statt alte Share-Links dauerhaft zu verwenden.
+- Strukturierte Prospekt-Hotspots werden mit Produktbezeichnung, Angebotspreis, optionalem Normalpreis, Produktbild, Gültigkeit und Prospektnachweis als `leaflet`-Evidenz in den bestehenden Angebots-/PriceObservation-Fluss übernommen.
+- Vollständige Prospektseiten werden als Bildseiten an den Bereich „Prospekte“ geliefert. Inhalte ohne strukturierten Preis-Hotspot bleiben Bild-/Prospektevidenz und werden nicht per unsicherem OCR als Preis erfunden.
+- Der Adapter ist nur aktiv, wenn `BRING_AUTH_TOKEN`, `BRING_API_KEY` und `BRING_USER_UUID` als GitHub-Secrets vorhanden sind. Ohne diese Zugangsdaten laufen die bestehenden offiziellen Händleradapter unverändert weiter.

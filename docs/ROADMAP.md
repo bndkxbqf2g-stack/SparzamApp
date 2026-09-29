@@ -116,3 +116,11 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Ausgewiesenen Normalpreis eines belegten Angebots als getrennte reguläre Preisbeobachtung erhalten.
 - [ ] Hierarchie über weitere Produktfamilien systematisch ausbauen; die vollständige Katalogmigration bleibt offen.
 - [ ] Angebotsquellen automatisiert aus realen Prospekten/Bildern einspeisen und Gültigkeit/Filialbezug prüfen.
+
+
+## Update 29.09.2026 – Bring-Hotspotadapter
+- [x] Share-Link-Struktur für die sechs Zielhändler analysiert; feste Prospekt-BRN von dauerhaftem „aktuell“-Abruf getrennt.
+- [x] Optionalen standortbezogenen Bring-Adapter für aktuelle Prospektseiten, strukturierte Produkt-Hotspots, Bilder, Angebots- und Normalpreise implementiert.
+- [x] Bring-Angebote laufen mit Gültigkeit und Nachweis durch den bestehenden Angebots-/PriceObservation-Vertrag.
+- [ ] Live-Abruf in GitHub aktivieren, sobald die drei Bring-Zugangsdaten als Repository-Secrets hinterlegt sind; bis dahin bleiben die offiziellen Händleradapter führend.
+- [ ] Bild-only-Prospektinhalte nur dann zusätzlich per OCR auswerten, wenn ein eigener Confidence-/Review-Pfad verhindert, dass erkannte Texte oder Preise ungeprüft routenfähig werden.

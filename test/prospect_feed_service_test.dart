@@ -68,4 +68,61 @@ void main() {
       'error',
     );
   });
+
+  test('parses Bring brochure pages and leaflet evidence', () {
+    final result = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-09-29T18:00:00Z",
+  "sources": [
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "recordCount": 1,
+      "prospects": [
+        {
+          "id": "brn:bring-de:offersbrochure:218970",
+          "title": "Lidl",
+          "url": "https://deeplink.getbring.com/view/offers/bring-de/brn:bring-de:offersbrochure:218970/0",
+          "thumbnailUrl": "https://cdn.example/cover.jpg",
+          "pageSamples": [
+            {
+              "number": 1,
+              "image": "https://cdn.example/page1.jpg",
+              "zoom": "https://cdn.example/page1.jpg",
+              "keyWords": "Milbona Schmand 200 g"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "offers": [
+    {
+      "sourceId": "bring-lidl-1",
+      "productLabel": "Milbona Schmand 200 g",
+      "storeName": "Lidl",
+      "offerPrice": 0.69,
+      "originalPrice": 0.89,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "source": "leaflet",
+      "proofRef": "https://deeplink.getbring.com/view/offers/bring-de/brn:bring-de:offersbrochure:218970/0",
+      "imageUrl": "https://cdn.example/schmand.png"
+    }
+  ]
+}
+''');
+
+    final lidl = result.prospects.firstWhere((item) => item.storeName == 'Lidl');
+    expect(lidl.pages, hasLength(1));
+    expect(lidl.pages.single.imageUrl, 'https://cdn.example/page1.jpg');
+    expect(lidl.recordCount, 1);
+    expect(result.records, hasLength(1));
+    expect(result.records.single.source, 'leaflet');
+    expect(result.records.single.offerPrice, 0.69);
+    expect(result.records.single.originalPrice, 0.89);
+    expect(result.records.single.imageUrl, 'https://cdn.example/schmand.png');
+    expect(result.records.single.proofRef, contains('offersbrochure:218970'));
+  });
+
 }
