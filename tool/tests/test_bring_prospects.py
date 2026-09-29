@@ -25,11 +25,14 @@ class BringProspectTest(unittest.TestCase):
                 brochure_id = "brn:bring-de:offersbrochure:" + brochure_number
                 url = (
                     "https://enjoy.getbring.com/ZAzR?"
-                    "af_web_dp=https%3A%2F%2Fdeeplink.getbring.com%2Fview%2Foffers%2F"
-                    "bring-de%2F" + brochure_id.replace(":", "%3A") + "%2F0"
-                    "&af_og_title=" + title.replace(" ", "%20")
-                    "&af_og_image=https%253A%252F%252Fofferscdn.bringapi.app%252F"
-                    "content%252Foffers%252Fbring-de%252F28%252F"
+                    + "af_web_dp=https%3A%2F%2Fdeeplink.getbring.com%2Fview%2Foffers%2F"
+                    + "bring-de%2F"
+                    + brochure_id.replace(":", "%3A")
+                    + "%2F0"
+                    + "&af_og_title="
+                    + title.replace(" ", "%20")
+                    + "&af_og_image=https%253A%252F%252Fofferscdn.bringapi.app%252F"
+                    + "content%252Foffers%252Fbring-de%252F28%252F"
                     + brochure_number
                     + "%252F1790000000000%252F00001_1500x2500_example.jpeg"
                 )
