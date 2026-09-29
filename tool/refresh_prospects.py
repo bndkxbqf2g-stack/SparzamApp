@@ -1657,7 +1657,9 @@ def main(selected_source_ids=None):
                 offers, prospects = PARSERS[parser_name](body, url)
             bring_data = bring_by_store.get(store)
             if bring_data:
-                offers = dedupe([*offers, *bring_data.get("offers", [])])
+                # dedupe keeps the last matching record. The retailer's
+                # structured record must win over the same Bring hotspot.
+                offers = dedupe([*bring_data.get("offers", []), *offers])
                 bring_prospect = bring_data.get("prospect")
                 if isinstance(bring_prospect, dict):
                     bring_id = clean(str(bring_prospect.get("id") or ""))

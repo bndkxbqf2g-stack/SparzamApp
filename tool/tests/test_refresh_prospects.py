@@ -8,6 +8,18 @@ refresh = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(refresh)
 
 class ProspectParserTest(unittest.TestCase):
+    def test_official_record_wins_over_matching_bring_hotspot(self):
+        shared = {
+            "storeName": "Lidl", "productLabel": "Schmand 200 g",
+            "validFrom": "2026-09-28", "validUntil": "2026-10-03",
+            "offerPrice": 0.69,
+        }
+        bring = {**shared, "source": "leaflet", "proofRef": "bring-page"}
+        official = {**shared, "source": "retailer", "proofRef": "lidl-product"}
+        merged = refresh.dedupe([bring, official])
+        self.assertEqual(len(merged), 1)
+        self.assertEqual(merged[0]["proofRef"], "lidl-product")
+
     def test_aldi_api_resolves_image_rendition_placeholders(self):
         payload = """
         {
