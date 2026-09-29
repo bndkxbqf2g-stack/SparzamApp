@@ -43,6 +43,13 @@ Modern, harmonisch, warmweiß/salbeigrün; getrennte Hauptbereiche. Die bereits 
 ## Pflege dieser Datei
 Neue dauerhafte Entscheidungen als D012, D013 usw. ergänzen. Bestehende Entscheidungen nur ändern, wenn die Änderung bewusst beschlossen wurde; Änderung kurz dokumentieren.
 
+## D018 – Angebote-Tab zeigt ausschließlich den aktuellen Prospekt
+Die sichtbare Rubrik „Angebote“ ist eine aktuelle Prospektansicht. Sie zeigt
+nur Prospektdatensätze, deren Gültigkeitszeitraum heute umfasst. Gespeicherte
+oder historische Angebote bleiben intern für Preisbeobachtungen und die
+Routenplanung erhalten, werden aber nicht mit der aktuellen Prospektansicht
+vermischt.
+
 ## D012 – Bonpositionen bleiben als Beobachtungen erhalten
 Jede vollständig geprüfte Produktzeile eines Bons wird als historische Bonbeobachtung gespeichert, auch wenn noch keine sichere Katalogzuordnung möglich ist. Pfand, Leergut-Rückgaben und reine Rabattzeilen werden nicht als Produkte gespeichert. Unsichere Beobachtungen dürfen später gelernt/zugeordnet werden, ohne bereits als sicherer Katalogpreis zu gelten.
 

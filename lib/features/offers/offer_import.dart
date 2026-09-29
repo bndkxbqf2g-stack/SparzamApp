@@ -1,6 +1,7 @@
 import '../../models/offer.dart';
 import '../../models/product.dart';
 import '../catalog/product_identity.dart';
+import 'offer_filter.dart';
 
 class OfferImportRecord {
   const OfferImportRecord({
@@ -27,6 +28,23 @@ class OfferImportRecord {
   final String? proofRef;
   final String? imageUrl;
 }
+
+/// Returns only records belonging to a prospect that is valid today.
+///
+/// The feed may retain older prospect records for diagnostics and price
+/// history. The user-facing Angebote tab must not expose those records.
+List<OfferImportRecord> currentProspectRecords(
+  Iterable<OfferImportRecord> records, {
+  DateTime? now,
+}) => records
+    .where(
+      (record) => isOfferDateRangeActive(
+        validFrom: record.validFrom,
+        validUntil: record.validUntil,
+        now: now,
+      ),
+    )
+    .toList(growable: false);
 
 class OfferImportResolution {
   const OfferImportResolution({

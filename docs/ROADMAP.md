@@ -27,6 +27,10 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 - Effektivpreise korrekt vergleichen.
 - Einkaufsliste gegen aktuelle Angebote prüfen.
 - Keine künstlichen Produktduplikate durch Angebote erzeugen.
+- [x] Sichtbare Rubrik „Angebote“ zunächst ausschließlich auf den aktuellen
+  Prospektfeed und gültige Prospektzeiträume begrenzen.
+- [ ] Prospektfeed weiter auf vollständige Artikelbilder, Kategorien,
+  Filialbezug und belastbare Gültigkeit ausbauen.
 
 ## Phase D – Alltagstaugliche Datenerfassung
 - Kassenbons möglichst automatisch.

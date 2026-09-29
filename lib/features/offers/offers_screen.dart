@@ -5,31 +5,31 @@ import '../../models/offer.dart';
 import '../../models/price_point.dart';
 import '../../models/product.dart';
 import 'offer_import.dart';
-import 'offer_card.dart';
-import 'offer_editor_screen.dart';
-import 'offer_filter.dart';
-import 'offer_filter_bar.dart';
-import 'official_offer_links.dart';
 
 class OffersScreen extends StatefulWidget {
   const OffersScreen({
     super.key,
-    required this.offers,
-    required this.priceHistory,
-    required this.onSave,
-    required this.onDelete,
+    this.offers = const [],
+    this.priceHistory = const [],
+    this.onSave,
+    this.onDelete,
     required this.catalogProducts,
     this.prospectRecords = const [],
     this.onAddToShoppingList,
+    this.now,
   });
 
+  // Kept for the shell/route data contract. The Angebote tab deliberately
+  // renders only the current prospect feed; stored offers remain available to
+  // the pricing and route pipeline.
   final List<Offer> offers;
   final List<PricePoint> priceHistory;
-  final Future<List<Offer>> Function(Offer offer) onSave;
-  final Future<List<Offer>> Function(Offer offer) onDelete;
+  final Future<List<Offer>> Function(Offer offer)? onSave;
+  final Future<List<Offer>> Function(Offer offer)? onDelete;
   final List<Product> catalogProducts;
   final List<OfferImportRecord> prospectRecords;
   final ValueChanged<Product>? onAddToShoppingList;
+  final DateTime? now;
 
   @override
   State<OffersScreen> createState() => _OffersScreenState();
@@ -37,23 +37,11 @@ class OffersScreen extends StatefulWidget {
 
 class _OffersScreenState extends State<OffersScreen> {
   final searchController = TextEditingController();
-  late List<Offer> offers;
-  var filter = OfferStatusFilter.active;
   var query = '';
-  var busy = false;
 
   @override
   void initState() {
     super.initState();
-    offers = [...widget.offers];
-  }
-
-  @override
-  void didUpdateWidget(covariant OffersScreen oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.offers != widget.offers) {
-      offers = [...widget.offers];
-    }
   }
 
   @override
@@ -62,136 +50,53 @@ class _OffersScreenState extends State<OffersScreen> {
     super.dispose();
   }
 
-  Future<void> _edit([Offer? offer]) async {
-    if (busy || widget.catalogProducts.isEmpty) return;
-    setState(() => busy = true);
-    try {
-      final result = await Navigator.of(context).push<Offer>(
-        MaterialPageRoute(
-          builder: (_) => OfferEditorScreen(
-            offer: offer,
-            catalogProducts: widget.catalogProducts,
-          ),
-        ),
-      );
-      if (!mounted || result == null) return;
-      final next = await widget.onSave(result);
-      if (mounted) setState(() => offers = next);
-    } catch (_) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Angebot konnte nicht gespeichert werden.')),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => busy = false);
-    }
-  }
-
-  Future<void> _delete(Offer offer) async {
-    if (busy) return;
-    setState(() => busy = true);
-    try {
-      final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Angebot löschen?'),
-            content: const Text('Das Angebot wird dauerhaft aus der App entfernt.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text('Abbrechen'),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: const Text('Löschen'),
-              ),
-            ],
-          ),
-        ) ??
-        false;
-      if (!mounted || !confirmed) return;
-
-      final next = await widget.onDelete(offer);
-      if (mounted) setState(() => offers = next);
-    } catch (_) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Angebot konnte nicht gelöscht werden.')),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => busy = false);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final visible = filterOffers(
-      offers,
-      status: filter,
-      query: query,
-      catalogProducts: widget.catalogProducts,
-    );
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Angebote'),
         centerTitle: true,
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: busy || widget.catalogProducts.isEmpty ? null : _edit,
-        icon: const Icon(Icons.add),
-        label: const Text('Angebot'),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
         children: [
           const Center(child: Text('Die besten Preise. Für dich.')),
           const SizedBox(height: 18),
-          OfferFilterBar(
+          TextField(
             controller: searchController,
-            filter: filter,
-            onQueryChanged: (value) => setState(() => query = value),
-            onFilterChanged: (value) => setState(() => filter = value),
+            onChanged: (value) => setState(() => query = value),
+            decoration: InputDecoration(
+              hintText: 'Aktuelles Prospekt durchsuchen',
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: query.isEmpty
+                  ? null
+                  : IconButton(
+                      tooltip: 'Suche löschen',
+                      onPressed: () {
+                        searchController.clear();
+                        setState(() => query = '');
+                      },
+                      icon: const Icon(Icons.close),
+                    ),
+              filled: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide.none,
+              ),
+            ),
           ),
           const SizedBox(height: 18),
-          const OfficialOfferLinks(),
-          const SizedBox(height: 26),
-          if (widget.prospectRecords.isNotEmpty) ...[
-            Text('Prospektangebote nach Markt',
-                style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 6),
-            const Text('Lebensmittel stehen zuerst und sind sinnvoll gruppiert.'),
-            const SizedBox(height: 14),
-            _ProspectOffers(
-              records: widget.prospectRecords,
-              query: query,
-              catalogProducts: widget.catalogProducts,
-              onAddToShoppingList: widget.onAddToShoppingList,
-            ),
-            const SizedBox(height: 26),
-          ],
-          Text('${visible.length} gespeicherte Angebote',
-              style: Theme.of(context).textTheme.titleMedium),
+          Text('Aktuelles Prospekt',
+              style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 6),
-          const Text('Bei einer Neuinstallation sind drei Beispielangebote enthalten.'),
+          const Text('Es werden ausschließlich aktuell gültige Prospektangebote angezeigt.'),
           const SizedBox(height: 14),
-          if (visible.isEmpty)
-            _EmptyOffers(filter: filter, hasQuery: query.trim().isNotEmpty)
-          else
-            for (var index = 0; index < visible.length; index++) ...[
-              OfferCard(
-                offer: visible[index],
-                priceHistory: widget.priceHistory,
-                catalogProducts: widget.catalogProducts,
-                onEdit: busy ? null : () => _edit(visible[index]),
-                onDelete: busy ? null : () => _delete(visible[index]),
-                onAddToShoppingList: widget.onAddToShoppingList,
-              ),
-              if (index < visible.length - 1) const SizedBox(height: 10),
-            ],
-
+          _ProspectOffers(
+            records: currentProspectRecords(widget.prospectRecords, now: widget.now),
+            query: query,
+            catalogProducts: widget.catalogProducts,
+            onAddToShoppingList: widget.onAddToShoppingList,
+          ),
         ],
       ),
     );
@@ -224,12 +129,6 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     final normalizedQuery = widget.query.trim().toLowerCase();
     final byStore = <String, List<OfferImportRecord>>{};
     for (final record in widget.records) {
-      if (!isOfferDateRangeActive(
-        validFrom: record.validFrom,
-        validUntil: record.validUntil,
-      )) {
-        continue;
-      }
       final searchable = '${record.storeName} ${record.productLabel}'.toLowerCase();
       if (normalizedQuery.isNotEmpty && !searchable.contains(normalizedQuery)) {
         continue;

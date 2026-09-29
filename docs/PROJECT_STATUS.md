@@ -21,6 +21,10 @@
 - Budget- und Diagnosefunktionen.
 
 ## Zuletzt umgesetzt
+- Die Rubrik „Angebote“ zeigt ausschließlich aktuell gültige, aus dem
+  aktuellen Prospektfeed ausgelesene Angebote. Gespeicherte/manuelle Angebote
+  bleiben für Preis- und Routenlogik erhalten, werden dort aber nicht mit der
+  Prospektansicht vermischt.
 - Gewichtsartikel und kg-Mengen im Bon-Parser sauberer getrennt.
 - Gedruckte Kilopreise werden sicher gelesen und im Review gekennzeichnet.
 - Exaktes Matching für gewichtete Bananen ergänzt.
@@ -36,6 +40,14 @@ Eine intelligente und alltagstaugliche Preisdatenbank aufbauen:
 4. Bestätigte Nutzerzuordnungen als Lernsignal verwenden.
 5. Angebote als zeitabhängige Preise behandeln, nicht als neue Produkte.
 6. Preisqualität/Herkunft/Aktualität nachvollziehbar halten.
+
+### Angebotsansicht
+- Die sichtbare Rubrik „Angebote“ ist bewusst auf den aktuellen Prospekt
+  beschränkt.
+- Abgelaufene Prospektdatensätze und gespeicherte Einzelangebote werden nicht
+  angezeigt.
+- Die Daten bleiben intern erhalten, damit die getrennte Preis-/Routenpipeline
+  weiterhin historische Nachweise und bestätigte Angebote verwenden kann.
 
 ## Noch offen / nächste sinnvolle Arbeitspakete
 - Lernendes Produktmatching und Alias-/Zuordnungswissen entwerfen und modular implementieren.

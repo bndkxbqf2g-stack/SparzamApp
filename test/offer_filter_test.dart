@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/features/offers/offer_filter.dart';
 import 'package:sparzamapp/models/offer.dart';
 
@@ -108,6 +109,31 @@ void main() {
         now: now,
       ).map((offer) => offer.id),
       ['active'],
+    );
+  });
+
+  test('currentProspectRecords excludes expired records', () {
+    final records = [
+      OfferImportRecord(
+        sourceId: 'current',
+        productLabel: 'Milch',
+        storeName: 'Lidl',
+        offerPrice: 0.99,
+        validFrom: DateTime(2026, 9, 22),
+        validUntil: DateTime(2026, 9, 29),
+      ),
+      OfferImportRecord(
+        sourceId: 'expired',
+        productLabel: 'Butter',
+        storeName: 'Lidl',
+        offerPrice: 1.49,
+        validUntil: DateTime(2026, 9, 28),
+      ),
+    ];
+
+    expect(
+      currentProspectRecords(records, now: now).map((record) => record.sourceId),
+      ['current'],
     );
   });
 }
