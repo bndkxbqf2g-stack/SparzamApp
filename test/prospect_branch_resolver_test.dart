@@ -26,11 +26,11 @@ void main() {
   test('keeps existing branches when the postcode is unknown', () {
     const current = [
       ProspectBranch(
-        storeName: 'REWE',
-        branchId: '461683',
-        postalCode: '97209',
-        location: 'Veitshöchheim',
-        officialUrl: 'https://www.rewe.de/',
+        storeName: 'Netto',
+        branchId: '4371',
+        postalCode: '97291',
+        location: 'Thüngersheim',
+        officialUrl: 'https://www.netto-online.de/',
       ),
     ];
 

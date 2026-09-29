@@ -13,7 +13,7 @@ void main() {
   );
   final external = MarketPrice(
     productId: 'milk',
-    storeName: 'REWE',
+    storeName: 'Netto',
     price: 1.09,
     updatedAt: DateTime.now(),
     source: MarketPriceSource.openPrices,

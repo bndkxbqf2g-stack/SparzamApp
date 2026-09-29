@@ -41,7 +41,7 @@ void main() {
         pages: [],
       ),
       ProspectIssue(
-        storeName: 'REWE',
+        storeName: 'Netto',
         title: 'Aktionsprospekt',
         pages: [],
       ),

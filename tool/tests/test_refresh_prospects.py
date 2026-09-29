@@ -439,6 +439,31 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(offers[0]["validFrom"], "2026-09-21")
         self.assertEqual(offers[0]["validUntil"], "2026-09-26")
 
+    def test_netto_reads_current_store_tiles_with_images(self):
+        html = """
+        <div data-slider-headline="gültig von Montag, 28.09.26 - Freitag, 02.10.26">
+          <li aria-label=" Zum Artikel: Rispentomaten, Niederlande, Kl. I, 1 kg, UVP 2.99, 2,29 Euro, 23 % günstiger">
+            <img data-src="/media_nfs/images/tomaten.webp">
+          </li>
+          <li aria-label=" Zum Artikel: Kiwi gold, Neuseeland, Stück, Aktion, 0,59 Euro">
+            <img data-src="/media_nfs/images/kiwi.webp">
+          </li>
+        </div>
+        """
+        offers, _ = refresh.parse_netto(
+            html,
+            "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371",
+        )
+        self.assertEqual(len(offers), 2)
+        self.assertEqual(offers[0]["productLabel"], "Rispentomaten, Niederlande, Kl. I, 1 kg")
+        self.assertEqual(offers[0]["offerPrice"], 2.29)
+        self.assertEqual(offers[0]["originalPrice"], 2.99)
+        self.assertTrue(offers[0]["imageUrl"].endswith("/tomaten.webp"))
+        self.assertEqual(offers[0]["validFrom"], "2026-09-28")
+        self.assertEqual(offers[0]["validUntil"], "2026-10-02")
+        self.assertEqual(offers[1]["productLabel"], "Kiwi gold, Neuseeland, Stück")
+        self.assertEqual(offers[1]["offerPrice"], 0.59)
+
     def test_rewe_reads_public_action_price(self):
         html = """
         <p>Diese Woche 21.9. bis 27.9.</p>

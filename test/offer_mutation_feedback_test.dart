@@ -26,7 +26,7 @@ void main() {
       OfferImportRecord(
         sourceId: 'current',
         productLabel: 'Aktuelle Milch',
-        storeName: 'REWE',
+        storeName: 'Netto',
         originalPrice: 1.49,
         offerPrice: 0.99,
         validFrom: DateTime(2026, 9, 28),
@@ -35,7 +35,7 @@ void main() {
       OfferImportRecord(
         sourceId: 'expired',
         productLabel: 'Alte Milch',
-        storeName: 'REWE',
+        storeName: 'Netto',
         originalPrice: 1.49,
         offerPrice: 0.79,
         validFrom: DateTime(2026, 9, 21),
@@ -59,7 +59,7 @@ void main() {
     expect(find.text('Alte Milch'), findsNothing);
     expect(find.text('1 gespeicherte Angebote'), findsNothing);
 
-    await tester.tap(find.text('REWE'));
+    await tester.tap(find.text('Netto'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Milchprodukte'));
     await tester.pumpAndSettle();

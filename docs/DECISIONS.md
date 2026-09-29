@@ -50,6 +50,12 @@ oder historische Angebote bleiben intern für Preisbeobachtungen und die
 Routenplanung erhalten, werden aber nicht mit der aktuellen Prospektansicht
 vermischt.
 
+## D019 – Netto Thüngersheim nutzt die Filial-Produktkacheln
+Die Netto-Filialseite `4371` in Thüngersheim ist die Quelle für den aktuellen
+Prospektfeed. Produktname, Angebotspreis, optionaler Referenzpreis,
+Gültigkeitszeitraum und Bild werden aus den zugänglichen Produktkachel-
+Attributen gelesen. Die frühere Anchor-Text-Regel bleibt nur als Fallback.
+
 ## D012 – Bonpositionen bleiben als Beobachtungen erhalten
 Jede vollständig geprüfte Produktzeile eines Bons wird als historische Bonbeobachtung gespeichert, auch wenn noch keine sichere Katalogzuordnung möglich ist. Pfand, Leergut-Rückgaben und reine Rabattzeilen werden nicht als Produkte gespeichert. Unsichere Beobachtungen dürfen später gelernt/zugeordnet werden, ohne bereits als sicherer Katalogpreis zu gelten.
 

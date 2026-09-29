@@ -14,7 +14,6 @@ class OfficialOfferLinks extends StatelessWidget {
     ('PENNY', 'https://www.penny.de/angebote'),
     ('ALDI Süd', 'https://www.aldi-sued.de/angebote'),
     ('Netto', 'https://www.netto-online.de/filialangebote'),
-    ('REWE', 'https://www.rewe.de/angebote/nationale-angebote/'),
     ('Kaufland', 'https://filiale.kaufland.de/angebote.html'),
   ];
 
@@ -39,7 +38,7 @@ class OfficialOfferLinks extends StatelessWidget {
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Aktuelle Angebote bei 7 Märkten',
+          Text('Aktuelle Angebote bei 6 Märkten',
               style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 4),
           const Text(

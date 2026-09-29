@@ -52,7 +52,6 @@ const configuredProspectStores = <String>[
   'Kaufland',
   'PENNY',
   'Netto',
-  'REWE',
 ];
 
 String? officialProspectUrl(String storeName, [String? fallback]) {
@@ -67,8 +66,6 @@ String? officialProspectUrl(String storeName, [String? fallback]) {
       return 'https://www.penny.de/angebote';
     case 'Netto':
       return 'https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371';
-    case 'REWE':
-      return 'https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1/';
     default:
       return fallback;
   }

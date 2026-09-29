@@ -21,6 +21,12 @@
 - Budget- und Diagnosefunktionen.
 
 ## Zuletzt umgesetzt
+- REWE wurde als Händlerintegration entfernt. Die Händlerauswahl umfasst damit
+  wieder die sechs für dieses Projekt vorgesehenen Märkte; Netto Thüngersheim
+  bleibt als Filiale `4371` enthalten.
+- Die Netto-Filialseite für Thüngersheim wird jetzt über ihre tatsächlichen
+  Produktkacheln ausgelesen: 28 aktuelle Angebote mit Preis, Gültigkeit,
+  Nachweis und Bild-URL wurden erfolgreich erkannt.
 - Die Rubrik „Angebote“ zeigt ausschließlich aktuell gültige, aus dem
   aktuellen Prospektfeed ausgelesene Angebote. Gespeicherte/manuelle Angebote
   bleiben für Preis- und Routenlogik erhalten, werden dort aber nicht mit der

@@ -22,7 +22,6 @@ SOURCES = (
     ("lidl_zellingen", "Lidl", "https://www.lidl.de/c/online-prospekte/s10005610/", "lidl_api"),
     ("penny_retzbach", "PENNY", "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1", "penny_api"),
     ("netto_thuengersheim", "Netto", "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371", "netto"),
-    ("rewe_veitshoechheim", "REWE", "https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1/", "rewe"),
 )
 
 class VisibleTextParser(HTMLParser):
@@ -1346,7 +1345,11 @@ def parse_netto(html_text, base_url):
     page = parsed(html_text)
     whole = "\n".join(page.lines)
     validity = re.search(
-        r"gültig von Montag,\s*(\d{2}\.\d{2}\.\d{2,4})\s*-\s*Samstag,\s*(\d{2}\.\d{2}\.\d{2,4})",
+        r"gültig von [^,]+,\s*(\d{2}\.\d{2}\.\d{2,4})\s*-\s*[^,]+,\s*(\d{2}\.\d{2}\.\d{2,4})",
+        html_text,
+        flags=re.I,
+    ) or re.search(
+        r"gültig von [^,]+,\s*(\d{2}\.\d{2}\.\d{2,4})\s*-\s*[^,]+,\s*(\d{2}\.\d{2}\.\d{2,4})",
         whole,
         flags=re.I,
     )
@@ -1361,6 +1364,62 @@ def parse_netto(html_text, base_url):
                 valid_until = parsed_value
 
     offers = []
+    # The Thüngersheim store page renders its current filial offers as
+    # product tiles. The accessible product identity, prices and validity are
+    # in attributes rather than in anchor text; parsing only visible anchors
+    # therefore silently returned zero offers.
+    tile_re = re.compile(
+        r'<li\b[^>]*\baria-label="([^"]+)"[^>]*>(.*?)</li>',
+        re.I | re.S,
+    )
+    price_re = re.compile(
+        r"(\d+[,.](?:\d{2}|[.–-]))\s*Euro\b",
+        re.I,
+    )
+    regular_re = re.compile(
+        r"(?:UVP|statt)\s+(\d+[,.](?:\d{2}|[.–-]))",
+        re.I,
+    )
+    for tile in tile_re.finditer(html_text):
+        aria = clean(html.unescape(tile.group(1)))
+        block = tile.group(2)
+        if "zum artikel:" not in aria.lower():
+            continue
+        price_matches = list(price_re.finditer(aria))
+        if not price_matches:
+            continue
+        sale_match = price_matches[-1]
+        sale = _netto_money(sale_match.group(1))
+        label = re.sub(r"^.*?zum artikel:\s*", "", aria, flags=re.I)
+        label = re.split(
+            r",\s*(?:UVP|statt)\s+\d+[,.](?:\d{2}|[.–-])\s*,\s*"
+            r"\d+[,.](?:\d{2}|[.–-])\s*Euro",
+            label,
+            maxsplit=1,
+            flags=re.I,
+        )[0]
+        label = re.split(
+            r",\s*Aktion\s*,\s*\d+[,.](?:\d{2}|[.–-])\s*Euro",
+            label,
+            maxsplit=1,
+            flags=re.I,
+        )[0]
+        label = clean(label)
+        if len(label) < 2 or sale <= 0:
+            continue
+        regular_match = regular_re.search(aria)
+        regular = _netto_money(regular_match.group(1)) if regular_match else None
+        image_match = re.search(
+            r'(?:data-src|src)="([^"]+)"', block, flags=re.I,
+        )
+        image = urljoin(base_url, html.unescape(image_match.group(1))) if image_match else None
+        proof = base_url + "#article-" + stable_id("Netto", base_url, aria)
+        offers.append(record(
+            "Netto", label, sale, valid_from, valid_until, proof, regular, image,
+        ))
+    if offers:
+        return dedupe(offers), []
+
     trailing = re.compile(
         r"^(.*?)(?:-\d{1,2}\s*%\s*)?(?:statt|UVP)\s+"
         r"(\d+[,.]\d{2})\s+(\d+(?:[,.]\d{2}|[.–-]))\*?$",
@@ -1488,8 +1547,6 @@ PARSERS = {
     "penny": parse_penny,
     "penny_api": parse_penny_api,
     "netto": parse_netto,
-    "rewe": parse_rewe,
-    "rewe_api": parse_rewe_api,
 }
 
 def load_previous():
@@ -1504,10 +1561,26 @@ def active_previous(previous, store):
     today = date.today().isoformat()
     return [item for item in previous.get("offers", []) if item.get("storeName") == store and item.get("validUntil", "") >= today]
 
-def main():
+def main(selected_source_ids=None):
     previous = load_previous()
     all_offers, sources = [], []
-    for source_id, store, url, parser_name in SOURCES:
+    selected = set(selected_source_ids or ())
+    source_list = (
+        tuple(source for source in SOURCES if source[0] in selected)
+        if selected
+        else SOURCES
+    )
+    if selected:
+        selected_stores = {source[1] for source in source_list}
+        all_offers.extend(
+            item for item in previous.get("offers", [])
+            if item.get("storeName") not in selected_stores
+        )
+        sources.extend(
+            source for source in previous.get("sources", [])
+            if source.get("storeName") not in selected_stores
+        )
+    for source_id, store, url, parser_name in source_list:
         try:
             source_mode = parser_name
             if parser_name == "aldi_api":
@@ -1592,4 +1665,4 @@ def main():
     print("Prospektfeed:", len(payload["offers"]), "Angebote")
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))

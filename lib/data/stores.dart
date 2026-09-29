@@ -82,22 +82,6 @@ const stores = <Store>[
     },
   ),
   Store(
-    name: 'REWE',
-    branchId: '461683',
-    location: 'Veitshöchheim',
-    address: 'Pont-l\'Eveque-Allee 1, 97209 Veitshöchheim, Germany',
-    distanceKm: 16.5,
-    prices: {
-      'butter_streichzart': 1.99,
-      'butter_block': 2.29,
-      'milch_35': 1.49,
-      'bananen': 1.49,
-      'weintrauben': 1.99,
-      'hackfleisch': 5.29,
-      'nudeln': 1.19,
-    },
-  ),
-  Store(
     name: 'Kaufland',
     branchId: 'DE5103',
     location: 'Würzburg · Nürnberger Straße',
