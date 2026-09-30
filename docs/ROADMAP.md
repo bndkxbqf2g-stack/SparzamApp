@@ -148,3 +148,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   Märkte und danach kanonische Marktnamen stabil aufgelöst.
 - [x] Eine Regression prüft den Gleichstand zwischen EDEKA und Lidl und schützt
   die Auswahl vor einer zufälligen Quellreihenfolge.
+
+## Update 01.10.2026 – Mehrmarkt-End-to-End-Fixture
+- [x] Ein versionierter Warenkorb wird gegen vollständige 1-, 2- und
+  3-Markt-Kombinationen verglichen.
+- [x] Die Fixture prüft die gemeinsame Warenkorbepreisung, Rundfahrtkosten und
+  den Wechsel zurück zum Einzelmarkt bei hohen Fahrtkosten.
