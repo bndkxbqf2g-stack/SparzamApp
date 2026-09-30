@@ -48,4 +48,16 @@ Summe 1,29
       expect(draft.balances, isTrue);
     },
   );
+
+  test('OCR-Fehler lassen den Bildbeleg als unlesbar zurück', () async {
+    final text = await readReceiptFileText(
+      fileName: 'bon.png',
+      bytes: Uint8List.fromList([1, 2, 3]),
+      imageTextReader: ({required bytes, filePath}) async {
+        throw StateError('native OCR unavailable');
+      },
+    );
+
+    expect(text, isNull);
+  });
 }

@@ -117,11 +117,16 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
       final image = await ImagePicker().pickImage(source: ImageSource.camera);
       if (!mounted || image == null) return;
       final bytes = await image.readAsBytes();
-      final text = await readReceiptFileText(
-        fileName: 'Kameraaufnahme.jpg',
-        filePath: image.path,
-        bytes: bytes,
-      );
+      String? text;
+      try {
+        text = await readReceiptFileText(
+          fileName: 'Kameraaufnahme.jpg',
+          filePath: image.path,
+          bytes: bytes,
+        );
+      } catch (_) {
+        text = null;
+      }
       final unreadable = <String>[];
       final drafts = <({String name, ReceiptDraft draft})>[];
       if (text == null || text.trim().isEmpty) {
@@ -137,7 +142,9 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
         unreadableFiles: unreadable,
       );
     } catch (error) {
-      if (mounted) setState(() => errorMessage = 'Kamera konnte nicht geöffnet werden: $error');
+      if (mounted) {
+        setState(() => errorMessage = 'Kamera konnte nicht geöffnet werden: $error');
+      }
     } finally {
       if (mounted) setState(() => importing = false);
     }
@@ -167,11 +174,17 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
           unreadableFiles.add(file.name);
           continue;
         }
-        final text = await readReceiptFileText(
-          fileName: file.name,
-          filePath: file.path,
-          bytes: bytes,
-        );
+        String? text;
+        try {
+          text = await readReceiptFileText(
+            fileName: file.name,
+            filePath: file.path,
+            bytes: bytes,
+          );
+        } catch (_) {
+          unreadableFiles.add(file.name);
+          continue;
+        }
         if (text != null && text.trim().isNotEmpty) {
           if (_isStructuredReceiptFile(file.name)) {
             final draft = parseReceiptLedger(text);
@@ -657,7 +670,9 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                                 products: availableProducts,
                                                 selectedProductId: assignedProducts[key],
                                               );
-                                              if (!mounted || value == null) return;
+                                              if (!mounted || value == null) {
+                                                return;
+                                              }
                                               setState(() {
                                                 if (value.isEmpty) {
                                                   assignedProducts.remove(key);
@@ -680,7 +695,9 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                                   rawLabel: row.label,
                                                   quantityUnit: row.quantityUnit,
                                                 );
-                                                if (!mounted || product == null) return;
+                                                if (!mounted || product == null) {
+                                                  return;
+                                                }
                                                 final next = await widget.onCreateProduct!(product);
                                                 if (!mounted) return;
                                                 setState(() {

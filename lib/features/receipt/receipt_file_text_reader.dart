@@ -32,15 +32,26 @@ Future<String?> readReceiptFileText({
     return utf8.decode(bytes, allowMalformed: true);
   }
   if (isReceiptImageFile(lowerName)) {
-    return (imageTextReader ?? readReceiptImageText)(
-      bytes: bytes,
-      filePath: filePath,
-    );
+    try {
+      return await (imageTextReader ?? readReceiptImageText)(
+        bytes: bytes,
+        filePath: filePath,
+      );
+    } catch (_) {
+      // OCR is optional. The caller keeps the original image as an unreadable
+      // reference so a transient/native OCR error never drops the import.
+      return null;
+    }
   }
   if (!lowerName.endsWith('.pdf')) return null;
 
-  await pdfrxFlutterInitialize();
-  final document = await PdfDocument.openData(bytes, sourceName: fileName);
+  final PdfDocument document;
+  try {
+    await pdfrxFlutterInitialize();
+    document = await PdfDocument.openData(bytes, sourceName: fileName);
+  } catch (_) {
+    return null;
+  }
   try {
     final text = StringBuffer();
     for (final page in document.pages) {
@@ -57,10 +68,15 @@ Future<String?> readReceiptFileText({
           4000000 / math.max(1.0, page.width * page.height),
         ),
       );
-      final rendered = await page.render(
-        fullWidth: page.width * scale,
-        fullHeight: page.height * scale,
-      );
+      PdfImage? rendered;
+      try {
+        rendered = await page.render(
+          fullWidth: page.width * scale,
+          fullHeight: page.height * scale,
+        );
+      } catch (_) {
+        continue;
+      }
       if (rendered == null) continue;
       try {
         final renderedText = await (bitmapTextReader ?? readReceiptBitmapText)(
