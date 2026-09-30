@@ -166,3 +166,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   Teilwarenkorb bezeichnet; eine vollständige Markt-Empfehlung bleibt aus.
 - [x] Regressionen decken Datenmodell, Empfehlungsstatus und sichtbare UI-Warnung
   ab.
+
+## Update 01.10.2026 – Dashboard vor Teilrouten schützen
+- [x] Das Dashboard zeigt eine unvollständige Route ausdrücklich als vorläufige
+  Teilroute und verlinkt zur Preisabdeckung.
+- [x] Teilkosten werden nicht als Sparpotenzial behauptet und nicht in die
+  Budgetplanung übernommen.
+- [x] Daten- und Widgettests decken die Teilroute ab.

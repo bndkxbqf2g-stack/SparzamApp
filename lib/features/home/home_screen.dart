@@ -44,8 +44,11 @@ class HomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           _SavingsCard(
-            amount: euro(data.todaySavings),
+            amount: data.savingsHasDataGaps ? '—' : euro(data.todaySavings),
             itemCount: data.itemCount,
+            detail: data.savingsHasDataGaps
+                ? 'Preisabdeckung für den Vergleich unvollständig'
+                : 'auf ${data.itemCount} ausgewählten Produkten',
             onTap: data.itemCount == 0 ? onOpenList : onOpenRoute,
           ),
           const SizedBox(height: 26),
@@ -66,7 +69,9 @@ class HomeScreen extends StatelessWidget {
                 child: _OverviewCard(
                   icon: Icons.route_outlined,
                   title: 'Beste Route',
-                  value: data.routeTotal == 0
+                  value: data.routeHasDataGaps
+                      ? 'Teilroute prüfen'
+                      : data.routeTotal == 0
                       ? 'Berechnen'
                       : euro(data.routeTotal),
                   onTap: data.itemCount == 0 ? onOpenList : onOpenRoute,
@@ -74,6 +79,27 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
+          if (data.routeHasDataGaps || data.savingsHasDataGaps) ...[
+            const SizedBox(height: 12),
+            Card(
+              color: Colors.amber.shade50,
+              child: ListTile(
+                leading: Icon(Icons.info_outline, color: Colors.amber.shade900),
+                title: const Text(
+                  'Preisabdeckung prüfen',
+                  style: TextStyle(fontWeight: FontWeight.w700),
+                ),
+                subtitle: Text(
+                  data.routeHasDataGaps
+                      ? '${data.routeCoverageLabel}. Öffne die Route für die '
+                          'fehlenden Positionen.'
+                      : 'Für den Einzelmarktvergleich fehlen noch belastbare '
+                          'Preise. Öffne die Route für die Details.',
+                ),
+                onTap: onOpenRoute,
+              ),
+            ),
+          ],
           const SizedBox(height: 26),
           _SectionHeader(title: 'Aktuelle Highlights', onTap: onOpenOffers),
           const SizedBox(height: 12),
@@ -137,11 +163,13 @@ class _SavingsCard extends StatelessWidget {
   const _SavingsCard({
     required this.amount,
     required this.itemCount,
+    required this.detail,
     required this.onTap,
   });
 
   final String amount;
   final int itemCount;
+  final String detail;
   final VoidCallback onTap;
 
   @override
@@ -173,9 +201,7 @@ class _SavingsCard extends StatelessWidget {
                               fontSize: 36,
                               fontWeight: FontWeight.w800)),
                       Text(
-                        itemCount == 0
-                            ? 'Füge Artikel zur Einkaufsliste hinzu'
-                            : 'auf $itemCount ausgewählten Produkten',
+                        itemCount == 0 ? 'Füge Artikel zur Einkaufsliste hinzu' : detail,
                         style: const TextStyle(color: Color(0xFFE1EDE1)),
                       ),
                     ],

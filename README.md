@@ -9,6 +9,9 @@ SparzamApp ist ein Flutter-Prototyp für intelligent geplante Lebensmitteleinkä
 ### Start / Dashboard
 - Zeigt Einkaufs-/Routeninformationen, Budgetstatus, Sparpotenzial, aktive Angebote und Wiederkaufhinweise.
 - Verwendet die aktuelle optimierte Route und eine Ein-Markt-Vergleichsroute als Grundlage für Kosten- und Sparanzeigen.
+- Bei unvollständiger Preisabdeckung zeigt das Dashboard eine vorläufige
+  Teilroute, setzt das Sparpotenzial auf „—“ und belastet das Budget nicht mit
+  einem unvollständigen Plan. Die fehlenden Preisbelege werden verlinkt.
 - Monatswerte werden aus der lokalen Kaufhistorie gebildet.
 
 ### Einkaufsliste
