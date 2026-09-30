@@ -27,7 +27,7 @@ Bei jedem behobenen Fehler kommt ein enger Test für Ursache und Gegenbeispiel h
 
 ## Visuelle Tests
 
-Flutter `testWidgets` ermöglicht reproduzierbare Widget- und Interaktionsregressionen. Der aktuelle CI-Workflow führt jedoch keinen Golden-Datei-Abgleich, Screenshot-Vergleich oder nativen iOS-Build aus. Für eine konkrete Layoutänderung:
+Flutter `testWidgets` ermöglicht reproduzierbare Widget- und Interaktionsregressionen. `widget_test.dart` prüft zusätzlich einen 390×844-Viewport auf Flutter-Layoutfehler; das ist ein schmaler mobiler Widget-Smoke-Test, kein iPhone-Simulatornachweis. Der aktuelle CI-Workflow führt keinen Golden-Datei-Abgleich, Screenshot-Vergleich oder nativen iOS-Build aus. Für eine konkrete Layoutänderung:
 
 1. Widget-/Flow-Test für Zustand und Interaktion ergänzen.
 2. Auf den relevanten kleinen und großen Layoutbreiten rendern und Overflow/Bedienbarkeit prüfen.
