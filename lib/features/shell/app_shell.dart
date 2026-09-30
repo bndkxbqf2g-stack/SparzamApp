@@ -63,6 +63,7 @@ import 'shell_routing.dart';
 import 'shell_dashboard.dart';
 import 'shell_navigation.dart';
 import 'shell_pages.dart';
+import 'active_store_count.dart';
 import 'shell_pricing.dart';
 import 'shell_purchase_coordinator.dart';
 import 'shell_price_coordinator.dart';
@@ -1037,9 +1038,7 @@ class _AppShellState extends State<AppShell> {
       onDeletePurchase: deletePurchase,
       onEditMobility: openMobilitySettings,
       onEditStores: openStoreSettings,
-      storeCount: mobility.enabledStoreNames.isEmpty
-          ? 7
-          : mobility.enabledStoreNames.length,
+      storeCount: activeStoreCount(mobility.enabledStoreNames),
       onOpenCatalog: openCatalog,
       onEditPriceData: openPriceDataSettings,
       onSavePrice: saveMarketPrice,

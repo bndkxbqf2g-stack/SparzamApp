@@ -154,3 +154,7 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   3-Markt-Kombinationen verglichen.
 - [x] Die Fixture prüft die gemeinsame Warenkorbepreisung, Rundfahrtkosten und
   den Wechsel zurück zum Einzelmarkt bei hohen Fahrtkosten.
+
+## Update 01.10.2026 – Händleranzahl konsistent halten
+- [x] Profil, Marktfilter und Route verwenden dieselbe konfigurierte
+  Händlerliste; die leere Auswahl zählt die sechs Projektmärkte.
