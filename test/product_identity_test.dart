@@ -115,6 +115,24 @@ void main() {
     expect(identifyProduct('Apfel rot 1kg').familyKey, 'aepfel');
   });
 
+  test('compound groceries do not inherit the ingredient price identity', () {
+    expect(identifyProduct('Eier-Spätzle').familyKey, 'nudeln');
+    expect(identifyProduct('Eier-Spätzle').productType, 'spaetzle');
+    expect(identifyProduct('Schinken-Käse-Croissant').familyKey, 'backware');
+    expect(identifyProduct('Weizenbrötchen').familyKey, 'broetchen');
+    expect(identifyProduct('Linguine').familyKey, 'nudeln');
+    expect(identifyProduct('Kritharaki').familyKey, 'nudeln');
+  });
+
+  test('abbreviated beef mince does not match mixed mince', () {
+    final beef = identifyProduct('XXL R.-Hackfleisch');
+    expect(beef.meatType, 'rind');
+    expect(
+      compatibleProductIdentity(beef, identifyProduct('Hackfleisch gemischt')),
+      isFalse,
+    );
+  });
+
   test('compound product names do not use a bare substring as identity', () {
     expect(identifyProduct('Milchreis').familyKey, isNull);
     expect(identifyProduct('Wa.Stein.Pizza Mozz. 350g').familyKey, 'pizza');

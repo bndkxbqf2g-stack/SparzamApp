@@ -28,6 +28,7 @@ import 'shopping_additions.dart';
 import 'shopping_list_header.dart';
 import 'shopping_input.dart';
 import 'shopping_recent_choices.dart';
+import 'receipt_search_products.dart';
 import 'shopping_search_results.dart';
 import 'shopping_list_status.dart';
 import 'aisle_order_dialog.dart';
@@ -104,6 +105,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   List<String> aisleOrder = <String>[];
   bool tileView = true;
   List<ReceiptPriceStat> receiptPriceStats = const <ReceiptPriceStat>[];
+  List<Product> receiptCandidates = const <Product>[];
 
   @override
   void initState() {
@@ -119,6 +121,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     if (!mounted) return;
     setState(() {
       receiptPriceStats = buildReceiptPriceStats(observations);
+      receiptCandidates = receiptSearchProducts(
+        observations,
+        catalogProducts: widget.catalogProducts,
+      );
     });
   }
 
@@ -153,7 +159,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     knownItems: knownItems,
     recentPurchases: widget.recentPurchases,
     preferredProductByGroup: widget.preferredProductByGroup,
-    catalogProducts: widget.catalogProducts,
+    catalogProducts: [...widget.catalogProducts, ...receiptCandidates],
     offers: widget.offers,
     marketPrices: widget.marketPrices,
     receiptPriceStats: receiptPriceStats,
@@ -174,7 +180,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       buildRelatedProductInterpretations(
         query: controller.text,
         primarySuggestions: suggestions,
-        catalogProducts: widget.catalogProducts,
+        catalogProducts: [...widget.catalogProducts, ...receiptCandidates],
       );
 
   List<Product> get quickProducts => buildQuickProducts(

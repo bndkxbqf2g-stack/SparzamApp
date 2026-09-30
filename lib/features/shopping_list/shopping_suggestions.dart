@@ -76,7 +76,9 @@ List<Product> buildSuggestions({
     ].map(identifyProduct).where((identity) => identity.isKnown).toList();
     if (identities.isNotEmpty) {
       return identities.any(
-        (candidate) => compatibleProductIdentity(queryIdentity, candidate),
+        (candidate) =>
+            compatibleProductIdentity(queryIdentity, candidate) ||
+            _openMilkChoice(queryIdentity, candidate),
       );
     }
     return textMatch;
@@ -127,6 +129,10 @@ List<Product> buildSuggestions({
       }
     }
 
+    final aExact = _matchesExactSearchLabel(a, query);
+    final bExact = _matchesExactSearchLabel(b, query);
+    if (aExact != bExact) return aExact ? -1 : 1;
+
     final aLearned = knownItems.any((item) => item.id == a.id);
     final bLearned = knownItems.any((item) => item.id == b.id);
     if (aLearned != bLearned) return aLearned ? -1 : 1;
@@ -154,6 +160,25 @@ List<Product> buildSuggestions({
 
   return matches;
 }
+
+bool _matchesExactSearchLabel(Product product, String query) {
+  final normalized = normalizeIdentityText(query);
+  return normalizeIdentityText(product.name) == normalized ||
+      product.aliases.any(
+        (alias) => normalizeIdentityText(alias) == normalized,
+      );
+}
+
+// Search may offer a fat-level choice for an unspecified H-milk receipt label.
+// This only retrieves separate products; it never transfers their prices or
+// confirms that the receipt's unknown fat level matches either choice.
+bool _openMilkChoice(ProductIdentity query, ProductIdentity candidate) =>
+    query.familyKey == 'milch' &&
+    query.variant == 'h' &&
+    query.fatPercent == null &&
+    candidate.familyKey == 'milch' &&
+    candidate.fatPercent != null &&
+    candidate.variant == null;
 
 /// Returns the lowest usable exact price or comparable recent receipt median
 /// for one product. This is search ranking evidence, not a price guarantee.
@@ -224,7 +249,10 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
       .where((quote) => quote.sourceLabel == 'Bonpreis')
       .map((quote) => quote.storeName)
       .toSet();
-  for (final stat in receiptStatsForProduct(product, receiptPriceStats)) {
+  final matchingReceiptStats = product.id.startsWith('receipt_suggestion_')
+      ? const <ReceiptPriceStat>[]
+      : receiptStatsForProduct(product, receiptPriceStats);
+  for (final stat in matchingReceiptStats) {
     if (!stat.comparable ||
         !stat.latestAt.isAfter(cutoff) ||
         (enabled.isNotEmpty && !enabled.contains(stat.storeName)) ||

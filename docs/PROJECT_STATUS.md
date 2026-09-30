@@ -80,6 +80,23 @@ Eine intelligente und alltagstaugliche Preisdatenbank aufbauen:
   Ohne verlässliche Angebotsdaten darf die App dort keine aktuellen Preise
   anzeigen; ein belastbarer offizieller Feed bleibt offen.
 
+## Update 30.09.2026 – Wiederholung des Kaufland-Einkaufs vom 26.05.2026
+- Der Originalbeleg `20260923_100506.pdf` wurde lokal vollständig simuliert:
+  78 Produktzeilen und 102 Buchungszeilen einschließlich Rabatten und Pfand
+  balancieren zur gedruckten Summe von 184,08 €. Alle 78 Produktzeilen sind
+  nach Bonimport über ihr belegtes Label wieder auffindbar; wiederholte Zeilen
+  ergeben 72 unterschiedliche Einkaufslistenprodukte und 132 Einheiten.
+- Unbestätigte Bonlabels bekannter Familien werden bis zu zwölf Monate als
+  Suchvorschläge erinnert und sichtbar mit „Früher gekauft · Sorte und Packung
+  prüfen“ markiert. Sie werden erst durch Antippen zur Einkaufsliste übernommen.
+- Solche Suchvorschläge erhalten keinen historischen Familienmedian und keinen
+  Routenpreis. Bei `K.H-Milch` erscheinen zusätzlich 1,5-%- und 3,5-%-Milch als
+  getrennte Auswahl; die unbekannte Fettstufe wird nicht erfunden.
+- Fehlzuordnungen aus dem Beleg wurden generisch korrigiert: Eier-Spätzle zählt
+  zu Nudeln, Käse-Croissant zu Backwaren und `R.-Hackfleisch` zu Rind statt zu
+  gemischtem Hack. Linguine, Kritharaki und zusammengesetzte
+  Weizenbrötchen-Bezeichnungen werden erkannt.
+
 ### Angebotsansicht
 - Die sichtbare Rubrik „Angebote“ ist bewusst auf den aktuellen Prospekt
   beschränkt.

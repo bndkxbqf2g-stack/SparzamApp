@@ -12,11 +12,17 @@ List<MarketPrice> receiptFamilyMarketPrices({
   int maxAgeDays = 30,
 }) {
   final today = now ?? DateTime.now();
-  final cutoff = DateTime(today.year, today.month, today.day)
-      .subtract(Duration(days: maxAgeDays));
+  final cutoff = DateTime(
+    today.year,
+    today.month,
+    today.day,
+  ).subtract(Duration(days: maxAgeDays));
   final result = <String, MarketPrice>{};
 
   for (final item in items) {
+    // A recalled raw receipt label has no confirmed pack/variant identity.
+    // It may be added to the list, but it cannot inherit a route price.
+    if (item.product.id.startsWith('receipt_suggestion_')) continue;
     final request = identifyProduct(item.product.name);
     final normalizedRequest = normalizeIdentityText(item.product.name);
     if (!request.isKnown && normalizedRequest.isEmpty) continue;
@@ -30,19 +36,21 @@ List<MarketPrice> receiptFamilyMarketPrices({
       }
       final candidate = identifyProduct(observation.rawLabel);
       final normalizedCandidate = normalizeIdentityText(observation.rawLabel);
-      final exact = normalizedRequest == normalizedCandidate ||
+      final exact =
+          normalizedRequest == normalizedCandidate ||
           item.product.aliases.any(
             (alias) => normalizeIdentityText(alias) == normalizedCandidate,
           );
-      final compatible = request.isKnown &&
-          compatibleProductIdentity(request, candidate);
+      final compatible =
+          request.isKnown && compatibleProductIdentity(request, candidate);
       if (!exact && !compatible) continue;
 
       final price = _comparablePrice(item, observation);
       if (price == null || !price.isFinite || price <= 0) continue;
       final key = '${observation.storeName}|${item.product.id}';
       final previous = result[key];
-      if (previous == null || observation.observedAt.isAfter(previous.updatedAt)) {
+      if (previous == null ||
+          observation.observedAt.isAfter(previous.updatedAt)) {
         result[key] = MarketPrice(
           productId: item.product.id,
           storeName: observation.storeName,
@@ -83,7 +91,9 @@ double? _comparablePrice(ListItem item, ReceiptObservation observation) {
   if (receiptAmount == null || receiptUnit.isEmpty) return null;
   final wanted = normalizeQuantity(packageAmount, packageUnit);
   final seen = normalizeQuantity(receiptAmount, receiptUnit);
-  if (wanted == null || seen == null || wanted.dimension != seen.dimension) return null;
+  if (wanted == null || seen == null || wanted.dimension != seen.dimension) {
+    return null;
+  }
   final perBase = normalizedUnitPrice(
     price: observation.totalPrice,
     amount: receiptAmount,

@@ -19,6 +19,9 @@ SparzamApp ist ein Flutter-Prototyp für intelligent geplante Lebensmitteleinkä
 - Eigene freie Produkte können angelegt werden.
 - Barcode-Scanner verwendet vorhandene Katalogdaten bzw. Open Food Facts.
 - Historische Bonpreise werden als Preis-Hinweis am Produkt angezeigt.
+- Unbestätigte Produktbezeichnungen aus früheren Bons können als klar markierte
+  Suchvorschläge wiedergefunden werden. Vor einer Auswahl bleiben Sorte und
+  Packung offen; der Vorschlag setzt keinen Markt- oder Routenpreis.
 - Frühere, belegte Prospektpreise mit bekannter Packungsgröße erscheinen in der Produktsuche als datierte historische Mediane; sie sind keine aktuellen Marktpreise.
 - Exakte Produkt-ID-Historie hat Vorrang. Fehlt sie, darf eine passende Produktfamilie als konservativer historischer Hinweis dienen.
 - Familienhinweise sind **keine Behauptung, dass zwei Varianten identisch sind**. Beispiel: Rinderhack und gemischtes Hack bleiben unterschiedliche Produktidentitäten.

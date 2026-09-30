@@ -80,4 +80,45 @@ void main() {
     );
     expect(find.textContaining('Stand 27.09.2026'), findsOneWidget);
   });
+
+  testWidgets('recalled receipt label is visibly marked for review', (
+    tester,
+  ) async {
+    const recalled = Product(
+      id: 'receipt_suggestion_milk',
+      name: 'H-Milch',
+      unit: 'Packung',
+      group: 'milch',
+      aliases: ['K.H-Milch'],
+    );
+    Product? added;
+    await tester.binding.setSurfaceSize(const Size(390, 844));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: ShoppingSearchResults(
+              query: 'K.H-Milch',
+              suggestions: const [recalled],
+              relatedInterpretations: const [],
+              preferredProductByGroup: const {},
+              recentPurchases: const [],
+              priceHintFor: (_) => null,
+              onAdd: (value) => added = value,
+              onAddCustom: () {},
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      find.textContaining('Früher gekauft · Sorte und Packung prüfen'),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+    await tester.tap(find.text('H-Milch'));
+    expect(added, recalled);
+  });
 }

@@ -51,6 +51,13 @@ ProductIdentity identifyProduct(String value) {
   if (_hasWord(text, 'schmand')) {
     return const ProductIdentity(familyKey: 'schmand');
   }
+  // A filled baked snack is not the same price identity as sliced cheese.
+  if (text.contains('croiss')) {
+    return const ProductIdentity(
+      familyKey: 'backware',
+      productType: 'croissant',
+    );
+  }
   if (_hasAny(text, const ['milch', 'h milch', 'vollmilch'])) {
     return ProductIdentity(
       familyKey: 'milch',
@@ -77,11 +84,12 @@ ProductIdentity identifyProduct(String value) {
       familyKey: 'hackfleisch',
       meatType:
           _hasAny(text, const [
-            'rinderhack',
-            'rinderhackfleisch',
-            'rind hack',
-            'rind',
-          ])
+                'rinderhack',
+                'rinderhackfleisch',
+                'rind hack',
+                'rind',
+              ]) ||
+              RegExp(r'\br\s+hack(?:fleisch|fl)?\b').hasMatch(text)
           ? 'rind'
           : _hasAny(text, const [
               'gemischt',
@@ -109,6 +117,9 @@ ProductIdentity identifyProduct(String value) {
   }
   if (_hasAny(text, const ['apfel', 'aepfel', 'äpfel'])) {
     return ProductIdentity(familyKey: 'aepfel', color: _color(text));
+  }
+  if (_hasAny(text, const ['spaetzle', 'spätzle', 'linguine', 'kritharaki'])) {
+    return ProductIdentity(familyKey: 'nudeln', productType: _pastaType(text));
   }
   if (_hasAny(text, const [
     'eier',
@@ -166,11 +177,12 @@ ProductIdentity identifyProduct(String value) {
     return const ProductIdentity(familyKey: 'fischstäbchen');
   }
   if (_hasAny(text, const [
-    'aufbackbroetchen',
-    'aufback broetchen',
-    'broetchen',
-    'semmel',
-  ])) {
+        'aufbackbroetchen',
+        'aufback broetchen',
+        'broetchen',
+        'semmel',
+      ]) ||
+      text.contains('broetchen')) {
     return ProductIdentity(
       familyKey: 'broetchen',
       variant:
@@ -194,6 +206,10 @@ ProductIdentity identifyProduct(String value) {
     'rigatoni',
     'tortellini',
     'lasagne',
+    'spaetzle',
+    'spätzle',
+    'linguine',
+    'kritharaki',
   ])) {
     return ProductIdentity(familyKey: 'nudeln', productType: _pastaType(text));
   }
@@ -279,6 +295,9 @@ String? _pastaType(String text) {
     'rigatoni',
     'tortellini',
     'lasagne',
+    'spaetzle',
+    'linguine',
+    'kritharaki',
   ]) {
     if (_hasWord(text, type)) return type;
   }

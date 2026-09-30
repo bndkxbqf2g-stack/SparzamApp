@@ -28,7 +28,7 @@ Die folgenden Dateien liegen im zuletzt bereitgestellten Quellen-ZIP. Sie wurden
 | --- | --- | ---: | --- |
 | `20260923_100433.pdf` | Kaufland Würzburg · 19.09.2026 | 32,47 € | Mengenzeile `2 * 0,88 = 1,76 €`; Artikel-/Mengenrabatte |
 | `20260923_100457.pdf` | Kaufland Würzburg · 23.07.2026 | 94,99 € | zahlreiche K-Card-Rabatte; Inline- und Folgezeilenmengen; gewichtete Bananen |
-| `20260923_100506.pdf` | Kaufland Würzburg-Grombühl · 26.05.2026 | 184,08 € | große Mischbon-Struktur mit Pfand, Rabatten und Mehrfachmengen |
+| `20260923_100506.pdf` | Kaufland Würzburg-Grombühl · 26.05.2026 | 184,08 € | große Mischbon-Struktur mit Pfand, Rabatten und Mehrfachmengen; lokal mit 78 Produktzeilen vollständig als erneuter Einkaufslistenlauf simuliert, Original bleibt außerhalb des Repositories |
 | `Netto_Kassenbon_20260731-170322.pdf` | Netto Thüngersheim · 31.07.2026 | 54,81 € | vorangestellte Mengen; gewichtete Bananen mit gedrucktem `EUR/kg`; Warenkorbrabatt |
 | `Netto_Kassenbon_20260824-131113.pdf` | Netto Thüngersheim · 24.08.2026 | 49,76 € | vorangestellte Mengen, Pfand und Rabattzeilen |
 

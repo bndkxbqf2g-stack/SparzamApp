@@ -99,6 +99,9 @@ class ShoppingSearchResults extends StatelessWidget {
     final hierarchy = productHierarchyLabel(product).path;
     final purchase = _recentPurchase(product.id);
     final parts = <String>['$hierarchy · ${product.unit}'];
+    if (product.id.startsWith('receipt_suggestion_')) {
+      parts.add('Früher gekauft · Sorte und Packung prüfen');
+    }
     if (purchase != null && purchase.averageQuantity.round() > 1) {
       parts.add('meist ×${purchase.averageQuantity.round()}');
     }

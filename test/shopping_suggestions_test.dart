@@ -77,6 +77,81 @@ void main() {
     );
   });
 
+  test(
+    'ambiguous H-milk label offers both fat choices without merging them',
+    () {
+      final results = buildSuggestions(
+        query: 'K.H-Milch',
+        knownItems: const [],
+        recentPurchases: const [],
+        preferredProductByGroup: const {},
+        catalogProducts: [regular, lowFat],
+        offers: [
+          Offer(
+            id: 'synthetic-offer',
+            productId: lowFat.id,
+            storeName: 'ALDI Süd',
+            originalPrice: 1.40,
+            offerPrice: 0.95,
+            validUntil: DateTime(2026, 10, 2),
+          ),
+        ],
+        now: now,
+      );
+      expect(results.map((item) => item.id), [lowFat.id, regular.id]);
+      expect(results.first.name, 'Milch 1,5 %');
+    },
+  );
+
+  test('beef mince query never suggests mixed mince as the same item', () {
+    final results = buildSuggestions(
+      query: 'XXL R.-Hackfleisch',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: const [
+        Product(
+          id: 'mixed',
+          name: 'Hackfleisch gemischt',
+          unit: '500 g',
+          group: 'fleisch',
+        ),
+      ],
+      now: now,
+    );
+    expect(results, isEmpty);
+  });
+
+  test(
+    'recalled receipt label never receives a family median as its price',
+    () {
+      const recalled = Product(
+        id: 'receipt_suggestion_milk',
+        name: 'H-Milch',
+        unit: 'Packung',
+        group: 'milch',
+        aliases: ['K.H-Milch'],
+      );
+      final hint = shoppingSuggestionPriceForProduct(
+        recalled,
+        receiptPriceStats: [
+          ReceiptPriceStat(
+            familyKey: 'milch',
+            storeName: 'Kaufland',
+            latestPrice: 0.85,
+            latestAt: DateTime(2026, 9, 29),
+            observationCount: 3,
+            medianPrice: 0.85,
+            comparable: true,
+            priceBasis: 'Packung',
+          ),
+        ],
+        now: now,
+      );
+      expect(hint, isNull);
+    },
+  );
+
   test('receipt median ranks known prices when no active offer exists', () {
     final results = buildSuggestions(
       query: 'Milch',

@@ -109,38 +109,72 @@ void main() {
     expect(prices, isEmpty);
   });
 
-  test('generic Schmand can reuse a receipt unit price without package metadata', () {
+  test('recalled receipt choice cannot become a route price', () {
     const product = Product(
-      id: 'shopping_schmand_generic',
-      name: 'Schmand',
-      unit: 'Stück',
-      group: 'sonstiges',
+      id: 'receipt_suggestion_milk',
+      name: 'H-Milch',
+      unit: 'Packung',
+      group: 'milch',
+      aliases: ['K.H-Milch'],
     );
     final prices = receiptFamilyMarketPrices(
       items: [ListItem(product: product)],
       observations: [
         ReceiptObservation(
-          id: 'receipt-schmand-unit',
-          receiptFingerprint: 'receipt-unit',
-          rowLine: 2,
-          rawLabel: 'Schmand',
-          familyKey: 'schmand',
-          storeName: 'Lidl',
-          observedAt: DateTime(2026, 9, 20),
-          totalPrice: 0.69,
+          id: 'ambiguous-milk',
+          receiptFingerprint: 'receipt',
+          rowLine: 1,
+          rawLabel: 'K.H-Milch',
+          familyKey: 'milch',
+          storeName: 'Kaufland',
+          observedAt: DateTime(2026, 9, 29),
+          totalPrice: 0.85,
           quantity: null,
-          quantityUnit: '',
+          quantityUnit: 'Stück',
           unitPrice: null,
           discounted: false,
         ),
       ],
-      now: DateTime(2026, 9, 24),
+      now: DateTime(2026, 9, 30),
     );
-
-    expect(prices, hasLength(1));
-    expect(prices.single.storeName, 'Lidl');
-    expect(prices.single.price, 0.69);
+    expect(prices, isEmpty);
   });
+
+  test(
+    'generic Schmand can reuse a receipt unit price without package metadata',
+    () {
+      const product = Product(
+        id: 'shopping_schmand_generic',
+        name: 'Schmand',
+        unit: 'Stück',
+        group: 'sonstiges',
+      );
+      final prices = receiptFamilyMarketPrices(
+        items: [ListItem(product: product)],
+        observations: [
+          ReceiptObservation(
+            id: 'receipt-schmand-unit',
+            receiptFingerprint: 'receipt-unit',
+            rowLine: 2,
+            rawLabel: 'Schmand',
+            familyKey: 'schmand',
+            storeName: 'Lidl',
+            observedAt: DateTime(2026, 9, 20),
+            totalPrice: 0.69,
+            quantity: null,
+            quantityUnit: '',
+            unitPrice: null,
+            discounted: false,
+          ),
+        ],
+        now: DateTime(2026, 9, 24),
+      );
+
+      expect(prices, hasLength(1));
+      expect(prices.single.storeName, 'Lidl');
+      expect(prices.single.price, 0.69);
+    },
+  );
 
   test('store-brand and abbreviated Schmand labels resolve to one family', () {
     expect(inferReceiptFamily('K-Schmand 24% 200g'), 'schmand');
@@ -171,7 +205,11 @@ void main() {
             id: 'schmand-${entry.$1}',
             receiptFingerprint: 'receipt-${entry.$1}',
             rowLine: 1,
-            rawLabel: entry.$1 == 'Kaufland' ? 'K-Schmand 24% 200g' : entry.$1 == 'EDEKA' ? 'G&G Schmand 200 G' : 'Milbona Schmand',
+            rawLabel: entry.$1 == 'Kaufland'
+                ? 'K-Schmand 24% 200g'
+                : entry.$1 == 'EDEKA'
+                ? 'G&G Schmand 200 G'
+                : 'Milbona Schmand',
             familyKey: 'schmand',
             storeName: entry.$1,
             observedAt: DateTime(2026, 9, 20),
@@ -186,45 +224,46 @@ void main() {
     );
 
     expect(prices, hasLength(3));
-    expect({for (final price in prices) price.storeName: price.price}, {
-      'Lidl': 0.69,
-      'Kaufland': 0.79,
-      'EDEKA': 0.89,
-    });
+    expect(
+      {for (final price in prices) price.storeName: price.price},
+      {'Lidl': 0.69, 'Kaufland': 0.79, 'EDEKA': 0.89},
+    );
   });
 
+  test(
+    'normalizes repeated whitespace before exact receipt identity matching',
+    () {
+      const product = Product(
+        id: 'schmand-200',
+        name: 'Schmand 200 g',
+        unit: '200 g',
+        group: 'milchprodukte',
+      );
+      final prices = receiptFamilyMarketPrices(
+        items: [ListItem(product: product)],
+        observations: [
+          ReceiptObservation(
+            id: 'spaced-schmand',
+            receiptFingerprint: 'receipt',
+            rowLine: 1,
+            rawLabel: 'Schmand   200 g',
+            familyKey: 'schmand',
+            storeName: 'Lidl',
+            observedAt: DateTime(2026, 9, 24),
+            totalPrice: 0.69,
+            quantity: null,
+            quantityUnit: '',
+            unitPrice: null,
+            discounted: false,
+          ),
+        ],
+        now: DateTime(2026, 9, 25),
+      );
 
-  test('normalizes repeated whitespace before exact receipt identity matching', () {
-    const product = Product(
-      id: 'schmand-200',
-      name: 'Schmand 200 g',
-      unit: '200 g',
-      group: 'milchprodukte',
-    );
-    final prices = receiptFamilyMarketPrices(
-      items: [ListItem(product: product)],
-      observations: [
-        ReceiptObservation(
-          id: 'spaced-schmand',
-          receiptFingerprint: 'receipt',
-          rowLine: 1,
-          rawLabel: 'Schmand   200 g',
-          familyKey: 'schmand',
-          storeName: 'Lidl',
-          observedAt: DateTime(2026, 9, 24),
-          totalPrice: 0.69,
-          quantity: null,
-          quantityUnit: '',
-          unitPrice: null,
-          discounted: false,
-        ),
-      ],
-      now: DateTime(2026, 9, 25),
-    );
-
-    expect(prices, hasLength(1));
-    expect(prices.single.price, 0.69);
-  });
+      expect(prices, hasLength(1));
+      expect(prices.single.price, 0.69);
+    },
+  );
   test('unrelated families are never bridged', () {
     const product = Product(
       id: 'shopping_schmand',
@@ -316,12 +355,21 @@ void main() {
       now: DateTime(2026, 9, 24),
     );
     expect(prices, isEmpty);
-  });  test('fresh tomato request excludes preserved tomato receipt prices', () {
-    const product = Product(id: 'tomaten-generic', name: 'Tomaten', unit: 'Stück', group: 'obst');
+  });
+  test('fresh tomato request excludes preserved tomato receipt prices', () {
+    const product = Product(
+      id: 'tomaten-generic',
+      name: 'Tomaten',
+      unit: 'Stück',
+      group: 'obst',
+    );
     final prices = receiptFamilyMarketPrices(
       items: [ListItem(product: product)],
       observations: [
-        for (final entry in [('Kaufland', 'KLC Geh. Tomaten', 0.59), ('Lidl', 'Passata', 0.79)])
+        for (final entry in [
+          ('Kaufland', 'KLC Geh. Tomaten', 0.59),
+          ('Lidl', 'Passata', 0.79),
+        ])
           ReceiptObservation(
             id: 'tomato-${entry.$1}',
             receiptFingerprint: 'r-${entry.$1}',
@@ -347,18 +395,29 @@ void main() {
     final prices = receiptFamilyMarketPrices(
       now: now,
       items: [
-        ListItem(product: const Product(
-          id: 'schmand', name: 'Schmand', unit: 'Becher',
-          group: 'milchprodukte',
-        )),
+        ListItem(
+          product: const Product(
+            id: 'schmand',
+            name: 'Schmand',
+            unit: 'Becher',
+            group: 'milchprodukte',
+          ),
+        ),
       ],
       observations: [
         ReceiptObservation(
-          id: 'future-schmand', receiptFingerprint: 'future-receipt',
-          rowLine: 1, rawLabel: 'Schmand', familyKey: 'schmand',
-          storeName: 'Lidl', observedAt: DateTime(2026, 9, 26),
-          totalPrice: 0.49, quantity: null, quantityUnit: '',
-          unitPrice: null, discounted: false,
+          id: 'future-schmand',
+          receiptFingerprint: 'future-receipt',
+          rowLine: 1,
+          rawLabel: 'Schmand',
+          familyKey: 'schmand',
+          storeName: 'Lidl',
+          observedAt: DateTime(2026, 9, 26),
+          totalPrice: 0.49,
+          quantity: null,
+          quantityUnit: '',
+          unitPrice: null,
+          discounted: false,
         ),
       ],
     );
@@ -401,11 +460,19 @@ void main() {
     expect(prices, isEmpty);
   });
   test('generic yoghurt aliases create separate market prices', () {
-    const product = Product(id: 'joghurt-generic', name: 'Joghurt', unit: 'Stück', group: 'milch');
+    const product = Product(
+      id: 'joghurt-generic',
+      name: 'Joghurt',
+      unit: 'Stück',
+      group: 'milch',
+    );
     final prices = receiptFamilyMarketPrices(
       items: [ListItem(product: product)],
       observations: [
-        for (final entry in [('Netto', 'Naturjoghurt', 0.79), ('Lidl', 'Joghurt natur', 0.69)])
+        for (final entry in [
+          ('Netto', 'Naturjoghurt', 0.79),
+          ('Lidl', 'Joghurt natur', 0.69),
+        ])
           ReceiptObservation(
             id: 'joghurt-${entry.$1}',
             receiptFingerprint: 'j-${entry.$1}',
@@ -426,11 +493,19 @@ void main() {
     expect(prices.map((price) => price.storeName).toSet(), {'Netto', 'Lidl'});
   });
   test('generic Hackfleisch resolves retailer labels across markets', () {
-    const product = Product(id: 'hack-generic', name: 'Hackfleisch', unit: 'Stück', group: 'fleisch');
+    const product = Product(
+      id: 'hack-generic',
+      name: 'Hackfleisch',
+      unit: 'Stück',
+      group: 'fleisch',
+    );
     final prices = receiptFamilyMarketPrices(
       items: [ListItem(product: product)],
       observations: [
-        for (final entry in [('Netto', 'Hackfl. gem.', 4.49), ('Kaufland', 'R-Hackfleisch', 4.99)])
+        for (final entry in [
+          ('Netto', 'Hackfl. gem.', 4.49),
+          ('Kaufland', 'R-Hackfleisch', 4.99),
+        ])
           ReceiptObservation(
             id: 'hack-${entry.$1}',
             receiptFingerprint: 'h-${entry.$1}',
@@ -448,10 +523,11 @@ void main() {
       ],
       now: DateTime(2026, 9, 24),
     );
-    expect({for (final price in prices) price.storeName: price.price},
-        {'Netto': 4.49, 'Kaufland': 4.99});
+    expect(
+      {for (final price in prices) price.storeName: price.price},
+      {'Netto': 4.49, 'Kaufland': 4.99},
+    );
   });
-
 
   test('generic receipt rows with default Stück unit become market prices', () {
     const eggs = Product(
@@ -496,43 +572,60 @@ void main() {
       ],
     );
 
-    expect({for (final price in prices) price.storeName: price.price}, {
-      'Netto': 2.49,
-      'Kaufland': 2.49,
-    });
+    expect(
+      {for (final price in prices) price.storeName: price.price},
+      {'Netto': 2.49, 'Kaufland': 2.49},
+    );
   });
 
-  test('generic fresh tomatoes accept fresh variants but reject tomato products', () {
-    const product = Product(
-      id: 'tomaten-frisch',
-      name: 'Tomaten',
-      unit: 'Packung',
-      group: 'obst',
-    );
-    final prices = receiptFamilyMarketPrices(
-      items: [ListItem(product: product)],
-      observations: [
-        ReceiptObservation(
-          id: 'rispen', receiptFingerprint: 'r1', rowLine: 1,
-          rawLabel: 'Rispentomaten', familyKey: 'tomaten',
-          storeName: 'Lidl', observedAt: DateTime(2026, 9, 24),
-          totalPrice: 1.49, quantity: null, quantityUnit: '',
-          unitPrice: null, discounted: false,
-        ),
-        ReceiptObservation(
-          id: 'mark', receiptFingerprint: 'r2', rowLine: 1,
-          rawLabel: 'Tomatenmark', familyKey: 'tomatenmark',
-          storeName: 'Lidl', observedAt: DateTime(2026, 9, 24),
-          totalPrice: 0.89, quantity: null, quantityUnit: '',
-          unitPrice: null, discounted: false,
-        ),
-      ],
-      now: DateTime(2026, 9, 25),
-    );
+  test(
+    'generic fresh tomatoes accept fresh variants but reject tomato products',
+    () {
+      const product = Product(
+        id: 'tomaten-frisch',
+        name: 'Tomaten',
+        unit: 'Packung',
+        group: 'obst',
+      );
+      final prices = receiptFamilyMarketPrices(
+        items: [ListItem(product: product)],
+        observations: [
+          ReceiptObservation(
+            id: 'rispen',
+            receiptFingerprint: 'r1',
+            rowLine: 1,
+            rawLabel: 'Rispentomaten',
+            familyKey: 'tomaten',
+            storeName: 'Lidl',
+            observedAt: DateTime(2026, 9, 24),
+            totalPrice: 1.49,
+            quantity: null,
+            quantityUnit: '',
+            unitPrice: null,
+            discounted: false,
+          ),
+          ReceiptObservation(
+            id: 'mark',
+            receiptFingerprint: 'r2',
+            rowLine: 1,
+            rawLabel: 'Tomatenmark',
+            familyKey: 'tomatenmark',
+            storeName: 'Lidl',
+            observedAt: DateTime(2026, 9, 24),
+            totalPrice: 0.89,
+            quantity: null,
+            quantityUnit: '',
+            unitPrice: null,
+            discounted: false,
+          ),
+        ],
+        now: DateTime(2026, 9, 25),
+      );
 
-    expect(prices, hasLength(1));
-    expect(prices.single.price, 1.49);
-  });
+      expect(prices, hasLength(1));
+      expect(prices.single.price, 1.49);
+    },
+  );
 
   test('tomato identity separates fresh variants from processed products', () {
     final generic = identifyProduct('Tomate');
@@ -554,39 +647,40 @@ void main() {
     expect(compatibleProductIdentity(generic, sauce), isFalse);
     expect(compatibleProductIdentity(generic, passata), isFalse);
   });
-  test('weighed bananas normalize receipt total to requested kilogram basis', () {
-    const product = Product(
-      id: 'bananen',
-      name: 'Bananen',
-      unit: '1 kg',
-      group: 'obst',
-      packageAmount: 1,
-      packageUnit: 'kg',
-    );
-    final prices = receiptFamilyMarketPrices(
-      items: [ListItem(product: product)],
-      observations: [
-        ReceiptObservation(
-          id: 'kaufland-bananas',
-          receiptFingerprint: 'kaufland-230726',
-          rowLine: 1,
-          rawLabel: 'Bananen kg',
-          familyKey: 'bananen',
-          storeName: 'Kaufland',
-          observedAt: DateTime(2026, 7, 23),
-          totalPrice: 0.64,
-          quantity: 0.498,
-          quantityUnit: 'kg',
-          unitPrice: null,
-          discounted: false,
-        ),
-      ],
-      now: DateTime(2026, 7, 24),
-    );
+  test(
+    'weighed bananas normalize receipt total to requested kilogram basis',
+    () {
+      const product = Product(
+        id: 'bananen',
+        name: 'Bananen',
+        unit: '1 kg',
+        group: 'obst',
+        packageAmount: 1,
+        packageUnit: 'kg',
+      );
+      final prices = receiptFamilyMarketPrices(
+        items: [ListItem(product: product)],
+        observations: [
+          ReceiptObservation(
+            id: 'kaufland-bananas',
+            receiptFingerprint: 'kaufland-230726',
+            rowLine: 1,
+            rawLabel: 'Bananen kg',
+            familyKey: 'bananen',
+            storeName: 'Kaufland',
+            observedAt: DateTime(2026, 7, 23),
+            totalPrice: 0.64,
+            quantity: 0.498,
+            quantityUnit: 'kg',
+            unitPrice: null,
+            discounted: false,
+          ),
+        ],
+        now: DateTime(2026, 7, 24),
+      );
 
-    expect(prices, hasLength(1));
-    expect(prices.single.price, closeTo(0.64 / 0.498, 0.0001));
-  });
-
+      expect(prices, hasLength(1));
+      expect(prices.single.price, closeTo(0.64 / 0.498, 0.0001));
+    },
+  );
 }
-
