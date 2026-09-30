@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/shopping_list/shopping_search_results.dart';
+import 'package:sparzamapp/features/shopping_list/shopping_suggestions.dart';
+import 'package:sparzamapp/features/offers/prospect_price_statistics.dart';
+import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/product.dart';
 
 void main() {
@@ -37,5 +40,44 @@ void main() {
     expect(find.textContaining('Angebot ALDI Süd 0,95 €'), findsOneWidget);
     await tester.tap(find.text('Milch 1,5 %'));
     expect(added, product);
+  });
+
+  testWidgets('shopping search labels learned leaflet prices as historical', (
+    tester,
+  ) async {
+    final summary = ProspectPriceHistorySummary(
+      productId: product.id,
+      storeName: 'Netto',
+      medianPrice: 0.85,
+      latestValidUntil: DateTime(2026, 9, 27),
+      kind: PriceObservationKind.offer,
+      observationCount: 2,
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ShoppingSearchResults(
+            query: 'Milch',
+            suggestions: const [product],
+            relatedInterpretations: const [],
+            preferredProductByGroup: const {},
+            recentPurchases: const [],
+            priceHintFor: (value) => shoppingSuggestionPriceForProduct(
+              value,
+              prospectPriceHistory: {product.id: summary},
+              now: DateTime(2026, 9, 30),
+            )?.displayLabel,
+            onAdd: (_) {},
+            onAddCustom: () {},
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      find.textContaining('Früheres Angebot (Median) Netto 0,85 €'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('Stand 27.09.2026'), findsOneWidget);
   });
 }

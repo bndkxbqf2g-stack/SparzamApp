@@ -56,6 +56,9 @@ Eine intelligente und alltagstaugliche Preisdatenbank aufbauen:
 6. Preisqualität/Herkunft/Aktualität nachvollziehbar halten.
 
 ## Update 30.09.2026 – Angebote und Preise direkt in der Einkaufssuche
+- Prospektkarten, Seiten und Zähler verwenden nur aktuell gültige Datensätze. Abgelaufene Seiten werden durch den offiziellen Händlerlink ersetzt.
+- Jeder nachgewiesene strukturierte Prospektpreis wird mit Angebotspreis, gegebenenfalls ausgewiesenem Normalpreis, Packung, Händler, Nachweis und Gültigkeit in der lokalen Preisbeobachtungshistorie gelernt. Vergangene, packungsvergleichbare Preise erscheinen in der Einkaufssuche als datierter 90-Tage-Median.
+- Historische Prospektpreise werden weder als aktuelle Angebote noch als bestätigte Marktpreise für die Route projiziert. Eine Katalog-ID wird nur bei exakt gleichem Label und nachweislich gleicher Packung wiederverwendet; ähnliche Marken bleiben getrennt.
 - Aktuell gültige, belegte Prospektangebote können als eigene exakte
   Suchprodukte erscheinen, auch wenn ein Artikel noch nicht im kleinen
   Basiskatalog steht. Unbekannte Labels werden nicht per Ähnlichkeit mit

@@ -13,21 +13,34 @@ import 'package:sparzamapp/models/price_data_settings.dart';
 import 'package:sparzamapp/features/route/market_price_quality.dart';
 
 void main() {
-  setUp(() => SharedPreferencesAsyncPlatform.instance =
-      InMemorySharedPreferencesAsync.empty());
+  setUp(
+    () => SharedPreferencesAsyncPlatform.instance =
+        InMemorySharedPreferencesAsync.empty(),
+  );
   tearDown(() => SharedPreferencesAsyncPlatform.instance = null);
 
   test('distinct prices persist, repeated imports are idempotent', () async {
     final store = PriceObservationStore();
-    final older = observationFromMarketPrice(MarketPrice(
-      productId: 'generic', storeName: 'Lidl', price: 0.79,
-      updatedAt: DateTime(2026, 9, 1),
-    ));
-    final newer = observationFromMarketPrice(MarketPrice(
-      productId: 'generic', storeName: 'Lidl', price: 0.89,
-      updatedAt: DateTime(2026, 9, 24),
-    ));
-    await Future.wait([store.append([older]), store.append([newer])]);
+    final older = observationFromMarketPrice(
+      MarketPrice(
+        productId: 'generic',
+        storeName: 'Lidl',
+        price: 0.79,
+        updatedAt: DateTime(2026, 9, 1),
+      ),
+    );
+    final newer = observationFromMarketPrice(
+      MarketPrice(
+        productId: 'generic',
+        storeName: 'Lidl',
+        price: 0.89,
+        updatedAt: DateTime(2026, 9, 24),
+      ),
+    );
+    await Future.wait([
+      store.append([older]),
+      store.append([newer]),
+    ]);
     await store.append([older, newer]);
     final saved = await PriceObservationStore().load();
     expect(saved, hasLength(2));
@@ -37,15 +50,21 @@ void main() {
   test('stable derived evidence can be reinterpreted in place', () async {
     final store = PriceObservationStore();
     final old = PriceObservation(
-      id: 'receipt|1', productId: 'tomato', familyKey: 'tomaten',
-      storeName: 'Kaufland', price: 1.29,
+      id: 'receipt|1',
+      productId: 'tomato',
+      familyKey: 'tomaten',
+      storeName: 'Kaufland',
+      price: 1.29,
       observedAt: DateTime(2026, 9, 20),
       source: PriceObservationSource.receipt,
       identityConfidence: 1,
     );
     final revised = PriceObservation(
-      id: 'receipt|1', productId: 'tomato', familyKey: 'tomatenkonserve',
-      storeName: 'Kaufland', price: 1.29,
+      id: 'receipt|1',
+      productId: 'tomato',
+      familyKey: 'tomatenkonserve',
+      storeName: 'Kaufland',
+      price: 1.29,
       observedAt: DateTime(2026, 9, 20),
       source: PriceObservationSource.receipt,
       identityConfidence: 1,
@@ -61,16 +80,25 @@ void main() {
 
   test('record keeps branch, amount, offer validity and proof separately', () {
     final original = PriceObservation(
-      id: 'shelf-1', productId: 'milk-15', familyKey: 'milch',
-      variant: '1,5 %', ean: '4000000000001', storeName: 'Lidl',
-      locationId: 'store-7', region: 'Zellingen', price: 1.09,
-      quantity: 1, unit: 'l', unitPrice: 1.09,
+      id: 'shelf-1',
+      productId: 'milk-15',
+      familyKey: 'milch',
+      variant: '1,5 %',
+      ean: '4000000000001',
+      storeName: 'Lidl',
+      locationId: 'store-7',
+      region: 'Zellingen',
+      price: 1.09,
+      quantity: 1,
+      unit: 'l',
+      unitPrice: 1.09,
       kind: PriceObservationKind.offer,
       validFrom: DateTime(2026, 9, 21),
       validUntil: DateTime(2026, 9, 27),
       observedAt: DateTime(2026, 9, 24),
       source: PriceObservationSource.shelfImage,
-      identityConfidence: 0.9, proofRef: 'local-photo-7',
+      identityConfidence: 0.9,
+      proofRef: 'local-photo-7',
     );
     final restored = PriceObservation.fromJson(original.toJson());
     expect(restored.ean, original.ean);
@@ -80,78 +108,131 @@ void main() {
     expect(restored.identityConfidence, 0.9);
   });
 
-  test('exact observation history projects every supported price for routing', () {
-    final projected = marketPricesFromObservations([
-      PriceObservation(
-        id: 'old', productId: 'schmand', storeName: 'Lidl', price: 0.79,
-        observedAt: DateTime(2026, 8, 1),
-        source: PriceObservationSource.manual,
-      ),
-      PriceObservation(
-        id: 'new', productId: 'schmand', storeName: 'Lidl', price: 0.89,
-        observedAt: DateTime(2026, 9, 24),
-        source: PriceObservationSource.openPrices,
-        proofRef: 'open-prices:42',
-      ),
-    ]);
+  test(
+    'exact observation history projects every supported price for routing',
+    () {
+      final projected = marketPricesFromObservations([
+        PriceObservation(
+          id: 'old',
+          productId: 'schmand',
+          storeName: 'Lidl',
+          price: 0.79,
+          observedAt: DateTime(2026, 8, 1),
+          source: PriceObservationSource.manual,
+        ),
+        PriceObservation(
+          id: 'new',
+          productId: 'schmand',
+          storeName: 'Lidl',
+          price: 0.89,
+          observedAt: DateTime(2026, 9, 24),
+          source: PriceObservationSource.openPrices,
+          proofRef: 'open-prices:42',
+        ),
+      ]);
 
-    expect(projected, hasLength(2));
-    expect(projected.map((item) => item.price), containsAll([0.79, 0.89]));
-    expect(projected.last.externalId, 42);
-  });
+      expect(projected, hasLength(2));
+      expect(projected.map((item) => item.price), containsAll([0.79, 0.89]));
+      expect(projected.last.externalId, 42);
+    },
+  );
 
-  test('family-only or uncertain identity is not projected as exact route price', () {
-    final projected = marketPricesFromObservations([
-      PriceObservation(
-        id: 'family', familyKey: 'schmand', storeName: 'Lidl', price: 0.69,
-        observedAt: DateTime(2026, 9, 24),
-        source: PriceObservationSource.manual,
-      ),
-      PriceObservation(
-        id: 'uncertain', productId: 'schmand', storeName: 'Lidl', price: 0.59,
-        observedAt: DateTime(2026, 9, 24),
-        source: PriceObservationSource.manual, identityConfidence: 0.8,
-      ),
-    ]);
+  test(
+    'family-only or uncertain identity is not projected as exact route price',
+    () {
+      final projected = marketPricesFromObservations([
+        PriceObservation(
+          id: 'family',
+          familyKey: 'schmand',
+          storeName: 'Lidl',
+          price: 0.69,
+          observedAt: DateTime(2026, 9, 24),
+          source: PriceObservationSource.manual,
+        ),
+        PriceObservation(
+          id: 'uncertain',
+          productId: 'schmand',
+          storeName: 'Lidl',
+          price: 0.59,
+          observedAt: DateTime(2026, 9, 24),
+          source: PriceObservationSource.manual,
+          identityConfidence: 0.8,
+        ),
+      ]);
 
-    expect(projected, isEmpty);
-  });
+      expect(projected, isEmpty);
+    },
+  );
 
-  test('receipt adapter preserves quantity and family without faking identity', () {
-    final observation = observationFromReceipt(ReceiptObservation(
-      id: 'r1', receiptFingerprint: 'fp', rowLine: 1,
-      rawLabel: 'SCHMAND 200G', familyKey: 'schmand',
-      storeName: 'Lidl', observedAt: DateTime(2026, 9, 24),
-      totalPrice: 0.69, quantity: 200, quantityUnit: 'g',
-      unitPrice: 3.45, discounted: false,
-    ));
-    expect(observation.familyKey, 'schmand');
-    expect(observation.quantity, 200);
-    expect(observation.identityConfidence, 0);
-  });
+  test(
+    'receipt adapter preserves quantity and family without faking identity',
+    () {
+      final observation = observationFromReceipt(
+        ReceiptObservation(
+          id: 'r1',
+          receiptFingerprint: 'fp',
+          rowLine: 1,
+          rawLabel: 'SCHMAND 200G',
+          familyKey: 'schmand',
+          storeName: 'Lidl',
+          observedAt: DateTime(2026, 9, 24),
+          totalPrice: 0.69,
+          quantity: 200,
+          quantityUnit: 'g',
+          unitPrice: 3.45,
+          discounted: false,
+        ),
+      );
+      expect(observation.familyKey, 'schmand');
+      expect(observation.quantity, 200);
+      expect(observation.identityConfidence, 0);
+    },
+  );
 
-  test('receipt product id alone does not create exact identity confidence', () {
-    final automatic = observationFromReceipt(ReceiptObservation(
-      id: 'r-auto', receiptFingerprint: 'fp-auto', rowLine: 1,
-      rawLabel: 'Unbekannte Spezialität', familyKey: 'unbekannte spezialitaet',
-      storeName: 'Lidl', observedAt: DateTime(2026, 9, 24),
-      totalPrice: 2.49, quantity: null, quantityUnit: 'Stück',
-      unitPrice: null, discounted: false,
-      productId: 'receipt_auto_specialitaet',
-    ));
-    final confirmed = observationFromReceipt(ReceiptObservation(
-      id: 'r-confirmed', receiptFingerprint: 'fp-confirmed', rowLine: 1,
-      rawLabel: 'Schmand', familyKey: 'schmand',
-      storeName: 'Lidl', observedAt: DateTime(2026, 9, 24),
-      totalPrice: 0.69, quantity: null, quantityUnit: 'Stück',
-      unitPrice: null, discounted: false,
-      productId: 'schmand', identityConfirmed: true,
-    ));
+  test(
+    'receipt product id alone does not create exact identity confidence',
+    () {
+      final automatic = observationFromReceipt(
+        ReceiptObservation(
+          id: 'r-auto',
+          receiptFingerprint: 'fp-auto',
+          rowLine: 1,
+          rawLabel: 'Unbekannte Spezialität',
+          familyKey: 'unbekannte spezialitaet',
+          storeName: 'Lidl',
+          observedAt: DateTime(2026, 9, 24),
+          totalPrice: 2.49,
+          quantity: null,
+          quantityUnit: 'Stück',
+          unitPrice: null,
+          discounted: false,
+          productId: 'receipt_auto_specialitaet',
+        ),
+      );
+      final confirmed = observationFromReceipt(
+        ReceiptObservation(
+          id: 'r-confirmed',
+          receiptFingerprint: 'fp-confirmed',
+          rowLine: 1,
+          rawLabel: 'Schmand',
+          familyKey: 'schmand',
+          storeName: 'Lidl',
+          observedAt: DateTime(2026, 9, 24),
+          totalPrice: 0.69,
+          quantity: null,
+          quantityUnit: 'Stück',
+          unitPrice: null,
+          discounted: false,
+          productId: 'schmand',
+          identityConfirmed: true,
+        ),
+      );
 
-    expect(automatic.productId, 'receipt_auto_specialitaet');
-    expect(automatic.identityConfidence, 0);
-    expect(confirmed.identityConfidence, 1);
-  });
+      expect(automatic.productId, 'receipt_auto_specialitaet');
+      expect(automatic.identityConfidence, 0);
+      expect(confirmed.identityConfidence, 1);
+    },
+  );
 
   test('legacy automatic receipt ids migrate as unconfirmed', () {
     final restored = ReceiptObservation.fromJson({
@@ -205,9 +286,14 @@ void main() {
 
   test('offer adapter carries validity into observation', () {
     final observation = observationFromOffer(
-      Offer(id: 'o1', productId: 'schmand', storeName: 'Lidl',
-        originalPrice: 0.89, offerPrice: 0.69,
-        validUntil: DateTime(2026, 9, 27)),
+      Offer(
+        id: 'o1',
+        productId: 'schmand',
+        storeName: 'Lidl',
+        originalPrice: 0.89,
+        offerPrice: 0.69,
+        validUntil: DateTime(2026, 9, 27),
+      ),
       observedAt: DateTime(2026, 9, 24),
     );
     expect(observation.kind, PriceObservationKind.offer);
@@ -237,33 +323,40 @@ void main() {
     expect(regular.identityConfidence, 0);
     expect(discounted.identityConfidence, 0);
     expect(
-      marketPricesFromObservations(
-        [regular, discounted],
-        now: DateTime(2026, 9, 25),
-      ),
+      marketPricesFromObservations([
+        regular,
+        discounted,
+      ], now: DateTime(2026, 9, 25)),
       isEmpty,
     );
   });
 
   test('leaflet preserves regular price as separate evidence', () {
     final offer = Offer(
-      id: 'leaflet-1', productId: 'chocolate', storeName: 'Lidl',
-      originalPrice: 2.19, offerPrice: 1.99,
+      id: 'leaflet-1',
+      productId: 'chocolate',
+      storeName: 'Lidl',
+      originalPrice: 2.19,
+      offerPrice: 1.99,
       validFrom: DateTime(2026, 9, 25),
       validUntil: DateTime(2026, 9, 26),
-      source: 'leaflet', proofRef: 'leaflet:lidl:2026-09-25:p1',
+      source: 'leaflet',
+      proofRef: 'leaflet:lidl:2026-09-25:p1',
     );
     final regular = regularObservationFromOffer(
-      offer, observedAt: DateTime(2026, 9, 25),
+      offer,
+      observedAt: DateTime(2026, 9, 25),
     );
     final discounted = observationFromOffer(
-      offer, observedAt: DateTime(2026, 9, 25),
+      offer,
+      observedAt: DateTime(2026, 9, 25),
     );
 
     expect(regular.price, 2.19);
     expect(regular.kind, PriceObservationKind.regular);
     expect(regular.source, PriceObservationSource.leaflet);
     expect(regular.proofRef, offer.proofRef);
+    expect(regular.validUntil, DateTime(2026, 9, 26));
     expect(discounted.price, 1.99);
     expect(discounted.kind, PriceObservationKind.offer);
     expect(discounted.validFrom, DateTime(2026, 9, 25));
@@ -272,51 +365,94 @@ void main() {
 
   test('exact route projection rejects a different declared package size', () {
     const product = Product(
-      id: 'schmand-200', name: 'Schmand 200 g', unit: '200 g',
-      group: 'schmand', packageAmount: 200, packageUnit: 'g',
+      id: 'schmand-200',
+      name: 'Schmand 200 g',
+      unit: '200 g',
+      group: 'schmand',
+      packageAmount: 200,
+      packageUnit: 'g',
     );
-    final projected = marketPricesFromObservations([
-      PriceObservation(
-        id: 'wrong-pack', productId: product.id, storeName: 'Lidl',
-        price: 0.69, quantity: 500, unit: 'g',
-        observedAt: DateTime(2026, 9, 24),
-        source: PriceObservationSource.receipt,
-      ),
-      PriceObservation(
-        id: 'right-pack', productId: product.id, storeName: 'Edeka',
-        price: 0.89, quantity: 0.2, unit: 'kg',
-        observedAt: DateTime(2026, 9, 24),
-        source: PriceObservationSource.receipt,
-      ),
-    ], products: const [product]);
+    final projected = marketPricesFromObservations(
+      [
+        PriceObservation(
+          id: 'wrong-pack',
+          productId: product.id,
+          storeName: 'Lidl',
+          price: 0.69,
+          quantity: 500,
+          unit: 'g',
+          observedAt: DateTime(2026, 9, 24),
+          source: PriceObservationSource.receipt,
+        ),
+        PriceObservation(
+          id: 'right-pack',
+          productId: product.id,
+          storeName: 'Edeka',
+          price: 0.89,
+          quantity: 0.2,
+          unit: 'kg',
+          observedAt: DateTime(2026, 9, 24),
+          source: PriceObservationSource.receipt,
+        ),
+      ],
+      products: const [product],
+    );
 
     expect(projected, hasLength(1));
     expect(projected.single.storeName, 'Edeka');
   });
 
   test('disabled Open Prices history cannot re-enter route planning', () {
-    final projected = marketPricesFromObservations([
-      PriceObservation(
-        id: 'open', productId: 'schmand', storeName: 'Lidl', price: 0.69,
-        observedAt: DateTime(2026, 9, 24),
-        source: PriceObservationSource.openPrices,
-      ),
-      PriceObservation(
-        id: 'manual', productId: 'schmand', storeName: 'Edeka', price: 0.89,
-        observedAt: DateTime(2026, 9, 24),
-        source: PriceObservationSource.manual,
-      ),
-    ], settings: const PriceDataSettings(openPricesEnabled: false),
-       now: DateTime(2026, 9, 24));
+    final projected = marketPricesFromObservations(
+      [
+        PriceObservation(
+          id: 'open',
+          productId: 'schmand',
+          storeName: 'Lidl',
+          price: 0.69,
+          observedAt: DateTime(2026, 9, 24),
+          source: PriceObservationSource.openPrices,
+        ),
+        PriceObservation(
+          id: 'manual',
+          productId: 'schmand',
+          storeName: 'Edeka',
+          price: 0.89,
+          observedAt: DateTime(2026, 9, 24),
+          source: PriceObservationSource.manual,
+        ),
+      ],
+      settings: const PriceDataSettings(openPricesEnabled: false),
+      now: DateTime(2026, 9, 24),
+    );
 
     expect(projected, hasLength(1));
     expect(projected.single.storeName, 'Edeka');
   });
 
-  test('verified leaflet regular price enters route planning', () {
+  test('verified leaflet regular price remains historical evidence', () {
     final projected = marketPricesFromObservations([
       PriceObservation(
         id: 'leaflet-regular',
+        productId: 'chocolate',
+        storeName: 'Lidl',
+        price: 2.19,
+        observedAt: DateTime(2026, 9, 25),
+        source: PriceObservationSource.leaflet,
+        kind: PriceObservationKind.regular,
+        validFrom: DateTime(2026, 9, 25),
+        validUntil: DateTime(2026, 9, 26),
+        proofRef: 'leaflet:lidl:2026-09-25:p1',
+      ),
+    ], now: DateTime(2026, 9, 25));
+
+    expect(projected, isEmpty);
+  });
+
+  test('legacy leaflet reference without validity stays history only', () {
+    final projected = marketPricesFromObservations([
+      PriceObservation(
+        id: 'old-leaflet-regular',
         productId: 'chocolate',
         storeName: 'Lidl',
         price: 2.19,
@@ -327,15 +463,17 @@ void main() {
       ),
     ], now: DateTime(2026, 9, 25));
 
-    expect(projected, hasLength(1));
-    expect(projected.single.price, 2.19);
+    expect(projected, isEmpty);
   });
 
   test('future offer validity cannot enter route planning early', () {
     final projected = marketPricesFromObservations([
       PriceObservation(
-        id: 'future-offer', productId: 'schmand', storeName: 'Lidl',
-        price: 0.49, observedAt: DateTime(2026, 9, 24),
+        id: 'future-offer',
+        productId: 'schmand',
+        storeName: 'Lidl',
+        price: 0.49,
+        observedAt: DateTime(2026, 9, 24),
         validFrom: DateTime(2026, 10, 1),
         validUntil: DateTime(2026, 10, 7),
         source: PriceObservationSource.manual,
@@ -349,8 +487,11 @@ void main() {
   test('invalid observation cannot bypass store validation into routing', () {
     final projected = marketPricesFromObservations([
       PriceObservation(
-        id: 'invalid', productId: 'schmand', storeName: 'Lidl',
-        price: -0.49, observedAt: DateTime(2026, 9, 24),
+        id: 'invalid',
+        productId: 'schmand',
+        storeName: 'Lidl',
+        price: -0.49,
+        observedAt: DateTime(2026, 9, 24),
         source: PriceObservationSource.manual,
       ),
     ], now: DateTime(2026, 9, 25));
@@ -359,18 +500,23 @@ void main() {
   });
 
   test('old Open Prices history respects configured maximum age', () {
-    final projected = marketPricesFromObservations([
-      PriceObservation(
-        id: 'old-open', productId: 'schmand', storeName: 'Lidl', price: 0.69,
-        observedAt: DateTime(2026, 7, 1),
-        source: PriceObservationSource.openPrices,
-      ),
-    ], settings: const PriceDataSettings(openPricesMaxAgeDays: 30),
-       now: DateTime(2026, 9, 24));
+    final projected = marketPricesFromObservations(
+      [
+        PriceObservation(
+          id: 'old-open',
+          productId: 'schmand',
+          storeName: 'Lidl',
+          price: 0.69,
+          observedAt: DateTime(2026, 7, 1),
+          source: PriceObservationSource.openPrices,
+        ),
+      ],
+      settings: const PriceDataSettings(openPricesMaxAgeDays: 30),
+      now: DateTime(2026, 9, 24),
+    );
 
     expect(projected, isEmpty);
   });
-
 
   test('old exact receipt history is excluded from route price projection', () {
     final projected = marketPricesFromObservations([
@@ -387,9 +533,14 @@ void main() {
     expect(projected, isEmpty);
   });
   test('source confidence and age confidence are separate', () {
-    final old = MarketPrice(productId: 'x', storeName: 'Lidl',
-        price: 0.79, updatedAt: DateTime(2026, 7, 23),
-        source: MarketPriceSource.receipt, discounted: true);
+    final old = MarketPrice(
+      productId: 'x',
+      storeName: 'Lidl',
+      price: 0.79,
+      updatedAt: DateTime(2026, 7, 23),
+      source: MarketPriceSource.receipt,
+      discounted: true,
+    );
     final quality = marketPriceQuality(old, DateTime(2026, 9, 24));
     expect(quality.sourceRate, 0.05);
     expect(quality.ageRate, 0.20);

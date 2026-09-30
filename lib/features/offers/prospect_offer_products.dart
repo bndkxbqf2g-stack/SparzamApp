@@ -3,6 +3,7 @@ import '../../models/product.dart';
 import '../catalog/product_identity.dart';
 import 'offer_import.dart';
 import 'offer_filter.dart';
+import 'prospect_product_match.dart';
 
 /// Keeps every verified current leaflet item discoverable from the shopping
 /// list, even when its product identity is not yet in the local catalog.
@@ -20,8 +21,7 @@ List<ProspectOfferProduct> prospectOfferProducts({
   for (final record in records) {
     if (!_isUsableRecord(record, now: now)) continue;
     final product = productForProspectOffer(record, catalog);
-    final resolution = resolveOfferImport(record, catalog);
-    final offer = resolution.offer ?? _offerForProduct(record, product);
+    final offer = _offerForProduct(record, product, now: now);
     if (offer == null) continue;
     final key = '${offer.storeName}|${offer.id}';
     result.putIfAbsent(key, () => ProspectOfferProduct(product, offer));
@@ -33,8 +33,8 @@ Product productForProspectOffer(
   OfferImportRecord record,
   Iterable<Product> catalogProducts,
 ) {
-  final resolution = resolveOfferImport(record, catalogProducts);
-  return resolution.product ?? _offerBackedProduct(record);
+  return exactProspectProduct(record.productLabel, catalogProducts) ??
+      _offerBackedProduct(record);
 }
 
 class ProspectOfferProduct {
@@ -84,8 +84,12 @@ Product _offerBackedProduct(OfferImportRecord record) {
   );
 }
 
-Offer? _offerForProduct(OfferImportRecord record, Product product) {
-  if (!_isUsableRecord(record)) return null;
+Offer? _offerForProduct(
+  OfferImportRecord record,
+  Product product, {
+  DateTime? now,
+}) {
+  if (!_isUsableRecord(record, now: now)) return null;
   final originalPrice = record.originalPrice ?? record.offerPrice;
   return Offer(
     id: 'import|${record.source}|${record.sourceId}|${product.id}',

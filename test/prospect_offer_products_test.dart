@@ -65,6 +65,37 @@ void main() {
     );
   });
 
+  test(
+    'different brand in same family never inherits catalog price identity',
+    () {
+      const coffee = Product(
+        id: 'coffee-jacobs-500',
+        name: 'Jacobs Kaffee Crema 500 g',
+        unit: '500 g',
+        group: 'kaffee',
+      );
+      final entries = prospectOfferProducts(
+        records: [
+          OfferImportRecord(
+            sourceId: 'melitta-500',
+            productLabel: 'Melitta Kaffee 500 g',
+            storeName: 'Netto',
+            offerPrice: 5,
+            validUntil: DateTime(2026, 10, 2),
+            source: 'leaflet',
+            proofRef: 'https://example.test/netto/melitta',
+          ),
+        ],
+        catalogProducts: const [coffee],
+        now: current,
+      );
+
+      expect(entries, hasLength(1));
+      expect(entries.single.product.id, 'prospect|melitta kaffee 500 g');
+      expect(entries.single.offer.productId, entries.single.product.id);
+    },
+  );
+
   test('expired, unproven, and invalid price records are excluded', () {
     final entries = prospectOfferProducts(
       records: [

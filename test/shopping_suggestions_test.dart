@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/shopping_list/shopping_suggestions.dart';
+import 'package:sparzamapp/features/offers/prospect_price_statistics.dart';
+import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/models/product.dart';
@@ -259,4 +261,49 @@ void main() {
       pastaHalfKg.id,
     ]);
   });
+
+  test(
+    'past prospect price is visible as history and does not beat an offer',
+    () {
+      final history = {
+        regular.id: ProspectPriceHistorySummary(
+          productId: regular.id,
+          storeName: 'Netto',
+          medianPrice: 0.49,
+          latestValidUntil: DateTime(2026, 9, 27),
+          kind: PriceObservationKind.offer,
+          observationCount: 3,
+        ),
+      };
+      final results = buildSuggestions(
+        query: 'Milch',
+        knownItems: const [],
+        recentPurchases: const [],
+        preferredProductByGroup: const {},
+        catalogProducts: const [regular, lowFat],
+        prospectPriceHistory: history,
+        offers: [
+          Offer(
+            id: 'current-milk',
+            productId: lowFat.id,
+            storeName: 'ALDI Süd',
+            originalPrice: 1.29,
+            offerPrice: 0.95,
+            validUntil: DateTime(2026, 10, 3),
+          ),
+        ],
+        now: now,
+      );
+
+      expect(results.first.id, lowFat.id);
+      expect(
+        shoppingSuggestionPriceForProduct(
+          regular,
+          prospectPriceHistory: history,
+          now: now,
+        )?.displayLabel,
+        contains('Früheres Angebot (Median) Netto 0,49 € · Stand 27.09.2026'),
+      );
+    },
+  );
 }

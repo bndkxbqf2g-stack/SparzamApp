@@ -10,7 +10,7 @@ import 'prospect_branch_resolver.dart';
 /// result and never treats an unavailable retailer as an empty successful feed.
 class ProspectImportModule {
   ProspectImportModule({http.Client? client})
-      : _feedService = ProspectFeedService(client: client);
+    : _feedService = ProspectFeedService(client: client);
 
   final ProspectFeedService _feedService;
   final ProspectBranchResolver _branchResolver = const ProspectBranchResolver();
@@ -34,6 +34,8 @@ class ProspectImportModule {
                   thumbnailUrl: issue.thumbnailUrl,
                   sourceStatus: issue.sourceStatus,
                   recordCount: issue.recordCount,
+                  validFrom: issue.validFrom,
+                  validUntil: issue.validUntil,
                 )
               : issue,
         )
@@ -47,7 +49,8 @@ class ProspectImportModule {
     );
   }
 
-  List<ProspectBranch> resolveBranches(String address, {
+  List<ProspectBranch> resolveBranches(
+    String address, {
     Iterable<ProspectBranch> current = configuredProspectBranches,
   }) => _branchResolver.resolveOrKeep(address, current);
 }

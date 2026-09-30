@@ -32,10 +32,10 @@ PriceObservation observationFromMarketPrice(MarketPrice price) =>
           ? PriceObservationKind.offer
           : PriceObservationKind.unknown,
       proofRef: price.externalId == null
-          ? null : 'open-prices:${price.externalId}',
+          ? null
+          : 'open-prices:${price.externalId}',
       discounted: price.discounted,
     );
-
 
 /// Projects exact, route-usable observations back into the legacy MarketPrice
 /// contract. The append-only observation history remains the source evidence;
@@ -47,34 +47,43 @@ List<MarketPrice> marketPricesFromObservations(
   DateTime? now,
 }) {
   final today = now ?? DateTime.now();
+  final currentDay = DateTime(today.year, today.month, today.day);
   final productsById = {for (final product in products) product.id: product};
   return observations
-        .where((entry) =>
+      .where(
+        (entry) =>
             entry.isValid &&
             entry.productId?.isNotEmpty == true &&
             entry.identityConfidence >= 1 &&
-            (entry.validFrom == null || !entry.validFrom!.isAfter(today)) &&
-            (entry.validUntil == null || !entry.validUntil!.isBefore(today)) &&
+            (entry.validFrom == null ||
+                !_day(entry.validFrom!).isAfter(currentDay)) &&
+            (entry.validUntil == null ||
+                !_day(entry.validUntil!).isBefore(currentDay)) &&
             _sourceAllowed(entry, settings, today) &&
             _matchesProductPackage(entry, productsById[entry.productId]) &&
-            _projectsToLegacyMarketPrice(entry.source))
-        .map((entry) => MarketPrice(
-              productId: entry.productId!,
-              storeName: entry.storeName,
-              price: entry.price,
-              updatedAt: entry.observedAt,
-              source: switch (entry.source) {
-                PriceObservationSource.receipt => MarketPriceSource.receipt,
-                PriceObservationSource.openPrices => MarketPriceSource.openPrices,
-                _ => MarketPriceSource.manual,
-              },
-              externalId: _openPricesId(entry.proofRef),
-              sourceLocationName: entry.region,
-              discounted: entry.discounted ||
-                  entry.kind == PriceObservationKind.offer,
-            ))
-        .toList();
+            _projectsToLegacyMarketPrice(entry.source),
+      )
+      .map(
+        (entry) => MarketPrice(
+          productId: entry.productId!,
+          storeName: entry.storeName,
+          price: entry.price,
+          updatedAt: entry.observedAt,
+          source: switch (entry.source) {
+            PriceObservationSource.receipt => MarketPriceSource.receipt,
+            PriceObservationSource.openPrices => MarketPriceSource.openPrices,
+            _ => MarketPriceSource.manual,
+          },
+          externalId: _openPricesId(entry.proofRef),
+          sourceLocationName: entry.region,
+          discounted:
+              entry.discounted || entry.kind == PriceObservationKind.offer,
+        ),
+      )
+      .toList();
 }
+
+DateTime _day(DateTime value) => DateTime(value.year, value.month, value.day);
 
 bool _matchesProductPackage(PriceObservation observation, Product? product) {
   if (product == null) {
@@ -95,7 +104,8 @@ bool _matchesProductPackage(PriceObservation observation, Product? product) {
   }
   final expected = normalizeQuantity(expectedAmount, expectedUnit);
   final observed = normalizeQuantity(observedAmount, observedUnit);
-  if (expected == null || observed == null ||
+  if (expected == null ||
+      observed == null ||
       expected.dimension != observed.dimension) {
     return false;
   }
@@ -106,7 +116,6 @@ int? _openPricesId(String? proofRef) {
   if (proofRef == null || !proofRef.startsWith('open-prices:')) return null;
   return int.tryParse(proofRef.substring('open-prices:'.length));
 }
-
 
 bool _sourceAllowed(
   PriceObservation observation,
@@ -128,14 +137,10 @@ bool _sourceAllowed(
   );
 }
 
-
-bool _projectsToLegacyMarketPrice(PriceObservationSource source) => switch (source) {
+bool _projectsToLegacyMarketPrice(PriceObservationSource source) =>
+    switch (source) {
       PriceObservationSource.manual ||
       PriceObservationSource.receipt ||
-      PriceObservationSource.openPrices ||
-      PriceObservationSource.retailer ||
-      PriceObservationSource.retailerWebsite ||
-      PriceObservationSource.leaflet =>
-        true,
+      PriceObservationSource.openPrices => true,
       _ => false,
     };

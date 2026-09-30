@@ -2,10 +2,12 @@ import '../../data/products.dart';
 import '../../models/product.dart';
 import '../../models/recent_purchase.dart';
 import '../../models/offer.dart';
+import '../../models/price_observation.dart';
 import '../../models/market_price.dart';
 import '../../models/receipt_price_stat.dart';
 import '../offers/effective_price.dart';
 import '../offers/offer_filter.dart';
+import '../offers/prospect_price_statistics.dart';
 import '../catalog/product_identity.dart';
 import '../catalog/product_hierarchy.dart';
 import 'receipt_product_price_match.dart';
@@ -20,6 +22,7 @@ class ShoppingSuggestionPrice {
     this.validUntil,
     this.observedAt,
     this.isOffer = false,
+    this.isHistorical = false,
   });
 
   final double price;
@@ -28,10 +31,12 @@ class ShoppingSuggestionPrice {
   final DateTime? validUntil;
   final DateTime? observedAt;
   final bool isOffer;
+  final bool isHistorical;
 
   String get displayLabel =>
       '$sourceLabel $storeName ${price.toStringAsFixed(2).replaceAll('.', ',')} €'
-      '${validUntil == null ? '' : ' · bis ${_date(validUntil!)}'}';
+      '${validUntil == null ? '' : ' · bis ${_date(validUntil!)}'}'
+      '${isHistorical && observedAt != null ? ' · Stand ${_date(observedAt!)}' : ''}';
 
   static String _date(DateTime value) =>
       '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.'
@@ -47,6 +52,7 @@ List<Product> buildSuggestions({
   Iterable<Offer> offers = const <Offer>[],
   Iterable<MarketPrice> marketPrices = const <MarketPrice>[],
   Iterable<ReceiptPriceStat> receiptPriceStats = const <ReceiptPriceStat>[],
+  Map<String, ProspectPriceHistorySummary> prospectPriceHistory = const {},
   Iterable<String> enabledStores = const <String>[],
   DateTime? now,
 }) {
@@ -89,6 +95,7 @@ List<Product> buildSuggestions({
         offers: offers,
         marketPrices: marketPrices,
         receiptPriceStats: receiptPriceStats,
+        prospectPriceHistory: prospectPriceHistory,
         enabledStores: enabledStores,
         now: now,
       ),
@@ -100,17 +107,23 @@ List<Product> buildSuggestions({
     if (aPrice != null || bPrice != null) {
       if (aPrice == null) return 1;
       if (bPrice == null) return -1;
+      if (aPrice.isHistorical != bPrice.isHistorical) {
+        return aPrice.isHistorical ? 1 : -1;
+      }
       if (aPrice.isOffer != bPrice.isOffer) return aPrice.isOffer ? -1 : 1;
-      final aComparable = _comparisonPrice(a, aPrice.price);
-      final bComparable = _comparisonPrice(b, bPrice.price);
-      if (aComparable != null &&
-          bComparable != null &&
-          aComparable.dimension == bComparable.dimension) {
-        final byUnitPrice = aComparable.price.compareTo(bComparable.price);
-        if (byUnitPrice != 0) return byUnitPrice;
-      } else if (_normalizedUnitLabel(a.unit) == _normalizedUnitLabel(b.unit)) {
-        final byPackagePrice = aPrice.price.compareTo(bPrice.price);
-        if (byPackagePrice != 0) return byPackagePrice;
+      if (!aPrice.isHistorical) {
+        final aComparable = _comparisonPrice(a, aPrice.price);
+        final bComparable = _comparisonPrice(b, bPrice.price);
+        if (aComparable != null &&
+            bComparable != null &&
+            aComparable.dimension == bComparable.dimension) {
+          final byUnitPrice = aComparable.price.compareTo(bComparable.price);
+          if (byUnitPrice != 0) return byUnitPrice;
+        } else if (_normalizedUnitLabel(a.unit) ==
+            _normalizedUnitLabel(b.unit)) {
+          final byPackagePrice = aPrice.price.compareTo(bPrice.price);
+          if (byPackagePrice != 0) return byPackagePrice;
+        }
       }
     }
 
@@ -149,6 +162,7 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
   Iterable<Offer> offers = const <Offer>[],
   Iterable<MarketPrice> marketPrices = const <MarketPrice>[],
   Iterable<ReceiptPriceStat> receiptPriceStats = const <ReceiptPriceStat>[],
+  Map<String, ProspectPriceHistorySummary> prospectPriceHistory = const {},
   Iterable<String> enabledStores = const <String>[],
   DateTime? now,
   int historyDays = 60,
@@ -227,7 +241,22 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
     );
   }
 
-  if (quotes.isEmpty) return null;
+  if (quotes.isEmpty) {
+    final history = prospectPriceHistory[product.id];
+    if (history == null ||
+        (enabled.isNotEmpty && !enabled.contains(history.storeName))) {
+      return null;
+    }
+    return ShoppingSuggestionPrice(
+      price: history.medianPrice,
+      storeName: history.storeName,
+      sourceLabel: history.kind == PriceObservationKind.offer
+          ? 'Früheres Angebot (Median)'
+          : 'Prospekt-Normalpreis (historisch)',
+      observedAt: history.latestValidUntil,
+      isHistorical: true,
+    );
+  }
   quotes.sort((a, b) {
     if (a.isOffer != b.isOffer) return a.isOffer ? -1 : 1;
     final byPrice = a.price.compareTo(b.price);

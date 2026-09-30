@@ -13,6 +13,7 @@ import '../../models/receipt_price_stat.dart';
 import '../../services/receipt_observation_store.dart';
 import '../../services/shopping_list_store.dart';
 import '../offers/offer_details_screen.dart';
+import '../offers/prospect_price_statistics.dart';
 import '../receipt/receipt_import_dialog.dart';
 import '../receipt/receipt_import.dart';
 import '../receipt/receipt_price_statistics.dart';
@@ -56,6 +57,7 @@ class ShoppingListScreen extends StatefulWidget {
     required this.catalogProducts,
     required this.marketPrices,
     this.priceObservations = const <MarketPrice>[],
+    this.prospectPriceHistory = const {},
     this.onSavePrices,
     this.onCreateProduct,
     this.onReceiptObservationsChanged,
@@ -84,6 +86,7 @@ class ShoppingListScreen extends StatefulWidget {
   final List<Product> catalogProducts;
   final List<MarketPrice> marketPrices;
   final List<MarketPrice> priceObservations;
+  final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
   final Future<void> Function(List<MarketPrice>)? onSavePrices;
   final Future<List<Product>> Function(Product product)? onCreateProduct;
   final Future<void> Function()? onReceiptObservationsChanged;
@@ -154,6 +157,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     offers: widget.offers,
     marketPrices: widget.marketPrices,
     receiptPriceStats: receiptPriceStats,
+    prospectPriceHistory: widget.prospectPriceHistory,
     enabledStores: widget.mobility.enabledStoreNames,
   );
 
@@ -162,6 +166,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     offers: widget.offers,
     marketPrices: widget.marketPrices,
     receiptPriceStats: receiptPriceStats,
+    prospectPriceHistory: widget.prospectPriceHistory,
     enabledStores: widget.mobility.enabledStoreNames,
   )?.displayLabel;
 

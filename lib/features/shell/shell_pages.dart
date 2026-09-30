@@ -20,6 +20,7 @@ import '../prospects/prospects_screen.dart';
 import '../../services/prospect_feed_service.dart';
 import 'more_screen.dart';
 import '../offers/offer_import.dart';
+import '../offers/prospect_price_statistics.dart';
 import '../offers/offers_screen.dart';
 import '../profile/profile_screen.dart';
 import '../receipt/receipt_screen.dart';
@@ -56,6 +57,7 @@ List<Widget> buildShellPages({
   required List<Product> catalogProducts,
   required List<MarketPrice> marketPrices,
   required List<MarketPrice> priceObservations,
+  Map<String, ProspectPriceHistorySummary> prospectPriceHistory = const {},
   required List<ReplenishmentSuggestion> replenishmentSuggestions,
   required ValueChanged<Map<String, double>> onRoadDistancesChanged,
   required ValueChanged<RoadRouteMatrix?> onRoadMatrixChanged,
@@ -77,99 +79,104 @@ List<Widget> buildShellPages({
   required Future<List<Offer>> Function(Offer offer) onSaveOffer,
   required Future<List<Offer>> Function(Offer offer) onDeleteOffer,
   required VoidCallback onOpenDiagnostics,
-}) =>
-    [
-      HomeScreen(
-        data: dashboard,
-        onOpenList: onOpenList,
-        onOpenRoute: onOpenRoute,
-        onOpenOffers: onOpenOffers,
-        onOpenBudget: onOpenBudget,
-        onOpenScanner: onOpenScanner,
-      ),
-      ShoppingListScreen(
-        items: shoppingList,
-        shoppingLists: shoppingLists,
-        activeShoppingListId: activeShoppingListId,
-        onSelectShoppingList: onSelectShoppingList,
-        onCreateShoppingList: onCreateShoppingList,
-        onAdd: onAddProduct,
-        onChangeQuantity: onChangeQuantity,
-        onSelectFamily: onSelectFamily,
-        onUpdateItemNote: onUpdateItemNote,
-        onUpdateItemChecked: onUpdateItemChecked,
-        preferredProductByGroup: preferredProductByGroup,
-        recentPurchases: recentPurchases,
-        onPurchased: onPurchased,
-        onClearPurchased: onClearPurchased,
-        shoppingListStore: shoppingListStore,
-        onOpenScanner: onOpenScanner,
-        offers: offers,
-        priceHistory: priceHistory,
-        mobility: mobility,
-        catalogProducts: catalogProducts,
-        marketPrices: marketPrices,
-        priceObservations: priceObservations,
-        onSavePrices: (prices) async {
-          for (final price in prices) {
-            await onSavePrice(price);
-          }
-        },
-        onCreateProduct: onSaveProduct,
-        onReceiptObservationsChanged: onReceiptObservationsChanged,
-        replenishmentSuggestions: replenishmentSuggestions,
-      ),
-      OffersScreen(
-        offers: offers,
-        prospectRecords: prospectRecords,
-        priceHistory: priceHistory,
-        onSave: onSaveOffer,
-        onDelete: onDeleteOffer,
-        catalogProducts: catalogProducts,
-        onAddToShoppingList: onAddProduct,
-      ),
-      ProspectsScreen(records: prospectRecords, prospects: prospectIssues, catalogProducts: catalogProducts, onAddProduct: onAddProduct),
-      PricesHubScreen(
-        onOpenCatalog: onOpenCatalog,
-        onOpenSettings: onEditPriceData,
-        summary: priceDataSummary,
-      ),
-      MoreScreen(
-        onOpenStores: onEditStores,
-        onOpenPriceData: onEditPriceData,
-        routePage: RouteScreen(
-          items: shoppingList,
-          offers: offers,
-          mobility: mobility,
-          marketPrices: marketPrices,
-          onRoadDistancesChanged: onRoadDistancesChanged,
-          onRoadMatrixChanged: onRoadMatrixChanged,
-        ),
-        receiptPage: ReceiptScreen(
-          plan: currentPlan,
-          baselineTotal: baselineTotal,
-          history: purchaseHistory,
-          onComplete: onCompletePurchase,
-          onUpdatePurchase: onUpdatePurchase,
-          onDeletePurchase: onDeletePurchase,
-          catalogProducts: catalogProducts,
-          onSavePrices: (prices) async {
-            for (final price in prices) {
-              await onSavePrice(price);
-            }
-          },
-          onCreateProduct: onSaveProduct,
-        ),
-        profilePage: ProfileScreen(
-          mobility: mobility,
-          onEditMobility: onEditMobility,
-          onEditStores: onEditStores,
-          storeCount: storeCount,
-          onOpenCatalog: onOpenCatalog,
-          productCount: catalogProducts.length,
-          onEditPriceData: onEditPriceData,
-          priceDataSummary: priceDataSummary,
-          onOpenDiagnostics: onOpenDiagnostics,
-        ),
-      ),
-    ];
+}) => [
+  HomeScreen(
+    data: dashboard,
+    onOpenList: onOpenList,
+    onOpenRoute: onOpenRoute,
+    onOpenOffers: onOpenOffers,
+    onOpenBudget: onOpenBudget,
+    onOpenScanner: onOpenScanner,
+  ),
+  ShoppingListScreen(
+    items: shoppingList,
+    shoppingLists: shoppingLists,
+    activeShoppingListId: activeShoppingListId,
+    onSelectShoppingList: onSelectShoppingList,
+    onCreateShoppingList: onCreateShoppingList,
+    onAdd: onAddProduct,
+    onChangeQuantity: onChangeQuantity,
+    onSelectFamily: onSelectFamily,
+    onUpdateItemNote: onUpdateItemNote,
+    onUpdateItemChecked: onUpdateItemChecked,
+    preferredProductByGroup: preferredProductByGroup,
+    recentPurchases: recentPurchases,
+    onPurchased: onPurchased,
+    onClearPurchased: onClearPurchased,
+    shoppingListStore: shoppingListStore,
+    onOpenScanner: onOpenScanner,
+    offers: offers,
+    priceHistory: priceHistory,
+    mobility: mobility,
+    catalogProducts: catalogProducts,
+    marketPrices: marketPrices,
+    priceObservations: priceObservations,
+    prospectPriceHistory: prospectPriceHistory,
+    onSavePrices: (prices) async {
+      for (final price in prices) {
+        await onSavePrice(price);
+      }
+    },
+    onCreateProduct: onSaveProduct,
+    onReceiptObservationsChanged: onReceiptObservationsChanged,
+    replenishmentSuggestions: replenishmentSuggestions,
+  ),
+  OffersScreen(
+    offers: offers,
+    prospectRecords: prospectRecords,
+    priceHistory: priceHistory,
+    onSave: onSaveOffer,
+    onDelete: onDeleteOffer,
+    catalogProducts: catalogProducts,
+    onAddToShoppingList: onAddProduct,
+  ),
+  ProspectsScreen(
+    records: prospectRecords,
+    prospects: prospectIssues,
+    catalogProducts: catalogProducts,
+    onAddProduct: onAddProduct,
+  ),
+  PricesHubScreen(
+    onOpenCatalog: onOpenCatalog,
+    onOpenSettings: onEditPriceData,
+    summary: priceDataSummary,
+  ),
+  MoreScreen(
+    onOpenStores: onEditStores,
+    onOpenPriceData: onEditPriceData,
+    routePage: RouteScreen(
+      items: shoppingList,
+      offers: offers,
+      mobility: mobility,
+      marketPrices: marketPrices,
+      onRoadDistancesChanged: onRoadDistancesChanged,
+      onRoadMatrixChanged: onRoadMatrixChanged,
+    ),
+    receiptPage: ReceiptScreen(
+      plan: currentPlan,
+      baselineTotal: baselineTotal,
+      history: purchaseHistory,
+      onComplete: onCompletePurchase,
+      onUpdatePurchase: onUpdatePurchase,
+      onDeletePurchase: onDeletePurchase,
+      catalogProducts: catalogProducts,
+      onSavePrices: (prices) async {
+        for (final price in prices) {
+          await onSavePrice(price);
+        }
+      },
+      onCreateProduct: onSaveProduct,
+    ),
+    profilePage: ProfileScreen(
+      mobility: mobility,
+      onEditMobility: onEditMobility,
+      onEditStores: onEditStores,
+      storeCount: storeCount,
+      onOpenCatalog: onOpenCatalog,
+      productCount: catalogProducts.length,
+      onEditPriceData: onEditPriceData,
+      priceDataSummary: priceDataSummary,
+      onOpenDiagnostics: onOpenDiagnostics,
+    ),
+  ),
+];

@@ -29,6 +29,8 @@ import '../../services/prospect_feed_service.dart';
 import '../../services/prospect_import_module.dart';
 import '../offers/offer_import.dart';
 import '../offers/prospect_offer_products.dart';
+import '../offers/prospect_price_learning.dart';
+import '../offers/prospect_price_statistics.dart';
 import '../../services/market_price_observation_adapter.dart';
 import '../../services/recent_purchase_store.dart';
 import '../../services/receipt_observation_store.dart';
@@ -40,7 +42,6 @@ import '../../services/sequential_write_queue.dart';
 import '../../services/diagnostic_log_service.dart';
 import '../budget/budget_screen.dart';
 import '../catalog/product_catalog_screen.dart';
-import '../catalog/product_identity.dart';
 import '../home/dashboard_data.dart';
 import '../profile/mobility_settings_screen.dart';
 import '../profile/price_data_settings_screen.dart';
@@ -180,7 +181,11 @@ class _AppShellState extends State<AppShell> {
         items: _copyItems(shoppingList),
       ),
     ];
-    offers = [...widget.initialOffers];
+    // Imported offers are rebuilt from the current verified feed. Stored
+    // manual offers retain their separate planning/history behavior.
+    offers = widget.initialOffers
+        .where((offer) => !offer.id.startsWith('import|'))
+        .toList();
     recentPurchases = [...widget.initialRecentPurchases];
     purchaseHistory = [...widget.initialPurchaseHistory];
     preferredProductByGroup = {...widget.initialPreferredProductByGroup};
@@ -281,66 +286,30 @@ class _AppShellState extends State<AppShell> {
         records: currentRecords,
         catalogProducts: buildCatalogProducts(customProducts),
       );
-      final resolutions = currentRecords
-          .map((record) => resolveOfferImport(record, catalogProducts))
-          .toList(growable: false);
-      final resolved = resolutions
-          .where((result) => result.isResolved)
-          .map((result) => result.offer!)
+      final resolved = offerBackedProducts
+          .where((entry) => !entry.product.id.startsWith('prospect|'))
+          .map((entry) => entry.offer)
           .toList(growable: false);
 
-      final refreshedStores = feed.refreshedStores.toSet();
-      final retained = offers.where((offer) {
-        final imported = offer.id.startsWith('import|');
-        return !imported || !refreshedStores.contains(offer.storeName);
-      }).toList();
+      final retained = offers
+          .where((offer) => !offer.id.startsWith('import|'))
+          .toList(growable: false);
       final next = [...retained, ...resolved];
       final offersById = <String, Offer>{
         for (final offer in next) offer.id: offer,
         for (final entry in offerBackedProducts) entry.offer.id: entry.offer,
       };
 
-      if (resolved.isNotEmpty) {
-        await widget.offerStore.save(next);
-      }
+      await widget.offerStore.save(next);
 
       final observedAt = feed.generatedAt ?? DateTime.now();
-      // Angebotspreise bleiben im Angebotsbestand. Für die normale
-      // Preisdatenbank wird aber jeder belegte Normalpreis übernommen,
-      // auch wenn das Produkt noch nicht im Katalog vorhanden ist.
-      final regularOffers = <Offer>[];
-      for (final record in feed.records) {
-        final regular = record.originalPrice;
-        if (regular == null) continue;
-        final resolution = resolveOfferImport(record, catalogProducts);
-        if (resolution.offer != null) {
-          regularOffers.add(resolution.offer!);
-          continue;
-        }
-        final identity = normalizeIdentityText(record.productLabel);
-        if (identity.isEmpty) continue;
-        regularOffers.add(
-          Offer(
-            id: 'prospect-regular|${record.sourceId}',
-            productId: 'prospect|$identity',
-            storeName: record.storeName,
-            originalPrice: regular,
-            offerPrice: record.offerPrice,
-            validFrom: record.validFrom,
-            validUntil: record.validUntil,
-            source: record.source,
-            proofRef: record.proofRef,
-          ),
-        );
-      }
-      final regularObservations = regularOffers
-          .map(
-            (offer) =>
-                regularObservationFromOffer(offer, observedAt: observedAt),
-          )
-          .toList(growable: false);
-      if (regularObservations.isNotEmpty) {
-        await priceObservationStore.append(regularObservations);
+      final learnedPrices = prospectPriceObservations(
+        records: feed.records,
+        catalogProducts: buildCatalogProducts(customProducts),
+        observedAt: observedAt,
+      );
+      if (learnedPrices.isNotEmpty) {
+        await priceObservationStore.append(learnedPrices);
       }
 
       final historical = await priceObservationStore.load();
@@ -358,7 +327,7 @@ class _AppShellState extends State<AppShell> {
         details:
             '${feed.records.length} Rohangebote · '
             '${resolved.length} zugeordnet · '
-            '${regularObservations.length} Normalpreise übernommen',
+            '${learnedPrices.length} datierte Preise gelernt',
       );
     } catch (error) {
       widget.diagnosticLogService.record(
@@ -1049,6 +1018,10 @@ class _AppShellState extends State<AppShell> {
       catalogProducts: catalogProducts,
       marketPrices: planningMarketPrices,
       priceObservations: [...planningMarketPrices],
+      prospectPriceHistory: prospectPriceHistorySummaries(
+        historicalPriceObservations,
+        enabledStores: mobility.enabledStoreNames,
+      ),
       replenishmentSuggestions: replenishmentSuggestions,
       onRoadDistancesChanged: (value) => setState(() => roadDistances = value),
       onRoadMatrixChanged: (value) => setState(() => roadMatrix = value),

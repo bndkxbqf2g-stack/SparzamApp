@@ -27,6 +27,8 @@ class ProspectIssue {
     this.thumbnailUrl,
     this.sourceStatus = 'unknown',
     this.recordCount = 0,
+    this.validFrom,
+    this.validUntil,
   });
   final String storeName;
   final String title;
@@ -35,10 +37,17 @@ class ProspectIssue {
   final String? thumbnailUrl;
   final String sourceStatus;
   final int recordCount;
+  final DateTime? validFrom;
+  final DateTime? validUntil;
 }
 
 class ProspectPage {
-  const ProspectPage({required this.number, required this.imageUrl, this.zoomUrl, this.keyWords = ''});
+  const ProspectPage({
+    required this.number,
+    required this.imageUrl,
+    this.zoomUrl,
+    this.keyWords = '',
+  });
   final int number;
   final String imageUrl;
   final String? zoomUrl;
@@ -57,7 +66,7 @@ const configuredProspectStores = <String>[
 String? officialProspectUrl(String storeName, [String? fallback]) {
   switch (storeName) {
     case 'ALDI Süd':
-      return 'https://prospekt.aldi-sued.de/kw39-26-op-mp/page/1';
+      return 'https://www.aldi-sued.de/';
     case 'EDEKA':
       return 'https://www.edeka.de/markt-id/8002976/prospekt.jsp';
     case 'Kaufland':
@@ -72,7 +81,8 @@ String? officialProspectUrl(String storeName, [String? fallback]) {
 }
 
 class ProspectFeedService {
-  ProspectFeedService({http.Client? client}) : _client = client ?? http.Client();
+  ProspectFeedService({http.Client? client})
+    : _client = client ?? http.Client();
 
   static const feedUrl =
       'https://raw.githubusercontent.com/bndkxbqf2g-stack/SparzamApp/'
@@ -111,7 +121,8 @@ ProspectFeedLoadResult parseProspectFeed(String raw) {
       availableStores.add(storeName);
     }
     sourceStatuses[storeName] = source['status'] as String? ?? 'unknown';
-    sourceRecordCounts[storeName] = (source['recordCount'] as num?)?.toInt() ?? 0;
+    sourceRecordCounts[storeName] =
+        (source['recordCount'] as num?)?.toInt() ?? 0;
     final sourceUrl = source['url'] as String?;
     if (sourceUrl != null && sourceUrl.trim().isNotEmpty) {
       availableStoreUrls[storeName] = sourceUrl;
@@ -134,19 +145,36 @@ ProspectFeedLoadResult parseProspectFeed(String raw) {
         final image = page['image'] as String?;
         final number = (page['number'] as num?)?.toInt();
         if (image != null && number != null) {
-          pages.add(ProspectPage(number: number, imageUrl: image, zoomUrl: page['zoom'] as String?, keyWords: page['keyWords'] as String? ?? ''));
+          pages.add(
+            ProspectPage(
+              number: number,
+              imageUrl: image,
+              zoomUrl: page['zoom'] as String?,
+              keyWords: page['keyWords'] as String? ?? '',
+            ),
+          );
         }
       }
       if (pages.isNotEmpty) {
-        prospects.add(ProspectIssue(
-          storeName: storeName,
-          title: raw['title'] as String? ?? 'Prospekt',
-          pages: pages,
-          url: raw['url'] as String?,
-          thumbnailUrl: raw['thumbnailUrl'] as String?,
-          sourceStatus: sourceStatuses[storeName] ?? 'unknown',
-          recordCount: sourceRecordCounts[storeName] ?? 0,
-        ));
+        prospects.add(
+          ProspectIssue(
+            storeName: storeName,
+            title: raw['title'] as String? ?? 'Prospekt',
+            pages: pages,
+            url: raw['url'] as String?,
+            thumbnailUrl: raw['thumbnailUrl'] as String?,
+            sourceStatus: sourceStatuses[storeName] ?? 'unknown',
+            recordCount: sourceRecordCounts[storeName] ?? 0,
+            validFrom: DateTime.tryParse(
+              raw['offerStartDate'] as String? ??
+                  raw['startDate'] as String? ??
+                  '',
+            ),
+            validUntil: DateTime.tryParse(
+              raw['offerEndDate'] as String? ?? raw['endDate'] as String? ?? '',
+            ),
+          ),
+        );
       }
     }
   }
@@ -175,8 +203,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw) {
     final productLabel = value['productLabel'] as String?;
     final storeName = value['storeName'] as String?;
     final offerPrice = (value['offerPrice'] as num?)?.toDouble();
-    final validUntil =
-        DateTime.tryParse(value['validUntil'] as String? ?? '');
+    final validUntil = DateTime.tryParse(value['validUntil'] as String? ?? '');
     if (sourceId == null ||
         sourceId.trim().isEmpty ||
         productLabel == null ||
@@ -198,8 +225,8 @@ ProspectFeedLoadResult parseProspectFeed(String raw) {
         storeName: storeName,
         originalPrice:
             originalPrice != null && originalPrice.isFinite && originalPrice > 0
-                ? originalPrice
-                : null,
+            ? originalPrice
+            : null,
         offerPrice: offerPrice,
         validFrom: DateTime.tryParse(value['validFrom'] as String? ?? ''),
         validUntil: validUntil,

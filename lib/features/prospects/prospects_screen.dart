@@ -6,6 +6,7 @@ import '../offers/offer_import.dart';
 import '../offers/prospect_offer_products.dart';
 import '../../models/product.dart';
 import '../../services/prospect_feed_service.dart';
+import '../offers/offer_filter.dart';
 
 class ProspectsScreen extends StatelessWidget {
   const ProspectsScreen({
@@ -14,20 +15,38 @@ class ProspectsScreen extends StatelessWidget {
     this.prospects = const [],
     this.catalogProducts = const [],
     this.onAddProduct,
+    this.now,
   });
 
   final List<OfferImportRecord> records;
   final List<ProspectIssue> prospects;
   final List<Product> catalogProducts;
   final ValueChanged<Product>? onAddProduct;
+  final DateTime? now;
 
   @override
   Widget build(BuildContext context) {
-    final byStore = <String, ProspectIssue>{};
-    for (final issue in prospects) {
-      byStore.putIfAbsent(issue.storeName, () => issue);
+    final currentRecords = currentProspectRecords(records, now: now);
+    final currentCounts = <String, int>{};
+    for (final record in currentRecords) {
+      currentCounts.update(
+        record.storeName,
+        (count) => count + 1,
+        ifAbsent: () => 1,
+      );
     }
-    final visibleProspects = byStore.values.toList(growable: false);
+    final byStore = <String, List<ProspectIssue>>{};
+    for (final issue in prospects) {
+      byStore.putIfAbsent(issue.storeName, () => []).add(issue);
+    }
+    final visibleProspects = <ProspectIssue>[
+      for (final entries in byStore.values)
+        _visibleIssue(
+          entries,
+          currentCounts[entries.first.storeName] ?? 0,
+          now: now,
+        ),
+    ];
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 96),
@@ -74,7 +93,7 @@ class ProspectsScreen extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (_) => _ProspectViewer(
                         issue: issue,
-                        records: records,
+                        records: currentRecords,
                         catalogProducts: catalogProducts,
                         onAddProduct: onAddProduct,
                       ),
@@ -88,6 +107,43 @@ class ProspectsScreen extends StatelessWidget {
       ],
     );
   }
+}
+
+ProspectIssue _visibleIssue(
+  List<ProspectIssue> entries,
+  int currentRecordCount, {
+  DateTime? now,
+}) {
+  final current = entries
+      .where(
+        (issue) =>
+            issue.pages.isNotEmpty &&
+            issue.validFrom != null &&
+            issue.validUntil != null &&
+            isOfferDateRangeActive(
+              validFrom: issue.validFrom,
+              validUntil: issue.validUntil!,
+              now: now,
+            ),
+      )
+      .firstOrNull;
+  final selected = current ?? entries.first;
+  return ProspectIssue(
+    storeName: selected.storeName,
+    title: current?.title ?? 'Aktionsprospekt',
+    pages: current?.pages ?? const <ProspectPage>[],
+    url: current?.url ?? officialProspectUrl(selected.storeName, selected.url),
+    thumbnailUrl: current?.thumbnailUrl,
+    sourceStatus:
+        current == null &&
+            currentRecordCount == 0 &&
+            selected.sourceStatus == 'ok'
+        ? 'no_current_offers'
+        : selected.sourceStatus,
+    recordCount: currentRecordCount,
+    validFrom: current?.validFrom,
+    validUntil: current?.validUntil,
+  );
 }
 
 class _ProspectCard extends StatelessWidget {
@@ -162,6 +218,9 @@ class _ProspectCard extends StatelessWidget {
 }
 
 String _sourceStatusLabel(ProspectIssue issue) {
+  if (issue.sourceStatus == 'no_current_offers') {
+    return 'Keine aktuell gültigen Angebotsdaten geladen.';
+  }
   if (issue.sourceStatus == 'error') {
     return 'Automatischer Abruf aktuell nicht verfügbar. '
         'Der offizielle Prospekt bleibt direkt erreichbar.';

@@ -19,6 +19,7 @@ SparzamApp ist ein Flutter-Prototyp für intelligent geplante Lebensmitteleinkä
 - Eigene freie Produkte können angelegt werden.
 - Barcode-Scanner verwendet vorhandene Katalogdaten bzw. Open Food Facts.
 - Historische Bonpreise werden als Preis-Hinweis am Produkt angezeigt.
+- Frühere, belegte Prospektpreise mit bekannter Packungsgröße erscheinen in der Produktsuche als datierte historische Mediane; sie sind keine aktuellen Marktpreise.
 - Exakte Produkt-ID-Historie hat Vorrang. Fehlt sie, darf eine passende Produktfamilie als konservativer historischer Hinweis dienen.
 - Familienhinweise sind **keine Behauptung, dass zwei Varianten identisch sind**. Beispiel: Rinderhack und gemischtes Hack bleiben unterschiedliche Produktidentitäten.
 - Nicht vergleichbare Packungspreise werden als historische Werte mit Prüfhinweis behandelt und nicht allein wegen des niedrigsten Betrags als günstigster Markt gewertet.
@@ -44,6 +45,8 @@ Eine Schätzung wird nicht stillschweigend zu einem bestätigten Marktpreis.
 ### Angebote / Prospekte
 - Angebote werden getrennt von Produktidentitäten behandelt: ein Angebot erzeugt grundsätzlich kein neues Produkt.
 - Angebotszeiträume werden berücksichtigt.
+- Die Prospektansicht lädt nur aktuell gültige Angebotsdaten und datierte Prospektseiten. Bei fehlendem Abruf zeigt sie den offiziellen Händlerlink ohne erfundene Preise.
+- Belegte Prospekt-Angebotspreise und ausdrücklich angegebene Normalpreise bleiben mit Markt, Quelle, Nachweis, Packungsgröße und Gültigkeit als Preisbeobachtungen erhalten. Abgelaufene Preise dienen nur der Historie; sie werden nicht als aktuell verfügbarer Routenpreis ausgegeben.
 - Marken-/Text-Matching kann passende Angebote zu Produkten finden.
 - Coupon, Cashback und Mehrfachkauf werden rechnerisch berücksichtigt, soweit die Angebotsdaten diese Bedingungen enthalten.
 
