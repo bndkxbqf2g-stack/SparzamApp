@@ -29,13 +29,26 @@ RouteRecommendationInfo buildRouteRecommendationInfo({
   }
 
   if (recommended.stores.length > 1 && singleStore != null) {
+    if (singleStore.hasDataGaps) {
+      final singlePercent = (singleStore.priceCoverage * 100).round();
+      final recommendedPercent = (recommended.priceCoverage * 100).round();
+      return RouteRecommendationInfo(
+        title: 'Mehrere Märkte sichern die Preisabdeckung',
+        detail:
+            'Der beste Einzelmarkt deckt nur $singlePercent % der Liste ab. '
+            'Die empfohlene Route deckt $recommendedPercent % ab. Die Empfehlung '
+            'beruht damit auf vollständiger Preisabdeckung.',
+      );
+    }
     final savings = singleStore.planningScore - recommended.planningScore;
-    return RouteRecommendationInfo(
-      title: 'Mehrere Märkte lohnen sich',
-      detail:
-          '${recommended.stores.length} Märkte verbessern den Planungswert '
-          'um ${savings.toStringAsFixed(2)} € gegenüber dem besten Einzelmarkt.',
-    );
+    if (savings > 0) {
+      return RouteRecommendationInfo(
+        title: 'Mehrere Märkte lohnen sich',
+        detail:
+            '${recommended.stores.length} Märkte verbessern den Planungswert '
+            'um ${savings.toStringAsFixed(2)} € gegenüber dem besten Einzelmarkt.',
+      );
+    }
   }
 
   if (cheapest.stores.length > recommended.stores.length &&

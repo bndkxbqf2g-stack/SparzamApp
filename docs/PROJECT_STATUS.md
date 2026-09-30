@@ -66,6 +66,17 @@
 - Für diesen Block: Flutter-Analyse ohne Befund, 424 Tests bestanden und
   `flutter build web --release` erfolgreich.
 
+## Update 30.09.2026 – Routenempfehlung bei unvollständiger Preisabdeckung
+- Wenn der beste Einzelmarkt nicht alle Listenartikel bepreisen kann, erklärt
+  die Empfehlung einen vollständigen Mehrmarktplan als Preisabdeckungs-
+  entscheidung. Sie berechnet daraus keine scheinbare Ersparnis gegenüber dem
+  unvollständigen Einzelmarkt.
+- Eine Regression prüft den Fall mit 50 % Einzelmarkt-Abdeckung und 100 %
+  Mehrmarkt-Abdeckung. Die bestehende Warnung für tatsächlich unvollständige
+  empfohlene Routen bleibt unverändert.
+- Für diesen Block: Flutter-Analyse ohne Befund, 425 Tests bestanden und
+  `flutter build web --release` erfolgreich.
+
 ## Audit 30.09.2026
 - Die App startet jetzt in der Einkaufsliste; ein Widget-Test prüft den sichtbaren Einstieg bei 390 × 844 px.
 - Ein doppelter Import in `app_shell.dart` wurde entfernt.
