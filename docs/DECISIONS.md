@@ -186,3 +186,11 @@ historischen Bon- oder normalen Marktpreisen angezeigt. Innerhalb des
 Angebotsvorrangs zählt der effektive Preis einschließlich sicher berechenbarer
 Coupon-/Cashback-Effekte. Historische Preise bleiben als Evidenz sichtbar und
 werden nicht gelöscht oder zur aktuellen Angebotsbehauptung umetikettiert.
+
+## D044 – Routenempfehlungen müssen Preisabdeckung von Ersparnis trennen
+Wenn der beste Einzelmarkt nicht alle Einkaufspositionen mit belastbaren
+Preisen abdeckt, darf ein vollständiger Mehrmarktplan nicht als reine
+Ersparnis gegenüber diesem Teilwarenkorb erklärt werden. Die UI benennt in
+diesem Fall die vollständige Preisabdeckung als Grund für die Mehrmarkt-
+Empfehlung. Eine unvollständige empfohlene Route bleibt weiterhin ausdrücklich
+vorläufig und zeigt ihre Datenlücke.
