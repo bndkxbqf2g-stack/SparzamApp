@@ -197,3 +197,6 @@ Preisbestätigung entsteht weder eine Preisbeobachtung noch ein Routenpreis.
 Web, macOS und Linux verwenden einen sichtbaren manuellen Fallback, weil der
 mobile OCR-Adapter dort nicht verfügbar ist. Render- oder OCR-Fehler lassen
 den Import kontrolliert als unlesbare Referenz weiterlaufen.
+Die iOS-Projektkonfiguration setzt deshalb das vom Plugin geforderte
+Deployment Target 15.5 zentral in Podfile und Runner-Projekt; ältere iOS-Geräte
+bleiben beim manuellen Fallback außerhalb der nativen OCR-Unterstützung.

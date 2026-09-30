@@ -367,6 +367,9 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Bildbasierte PDF-Seiten ohne Textebene werden auf Android/iOS mit `pdfrx`
   lokal in begrenzter Auflösung gerendert und über denselben OCR-Adapter gelesen.
   Seiten mit vorhandener Textebene bleiben beim verlustfreien Textpfad.
+- Die native iOS-Konfiguration setzt dafür das vom ML-Kit-Plugin benötigte
+  Deployment Target 15.5 in `ios/Podfile` und dem Runner-Projekt; Android bleibt
+  beim vorhandenen Mindest-SDK.
 - Bilddateien werden als strukturierte Bons behandelt und bei gleichem
   Fingerprint wie andere Bons dedupliziert. Ein unlesbares Bild bleibt als
   importierte Referenz sichtbar und erhält eine verständliche Handlungsanweisung.

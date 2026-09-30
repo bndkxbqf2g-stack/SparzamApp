@@ -392,6 +392,9 @@ Grundregel: kleine, klar verantwortliche Module; keine unnötige doppelte Logik.
 ## 15. Entwicklung und CI
 
 Voraussetzung: Flutter/Dart gemäß `pubspec.yaml` (Dart SDK aktuell `^3.13.4`).
+Für die mobile OCR-Integration ist iOS 15.5 oder neuer erforderlich; die
+versionierte `ios/Podfile` und das Runner-Projekt setzen dieses Ziel für alle
+Konfigurationen. Eine native Geräteabnahme bleibt zusätzlich erforderlich.
 
 ```sh
 flutter pub get
