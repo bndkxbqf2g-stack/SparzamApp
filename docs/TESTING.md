@@ -11,7 +11,7 @@ flutter test
 flutter build web --release
 ```
 
-Weitere Workflows aktualisieren Prospektdaten, erzeugen Release-Artefakte oder beobachten Releases. Sie sind getrennt vom Flutter-CI zu beurteilen: ein fehlgeschlagener Release-/Watcher-Lauf macht den Analyse-/Test-/Webbuild nicht automatisch rot, muss aber bei Release-Aufträgen untersucht werden.
+Weitere Workflows aktualisieren Prospektdaten, erzeugen Release-Artefakte oder beobachten Releases. Sie sind getrennt vom Flutter-CI zu beurteilen: ein fehlgeschlagener Release-/Watcher-Lauf macht den Analyse-/Test-/Webbuild nicht automatisch rot, muss aber bei Release-Aufträgen untersucht werden. Der Release-Watcher muss `gh workflow run release.yml --ref main --repo "$REPOSITORY"` verwenden, weil der geplante Watcher keinen lokalen Checkout hat. Die Korrektur des bisher fehlenden `--repo`-Arguments wird mit diesem PR ausgeliefert; ein manueller Dispatch wird während der Prüfung vermieden, damit kein Release veröffentlicht wird.
 
 ## Bestehende Abdeckung und Regressionen
 
