@@ -186,3 +186,17 @@ historischen Bon- oder normalen Marktpreisen angezeigt. Innerhalb des
 Angebotsvorrangs zählt der effektive Preis einschließlich sicher berechenbarer
 Coupon-/Cashback-Effekte. Historische Preise bleiben als Evidenz sichtbar und
 werden nicht gelöscht oder zur aktuellen Angebotsbehauptung umetikettiert.
+
+## D044 – Bildbon-OCR bleibt lokal und durchläuft denselben Review
+JPG-/PNG-Bons, Kameraaufnahmen und Seiten bildbasierter PDFs werden auf
+Android/iOS lokal mit ML Kit ausgelesen. PDF-Seiten werden nur dann gerendert,
+wenn keine Textebene vorhanden ist; Seiten mit Text bleiben im verlustfreien
+Textpfad. Der erkannte Text wird ausschließlich als `ReceiptDraft` in den
+bestehenden Bonreview gegeben; ohne ausgeglichenen Bon und explizite
+Preisbestätigung entsteht weder eine Preisbeobachtung noch ein Routenpreis.
+Web, macOS und Linux verwenden einen sichtbaren manuellen Fallback, weil der
+mobile OCR-Adapter dort nicht verfügbar ist. Render- oder OCR-Fehler lassen
+den Import kontrolliert als unlesbare Referenz weiterlaufen.
+Die iOS-Projektkonfiguration setzt deshalb das vom Plugin geforderte
+Deployment Target 15.5 zentral in Podfile und Runner-Projekt; ältere iOS-Geräte
+bleiben beim manuellen Fallback außerhalb der nativen OCR-Unterstützung.
