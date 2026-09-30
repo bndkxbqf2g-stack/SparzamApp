@@ -13,6 +13,7 @@ import '../../models/receipt_price_stat.dart';
 import '../../services/receipt_observation_store.dart';
 import '../../services/shopping_list_store.dart';
 import '../offers/offer_details_screen.dart';
+import '../offers/prospect_price_statistics.dart';
 import '../receipt/receipt_import_dialog.dart';
 import '../receipt/receipt_import.dart';
 import '../receipt/receipt_price_statistics.dart';
@@ -27,6 +28,7 @@ import 'shopping_additions.dart';
 import 'shopping_list_header.dart';
 import 'shopping_input.dart';
 import 'shopping_recent_choices.dart';
+import 'receipt_search_products.dart';
 import 'shopping_search_results.dart';
 import 'shopping_list_status.dart';
 import 'aisle_order_dialog.dart';
@@ -56,6 +58,7 @@ class ShoppingListScreen extends StatefulWidget {
     required this.catalogProducts,
     required this.marketPrices,
     this.priceObservations = const <MarketPrice>[],
+    this.prospectPriceHistory = const {},
     this.onSavePrices,
     this.onCreateProduct,
     this.onReceiptObservationsChanged,
@@ -84,6 +87,7 @@ class ShoppingListScreen extends StatefulWidget {
   final List<Product> catalogProducts;
   final List<MarketPrice> marketPrices;
   final List<MarketPrice> priceObservations;
+  final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
   final Future<void> Function(List<MarketPrice>)? onSavePrices;
   final Future<List<Product>> Function(Product product)? onCreateProduct;
   final Future<void> Function()? onReceiptObservationsChanged;
@@ -101,6 +105,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   List<String> aisleOrder = <String>[];
   bool tileView = true;
   List<ReceiptPriceStat> receiptPriceStats = const <ReceiptPriceStat>[];
+  List<Product> receiptCandidates = const <Product>[];
 
   @override
   void initState() {
@@ -116,6 +121,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     if (!mounted) return;
     setState(() {
       receiptPriceStats = buildReceiptPriceStats(observations);
+      receiptCandidates = receiptSearchProducts(
+        observations,
+        catalogProducts: widget.catalogProducts,
+      );
     });
   }
 
@@ -146,31 +155,45 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   }
 
   List<Product> get suggestions => buildSuggestions(
-        query: controller.text,
-        knownItems: knownItems,
-        recentPurchases: widget.recentPurchases,
-        preferredProductByGroup: widget.preferredProductByGroup,
-        catalogProducts: widget.catalogProducts,
-      );
+    query: controller.text,
+    knownItems: knownItems,
+    recentPurchases: widget.recentPurchases,
+    preferredProductByGroup: widget.preferredProductByGroup,
+    catalogProducts: [...widget.catalogProducts, ...receiptCandidates],
+    offers: widget.offers,
+    marketPrices: widget.marketPrices,
+    receiptPriceStats: receiptPriceStats,
+    prospectPriceHistory: widget.prospectPriceHistory,
+    enabledStores: widget.mobility.enabledStoreNames,
+  );
+
+  String? priceHintFor(Product product) => shoppingSuggestionPriceForProduct(
+    product,
+    offers: widget.offers,
+    marketPrices: widget.marketPrices,
+    receiptPriceStats: receiptPriceStats,
+    prospectPriceHistory: widget.prospectPriceHistory,
+    enabledStores: widget.mobility.enabledStoreNames,
+  )?.displayLabel;
 
   List<Product> get relatedInterpretations =>
       buildRelatedProductInterpretations(
         query: controller.text,
         primarySuggestions: suggestions,
-        catalogProducts: widget.catalogProducts,
+        catalogProducts: [...widget.catalogProducts, ...receiptCandidates],
       );
 
   List<Product> get quickProducts => buildQuickProducts(
-        widget.preferredProductByGroup,
-        catalogProducts: widget.catalogProducts,
-      );
+    widget.preferredProductByGroup,
+    catalogProducts: widget.catalogProducts,
+  );
 
   Map<String, List<ListItem>> get itemsByGroup => groupShoppingItems(
-        widget.items,
-        widget.offers.where((offer) => !isSampleOffer(offer)).toList(),
-        enabledStoreNames: widget.mobility.enabledStoreNames,
-        marketPrices: widget.marketPrices,
-      );
+    widget.items,
+    widget.offers.where((offer) => !isSampleOffer(offer)).toList(),
+    enabledStoreNames: widget.mobility.enabledStoreNames,
+    marketPrices: widget.marketPrices,
+  );
 
   Set<String> get checkedProductIds => widget.items
       .where((item) => item.checked)
@@ -310,7 +333,9 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         if (mounted) {
           setItemChecked(item, false);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Kauf konnte nicht gespeichert werden.')),
+            const SnackBar(
+              content: Text('Kauf konnte nicht gespeichert werden.'),
+            ),
           );
         }
       } finally {
@@ -350,9 +375,13 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     await _loadReceiptPriceStats();
     await widget.onReceiptObservationsChanged?.call();
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('${result.savedObservations} Produktbeobachtung(en) gelernt · ${result.savedPrices} direkte Bonpreise.'),
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '${result.savedObservations} Produktbeobachtung(en) gelernt · ${result.savedPrices} direkte Bonpreise.',
+        ),
+      ),
+    );
   }
 
   @override
@@ -420,6 +449,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   relatedInterpretations: relatedInterpretations,
                   preferredProductByGroup: widget.preferredProductByGroup,
                   recentPurchases: widget.recentPurchases,
+                  priceHintFor: priceHintFor,
                   onAdd: add,
                   onAddCustom: addCustomProduct,
                 )

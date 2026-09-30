@@ -16,9 +16,18 @@ SparzamApp ist ein Flutter-Prototyp für intelligent geplante Lebensmitteleinkä
 - Listen- und Kachelansicht.
 - Mengen, Notizen, Erledigt-Status und speicherbare Reihenfolge der Warengruppen.
 - Bekannte bzw. zuletzt gekaufte Produkte unterstützen die Produktauswahl.
+- Auf einer frischen Installation stehen häufige Grundbedarfsartikel wie Milch,
+  Eier, Joghurt, Wurst, Käse, Aufbackbrötchen, Marmelade, Nudeln und Kaffee
+  direkt zur Auswahl. Diese Starterprodukte tragen selbst keinen erfundenen
+  Marktpreis; sie werden erst durch aktuelle Angebote oder belegte Preise
+  routenfähig.
 - Eigene freie Produkte können angelegt werden.
 - Barcode-Scanner verwendet vorhandene Katalogdaten bzw. Open Food Facts.
 - Historische Bonpreise werden als Preis-Hinweis am Produkt angezeigt.
+- Unbestätigte Produktbezeichnungen aus früheren Bons können als klar markierte
+  Suchvorschläge wiedergefunden werden. Vor einer Auswahl bleiben Sorte und
+  Packung offen; der Vorschlag setzt keinen Markt- oder Routenpreis.
+- Frühere, belegte Prospektpreise mit bekannter Packungsgröße erscheinen in der Produktsuche als datierte historische Mediane; sie sind keine aktuellen Marktpreise.
 - Exakte Produkt-ID-Historie hat Vorrang. Fehlt sie, darf eine passende Produktfamilie als konservativer historischer Hinweis dienen.
 - Familienhinweise sind **keine Behauptung, dass zwei Varianten identisch sind**. Beispiel: Rinderhack und gemischtes Hack bleiben unterschiedliche Produktidentitäten.
 - Nicht vergleichbare Packungspreise werden als historische Werte mit Prüfhinweis behandelt und nicht allein wegen des niedrigsten Betrags als günstigster Markt gewertet.
@@ -27,6 +36,8 @@ SparzamApp ist ein Flutter-Prototyp für intelligent geplante Lebensmitteleinkä
 - Enthält Basiskatalog und lokal angelegte Produkte.
 - Produktdaten können u. a. ID, Name, Einheit, Gruppe, Alias, EAN, Marke, Packungsmenge/-einheit und Bild-URL enthalten.
 - Eigene Produkte werden lokal gespeichert.
+- Basiskatalogartikel können als Grundbedarf markiert sein und erscheinen dann
+  im Schnellzugriff, ohne die Produktidentität anderer Varianten zu ersetzen.
 - Neue erkannte Bonprodukte können automatisch in den Katalog wachsen.
 - Barcode/Open Food Facts kann Produktstammdaten ergänzen.
 - Preisabdeckung nach Quellen wird dargestellt.
@@ -44,6 +55,8 @@ Eine Schätzung wird nicht stillschweigend zu einem bestätigten Marktpreis.
 ### Angebote / Prospekte
 - Angebote werden getrennt von Produktidentitäten behandelt: ein Angebot erzeugt grundsätzlich kein neues Produkt.
 - Angebotszeiträume werden berücksichtigt.
+- Die Prospektansicht lädt nur aktuell gültige Angebotsdaten und datierte Prospektseiten. Bei fehlendem Abruf zeigt sie den offiziellen Händlerlink ohne erfundene Preise.
+- Belegte Prospekt-Angebotspreise und ausdrücklich angegebene Normalpreise bleiben mit Markt, Quelle, Nachweis, Packungsgröße und Gültigkeit als Preisbeobachtungen erhalten. Abgelaufene Preise dienen nur der Historie; sie werden nicht als aktuell verfügbarer Routenpreis ausgegeben.
 - Marken-/Text-Matching kann passende Angebote zu Produkten finden.
 - Coupon, Cashback und Mehrfachkauf werden rechnerisch berücksichtigt, soweit die Angebotsdaten diese Bedingungen enthalten.
 
@@ -281,9 +294,16 @@ Bei Lebensmittelbudget ≤ 0 gilt die Prognose als nicht konfiguriert.
 
 ## 9. Wiederkauflogik
 
-Wiederkaufvorschläge werden aus der Kaufhistorie pro konkreter Produkt-ID berechnet.
+Wiederkaufvorschläge werden aus der Kaufhistorie und aus ausdrücklich bestätigten
+Bonbeobachtungen pro konkreter Produkt-ID berechnet.
 
 - Käufe desselben Produkts am selben Kalendertag werden mengenmäßig zusammengefasst.
+- Ein bestätigter Bon zählt nur mit einer konkreten Produkt-ID und einer sicheren
+  Stück-/Packungseinheit; gewichtete oder volumetrische Bonzeilen bleiben
+  Preis-/Historienevidenz, bis ihre Packungssemantik geklärt ist.
+- Wenn ein abgeschlossener In-App-Einkauf und ein importierter Bon denselben
+  Einkaufstag belegen, wird dieser Tag nicht doppelt gezählt; die größere
+  belegte Menge wird verwendet.
 - Standardmäßig sind mindestens **2 Kauftage** nötig.
 - Aus den Abständen zwischen Kauftagen wird der Median in Tagen gebildet.
 - Bei gerader Anzahl von Intervallen wird der Mittelwert der beiden mittleren Werte gerundet.
@@ -291,6 +311,8 @@ Wiederkaufvorschläge werden aus der Kaufhistorie pro konkreter Produkt-ID berec
 - Standardmäßig wird ein Produkt angezeigt, wenn es bereits fällig ist oder innerhalb von **3 Tagen** fällig wird.
 - Produkte, die schon auf der aktuellen Einkaufsliste stehen, werden nicht vorgeschlagen.
 - Durchschnittsmenge = Gesamtmenge / Zahl der Kauftage.
+- Die Karte zeigt, ob der Rhythmus aus der Kaufhistorie, aus bestätigten Bons
+  oder aus beiden Quellen stammt.
 - Sortierung: zuerst früheste/überfällige Fälligkeit, dann höhere Kaufanzahl, dann Produktname.
 
 ## 10. Open Food Facts und Open Prices

@@ -2,10 +2,7 @@ import '../../models/product.dart';
 import 'product_identity.dart';
 
 class ProductHierarchyLabel {
-  const ProductHierarchyLabel({
-    required this.family,
-    this.variant,
-  });
+  const ProductHierarchyLabel({required this.family, this.variant});
 
   final String family;
   final String? variant;
@@ -35,33 +32,34 @@ ProductHierarchyLabel productHierarchyLabel(Product product) {
   );
 }
 
-String? productHierarchyRoot(ProductIdentity identity) => switch (identity.familyKey) {
+String? productHierarchyRoot(ProductIdentity identity) =>
+    switch (identity.familyKey) {
       'tomaten' ||
       'tomatenmark' ||
       'tomatenkonserve' ||
-      'tomatensauce' =>
-        'tomate',
+      'tomatensauce' => 'tomate',
       final family => family,
     };
 
-bool sharesProductHierarchy(
-  ProductIdentity left,
-  ProductIdentity right,
-) {
+bool sharesProductHierarchy(ProductIdentity left, ProductIdentity right) {
   final leftRoot = productHierarchyRoot(left);
   final rightRoot = productHierarchyRoot(right);
   return leftRoot != null && leftRoot == rightRoot;
 }
 
 String _familyLabel(String key) => switch (key) {
-      'aepfel' => 'Äpfel',
-      'kaese' => 'Käse',
-      'fischstäbchen' => 'Fischstäbchen',
-      'tomatenkonserve' => 'Tomatenkonserve',
-      'tomatensauce' => 'Tomatensauce',
-      'tomatenmark' => 'Tomatenmark',
-      _ => _fallbackLabel(key),
-    };
+  'aepfel' => 'Äpfel',
+  'kaese' => 'Käse',
+  'kaffee' => 'Kaffee',
+  'nudeln' => 'Nudeln',
+  'broetchen' => 'Brötchen',
+  'marmelade' => 'Marmelade & Fruchtaufstrich',
+  'fischstäbchen' => 'Fischstäbchen',
+  'tomatenkonserve' => 'Tomatenkonserve',
+  'tomatensauce' => 'Tomatensauce',
+  'tomatenmark' => 'Tomatenmark',
+  _ => _fallbackLabel(key),
+};
 
 String? _variantLabel(ProductIdentity identity) {
   final parts = <String>[
@@ -72,8 +70,7 @@ String? _variantLabel(ProductIdentity identity) {
         identity.familyKey != 'tomatensauce' &&
         identity.familyKey != 'tomatenkonserve')
       _prettyVariant(identity.productType!),
-    if (identity.fatPercent != null)
-      '${_number(identity.fatPercent!)} %',
+    if (identity.fatPercent != null) '${_number(identity.fatPercent!)} %',
     if (identity.color != null) _prettyVariant(identity.color!),
     if (identity.shape != null) _prettyVariant(identity.shape!),
     if (identity.meatType != null) _prettyVariant(identity.meatType!),
@@ -82,35 +79,42 @@ String? _variantLabel(ProductIdentity identity) {
 }
 
 String _prettyVariant(String value) => switch (value) {
-      'h' => 'H-Milch',
-      'rispe' => 'Rispe',
-      'party' => 'Party',
-      'cherry' => 'Cherry',
-      'cocktail' => 'Cocktail',
-      'rind' => 'Rind',
-      'gemischt' => 'Gemischt',
-      'gruen' => 'Grün',
-      'bergkaese' => 'Bergkäse',
-      'butterkaese' => 'Butterkäse',
-      _ => _fallbackLabel(value),
-    };
+  'h' => 'H-Milch',
+  'rispe' => 'Rispe',
+  'party' => 'Party',
+  'cherry' => 'Cherry',
+  'cocktail' => 'Cocktail',
+  'rind' => 'Rind',
+  'gemischt' => 'Gemischt',
+  'gruen' => 'Grün',
+  'bergkaese' => 'Bergkäse',
+  'butterkaese' => 'Butterkäse',
+  'aufback' => 'Aufback',
+  'espresso' => 'Espresso',
+  'instant' => 'löslich',
+  'filter' => 'Filterkaffee',
+  'beans' => 'Bohnen',
+  'decaf' => 'entkoffeiniert',
+  _ => _fallbackLabel(value),
+};
 
 String _number(double value) {
   final whole = value.roundToDouble() == value;
-  return (whole ? value.toStringAsFixed(0) : value.toString())
-      .replaceAll('.', ',');
+  return (whole ? value.toStringAsFixed(0) : value.toString()).replaceAll(
+    '.',
+    ',',
+  );
 }
 
 String _fallbackLabel(String value) {
-  final clean = value
-      .replaceAll('_', ' ')
-      .replaceAll('-', ' ')
-      .trim();
+  final clean = value.replaceAll('_', ' ').replaceAll('-', ' ').trim();
   if (clean.isEmpty) return 'Sonstiges';
   return clean
       .split(RegExp(r'\s+'))
-      .map((part) => part.isEmpty
-          ? part
-          : '${part[0].toUpperCase()}${part.substring(1)}')
+      .map(
+        (part) => part.isEmpty
+            ? part
+            : '${part[0].toUpperCase()}${part.substring(1)}',
+      )
       .join(' ');
 }

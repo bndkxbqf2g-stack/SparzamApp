@@ -24,6 +24,7 @@ void main() {
       group: 'vorrat',
       aliases: ['test', 'probe'],
       isFavorite: true,
+      isStaple: true,
       ean: '1234567890123',
     );
 
@@ -35,6 +36,7 @@ void main() {
     expect(loaded.single.brand, 'Meine Marke');
     expect(loaded.single.aliases, ['test', 'probe']);
     expect(loaded.single.isFavorite, isTrue);
+    expect(loaded.single.isStaple, isTrue);
     expect(loaded.single.ean, '1234567890123');
   });
 

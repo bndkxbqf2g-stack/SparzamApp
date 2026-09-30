@@ -5,8 +5,9 @@ import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/services/prospect_feed_service.dart';
 
 void main() {
-  testWidgets('shows market prospect cards instead of raw article summary',
-      (tester) async {
+  testWidgets('shows market prospect cards instead of raw article summary', (
+    tester,
+  ) async {
     const prospects = [
       ProspectIssue(
         storeName: 'ALDI Süd',
@@ -15,36 +16,12 @@ void main() {
         url: 'https://example.test/aldi-prospekt',
         recordCount: 322,
       ),
-      ProspectIssue(
-        storeName: 'EDEKA',
-        title: 'Aktionsprospekt',
-        pages: [],
-      ),
-      ProspectIssue(
-        storeName: 'Kaufland',
-        title: 'Aktionsprospekt',
-        pages: [],
-      ),
-      ProspectIssue(
-        storeName: 'Lidl',
-        title: 'Aktionsprospekt',
-        pages: [],
-      ),
-      ProspectIssue(
-        storeName: 'PENNY',
-        title: 'Aktionsprospekt',
-        pages: [],
-      ),
-      ProspectIssue(
-        storeName: 'Netto',
-        title: 'Aktionsprospekt',
-        pages: [],
-      ),
-      ProspectIssue(
-        storeName: 'Netto',
-        title: 'Aktionsprospekt',
-        pages: [],
-      ),
+      ProspectIssue(storeName: 'EDEKA', title: 'Aktionsprospekt', pages: []),
+      ProspectIssue(storeName: 'Kaufland', title: 'Aktionsprospekt', pages: []),
+      ProspectIssue(storeName: 'Lidl', title: 'Aktionsprospekt', pages: []),
+      ProspectIssue(storeName: 'PENNY', title: 'Aktionsprospekt', pages: []),
+      ProspectIssue(storeName: 'Netto', title: 'Aktionsprospekt', pages: []),
+      ProspectIssue(storeName: 'Netto', title: 'Aktionsprospekt', pages: []),
     ];
 
     var added = false;
@@ -68,6 +45,7 @@ void main() {
             records: records,
             prospects: prospects,
             onAddProduct: (_) => added = true,
+            now: DateTime(2026, 9, 25),
           ),
         ),
       ),
@@ -75,12 +53,15 @@ void main() {
 
     expect(find.text('Prospekte'), findsOneWidget);
     expect(find.text('Alle Märkte'), findsOneWidget);
-    expect(find.text('322 Angebote geladen'), findsOneWidget);
+    expect(find.text('1 Angebote geladen'), findsOneWidget);
     expect(
       find.text('Aktuelle Prospekte. Produkte antippen und vormerken.'),
       findsOneWidget,
     );
-    expect(find.text('1854 aktuelle Prospektartikel aus 5 Märkten'), findsNothing);
+    expect(
+      find.text('1854 aktuelle Prospektartikel aus 5 Märkten'),
+      findsNothing,
+    );
 
     await tester.tap(find.textContaining('ALDI Süd'));
     await tester.pumpAndSettle();
@@ -95,35 +76,36 @@ void main() {
     expect(find.text('2,99 €'), findsOneWidget);
     expect(find.text('Milchprodukte'), findsOneWidget);
 
-    await tester.drag(
-      find.byType(Scrollable).last,
-      const Offset(0, -420),
-    );
+    await tester.drag(find.byType(Scrollable).last, const Offset(0, -420));
     await tester.pumpAndSettle();
     await tester.ensureVisible(find.text('2,39 €'));
     await tester.tap(find.text('2,39 €'));
     await tester.pump();
     expect(added, isTrue);
   });
-  testWidgets('keeps official opening action for a browsable prospect',
-      (tester) async {
+  testWidgets('keeps official opening action for a browsable prospect', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       MaterialApp(
         home: ProspectsScreen(
           records: const [],
-          prospects: const [
+          prospects: [
             ProspectIssue(
               storeName: 'Lidl',
               title: 'Aktionsprospekt',
-              pages: [
+              pages: const [
                 ProspectPage(
                   number: 1,
                   imageUrl: 'https://example.test/page.png',
                 ),
               ],
               url: 'https://example.test/official-prospect',
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
             ),
           ],
+          now: DateTime(2026, 9, 30),
         ),
       ),
     );
@@ -134,4 +116,68 @@ void main() {
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
   });
 
+  testWidgets('shows current issue and current prices instead of old pages', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          now: DateTime(2026, 9, 30),
+          records: [
+            OfferImportRecord(
+              sourceId: 'old',
+              productLabel: 'Alter Kaffee',
+              storeName: 'Lidl',
+              offerPrice: 3.99,
+              validUntil: DateTime(2026, 9, 27),
+            ),
+            OfferImportRecord(
+              sourceId: 'current',
+              productLabel: 'Aktueller Kaffee',
+              storeName: 'Lidl',
+              offerPrice: 4.99,
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+            ),
+          ],
+          prospects: [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Altes Prospekt',
+              pages: const [
+                ProspectPage(
+                  number: 99,
+                  imageUrl: 'https://example.test/old-page.png',
+                ),
+              ],
+              validFrom: DateTime(2026, 9, 21),
+              validUntil: DateTime(2026, 9, 27),
+              recordCount: 99,
+            ),
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktuelles Prospekt',
+              pages: const [
+                ProspectPage(
+                  number: 1,
+                  imageUrl: 'https://example.test/current-page.png',
+                ),
+              ],
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+              recordCount: 99,
+            ),
+          ],
+        ),
+      ),
+    );
+
+    expect(find.text('1 Angebote geladen'), findsOneWidget);
+    await tester.tap(find.text('Lidl'));
+    await tester.pumpAndSettle();
+    expect(find.text('Seite 1'), findsOneWidget);
+    expect(find.text('Seite 99'), findsNothing);
+    expect(find.text('Aktueller Kaffee'), findsOneWidget);
+    expect(find.text('Alter Kaffee'), findsNothing);
+  });
 }

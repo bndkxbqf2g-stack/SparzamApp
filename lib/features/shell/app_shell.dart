@@ -28,6 +28,9 @@ import '../../services/price_observation_adapters.dart';
 import '../../services/prospect_feed_service.dart';
 import '../../services/prospect_import_module.dart';
 import '../offers/offer_import.dart';
+import '../offers/prospect_offer_products.dart';
+import '../offers/prospect_price_learning.dart';
+import '../offers/prospect_price_statistics.dart';
 import '../../services/market_price_observation_adapter.dart';
 import '../../services/recent_purchase_store.dart';
 import '../../services/receipt_observation_store.dart';
@@ -39,7 +42,6 @@ import '../../services/sequential_write_queue.dart';
 import '../../services/diagnostic_log_service.dart';
 import '../budget/budget_screen.dart';
 import '../catalog/product_catalog_screen.dart';
-import '../catalog/product_identity.dart';
 import '../home/dashboard_data.dart';
 import '../profile/mobility_settings_screen.dart';
 import '../profile/price_data_settings_screen.dart';
@@ -133,9 +135,11 @@ class _AppShellState extends State<AppShell> {
   late List<Product> customProducts;
   late List<MarketPrice> marketPrices;
   List<ReceiptObservation> receiptObservations = const <ReceiptObservation>[];
-  List<PriceObservation> historicalPriceObservations = const <PriceObservation>[];
+  List<PriceObservation> historicalPriceObservations =
+      const <PriceObservation>[];
   List<OfferImportRecord> prospectRecords = const <OfferImportRecord>[];
   List<ProspectIssue> prospectIssues = const <ProspectIssue>[];
+  List<Product> prospectProducts = const <Product>[];
   final priceObservationStore = PriceObservationStore();
   late PriceDataSettings priceDataSettings;
   late List<PricePoint> priceHistory;
@@ -177,7 +181,11 @@ class _AppShellState extends State<AppShell> {
         items: _copyItems(shoppingList),
       ),
     ];
-    offers = [...widget.initialOffers];
+    // Imported offers are rebuilt from the current verified feed. Stored
+    // manual offers retain their separate planning/history behavior.
+    offers = widget.initialOffers
+        .where((offer) => !offer.id.startsWith('import|'))
+        .toList();
     recentPurchases = [...widget.initialRecentPurchases];
     purchaseHistory = [...widget.initialPurchaseHistory];
     preferredProductByGroup = {...widget.initialPreferredProductByGroup};
@@ -189,12 +197,14 @@ class _AppShellState extends State<AppShell> {
   }
 
   List<ListItem> _copyItems(List<ListItem> items) => items
-      .map((item) => ListItem(
-            product: item.product,
-            quantity: item.quantity,
-            note: item.note,
-            checked: item.checked,
-          ))
+      .map(
+        (item) => ListItem(
+          product: item.product,
+          quantity: item.quantity,
+          note: item.note,
+          checked: item.checked,
+        ),
+      )
       .toList();
 
   Future<void> _loadNamedShoppingLists() async {
@@ -221,24 +231,28 @@ class _AppShellState extends State<AppShell> {
     });
   }
 
-  List<Product> get catalogProducts => buildCatalogProducts(customProducts);
+  List<Product> get catalogProducts {
+    final seen = <String>{};
+    return buildCatalogProducts([...customProducts, ...prospectProducts])
+        .where((product) => seen.add(product.id))
+        .toList(growable: false);
+  }
 
   bool isBaseProduct(String id) => isBaseCatalogProduct(id);
 
   List<MarketPrice> get activeMarketPrices =>
       activePrices(marketPrices, priceDataSettings);
 
-  List<MarketPrice> get historicalMarketPrices =>
-      marketPricesFromObservations(
-        historicalPriceObservations,
-        products: catalogProducts,
-        settings: priceDataSettings,
-      );
+  List<MarketPrice> get historicalMarketPrices => marketPricesFromObservations(
+    historicalPriceObservations,
+    products: catalogProducts,
+    settings: priceDataSettings,
+  );
 
   List<MarketPrice> get receiptFamilyPrices => receiptFamilyMarketPrices(
-        items: shoppingList,
-        observations: receiptObservations,
-      );
+    items: shoppingList,
+    observations: receiptObservations,
+  );
 
   List<MarketPrice> get planningMarketPrices =>
       planning_prices.planningMarketPrices(
@@ -267,70 +281,44 @@ class _AppShellState extends State<AppShell> {
         });
       }
 
-      final resolutions = currentProspectRecords(feed.records)
-          .map((record) => resolveOfferImport(record, catalogProducts))
-          .toList(growable: false);
-      final resolved = resolutions
-          .where((result) => result.isResolved)
-          .map((result) => result.offer!)
+      final currentRecords = currentProspectRecords(feed.records);
+      final offerBackedProducts = prospectOfferProducts(
+        records: currentRecords,
+        catalogProducts: buildCatalogProducts(customProducts),
+      );
+      final resolved = offerBackedProducts
+          .where((entry) => !entry.product.id.startsWith('prospect|'))
+          .map((entry) => entry.offer)
           .toList(growable: false);
 
-      final refreshedStores = feed.refreshedStores.toSet();
-      final retained = offers.where((offer) {
-        final imported = offer.id.startsWith('import|');
-        return !imported || !refreshedStores.contains(offer.storeName);
-      }).toList();
+      final retained = offers
+          .where((offer) => !offer.id.startsWith('import|'))
+          .toList(growable: false);
       final next = [...retained, ...resolved];
+      final offersById = <String, Offer>{
+        for (final offer in next) offer.id: offer,
+        for (final entry in offerBackedProducts) entry.offer.id: entry.offer,
+      };
 
-      if (resolved.isNotEmpty) {
-        await widget.offerStore.save(next);
-      }
+      await widget.offerStore.save(next);
 
       final observedAt = feed.generatedAt ?? DateTime.now();
-      // Angebotspreise bleiben im Angebotsbestand. Für die normale
-      // Preisdatenbank wird aber jeder belegte Normalpreis übernommen,
-      // auch wenn das Produkt noch nicht im Katalog vorhanden ist.
-      final regularOffers = <Offer>[];
-      for (final record in feed.records) {
-        final regular = record.originalPrice;
-        if (regular == null) continue;
-        final resolution = resolveOfferImport(record, catalogProducts);
-        if (resolution.offer != null) {
-          regularOffers.add(resolution.offer!);
-          continue;
-        }
-        final identity = normalizeIdentityText(record.productLabel);
-        if (identity.isEmpty) continue;
-        regularOffers.add(
-          Offer(
-            id: 'prospect-regular|${record.sourceId}',
-            productId: 'prospect|$identity',
-            storeName: record.storeName,
-            originalPrice: regular,
-            offerPrice: record.offerPrice,
-            validFrom: record.validFrom,
-            validUntil: record.validUntil,
-            source: record.source,
-            proofRef: record.proofRef,
-          ),
-        );
-      }
-      final regularObservations = regularOffers
-          .map(
-            (offer) => regularObservationFromOffer(
-              offer,
-              observedAt: observedAt,
-            ),
-          )
-          .toList(growable: false);
-      if (regularObservations.isNotEmpty) {
-        await priceObservationStore.append(regularObservations);
+      final learnedPrices = prospectPriceObservations(
+        records: feed.records,
+        catalogProducts: buildCatalogProducts(customProducts),
+        observedAt: observedAt,
+      );
+      if (learnedPrices.isNotEmpty) {
+        await priceObservationStore.append(learnedPrices);
       }
 
       final historical = await priceObservationStore.load();
       if (!mounted) return;
       setState(() {
-        offers = next;
+        offers = offersById.values.toList(growable: false);
+        prospectProducts = offerBackedProducts
+            .map((entry) => entry.product)
+            .toList(growable: false);
         historicalPriceObservations = historical;
       });
       widget.diagnosticLogService.record(
@@ -339,7 +327,7 @@ class _AppShellState extends State<AppShell> {
         details:
             '${feed.records.length} Rohangebote · '
             '${resolved.length} zugeordnet · '
-            '${regularObservations.length} Normalpreise übernommen',
+            '${learnedPrices.length} datierte Preise gelernt',
       );
     } catch (error) {
       widget.diagnosticLogService.record(
@@ -370,8 +358,10 @@ class _AppShellState extends State<AppShell> {
       buildReplenishmentSuggestions(
         history: purchaseHistory,
         catalogProducts: catalogProducts,
-        currentListProductIds:
-            shoppingList.map((item) => item.product.id).toSet(),
+        currentListProductIds: shoppingList
+            .map((item) => item.product.id)
+            .toSet(),
+        receiptObservations: receiptObservations,
       );
 
   Future<void> persistShoppingList() {
@@ -385,13 +375,15 @@ class _AppShellState extends State<AppShell> {
         ),
     ];
     final lists = namedShoppingLists
-        .map((list) => list.id == activeShoppingListId
-            ? NamedShoppingList(
-                id: list.id,
-                name: list.name,
-                items: _copyItems(snapshot),
-              )
-            : list)
+        .map(
+          (list) => list.id == activeShoppingListId
+              ? NamedShoppingList(
+                  id: list.id,
+                  name: list.name,
+                  items: _copyItems(snapshot),
+                )
+              : list,
+        )
         .toList();
     namedShoppingLists = lists;
     return _shoppingListSaves.add(() async {
@@ -451,7 +443,9 @@ class _AppShellState extends State<AppShell> {
       );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Einkaufsliste konnte nicht gespeichert werden.')),
+          const SnackBar(
+            content: Text('Einkaufsliste konnte nicht gespeichert werden.'),
+          ),
         );
       }
     });
@@ -487,10 +481,7 @@ class _AppShellState extends State<AppShell> {
       request: item.product.name,
       catalogProducts: catalogProducts,
       offers: offers,
-      marketPrices: [
-        ...activeMarketPrices,
-        ...historicalMarketPrices,
-      ],
+      marketPrices: [...activeMarketPrices, ...historicalMarketPrices],
       receiptPriceStats: buildReceiptPriceStats(
         receiptObservations,
         maxAgeDays: 60,
@@ -523,7 +514,8 @@ class _AppShellState extends State<AppShell> {
     widget.diagnosticLogService.record(
       category: 'Einkaufsliste',
       message: 'Generische Anfrage konkretisiert.',
-      details: '${item.product.name}: ${selected.map((product) => product.name).join(', ')}',
+      details:
+          '${item.product.name}: ${selected.map((product) => product.name).join(', ')}',
     );
   }
 
@@ -539,17 +531,22 @@ class _AppShellState extends State<AppShell> {
 
     final product = await Navigator.of(context).push<Product>(
       MaterialPageRoute(
-        builder: (_) => ScannerScreen(
-          learnedProducts: scannerProducts,
-        ),
+        builder: (_) => ScannerScreen(learnedProducts: scannerProducts),
       ),
     );
     if (mounted && product != null) addProduct(product);
   }
 
   Future<void> markPurchased(Product product, int quantity) async {
-    final next = await widget.recentPurchaseStore.add(product, quantity, recentPurchases);
-    await widget.shoppingListStore.savePreferredProduct(product.group, product.id);
+    final next = await widget.recentPurchaseStore.add(
+      product,
+      quantity,
+      recentPurchases,
+    );
+    await widget.shoppingListStore.savePreferredProduct(
+      product.group,
+      product.id,
+    );
     setState(() {
       preferredProductByGroup[product.group] = product.id;
       recentPurchases = next;
@@ -558,7 +555,9 @@ class _AppShellState extends State<AppShell> {
 
   void changeQuantity(String productId, int delta) {
     setState(() {
-      final index = shoppingList.indexWhere((item) => item.product.id == productId);
+      final index = shoppingList.indexWhere(
+        (item) => item.product.id == productId,
+      );
       if (index < 0) return;
       shoppingList[index].quantity += delta;
       if (shoppingList[index].quantity <= 0) shoppingList.removeAt(index);
@@ -586,54 +585,57 @@ class _AppShellState extends State<AppShell> {
 
   void clearPurchasedItems(Set<String> productIds) {
     if (productIds.isEmpty) return;
-    setState(() => shoppingList.removeWhere((item) => productIds.contains(item.product.id)));
+    setState(
+      () => shoppingList.removeWhere(
+        (item) => productIds.contains(item.product.id),
+      ),
+    );
     persistShoppingListWithFeedback();
   }
 
   ShellRouting get routing => ShellRouting(
-        items: shoppingList,
-        offers: offers,
-        mobility: mobility,
-        marketPrices: planningMarketPrices,
-        roadDistances: roadDistances,
-        roadMatrix: roadMatrix,
-      );
+    items: shoppingList,
+    offers: offers,
+    mobility: mobility,
+    marketPrices: planningMarketPrices,
+    roadDistances: roadDistances,
+    roadMatrix: roadMatrix,
+  );
 
   RouteOptimizer? get currentOptimizer => routing.current;
 
   RouteOptimizer? get regularOptimizer => routing.regular;
 
-  ShellPurchaseCoordinator get purchaseCoordinator =>
-      ShellPurchaseCoordinator(
-        budgetStore: widget.budgetStore,
-        purchaseStore: widget.purchaseStore,
-        shoppingListStore: widget.shoppingListStore,
-      );
+  ShellPurchaseCoordinator get purchaseCoordinator => ShellPurchaseCoordinator(
+    budgetStore: widget.budgetStore,
+    purchaseStore: widget.purchaseStore,
+    shoppingListStore: widget.shoppingListStore,
+  );
 
   ShellPriceCoordinator get priceCoordinator => ShellPriceCoordinator(
-        marketPriceStore: widget.marketPriceStore,
-        priceHistoryStore: widget.priceHistoryStore,
-      );
+    marketPriceStore: widget.marketPriceStore,
+    priceHistoryStore: widget.priceHistoryStore,
+  );
 
   ShellCatalogCoordinator get catalogCoordinator => ShellCatalogCoordinator(
-        productCatalogStore: widget.productCatalogStore,
-        shoppingListStore: widget.shoppingListStore,
-        marketPriceStore: widget.marketPriceStore,
-        priceHistoryStore: widget.priceHistoryStore,
-        offerStore: widget.offerStore,
-      );
+    productCatalogStore: widget.productCatalogStore,
+    shoppingListStore: widget.shoppingListStore,
+    marketPriceStore: widget.marketPriceStore,
+    priceHistoryStore: widget.priceHistoryStore,
+    offerStore: widget.offerStore,
+  );
 
   DashboardData dashboardData() => buildShellDashboard(
-        shoppingList: shoppingList,
-        offers: offers,
-        mobility: mobility,
-        roadDistances: roadDistances,
-        roadMatrix: roadMatrix,
-        routing: routing,
-        budget: budget,
-        purchaseHistory: purchaseHistory,
-        replenishment: replenishmentSuggestions,
-      );
+    shoppingList: shoppingList,
+    offers: offers,
+    mobility: mobility,
+    roadDistances: roadDistances,
+    roadMatrix: roadMatrix,
+    routing: routing,
+    budget: budget,
+    purchaseHistory: purchaseHistory,
+    replenishment: replenishmentSuggestions,
+  );
 
   Future<void> completePurchase() async {
     if (_purchaseInProgress) return;
@@ -755,7 +757,8 @@ class _AppShellState extends State<AppShell> {
       message: price.source == MarketPriceSource.receipt
           ? 'Kassenbonpreis gespeichert.'
           : 'Preis gespeichert.',
-      details: '${price.storeName} · ${price.productId} · ${price.price.toStringAsFixed(2)} €',
+      details:
+          '${price.storeName} · ${price.productId} · ${price.price.toStringAsFixed(2)} €',
     );
     return result.prices;
   }
@@ -804,8 +807,8 @@ class _AppShellState extends State<AppShell> {
         products: retryIds == null
             ? _openPricesDemandProducts()
             : catalogProducts
-                .where((product) => retryIds.contains(product.id))
-                .toList(),
+                  .where((product) => retryIds.contains(product.id))
+                  .toList(),
         maxAgeDays: priceDataSettings.openPricesMaxAgeDays,
         prices: marketPrices,
         history: priceHistory,
@@ -833,7 +836,8 @@ class _AppShellState extends State<AppShell> {
       message: result.cancelled
           ? 'Preisabgleich abgebrochen.'
           : 'Preisabgleich abgeschlossen.',
-      details: '${result.productsProcessed}/${result.productsWithEan} Produkte · '
+      details:
+          '${result.productsProcessed}/${result.productsWithEan} Produkte · '
           '${result.pricesFound} Preise · '
           '${result.failedProductIds.length} Fehler',
     );
@@ -843,9 +847,8 @@ class _AppShellState extends State<AppShell> {
   Future<void> openPriceDataSettings() async {
     final result = await Navigator.of(context).push<PriceDataSettings>(
       MaterialPageRoute(
-        builder: (_) => PriceDataSettingsScreen(
-          initialSettings: priceDataSettings,
-        ),
+        builder: (_) =>
+            PriceDataSettingsScreen(initialSettings: priceDataSettings),
       ),
     );
     if (result == null) return;
@@ -929,11 +932,11 @@ class _AppShellState extends State<AppShell> {
             offers,
             roadDistances: roadDistances,
             euroPerKm: mobility.effectiveEuroPerKm,
-          maxStores: mobility.maxStores,
-          minExtraStoreSavings: mobility.minExtraStoreSavings,
-          enabledStoreNames: mobility.enabledStoreNames,
-          marketPrices: planningMarketPrices,
-          roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
+            maxStores: mobility.maxStores,
+            minExtraStoreSavings: mobility.minExtraStoreSavings,
+            enabledStoreNames: mobility.enabledStoreNames,
+            marketPrices: planningMarketPrices,
+            roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
           ).bestPlan();
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -950,7 +953,8 @@ class _AppShellState extends State<AppShell> {
   void openDiagnostics() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => DiagnosticLogScreen(service: widget.diagnosticLogService),
+        builder: (_) =>
+            DiagnosticLogScreen(service: widget.diagnosticLogService),
       ),
     );
   }
@@ -1015,6 +1019,10 @@ class _AppShellState extends State<AppShell> {
       catalogProducts: catalogProducts,
       marketPrices: planningMarketPrices,
       priceObservations: [...planningMarketPrices],
+      prospectPriceHistory: prospectPriceHistorySummaries(
+        historicalPriceObservations,
+        enabledStores: mobility.enabledStoreNames,
+      ),
       replenishmentSuggestions: replenishmentSuggestions,
       onRoadDistancesChanged: (value) => setState(() => roadDistances = value),
       onRoadMatrixChanged: (value) => setState(() => roadMatrix = value),

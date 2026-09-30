@@ -27,7 +27,7 @@ const configuredProspectBranches = <ProspectBranch>[
     branchId: 'B384',
     postalCode: '97225',
     location: 'Zellingen',
-    officialUrl: 'https://prospekt.aldi-sued.de/kw39-26-op-mp/page/1',
+    officialUrl: 'https://www.aldi-sued.de/',
   ),
   ProspectBranch(
     storeName: 'EDEKA',

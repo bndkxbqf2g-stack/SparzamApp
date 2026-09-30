@@ -42,8 +42,10 @@ void main() {
     expect(result.records.last.originalPrice, isNull);
   });
 
-  test('keeps all six configured retailers visible when a source has no data', () {
-    final result = parseProspectFeed(r'''
+  test(
+    'keeps all six configured retailers visible when a source has no data',
+    () {
+      final result = parseProspectFeed(r'''
 {
   "generatedAt": "2026-09-26T04:15:00Z",
   "sources": [
@@ -54,20 +56,23 @@ void main() {
 }
 ''');
 
-    expect(
-      result.prospects.map((item) => item.storeName).toSet(),
-      containsAll(configuredProspectStores),
-    );
-    expect(result.prospects, hasLength(configuredProspectStores.length));
-    expect(
-      result.prospects.firstWhere((item) => item.storeName == 'Netto').url,
-      officialProspectUrl('Netto'),
-    );
-    expect(
-      result.prospects.firstWhere((item) => item.storeName == 'Netto').sourceStatus,
-      'error',
-    );
-  });
+      expect(
+        result.prospects.map((item) => item.storeName).toSet(),
+        containsAll(configuredProspectStores),
+      );
+      expect(result.prospects, hasLength(configuredProspectStores.length));
+      expect(
+        result.prospects.firstWhere((item) => item.storeName == 'Netto').url,
+        officialProspectUrl('Netto'),
+      );
+      expect(
+        result.prospects
+            .firstWhere((item) => item.storeName == 'Netto')
+            .sourceStatus,
+        'error',
+      );
+    },
+  );
 
   test('parses Bring brochure pages and leaflet evidence', () {
     final result = parseProspectFeed(r'''
@@ -82,6 +87,8 @@ void main() {
         {
           "id": "brn:bring-de:offersbrochure:218970",
           "title": "Lidl",
+          "offerStartDate": "2026-09-28",
+          "offerEndDate": "2026-10-03",
           "url": "https://deeplink.getbring.com/view/offers/bring-de/brn:bring-de:offersbrochure:218970/0",
           "thumbnailUrl": "https://cdn.example/cover.jpg",
           "pageSamples": [
@@ -113,10 +120,14 @@ void main() {
 }
 ''');
 
-    final lidl = result.prospects.firstWhere((item) => item.storeName == 'Lidl');
+    final lidl = result.prospects.firstWhere(
+      (item) => item.storeName == 'Lidl',
+    );
     expect(lidl.pages, hasLength(1));
     expect(lidl.pages.single.imageUrl, 'https://cdn.example/page1.jpg');
     expect(lidl.recordCount, 1);
+    expect(lidl.validFrom, DateTime(2026, 9, 28));
+    expect(lidl.validUntil, DateTime(2026, 10, 3));
     expect(result.records, hasLength(1));
     expect(result.records.single.source, 'leaflet');
     expect(result.records.single.offerPrice, 0.69);
@@ -124,5 +135,4 @@ void main() {
     expect(result.records.single.imageUrl, 'https://cdn.example/schmand.png');
     expect(result.records.single.proofRef, contains('offersbrochure:218970'));
   });
-
 }

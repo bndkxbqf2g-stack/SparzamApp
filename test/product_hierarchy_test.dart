@@ -32,17 +32,17 @@ void main() {
     expect(productHierarchyLabel(milk).path, 'Milch › H-Milch · 3,5 %');
   });
 
-  test('unknown identities fall back to catalog group without creating identity', () {
-    const coffee = Product(
-      id: 'coffee',
-      name: 'Espresso Bohnen',
-      unit: '500 g',
-      group: 'kaffee_spezialitaeten',
-    );
+  test(
+    'recognized coffee identity displays its type without changing confidence',
+    () {
+      const coffee = Product(
+        id: 'coffee',
+        name: 'Espresso Bohnen',
+        unit: '500 g',
+        group: 'kaffee_spezialitaeten',
+      );
 
-    expect(
-      productHierarchyLabel(coffee).path,
-      'Kaffee Spezialitaeten',
-    );
-  });
+      expect(productHierarchyLabel(coffee).path, 'Kaffee › Espresso');
+    },
+  );
 }

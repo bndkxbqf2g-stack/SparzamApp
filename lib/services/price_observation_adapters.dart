@@ -22,47 +22,51 @@ PriceObservation observationFromReceipt(ReceiptObservation receipt) {
     unitPrice: receipt.unitPrice,
     observedAt: receipt.observedAt,
     source: PriceObservationSource.receipt,
-    kind: receipt.discounted ? PriceObservationKind.offer : PriceObservationKind.unknown,
+    kind: receipt.discounted
+        ? PriceObservationKind.offer
+        : PriceObservationKind.unknown,
     proofRef: 'receipt:${receipt.receiptFingerprint}',
     discounted: receipt.discounted,
     identityConfidence: identity.confidence,
   );
 }
 
-PriceObservation observationFromOffer(Offer offer, {required DateTime observedAt}) =>
-    PriceObservation(
-      id: 'offer|${offer.id}|${offer.validUntil.toIso8601String()}|${offer.offerPrice.toStringAsFixed(4)}',
-      productId: offer.productId,
-      storeName: offer.storeName,
-      price: offer.offerPrice,
-      observedAt: observedAt,
-      source: _offerSource(offer),
-      kind: PriceObservationKind.offer,
-      validFrom: offer.validFrom,
-      validUntil: offer.validUntil,
-      proofRef: offer.proofRef ?? 'offer:${offer.id}',
-      discounted: true,
-      identityConfidence: _offerIdentityConfidence(offer),
-    );
-
+PriceObservation observationFromOffer(
+  Offer offer, {
+  required DateTime observedAt,
+}) => PriceObservation(
+  id: 'offer|${offer.id}|${offer.validUntil.toIso8601String()}|${offer.offerPrice.toStringAsFixed(4)}',
+  productId: offer.productId,
+  storeName: offer.storeName,
+  price: offer.offerPrice,
+  observedAt: observedAt,
+  source: _offerSource(offer),
+  kind: PriceObservationKind.offer,
+  validFrom: offer.validFrom,
+  validUntil: offer.validUntil,
+  proofRef: offer.proofRef ?? 'offer:${offer.id}',
+  discounted: true,
+  identityConfidence: _offerIdentityConfidence(offer),
+);
 
 PriceObservation regularObservationFromOffer(
   Offer offer, {
   required DateTime observedAt,
-}) =>
-    PriceObservation(
-      id: 'offer-regular|${offer.id}|${offer.originalPrice.toStringAsFixed(4)}',
-      productId: offer.productId,
-      storeName: offer.storeName,
-      price: offer.originalPrice,
-      observedAt: observedAt,
-      source: _offerSource(offer),
-      kind: PriceObservationKind.regular,
-      proofRef: offer.proofRef ?? 'offer:${offer.id}',
-      identityConfidence: offer.originalPriceVerified
-          ? _offerIdentityConfidence(offer)
-          : 0,
-    );
+}) => PriceObservation(
+  id: 'offer-regular|${offer.id}|${offer.originalPrice.toStringAsFixed(4)}',
+  productId: offer.productId,
+  storeName: offer.storeName,
+  price: offer.originalPrice,
+  observedAt: observedAt,
+  source: _offerSource(offer),
+  kind: PriceObservationKind.regular,
+  validFrom: offer.validFrom,
+  validUntil: offer.validUntil,
+  proofRef: offer.proofRef ?? 'offer:${offer.id}',
+  identityConfidence: offer.originalPriceVerified
+      ? _offerIdentityConfidence(offer)
+      : 0,
+);
 
 Iterable<PriceObservation> observationsFromOffer(
   Offer offer, {
@@ -80,8 +84,8 @@ double _offerIdentityConfidence(Offer offer) {
 }
 
 PriceObservationSource _offerSource(Offer offer) => switch (offer.source) {
-      'retailer' => PriceObservationSource.retailer,
-      'retailerWebsite' => PriceObservationSource.retailerWebsite,
-      'leaflet' => PriceObservationSource.leaflet,
-      _ => PriceObservationSource.manual,
-    };
+  'retailer' => PriceObservationSource.retailer,
+  'retailerWebsite' => PriceObservationSource.retailerWebsite,
+  'leaflet' => PriceObservationSource.leaflet,
+  _ => PriceObservationSource.manual,
+};

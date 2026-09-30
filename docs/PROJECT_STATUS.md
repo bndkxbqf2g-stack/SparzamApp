@@ -55,6 +55,48 @@ Eine intelligente und alltagstaugliche Preisdatenbank aufbauen:
 5. Angebote als zeitabhängige Preise behandeln, nicht als neue Produkte.
 6. Preisqualität/Herkunft/Aktualität nachvollziehbar halten.
 
+## Update 30.09.2026 – Angebote und Preise direkt in der Einkaufssuche
+- Prospektkarten, Seiten und Zähler verwenden nur aktuell gültige Datensätze. Abgelaufene Seiten werden durch den offiziellen Händlerlink ersetzt.
+- Jeder nachgewiesene strukturierte Prospektpreis wird mit Angebotspreis, gegebenenfalls ausgewiesenem Normalpreis, Packung, Händler, Nachweis und Gültigkeit in der lokalen Preisbeobachtungshistorie gelernt. Vergangene, packungsvergleichbare Preise erscheinen in der Einkaufssuche als datierter 90-Tage-Median.
+- Historische Prospektpreise werden weder als aktuelle Angebote noch als bestätigte Marktpreise für die Route projiziert. Eine Katalog-ID wird nur bei exakt gleichem Label und nachweislich gleicher Packung wiederverwendet; ähnliche Marken bleiben getrennt.
+- Aktuell gültige, belegte Prospektangebote können als eigene exakte
+  Suchprodukte erscheinen, auch wenn ein Artikel noch nicht im kleinen
+  Basiskatalog steht. Unbekannte Labels werden nicht per Ähnlichkeit mit
+  bestehenden Produkten zusammengeführt.
+- Exakt übereinstimmende normalisierte Prospektlabels teilen eine ID über
+  Märkte hinweg. Erst beim Hinzufügen wird das Produkt in die Einkaufsliste
+  übernommen.
+- Vorschläge priorisieren gültige Angebote; innerhalb vergleichbarer
+  Packungsgrößen entscheidet der normierte Preis. Ohne passendes Angebot
+  können aktuelle Marktpreise und vergleichbare Bonpreis-Mediane der letzten
+  60 Tage die Reihenfolge bestimmen. Preisquelle und Markt erscheinen direkt
+  in den Suchergebnissen.
+- Allgemeine Vorratswünsche wie Eier, Brötchen/Aufbackbrötchen, Marmelade,
+  Nudeln und Kaffee erhalten generische Produktfamilien; konkrete Varianten
+  bleiben getrennt und auswählbar.
+- Regressionstests decken Angebotsuche, Preisrangfolge, sichere
+  Produktidentität und den Abzug von Fahrtkosten beim Angebotsvergleich ab.
+- Der letzte lokale Prospekt-Refresh erhielt für Netto Thüngersheim HTTP 403.
+  Ohne verlässliche Angebotsdaten darf die App dort keine aktuellen Preise
+  anzeigen; ein belastbarer offizieller Feed bleibt offen.
+
+## Update 30.09.2026 – Wiederholung des Kaufland-Einkaufs vom 26.05.2026
+- Der Originalbeleg `20260923_100506.pdf` wurde lokal vollständig simuliert:
+  78 Produktzeilen und 102 Buchungszeilen einschließlich Rabatten und Pfand
+  balancieren zur gedruckten Summe von 184,08 €. Alle 78 Produktzeilen sind
+  nach Bonimport über ihr belegtes Label wieder auffindbar; wiederholte Zeilen
+  ergeben 72 unterschiedliche Einkaufslistenprodukte und 132 Einheiten.
+- Unbestätigte Bonlabels bekannter Familien werden bis zu zwölf Monate als
+  Suchvorschläge erinnert und sichtbar mit „Früher gekauft · Sorte und Packung
+  prüfen“ markiert. Sie werden erst durch Antippen zur Einkaufsliste übernommen.
+- Solche Suchvorschläge erhalten keinen historischen Familienmedian und keinen
+  Routenpreis. Bei `K.H-Milch` erscheinen zusätzlich 1,5-%- und 3,5-%-Milch als
+  getrennte Auswahl; die unbekannte Fettstufe wird nicht erfunden.
+- Fehlzuordnungen aus dem Beleg wurden generisch korrigiert: Eier-Spätzle zählt
+  zu Nudeln, Käse-Croissant zu Backwaren und `R.-Hackfleisch` zu Rind statt zu
+  gemischtem Hack. Linguine, Kritharaki und zusammengesetzte
+  Weizenbrötchen-Bezeichnungen werden erkannt.
+
 ### Angebotsansicht
 - Die sichtbare Rubrik „Angebote“ ist bewusst auf den aktuellen Prospekt
   beschränkt.
@@ -259,3 +301,31 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Vollständige Prospektseiten werden als Bildseiten an den Bereich „Prospekte“ geliefert. Inhalte ohne strukturierten Preis-Hotspot bleiben Bild-/Prospektevidenz und werden nicht per unsicherem OCR als Preis erfunden.
 - Der Adapter ist nur aktiv, wenn `BRING_AUTH_TOKEN`, `BRING_API_KEY` und `BRING_USER_UUID` als GitHub-Secrets vorhanden sind. Ohne diese Zugangsdaten laufen die bestehenden offiziellen Händleradapter unverändert weiter.
 - Bei identischem Händler, Produkt, Zeitraum und Angebotspreis behält der Feed den strukturierten Händlerdatensatz als führenden Beleg; Bring ergänzt die Prospektseiten und nur fehlende Angebotsdatensätze.
+
+
+## Update 30.09.2026 – Bestätigte Bons speisen die Wiederkauflogik
+- `buildReplenishmentSuggestions` verarbeitet jetzt neben abgeschlossenen Routen-
+  Einkäufen auch bestätigte `ReceiptObservation`-Zeilen.
+- Unbestätigte Bonlabels sowie gewichtete/volumetrische Zeilen erzeugen weiterhin
+  keinen konkreten Nachkaufvorschlag. Dadurch wird weder eine Produktvariante noch
+  eine Stückmenge erfunden.
+- Bon und In-App-Kauf am selben Kalendertag werden dedupliziert; die belegte
+  Herkunft bleibt an der Vorschlagskarte als `Kaufhistorie`, `bestätigte Bons`
+  oder Kombination sichtbar.
+- Regressionen decken bestätigte Bonkäufe, Identitäts-/Mengenausschluss und die
+  Tagesdeduplizierung ab. Der Vorschlag bleibt aus, wenn das Produkt bereits auf
+  der aktuellen Liste steht.
+
+
+## Update 30.09.2026 – Grundbedarf auf leerer Liste
+- Der Basiskatalog markiert häufige Starterartikel (`Milch`, `Eier`, `Joghurt`,
+  `Wurstaufschnitt`, `Gouda`, `Aufbackbrötchen`, `Marmelade`, `Spaghetti` und
+  `Filterkaffee`) als `isStaple`.
+- Diese Produkte erscheinen im Schnellzugriff und bleiben über die hierarchische
+  Identitätslogik suchbar. Marken, Fettstufen und andere Varianten werden dabei
+  nicht automatisch gleichgesetzt.
+- Für die neuen Starterartikel wurden keine Preise oder Angebote erfunden. Ohne
+  belegte aktuelle Evidenz markiert die Routenplanung sie weiterhin als
+  unvollständige Preisabdeckung.
+- Regressionen prüfen Schnellzugriff und Suchbarkeit für die Grundbedarfsbegriffe
+  sowie das Speichern des neuen Katalogmerkmals.
