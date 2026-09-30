@@ -52,6 +52,7 @@ List<Widget> buildShellPages({
   required List<Offer> offers,
   required List<OfferImportRecord> prospectRecords,
   List<ProspectIssue> prospectIssues = const <ProspectIssue>[],
+  bool prospectFeedFromCache = false,
   required List<PricePoint> priceHistory,
   required MobilitySettings mobility,
   required List<Product> catalogProducts,
@@ -133,6 +134,7 @@ List<Widget> buildShellPages({
   ProspectsScreen(
     records: prospectRecords,
     prospects: prospectIssues,
+    fromCache: prospectFeedFromCache,
     catalogProducts: catalogProducts,
     onAddProduct: onAddProduct,
   ),

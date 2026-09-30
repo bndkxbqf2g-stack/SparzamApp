@@ -139,6 +139,7 @@ class _AppShellState extends State<AppShell> {
       const <PriceObservation>[];
   List<OfferImportRecord> prospectRecords = const <OfferImportRecord>[];
   List<ProspectIssue> prospectIssues = const <ProspectIssue>[];
+  bool prospectFeedFromCache = false;
   List<Product> prospectProducts = const <Product>[];
   final priceObservationStore = PriceObservationStore();
   late PriceDataSettings priceDataSettings;
@@ -278,6 +279,7 @@ class _AppShellState extends State<AppShell> {
           // the price observation store, but must not be loaded as tiles.
           prospectRecords = currentProspectRecords(feed.records);
           prospectIssues = feed.prospects;
+          prospectFeedFromCache = feed.fromCache;
         });
       }
 
@@ -1014,6 +1016,7 @@ class _AppShellState extends State<AppShell> {
       offers: offers,
       prospectRecords: prospectRecords,
       prospectIssues: prospectIssues,
+      prospectFeedFromCache: prospectFeedFromCache,
       priceHistory: priceHistory,
       mobility: mobility,
       catalogProducts: catalogProducts,

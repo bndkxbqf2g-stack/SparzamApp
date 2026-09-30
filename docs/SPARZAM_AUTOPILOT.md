@@ -142,6 +142,8 @@ Externe Angebote benötigen für eine belastbare Preisbeobachtung einen `proofRe
 
 Nächster sicherer Schwerpunkt: reale Angebots-/Prospektdaten in den bereits abgesicherten Importvertrag einspeisen und danach die Produkt×Markt-Abdeckung bzw. `dataGap`-Priorisierung ausbauen. Die zwei weiterhin fehlenden Originalbons bleiben ein separater Datenblocker und werden nicht erraten.
 
+Der öffentliche Prospektfeed wird nach erfolgreicher Validierung lokal zwischengespeichert. Bei einem vorübergehenden Netzwerkfehler darf dieser Feed als Cache-Fallback weiterlaufen; die aktuelle Gültigkeitsprüfung bleibt unverändert und private Belegdaten werden nicht mitgespeichert.
+
 ## Update 30.09.2026 – Grundvorrat und Variantenwahl
 Der Basiskatalog enthält jetzt weitere preisfreie Varianten für den täglichen
 Einkauf. Die zentrale Identität löst zusätzlich Reis, Mehl, Öl, Zucker, Salz,

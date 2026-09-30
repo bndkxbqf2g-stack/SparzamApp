@@ -205,3 +205,12 @@ Familienvarianten übrig bleiben; er erweitert weder die Kompatibilität noch
 überträgt er Preise. Ein nicht belastbar interpretierbarer Code bleibt als
 prüfbedürftige Bonzeile sichtbar und wird nicht stillschweigend einer
 Produktfamilie oder Route zugeordnet.
+
+## D046 – Offline-Prospektcache bleibt öffentlich, datiert und route-sicher
+Der letzte erfolgreich validierte öffentliche Prospektfeed darf lokal auf dem
+Gerät zwischengespeichert und bei einem vorübergehenden Abruffehler angezeigt
+werden. Der Cache enthält keine privaten Belege oder Nutzerpreise. Auch aus dem
+Cache werden Angebotsdatensätze vor der Anzeige und Routenplanung mit ihrer
+Gültigkeit gefiltert; abgelaufene oder unvollständige Datensätze bleiben
+Historie bzw. Nachweis und werden nicht als aktuelle Preise ausgegeben. Der
+Feed wird sichtbar als Cache-Ergebnis unterscheidbar gehalten.

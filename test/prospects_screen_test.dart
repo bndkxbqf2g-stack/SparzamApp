@@ -83,6 +83,28 @@ void main() {
     await tester.pump();
     expect(added, isTrue);
   });
+
+  testWidgets('labels a cached prospect feed clearly', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: const [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: [],
+            ),
+          ],
+          fromCache: true,
+        ),
+      ),
+    );
+
+    expect(find.text('Letzter geprüfter Prospektstand'), findsOneWidget);
+    expect(find.textContaining('abgelaufene Angebote'), findsOneWidget);
+  });
+
   testWidgets('keeps official opening action for a browsable prospect', (
     tester,
   ) async {
