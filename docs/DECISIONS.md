@@ -186,3 +186,11 @@ historischen Bon- oder normalen Marktpreisen angezeigt. Innerhalb des
 Angebotsvorrangs zählt der effektive Preis einschließlich sicher berechenbarer
 Coupon-/Cashback-Effekte. Historische Preise bleiben als Evidenz sichtbar und
 werden nicht gelöscht oder zur aktuellen Angebotsbehauptung umetikettiert.
+
+## D044 – Frische Tomatenvarianten bleiben im Basiskatalog getrennt
+Der Basiskatalog führt häufige frische Tomatenvarianten mit eigener Produkt-ID,
+Packungsbasis und Suchidentität. Ein generischer Suchbegriff wie „Tomate“ darf
+Rispentomaten, Partytomaten und Cherrytomaten gemeinsam anbieten; verarbeitete
+Produkte wie Tomatenmark, Passata und Tomatensauce bleiben über die bestehende
+Hierarchie verwandte, aber separate Identitäten. Eine gemeinsame Familie ist
+kein gemeinsamer exakter Preis- oder Routenbeleg.

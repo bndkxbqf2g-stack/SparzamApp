@@ -72,6 +72,21 @@ void main() {
     },
   );
 
+  test('Basiskatalog liefert frische Tomatenvarianten für die Suche', () {
+    final result = buildSuggestions(
+      query: 'Tomate',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: products,
+    );
+
+    expect(
+      result.map((product) => product.id),
+      containsAll(['tomate_rispe', 'tomate_party', 'tomate_cherry']),
+    );
+  });
+
   test(
     'Tomate exposes processed tomato products only as related interpretations',
     () {

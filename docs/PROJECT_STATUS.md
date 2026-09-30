@@ -83,6 +83,17 @@ Eine intelligente und alltagstaugliche Preisdatenbank aufbauen:
 5. Angebote als zeitabhängige Preise behandeln, nicht als neue Produkte.
 6. Preisqualität/Herkunft/Aktualität nachvollziehbar halten.
 
+## Update 30.09.2026 – Frische Tomaten im Basiskatalog
+- Auf einer frischen Installation bietet die Produktsuche jetzt
+  Rispentomaten, Partytomaten und Cherrytomaten als getrennte Varianten an.
+- Die Identitätshierarchie hält diese Varianten von Tomatenmark, Passata und
+  Tomatensauce getrennt; gemeinsame Begriffe erzeugen keinen gemeinsamen
+  Preis- oder Routenbeleg.
+- Eine Regression prüft die Suche gegen den echten Basiskatalog und verhindert,
+  dass die dokumentierte Tomatenfunktion nur in Testkatalogen existiert.
+- Für diesen Block: Flutter-Analyse ohne Befund, 425 Tests bestanden und
+  `flutter build web --release` erfolgreich.
+
 ## Update 30.09.2026 – Angebote und Preise direkt in der Einkaufssuche
 - Prospektkarten, Seiten und Zähler verwenden nur aktuell gültige Datensätze. Abgelaufene Seiten werden durch den offiziellen Händlerlink ersetzt.
 - Jeder nachgewiesene strukturierte Prospektpreis wird mit Angebotspreis, gegebenenfalls ausgewiesenem Normalpreis, Packung, Händler, Nachweis und Gültigkeit in der lokalen Preisbeobachtungshistorie gelernt. Vergangene, packungsvergleichbare Preise erscheinen in der Einkaufssuche als datierter 90-Tage-Median.
