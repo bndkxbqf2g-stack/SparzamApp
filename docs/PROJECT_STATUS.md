@@ -393,3 +393,14 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Händlerlabel ohne Fettstufe zeigt beide belegbaren Milchvarianten zur Auswahl;
   keine Variante erbt dabei den Preis der anderen.
 - Ein Regressionstest deckt diesen Auswahlpfad ab.
+
+## Update 30.09.2026 – Öffentlicher Prospektcache für Offline-Fallback
+- Der zuletzt erfolgreich validierte Feed wird lokal als öffentlicher Cache
+  gespeichert. Fällt der Netzwerkabruf aus, kann die App den Feed weiter
+  verarbeiten und kennzeichnet das Ergebnis als Cache.
+- Die bestehende Gültigkeitsprüfung bleibt vor Anzeige und Routenprojektion
+  aktiv. Ein abgelaufenes Cache-Angebot wird deshalb nicht zu einem aktuellen
+  Angebot.
+- Private Bons, Nutzerpreise und andere lokale Kontodaten gelangen nicht in den
+  Cache. Vier Regressionen decken Live-Speicherung, Offline-Fallback,
+  abgelaufene Cache-Angebote und beschädigte Cache-Daten ab.

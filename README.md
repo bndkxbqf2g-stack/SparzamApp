@@ -75,6 +75,7 @@ Bonimporte, eigene Preise oder andere belegte Quellen routenfähig.
 - Angebote werden getrennt von Produktidentitäten behandelt: ein Angebot erzeugt grundsätzlich kein neues Produkt.
 - Angebotszeiträume werden berücksichtigt.
 - Die Prospektansicht lädt nur aktuell gültige Angebotsdaten und datierte Prospektseiten. Bei fehlendem Abruf zeigt sie den offiziellen Händlerlink ohne erfundene Preise.
+- Der zuletzt erfolgreich validierte öffentliche Feed bleibt lokal als Cache verfügbar, wenn der nächste Abruf vorübergehend scheitert. Auch Cache-Daten werden vor Anzeige und Routenplanung nach ihrer Angebotsgültigkeit gefiltert und als Cache-Ergebnis kenntlich gemacht.
 - Belegte Prospekt-Angebotspreise und ausdrücklich angegebene Normalpreise bleiben mit Markt, Quelle, Nachweis, Packungsgröße und Gültigkeit als Preisbeobachtungen erhalten. Abgelaufene Preise dienen nur der Historie; sie werden nicht als aktuell verfügbarer Routenpreis ausgegeben.
 - Marken-/Text-Matching kann passende Angebote zu Produkten finden.
 - Coupon, Cashback und Mehrfachkauf werden rechnerisch berücksichtigt, soweit die Angebotsdaten diese Bedingungen enthalten.

@@ -16,6 +16,7 @@ class ProspectsScreen extends StatelessWidget {
     this.catalogProducts = const [],
     this.onAddProduct,
     this.now,
+    this.fromCache = false,
   });
 
   final List<OfferImportRecord> records;
@@ -23,6 +24,7 @@ class ProspectsScreen extends StatelessWidget {
   final List<Product> catalogProducts;
   final ValueChanged<Product>? onAddProduct;
   final DateTime? now;
+  final bool fromCache;
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +67,17 @@ class ProspectsScreen extends StatelessWidget {
         const Center(
           child: Text('Aktuelle Prospekte. Produkte antippen und vormerken.'),
         ),
+        if (fromCache)
+          Card(
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            child: const ListTile(
+              leading: Icon(Icons.cloud_off_outlined),
+              title: Text('Letzter geprüfter Prospektstand'),
+              subtitle: Text(
+                'Der Live-Abruf war nicht verfügbar. Gültigkeiten werden weiterhin geprüft; abgelaufene Angebote bleiben ausgeblendet.',
+              ),
+            ),
+          ),
         const SizedBox(height: 20),
         if (visibleProspects.isEmpty)
           const Card(
