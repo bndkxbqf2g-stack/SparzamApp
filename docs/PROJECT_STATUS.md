@@ -404,3 +404,19 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Private Bons, Nutzerpreise und andere lokale Kontodaten gelangen nicht in den
   Cache. Vier Regressionen decken Live-Speicherung, Offline-Fallback,
   abgelaufene Cache-Angebote und beschädigte Cache-Daten ab.
+
+## Update 01.10.2026 – Mobile Bildbon-OCR mit Review-Gate
+- JPG-/PNG-Dateien und Kameraaufnahmen werden auf Android/iOS lokal über den
+  ML-Kit-Text-Recognizer gelesen. Der erkannte Text läuft danach durch denselben
+  `ReceiptDraft`-/Bonreview-Pfad wie durchsuchbare PDFs; Aliaslernen,
+  Ausgleichsprüfung und explizite Preisbestätigung bleiben dadurch unverändert.
+- Bilddateien werden als strukturierte Bons behandelt und bei gleichem
+  Fingerprint wie andere Bons dedupliziert. Ein unlesbares Bild bleibt als
+  importierte Referenz sichtbar und erhält eine verständliche Handlungsanweisung.
+- Bildbasierte PDF-Seiten ohne Textebene werden auf mobilen Geräten gerendert
+  und an denselben OCR-Adapter übergeben. Web, macOS und Linux melden den
+  fehlenden mobilen OCR-Support und bieten weiterhin den manuellen bzw.
+  durchsuchbaren-PDF-Fallback.
+- Die plattformneutrale Regression prüft Bildweiterleitung, Pfadübergabe und
+  dass der erkannte Text in denselben Bonreview geparst wird. Eine native
+  Geräteabnahme steht noch aus.
