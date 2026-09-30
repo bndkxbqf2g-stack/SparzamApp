@@ -25,6 +25,8 @@ Die Testsuite enthält Domänen-, Store-, Service-, Widget- und Ablaufprüfungen
 - Dashboarddaten/Teilrouten: `shell_dashboard_test.dart` prüft, dass
   unvollständige Preisabdeckung weder Sparpotenzial noch Budgetverbrauch
   vortäuscht.
+- Kaufabschluss: `receipt_completion_feedback_test.dart` prüft, dass eine
+  Teilroute nicht bestätigt werden kann und fehlende Artikel sichtbar bleiben.
 
 Bei jedem behobenen Fehler kommt ein enger Test für Ursache und Gegenbeispiel hinzu. Datenqualitätskorrekturen dürfen nicht allein anhand des erwarteten UI-Texts getestet werden: prüfe den resultierenden Preis-/Identitäts-/Routenstatus.
 

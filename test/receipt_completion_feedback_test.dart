@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/receipt/receipt_screen.dart';
+import 'package:sparzamapp/models/list_item.dart';
+import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/route_plan.dart';
 import 'package:sparzamapp/models/store.dart';
 
@@ -15,11 +17,16 @@ void main() {
     total: 6, unassigned: [],
   );
 
-  Widget screen(Future<void> Function() onComplete) => MaterialApp(
+  Widget screen(
+    Future<void> Function() onComplete, {
+    RoutePlan currentPlan = plan,
+    bool baselineHasDataGaps = false,
+  }) => MaterialApp(
         home: Scaffold(
           body: ReceiptScreen(
-            plan: plan,
+            plan: currentPlan,
             baselineTotal: 8,
+            baselineHasDataGaps: baselineHasDataGaps,
             history: const [],
             onComplete: onComplete,
             onUpdatePurchase: (_) async {},
@@ -55,5 +62,34 @@ void main() {
         findsOneWidget);
     final button = tester.widget<FilledButton>(find.byType(FilledButton));
     expect(button.onPressed, isNotNull);
+  });
+
+  testWidgets('Teilroute kann nicht als vollständiger Einkauf bestätigt werden',
+      (tester) async {
+    const unknown = Product(
+      id: 'unknown',
+      name: 'Unbekannter Artikel',
+      unit: 'Stück',
+      group: 'test',
+    );
+    final partial = RoutePlan(
+      stores: const [store],
+      assignments: const {},
+      basket: 5,
+      travel: 1,
+      total: 6,
+      unassigned: [ListItem(product: unknown)],
+    );
+    var calls = 0;
+    await tester.pumpWidget(
+      screen(() async { calls++; }, currentPlan: partial),
+    );
+
+    expect(find.text('Vorläufige Teilroute'), findsOneWidget);
+    expect(find.textContaining('Ohne Preis: Unbekannter Artikel'), findsOneWidget);
+    expect(find.text('Preise ergänzen, dann bestätigen'), findsOneWidget);
+    expect(tester.widget<FilledButton>(find.byType(FilledButton)).onPressed,
+        isNull);
+    expect(calls, 0);
   });
 }

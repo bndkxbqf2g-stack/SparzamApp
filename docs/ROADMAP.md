@@ -173,3 +173,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Teilkosten werden nicht als Sparpotenzial behauptet und nicht in die
   Budgetplanung übernommen.
 - [x] Daten- und Widgettests decken die Teilroute ab.
+
+## Update 01.10.2026 – Kaufabschluss gegen Teilrouten absichern
+- [x] Eine Teilroute kann nicht als vollständiger Einkauf bestätigt werden.
+- [x] Fehlende Artikel und die vorläufige Ersparnis werden im Abschluss sichtbar
+  genannt.
+- [x] Der App-Handler blockiert Teilrouten auch außerhalb der UI.

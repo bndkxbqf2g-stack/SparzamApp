@@ -64,6 +64,7 @@ List<Widget> buildShellPages({
   required ValueChanged<RoadRouteMatrix?> onRoadMatrixChanged,
   required RoutePlan? currentPlan,
   required double baselineTotal,
+  bool baselineHasDataGaps = false,
   required List<PurchaseRecord> purchaseHistory,
   required Future<void> Function() onCompletePurchase,
   required Future<void> Function(PurchaseRecord record) onUpdatePurchase,
@@ -157,6 +158,7 @@ List<Widget> buildShellPages({
     receiptPage: ReceiptScreen(
       plan: currentPlan,
       baselineTotal: baselineTotal,
+      baselineHasDataGaps: baselineHasDataGaps,
       history: purchaseHistory,
       onComplete: onCompletePurchase,
       onUpdatePurchase: onUpdatePurchase,

@@ -644,7 +644,12 @@ class _AppShellState extends State<AppShell> {
     if (_purchaseInProgress) return;
     final plan = currentOptimizer?.bestPlan();
     final baseline = regularOptimizer?.bestSingleStorePlan();
-    if (plan == null || baseline == null || shoppingList.isEmpty) return;
+    if (plan == null ||
+        baseline == null ||
+        plan.hasDataGaps ||
+        shoppingList.isEmpty) {
+      return;
+    }
     final purchasedItemCount = shoppingList.fold<int>(
       0,
       (sum, item) => sum + item.quantity,
@@ -1032,6 +1037,8 @@ class _AppShellState extends State<AppShell> {
       onRoadMatrixChanged: (value) => setState(() => roadMatrix = value),
       currentPlan: currentOptimizer?.bestPlan(),
       baselineTotal: regularOptimizer?.bestSingleStorePlan()?.total ?? 0,
+      baselineHasDataGaps:
+          regularOptimizer?.bestSingleStorePlan()?.hasDataGaps ?? false,
       purchaseHistory: purchaseHistory,
       onCompletePurchase: completePurchase,
       onUpdatePurchase: updatePurchase,
