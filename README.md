@@ -49,6 +49,7 @@ SparzamApp ist ein Flutter-Prototyp für intelligent geplante Lebensmitteleinkä
 ### Produktkatalog
 - Enthält Basiskatalog und lokal angelegte Produkte.
 - Produktdaten können u. a. ID, Name, Einheit, Gruppe, Alias, EAN, Marke, Packungsmenge/-einheit und Bild-URL enthalten.
+- Frische Tomaten werden im Basiskatalog als getrennte Varianten wie Rispentomaten, Partytomaten und Cherrytomaten geführt. Tomatenmark, Passata und Tomatensauce bleiben verwandte, aber getrennte Produktinterpretationen.
 - Eigene Produkte werden lokal gespeichert.
 - Basiskatalogartikel können als Grundbedarf markiert sein und erscheinen dann
   im Schnellzugriff, ohne die Produktidentität anderer Varianten zu ersetzen.

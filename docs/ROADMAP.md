@@ -15,6 +15,8 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 - Confidence aus Herkunft und Alter getrennt modellieren und fehlende Preise als Unsicherheitsbereich behandeln; knappe Routenentscheidungen kennzeichnen.
 - dataGap-Score für häufige, teure und entscheidungsrelevante Einkaufspositionen; nur gezielt neue Preisbelege anfordern.
 - Produktidentität von Preisbeobachtungen trennen.
+- Frische Tomatenvarianten im Basiskatalog getrennt von verarbeiteten
+  Tomatenprodukten anbieten.
 - Händler-/Bon-Aliase lernen.
 - Confidence für automatische Zuordnungen.
 - Wiederkehrende Käufe bevorzugt erkennen.

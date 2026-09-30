@@ -101,6 +101,27 @@ const products = <Product>[
     aliases: ['trauben', 'weintraube'],
   ),
   Product(
+    id: 'tomate_rispe',
+    name: 'Rispentomaten',
+    unit: '500 g',
+    group: 'obst_gemuese',
+    aliases: ['tomate', 'tomaten', 'rispe'],
+  ),
+  Product(
+    id: 'tomate_party',
+    name: 'Partytomaten',
+    unit: '250 g',
+    group: 'obst_gemuese',
+    aliases: ['tomate', 'tomaten', 'party'],
+  ),
+  Product(
+    id: 'tomate_cherry',
+    name: 'Cherrytomaten',
+    unit: '250 g',
+    group: 'obst_gemuese',
+    aliases: ['tomate', 'tomaten', 'cherry'],
+  ),
+  Product(
     id: 'hackfleisch',
     name: 'Hackfleisch gemischt',
     unit: '500 g',
