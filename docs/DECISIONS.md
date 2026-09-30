@@ -224,3 +224,11 @@ Web, macOS und Linux verwenden einen sichtbaren manuellen Fallback, weil der
 mobile OCR-Adapter dort nicht verfügbar ist. Bildbasierte PDFs ohne
 Textebene werden auf mobilen Geräten ebenfalls gerendert und lokal gelesen;
 OCR- oder Renderfehler bleiben als unlesbare Referenz im Review.
+
+## D048 – Routenempfehlungen trennen Preisabdeckung und Ersparnis
+Wenn der beste Einzelmarkt nicht alle Einkaufspositionen mit belastbaren
+Preisen abdeckt, darf ein vollständiger Mehrmarktplan nicht als reine
+Ersparnis gegenüber diesem Teilwarenkorb erklärt werden. Die UI benennt in
+diesem Fall die vollständige Preisabdeckung als Grund für die Mehrmarkt-
+Empfehlung. Eine unvollständige empfohlene Route bleibt weiterhin ausdrücklich
+vorläufig und zeigt ihre Datenlücke.

@@ -83,6 +83,7 @@ Bonimporte, eigene Preise oder andere belegte Quellen routenfähig.
 ### Route
 - Vergleicht aktivierte Märkte und mögliche Kombinationen bis zur eingestellten maximalen Marktzahl.
 - Produkte werden nur anhand nicht geschätzter Preise einer Route verbindlich zugeordnet.
+- Die Empfehlung unterscheidet vollständige Preisabdeckung von einer Teilroute. Wenn ein Einzelmarkt nicht alle Artikel bepreisen kann, wird ein Mehrmarktplan als Abdeckungsentscheidung erklärt und nicht als reine Ersparnis gegenüber einem unvollständigen Vergleich.
 - Fahrtstrecken können über OpenStreetMap/Nominatim und OSRM ermittelt und lokal zwischengespeichert werden.
 - Verkehrsmittel, Fahrtkosten, maximale Marktzahl und Mindestvorteil für einen zusätzlichen Markt sind einstellbar.
 - Produkte ohne belastbaren Preis bleiben für die Route unzugeordnet; dadurch wird keine scheinbar günstige Route aus Schätzpreisen erzeugt.

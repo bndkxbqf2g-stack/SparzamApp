@@ -59,6 +59,54 @@ void main() {
     expect(info.title, 'Mehrere Märkte lohnen sich');
     expect(info.detail, contains('2.00 €'));
   });
+
+  test('erklärt Preisabdeckung statt Ersparnis gegenüber einer Teilroute', () {
+    const firstProduct = Product(
+      id: 'first',
+      name: 'Milch',
+      unit: 'Stück',
+      group: 'molkerei',
+    );
+    const secondProduct = Product(
+      id: 'second',
+      name: 'Käse',
+      unit: 'Stück',
+      group: 'molkerei',
+    );
+    final incompleteSingle = RoutePlan(
+      stores: const [a],
+      assignments: {
+        a: [ListItem(product: firstProduct)],
+      },
+      basket: 1,
+      travel: 1,
+      total: 2,
+      unassigned: [ListItem(product: secondProduct)],
+    );
+    final completeMulti = RoutePlan(
+      stores: const [a, b],
+      assignments: {
+        a: [ListItem(product: firstProduct)],
+        b: [ListItem(product: secondProduct)],
+      },
+      basket: 2,
+      travel: 2,
+      total: 4,
+      unassigned: const [],
+    );
+
+    final info = buildRouteRecommendationInfo(
+      recommended: completeMulti,
+      cheapest: completeMulti,
+      singleStore: incompleteSingle,
+      mobility: const MobilitySettings(),
+    );
+
+    expect(info.title, 'Mehrere Märkte sichern die Preisabdeckung');
+    expect(info.detail, contains('nur 50 %'));
+    expect(info.detail, contains('vollständiger Preisabdeckung'));
+  });
+
   test('incomplete route does not claim a complete recommendation', () {
     const product = Product(id: 'missing', name: 'Schmand', unit: 'Stück', group: 'molkerei');
     final incomplete = RoutePlan(
