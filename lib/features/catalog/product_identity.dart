@@ -42,7 +42,15 @@ class ProductIdentity {
 ProductIdentity identifyProduct(String value) {
   final text = normalizeIdentityText(value);
 
-  if (_hasAny(text, const ['chips', 'pringles'])) {
+  if (_hasAny(text, const [
+    'chips',
+    'pringles',
+    'lays',
+    'kartoffelchips',
+    'knabbermaeuse',
+    'knabbermäuse',
+    'maeuse',
+  ])) {
     return const ProductIdentity(familyKey: 'chips', productType: 'chips');
   }
   if (_hasWord(text, 'pizza')) {
@@ -58,6 +66,9 @@ ProductIdentity identifyProduct(String value) {
       productType: 'croissant',
     );
   }
+  if (_hasAny(text, const ['muellermilch', 'milchgetraenk', 'milchdrink'])) {
+    return const ProductIdentity(familyKey: 'milchgetraenk');
+  }
   if (_hasAny(text, const ['milch', 'h milch', 'vollmilch'])) {
     return ProductIdentity(
       familyKey: 'milch',
@@ -66,11 +77,36 @@ ProductIdentity identifyProduct(String value) {
       fatPercent: _percent(text),
     );
   }
-  if (text.contains('joghurt') || text.contains('jogurt')) {
+  if (text.contains('joghurt') ||
+      text.contains('jogurt') ||
+      _hasWord(text, 'jogh')) {
     return ProductIdentity(
       familyKey: 'joghurt',
       variant: _yoghurtVariant(text),
     );
+  }
+  if (_hasAny(text, const ['pudding', 'pud', 'dessert', 'delacreme'])) {
+    return const ProductIdentity(familyKey: 'dessert');
+  }
+  if (_hasAny(text, const ['ice cream', 'eis', 'pirulo', 'bounty ice'])) {
+    return const ProductIdentity(familyKey: 'eis', productType: 'eis');
+  }
+  if (_hasAny(text, const ['creme', 'sahne', 'kochcreme'])) {
+    return ProductIdentity(familyKey: 'creme', productType: _creamType(text));
+  }
+  if (_hasAny(text, const [
+    'bier',
+    'pils',
+    'radler',
+    'rad',
+    'helles bier',
+    'moench hell',
+    'desperados',
+  ])) {
+    return const ProductIdentity(familyKey: 'bier');
+  }
+  if (_hasAny(text, const ['limonade', 'gazoz', 'uludag'])) {
+    return const ProductIdentity(familyKey: 'limonade');
   }
   if (_hasAny(text, const [
     'hackfleisch',
@@ -129,8 +165,11 @@ ProductIdentity identifyProduct(String value) {
   ])) {
     return ProductIdentity(familyKey: 'eier', variant: _eggVariant(text));
   }
-  if (_hasAny(text, const ['kartoffel', 'kartoffeln'])) {
-    return const ProductIdentity(familyKey: 'kartoffeln');
+  if (_hasAny(text, const ['kartoffel', 'kartoffeln', 'wedges'])) {
+    return ProductIdentity(
+      familyKey: 'kartoffeln',
+      productType: _hasWord(text, 'wedges') ? 'wedges' : null,
+    );
   }
   if (_hasAny(text, const ['butter'])) {
     return const ProductIdentity(familyKey: 'butter');
@@ -172,6 +211,51 @@ ProductIdentity identifyProduct(String value) {
   if (_hasAny(text, const ['ketchup'])) {
     return const ProductIdentity(familyKey: 'ketchup');
   }
+  if (_hasAny(text, const [
+    'kraeuter',
+    'ital kraeuter',
+    'italienische kraeuter',
+  ])) {
+    return const ProductIdentity(familyKey: 'kraeuter');
+  }
+  if (_hasAny(text, const ['toilettenpapier', 'klopapier', 'klo'])) {
+    return const ProductIdentity(familyKey: 'toilettenpapier');
+  }
+  if (_hasAny(text, const ['softlan', 'weichspueler', 'weichspüler'])) {
+    return const ProductIdentity(familyKey: 'weichspueler');
+  }
+  if (_hasAny(text, const ['kohlrabi'])) {
+    return const ProductIdentity(familyKey: 'kohlrabi');
+  }
+  if (_hasAny(text, const ['eisbergsalat', 'salat'])) {
+    return ProductIdentity(
+      familyKey: 'salat',
+      productType: _hasWord(text, 'eisbergsalat') ? 'eisberg' : null,
+    );
+  }
+  if (_hasAny(text, const ['zwiebel', 'zwiebeln'])) {
+    return ProductIdentity(familyKey: 'zwiebeln', color: _color(text));
+  }
+  if (_hasAny(text, const ['ananas', 'ananasscheiben'])) {
+    return const ProductIdentity(familyKey: 'ananas');
+  }
+  if (_hasAny(text, const ['mais', 'gemuese mais', 'gemüsemais'])) {
+    return const ProductIdentity(familyKey: 'mais');
+  }
+  if (_hasAny(text, const ['erbsen', 'erbsen moehren', 'erbsen möhren'])) {
+    return ProductIdentity(
+      familyKey: 'gemuese',
+      productType: _hasAny(text, const ['moehren', 'möhren'])
+          ? 'erbsen_moehren'
+          : 'erbsen',
+    );
+  }
+  if (_hasAny(text, const ['kaiser gemuese', 'kaiser', 'kaisergemuese'])) {
+    return const ProductIdentity(
+      familyKey: 'gemuese',
+      productType: 'kaisergemuese',
+    );
+  }
   // Tomato products must be classified before fresh tomatoes. Matching the
   // token "tomate" alone must never turn tomato paste/sauce into fresh produce.
   if (_hasAny(text, const ['tomatenmark', 'tomaten mark'])) {
@@ -200,6 +284,7 @@ ProductIdentity identifyProduct(String value) {
   if (_hasAny(text, const [
     'tomate',
     'tomaten',
+    'ta rot',
     'rispentomaten',
     'rispen tomaten',
     'partytomaten',
@@ -273,6 +358,7 @@ ProductIdentity identifyProduct(String value) {
     'käse',
     'kaese',
     'gouda',
+    'gou',
     'edamer',
     'emmentaler',
     'bergkäse',
@@ -280,6 +366,11 @@ ProductIdentity identifyProduct(String value) {
     'butterkäse',
     'butterkaese',
     'tilsiter',
+    'camembert',
+    'frischkaese',
+    'frischk',
+    'schmelzkaese',
+    'schmelzk',
   ])) {
     return ProductIdentity(familyKey: 'kaese', variant: _cheeseVariant(text));
   }
@@ -291,8 +382,56 @@ ProductIdentity identifyProduct(String value) {
     'fleischwurst',
     'mortadella',
     'cervelat',
+    'wiener',
+    'gelbwurst',
+    'kochhinterschink',
+    'schinken',
   ])) {
     return ProductIdentity(familyKey: 'wurst', variant: _sausageVariant(text));
+  }
+  if (_hasAny(text, const ['fischstäbchen', 'fischstaebchen'])) {
+    return const ProductIdentity(familyKey: 'fischstäbchen');
+  }
+  if (_hasAny(text, const ['schlemmerfilet', 'fischfilet'])) {
+    return const ProductIdentity(
+      familyKey: 'fischfilet',
+      productType: 'schlemmerfilet',
+    );
+  }
+  if (_hasAny(text, const ['haehnchenbrust', 'hähnchenbrust'])) {
+    return const ProductIdentity(
+      familyKey: 'fleisch',
+      productType: 'hähnchenbrust',
+    );
+  }
+  if (_hasAny(text, const ['schlemmerbraten', 'braten'])) {
+    return const ProductIdentity(familyKey: 'fleisch', productType: 'braten');
+  }
+  if (_hasAny(text, const ['nudeltopf', 'linseneintopf', 'eintopf'])) {
+    return ProductIdentity(
+      familyKey: 'eintopf',
+      productType: _hasWord(text, 'linseneintopf')
+          ? 'linseneintopf'
+          : 'nudeltopf',
+    );
+  }
+  if (_hasAny(text, const ['muesliriegel', 'müsliriegel', 'riegel'])) {
+    return const ProductIdentity(
+      familyKey: 'snack',
+      productType: 'muesliriegel',
+    );
+  }
+  if (_hasAny(text, const ['schokolade'])) {
+    return const ProductIdentity(familyKey: 'schokolade');
+  }
+  if (_hasAny(text, const ['haribo', 'baella', 'balla', 'suessigkeit'])) {
+    return const ProductIdentity(familyKey: 'suessigkeit');
+  }
+  if (_hasAny(text, const ['hollandaise', 'holl'])) {
+    return const ProductIdentity(
+      familyKey: 'sauce',
+      productType: 'hollandaise',
+    );
   }
   return const ProductIdentity(familyKey: null);
 }
@@ -359,6 +498,17 @@ String? _coffeeType(String text) {
 String? _milkType(String text) =>
     _hasAny(text, const ['laktosefrei', 'laktosefreie']) ? 'laktosefrei' : null;
 
+String? _creamType(String text) {
+  if (_hasAny(text, const ['kochcreme', 'creme zum kochen', 'kochen'])) {
+    return 'kochcreme';
+  }
+  if (_hasAny(text, const ['creme leicht', 'leicht'])) return 'leicht';
+  if (_hasAny(text, const ['schlagsahne', 'schlag sahne'])) {
+    return 'schlagsahne';
+  }
+  return null;
+}
+
 String? _yoghurtVariant(String text) {
   if (_hasAny(text, const ['griechisch', 'griechischer', 'griechische'])) {
     return 'griechisch';
@@ -375,10 +525,19 @@ String? _yoghurtVariant(String text) {
 
 String? _eggVariant(String text) {
   if (_hasAny(text, const ['bioeier', 'bio eier', 'bio ei'])) return 'bio';
-  if (_hasAny(text, const ['freilandeier', 'freiland eier', 'freiland ei'])) {
+  if (_hasAny(text, const [
+    'freilandeier',
+    'freiland eier',
+    'freiland ei',
+    'eier freiland',
+  ])) {
     return 'freiland';
   }
-  if (_hasAny(text, const ['bodenhaltungseier', 'bodenhaltung eier'])) {
+  if (_hasAny(text, const [
+    'bodenhaltungseier',
+    'bodenhaltung eier',
+    'eier bodenhaltung',
+  ])) {
     return 'boden';
   }
   return null;
@@ -461,18 +620,34 @@ double? _percent(String text) {
 String? _cheeseVariant(String text) {
   for (final term in const [
     'gouda',
+    'gou',
     'edamer',
     'emmentaler',
     'bergkaese',
     'butterkaese',
     'tilsiter',
+    'camembert',
+    'frischkaese',
+    'frischk',
+    'schmelzkaese',
+    'schmelzk',
   ]) {
-    if (_hasWord(text, term)) return term;
+    if (_hasWord(text, term)) {
+      return switch (term) {
+        'gou' => 'gouda',
+        'frischk' => 'frischkaese',
+        'schmelzk' => 'schmelzkaese',
+        _ => term,
+      };
+    }
   }
   return null;
 }
 
 String? _sausageVariant(String text) {
+  if (_hasAny(text, const ['kochschinken', 'kochhinterschink'])) {
+    return 'schinken';
+  }
   for (final term in const [
     'salami',
     'lyoner',
@@ -480,6 +655,10 @@ String? _sausageVariant(String text) {
     'fleischwurst',
     'mortadella',
     'cervelat',
+    'wiener',
+    'gelbwurst',
+    'kochhinterschink',
+    'schinken',
   ]) {
     if (_hasWord(text, term)) return term;
   }

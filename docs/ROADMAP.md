@@ -113,6 +113,7 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Familie/Variante in der Einkaufssuche sichtbar machen.
 - [x] Verwandte Interpretationen getrennt von identitätskompatiblen Treffern anzeigen; Referenzfall „Tomate“.
 - [x] Häufige Grundbedarfs- und Grundvorratsfamilien mit getrennten Varianten in den Basiskatalog aufnehmen.
+- [x] Häufige Bonabkürzungen und Händlerpräfixe über die zentrale Identität auffindbar machen; unklare Codes bleiben im Review.
 - [x] Externe Angebotsimporte ohne belastbaren Nachweis von exakter Preisprojektion ausschließen.
 - [x] Ausgewiesenen Normalpreis eines belegten Angebots als getrennte reguläre Preisbeobachtung erhalten.
 - [ ] Hierarchie über weitere Produktfamilien systematisch ausbauen; die vollständige Katalogmigration bleibt offen.

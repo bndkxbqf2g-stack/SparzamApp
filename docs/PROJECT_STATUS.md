@@ -373,3 +373,16 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   aktuelle Prospekte oder belegte Beobachtungen vorliegen.
 - Regressionen decken Identität, Hierarchie, Suchvorschläge und sichtbare
   Warengruppen ab.
+
+## Update 30.09.2026 – Belegsimulation mit Händlerkürzeln
+- Der bereitgestellte Kaufland-Beleg wurde lokal als erneuter Einkaufslistenlauf
+  simuliert; der Originalbeleg bleibt außerhalb des Repositories.
+- 70 von 72 geprüften Produktzeilen führen jetzt zu einer passenden
+  preisfreien Katalogauswahl. Abgedeckt sind unter anderem Milch-, Käse-,
+  Joghurt-, Tiefkühl-, Wurst-, Nudel-, Gemüse- und Konservenkürzel.
+- Zwei nicht belastbar interpretierbare Codes (`bev.sen.SoSp 50` und
+  `bev.KidsRoll50`) bleiben bewusst zur manuellen Prüfung offen. Es werden
+  weder Produktidentität noch Preis aus dem Kürzel geraten.
+- Die Suchrangfolge bevorzugt bei mehreren kompatiblen Varianten die noch im
+  Bonlabel erkennbare Bezeichnung, ohne Preis- oder Identitätsvertrauen zu
+  erhöhen.

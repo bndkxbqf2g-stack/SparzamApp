@@ -29,6 +29,10 @@ SparzamApp ist ein Flutter-Prototyp für intelligent geplante Lebensmitteleinkä
 - Unbestätigte Produktbezeichnungen aus früheren Bons können als klar markierte
   Suchvorschläge wiedergefunden werden. Vor einer Auswahl bleiben Sorte und
   Packung offen; der Vorschlag setzt keinen Markt- oder Routenpreis.
+- Händlerkürzel und typische Bonabkürzungen werden über dieselbe
+  Produktidentität aufgelöst wie manuelle Suchbegriffe. Wenn ein Code keine
+  belastbare Produktbedeutung trägt, bleibt er als prüfbedürftiger Vorschlag
+  offen und wird nicht automatisch bepreist.
 - Frühere, belegte Prospektpreise mit bekannter Packungsgröße erscheinen in der Produktsuche als datierte historische Mediane; sie sind keine aktuellen Marktpreise.
 - Exakte Produkt-ID-Historie hat Vorrang. Fehlt sie, darf eine passende Produktfamilie als konservativer historischer Hinweis dienen.
 - Familienhinweise sind **keine Behauptung, dass zwei Varianten identisch sind**. Beispiel: Rinderhack und gemischtes Hack bleiben unterschiedliche Produktidentitäten.

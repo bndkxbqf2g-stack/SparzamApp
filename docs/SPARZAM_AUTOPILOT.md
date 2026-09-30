@@ -150,3 +150,10 @@ Varianten, während konkrete Produktarten getrennte Preisidentitäten behalten.
 Damit ist der hierarchische Katalogpfad für die häufigsten Grundbedarfswünsche
 erweitert; die vollständige Katalogmigration und echte Preisabdeckung bleiben
 separate Arbeitspakete.
+
+## Update 30.09.2026 – Belegabkürzungen im Einkaufslistenlauf
+Ein bereitgestellter Kaufland-Beleg wurde lokal gegen die Produktsuche
+simuliert. 70 von 72 Produktzeilen erhalten eine passende preisfreie Auswahl;
+zwei undurchsichtige Händlercodes bleiben zur Review offen. Die Suchrangfolge nutzt
+erkennbare Labelbestandteile nur als Hinweis und macht daraus weder eine
+bestätigte Produktidentität noch einen Preis.
