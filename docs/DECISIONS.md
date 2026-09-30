@@ -256,3 +256,10 @@ entscheidet zuerst die Route mit weniger Märkten. Bleibt auch die Marktanzahl
 gleich, werden die kanonischen Marktnamen lexikografisch verglichen. Dadurch
 ist die Empfehlung unabhängig von der Reihenfolge eingehender Preisquellen
 reproduzierbar; ein Gleichstand wird nicht als zusätzliche Ersparnis behauptet.
+
+## D052 – Marktanzahlen kommen aus der konfigurierten Händlerliste
+Die Anzeige „Märkte für Empfehlungen aktiv“ wird nicht separat hartcodiert.
+Eine leere Auswahl bedeutet genau alle aktuell konfigurierten Händler; doppelte
+oder unbekannte Namen aus alten lokalen Einstellungen werden nicht gezählt.
+Damit bleiben Profil, Marktfilter und Routenoptimierer auf derselben
+Händlerquelle und zeigen im aktuellen Projekt sechs Märkte.

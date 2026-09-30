@@ -474,3 +474,12 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Einzelmarkt gewinnt.
 - Die neue Fixture besteht zusammen mit `flutter analyze`; alle 447 Flutter-
   Tests sind grün und `flutter build web --release` war erfolgreich.
+
+## Update 01.10.2026 – Marktanzahl aus der Händlerkonfiguration
+- Die Profilanzeige leitet die aktive Marktanzahl jetzt aus derselben
+  konfigurierten Händlerliste wie der Routenoptimierer ab. Eine leere Auswahl
+  zeigt dadurch korrekt sechs statt sieben Märkte.
+- Doppelte oder unbekannte Namen aus alten lokalen Einstellungen werden nicht
+  als aktive Märkte gezählt. Zwei Regressionen decken beide Fälle ab.
+- `flutter analyze` ist ohne Befund, alle 449 Flutter-Tests sind grün und
+  `flutter build web --release` war erfolgreich.
