@@ -232,3 +232,11 @@ Ersparnis gegenüber diesem Teilwarenkorb erklärt werden. Die UI benennt in
 diesem Fall die vollständige Preisabdeckung als Grund für die Mehrmarkt-
 Empfehlung. Eine unvollständige empfohlene Route bleibt weiterhin ausdrücklich
 vorläufig und zeigt ihre Datenlücke.
+
+## D049 – Frische Tomatenvarianten bleiben im Basiskatalog getrennt
+Der Basiskatalog führt häufige frische Tomatenvarianten mit eigener Produkt-ID,
+Packungsbasis und Suchidentität. Ein generischer Suchbegriff wie „Tomate“ darf
+Rispentomaten, Partytomaten und Cherrytomaten gemeinsam anbieten; verarbeitete
+Produkte wie Tomatenmark, Passata und Tomatensauce bleiben über die bestehende
+Hierarchie verwandte, aber separate Identitäten. Eine gemeinsame Familie ist
+kein gemeinsamer exakter Preis- oder Routenbeleg.
