@@ -155,6 +155,11 @@ List<Product> buildSuggestions({
     final bPreferred = preferredProductByGroup[b.group] == b.id;
     if (aPreferred != bPreferred) return aPreferred ? -1 : 1;
     if (a.isFavorite != b.isFavorite) return a.isFavorite ? -1 : 1;
+    final aTextMatch = _queryLabelScore(a, query);
+    final bTextMatch = _queryLabelScore(b, query);
+    if (aTextMatch != bTextMatch) {
+      return bTextMatch.compareTo(aTextMatch);
+    }
     return a.name.compareTo(b.name);
   });
 
@@ -167,6 +172,31 @@ bool _matchesExactSearchLabel(Product product, String query) {
       product.aliases.any(
         (alias) => normalizeIdentityText(alias) == normalized,
       );
+}
+
+// A receipt-style label can contain a retailer prefix and several unrelated
+// abbreviations. Prefer a candidate whose own name/alias still occurs in the
+// label when identity matching intentionally keeps several family siblings.
+// This is a ranking signal only; it never broadens compatibility or price
+// identity.
+int _queryLabelScore(Product product, String query) {
+  final normalizedQuery = normalizeIdentityText(query);
+  var score = 0;
+  for (final label in [product.name, ...product.aliases]) {
+    final normalizedLabel = normalizeIdentityText(label);
+    if (normalizedLabel.isEmpty) continue;
+    if (normalizedQuery == normalizedLabel) {
+      score = score < 3 ? 3 : score;
+    } else if (normalizedQuery.contains(normalizedLabel)) {
+      score = score < 2 ? 2 : score;
+    }
+    for (final token in normalizedLabel.split(' ')) {
+      if (token.length >= 4 && normalizedQuery.contains(token)) {
+        score = score < 1 ? 1 : score;
+      }
+    }
+  }
+  return score;
 }
 
 // Search may offer a fat-level choice for an unspecified H-milk receipt label.

@@ -18,18 +18,27 @@ SparzamApp ist ein Flutter-Prototyp für intelligent geplante Lebensmitteleinkä
 - Bekannte bzw. zuletzt gekaufte Produkte unterstützen die Produktauswahl.
 - Auf einer frischen Installation stehen häufige Grundbedarfsartikel wie Milch,
   Eier, Joghurt, Wurst, Käse, Aufbackbrötchen, Marmelade, Nudeln und Kaffee
-  direkt zur Auswahl. Diese Starterprodukte tragen selbst keinen erfundenen
-  Marktpreis; sie werden erst durch aktuelle Angebote oder belegte Preise
-  routenfähig.
+  direkt zur Auswahl. Der Grundvorrat enthält zusätzlich hierarchisch auflösbare
+  Varianten für Reis, Mehl, Öl, Zucker, Salz, Ketchup, Kartoffeln, Äpfel,
+  Paprika und haltbare Tomatenprodukte. Diese Starterprodukte tragen selbst
+  keinen erfundenen Marktpreis; sie werden erst durch aktuelle Angebote oder
+  belegte Preise routenfähig.
 - Eigene freie Produkte können angelegt werden.
 - Barcode-Scanner verwendet vorhandene Katalogdaten bzw. Open Food Facts.
 - Historische Bonpreise werden als Preis-Hinweis am Produkt angezeigt.
 - Unbestätigte Produktbezeichnungen aus früheren Bons können als klar markierte
   Suchvorschläge wiedergefunden werden. Vor einer Auswahl bleiben Sorte und
   Packung offen; der Vorschlag setzt keinen Markt- oder Routenpreis.
+- Händlerkürzel und typische Bonabkürzungen werden über dieselbe
+  Produktidentität aufgelöst wie manuelle Suchbegriffe. Wenn ein Code keine
+  belastbare Produktbedeutung trägt, bleibt er als prüfbedürftiger Vorschlag
+  offen und wird nicht automatisch bepreist.
 - Frühere, belegte Prospektpreise mit bekannter Packungsgröße erscheinen in der Produktsuche als datierte historische Mediane; sie sind keine aktuellen Marktpreise.
 - Exakte Produkt-ID-Historie hat Vorrang. Fehlt sie, darf eine passende Produktfamilie als konservativer historischer Hinweis dienen.
 - Familienhinweise sind **keine Behauptung, dass zwei Varianten identisch sind**. Beispiel: Rinderhack und gemischtes Hack bleiben unterschiedliche Produktidentitäten.
+- Oberbegriffe wie „Reis“, „Öl“ oder „Joghurt“ liefern kompatible Varianten;
+  konkrete Wünsche wie „Basmati Reis“, „Rapsöl“ oder „griechischer Joghurt“
+  bleiben dabei voneinander getrennt.
 - Nicht vergleichbare Packungspreise werden als historische Werte mit Prüfhinweis behandelt und nicht allein wegen des niedrigsten Betrags als günstigster Markt gewertet.
 - Wenn ein allgemeiner Wunsch mehrere konkrete Varianten zulässt, stehen
   aktive Angebote im Auswahlfenster vor historischen Bon- und Normalpreisen.

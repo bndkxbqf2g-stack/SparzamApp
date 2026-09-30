@@ -141,3 +141,19 @@ Die Einkaufssuche nutzt jetzt die vorhandene Identitätslogik auch als sichtbare
 Externe Angebote benötigen für eine belastbare Preisbeobachtung einen `proofRef`. Ohne Nachweis bleibt ihre Identitäts-Confidence 0; manuell eingegebene Angebote gelten weiterhin als explizite Nutzerbestätigung.
 
 Nächster sicherer Schwerpunkt: reale Angebots-/Prospektdaten in den bereits abgesicherten Importvertrag einspeisen und danach die Produkt×Markt-Abdeckung bzw. `dataGap`-Priorisierung ausbauen. Die zwei weiterhin fehlenden Originalbons bleiben ein separater Datenblocker und werden nicht erraten.
+
+## Update 30.09.2026 – Grundvorrat und Variantenwahl
+Der Basiskatalog enthält jetzt weitere preisfreie Varianten für den täglichen
+Einkauf. Die zentrale Identität löst zusätzlich Reis, Mehl, Öl, Zucker, Salz,
+Ketchup und haltbare Tomatenprodukte auf. Ein Oberbegriff findet kompatible
+Varianten, während konkrete Produktarten getrennte Preisidentitäten behalten.
+Damit ist der hierarchische Katalogpfad für die häufigsten Grundbedarfswünsche
+erweitert; die vollständige Katalogmigration und echte Preisabdeckung bleiben
+separate Arbeitspakete.
+
+## Update 30.09.2026 – Belegabkürzungen im Einkaufslistenlauf
+Ein bereitgestellter Kaufland-Beleg wurde lokal gegen die Produktsuche
+simuliert. 70 von 72 Produktzeilen erhalten eine passende preisfreie Auswahl;
+zwei undurchsichtige Händlercodes bleiben zur Review offen. Die Suchrangfolge nutzt
+erkennbare Labelbestandteile nur als Hinweis und macht daraus weder eine
+bestätigte Produktidentität noch einen Preis.

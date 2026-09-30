@@ -73,7 +73,9 @@ List<ShoppingCandidate> buildShoppingCandidates({
     final identities = [product.name, ...product.aliases]
         .map(identifyProduct)
         .where((candidate) => candidate.isKnown);
-    return identities.any((candidate) => compatibleProductIdentity(identity, candidate));
+    return identities.any((candidate) =>
+        compatibleProductIdentity(identity, candidate) ||
+        _openMilkChoice(identity, candidate));
   });
 
   final result = <ShoppingCandidate>[];
@@ -151,3 +153,15 @@ List<ShoppingCandidate> buildShoppingCandidates({
 
 bool _storeEnabled(String store, Iterable<String> enabledStores) =>
     enabledStores.isEmpty || enabledStores.contains(store);
+
+// Receipt labels such as "K.H-Milch" identify the H-milk family but do not
+// print the fat percentage. Keep both catalog variants selectable until the
+// user chooses one; this mirrors the regular shopping search and never
+// transfers a variant's price to the other one.
+bool _openMilkChoice(ProductIdentity request, ProductIdentity candidate) =>
+    request.familyKey == 'milch' &&
+    request.variant == 'h' &&
+    request.fatPercent == null &&
+    candidate.familyKey == 'milch' &&
+    candidate.fatPercent != null &&
+    candidate.variant == null;

@@ -52,6 +52,35 @@ void main() {
     expect(candidates.map((candidate) => candidate.product.id), ['bergkaese']);
   });
 
+  test('ambiguous H-milk receipt label offers both fat variants', () {
+    final candidates = buildShoppingCandidates(
+      request: 'K.H-Milch',
+      catalogProducts: [
+        Product(
+          id: 'milk15',
+          name: 'Milch 1,5 %',
+          unit: '1 l',
+          group: 'milch',
+        ),
+        Product(
+          id: 'milk35',
+          name: 'Vollmilch 3,5 %',
+          unit: '1 l',
+          group: 'milch',
+        ),
+      ],
+      offers: const [],
+      marketPrices: const [],
+      receiptPriceStats: const [],
+      now: now,
+    );
+
+    expect(
+      candidates.map((candidate) => candidate.product.id),
+      containsAll(<String>['milk15', 'milk35']),
+    );
+  });
+
   test('only active offers and receipt prices from the last 60 days are shown', () {
     final candidates = buildShoppingCandidates(
       request: 'Käse',

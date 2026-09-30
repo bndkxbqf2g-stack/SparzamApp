@@ -357,3 +357,39 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   unvollständige Preisabdeckung.
 - Regressionen prüfen Schnellzugriff und Suchbarkeit für die Grundbedarfsbegriffe
   sowie das Speichern des neuen Katalogmerkmals.
+
+## Update 30.09.2026 – Grundvorrat mit hierarchischer Variantenwahl
+- Der Basiskatalog enthält jetzt zusätzliche, preisfreie Varianten für Milch,
+  Eier, Joghurt, Wurst, Käse, Nudeln und Kaffee sowie Kartoffeln, Äpfel und
+  Paprika.
+- Reis, Mehl, Öl, Zucker, Salz, Ketchup und haltbare Tomatenprodukte besitzen
+  eigene Produktfamilien. Oberbegriffe finden kompatible Varianten; konkrete
+  Varianten bleiben für Preis- und Bonzuordnung getrennt.
+- „Passierte Tomaten“, „Gehackte Tomaten“, Tomatenmark und Tomatensauce werden
+  nicht als frische Tomaten angeboten. Das verhindert, dass eine Konserve in
+  der Einkaufsliste oder Route eine Frischware-Preisidentität übernimmt.
+- Gruppenbezeichnungen führen die neuen Grundvorratsgruppen einheitlich unter
+  „Vorrat“ bzw. „Milch & Käse“; die Preisabdeckung bleibt bewusst leer, bis
+  aktuelle Prospekte oder belegte Beobachtungen vorliegen.
+- Regressionen decken Identität, Hierarchie, Suchvorschläge und sichtbare
+  Warengruppen ab.
+
+## Update 30.09.2026 – Belegsimulation mit Händlerkürzeln
+- Der bereitgestellte Kaufland-Beleg wurde lokal als erneuter Einkaufslistenlauf
+  simuliert; der Originalbeleg bleibt außerhalb des Repositories.
+- 70 von 72 geprüften Produktzeilen führen jetzt zu einer passenden
+  preisfreien Katalogauswahl. Abgedeckt sind unter anderem Milch-, Käse-,
+  Joghurt-, Tiefkühl-, Wurst-, Nudel-, Gemüse- und Konservenkürzel.
+- Zwei nicht belastbar interpretierbare Codes (`bev.sen.SoSp 50` und
+  `bev.KidsRoll50`) bleiben bewusst zur manuellen Prüfung offen. Es werden
+  weder Produktidentität noch Preis aus dem Kürzel geraten.
+- Die Suchrangfolge bevorzugt bei mehreren kompatiblen Varianten die noch im
+  Bonlabel erkennbare Bezeichnung, ohne Preis- oder Identitätsvertrauen zu
+  erhöhen.
+
+## Update 30.09.2026 – Einheitliche H-Milch-Auswahl
+- Die separate Auswahlansicht für generische Einkaufspositionen übernimmt jetzt
+  dieselbe offene H-Milch-Interpretation wie die direkte Produktsuche. Ein
+  Händlerlabel ohne Fettstufe zeigt beide belegbaren Milchvarianten zur Auswahl;
+  keine Variante erbt dabei den Preis der anderen.
+- Ein Regressionstest deckt diesen Auswahlpfad ab.

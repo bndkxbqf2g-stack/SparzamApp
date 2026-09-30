@@ -363,12 +363,21 @@ class _ProductImage extends StatelessWidget {
 }
 
 String shoppingGroupLabel(String group) => switch (group) {
-      'milch' || 'butter' => 'Milch & Käse',
+      'milch' || 'butter' || 'joghurt' || 'eier' => 'Milch & Käse',
       'obst' => 'Obst & Gemüse',
+      'obst_gemuese' => 'Obst & Gemüse',
       'fleisch' => 'Fleisch & Fisch',
       'backwaren' => 'Backwaren',
       'getraenke' => 'Getränke',
-      'nudeln' || 'vorrat' => 'Vorrat',
+      'nudeln' ||
+      'vorrat' ||
+      'kaffee' ||
+      'reis' ||
+      'mehl' ||
+      'oel' ||
+      'zucker' ||
+      'salz' ||
+      'saucen' => 'Vorrat',
       'tiefkuehl' => 'Tiefkühl',
       'haushalt' => 'Haushalt',
       'drogerie' => 'Drogerie',
