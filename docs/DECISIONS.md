@@ -249,3 +249,10 @@ angezeigt; der beste nicht rabattierte Beleg wird nach seiner Aktualität
 ausgewählt. Ein fehlender Beleg bleibt als Datenlücke sichtbar und erzeugt
 keinen Schätz- oder Routenpreis. Die Matrix ist eine Orientierung für die
 Einkaufsliste; die verbindliche Marktzuordnung bleibt der Route vorbehalten.
+
+## D051 – Routen-Gleichstände werden deterministisch aufgelöst
+Bei gleicher Preisabdeckung und gleichem qualitätsbereinigtem Planungswert
+entscheidet zuerst die Route mit weniger Märkten. Bleibt auch die Marktanzahl
+gleich, werden die kanonischen Marktnamen lexikografisch verglichen. Dadurch
+ist die Empfehlung unabhängig von der Reihenfolge eingehender Preisquellen
+reproduzierbar; ein Gleichstand wird nicht als zusätzliche Ersparnis behauptet.

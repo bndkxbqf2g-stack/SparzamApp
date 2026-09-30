@@ -92,6 +92,9 @@ Bonimporte, eigene Preise oder andere belegte Quellen routenfähig.
 - Fahrtstrecken können über OpenStreetMap/Nominatim und OSRM ermittelt und lokal zwischengespeichert werden.
 - Verkehrsmittel, Fahrtkosten, maximale Marktzahl und Mindestvorteil für einen zusätzlichen Markt sind einstellbar.
 - Produkte ohne belastbaren Preis bleiben für die Route unzugeordnet; dadurch wird keine scheinbar günstige Route aus Schätzpreisen erzeugt.
+- Bei identischer Preisabdeckung und identischem Planungswert löst die Route
+  Gleichstände deterministisch über die geringere Marktanzahl und danach den
+  kanonischen Marktnamen auf.
 
 ### Bon / Kaufhistorie
 - Textbasierte PDF-, TXT- und CSV-Bons können eingelesen werden.
