@@ -301,3 +301,17 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Vollständige Prospektseiten werden als Bildseiten an den Bereich „Prospekte“ geliefert. Inhalte ohne strukturierten Preis-Hotspot bleiben Bild-/Prospektevidenz und werden nicht per unsicherem OCR als Preis erfunden.
 - Der Adapter ist nur aktiv, wenn `BRING_AUTH_TOKEN`, `BRING_API_KEY` und `BRING_USER_UUID` als GitHub-Secrets vorhanden sind. Ohne diese Zugangsdaten laufen die bestehenden offiziellen Händleradapter unverändert weiter.
 - Bei identischem Händler, Produkt, Zeitraum und Angebotspreis behält der Feed den strukturierten Händlerdatensatz als führenden Beleg; Bring ergänzt die Prospektseiten und nur fehlende Angebotsdatensätze.
+
+
+## Update 30.09.2026 – Bestätigte Bons speisen die Wiederkauflogik
+- `buildReplenishmentSuggestions` verarbeitet jetzt neben abgeschlossenen Routen-
+  Einkäufen auch bestätigte `ReceiptObservation`-Zeilen.
+- Unbestätigte Bonlabels sowie gewichtete/volumetrische Zeilen erzeugen weiterhin
+  keinen konkreten Nachkaufvorschlag. Dadurch wird weder eine Produktvariante noch
+  eine Stückmenge erfunden.
+- Bon und In-App-Kauf am selben Kalendertag werden dedupliziert; die belegte
+  Herkunft bleibt an der Vorschlagskarte als `Kaufhistorie`, `bestätigte Bons`
+  oder Kombination sichtbar.
+- Regressionen decken bestätigte Bonkäufe, Identitäts-/Mengenausschluss und die
+  Tagesdeduplizierung ab. Der Vorschlag bleibt aus, wenn das Produkt bereits auf
+  der aktuellen Liste steht.

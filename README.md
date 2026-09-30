@@ -287,9 +287,16 @@ Bei Lebensmittelbudget ≤ 0 gilt die Prognose als nicht konfiguriert.
 
 ## 9. Wiederkauflogik
 
-Wiederkaufvorschläge werden aus der Kaufhistorie pro konkreter Produkt-ID berechnet.
+Wiederkaufvorschläge werden aus der Kaufhistorie und aus ausdrücklich bestätigten
+Bonbeobachtungen pro konkreter Produkt-ID berechnet.
 
 - Käufe desselben Produkts am selben Kalendertag werden mengenmäßig zusammengefasst.
+- Ein bestätigter Bon zählt nur mit einer konkreten Produkt-ID und einer sicheren
+  Stück-/Packungseinheit; gewichtete oder volumetrische Bonzeilen bleiben
+  Preis-/Historienevidenz, bis ihre Packungssemantik geklärt ist.
+- Wenn ein abgeschlossener In-App-Einkauf und ein importierter Bon denselben
+  Einkaufstag belegen, wird dieser Tag nicht doppelt gezählt; die größere
+  belegte Menge wird verwendet.
 - Standardmäßig sind mindestens **2 Kauftage** nötig.
 - Aus den Abständen zwischen Kauftagen wird der Median in Tagen gebildet.
 - Bei gerader Anzahl von Intervallen wird der Mittelwert der beiden mittleren Werte gerundet.
@@ -297,6 +304,8 @@ Wiederkaufvorschläge werden aus der Kaufhistorie pro konkreter Produkt-ID berec
 - Standardmäßig wird ein Produkt angezeigt, wenn es bereits fällig ist oder innerhalb von **3 Tagen** fällig wird.
 - Produkte, die schon auf der aktuellen Einkaufsliste stehen, werden nicht vorgeschlagen.
 - Durchschnittsmenge = Gesamtmenge / Zahl der Kauftage.
+- Die Karte zeigt, ob der Rhythmus aus der Kaufhistorie, aus bestätigten Bons
+  oder aus beiden Quellen stammt.
 - Sortierung: zuerst früheste/überfällige Fälligkeit, dann höhere Kaufanzahl, dann Produktname.
 
 ## 10. Open Food Facts und Open Prices

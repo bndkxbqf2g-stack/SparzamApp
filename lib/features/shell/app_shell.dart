@@ -361,6 +361,7 @@ class _AppShellState extends State<AppShell> {
         currentListProductIds: shoppingList
             .map((item) => item.product.id)
             .toSet(),
+        receiptObservations: receiptObservations,
       );
 
   Future<void> persistShoppingList() {

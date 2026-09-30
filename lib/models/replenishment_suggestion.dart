@@ -12,6 +12,8 @@ class ReplenishmentSuggestion {
     required this.dueAt,
     required this.daysUntilDue,
     required this.urgency,
+    this.fromPurchaseHistory = true,
+    this.fromConfirmedReceipts = false,
   });
 
   final Product product;
@@ -22,8 +24,18 @@ class ReplenishmentSuggestion {
   final DateTime dueAt;
   final int daysUntilDue;
   final ReplenishmentUrgency urgency;
+  final bool fromPurchaseHistory;
+  final bool fromConfirmedReceipts;
 
   int get suggestedQuantity => averageQuantity.round().clamp(1, 99);
+
+  String get evidenceLabel {
+    if (fromPurchaseHistory && fromConfirmedReceipts) {
+      return 'Kaufhistorie + bestätigte Bons';
+    }
+    if (fromConfirmedReceipts) return 'bestätigte Bons';
+    return 'Kaufhistorie';
+  }
 
   String get timingLabel {
     if (daysUntilDue < 0) {

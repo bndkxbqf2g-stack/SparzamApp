@@ -29,9 +29,8 @@ class ReplenishmentCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     'Bald wieder nötig',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
+                    style: Theme.of(context).textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w800),
                   ),
                 ),
               ],
@@ -51,7 +50,8 @@ class ReplenishmentCard extends StatelessWidget {
               subtitle: Text(
                 '${suggestions[index].timingLabel} · '
                 'Rhythmus ca. ${suggestions[index].intervalDays} Tage'
-                '${suggestions[index].suggestedQuantity > 1 ? ' · meist ×${suggestions[index].suggestedQuantity}' : ''}',
+                '${suggestions[index].suggestedQuantity > 1 ? ' · meist ×${suggestions[index].suggestedQuantity}' : ''}'
+                ' · ${suggestions[index].evidenceLabel}',
               ),
               trailing: IconButton.filledTonal(
                 tooltip: 'Zur Liste hinzufügen',
