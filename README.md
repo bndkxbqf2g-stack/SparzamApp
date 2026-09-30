@@ -31,6 +31,11 @@ SparzamApp ist ein Flutter-Prototyp für intelligent geplante Lebensmitteleinkä
 - Exakte Produkt-ID-Historie hat Vorrang. Fehlt sie, darf eine passende Produktfamilie als konservativer historischer Hinweis dienen.
 - Familienhinweise sind **keine Behauptung, dass zwei Varianten identisch sind**. Beispiel: Rinderhack und gemischtes Hack bleiben unterschiedliche Produktidentitäten.
 - Nicht vergleichbare Packungspreise werden als historische Werte mit Prüfhinweis behandelt und nicht allein wegen des niedrigsten Betrags als günstigster Markt gewertet.
+- Wenn ein allgemeiner Wunsch mehrere konkrete Varianten zulässt, stehen
+  aktive Angebote im Auswahlfenster vor historischen Bon- und Normalpreisen.
+  Coupon-/Cashback-Effekte werden dabei als effektiver Preis angezeigt; ein
+  Angebot wird nicht durch einen zufällig niedrigeren historischen Einzelpreis
+  verdrängt.
 
 ### Produktkatalog
 - Enthält Basiskatalog und lokal angelegte Produkte.

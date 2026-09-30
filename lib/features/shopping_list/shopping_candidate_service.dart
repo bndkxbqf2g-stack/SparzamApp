@@ -3,6 +3,7 @@ import '../../models/offer.dart';
 import '../../models/product.dart';
 import '../../models/receipt_price_stat.dart';
 import '../catalog/product_identity.dart';
+import '../offers/effective_price.dart';
 import '../offers/offer_filter.dart';
 import 'receipt_product_price_match.dart';
 
@@ -14,6 +15,7 @@ class ShoppingCandidateQuote {
     this.observedAt,
     this.validUntil,
     this.imageUrl,
+    this.isOffer = false,
   });
 
   final String storeName;
@@ -22,6 +24,7 @@ class ShoppingCandidateQuote {
   final DateTime? observedAt;
   final DateTime? validUntil;
   final String? imageUrl;
+  final bool isOffer;
 }
 
 class ShoppingCandidate {
@@ -30,7 +33,17 @@ class ShoppingCandidate {
   final Product product;
   final List<ShoppingCandidateQuote> quotes;
 
-  double? get bestPrice => quotes.isEmpty ? null : quotes.map((q) => q.price).reduce((a, b) => a < b ? a : b);
+  double? get bestPrice {
+    final rankedQuotes = hasOffer
+        ? quotes.where((quote) => quote.isOffer)
+        : quotes;
+    if (rankedQuotes.isEmpty) return null;
+    return rankedQuotes.map((quote) => quote.price).reduce(
+          (a, b) => a < b ? a : b,
+        );
+  }
+
+  bool get hasOffer => quotes.any((quote) => quote.isOffer);
 
   String? get imageUrl {
     for (final quote in quotes) {
@@ -76,13 +89,14 @@ List<ShoppingCandidate> buildShoppingCandidates({
           )) {
         continue;
       }
+      final effective = effectivePrice(offer);
       quotes.add(ShoppingCandidateQuote(
-        storeName: offer.storeName,
-        price: offer.offerPrice,
-        label: 'Angebot',
-        validUntil: offer.validUntil,
-        imageUrl: offer.imageUrl,
-      ));
+          storeName: offer.storeName,
+          price: effective.finalPrice,
+          label: effective.cashback > 0 ? 'Angebot, effektiv' : 'Angebot',
+          validUntil: offer.validUntil,
+          imageUrl: offer.imageUrl,
+          isOffer: true));
     }
     for (final price in marketPrices) {
       if (price.productId != product.id ||
@@ -118,10 +132,15 @@ List<ShoppingCandidate> buildShoppingCandidates({
         observedAt: stat.latestAt,
       ));
     }
-    quotes.sort((a, b) => a.price.compareTo(b.price));
+    quotes.sort((a, b) {
+      if (a.isOffer != b.isOffer) return a.isOffer ? -1 : 1;
+      final price = a.price.compareTo(b.price);
+      return price != 0 ? price : a.storeName.compareTo(b.storeName);
+    });
     result.add(ShoppingCandidate(product: product, quotes: quotes));
   }
   result.sort((a, b) {
+    if (a.hasOffer != b.hasOffer) return a.hasOffer ? -1 : 1;
     final aPrice = a.bestPrice ?? double.infinity;
     final bPrice = b.bestPrice ?? double.infinity;
     final priceOrder = aPrice.compareTo(bPrice);
