@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sparzamapp/data/products.dart';
 import 'package:sparzamapp/features/shopping_list/shopping_suggestions.dart';
 import 'package:sparzamapp/models/product.dart';
 
@@ -26,54 +27,102 @@ void main() {
     expect(result.single.id, 'custom_coffee');
   });
 
-  test('generische Tomate findet frische Varianten aber keine Tomatenprodukte', () {
-    const catalog = [
-      Product(id: 'tomate_rispe', name: 'Rispentomaten', unit: '500 g', group: 'obst_gemuese'),
-      Product(id: 'tomate_party', name: 'Partytomaten', unit: '250 g', group: 'obst_gemuese'),
-      Product(id: 'tomatenmark', name: 'Tomatenmark', unit: '200 g', group: 'vorrat'),
-      Product(id: 'passata', name: 'Passata', unit: '500 g', group: 'vorrat'),
-    ];
+  test(
+    'generische Tomate findet frische Varianten aber keine Tomatenprodukte',
+    () {
+      const catalog = [
+        Product(
+          id: 'tomate_rispe',
+          name: 'Rispentomaten',
+          unit: '500 g',
+          group: 'obst_gemuese',
+        ),
+        Product(
+          id: 'tomate_party',
+          name: 'Partytomaten',
+          unit: '250 g',
+          group: 'obst_gemuese',
+        ),
+        Product(
+          id: 'tomatenmark',
+          name: 'Tomatenmark',
+          unit: '200 g',
+          group: 'vorrat',
+        ),
+        Product(id: 'passata', name: 'Passata', unit: '500 g', group: 'vorrat'),
+      ];
 
-    final result = buildSuggestions(
-      query: 'Tomate',
-      knownItems: const [],
-      recentPurchases: const [],
-      preferredProductByGroup: const {},
-      catalogProducts: catalog,
-    );
+      final result = buildSuggestions(
+        query: 'Tomate',
+        knownItems: const [],
+        recentPurchases: const [],
+        preferredProductByGroup: const {},
+        catalogProducts: catalog,
+      );
 
-    expect(result.map((product) => product.id), containsAll(['tomate_rispe', 'tomate_party']));
-    expect(result.map((product) => product.id), isNot(contains('tomatenmark')));
-    expect(result.map((product) => product.id), isNot(contains('passata')));
-  });
+      expect(
+        result.map((product) => product.id),
+        containsAll(['tomate_rispe', 'tomate_party']),
+      );
+      expect(
+        result.map((product) => product.id),
+        isNot(contains('tomatenmark')),
+      );
+      expect(result.map((product) => product.id), isNot(contains('passata')));
+    },
+  );
 
-  test('Tomate exposes processed tomato products only as related interpretations', () {
-    const catalog = [
-      Product(id: 'tomate_rispe', name: 'Rispentomaten', unit: '500 g', group: 'obst_gemuese'),
-      Product(id: 'tomate_party', name: 'Partytomaten', unit: '250 g', group: 'obst_gemuese'),
-      Product(id: 'tomatenmark', name: 'Tomatenmark', unit: '200 g', group: 'vorrat'),
-      Product(id: 'passata', name: 'Passata', unit: '500 g', group: 'vorrat'),
-    ];
-    final primary = buildSuggestions(
-      query: 'Tomate',
-      knownItems: const [],
-      recentPurchases: const [],
-      preferredProductByGroup: const {},
-      catalogProducts: catalog,
-    );
-    final related = buildRelatedProductInterpretations(
-      query: 'Tomate',
-      primarySuggestions: primary,
-      catalogProducts: catalog,
-    );
+  test(
+    'Tomate exposes processed tomato products only as related interpretations',
+    () {
+      const catalog = [
+        Product(
+          id: 'tomate_rispe',
+          name: 'Rispentomaten',
+          unit: '500 g',
+          group: 'obst_gemuese',
+        ),
+        Product(
+          id: 'tomate_party',
+          name: 'Partytomaten',
+          unit: '250 g',
+          group: 'obst_gemuese',
+        ),
+        Product(
+          id: 'tomatenmark',
+          name: 'Tomatenmark',
+          unit: '200 g',
+          group: 'vorrat',
+        ),
+        Product(id: 'passata', name: 'Passata', unit: '500 g', group: 'vorrat'),
+      ];
+      final primary = buildSuggestions(
+        query: 'Tomate',
+        knownItems: const [],
+        recentPurchases: const [],
+        preferredProductByGroup: const {},
+        catalogProducts: catalog,
+      );
+      final related = buildRelatedProductInterpretations(
+        query: 'Tomate',
+        primarySuggestions: primary,
+        catalogProducts: catalog,
+      );
 
-    expect(primary.map((product) => product.id),
-        containsAll(['tomate_rispe', 'tomate_party']));
-    expect(related.map((product) => product.id),
-        containsAll(['tomatenmark', 'passata']));
-    expect(related.map((product) => product.id),
-        isNot(contains('tomate_rispe')));
-  });
+      expect(
+        primary.map((product) => product.id),
+        containsAll(['tomate_rispe', 'tomate_party']),
+      );
+      expect(
+        related.map((product) => product.id),
+        containsAll(['tomatenmark', 'passata']),
+      );
+      expect(
+        related.map((product) => product.id),
+        isNot(contains('tomate_rispe')),
+      );
+    },
+  );
 
   test('eigene Favoriten erscheinen beim Schnellhinzufügen', () {
     const custom = Product(
@@ -90,5 +139,50 @@ void main() {
     );
 
     expect(result.single.id, 'custom_coffee');
+  });
+
+  test('Grundbedarf ist auf einer frischen Liste direkt auswählbar', () {
+    final result = buildQuickProducts(const {}, catalogProducts: products);
+
+    expect(
+      result.map((product) => product.id),
+      containsAll([
+        'milch_35',
+        'milch_15',
+        'eier_10',
+        'joghurt_natur',
+        'wurst_aufschnitt',
+        'broetchen_aufback',
+        'marmelade',
+        'kaffee_filter',
+        'kaese_gouda',
+        'nudeln',
+      ]),
+    );
+    expect(result.every((product) => product.isStaple), isTrue);
+
+    for (final query in [
+      'Eier',
+      'Milch',
+      'Wurst',
+      'Käse',
+      'Joghurt',
+      'Brötchen',
+      'Marmelade',
+      'Nudeln',
+      'Kaffee',
+    ]) {
+      expect(
+        buildSuggestions(
+          query: query,
+          knownItems: const [],
+          recentPurchases: const [],
+          preferredProductByGroup: const {},
+          catalogProducts: products,
+        ),
+        isNotEmpty,
+        reason: 'Grundbedarf muss über "$query" auffindbar sein',
+      );
+    }
   });
 }

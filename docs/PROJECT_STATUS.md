@@ -315,3 +315,17 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Regressionen decken bestätigte Bonkäufe, Identitäts-/Mengenausschluss und die
   Tagesdeduplizierung ab. Der Vorschlag bleibt aus, wenn das Produkt bereits auf
   der aktuellen Liste steht.
+
+
+## Update 30.09.2026 – Grundbedarf auf leerer Liste
+- Der Basiskatalog markiert häufige Starterartikel (`Milch`, `Eier`, `Joghurt`,
+  `Wurstaufschnitt`, `Gouda`, `Aufbackbrötchen`, `Marmelade`, `Spaghetti` und
+  `Filterkaffee`) als `isStaple`.
+- Diese Produkte erscheinen im Schnellzugriff und bleiben über die hierarchische
+  Identitätslogik suchbar. Marken, Fettstufen und andere Varianten werden dabei
+  nicht automatisch gleichgesetzt.
+- Für die neuen Starterartikel wurden keine Preise oder Angebote erfunden. Ohne
+  belegte aktuelle Evidenz markiert die Routenplanung sie weiterhin als
+  unvollständige Preisabdeckung.
+- Regressionen prüfen Schnellzugriff und Suchbarkeit für die Grundbedarfsbegriffe
+  sowie das Speichern des neuen Katalogmerkmals.

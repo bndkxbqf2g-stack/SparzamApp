@@ -372,5 +372,6 @@ List<Product> buildQuickProducts(
   return <Product>[
     ...catalogProducts.where((p) => preferredIds.contains(p.id)),
     ...catalogProducts.where((p) => p.isFavorite),
-  ].where((p) => seen.add(p.id)).take(5).toList();
+    ...catalogProducts.where((p) => p.isStaple),
+  ].where((p) => seen.add(p.id)).take(12).toList();
 }

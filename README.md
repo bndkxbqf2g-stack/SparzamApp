@@ -16,6 +16,11 @@ SparzamApp ist ein Flutter-Prototyp für intelligent geplante Lebensmitteleinkä
 - Listen- und Kachelansicht.
 - Mengen, Notizen, Erledigt-Status und speicherbare Reihenfolge der Warengruppen.
 - Bekannte bzw. zuletzt gekaufte Produkte unterstützen die Produktauswahl.
+- Auf einer frischen Installation stehen häufige Grundbedarfsartikel wie Milch,
+  Eier, Joghurt, Wurst, Käse, Aufbackbrötchen, Marmelade, Nudeln und Kaffee
+  direkt zur Auswahl. Diese Starterprodukte tragen selbst keinen erfundenen
+  Marktpreis; sie werden erst durch aktuelle Angebote oder belegte Preise
+  routenfähig.
 - Eigene freie Produkte können angelegt werden.
 - Barcode-Scanner verwendet vorhandene Katalogdaten bzw. Open Food Facts.
 - Historische Bonpreise werden als Preis-Hinweis am Produkt angezeigt.
@@ -31,6 +36,8 @@ SparzamApp ist ein Flutter-Prototyp für intelligent geplante Lebensmitteleinkä
 - Enthält Basiskatalog und lokal angelegte Produkte.
 - Produktdaten können u. a. ID, Name, Einheit, Gruppe, Alias, EAN, Marke, Packungsmenge/-einheit und Bild-URL enthalten.
 - Eigene Produkte werden lokal gespeichert.
+- Basiskatalogartikel können als Grundbedarf markiert sein und erscheinen dann
+  im Schnellzugriff, ohne die Produktidentität anderer Varianten zu ersetzen.
 - Neue erkannte Bonprodukte können automatisch in den Katalog wachsen.
 - Barcode/Open Food Facts kann Produktstammdaten ergänzen.
 - Preisabdeckung nach Quellen wird dargestellt.

@@ -25,23 +25,23 @@ Map<String, List<ListItem>> groupShoppingItems(
   return grouped;
 }
 
-
 String shoppingGroupBucket(String group) => switch (group) {
-      'butter' || 'milch' => 'milch',
-      'obst' => 'obst',
-      'fleisch' => 'fleisch',
-      'nudeln' => 'nudeln',
-      'backwaren' || 'brot' => 'backwaren',
-      'getraenke' || 'getränke' => 'getraenke',
-      'vorrat' || 'konserven' => 'vorrat',
-      'tiefkuehl' || 'tiefkühl' => 'tiefkuehl',
-      'haushalt' => 'haushalt',
-      'drogerie' => 'drogerie',
-      'non-food' || 'nonfood' => 'nonfood',
-      _ => 'other',
-    };
+  'butter' || 'milch' || 'eier' || 'joghurt' => 'milch',
+  'obst' => 'obst',
+  'fleisch' || 'wurst' => 'fleisch',
+  'nudeln' => 'nudeln',
+  'backwaren' || 'brot' => 'backwaren',
+  'getraenke' || 'getränke' => 'getraenke',
+  'vorrat' || 'konserven' || 'aufstrich' || 'kaffee' => 'vorrat',
+  'tiefkuehl' || 'tiefkühl' => 'tiefkuehl',
+  'haushalt' => 'haushalt',
+  'drogerie' => 'drogerie',
+  'non-food' || 'nonfood' => 'nonfood',
+  _ => 'other',
+};
 
-int shoppingGroupRank(String group) => const {
+int shoppingGroupRank(String group) =>
+    const {
       'obst': 0,
       'milch': 1,
       'fleisch': 2,
@@ -54,4 +54,5 @@ int shoppingGroupRank(String group) => const {
       'drogerie': 7,
       'nonfood': 8,
       'other': 9,
-    }[group] ?? 99;
+    }[group] ??
+    99;

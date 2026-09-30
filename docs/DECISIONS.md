@@ -165,3 +165,6 @@ Eine unbestätigte Produktzeile aus einem ausgeglichenen Bon darf zeitlich begre
 
 ## D040 – Bestätigte Bons erweitern die Wiederkauflogik ohne Identitäts- oder Mengenschätzung
 Die Nachkaufprognose darf neben abgeschlossenen In-App-Einkäufen ausdrücklich bestätigte `ReceiptObservation`-Zeilen derselben konkreten Produkt-ID verwenden. Unbestätigte Produktlabels bleiben davon ausgeschlossen. Bonzeilen mit Gewicht oder Volumen zählen erst nach geklärter Packungssemantik als Wiederkaufmenge; sie bleiben bis dahin gültige Preis-/Historienevidenz. Mehrere Quellen am selben Kalendertag werden zu einem Kauftag zusammengeführt, damit ein importierter Bon denselben abgeschlossenen Einkauf nicht doppelt in den Rhythmus einfließen lässt. Die UI zeigt die verwendete Evidenzquelle sichtbar an.
+
+## D041 – Starter-Grundbedarf ist Auswahlhilfe, keine Preisbehauptung
+Der Basiskatalog darf häufige Grundbedarfsartikel als `isStaple` markieren, damit sie auf einer leeren Einkaufsliste direkt auswählbar sind. Diese Markierung ist weder eine bevorzugte Marke noch ein Marktpreis und erzeugt keine Preisbeobachtung. Ein Starterartikel wird erst durch einen gültigen aktuellen Angebotspreis oder eine vergleichbare belegte Markt-/Bonbeobachtung routenfähig; fehlt diese Evidenz, bleibt die Datenlücke sichtbar.
