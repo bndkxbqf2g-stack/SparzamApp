@@ -38,6 +38,14 @@
 - Explizite Zuordnung unklar abgekürzter Kaufland-Milchzeilen ermöglicht.
 - Milch-Auswahl nur für sicher zuordenbare, ausgeglichene und nicht rabattierte Bonzeilen.
 
+## Audit 30.09.2026
+- Die App startet jetzt in der Einkaufsliste; ein Widget-Test prüft den sichtbaren Einstieg bei 390 × 844 px.
+- Ein doppelter Import in `app_shell.dart` wurde entfernt.
+- `flutter analyze`: keine Befunde. `flutter test`: 377 Tests bestanden. `flutter build web --release`: erfolgreich.
+- Offener UX-/Katalogbefund: Der Basiskatalog enthält keine frischen Tomatenvarianten. Auf einer frischen Installation wird „Tomate“ deshalb als freies Produkt angeboten, obwohl die Roadmap dieses Beispiel als hierarchische Produktsuche vorsieht. Die vorhandenen Tomatentests verwenden eigens angelegte Testprodukte.
+- Architekturhinweis: `app_shell.dart` ist mit rund 1.050 Zeilen weiterhin deutlich größer als die in `ARCHITECTURE.md` angestrebten kleinen Verantwortungsbereiche.
+- Die verpflichtenden Kamera-/Neustarttests auf einem echten Android- oder iOS-Gerät sind lokal nicht ausgeführt. Zwei in `REAL_RECEIPT_MATRIX.md` benannte Originalbons fehlen weiterhin als Quelldateien.
+
 ## Aktueller Schwerpunkt
 Eine intelligente und alltagstaugliche Preisdatenbank aufbauen:
 1. Wiederkehrende Einkäufe und bekannte Produktidentitäten lernen.

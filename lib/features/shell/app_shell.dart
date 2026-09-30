@@ -38,7 +38,6 @@ import '../../services/shopping_list_store.dart';
 import '../../services/sequential_write_queue.dart';
 import '../../services/diagnostic_log_service.dart';
 import '../budget/budget_screen.dart';
-import '../offers/offer_import.dart';
 import '../catalog/product_catalog_screen.dart';
 import '../catalog/product_identity.dart';
 import '../home/dashboard_data.dart';
@@ -122,7 +121,7 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   // The primary task is adding items. Open the app on the list, like Bring.
-  int selectedIndex = 0;
+  int selectedIndex = 1;
   late BudgetPlan budget;
   late MobilitySettings mobility;
   late List<ListItem> shoppingList;
