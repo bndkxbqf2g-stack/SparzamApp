@@ -67,9 +67,9 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [x] realistische Mehrmarkt-End-to-End-Tests
 - [x] gleiche Produktliste gegen 1/2/3 Markt-Kombinationen vergleichen
 - [x] Entfernung, Fahrtkosten und Preisersparnis transparent aufschlüsseln
-- [ ] unvollständige Preisabdeckung sauber in Empfehlung einbeziehen
-- [ ] robuste Tie-Breaker und Grenzfälle
-- [ ] Routenempfehlung mit klarer Begründung ausgeben
+- [x] unvollständige Preisabdeckung sauber in Empfehlung einbeziehen
+- [x] robuste Tie-Breaker und Grenzfälle
+- [x] Routenempfehlung mit klarer Begründung ausgeben
 
 ### Phase 5 – Automatische Datenerfassung
 - [ ] Bon-OCR robuster gegen Händlerlayouts machen
@@ -84,9 +84,9 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [ ] heutiges Sparpotenzial
 - [ ] empfohlene Route prominent
 - [ ] Gesamtpreis + Fahrtkosten + Ersparnis
-- [ ] Preisabdeckung und Unsicherheit verständlich
+- [x] Preisabdeckung und Unsicherheit verständlich
 - [ ] schneller Einkaufsliste→Route-Flow
-- [ ] klare Hinweise, wenn Daten für Empfehlung fehlen
+- [x] klare Hinweise, wenn Daten für Empfehlung fehlen
 - [ ] kompakte iPhone-Darstellung
 - [x] Detailansicht pro Produkt/Markt
 - [ ] historische Preisentwicklung als optionale Detailansicht

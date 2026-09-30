@@ -158,3 +158,11 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 ## Update 01.10.2026 – Händleranzahl konsistent halten
 - [x] Profil, Marktfilter und Route verwenden dieselbe konfigurierte
   Händlerliste; die leere Auswahl zählt die sechs Projektmärkte.
+
+## Update 01.10.2026 – Teilwarenkörbe in der Marktansicht kennzeichnen
+- [x] Unbepreiste oder nur geschätzte Listenpositionen werden in der
+  Markt-Detailansicht als Datenlücke aufgelistet.
+- [x] Warenkorb-, Ersparnis- und Fahrtkostenwerte werden bei Lücken als
+  Teilwarenkorb bezeichnet; eine vollständige Markt-Empfehlung bleibt aus.
+- [x] Regressionen decken Datenmodell, Empfehlungsstatus und sichtbare UI-Warnung
+  ab.

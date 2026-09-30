@@ -49,6 +49,10 @@ SparzamApp ist ein Flutter-Prototyp für intelligent geplante Lebensmitteleinkä
   Auswahl alle sechs Projektmärkte) einzeln. Aktive Angebote, belegte Bon-/eigene
   Preise und fehlende Preisbelege bleiben sichtbar getrennt; ein fehlender Markt
   wird nicht durch eine Schätzung ersetzt.
+- Die Markt-Detailansicht weist zusätzlich aus, wie viele Listenpositionen einen
+  aktuellen, vergleichbaren Preis haben. Unbelegte Positionen werden namentlich
+  aufgelistet; Warenkorb- und Fahrtkostenwerte sind bei Lücken ausdrücklich nur
+  ein Teilwarenkorb und erzeugen keine vollständige „Markt lohnt sich“-Aussage.
 
 ### Produktkatalog
 - Enthält Basiskatalog und lokal angelegte Produkte.

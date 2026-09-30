@@ -61,6 +61,28 @@ void main() {
     expect(value.netAdvantage, lessThan(0));
     expect(value.isWorthIt, isFalse);
   });
+
+  test('unbepreiste Positionen verhindern eine vollständige Markt-Empfehlung', () {
+    const unknown = Product(
+      id: 'unknown',
+      name: 'Unbekannter Artikel',
+      unit: 'Stück',
+      group: 'test',
+    );
+    final value = evaluateStoreValue(
+      lidl,
+      [ListItem(product: milk), ListItem(product: unknown)],
+      const <Offer>[],
+      marketPrices: const [],
+    );
+
+    expect(value.pricedItemCount, 0);
+    expect(value.totalItemCount, 2);
+    expect(value.hasDataGaps, isTrue);
+    expect(value.isWorthIt, isFalse);
+    expect(value.isNeutral, isFalse);
+  });
+
   test('alle konfigurierten Märkte haben eine belegte Markt-ID', () {
     expect(stores, hasLength(6));
     final branchIds = stores.map((store) => store.branchId).toList();

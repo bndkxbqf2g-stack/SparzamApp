@@ -25,15 +25,21 @@ class StoreShoppingLine {
 class StoreShoppingSummary {
   const StoreShoppingSummary({
     required this.lines,
+    required this.unpricedItems,
     required this.total,
     required this.regularTotal,
     required this.savings,
   });
 
   final List<StoreShoppingLine> lines;
+  final List<ListItem> unpricedItems;
   final double total;
   final double regularTotal;
   final double savings;
+
+  int get pricedItemCount => lines.length;
+  int get totalItemCount => lines.length + unpricedItems.length;
+  bool get hasDataGaps => unpricedItems.isNotEmpty;
 }
 
 StoreShoppingSummary buildStoreShoppingSummary(
@@ -49,10 +55,14 @@ StoreShoppingSummary buildStoreShoppingSummary(
     marketPrices: marketPrices,
   );
   final lines = <StoreShoppingLine>[];
+  final unpricedItems = <ListItem>[];
 
   for (final item in items) {
     final quote = resolver.quote(store, item);
-    if (quote == null || quote.isEstimated) continue;
+    if (quote == null || quote.isEstimated) {
+      unpricedItems.add(item);
+      continue;
+    }
     lines.add(
       StoreShoppingLine(
         item: item,
@@ -78,6 +88,7 @@ StoreShoppingSummary buildStoreShoppingSummary(
 
   return StoreShoppingSummary(
     lines: lines,
+    unpricedItems: unpricedItems,
     total: total,
     regularTotal: regularTotal,
     savings: regularTotal - total,
