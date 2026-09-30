@@ -281,3 +281,11 @@ Hinweis zur Preisabdeckung, unterdrückt den Sparbetrag und setzt den geplanten
 Budgetanteil auf null, bis eine vollständige belastbare Route vorliegt. Ein
 Vergleich zwischen einer vollständigen Route und einer unvollständigen
 Einzelmarkt-Baseline bleibt ebenfalls als nicht belastbar markiert.
+
+## D055 – Einkauf bestätigen nur mit vollständiger Preisabdeckung
+Der Kaufabschluss übernimmt nur eine Route ohne unzugeordnete Positionen in
+Budget und Kaufhistorie. Bei einer Teilroute bleibt die Schaltfläche zum
+Bestätigen deaktiviert und nennt die fehlenden Artikel; auch der
+Abschluss-Handler verweigert eine direkte oder veraltete Teilroutenübergabe.
+Ist nur die Einzelmarkt-Baseline unvollständig, darf eine vollständige Route
+bestätigt werden, aber ihr Ersparnisvergleich wird als vorläufig gekennzeichnet.

@@ -113,6 +113,9 @@ Bonimporte, eigene Preise oder andere belegte Quellen routenfähig.
   geführt. Web, macOS und Linux zeigen für Bild-OCR einen klaren manuellen
   Fallback. Bildbasierte PDF-Seiten ohne Textebene werden auf Android/iOS
   lokal gerendert und ebenfalls durch diesen OCR-Review geführt.
+- Der Abschluss eines geplanten Einkaufs ist nur bei vollständiger
+  Preisabdeckung aktiv. Teilrouten bleiben als bekannte Teilkosten sichtbar,
+  dürfen aber weder bestätigt noch als vollständige Ersparnis verbucht werden.
 
 ### Budget
 - Lebensmittelbudget und bisherige Lebensmittelausgaben werden lokal geführt.

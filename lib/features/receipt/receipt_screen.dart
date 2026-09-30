@@ -18,6 +18,7 @@ class ReceiptScreen extends StatelessWidget {
     required this.onComplete,
     required this.onUpdatePurchase,
     required this.onDeletePurchase,
+    this.baselineHasDataGaps = false,
     this.catalogProducts = const <Product>[],
     this.onSavePrices = _ignoreReceiptPrices,
     this.onCreateProduct,
@@ -29,6 +30,7 @@ class ReceiptScreen extends StatelessWidget {
   final Future<void> Function() onComplete;
   final Future<void> Function(PurchaseRecord record) onUpdatePurchase;
   final Future<void> Function(PurchaseRecord record) onDeletePurchase;
+  final bool baselineHasDataGaps;
   final List<Product> catalogProducts;
   final Future<void> Function(List<MarketPrice> prices) onSavePrices;
   final Future<List<Product>> Function(Product product)? onCreateProduct;
@@ -52,6 +54,7 @@ class ReceiptScreen extends StatelessWidget {
             _CheckoutCard(
               plan: plan!,
               baselineTotal: baselineTotal,
+              baselineHasDataGaps: baselineHasDataGaps,
               onComplete: onComplete,
             ),
           const SizedBox(height: 12),
@@ -106,10 +109,16 @@ class ReceiptScreen extends StatelessWidget {
 Future<void> _ignoreReceiptPrices(List<MarketPrice> prices) async {}
 
 class _CheckoutCard extends StatefulWidget {
-  const _CheckoutCard({required this.plan, required this.baselineTotal, required this.onComplete});
+  const _CheckoutCard({
+    required this.plan,
+    required this.baselineTotal,
+    required this.baselineHasDataGaps,
+    required this.onComplete,
+  });
 
   final RoutePlan plan;
   final double baselineTotal;
+  final bool baselineHasDataGaps;
   final Future<void> Function() onComplete;
 
   @override
@@ -147,26 +156,78 @@ class _CheckoutCardState extends State<_CheckoutCard> {
 
   @override
   Widget build(BuildContext context) {
-    final savings = (widget.baselineTotal - widget.plan.total)
-        .clamp(0.0, double.infinity)
-        .toDouble();
+    final planHasDataGaps = widget.plan.hasDataGaps;
+    final comparisonHasDataGaps =
+        planHasDataGaps || widget.baselineHasDataGaps;
+    final savings = comparisonHasDataGaps
+        ? null
+        : (widget.baselineTotal - widget.plan.total)
+            .clamp(0.0, double.infinity)
+            .toDouble();
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(widget.plan.stores.map((store) => store.name).join(' + '), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+            Text(
+              planHasDataGaps
+                  ? 'Vorläufige Teilroute'
+                  : widget.plan.stores.map((store) => store.name).join(' + '),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+            ),
             const SizedBox(height: 10),
-            Text('Warenkorb: ${euro(widget.plan.basket)}'),
+            Text(
+              planHasDataGaps
+                  ? 'Bekannter Teilwarenkorb: ${euro(widget.plan.basket)}'
+                  : 'Warenkorb: ${euro(widget.plan.basket)}',
+            ),
             Text('Fahrt: ${euro(widget.plan.travel)}'),
-            Text('Gesamt: ${euro(widget.plan.total)}', style: const TextStyle(fontWeight: FontWeight.w800)),
-            Text('Ersparnis: ${euro(savings)}'),
+            Text(
+              planHasDataGaps
+                  ? 'Bekannte Teilkosten: ${euro(widget.plan.total)}'
+                  : 'Gesamt: ${euro(widget.plan.total)}',
+              style: const TextStyle(fontWeight: FontWeight.w800),
+            ),
+            Text(
+              savings == null
+                  ? 'Ersparnis: — (Preisvergleich unvollständig)'
+                  : 'Ersparnis: ${euro(savings)}',
+            ),
+            if (planHasDataGaps) ...[
+              const SizedBox(height: 12),
+              Text(
+                '${widget.plan.pricedItemCount} von '
+                '${widget.plan.totalItemCount} Artikeln haben einen '
+                'belastbaren Preis. Ohne Preis: '
+                '${widget.plan.unassigned.map((item) => item.product.name).join(', ')}. '
+                'Erst nach vollständiger Preisabdeckung kann der Einkauf '
+                'bestätigt werden.',
+                style: TextStyle(
+                  color: Colors.amber.shade900,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ] else if (widget.baselineHasDataGaps) ...[
+              const SizedBox(height: 12),
+              Text(
+                'Der Ersparnisvergleich zum Einzelmarkt ist wegen fehlender '
+                'Preise vorläufig.',
+                style: TextStyle(
+                  color: Colors.amber.shade900,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
             const SizedBox(height: 16),
             FilledButton.icon(
-              onPressed: saving ? null : complete,
+              onPressed: saving || planHasDataGaps ? null : complete,
               icon: const Icon(Icons.check_circle_outline),
-              label: const Text('Einkauf bestätigen'),
+              label: Text(
+                planHasDataGaps
+                    ? 'Preise ergänzen, dann bestätigen'
+                    : 'Einkauf bestätigen',
+              ),
             ),
           ],
         ),

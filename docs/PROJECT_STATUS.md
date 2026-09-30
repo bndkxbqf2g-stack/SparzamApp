@@ -505,3 +505,14 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   `home_screen_test.dart`.
 - `flutter analyze` ist ohne Befund, alle 453 Flutter-Tests sind grün und
   `flutter build web --release` war erfolgreich.
+
+## Update 01.10.2026 – Kaufabschluss sperrt Teilrouten
+- `ReceiptScreen` deaktiviert „Einkauf bestätigen“, sobald die Route noch
+  unzugeordnete Positionen enthält, und listet diese Artikel mit der fehlenden
+  Preisabdeckung auf. Ein unvollständiger Baseline-Vergleich macht nur die
+  Ersparnis vorläufig, nicht den Abschluss einer vollständigen Route.
+- `AppShell.completePurchase` prüft die Abdeckung zusätzlich im Handler, bevor
+  Budget und Kaufhistorie verändert werden.
+- `receipt_completion_feedback_test.dart` deckt die blockierte Teilroute ab.
+- `flutter analyze` ist ohne Befund, alle 454 Flutter-Tests sind grün und
+  `flutter build web --release` war erfolgreich.
