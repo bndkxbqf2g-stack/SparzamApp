@@ -364,12 +364,15 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   ML-Kit-Text-Recognizer gelesen. Der erkannte Text läuft danach durch denselben
   `ReceiptDraft`-/Bonreview-Pfad wie durchsuchbare PDFs; Aliaslernen,
   Ausgleichsprüfung und explizite Preisbestätigung bleiben dadurch unverändert.
+- Bildbasierte PDF-Seiten ohne Textebene werden auf Android/iOS mit `pdfrx`
+  lokal in begrenzter Auflösung gerendert und über denselben OCR-Adapter gelesen.
+  Seiten mit vorhandener Textebene bleiben beim verlustfreien Textpfad.
 - Bilddateien werden als strukturierte Bons behandelt und bei gleichem
   Fingerprint wie andere Bons dedupliziert. Ein unlesbares Bild bleibt als
   importierte Referenz sichtbar und erhält eine verständliche Handlungsanweisung.
 - Web, macOS und Linux melden Bild-OCR als nicht verfügbar und bieten weiterhin
-  den manuellen bzw. durchsuchbaren-PDF-Fallback. Bildbasierte PDFs ohne
-  Textebene sind bewusst ein separates, noch offenes OCR-Paket.
+  den manuellen bzw. durchsuchbaren-PDF-Fallback. Ein OCR-Fehler blockiert den
+  Import nicht; die Datei bleibt als unlesbare Referenz im Review sichtbar.
 - Die plattformneutrale Regression prüft Bildweiterleitung, Pfadübergabe und
   dass der erkannte Text in denselben Bonreview geparst wird. Lokale CI baut
   weiterhin Web; eine native Geräteabnahme steht noch aus.

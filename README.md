@@ -85,7 +85,8 @@ Bonimporte, eigene Preise oder andere belegte Quellen routenfähig.
 - JPG-/PNG-Bons und Kameraaufnahmen werden auf Android/iOS lokal per ML Kit OCR
   gelesen und danach in denselben Bonreview mit Identitäts- und Preisprüfung
   geführt. Web, macOS und Linux zeigen für Bild-OCR einen klaren manuellen
-  Fallback; bildbasierte PDFs ohne Textebene bleiben ebenfalls manuell.
+  Fallback. Bildbasierte PDF-Seiten ohne Textebene werden auf Android/iOS
+  lokal gerendert und ebenfalls durch diesen OCR-Review geführt.
 
 ### Budget
 - Lebensmittelbudget und bisherige Lebensmittelausgaben werden lokal geführt.
@@ -367,9 +368,8 @@ Diese Funktionen benötigen eine Internetverbindung.
 
 ## 13. Bekannte Grenzen
 
-- Keine automatische OCR für bildbasierte PDFs ohne Textebene; Bild-OCR für
-  JPG/PNG und Kameraaufnahmen ist auf Android/iOS verfügbar, auf Web/Desktop
-  bleibt der manuelle Fallback aktiv.
+- Bild-OCR für JPG/PNG, Kameraaufnahmen und bildbasierte PDF-Seiten ist auf
+  Android/iOS verfügbar; auf Web/Desktop bleibt der manuelle Fallback aktiv.
 - Keine garantierte vollständige Preisabdeckung.
 - Historische Bonpreise sind Beobachtungen und keine Garantie für den heutigen Regalpreis.
 - Familien-Fallbacks dürfen Varianten nicht als identisch ausgeben.

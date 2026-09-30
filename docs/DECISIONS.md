@@ -188,11 +188,12 @@ Coupon-/Cashback-Effekte. Historische Preise bleiben als Evidenz sichtbar und
 werden nicht gelöscht oder zur aktuellen Angebotsbehauptung umetikettiert.
 
 ## D044 – Bildbon-OCR bleibt lokal und durchläuft denselben Review
-JPG-/PNG-Bons und Kameraaufnahmen werden auf Android/iOS lokal mit ML Kit
-ausgelesen. Der erkannte Text wird ausschließlich als `ReceiptDraft` in den
+JPG-/PNG-Bons, Kameraaufnahmen und Seiten bildbasierter PDFs werden auf
+Android/iOS lokal mit ML Kit ausgelesen. PDF-Seiten werden nur dann gerendert,
+wenn keine Textebene vorhanden ist; Seiten mit Text bleiben im verlustfreien
+Textpfad. Der erkannte Text wird ausschließlich als `ReceiptDraft` in den
 bestehenden Bonreview gegeben; ohne ausgeglichenen Bon und explizite
 Preisbestätigung entsteht weder eine Preisbeobachtung noch ein Routenpreis.
 Web, macOS und Linux verwenden einen sichtbaren manuellen Fallback, weil der
-mobile OCR-Adapter dort nicht verfügbar ist. Bildbasierte PDFs ohne
-Textebene bleiben ein eigenes Folgepaket, damit PDF-Seitenrendering und
-OCR-Konfidenz nicht ungeprüft in die Preislogik gelangen.
+mobile OCR-Adapter dort nicht verfügbar ist. Render- oder OCR-Fehler lassen
+den Import kontrolliert als unlesbare Referenz weiterlaufen.

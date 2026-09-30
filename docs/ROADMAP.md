@@ -35,7 +35,7 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 ## Phase D – Alltagstaugliche Datenerfassung
 - Kassenbons möglichst automatisch.
 - [x] JPG/PNG- und Kamera-Bons auf Android/iOS lokal per OCR lesen und in den bestehenden Bonreview führen.
-- [ ] Bildbasierte PDFs ohne Textebene über einen separaten, geprüften OCR-/Review-Pfad verarbeiten.
+- [x] Bildbasierte PDFs ohne Textebene auf Android/iOS lokal rendern und über den geprüften OCR-/Review-Pfad verarbeiten.
 - Barcode als sichere Produktidentität nutzen.
 - Open Prices/Open Food Facts sinnvoll ergänzen.
 - Regalvideo-Erfassung evaluieren: Lesbarkeit von Preisschildern, Produktbezug, Dubletten, Aufwand und Datenschutz.
