@@ -101,31 +101,27 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [ ] Dokumentation
 - [ ] finaler CI-/UX-/Datenqualitäts-Audit
 
-## Gemeinsame Chat-Befehle
+## Arbeitsmodi A/N/Q/U
 
-### `A`
-Wenn der Nutzer nur `A` sendet, arbeitet ChatGPT im aktuellen Chat-Turn maximal selbstständig an **beiden aktiven Projekten**: SparzamApp und FamSchicht.
+Die Kürzel gelten für das vom Nutzer genannte Repository. Sind mehrere Repositories ausdrücklich genannt, bearbeite sie jeweils getrennt.
 
-Das gilt ausdrücklich auch für Problembehebung:
-1. CI und aktuellen Stand beider Projekte prüfen.
-2. Fehler nicht nur melden, sondern selbstständig analysieren.
-3. Eindeutig belegte Ursachen direkt korrigieren.
-4. Regressionstests ergänzen oder anpassen.
-5. Änderungen committen und pushen.
-6. CI erneut prüfen.
-7. Solange sichere weitere Korrekturen oder Roadmap-Schritte möglich sind, im selben Turn weiterarbeiten.
-8. Erst bei grüner CI oder einer echten externen Grenze stoppen.
+### `A` — Autopilot
+Erledige den vereinbarten Umfang in diesem Repository maximal selbstständig: aktuellen Branch und CI prüfen, Ursachen klären, Implementierung und Regressionstests ergänzen, relevante CI ausführen und klare Folgefehler beheben. Arbeite bis die Checks grün sind oder eine echte externe Grenze erreicht ist. Keine unbeauftragte Scope-Erweiterung; keine riskante Datenänderung, kein Merge und kein Release allein aufgrund des Kürzels.
 
-### `N`
-Normaler Entwicklungsblock für **beide aktiven Projekte**: typischerweise bis zu 5 logisch zusammengehörige Schritte pro Projekt, danach relevante CI.
+### `N` — Normaler Entwicklungsblock
+Arbeite einen begrenzten Block von typischerweise bis zu fünf logisch zusammenhängenden Schritten ab. Führe danach die passenden Tests und CI aus und berichte den nächsten sinnvollen Schritt.
 
-### `U`
-Nur **Status prüfen**. Keine neue Feature-Entwicklung und keine eigenständige Problembehebung starten.
+### `Q` — Qualitätssicherung
+Prüfe den benannten Bereich oder vorhandenen Diff, führe passende Tests aus und behebe nur klar reproduzierbare Fehler mit Regressionstest. Keine neuen Features.
+
+### `U` — Update
+Prüfe nur Repository-, Branch-, Test- und CI-Status und berichte ihn kompakt mit Ampel. Keine Änderungen und keine eigenständige Fehlerbehebung.
 
 ## Bestehende Kurzbefehle
-- `A`: maximal selbstständige Umsetzung **und Problembehebung** in SparzamApp + FamSchicht
-- `N`: normaler Entwicklungsblock für beide aktiven Projekte
-- `U`: nur Status beider aktiven Projekte prüfen
+- `A`: maximal selbstständige Umsetzung und Problembehebung im jeweils genannten Repository
+- `N`: begrenzter Entwicklungsblock im jeweils genannten Repository
+- `Q`: fokussierte Qualitätssicherung ohne neue Features
+- `U`: Statusbericht ohne Änderungen
 
 ## Wiedereinstieg nach dem aktuellen Entwicklungsblock
 Der End-to-End-Audit hat drei konkrete Identitäts-Bypässe geschlossen: Eine bloße `productId` auf einer Bonbeobachtung gilt nicht mehr automatisch als bestätigte Identität; automatisch angelegte Bonprodukte dürfen keinen direkten `MarketPrice` erzeugen; automatische Preisvorschläge starten unselektiert und werden erst nach expliziter Nutzerbestätigung als exakter Marktpreis übernommen. Alte `receipt_auto_*`-Beobachtungen werden konservativ als unbestätigt gelesen.
