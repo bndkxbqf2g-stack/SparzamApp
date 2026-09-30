@@ -186,3 +186,13 @@ historischen Bon- oder normalen Marktpreisen angezeigt. Innerhalb des
 Angebotsvorrangs zählt der effektive Preis einschließlich sicher berechenbarer
 Coupon-/Cashback-Effekte. Historische Preise bleiben als Evidenz sichtbar und
 werden nicht gelöscht oder zur aktuellen Angebotsbehauptung umetikettiert.
+
+## D044 – Öffentlicher Prospektcache bleibt dem Gültigkeitsfilter untergeordnet
+Der erfolgreich geladene öffentliche Prospektfeed darf lokal zwischengespeichert
+werden, damit ein temporärer Abruffehler nicht alle Angebotsinformationen
+verliert. Der Cache ist ausschließlich eine Wiederholungsquelle für denselben
+validierten Feed; er erhält keine privaten Belege und erzeugt keine neuen
+Preise. Bei der Verwendung bleiben `validFrom` und `validUntil` zwingend aktiv:
+abgelaufene Cache-Angebote dürfen weder in der aktuellen Prospektansicht noch
+als aktuelle Routenpreise erscheinen. Ein beschädigter Cache wird ignoriert und
+der ursprüngliche Live-Fehler bleibt erhalten.

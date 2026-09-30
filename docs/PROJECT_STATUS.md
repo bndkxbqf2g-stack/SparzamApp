@@ -66,6 +66,24 @@
 - Für diesen Block: Flutter-Analyse ohne Befund, 424 Tests bestanden und
   `flutter build web --release` erfolgreich.
 
+## Update 30.09.2026 – Ausfallsicherer öffentlicher Prospektfeed
+- Der zuletzt erfolgreich geladene, öffentliche Prospektfeed wird lokal als
+  Cache gespeichert. Bei einem temporären HTTP-, Netzwerk- oder Parsefehler
+  kann die App diesen Feed wieder einlesen, ohne private Belege oder
+  Nutzerdaten zu berühren.
+- Cache-Daten werden nicht zu neuen aktuellen Angeboten erklärt: Die
+  bestehende Prüfung von `validFrom` und `validUntil` bleibt vor Prospektkarten,
+  Angebotssuche und Routenimport aktiv. Abgelaufene Cache-Angebote bleiben nur
+  als historische Evidenz lernbar und erscheinen nicht in der aktuellen
+  Ansicht.
+- Der Diagnoseeintrag kennzeichnet, ob der Refresh aus dem Livefeed oder dem
+  lokalen Cache kam. Ein beschädigter Cache wird verworfen und der ursprüngliche
+  Live-Fehler bleibt sichtbar.
+- Regressionen decken Live-Speicherung, Offline-Fallback, abgelaufene Cache-
+  Angebote und beschädigte Cache-Daten ab.
+- Für diesen Block: Flutter-Analyse ohne Befund, 428 Tests bestanden und
+  `flutter build web --release` erfolgreich.
+
 ## Audit 30.09.2026
 - Die App startet jetzt in der Einkaufsliste; ein Widget-Test prüft den sichtbaren Einstieg bei 390 × 844 px.
 - Ein doppelter Import in `app_shell.dart` wurde entfernt.

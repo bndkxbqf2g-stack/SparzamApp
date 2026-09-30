@@ -66,6 +66,7 @@ Bonimporte, eigene Preise oder andere belegte Quellen routenfähig.
 - Angebote werden getrennt von Produktidentitäten behandelt: ein Angebot erzeugt grundsätzlich kein neues Produkt.
 - Angebotszeiträume werden berücksichtigt.
 - Die Prospektansicht lädt nur aktuell gültige Angebotsdaten und datierte Prospektseiten. Bei fehlendem Abruf zeigt sie den offiziellen Händlerlink ohne erfundene Preise.
+- Der zuletzt erfolgreich geladene öffentliche Feed wird lokal zwischengespeichert. Bei einem temporären Abruffehler darf die App daraus nur noch innerhalb der ausgewiesenen Gültigkeit aktuelle Angebote anzeigen; abgelaufene Cache-Daten bleiben aus der sichtbaren Prospektansicht und der Route ausgeschlossen.
 - Belegte Prospekt-Angebotspreise und ausdrücklich angegebene Normalpreise bleiben mit Markt, Quelle, Nachweis, Packungsgröße und Gültigkeit als Preisbeobachtungen erhalten. Abgelaufene Preise dienen nur der Historie; sie werden nicht als aktuell verfügbarer Routenpreis ausgegeben.
 - Marken-/Text-Matching kann passende Angebote zu Produkten finden.
 - Coupon, Cashback und Mehrfachkauf werden rechnerisch berücksichtigt, soweit die Angebotsdaten diese Bedingungen enthalten.
