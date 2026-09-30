@@ -25,7 +25,10 @@ DashboardData buildShellDashboard({
 }) {
   final best = routing.current?.bestPlan();
   final baseline = routing.regular?.bestSingleStorePlan();
-  final savings = best == null || baseline == null
+  final savingsHasDataGaps = best != null &&
+      baseline != null &&
+      (best.hasDataGaps || baseline.hasDataGaps);
+  final savings = best == null || baseline == null || savingsHasDataGaps
       ? 0.0
       : baseline.total - best.total;
   final travel = best == null
@@ -36,7 +39,7 @@ DashboardData buildShellDashboard({
           roadDistances: roadDistances,
           roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
         );
-  final planned = best?.basket ?? 0;
+  final planned = best == null || best.hasDataGaps ? 0.0 : best.basket;
   final snapshot = calculateBudget(budget, planned);
   final forecast = calculateBudgetForecast(budget, planned, now: now);
   final monthly = summarizeMonth(purchaseHistory, now: now);
@@ -52,6 +55,12 @@ DashboardData buildShellDashboard({
         ? 'Noch keine Route'
         : best.stores.map((store) => store.name).join(' + '),
     routeTotal: best?.total ?? 0,
+    routeHasDataGaps: best?.hasDataGaps ?? false,
+    routeCoverageLabel: best == null
+        ? ''
+        : '${best.pricedItemCount} von ${best.totalItemCount} Artikeln '
+            'preislich belegt',
+    savingsHasDataGaps: savingsHasDataGaps,
     routeTravelMinutes: travel.minutes,
     mobilityLabel: mobility.mode.label,
     todaySavings: savings > 0 ? savings : 0,

@@ -272,3 +272,12 @@ als Teilwarenkorb gekennzeichnet sein. Eine vollständige Aussage, dass sich der
 Markt lohnt oder dass die Fahrtkosten den Warenkorb übersteigen, wird bei
 fehlender Preisabdeckung nicht ausgegeben. Dadurch bleiben fehlende Daten vor
 der Einkaufsentscheidung sichtbar und werden nicht als Nullpreis interpretiert.
+
+## D054 – Das Dashboard plant unvollständige Routen nicht als Sparbetrag
+Das Dashboard darf eine vorläufige Teilroute informativ anzeigen, darf deren
+bekannte Teilkosten aber weder als vollständiges Sparpotenzial noch als geplanten
+Budgetverbrauch ausgeben. Bei fehlender Abdeckung zeigt es deshalb einen
+Hinweis zur Preisabdeckung, unterdrückt den Sparbetrag und setzt den geplanten
+Budgetanteil auf null, bis eine vollständige belastbare Route vorliegt. Ein
+Vergleich zwischen einer vollständigen Route und einer unvollständigen
+Einzelmarkt-Baseline bleibt ebenfalls als nicht belastbar markiert.

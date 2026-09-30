@@ -4,6 +4,9 @@ class DashboardData {
     required this.activeOffers,
     required this.routeNames,
     required this.routeTotal,
+    required this.routeHasDataGaps,
+    required this.routeCoverageLabel,
+    required this.savingsHasDataGaps,
     required this.routeTravelMinutes,
     required this.mobilityLabel,
     required this.todaySavings,
@@ -22,6 +25,9 @@ class DashboardData {
   final int activeOffers;
   final String routeNames;
   final double routeTotal;
+  final bool routeHasDataGaps;
+  final String routeCoverageLabel;
+  final bool savingsHasDataGaps;
   final int routeTravelMinutes;
   final String mobilityLabel;
   final double todaySavings;

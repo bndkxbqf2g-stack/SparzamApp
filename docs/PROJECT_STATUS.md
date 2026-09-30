@@ -495,3 +495,13 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   und verhindert eine irreführende Markt-Empfehlung.
 - `flutter analyze` ist ohne Befund, alle 451 Flutter-Tests sind grün und der
   Web-Build wird im Abschlussgate erneut geprüft.
+
+## Update 01.10.2026 – Dashboard kennzeichnet Teilrouten
+- `buildShellDashboard` unterdrückt Sparpotenzial und geplanten Budgetverbrauch,
+  wenn die empfohlene Route oder ihre Einzelmarkt-Baseline unvollständig ist.
+- Die Startseite zeigt dann „—“, „Teilroute prüfen“ und einen direkten Hinweis
+  auf die fehlende Preisabdeckung. Eine vollständige Route bleibt unverändert.
+- Die Daten- und Widgetregressionen stehen in `shell_dashboard_test.dart` und
+  `home_screen_test.dart`.
+- `flutter analyze` ist ohne Befund, alle 453 Flutter-Tests sind grün und
+  `flutter build web --release` war erfolgreich.

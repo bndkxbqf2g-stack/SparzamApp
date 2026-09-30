@@ -21,7 +21,10 @@ Die Testsuite enthält Domänen-, Store-, Service-, Widget- und Ablaufprüfungen
 - Produktidentität/Normalisierung: `product_identity_test.dart`, `product_family_test.dart`, `product_hierarchy_test.dart`, `product_match_candidates_test.dart`, `product_package_validation_test.dart`, `quantity_normalizer_test.dart`.
 - Datenqualität/Quellen: `offer_import_test.dart`, `open_prices_service_test.dart`, `receipt_observation_store_test.dart`, `receipt_price_review_test.dart`, `prospect_feed_service_test.dart`, `real_receipt_evidence_e2e_test.dart`.
 - Route: `route_price_resolver_test.dart`, `route_price_quality_test.dart`, `route_road_distance_test.dart`, `route_recommendation_test.dart`, `route_multi_market_e2e_test.dart`, `list_to_route_flow_test.dart`, `route_to_purchase_flow_test.dart`.
-- UI/Flows: `widget_test.dart`, `store_screen_test.dart`, `prospects_screen_test.dart`, `shopping_price_badge_visuals_test.dart`, `scan_to_list_flow_test.dart`, `receipt_import_display_test.dart`.
+- UI/Flows: `widget_test.dart`, `home_screen_test.dart`, `store_screen_test.dart`, `prospects_screen_test.dart`, `shopping_price_badge_visuals_test.dart`, `scan_to_list_flow_test.dart`, `receipt_import_display_test.dart`.
+- Dashboarddaten/Teilrouten: `shell_dashboard_test.dart` prüft, dass
+  unvollständige Preisabdeckung weder Sparpotenzial noch Budgetverbrauch
+  vortäuscht.
 
 Bei jedem behobenen Fehler kommt ein enger Test für Ursache und Gegenbeispiel hinzu. Datenqualitätskorrekturen dürfen nicht allein anhand des erwarteten UI-Texts getestet werden: prüfe den resultierenden Preis-/Identitäts-/Routenstatus.
 
