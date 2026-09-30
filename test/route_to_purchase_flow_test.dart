@@ -6,6 +6,7 @@ import 'package:sparzamapp/features/shell/shell_routing.dart';
 import 'package:sparzamapp/models/budget_plan.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/mobility_settings.dart';
+import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/services/budget_store.dart';
 import 'package:sparzamapp/services/purchase_store.dart';
@@ -36,7 +37,14 @@ void main() {
         mode: MobilityMode.bike,
         enabledStoreNames: ['Lidl'],
       ),
-      marketPrices: const [],
+      marketPrices: [
+        MarketPrice(
+          productId: 'milch_35',
+          storeName: 'Lidl',
+          price: 1.29,
+          updatedAt: DateTime(2026, 9, 24),
+        ),
+      ],
       roadDistances: const {},
       roadMatrix: null,
     );

@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/data/stores.dart';
 import 'package:sparzamapp/features/store/store_shopping_summary.dart';
 import 'package:sparzamapp/models/list_item.dart';
+import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/models/product.dart';
 
@@ -39,6 +40,14 @@ void main() {
         ),
       ],
       now: DateTime(2026, 9, 22),
+      marketPrices: [
+        MarketPrice(
+          productId: 'nudeln',
+          storeName: 'Lidl',
+          price: 0.89,
+          updatedAt: DateTime(2026, 9, 22),
+        ),
+      ],
     );
 
     expect(summary.lines.length, 2);
@@ -82,6 +91,14 @@ void main() {
         ),
       ],
       now: DateTime(2026, 9, 22),
+      marketPrices: [
+        MarketPrice(
+          productId: 'milch_35',
+          storeName: 'Lidl',
+          price: 1.29,
+          updatedAt: DateTime(2026, 9, 22),
+        ),
+      ],
     );
 
     expect(summary.lines.single.usesOffer, isFalse);

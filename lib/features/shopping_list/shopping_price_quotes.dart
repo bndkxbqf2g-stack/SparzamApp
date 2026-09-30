@@ -2,6 +2,7 @@ import '../../data/offers.dart';
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/offer.dart';
+import '../offers/offer_filter.dart';
 
 bool isSampleOffer(Offer offer) => sampleOffers.any((sample) =>
     sample.id == offer.id &&
@@ -73,9 +74,13 @@ List<ShoppingQuote> shoppingQuotes(
 
   for (final offer in offers) {
     if (offer.productId != item.product.id ||
-        offer.validUntil.isBefore(DateTime(today.year, today.month, today.day)) ||
         (enabledStores.isNotEmpty &&
             !enabledStores.contains(offer.storeName)) ||
+        !isOfferDateRangeActive(
+          validFrom: offer.validFrom,
+          validUntil: offer.validUntil,
+          now: today,
+        ) ||
         isSampleOffer(offer)) {
       continue;
     }

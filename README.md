@@ -52,6 +52,11 @@ Preisquellen bleiben unterscheidbar:
 
 Eine Schätzung wird nicht stillschweigend zu einem bestätigten Marktpreis.
 
+Auf einer frischen Installation werden weder Marktstammpreise noch Angebote
+oder Preishistorie als Beispielbestand vorgefüllt. Die Routenplanung startet
+deshalb mit einer sichtbaren Datenlücke und wird erst durch aktuelle Angebote,
+Bonimporte, eigene Preise oder andere belegte Quellen routenfähig.
+
 ### Angebote / Prospekte
 - Angebote werden getrennt von Produktidentitäten behandelt: ein Angebot erzeugt grundsätzlich kein neues Produkt.
 - Angebotszeiträume werden berücksichtigt.

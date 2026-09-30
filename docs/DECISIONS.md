@@ -168,3 +168,13 @@ Die Nachkaufprognose darf neben abgeschlossenen In-App-Einkäufen ausdrücklich 
 
 ## D041 – Starter-Grundbedarf ist Auswahlhilfe, keine Preisbehauptung
 Der Basiskatalog darf häufige Grundbedarfsartikel als `isStaple` markieren, damit sie auf einer leeren Einkaufsliste direkt auswählbar sind. Diese Markierung ist weder eine bevorzugte Marke noch ein Marktpreis und erzeugt keine Preisbeobachtung. Ein Starterartikel wird erst durch einen gültigen aktuellen Angebotspreis oder eine vergleichbare belegte Markt-/Bonbeobachtung routenfähig; fehlt diese Evidenz, bleibt die Datenlücke sichtbar.
+
+## D042 – Produktionsstart ohne synthetische Preisbehauptungen
+Produktionsmärkte, Angebotsbestand und Preishistorie dürfen beim ersten Start
+keine festen Beispielwerte als reale Beobachtungen ausgeben. Ein leerer
+Preisbestand bleibt eine sichtbare Datenlücke, bis aktuelle Prospekte,
+Bonimporte, eigene Preise oder andere belegte Quellen ihn füllen. Ältere
+Versionen dürfen ihre bekannten Demo-IDs bzw. exakten Demo-Beobachtungen bei
+der ersten Migration entfernen, müssen aber alle übrigen Nutzerwerte erhalten.
+Angebote sind erst innerhalb ihres vollständigen Gültigkeitszeitraums aktiv;
+historische Preisbelege bleiben von aktuellen Routenpreisen getrennt.

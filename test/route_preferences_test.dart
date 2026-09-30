@@ -5,6 +5,32 @@ import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/offer.dart';
 
+final _baselineDate = DateTime(2026, 9, 24);
+
+List<MarketPrice> _baselinePrices() => [
+      for (final entry in const <(String, double, double)>[
+        ('Lidl', 1.29, 0.89),
+        ('EDEKA', 1.39, 1.29),
+        ('PENNY', 1.19, 0.79),
+        ('ALDI Süd', 1.15, 0.75),
+        ('Netto', 1.35, 0.79),
+        ('Kaufland', 1.19, 0.72),
+      ]) ...[
+        MarketPrice(
+          productId: 'milch_35',
+          storeName: entry.$1,
+          price: entry.$2,
+          updatedAt: _baselineDate,
+        ),
+        MarketPrice(
+          productId: 'nudeln',
+          storeName: entry.$1,
+          price: entry.$3,
+          updatedAt: _baselineDate,
+        ),
+      ],
+    ];
+
 void main() {
   const milk = Product(
     id: 'milch_35',
@@ -28,6 +54,7 @@ void main() {
     final optimizer = RouteOptimizer(
       items(),
       const [],
+      marketPrices: _baselinePrices(),
       euroPerKm: 0,
       maxStores: 1,
     );
@@ -43,6 +70,7 @@ void main() {
     final strict = RouteOptimizer(
       items(),
       const [],
+      marketPrices: _baselinePrices(),
       euroPerKm: 0,
       maxStores: 2,
       minExtraStoreSavings: 0.05,
@@ -50,6 +78,7 @@ void main() {
     final relaxed = RouteOptimizer(
       items(),
       const [],
+      marketPrices: _baselinePrices(),
       euroPerKm: 0,
       maxStores: 2,
       minExtraStoreSavings: 0.01,
@@ -63,6 +92,7 @@ void main() {
     final strict = RouteOptimizer(
       items(),
       const [],
+      marketPrices: _baselinePrices(),
       euroPerKm: 0.22,
       maxStores: 2,
       minExtraStoreSavings: 0.05,
@@ -100,6 +130,7 @@ void main() {
     final withoutTravel = RouteOptimizer(
       items(),
       [offer],
+      marketPrices: _baselinePrices(),
       now: DateTime(2026, 9, 25),
       euroPerKm: 0,
       maxStores: 2,
@@ -109,6 +140,7 @@ void main() {
     final withTravel = RouteOptimizer(
       items(),
       [offer],
+      marketPrices: _baselinePrices(),
       now: DateTime(2026, 9, 25),
       euroPerKm: 0.22,
       maxStores: 2,
@@ -125,6 +157,7 @@ void main() {
     final optimizer = RouteOptimizer(
       items(),
       const [],
+      marketPrices: _baselinePrices(),
       euroPerKm: 0,
       enabledStoreNames: const ['Lidl', 'PENNY'],
     );
@@ -158,6 +191,18 @@ void main() {
       maxStores: 2,
       enabledStoreNames: const ['Lidl', 'EDEKA'],
       marketPrices: [
+        MarketPrice(
+          productId: 'milch_35',
+          storeName: 'Lidl',
+          price: 1.29,
+          updatedAt: now,
+        ),
+        MarketPrice(
+          productId: 'milch_35',
+          storeName: 'EDEKA',
+          price: 1.39,
+          updatedAt: now,
+        ),
         MarketPrice(
           productId: 'nur_edeka',
           storeName: 'EDEKA',

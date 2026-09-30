@@ -11,8 +11,11 @@ class PriceHistoryStore {
   Future<List<PricePoint>> load() async {
     final raw = await _preferences.getStringList(_key);
     if (raw == null) {
-      await save(samplePriceHistory);
-      return [...samplePriceHistory];
+      // Price history is evidence, so a fresh installation starts without
+      // synthetic observations. Real history is added by receipts, offers,
+      // Open Prices, or an explicit manual price.
+      await save(const <PricePoint>[]);
+      return <PricePoint>[];
     }
 
     final result = <PricePoint>[];
@@ -23,14 +26,22 @@ class PriceHistoryStore {
         // Einzelne defekte Alt-Einträge nicht den kompletten Verlauf zerstören.
       }
     }
-    return result;
+    // Older releases persisted a fixed sample history on first start. Remove
+    // only those exact observations so any user-created history survives.
+    final sampleKeys = samplePriceHistory
+        .map((point) => point.observationKey)
+        .toSet();
+    final current = result
+        .where((point) => !sampleKeys.contains(point.observationKey))
+        .toList(growable: false);
+    if (current.length != result.length) await save(current);
+    return current;
   }
 
-  Future<void> save(List<PricePoint> history) =>
-      _preferences.setStringList(
-        _key,
-        history.map((item) => item.toJson()).toList(),
-      );
+  Future<void> save(List<PricePoint> history) => _preferences.setStringList(
+    _key,
+    history.map((item) => item.toJson()).toList(),
+  );
 
   Future<List<PricePoint>> upsertObservation(
     PricePoint point,
@@ -64,8 +75,7 @@ class PriceHistoryStore {
     String productId,
     List<PricePoint> current,
   ) async {
-    final next =
-        current.where((item) => item.productId != productId).toList();
+    final next = current.where((item) => item.productId != productId).toList();
     await save(next);
     return next;
   }

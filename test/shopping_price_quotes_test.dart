@@ -77,4 +77,31 @@ void main() {
         offers: [offer],
         now: DateTime(2026, 10, 1)), isEmpty);
   });
+
+  test('future offers are hidden before their validFrom date', () {
+    final future = Offer(
+      id: 'future_offer',
+      productId: 'milch_35',
+      storeName: 'Lidl',
+      originalPrice: 1.29,
+      offerPrice: 0.79,
+      validFrom: DateTime(2026, 9, 28),
+      validUntil: DateTime(2026, 10, 2),
+    );
+
+    expect(
+      shoppingQuotes(item,
+          prices: const [],
+          offers: [future],
+          now: DateTime(2026, 9, 27)),
+      isEmpty,
+    );
+    expect(
+      shoppingQuotes(item,
+          prices: const [],
+          offers: [future],
+          now: DateTime(2026, 9, 28)),
+      hasLength(1),
+    );
+  });
 }
