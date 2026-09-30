@@ -240,3 +240,12 @@ Rispentomaten, Partytomaten und Cherrytomaten gemeinsam anbieten; verarbeitete
 Produkte wie Tomatenmark, Passata und Tomatensauce bleiben über die bestehende
 Hierarchie verwandte, aber separate Identitäten. Eine gemeinsame Familie ist
 kein gemeinsamer exakter Preis- oder Routenbeleg.
+
+## D050 – Die Einkaufsliste zeigt Preisabdeckung je aktiviertem Markt
+Das Preisfenster eines exakten Listenprodukts führt jeden aktivierten Markt
+separat auf. Wenn keine Marktauswahl hinterlegt ist, werden die sechs
+Projektmärkte verwendet. Aktive Angebote werden vor sonstigen Beobachtungen
+angezeigt; der beste nicht rabattierte Beleg wird nach seiner Aktualität
+ausgewählt. Ein fehlender Beleg bleibt als Datenlücke sichtbar und erzeugt
+keinen Schätz- oder Routenpreis. Die Matrix ist eine Orientierung für die
+Einkaufsliste; die verbindliche Marktzuordnung bleibt der Route vorbehalten.

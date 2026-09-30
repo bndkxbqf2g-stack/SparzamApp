@@ -1,4 +1,5 @@
 import '../../data/offers.dart';
+import '../../data/stores.dart';
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/offer.dart';
@@ -39,6 +40,23 @@ class ShoppingQuote {
   static String _date(DateTime date) =>
       '${date.day.toString().padLeft(2, '0')}.'
       '${date.month.toString().padLeft(2, '0')}.${date.year}';
+}
+
+/// One row of the product × market view shown from the shopping list.
+///
+/// A missing quote is intentional information: the market is enabled (or is
+/// one of the six configured markets), but no current, comparable evidence is
+/// available for this exact product identity.
+class ShoppingPriceMatrixEntry {
+  const ShoppingPriceMatrixEntry({
+    required this.storeName,
+    this.quote,
+  });
+
+  final String storeName;
+  final ShoppingQuote? quote;
+
+  bool get hasQuote => quote != null;
 }
 
 /// Exact product identity only. Receipts are observations of a purchase,
@@ -103,4 +121,83 @@ List<ShoppingQuote> shoppingQuotes(
     return b.observedAt?.compareTo(a.observedAt ?? today) ?? 0;
   });
   return candidates;
+}
+
+/// Resolves one best visible quote per enabled market while retaining markets
+/// without evidence. Offers are preferred over non-offer observations, and
+/// the cheapest active offer wins within a market. For non-offer evidence the
+/// newest observation wins; a lower price is only a deterministic tie-breaker.
+List<ShoppingPriceMatrixEntry> shoppingPriceMatrix(
+  ListItem item, {
+  required List<MarketPrice> prices,
+  required List<Offer> offers,
+  List<String> enabledStores = const [],
+  DateTime? now,
+}) {
+  final quotes = shoppingQuotes(
+    item,
+    prices: prices,
+    offers: offers,
+    enabledStores: enabledStores,
+    now: now,
+  );
+  final configuredNames = enabledStores.isEmpty
+      ? stores.map((store) => store.name).toList(growable: false)
+      : enabledStores;
+  final names = <String>{
+    ...configuredNames,
+    ...quotes.map((quote) => quote.storeName),
+  };
+  final configuredOrder = <String, int>{
+    for (var index = 0; index < configuredNames.length; index++)
+      configuredNames[index]: index,
+  };
+
+  final result = names.map((storeName) {
+    final storeQuotes = quotes
+        .where((quote) => quote.storeName == storeName)
+        .toList(growable: false);
+    if (storeQuotes.isEmpty) {
+      return ShoppingPriceMatrixEntry(storeName: storeName);
+    }
+    final sorted = [...storeQuotes]..sort(_compareMatrixQuotes);
+    return ShoppingPriceMatrixEntry(
+      storeName: storeName,
+      quote: sorted.first,
+    );
+  }).toList();
+
+  result.sort((a, b) {
+    final aOrder = configuredOrder[a.storeName];
+    final bOrder = configuredOrder[b.storeName];
+    if (aOrder != null || bOrder != null) {
+      if (aOrder == null) return 1;
+      if (bOrder == null) return -1;
+      if (aOrder != bOrder) return aOrder.compareTo(bOrder);
+    }
+    return a.storeName.compareTo(b.storeName);
+  });
+  return result;
+}
+
+int _compareMatrixQuotes(ShoppingQuote a, ShoppingQuote b) {
+  final aOffer = a.kind == ShoppingQuoteKind.offer;
+  final bOffer = b.kind == ShoppingQuoteKind.offer;
+  if (aOffer != bOffer) return aOffer ? -1 : 1;
+  if (aOffer) {
+    final byPrice = a.unitPrice.compareTo(b.unitPrice);
+    if (byPrice != 0) return byPrice;
+  } else {
+    final aDate = a.observedAt;
+    final bDate = b.observedAt;
+    if (aDate != null || bDate != null) {
+      if (aDate == null) return 1;
+      if (bDate == null) return -1;
+      final byDate = bDate.compareTo(aDate);
+      if (byDate != 0) return byDate;
+    }
+    final byPrice = a.unitPrice.compareTo(b.unitPrice);
+    if (byPrice != 0) return byPrice;
+  }
+  return a.sourceLabel.compareTo(b.sourceLabel);
 }

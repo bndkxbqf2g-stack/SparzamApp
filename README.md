@@ -45,6 +45,10 @@ SparzamApp ist ein Flutter-Prototyp für intelligent geplante Lebensmitteleinkä
   Coupon-/Cashback-Effekte werden dabei als effektiver Preis angezeigt; ein
   Angebot wird nicht durch einen zufällig niedrigeren historischen Einzelpreis
   verdrängt.
+- Das Preisfenster jedes Listenartikels zeigt die aktivierten Märkte (bei leerer
+  Auswahl alle sechs Projektmärkte) einzeln. Aktive Angebote, belegte Bon-/eigene
+  Preise und fehlende Preisbelege bleiben sichtbar getrennt; ein fehlender Markt
+  wird nicht durch eine Schätzung ersetzt.
 
 ### Produktkatalog
 - Enthält Basiskatalog und lokal angelegte Produkte.

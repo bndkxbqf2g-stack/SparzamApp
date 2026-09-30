@@ -30,6 +30,13 @@ class ShoppingPriceBadge extends StatelessWidget {
       offers: offers,
       enabledStores: enabledStores,
     );
+    final matrix = shoppingPriceMatrix(
+      item,
+      prices: prices,
+      offers: offers,
+      enabledStores: enabledStores,
+    );
+    final pricedMarkets = matrix.where((entry) => entry.hasQuote).length;
     final offersToday = quotes.where((q) => q.kind == ShoppingQuoteKind.offer).toList();
     offersToday.sort((a, b) => a.unitPrice.compareTo(b.unitPrice));
     final receiptQuotes = quotes.where((q) => q.kind == ShoppingQuoteKind.receipt).toList();
@@ -45,7 +52,7 @@ class ShoppingPriceBadge extends StatelessWidget {
             ? 'Bonpreis'
             : 'Eigener Preis';
     return InkWell(
-      onTap: quotes.isEmpty ? null : () => _showQuotes(context, quotes),
+      onTap: matrix.isEmpty ? null : () => _showQuotes(context, matrix),
       borderRadius: BorderRadius.circular(12),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 5),
@@ -70,7 +77,19 @@ class ShoppingPriceBadge extends StatelessWidget {
                 ),
               ),
             ),
-            if (quotes.isNotEmpty)
+            if (matrix.length > 1)
+              Padding(
+                padding: const EdgeInsets.only(left: 6),
+                child: Text(
+                  '$pricedMarkets/${matrix.length} Märkte',
+                  style: const TextStyle(
+                    color: SparzamTheme.deepGreen,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            if (matrix.isNotEmpty)
               const Icon(Icons.chevron_right,
                   size: 16, color: SparzamTheme.deepGreen),
           ],
@@ -79,7 +98,11 @@ class ShoppingPriceBadge extends StatelessWidget {
     );
   }
 
-  void _showQuotes(BuildContext context, List<ShoppingQuote> quotes) {
+  void _showQuotes(
+    BuildContext context,
+    List<ShoppingPriceMatrixEntry> matrix,
+  ) {
+    final pricedMarkets = matrix.where((entry) => entry.hasQuote).length;
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -111,13 +134,37 @@ class ShoppingPriceBadge extends StatelessWidget {
                 'Bonpreise zeigen einen vergangenen Einkauf. '
                 'Angebote gelten nur unter den Bedingungen des Händlers.',
               ),
+              const SizedBox(height: 6),
+              Text(
+                '$pricedMarkets von ${matrix.length} Märkten mit belastbarem '
+                'Preisbeleg für genau diese Produktvariante.',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
               const SizedBox(height: 12),
               Flexible(
                 child: ListView.builder(
                   shrinkWrap: true,
-                  itemCount: quotes.length,
+                  itemCount: matrix.length,
                   itemBuilder: (context, index) {
-                    final quote = quotes[index];
+                    final entry = matrix[index];
+                    final quote = entry.quote;
+                    if (quote == null) {
+                      return ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: Icon(
+                          Icons.help_outline,
+                          color: Colors.amber.shade800,
+                        ),
+                        title: Text(entry.storeName),
+                        subtitle: const Text(
+                          'Kein aktueller, vergleichbarer Preisbeleg',
+                        ),
+                        trailing: const Text(
+                          'fehlt',
+                          style: TextStyle(fontWeight: FontWeight.w700),
+                        ),
+                      );
+                    }
                     return ListTile(
                       contentPadding: EdgeInsets.zero,
                       leading: quote.offer?.imageUrl?.trim().isNotEmpty == true
@@ -134,7 +181,7 @@ class ShoppingPriceBadge extends StatelessWidget {
                             )
                           : const Icon(Icons.local_offer_outlined),
                       title: Text(
-                        '${item.product.name} · ${quote.storeName}',
+                        '${item.product.name} · ${entry.storeName}',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),

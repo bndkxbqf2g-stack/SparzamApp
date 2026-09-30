@@ -39,9 +39,17 @@ void main() {
         ),
       ),
     ));
+    expect(find.text('1/6 Märkte'), findsOneWidget);
     await tester.tap(find.textContaining('Angebot Kaufland'));
     await tester.pumpAndSettle();
 
+    expect(find.text('PENNY'), findsOneWidget);
+    expect(find.text('Kein aktueller, vergleichbarer Preisbeleg'), findsWidgets);
+    await tester.scrollUntilVisible(
+      find.text('Käse · Kaufland'),
+      300,
+      scrollable: find.byType(Scrollable).last,
+    );
     expect(find.text('Käse · Kaufland'), findsOneWidget);
     expect(find.text('Käse'), findsOneWidget);
     expect(find.byType(Image), findsNWidgets(2));

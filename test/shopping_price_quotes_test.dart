@@ -104,4 +104,35 @@ void main() {
       hasLength(1),
     );
   });
+
+  test('price matrix keeps missing enabled markets visible', () {
+    final matrix = shoppingPriceMatrix(
+      item,
+      prices: [receipt],
+      offers: [offer],
+      enabledStores: const ['Lidl', 'Beispielmarkt', 'PENNY'],
+      now: DateTime(2026, 9, 24),
+    );
+
+    expect(matrix.map((entry) => entry.storeName), [
+      'Lidl',
+      'Beispielmarkt',
+      'PENNY',
+    ]);
+    expect(matrix[0].quote?.kind, ShoppingQuoteKind.offer);
+    expect(matrix[1].quote?.kind, ShoppingQuoteKind.receipt);
+    expect(matrix[2].quote, isNull);
+  });
+
+  test('without store filter the matrix covers the six configured markets', () {
+    final matrix = shoppingPriceMatrix(
+      item,
+      prices: const [],
+      offers: const [],
+      now: DateTime(2026, 9, 24),
+    );
+
+    expect(matrix, hasLength(6));
+    expect(matrix.every((entry) => entry.quote == null), isTrue);
+  });
 }
