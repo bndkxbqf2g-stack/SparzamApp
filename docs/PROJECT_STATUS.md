@@ -55,6 +55,17 @@
 - Für diesen Block: Flutter-Analyse ohne Befund, 423 Tests bestanden und
   `flutter build web --release` erfolgreich.
 
+## Update 30.09.2026 – Angebotsvorrang bei konkreten Varianten
+- Das Auswahlfenster für allgemeine Wünsche wie „Käse“ oder „Milch“ priorisiert
+  aktive Angebote jetzt vor Bon- und normalen Marktpreisen, auch wenn ein
+  historischer Einzelpreis nominal niedriger ist.
+- Coupon-/Cashback-Effekte werden im Auswahlpreis berücksichtigt. Gültigkeit,
+  Händler und Nachweis bleiben getrennt; abgelaufene Angebote gelangen nicht in
+  die Auswahl.
+- Eine Regression deckt den Vorrang und den effektiven Couponpreis ab.
+- Für diesen Block: Flutter-Analyse ohne Befund, 424 Tests bestanden und
+  `flutter build web --release` erfolgreich.
+
 ## Audit 30.09.2026
 - Die App startet jetzt in der Einkaufsliste; ein Widget-Test prüft den sichtbaren Einstieg bei 390 × 844 px.
 - Ein doppelter Import in `app_shell.dart` wurde entfernt.

@@ -178,3 +178,11 @@ Versionen dürfen ihre bekannten Demo-IDs bzw. exakten Demo-Beobachtungen bei
 der ersten Migration entfernen, müssen aber alle übrigen Nutzerwerte erhalten.
 Angebote sind erst innerhalb ihres vollständigen Gültigkeitszeitraums aktiv;
 historische Preisbelege bleiben von aktuellen Routenpreisen getrennt.
+
+## D043 – Aktive Angebote führen die konkrete Variantenwahl an
+Wenn ein generischer Einkaufswunsch mehrere konkrete Katalogvarianten zulässt,
+werden Varianten mit einem heute gültigen Angebot vor Varianten mit nur
+historischen Bon- oder normalen Marktpreisen angezeigt. Innerhalb des
+Angebotsvorrangs zählt der effektive Preis einschließlich sicher berechenbarer
+Coupon-/Cashback-Effekte. Historische Preise bleiben als Evidenz sichtbar und
+werden nicht gelöscht oder zur aktuellen Angebotsbehauptung umetikettiert.

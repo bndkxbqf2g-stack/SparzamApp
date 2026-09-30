@@ -106,4 +106,41 @@ void main() {
     expect(quotes.map((quote) => quote.storeName), isNot(contains('Kaufland')));
     expect(quotes.map((quote) => quote.storeName), isNot(contains('Lidl')));
   });
+
+  test('active offers are ranked before cheaper historical quotes', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda, edamer],
+      offers: [
+        Offer(
+          id: 'gouda-sale',
+          productId: 'gouda',
+          storeName: 'ALDI Süd',
+          originalPrice: 2,
+          offerPrice: 1.50,
+          couponPercent: 10,
+          validUntil: DateTime(2026, 9, 30),
+        ),
+      ],
+      marketPrices: const [],
+      receiptPriceStats: [
+        ReceiptPriceStat(
+          familyKey: 'kaese',
+          productId: 'edamer',
+          storeName: 'EDEKA',
+          latestPrice: 0.99,
+          latestAt: DateTime(2026, 9, 27),
+          observationCount: 1,
+          medianPrice: 0.99,
+          comparable: true,
+          priceBasis: '250 g',
+        ),
+      ],
+      now: now,
+    );
+
+    expect(candidates.first.product.id, 'gouda');
+    expect(candidates.first.quotes.first.isOffer, isTrue);
+    expect(candidates.first.quotes.first.price, 1.35);
+  });
 }
