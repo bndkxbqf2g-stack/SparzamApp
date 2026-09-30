@@ -8,16 +8,11 @@ import 'package:sparzamapp/models/store.dart';
 void main() {
   const custom = Product(
     id: 'custom_coffee',
-    name: 'Kaffee',
+    name: 'Filterkaffee',
     unit: '500 g',
     group: 'kaffee',
   );
-  const store = Store(
-    name: 'Lidl',
-    location: 'Ort',
-    distanceKm: 1,
-    prices: {},
-  );
+  const store = Store(name: 'Lidl', location: 'Ort', distanceKm: 1, prices: {});
 
   test('eigener Marktpreis macht eigenes Produkt routenfähig', () {
     final resolver = RoutePriceResolver(
@@ -32,10 +27,7 @@ void main() {
       ],
     );
 
-    final quote = resolver.quote(
-      store,
-      ListItem(product: custom, quantity: 2),
-    );
+    final quote = resolver.quote(store, ListItem(product: custom, quantity: 2));
 
     expect(quote, isNotNull);
     expect(quote!.unitPrice, 4.99);

@@ -1,8 +1,42 @@
 import '../../data/products.dart';
 import '../../models/product.dart';
 import '../../models/recent_purchase.dart';
+import '../../models/offer.dart';
+import '../../models/market_price.dart';
+import '../../models/receipt_price_stat.dart';
+import '../offers/effective_price.dart';
+import '../offers/offer_filter.dart';
 import '../catalog/product_identity.dart';
 import '../catalog/product_hierarchy.dart';
+import 'receipt_product_price_match.dart';
+import 'shopping_price_quotes.dart';
+import '../../services/quantity_normalizer.dart';
+
+class ShoppingSuggestionPrice {
+  const ShoppingSuggestionPrice({
+    required this.price,
+    required this.storeName,
+    required this.sourceLabel,
+    this.validUntil,
+    this.observedAt,
+    this.isOffer = false,
+  });
+
+  final double price;
+  final String storeName;
+  final String sourceLabel;
+  final DateTime? validUntil;
+  final DateTime? observedAt;
+  final bool isOffer;
+
+  String get displayLabel =>
+      '$sourceLabel $storeName ${price.toStringAsFixed(2).replaceAll('.', ',')} €'
+      '${validUntil == null ? '' : ' · bis ${_date(validUntil!)}'}';
+
+  static String _date(DateTime value) =>
+      '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.'
+      '${value.year}';
+}
 
 List<Product> buildSuggestions({
   required String query,
@@ -10,6 +44,11 @@ List<Product> buildSuggestions({
   required List<RecentPurchase> recentPurchases,
   required Map<String, String> preferredProductByGroup,
   List<Product> catalogProducts = products,
+  Iterable<Offer> offers = const <Offer>[],
+  Iterable<MarketPrice> marketPrices = const <MarketPrice>[],
+  Iterable<ReceiptPriceStat> receiptPriceStats = const <ReceiptPriceStat>[],
+  Iterable<String> enabledStores = const <String>[],
+  DateTime? now,
 }) {
   final normalized = query.trim().toLowerCase();
   if (normalized.isEmpty) return const <Product>[];
@@ -20,14 +59,15 @@ List<Product> buildSuggestions({
   final queryIdentity = identifyProduct(query);
   final catalogMatches = catalogProducts.where((product) {
     final values = [product.name, product.group, ...product.aliases];
-    final textMatch =
-        values.any((value) => value.toLowerCase().contains(normalized));
+    final textMatch = values.any(
+      (value) => value.toLowerCase().contains(normalized),
+    );
     if (!queryIdentity.isKnown) return textMatch;
 
-    final identities = [product.name, ...product.aliases]
-        .map(identifyProduct)
-        .where((identity) => identity.isKnown)
-        .toList();
+    final identities = [
+      product.name,
+      ...product.aliases,
+    ].map(identifyProduct).where((identity) => identity.isKnown).toList();
     if (identities.isNotEmpty) {
       return identities.any(
         (candidate) => compatibleProductIdentity(queryIdentity, candidate),
@@ -37,17 +77,53 @@ List<Product> buildSuggestions({
   });
 
   final seen = <String>{};
-  final matches = <Product>[...catalogMatches, ...learnedMatches]
-      .where((product) => seen.add(product.id))
-      .toList();
+  final matches = <Product>[
+    ...catalogMatches,
+    ...learnedMatches,
+  ].where((product) => seen.add(product.id)).toList();
+
+  final suggestionPrices = <String, ShoppingSuggestionPrice?>{
+    for (final product in matches)
+      product.id: shoppingSuggestionPriceForProduct(
+        product,
+        offers: offers,
+        marketPrices: marketPrices,
+        receiptPriceStats: receiptPriceStats,
+        enabledStores: enabledStores,
+        now: now,
+      ),
+  };
 
   matches.sort((a, b) {
+    final aPrice = suggestionPrices[a.id];
+    final bPrice = suggestionPrices[b.id];
+    if (aPrice != null || bPrice != null) {
+      if (aPrice == null) return 1;
+      if (bPrice == null) return -1;
+      if (aPrice.isOffer != bPrice.isOffer) return aPrice.isOffer ? -1 : 1;
+      final aComparable = _comparisonPrice(a, aPrice.price);
+      final bComparable = _comparisonPrice(b, bPrice.price);
+      if (aComparable != null &&
+          bComparable != null &&
+          aComparable.dimension == bComparable.dimension) {
+        final byUnitPrice = aComparable.price.compareTo(bComparable.price);
+        if (byUnitPrice != 0) return byUnitPrice;
+      } else if (_normalizedUnitLabel(a.unit) == _normalizedUnitLabel(b.unit)) {
+        final byPackagePrice = aPrice.price.compareTo(bPrice.price);
+        if (byPackagePrice != 0) return byPackagePrice;
+      }
+    }
+
     final aLearned = knownItems.any((item) => item.id == a.id);
     final bLearned = knownItems.any((item) => item.id == b.id);
     if (aLearned != bLearned) return aLearned ? -1 : 1;
 
-    final aPurchase = recentPurchases.where((item) => item.id == a.id).firstOrNull;
-    final bPurchase = recentPurchases.where((item) => item.id == b.id).firstOrNull;
+    final aPurchase = recentPurchases
+        .where((item) => item.id == a.id)
+        .firstOrNull;
+    final bPurchase = recentPurchases
+        .where((item) => item.id == b.id)
+        .firstOrNull;
     if (aPurchase != null || bPurchase != null) {
       if (aPurchase == null) return 1;
       if (bPurchase == null) return -1;
@@ -66,6 +142,137 @@ List<Product> buildSuggestions({
   return matches;
 }
 
+/// Returns the lowest usable exact price or comparable recent receipt median
+/// for one product. This is search ranking evidence, not a price guarantee.
+ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
+  Product product, {
+  Iterable<Offer> offers = const <Offer>[],
+  Iterable<MarketPrice> marketPrices = const <MarketPrice>[],
+  Iterable<ReceiptPriceStat> receiptPriceStats = const <ReceiptPriceStat>[],
+  Iterable<String> enabledStores = const <String>[],
+  DateTime? now,
+  int historyDays = 60,
+}) {
+  final current = now ?? DateTime.now();
+  final enabled = enabledStores.toSet();
+  final quotes = <ShoppingSuggestionPrice>[];
+
+  for (final offer in offers) {
+    if (offer.productId != product.id ||
+        (enabled.isNotEmpty && !enabled.contains(offer.storeName)) ||
+        !isOfferDateRangeActive(
+          validFrom: offer.validFrom,
+          validUntil: offer.validUntil,
+          now: current,
+        ) ||
+        isSampleOffer(offer)) {
+      continue;
+    }
+    final effective = effectivePrice(offer);
+    quotes.add(
+      ShoppingSuggestionPrice(
+        price: effective.finalPrice,
+        storeName: offer.storeName,
+        sourceLabel: effective.cashback > 0 ? 'Angebot, effektiv' : 'Angebot',
+        validUntil: offer.validUntil,
+        isOffer: true,
+      ),
+    );
+  }
+
+  for (final price in marketPrices) {
+    if (price.productId != product.id ||
+        price.source == MarketPriceSource.openPrices ||
+        (enabled.isNotEmpty && !enabled.contains(price.storeName)) ||
+        !price.price.isFinite ||
+        price.price <= 0 ||
+        !price.isUsable(now: current, openPricesMaxAgeDays: historyDays)) {
+      continue;
+    }
+    quotes.add(
+      ShoppingSuggestionPrice(
+        price: price.price,
+        storeName: price.storeName,
+        sourceLabel: price.source == MarketPriceSource.receipt
+            ? 'Bonpreis'
+            : 'Eigener Preis',
+        observedAt: price.updatedAt,
+      ),
+    );
+  }
+
+  final cutoff = DateTime(
+    current.year,
+    current.month,
+    current.day,
+  ).subtract(Duration(days: historyDays));
+  final existingReceiptStores = quotes
+      .where((quote) => quote.sourceLabel == 'Bonpreis')
+      .map((quote) => quote.storeName)
+      .toSet();
+  for (final stat in receiptStatsForProduct(product, receiptPriceStats)) {
+    if (!stat.comparable ||
+        !stat.latestAt.isAfter(cutoff) ||
+        (enabled.isNotEmpty && !enabled.contains(stat.storeName)) ||
+        existingReceiptStores.contains(stat.storeName)) {
+      continue;
+    }
+    quotes.add(
+      ShoppingSuggestionPrice(
+        price: stat.medianPrice,
+        storeName: stat.storeName,
+        sourceLabel: 'Bon-Median',
+        observedAt: stat.latestAt,
+      ),
+    );
+  }
+
+  if (quotes.isEmpty) return null;
+  quotes.sort((a, b) {
+    if (a.isOffer != b.isOffer) return a.isOffer ? -1 : 1;
+    final byPrice = a.price.compareTo(b.price);
+    if (byPrice != 0) return byPrice;
+    return a.storeName.compareTo(b.storeName);
+  });
+  return quotes.first;
+}
+
+({double price, QuantityDimension dimension})? _comparisonPrice(
+  Product product,
+  double price,
+) {
+  var amount = product.packageAmount;
+  var unit = product.packageUnit;
+  if (amount == null || unit == null) {
+    // A unit label such as "2 x 500 g" needs explicit multipack parsing;
+    // treating only the last component as the whole package would mis-rank it.
+    if (RegExp(r'\d\s*[x×]').hasMatch(product.unit.toLowerCase())) {
+      return null;
+    }
+    final match = RegExp(
+      r'(\d+(?:[,.]\d+)?)\s*(kg|g|ml|l|stk|st|stück|stueck)\b',
+    ).firstMatch(product.unit.toLowerCase());
+    if (match == null) return null;
+    amount = double.tryParse(match.group(1)!.replaceAll(',', '.'));
+    unit = match.group(2);
+  }
+  final quantity = normalizeQuantity(amount, unit);
+  final unitPrice = normalizedUnitPrice(
+    price: price,
+    amount: amount,
+    unit: unit,
+  );
+  if (quantity == null || unitPrice == null) return null;
+  return (price: unitPrice, dimension: quantity.dimension);
+}
+
+String _normalizedUnitLabel(String value) => value
+    .toLowerCase()
+    .replaceAll('stück', 'stk')
+    .replaceAll('stueck', 'stk')
+    .replaceAll(RegExp(r'\s+'), ' ')
+    .trim();
+
 List<Product> buildRelatedProductInterpretations({
   required String query,
   required List<Product> primarySuggestions,
@@ -80,9 +287,10 @@ List<Product> buildRelatedProductInterpretations({
 
   for (final product in catalogProducts) {
     if (primaryIds.contains(product.id)) continue;
-    final identities = [product.name, ...product.aliases]
-        .map(identifyProduct)
-        .where((identity) => identity.isKnown);
+    final identities = [
+      product.name,
+      ...product.aliases,
+    ].map(identifyProduct).where((identity) => identity.isKnown);
 
     final related = identities.any(
       (candidate) =>

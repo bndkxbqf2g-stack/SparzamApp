@@ -12,6 +12,7 @@ class ShoppingSearchResults extends StatelessWidget {
     required this.relatedInterpretations,
     required this.preferredProductByGroup,
     required this.recentPurchases,
+    this.priceHintFor,
     required this.onAdd,
     required this.onAddCustom,
   });
@@ -21,6 +22,7 @@ class ShoppingSearchResults extends StatelessWidget {
   final List<Product> relatedInterpretations;
   final Map<String, String> preferredProductByGroup;
   final List<RecentPurchase> recentPurchases;
+  final String? Function(Product product)? priceHintFor;
   final ValueChanged<Product> onAdd;
   final VoidCallback onAddCustom;
 
@@ -40,8 +42,7 @@ class ShoppingSearchResults extends StatelessWidget {
       child: Card(
         child: Column(
           children: [
-            for (final product in suggestions)
-              _productTile(product),
+            for (final product in suggestions) _productTile(product),
             if (relatedInterpretations.isNotEmpty) ...[
               const Divider(height: 1),
               const Padding(
@@ -97,11 +98,13 @@ class ShoppingSearchResults extends StatelessWidget {
   String _subtitle(Product product) {
     final hierarchy = productHierarchyLabel(product).path;
     final purchase = _recentPurchase(product.id);
-    if (purchase == null) return '$hierarchy · ${product.unit}';
-    final quantity = purchase.averageQuantity.round();
-    return quantity > 1
-        ? '$hierarchy · ${product.unit} · meist ×$quantity'
-        : '$hierarchy · ${product.unit}';
+    final parts = <String>['$hierarchy · ${product.unit}'];
+    if (purchase != null && purchase.averageQuantity.round() > 1) {
+      parts.add('meist ×${purchase.averageQuantity.round()}');
+    }
+    final price = priceHintFor?.call(product);
+    if (price != null) parts.add(price);
+    return parts.join(' · ');
   }
 }
 

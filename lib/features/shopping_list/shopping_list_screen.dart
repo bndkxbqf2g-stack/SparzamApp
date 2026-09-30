@@ -146,12 +146,24 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   }
 
   List<Product> get suggestions => buildSuggestions(
-        query: controller.text,
-        knownItems: knownItems,
-        recentPurchases: widget.recentPurchases,
-        preferredProductByGroup: widget.preferredProductByGroup,
-        catalogProducts: widget.catalogProducts,
-      );
+    query: controller.text,
+    knownItems: knownItems,
+    recentPurchases: widget.recentPurchases,
+    preferredProductByGroup: widget.preferredProductByGroup,
+    catalogProducts: widget.catalogProducts,
+    offers: widget.offers,
+    marketPrices: widget.marketPrices,
+    receiptPriceStats: receiptPriceStats,
+    enabledStores: widget.mobility.enabledStoreNames,
+  );
+
+  String? priceHintFor(Product product) => shoppingSuggestionPriceForProduct(
+    product,
+    offers: widget.offers,
+    marketPrices: widget.marketPrices,
+    receiptPriceStats: receiptPriceStats,
+    enabledStores: widget.mobility.enabledStoreNames,
+  )?.displayLabel;
 
   List<Product> get relatedInterpretations =>
       buildRelatedProductInterpretations(
@@ -161,16 +173,16 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       );
 
   List<Product> get quickProducts => buildQuickProducts(
-        widget.preferredProductByGroup,
-        catalogProducts: widget.catalogProducts,
-      );
+    widget.preferredProductByGroup,
+    catalogProducts: widget.catalogProducts,
+  );
 
   Map<String, List<ListItem>> get itemsByGroup => groupShoppingItems(
-        widget.items,
-        widget.offers.where((offer) => !isSampleOffer(offer)).toList(),
-        enabledStoreNames: widget.mobility.enabledStoreNames,
-        marketPrices: widget.marketPrices,
-      );
+    widget.items,
+    widget.offers.where((offer) => !isSampleOffer(offer)).toList(),
+    enabledStoreNames: widget.mobility.enabledStoreNames,
+    marketPrices: widget.marketPrices,
+  );
 
   Set<String> get checkedProductIds => widget.items
       .where((item) => item.checked)
@@ -310,7 +322,9 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         if (mounted) {
           setItemChecked(item, false);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Kauf konnte nicht gespeichert werden.')),
+            const SnackBar(
+              content: Text('Kauf konnte nicht gespeichert werden.'),
+            ),
           );
         }
       } finally {
@@ -350,9 +364,13 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     await _loadReceiptPriceStats();
     await widget.onReceiptObservationsChanged?.call();
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('${result.savedObservations} Produktbeobachtung(en) gelernt · ${result.savedPrices} direkte Bonpreise.'),
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '${result.savedObservations} Produktbeobachtung(en) gelernt · ${result.savedPrices} direkte Bonpreise.',
+        ),
+      ),
+    );
   }
 
   @override
@@ -420,6 +438,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   relatedInterpretations: relatedInterpretations,
                   preferredProductByGroup: widget.preferredProductByGroup,
                   recentPurchases: widget.recentPurchases,
+                  priceHintFor: priceHintFor,
                   onAdd: add,
                   onAddCustom: addCustomProduct,
                 )

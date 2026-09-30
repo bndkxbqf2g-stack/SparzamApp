@@ -3,32 +3,104 @@ import 'package:sparzamapp/features/catalog/product_identity.dart';
 
 void main() {
   test('generic milk competes across compatible fat variants', () {
-    expect(compatibleProductIdentity(identifyProduct('Milch'), identifyProduct('GL H-Milch 1,5% 1L')), isTrue);
-    expect(compatibleProductIdentity(identifyProduct('Milch'), identifyProduct('GL H-Milch 3,5% 1 L')), isTrue);
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Milch'),
+        identifyProduct('GL H-Milch 1,5% 1L'),
+      ),
+      isTrue,
+    );
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Milch'),
+        identifyProduct('GL H-Milch 3,5% 1 L'),
+      ),
+      isTrue,
+    );
   });
 
   test('specific milk fat does not match another fat', () {
-    expect(compatibleProductIdentity(identifyProduct('Milch 1,5%'), identifyProduct('H-Milch 3,5%')), isFalse);
-    expect(compatibleProductIdentity(identifyProduct('Milch 1,5%'), identifyProduct('Marke XY H-Vollmilch 1,5% 1L')), isTrue);
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Milch 1,5%'),
+        identifyProduct('H-Milch 3,5%'),
+      ),
+      isFalse,
+    );
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Milch 1,5%'),
+        identifyProduct('Marke XY H-Vollmilch 1,5% 1L'),
+      ),
+      isTrue,
+    );
   });
 
   test('paprika family excludes paprika-flavoured chips', () {
     expect(identifyProduct('Paprika Mix 500g').familyKey, 'paprika');
     expect(identifyProduct('Pringles Paprika').familyKey, 'chips');
-    expect(compatibleProductIdentity(identifyProduct('Paprika'), identifyProduct('Pringles Paprika')), isFalse);
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Paprika'),
+        identifyProduct('Pringles Paprika'),
+      ),
+      isFalse,
+    );
   });
 
   test('paprika variants and generic request follow specificity', () {
-    expect(compatibleProductIdentity(identifyProduct('rote Paprika'), identifyProduct('rote Spitzpaprika')), isTrue);
-    expect(compatibleProductIdentity(identifyProduct('rote Paprika'), identifyProduct('gelbe Paprika')), isFalse);
-    expect(compatibleProductIdentity(identifyProduct('Paprika'), identifyProduct('Paprika Mix 500g')), isTrue);
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('rote Paprika'),
+        identifyProduct('rote Spitzpaprika'),
+      ),
+      isTrue,
+    );
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('rote Paprika'),
+        identifyProduct('gelbe Paprika'),
+      ),
+      isFalse,
+    );
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Paprika'),
+        identifyProduct('Paprika Mix 500g'),
+      ),
+      isTrue,
+    );
   });
 
   test('hackfleisch and yoghurt retain variant constraints', () {
-    expect(compatibleProductIdentity(identifyProduct('Hackfleisch'), identifyProduct('Rinderhackfleisch')), isTrue);
-    expect(compatibleProductIdentity(identifyProduct('Rinderhackfleisch'), identifyProduct('gemischtes Hackfleisch')), isFalse);
-    expect(compatibleProductIdentity(identifyProduct('Joghurt'), identifyProduct('normaler Naturjoghurt')), isTrue);
-    expect(compatibleProductIdentity(identifyProduct('Naturjoghurt'), identifyProduct('Naturjoghurt')), isTrue);
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Hackfleisch'),
+        identifyProduct('Rinderhackfleisch'),
+      ),
+      isTrue,
+    );
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Rinderhackfleisch'),
+        identifyProduct('gemischtes Hackfleisch'),
+      ),
+      isFalse,
+    );
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Joghurt'),
+        identifyProduct('normaler Naturjoghurt'),
+      ),
+      isTrue,
+    );
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Naturjoghurt'),
+        identifyProduct('Naturjoghurt'),
+      ),
+      isTrue,
+    );
   });
 
   test('new retailer wording resolves without a stored alias', () {
@@ -46,22 +118,77 @@ void main() {
   test('compound product names do not use a bare substring as identity', () {
     expect(identifyProduct('Milchreis').familyKey, isNull);
     expect(identifyProduct('Wa.Stein.Pizza Mozz. 350g').familyKey, 'pizza');
-    expect(compatibleProductIdentity(identifyProduct('Mozzarella'), identifyProduct('Wa.Stein.Pizza Mozz. 350g')), isFalse);
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Mozzarella'),
+        identifyProduct('Wa.Stein.Pizza Mozz. 350g'),
+      ),
+      isFalse,
+    );
   });
 
-  test('fresh tomato request is not compatible with preserved tomato products', () {
-  final fresh=identifyProduct('Tomaten');
-  final passata=identifyProduct('Passata');
-  expect(compatibleProductIdentity(fresh, passata), isFalse);
-  });
+  test(
+    'fresh tomato request is not compatible with preserved tomato products',
+    () {
+      final fresh = identifyProduct('Tomaten');
+      final passata = identifyProduct('Passata');
+      expect(compatibleProductIdentity(fresh, passata), isFalse);
+    },
+  );
 
   test('preserved tomato request still accepts preserved tomato evidence', () {
-  expect(compatibleProductIdentity(identifyProduct('Passata'), identifyProduct('Gehackte Tomaten')), isTrue);
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Passata'),
+        identifyProduct('Gehackte Tomaten'),
+      ),
+      isTrue,
+    );
   });
 
   test('explicit mince variant is not a generic family request', () {
     expect(identifyProduct('Hackfleisch').isGeneric, isTrue);
     expect(identifyProduct('Hackfleisch gemischt').isGeneric, isFalse);
     expect(identifyProduct('Rinderhackfleisch').isGeneric, isFalse);
+  });
+
+  test('common staples resolve to their grocery families', () {
+    expect(identifyProduct('Freilandeier 10 Stück').familyKey, 'eier');
+    expect(identifyProduct('Naturjoghurt 500 g').familyKey, 'joghurt');
+    expect(identifyProduct('Aufbackbrötchen 6 Stück').familyKey, 'broetchen');
+    expect(identifyProduct('Erdbeer-Konfitüre').familyKey, 'marmelade');
+    expect(identifyProduct('Penne Rigate 500 g').familyKey, 'nudeln');
+    expect(identifyProduct('Nescafé Classic 200 g').familyKey, 'kaffee');
+  });
+
+  test('generic staples include variants but specific forms stay distinct', () {
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Brötchen'),
+        identifyProduct('Aufbackbrötchen 6 Stück'),
+      ),
+      isTrue,
+    );
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Aufbackbrötchen'),
+        identifyProduct('Brötchen'),
+      ),
+      isFalse,
+    );
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Nudeln'),
+        identifyProduct('Penne'),
+      ),
+      isTrue,
+    );
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Penne'),
+        identifyProduct('Spaghetti'),
+      ),
+      isFalse,
+    );
   });
 }

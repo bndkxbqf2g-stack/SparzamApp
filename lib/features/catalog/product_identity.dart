@@ -20,7 +20,8 @@ class ProductIdentity {
 
   bool get isKnown => familyKey != null;
 
-  bool get isGeneric => isKnown &&
+  bool get isGeneric =>
+      isKnown &&
       variant == null &&
       productType == null &&
       fatPercent == null &&
@@ -29,13 +30,13 @@ class ProductIdentity {
       meatType == null;
 
   String get variantKey => <String>[
-        if (variant != null) 'variant:$variant',
-        if (productType != null) 'type:$productType',
-        if (fatPercent != null) 'fat:${fatPercent!.toStringAsFixed(2)}',
-        if (color != null) 'color:$color',
-        if (shape != null) 'shape:$shape',
-        if (meatType != null) 'meat:$meatType',
-      ].join('|');
+    if (variant != null) 'variant:$variant',
+    if (productType != null) 'type:$productType',
+    if (fatPercent != null) 'fat:${fatPercent!.toStringAsFixed(2)}',
+    if (color != null) 'color:$color',
+    if (shape != null) 'shape:$shape',
+    if (meatType != null) 'meat:$meatType',
+  ].join('|');
 }
 
 ProductIdentity identifyProduct(String value) {
@@ -65,14 +66,31 @@ ProductIdentity identifyProduct(String value) {
           : null,
     );
   }
-  if (_hasAny(text, const ['hackfleisch', 'hackfl', 'rinderhack', 'rinderhackfleisch', 'gem hack'])) {
+  if (_hasAny(text, const [
+    'hackfleisch',
+    'hackfl',
+    'rinderhack',
+    'rinderhackfleisch',
+    'gem hack',
+  ])) {
     return ProductIdentity(
       familyKey: 'hackfleisch',
-      meatType: _hasAny(text, const ['rinderhack', 'rinderhackfleisch', 'rind hack', 'rind'])
+      meatType:
+          _hasAny(text, const [
+            'rinderhack',
+            'rinderhackfleisch',
+            'rind hack',
+            'rind',
+          ])
           ? 'rind'
-          : _hasAny(text, const ['gemischt', 'gemischtes', 'gem hack', 'hackfl gem'])
-              ? 'gemischt'
-              : null,
+          : _hasAny(text, const [
+              'gemischt',
+              'gemischtes',
+              'gem hack',
+              'hackfl gem',
+            ])
+          ? 'gemischt'
+          : null,
     );
   }
   if (_hasAny(text, const ['paprika', 'spitzpaprika'])) {
@@ -82,8 +100,8 @@ ProductIdentity identifyProduct(String value) {
       shape: _hasAny(text, const ['spitzpaprika', 'spitz paprika'])
           ? 'spitz'
           : _hasWord(text, 'mix')
-              ? 'mix'
-              : null,
+          ? 'mix'
+          : null,
     );
   }
   if (_hasAny(text, const ['banane', 'bananen'])) {
@@ -92,7 +110,13 @@ ProductIdentity identifyProduct(String value) {
   if (_hasAny(text, const ['apfel', 'aepfel', 'äpfel'])) {
     return ProductIdentity(familyKey: 'aepfel', color: _color(text));
   }
-  if (_hasAny(text, const ['eier', 'ei'])) {
+  if (_hasAny(text, const [
+    'eier',
+    'ei',
+    'freilandeier',
+    'bodenhaltungseier',
+    'bioeier',
+  ])) {
     return const ProductIdentity(familyKey: 'eier');
   }
   if (_hasAny(text, const ['kartoffel', 'kartoffeln'])) {
@@ -101,13 +125,13 @@ ProductIdentity identifyProduct(String value) {
   // Tomato products must be classified before fresh tomatoes. Matching the
   // token "tomate" alone must never turn tomato paste/sauce into fresh produce.
   if (_hasAny(text, const ['tomatenmark', 'tomaten mark'])) {
-    return const ProductIdentity(
-      familyKey: 'tomatenmark',
-      productType: 'mark',
-    );
+    return const ProductIdentity(familyKey: 'tomatenmark', productType: 'mark');
   }
   if (_hasAny(text, const [
-    'passata', 'geh tomaten', 'gehackte tomaten', 'dosentomaten',
+    'passata',
+    'geh tomaten',
+    'gehackte tomaten',
+    'dosentomaten',
     'dosen tomaten',
   ])) {
     return const ProductIdentity(
@@ -122,14 +146,18 @@ ProductIdentity identifyProduct(String value) {
     );
   }
   if (_hasAny(text, const [
-    'tomate', 'tomaten', 'rispentomaten', 'rispen tomaten',
-    'partytomaten', 'party tomaten', 'cherrytomaten', 'cherry tomaten',
-    'cocktailtomaten', 'cocktail tomaten',
+    'tomate',
+    'tomaten',
+    'rispentomaten',
+    'rispen tomaten',
+    'partytomaten',
+    'party tomaten',
+    'cherrytomaten',
+    'cherry tomaten',
+    'cocktailtomaten',
+    'cocktail tomaten',
   ])) {
-    return ProductIdentity(
-      familyKey: 'tomaten',
-      variant: _tomatoVariant(text),
-    );
+    return ProductIdentity(familyKey: 'tomaten', variant: _tomatoVariant(text));
   }
   if (_hasAny(text, const ['weintrauben', 'trauben'])) {
     return const ProductIdentity(familyKey: 'weintrauben');
@@ -137,33 +165,94 @@ ProductIdentity identifyProduct(String value) {
   if (_hasWord(text, 'fischstäbchen')) {
     return const ProductIdentity(familyKey: 'fischstäbchen');
   }
+  if (_hasAny(text, const [
+    'aufbackbroetchen',
+    'aufback broetchen',
+    'broetchen',
+    'semmel',
+  ])) {
+    return ProductIdentity(
+      familyKey: 'broetchen',
+      variant:
+          text.startsWith('aufback') ||
+              _hasAny(text, const ['aufback', 'backofen'])
+          ? 'aufback'
+          : null,
+    );
+  }
+  if (_hasAny(text, const ['marmelade', 'konfituere', 'fruchtaufstrich'])) {
+    return const ProductIdentity(familyKey: 'marmelade');
+  }
+  if (_hasAny(text, const [
+    'nudel',
+    'nudeln',
+    'pasta',
+    'spaghetti',
+    'penne',
+    'fusilli',
+    'farfalle',
+    'rigatoni',
+    'tortellini',
+    'lasagne',
+  ])) {
+    return ProductIdentity(familyKey: 'nudeln', productType: _pastaType(text));
+  }
+  if (_hasAny(text, const [
+    'kaffee',
+    'cafe',
+    'nescafe',
+    'espresso',
+    'kaffeebohnen',
+    'bohnenkaffee',
+    'filterkaffee',
+    'instantkaffee',
+  ])) {
+    return ProductIdentity(familyKey: 'kaffee', productType: _coffeeType(text));
+  }
   if (_hasAny(text, const ['sandwichtoast', 'toast'])) {
     return const ProductIdentity(familyKey: 'toast');
   }
   if (_hasAny(text, const [
-    'käse', 'kaese', 'gouda', 'edamer', 'emmentaler', 'bergkäse',
-    'bergkaese', 'butterkäse', 'butterkaese', 'tilsiter',
+    'käse',
+    'kaese',
+    'gouda',
+    'edamer',
+    'emmentaler',
+    'bergkäse',
+    'bergkaese',
+    'butterkäse',
+    'butterkaese',
+    'tilsiter',
   ])) {
     return ProductIdentity(familyKey: 'kaese', variant: _cheeseVariant(text));
   }
   if (_hasAny(text, const [
-    'wurst', 'salami', 'lyoner', 'schinkenwurst', 'fleischwurst',
-    'mortadella', 'cervelat',
+    'wurst',
+    'salami',
+    'lyoner',
+    'schinkenwurst',
+    'fleischwurst',
+    'mortadella',
+    'cervelat',
   ])) {
     return ProductIdentity(familyKey: 'wurst', variant: _sausageVariant(text));
   }
   return const ProductIdentity(familyKey: null);
 }
 
-bool compatibleProductIdentity(ProductIdentity request, ProductIdentity candidate) {
+bool compatibleProductIdentity(
+  ProductIdentity request,
+  ProductIdentity candidate,
+) {
   if (!request.isKnown || request.familyKey != candidate.familyKey) {
     return false;
   }
-  if (request.productType != candidate.productType &&
-      (request.productType != null || candidate.productType != null)) {
+  if (request.productType != null &&
+      request.productType != candidate.productType) {
     return false;
   }
-  if (request.fatPercent != null && request.fatPercent != candidate.fatPercent) {
+  if (request.fatPercent != null &&
+      request.fatPercent != candidate.fatPercent) {
     return false;
   }
   if (request.color != null && request.color != candidate.color) {
@@ -175,11 +264,36 @@ bool compatibleProductIdentity(ProductIdentity request, ProductIdentity candidat
   if (request.meatType != null && request.meatType != candidate.meatType) {
     return false;
   }
-  if (request.variant != null && candidate.variant != null &&
-      request.variant != candidate.variant) {
+  if (request.variant != null && request.variant != candidate.variant) {
     return false;
   }
   return true;
+}
+
+String? _pastaType(String text) {
+  for (final type in const [
+    'spaghetti',
+    'penne',
+    'fusilli',
+    'farfalle',
+    'rigatoni',
+    'tortellini',
+    'lasagne',
+  ]) {
+    if (_hasWord(text, type)) return type;
+  }
+  return null;
+}
+
+String? _coffeeType(String text) {
+  if (_hasAny(text, const ['entkoffeiniert', 'koffeinfrei'])) return 'decaf';
+  if (_hasAny(text, const ['instantkaffee', 'loeslicher kaffee', 'loeslich'])) {
+    return 'instant';
+  }
+  if (_hasAny(text, const ['espresso'])) return 'espresso';
+  if (_hasAny(text, const ['filterkaffee', 'filter'])) return 'filter';
+  if (_hasAny(text, const ['kaffeebohnen', 'bohnenkaffee'])) return 'beans';
+  return null;
 }
 
 String normalizeIdentityText(String value) => value
@@ -188,6 +302,7 @@ String normalizeIdentityText(String value) => value
     .replaceAll('ö', 'oe')
     .replaceAll('ü', 'ue')
     .replaceAll('ß', 'ss')
+    .replaceAll('é', 'e')
     .replaceAll(RegExp(r'[._/-]+'), ' ')
     .replaceAll(RegExp(r'\s+'), ' ')
     .trim();
@@ -200,16 +315,24 @@ bool _hasWord(String text, String word) {
       text.contains(' $normalized ');
 }
 
-bool _hasAny(String text, List<String> words) => words.any((word) => _hasWord(text, word));
+bool _hasAny(String text, List<String> words) =>
+    words.any((word) => _hasWord(text, word));
 
 double? _percent(String text) {
   final match = RegExp(r'(\d+(?:[,.]\d+)?)\s*%').firstMatch(text);
-  return match == null ? null : double.tryParse(match.group(1)!.replaceAll(',', '.'));
+  return match == null
+      ? null
+      : double.tryParse(match.group(1)!.replaceAll(',', '.'));
 }
 
 String? _cheeseVariant(String text) {
   for (final term in const [
-    'gouda', 'edamer', 'emmentaler', 'bergkaese', 'butterkaese', 'tilsiter',
+    'gouda',
+    'edamer',
+    'emmentaler',
+    'bergkaese',
+    'butterkaese',
+    'tilsiter',
   ]) {
     if (_hasWord(text, term)) return term;
   }
@@ -218,7 +341,12 @@ String? _cheeseVariant(String text) {
 
 String? _sausageVariant(String text) {
   for (final term in const [
-    'salami', 'lyoner', 'schinkenwurst', 'fleischwurst', 'mortadella', 'cervelat',
+    'salami',
+    'lyoner',
+    'schinkenwurst',
+    'fleischwurst',
+    'mortadella',
+    'cervelat',
   ]) {
     if (_hasWord(text, term)) return term;
   }

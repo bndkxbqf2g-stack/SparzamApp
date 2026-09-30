@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../design/sparzam_theme.dart';
 import '../offers/offer_import.dart';
+import '../offers/prospect_offer_products.dart';
 import '../../models/product.dart';
 import '../../services/prospect_feed_service.dart';
 
@@ -57,18 +58,14 @@ class ProspectsScreen extends StatelessWidget {
             ),
           )
         else ...[
-          Text(
-            'Alle Märkte',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          Text('Alle Märkte', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
           SizedBox(
             height: 230,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: visibleProspects.length,
-              separatorBuilder: (context, index) =>
-                  const SizedBox(width: 12),
+              separatorBuilder: (context, index) => const SizedBox(width: 12),
               itemBuilder: (context, index) {
                 final issue = visibleProspects[index];
                 return _ProspectCard(
@@ -115,8 +112,7 @@ class _ProspectCard extends StatelessWidget {
                 child: hasPages
                     ? Image.network(
                         issue.pages.first.imageUrl,
-                        webHtmlElementStrategy:
-                            WebHtmlElementStrategy.prefer,
+                        webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
                         fit: BoxFit.cover,
                         width: double.infinity,
                         errorBuilder: (context, error, stackTrace) =>
@@ -200,11 +196,15 @@ class _ProspectViewer extends StatelessWidget {
         .toList(growable: false);
     final groupedItems = <String, List<OfferImportRecord>>{};
     for (final record in items) {
-      groupedItems.putIfAbsent(_prospectCategory(record.productLabel), () => [])
+      groupedItems
+          .putIfAbsent(_prospectCategory(record.productLabel), () => [])
           .add(record);
     }
     final categories = groupedItems.keys.toList()
-      ..sort((a, b) => _prospectCategoryOrder(a).compareTo(_prospectCategoryOrder(b)));
+      ..sort(
+        (a, b) =>
+            _prospectCategoryOrder(a).compareTo(_prospectCategoryOrder(b)),
+      );
 
     return Scaffold(
       appBar: AppBar(title: Text(issue.storeName)),
@@ -260,9 +260,9 @@ class _ProspectViewer extends StatelessWidget {
                       fit: BoxFit.contain,
                       errorBuilder: (context, error, stackTrace) =>
                           const SizedBox(
-                        height: 180,
-                        child: Icon(Icons.broken_image),
-                      ),
+                            height: 180,
+                            child: Icon(Icons.broken_image),
+                          ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8),
@@ -285,7 +285,10 @@ class _ProspectViewer extends StatelessWidget {
                 child: Text(
                   category,
                   key: ValueKey('prospect-category-$category'),
-                  style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 18,
+                  ),
                 ),
               ),
               LayoutBuilder(
@@ -300,13 +303,16 @@ class _ProspectViewer extends StatelessWidget {
                           width: width,
                           child: Builder(
                             builder: (context) {
-                              final result = resolveOfferImport(record, catalogProducts);
-                              final product = result.product ?? Product(
-                                id: '${record.storeName}|${record.sourceId}',
-                                name: record.productLabel,
-                                unit: 'Stück',
-                                group: category,
+                              final result = resolveOfferImport(
+                                record,
+                                catalogProducts,
                               );
+                              final product =
+                                  result.product ??
+                                  productForProspectOffer(
+                                    record,
+                                    catalogProducts,
+                                  );
                               return _ProspectProductCard(
                                 record: record,
                                 category: category,
@@ -322,7 +328,8 @@ class _ProspectViewer extends StatelessWidget {
                 },
               ),
             ],
-          ],        ],
+          ],
+        ],
       ),
     );
   }
@@ -347,29 +354,53 @@ int _prospectCategoryOrder(String category) =>
 
 String _prospectCategory(String label) {
   final value = label.toLowerCase();
-  if (RegExp(r'gemüse|salat|tomat|gurk|kartoff|obst|apfel|banane|traube').hasMatch(value)) {
+  if (RegExp(r'gemüse|salat|tomat|gurk|kartoff|obst|apfel|banane|traube')
+      .hasMatch(value)) {
     return 'Obst & Gemüse';
   }
-  if (RegExp(r'milch|joghurt|käse|schmand|sahne|quark|butter').hasMatch(value)) {
+  if (RegExp(r'milch|joghurt|käse|schmand|sahne|quark|butter')
+      .hasMatch(value)) {
     return 'Milchprodukte';
   }
-  if (RegExp(r'hack|fleisch|wurst|schinken|fisch|lachs|hähnchen').hasMatch(value)) {
+  if (RegExp(r'hack|fleisch|wurst|schinken|fisch|lachs|hähnchen')
+      .hasMatch(value)) {
     return 'Fleisch & Fisch';
   }
-  if (RegExp(r'brot|bröt|toast|backwaren|croissant').hasMatch(value)) return 'Backwaren';
-  if (RegExp(r'getränk|wasser|saft|cola|bier|wein|kaffee|tee').hasMatch(value)) return 'Getränke';
-  if (RegExp(r'tiefkühl|tk |pizza|eis ').hasMatch(value)) return 'Tiefkühl';
-  if (RegExp(r'reis|nudel|mehl|zucker|dose|konserve|sauce|öl|gewürz').hasMatch(value)) {
+  if (RegExp(r'brot|bröt|toast|backwaren|croissant').hasMatch(value)) {
+    return 'Backwaren';
+  }
+  if (RegExp(r'getränk|wasser|saft|cola|bier|wein|kaffee|tee')
+      .hasMatch(value)) {
+    return 'Getränke';
+  }
+  if (RegExp(r'tiefkühl|tk |pizza|eis ').hasMatch(value)) {
+    return 'Tiefkühl';
+  }
+  if (RegExp(r'reis|nudel|mehl|zucker|dose|konserve|sauce|öl|gewürz')
+      .hasMatch(value)) {
     return 'Vorrat & Konserven';
   }
-  if (RegExp(r'seife|shampoo|zahnpasta|deo|waschmittel|reiniger').hasMatch(value)) return 'Drogerie';
-  if (RegExp(r'küche|haushalt|müll|papier|lampe|werkzeug|akku|bastel|raum-weiß').hasMatch(value)) return 'Haushalt';
-  if (RegExp(r'non-food|bekleidung|schuh|spielzeug|dekoration').hasMatch(value)) return 'Non-Food';
+  if (RegExp(r'seife|shampoo|zahnpasta|deo|waschmittel|reiniger')
+      .hasMatch(value)) {
+    return 'Drogerie';
+  }
+  if (RegExp(r'küche|haushalt|müll|papier|lampe|werkzeug|akku|bastel|raum-weiß')
+      .hasMatch(value)) {
+    return 'Haushalt';
+  }
+  if (RegExp(r'non-food|bekleidung|schuh|spielzeug|dekoration')
+      .hasMatch(value)) {
+    return 'Non-Food';
+  }
   return 'Weitere Angebote';
 }
 
 class _ProspectProductCard extends StatelessWidget {
-  const _ProspectProductCard({required this.record, required this.category, required this.onTap});
+  const _ProspectProductCard({
+    required this.record,
+    required this.category,
+    required this.onTap,
+  });
 
   final OfferImportRecord record;
   final String category;
@@ -397,7 +428,12 @@ class _ProspectProductCard extends StatelessWidget {
                                 WebHtmlElementStrategy.prefer,
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) =>
-                                Center(child: Icon(_categoryIcon(category), size: 42)),
+                                Center(
+                                  child: Icon(
+                                    _categoryIcon(category),
+                                    size: 42,
+                                  ),
+                                ),
                           )
                         : Center(
                             child: Icon(_categoryIcon(category), size: 42),
@@ -409,7 +445,11 @@ class _ProspectProductCard extends StatelessWidget {
                     child: CircleAvatar(
                       radius: 23,
                       backgroundColor: Colors.green.shade400,
-                      child: const Icon(Icons.add, color: Colors.white, size: 30),
+                      child: const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                        size: 30,
+                      ),
                     ),
                   ),
                 ],
@@ -462,17 +502,26 @@ class _ProspectProductCard extends StatelessWidget {
   }
 }
 
-String _prospectDate(DateTime value) => '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.${value.year}';
+String _prospectDate(DateTime value) =>
+    '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.${value.year}';
 
 IconData _categoryIcon(String category) {
   switch (category) {
-    case 'Obst & Gemüse': return Icons.eco_outlined;
-    case 'Milchprodukte': return Icons.local_drink_outlined;
-    case 'Fleisch & Fisch': return Icons.restaurant_outlined;
-    case 'Getränke': return Icons.local_bar_outlined;
-    case 'Haushalt': return Icons.home_outlined;
-    case 'Drogerie': return Icons.clean_hands_outlined;
-    case 'Non-Food': return Icons.shopping_bag_outlined;
-    default: return Icons.local_offer_outlined;
+    case 'Obst & Gemüse':
+      return Icons.eco_outlined;
+    case 'Milchprodukte':
+      return Icons.local_drink_outlined;
+    case 'Fleisch & Fisch':
+      return Icons.restaurant_outlined;
+    case 'Getränke':
+      return Icons.local_bar_outlined;
+    case 'Haushalt':
+      return Icons.home_outlined;
+    case 'Drogerie':
+      return Icons.clean_hands_outlined;
+    case 'Non-Food':
+      return Icons.shopping_bag_outlined;
+    default:
+      return Icons.local_offer_outlined;
   }
 }

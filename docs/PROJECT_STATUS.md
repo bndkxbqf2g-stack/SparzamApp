@@ -55,6 +55,28 @@ Eine intelligente und alltagstaugliche Preisdatenbank aufbauen:
 5. Angebote als zeitabhängige Preise behandeln, nicht als neue Produkte.
 6. Preisqualität/Herkunft/Aktualität nachvollziehbar halten.
 
+## Update 30.09.2026 – Angebote und Preise direkt in der Einkaufssuche
+- Aktuell gültige, belegte Prospektangebote können als eigene exakte
+  Suchprodukte erscheinen, auch wenn ein Artikel noch nicht im kleinen
+  Basiskatalog steht. Unbekannte Labels werden nicht per Ähnlichkeit mit
+  bestehenden Produkten zusammengeführt.
+- Exakt übereinstimmende normalisierte Prospektlabels teilen eine ID über
+  Märkte hinweg. Erst beim Hinzufügen wird das Produkt in die Einkaufsliste
+  übernommen.
+- Vorschläge priorisieren gültige Angebote; innerhalb vergleichbarer
+  Packungsgrößen entscheidet der normierte Preis. Ohne passendes Angebot
+  können aktuelle Marktpreise und vergleichbare Bonpreis-Mediane der letzten
+  60 Tage die Reihenfolge bestimmen. Preisquelle und Markt erscheinen direkt
+  in den Suchergebnissen.
+- Allgemeine Vorratswünsche wie Eier, Brötchen/Aufbackbrötchen, Marmelade,
+  Nudeln und Kaffee erhalten generische Produktfamilien; konkrete Varianten
+  bleiben getrennt und auswählbar.
+- Regressionstests decken Angebotsuche, Preisrangfolge, sichere
+  Produktidentität und den Abzug von Fahrtkosten beim Angebotsvergleich ab.
+- Der letzte lokale Prospekt-Refresh erhielt für Netto Thüngersheim HTTP 403.
+  Ohne verlässliche Angebotsdaten darf die App dort keine aktuellen Preise
+  anzeigen; ein belastbarer offizieller Feed bleibt offen.
+
 ### Angebotsansicht
 - Die sichtbare Rubrik „Angebote“ ist bewusst auf den aktuellen Prospekt
   beschränkt.
