@@ -36,9 +36,9 @@ void main() {
     SharedPreferencesAsyncPlatform.instance = null;
   });
 
-  testWidgets('sparzamApp startet', (tester) async {
+  testWidgets('sparzamApp startet auf einem schmalen iPhone-Viewport', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
-    tester.view.devicePixelRatio = 1;
+    tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
@@ -70,5 +70,7 @@ void main() {
     );
 
     expect(find.text('Was möchtest du einkaufen?'), findsOneWidget);
+    await tester.pump();
+    expect(tester.takeException(), isNull);
   });
 }

@@ -37,4 +37,4 @@ jobs:
           fi
 
           echo "Starte automatischen Release für ${current_sha}."
-          gh workflow run release.yml --ref main
+          gh workflow run release.yml --ref main --repo "${REPOSITORY}"
