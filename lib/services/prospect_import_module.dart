@@ -46,6 +46,7 @@ class ProspectImportModule {
       refreshedStores: feed.refreshedStores,
       generatedAt: feed.generatedAt,
       prospects: prospects,
+      fromCache: feed.fromCache,
     );
   }
 

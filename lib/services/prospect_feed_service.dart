@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../features/offers/offer_import.dart';
+import 'prospect_feed_cache.dart';
 
 class ProspectFeedLoadResult {
   const ProspectFeedLoadResult({
@@ -10,12 +11,14 @@ class ProspectFeedLoadResult {
     required this.refreshedStores,
     this.generatedAt,
     this.prospects = const <ProspectIssue>[],
+    this.fromCache = false,
   });
 
   final List<OfferImportRecord> records;
   final List<String> refreshedStores;
   final DateTime? generatedAt;
   final List<ProspectIssue> prospects;
+  final bool fromCache;
 }
 
 class ProspectIssue {
@@ -81,27 +84,60 @@ String? officialProspectUrl(String storeName, [String? fallback]) {
 }
 
 class ProspectFeedService {
-  ProspectFeedService({http.Client? client})
-    : _client = client ?? http.Client();
+  ProspectFeedService({http.Client? client, ProspectFeedCache? cache})
+    : _client = client ?? http.Client(),
+      _cache = cache ?? SharedPreferencesProspectFeedCache();
 
   static const feedUrl =
       'https://raw.githubusercontent.com/bndkxbqf2g-stack/SparzamApp/'
       'main/assets/prospects/current.json';
 
   final http.Client _client;
+  final ProspectFeedCache _cache;
 
   Future<ProspectFeedLoadResult> load() async {
-    final response = await _client
-        .get(Uri.parse(feedUrl))
-        .timeout(const Duration(seconds: 10));
-    if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw StateError('Prospektfeed HTTP ${response.statusCode}');
+    try {
+      final response = await _client
+          .get(Uri.parse(feedUrl))
+          .timeout(const Duration(seconds: 10));
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        throw StateError('Prospektfeed HTTP ${response.statusCode}');
+      }
+      final result = parseProspectFeed(response.body);
+      // A cache failure must never hide a valid live feed.
+      try {
+        await _cache.save(response.body);
+      } catch (_) {
+        // The next online refresh can try to repair the cache.
+      }
+      return result;
+    } catch (error, stackTrace) {
+      final cached = await _loadCachedFeed();
+      if (cached != null) return cached;
+      Error.throwWithStackTrace(error, stackTrace);
     }
-    return parseProspectFeed(response.body);
+  }
+
+  Future<ProspectFeedLoadResult?> _loadCachedFeed() async {
+    String? raw;
+    try {
+      raw = await _cache.load();
+    } catch (_) {
+      return null;
+    }
+    if (raw == null || raw.trim().isEmpty) return null;
+    try {
+      return parseProspectFeed(raw, fromCache: true);
+    } catch (_) {
+      return null;
+    }
   }
 }
 
-ProspectFeedLoadResult parseProspectFeed(String raw) {
+ProspectFeedLoadResult parseProspectFeed(
+  String raw, {
+  bool fromCache = false,
+}) {
   final json = jsonDecode(raw);
   if (json is! Map<String, dynamic>) {
     throw const FormatException('Ungültiger Prospektfeed');
@@ -242,5 +278,6 @@ ProspectFeedLoadResult parseProspectFeed(String raw) {
     refreshedStores: refreshedStores,
     generatedAt: generatedAt,
     prospects: prospects,
+    fromCache: fromCache,
   );
 }

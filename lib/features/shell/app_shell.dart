@@ -327,7 +327,8 @@ class _AppShellState extends State<AppShell> {
         details:
             '${feed.records.length} Rohangebote · '
             '${resolved.length} zugeordnet · '
-            '${learnedPrices.length} datierte Preise gelernt',
+            '${learnedPrices.length} datierte Preise gelernt · '
+            'Quelle: ${feed.fromCache ? 'lokaler Cache' : 'Livefeed'}',
       );
     } catch (error) {
       widget.diagnosticLogService.record(

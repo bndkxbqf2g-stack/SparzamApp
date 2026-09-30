@@ -29,6 +29,8 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 - Keine künstlichen Produktduplikate durch Angebote erzeugen.
 - [x] Sichtbare Rubrik „Angebote“ zunächst ausschließlich auf den aktuellen
   Prospektfeed und gültige Prospektzeiträume begrenzen.
+- [x] Den öffentlichen Prospektfeed lokal zwischenspeichern und bei einem
+  temporären Abruffehler nur mit unverändertem Gültigkeitsfilter verwenden.
 - [ ] Prospektfeed weiter auf vollständige Artikelbilder, Kategorien,
   Filialbezug und belastbare Gültigkeit ausbauen.
 
