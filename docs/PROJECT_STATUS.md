@@ -386,3 +386,10 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Die Suchrangfolge bevorzugt bei mehreren kompatiblen Varianten die noch im
   Bonlabel erkennbare Bezeichnung, ohne Preis- oder Identitätsvertrauen zu
   erhöhen.
+
+## Update 30.09.2026 – Einheitliche H-Milch-Auswahl
+- Die separate Auswahlansicht für generische Einkaufspositionen übernimmt jetzt
+  dieselbe offene H-Milch-Interpretation wie die direkte Produktsuche. Ein
+  Händlerlabel ohne Fettstufe zeigt beide belegbaren Milchvarianten zur Auswahl;
+  keine Variante erbt dabei den Preis der anderen.
+- Ein Regressionstest deckt diesen Auswahlpfad ab.
