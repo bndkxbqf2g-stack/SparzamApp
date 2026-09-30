@@ -55,9 +55,12 @@ void main() {
     expect(summary.lines.first.usesOffer, isTrue);
     expect(summary.savings, closeTo(0.30, 0.001));
     expect(summary.total, closeTo(2.77, 0.001));
+    expect(summary.pricedItemCount, 2);
+    expect(summary.totalItemCount, 2);
+    expect(summary.hasDataGaps, isFalse);
   });
 
-  test('Artikel ohne Marktpreis werden nicht angezeigt', () {
+  test('Artikel ohne Marktpreis bleiben als Datenlücke sichtbar', () {
     const unknown = Product(
       id: 'custom_unknown',
       name: 'Unbekannt',
@@ -74,6 +77,10 @@ void main() {
 
     expect(summary.lines, isEmpty);
     expect(summary.total, 0);
+    expect(summary.unpricedItems.single.product.id, 'custom_unknown');
+    expect(summary.pricedItemCount, 0);
+    expect(summary.totalItemCount, 1);
+    expect(summary.hasDataGaps, isTrue);
   });
 
   test('abgelaufene Angebote werden als Normalpreis behandelt', () {

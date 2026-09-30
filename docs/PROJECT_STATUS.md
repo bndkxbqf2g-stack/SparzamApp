@@ -483,3 +483,15 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   als aktive Märkte gezählt. Zwei Regressionen decken beide Fälle ab.
 - `flutter analyze` ist ohne Befund, alle 449 Flutter-Tests sind grün und
   `flutter build web --release` war erfolgreich.
+
+## Update 01.10.2026 – Teilwarenkörbe in der Markt-Detailansicht
+- `StoreShoppingSummary` führt nicht bepreiste oder nur geschätzte Positionen
+  als `unpricedItems` und stellt `pricedItemCount`, `totalItemCount` sowie
+  `hasDataGaps` bereit.
+- `StoreValue` unterdrückt bei unvollständiger Abdeckung die vollständigen
+  `isWorthIt`-/Neutral-Aussagen. Die Detailansicht nennt die betroffenen Artikel
+  und bezeichnet Kosten und Ersparnis ausdrücklich als Teilwarenkorb.
+- Die UI-Regression prüft die sichtbare Warnung „Preisabdeckung unvollständig“
+  und verhindert eine irreführende Markt-Empfehlung.
+- `flutter analyze` ist ohne Befund, alle 451 Flutter-Tests sind grün und der
+  Web-Build wird im Abschlussgate erneut geprüft.

@@ -11,15 +11,20 @@ class StoreValue {
     required this.travelCost,
     required this.netAdvantage,
     required this.totalWithTravel,
+    required this.pricedItemCount,
+    required this.totalItemCount,
   });
 
   final double basketSavings;
   final double travelCost;
   final double netAdvantage;
   final double totalWithTravel;
+  final int pricedItemCount;
+  final int totalItemCount;
 
-  bool get isWorthIt => netAdvantage > 0;
-  bool get isNeutral => netAdvantage.abs() < 0.005;
+  bool get hasDataGaps => pricedItemCount < totalItemCount;
+  bool get isWorthIt => !hasDataGaps && netAdvantage > 0;
+  bool get isNeutral => !hasDataGaps && netAdvantage.abs() < 0.005;
 }
 
 StoreValue evaluateStoreValue(
@@ -53,5 +58,7 @@ StoreValue evaluateStoreValue(
     travelCost: travel,
     netAdvantage: net,
     totalWithTravel: summary.total + travel,
+    pricedItemCount: summary.pricedItemCount,
+    totalItemCount: summary.totalItemCount,
   );
 }

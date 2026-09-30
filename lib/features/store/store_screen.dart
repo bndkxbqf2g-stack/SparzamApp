@@ -155,13 +155,64 @@ class _StoreScreenState extends State<StoreScreen> {
                   ),
                   Text(
                     summary.savings > 0
-                        ? 'Für deine Liste · spare ${summary.savings.toStringAsFixed(2)} €'
-                        : 'Für deine Liste',
+                        ? summary.hasDataGaps
+                            ? 'Für den belegten Teil · spare '
+                                '${summary.savings.toStringAsFixed(2)} €'
+                            : 'Für deine Liste · spare '
+                                '${summary.savings.toStringAsFixed(2)} €'
+                        : summary.hasDataGaps
+                            ? 'Für den belegten Teil'
+                            : 'Für deine Liste',
                   ),
+                  if (summary.totalItemCount > 0) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      '${summary.pricedItemCount} von '
+                      '${summary.totalItemCount} Artikeln mit aktuellem, '
+                      'vergleichbarem Preis',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
                 ],
               ),
             ),
           ),
+          if (summary.hasDataGaps) ...[
+            const SizedBox(height: 12),
+            Card(
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.info_outline),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            'Preisabdeckung unvollständig',
+                            style: const TextStyle(fontWeight: FontWeight.w800),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Kosten und Ersparnis gelten nur für den belegten Teil '
+                      'deiner Liste.',
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Ohne Preis: ${summary.unpricedItems.map((item) => item.product.name).join(', ')}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: 16),
           _ValueCard(value: value),
           const SizedBox(height: 16),
@@ -255,14 +306,19 @@ class _ValueCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final incomplete = value.hasDataGaps;
     final positive = value.isWorthIt;
     final neutral = value.isNeutral;
-    final icon = positive
+    final icon = incomplete
+        ? Icons.info_outline
+        : positive
         ? Icons.thumb_up_alt_outlined
         : neutral
             ? Icons.remove_circle_outline
             : Icons.warning_amber_rounded;
-    final title = positive
+    final title = incomplete
+        ? 'Preisabdeckung unvollständig'
+        : positive
         ? 'Dieser Markt lohnt sich durch die Angebote'
         : neutral
             ? 'Angebotsvorteil und Fahrtkosten gleichen sich aus'
@@ -288,7 +344,7 @@ class _ValueCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             _ValueRow(
-              label: 'Warenkorbersparnis',
+              label: incomplete ? 'Bekannte Ersparnis' : 'Warenkorbersparnis',
               value: '+${value.basketSavings.toStringAsFixed(2)} €',
             ),
             _ValueRow(
@@ -297,15 +353,22 @@ class _ValueCard extends StatelessWidget {
             ),
             const Divider(height: 20),
             _ValueRow(
-              label: 'Echter Vorteil',
+              label: incomplete
+                  ? 'Teilwarenkorb nach Fahrtkosten'
+                  : 'Echter Vorteil',
               value: '${value.netAdvantage >= 0 ? '+' : ''}'
                   '${value.netAdvantage.toStringAsFixed(2)} €',
               strong: true,
             ),
             const SizedBox(height: 6),
             Text(
-              'Gesamt inklusive Fahrt: '
-              '${value.totalWithTravel.toStringAsFixed(2)} €',
+              incomplete
+                  ? 'Bekannte Kosten inklusive Fahrt: '
+                      '${value.totalWithTravel.toStringAsFixed(2)} € · '
+                      '${value.pricedItemCount} von '
+                      '${value.totalItemCount} Artikeln bepreist'
+                  : 'Gesamt inklusive Fahrt: '
+                      '${value.totalWithTravel.toStringAsFixed(2)} €',
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],

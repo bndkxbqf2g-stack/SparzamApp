@@ -263,3 +263,12 @@ Eine leere Auswahl bedeutet genau alle aktuell konfigurierten Händler; doppelte
 oder unbekannte Namen aus alten lokalen Einstellungen werden nicht gezählt.
 Damit bleiben Profil, Marktfilter und Routenoptimierer auf derselben
 Händlerquelle und zeigen im aktuellen Projekt sechs Märkte.
+
+## D053 – Teilwarenkörbe bleiben in der Marktansicht ausdrücklich vorläufig
+Die Detailansicht eines einzelnen Marktes führt nicht bepreiste oder nur
+geschätzte Listenpositionen separat als Datenlücke. Gesamtpreis, Ersparnis und
+Fahrtkosten dürfen für den belegten Teil weiterhin angezeigt werden, müssen aber
+als Teilwarenkorb gekennzeichnet sein. Eine vollständige Aussage, dass sich der
+Markt lohnt oder dass die Fahrtkosten den Warenkorb übersteigen, wird bei
+fehlender Preisabdeckung nicht ausgegeben. Dadurch bleiben fehlende Daten vor
+der Einkaufsentscheidung sichtbar und werden nicht als Nullpreis interpretiert.
