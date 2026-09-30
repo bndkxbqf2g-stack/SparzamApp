@@ -465,3 +465,12 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Empfehlung von der Reihenfolge der Preisquelle abhängt.
 - `flutter analyze` ist ohne Befund, alle 445 Flutter-Tests sind grün und
   `flutter build web --release` war erfolgreich.
+
+## Update 01.10.2026 – Mehrmarkt-End-to-End-Fixture
+- `test/route_multi_market_e2e_test.dart` vergleicht denselben Warenkorb mit
+  vollständiger Preisabdeckung gegen 1, 2 und 3 Märkte.
+- Die Regression prüft, dass die günstigste 3-Markt-Aufteilung inklusive
+  Rundfahrtkosten empfohlen wird und bei hohen Fahrtkosten wieder der beste
+  Einzelmarkt gewinnt.
+- Die neue Fixture besteht zusammen mit `flutter analyze`; alle 447 Flutter-
+  Tests sind grün und `flutter build web --release` war erfolgreich.

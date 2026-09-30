@@ -64,9 +64,9 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [x] Preisabdeckung vor Teilkosten bevorzugen
 - [x] unsichere/geschätzte Preise nicht als belastbar behandeln
 - [x] Mindestvorteil für zusätzlichen Markt
-- [ ] realistische Mehrmarkt-End-to-End-Tests
-- [ ] gleiche Produktliste gegen 1/2/3 Markt-Kombinationen vergleichen
-- [ ] Entfernung, Fahrtkosten und Preisersparnis transparent aufschlüsseln
+- [x] realistische Mehrmarkt-End-to-End-Tests
+- [x] gleiche Produktliste gegen 1/2/3 Markt-Kombinationen vergleichen
+- [x] Entfernung, Fahrtkosten und Preisersparnis transparent aufschlüsseln
 - [ ] unvollständige Preisabdeckung sauber in Empfehlung einbeziehen
 - [ ] robuste Tie-Breaker und Grenzfälle
 - [ ] Routenempfehlung mit klarer Begründung ausgeben
