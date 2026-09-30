@@ -12,6 +12,7 @@ import 'receipt_file_text_reader.dart';
 import 'receipt_import.dart';
 import 'receipt_import_display.dart';
 import 'receipt_ledger.dart';
+import 'receipt_ocr.dart';
 import 'receipt_assigned_price.dart';
 import 'receipt_observation_builder.dart';
 import 'receipt_price_review.dart';
@@ -108,14 +109,44 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
   }
 
   Future<void> pickReceipt() async {
+    setState(() {
+      importing = true;
+      errorMessage = null;
+    });
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.camera);
       if (!mounted || image == null) return;
-      setState(() {
-        errorMessage = 'Fotos lassen sich noch nicht auslesen. Bitte einen durchsuchbaren PDF-Bon auswählen.';
-      });
+      final bytes = await image.readAsBytes();
+      String? text;
+      try {
+        text = await readReceiptFileText(
+          fileName: 'Kameraaufnahme.jpg',
+          filePath: image.path,
+          bytes: bytes,
+        );
+      } catch (_) {
+        text = null;
+      }
+      final unreadable = <String>[];
+      final drafts = <({String name, ReceiptDraft draft})>[];
+      if (text == null || text.trim().isEmpty) {
+        unreadable.add('Kameraaufnahme.jpg');
+      } else {
+        drafts.add((name: 'Kameraaufnahme.jpg', draft: parseReceiptLedger(text)));
+      }
+      await _mergeRecognizedReceipts(
+        newDrafts: drafts,
+        importedNames: const ['Kameraaufnahme.jpg'],
+        extractedTexts: const [],
+        duplicateCount: 0,
+        unreadableFiles: unreadable,
+      );
     } catch (error) {
-      if (mounted) setState(() => errorMessage = 'Kamera konnte nicht geöffnet werden: $error');
+      if (mounted) {
+        setState(() => errorMessage = 'Kamera konnte nicht geöffnet werden: $error');
+      }
+    } finally {
+      if (mounted) setState(() => importing = false);
     }
   }
 
@@ -143,12 +174,19 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
           unreadableFiles.add(file.name);
           continue;
         }
-        final text = await readReceiptFileText(
-          fileName: file.name,
-          bytes: bytes,
-        );
+        String? text;
+        try {
+          text = await readReceiptFileText(
+            fileName: file.name,
+            filePath: file.path,
+            bytes: bytes,
+          );
+        } catch (_) {
+          unreadableFiles.add(file.name);
+          continue;
+        }
         if (text != null && text.trim().isNotEmpty) {
-          if (file.name.toLowerCase().endsWith('.pdf')) {
+          if (_isStructuredReceiptFile(file.name)) {
             final draft = parseReceiptLedger(text);
             final existing = [...receiptDrafts, ...newDrafts]
                 .any((entry) => entry.draft.fingerprint == draft.fingerprint);
@@ -160,42 +198,17 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
           } else {
             extractedTexts.add(text.trim());
           }
-        } else if (file.name.toLowerCase().endsWith('.pdf')) {
+        } else if (_isStructuredReceiptFile(file.name)) {
           unreadableFiles.add(file.name);
         }
       }
-      if (!mounted) return;
-      for (final entry in newDrafts) {
-        final draft = entry.draft;
-        if (draft.retailer != null) {
-          for (final row in draft.rows.where((r) => r.kind == ReceiptRowKind.item)) {
-            final learnedId = await aliasStore.learnedProductId(
-              storeName: draft.retailer!,
-              rawLabel: row.label,
-            );
-            if (learnedId != null &&
-                availableProducts.any((product) => product.id == learnedId)) {
-              assignedProducts[_rowKey(draft, row)] = learnedId;
-            }
-          }
-        }
-        // Price suggestions are rendered later and deliberately start
-        // unselected; only an explicit checkbox action confirms them.
-      }
-      setState(() {
-        importedFileNames.addAll(result.files.map((file) => file.name));
-        receiptDrafts.addAll(newDrafts);
-        duplicateReceipts += duplicateCount;
-        if (receiptDrafts.length == 1) {
-          receiptDate = receiptDrafts.single.draft.receiptDate;
-          storeController.text = receiptDrafts.single.draft.retailer ?? '';
-        }
-        _appendReceiptText(extractedTexts);
-        if (unreadableFiles.isNotEmpty) {
-          errorMessage =
-              '${unreadableFiles.length} Datei(en) enthalten keinen auslesbaren Text. Bilder benötigen künftig Texterkennung; bitte einen durchsuchbaren PDF-Bon wählen.';
-        }
-      });
+      await _mergeRecognizedReceipts(
+        newDrafts: newDrafts,
+        importedNames: result.files.map((file) => file.name).toList(),
+        extractedTexts: extractedTexts,
+        duplicateCount: duplicateCount,
+        unreadableFiles: unreadableFiles,
+      );
     } catch (error) {
       if (mounted) {
         setState(() => errorMessage = 'Dateien konnten nicht gelesen werden: $error');
@@ -203,6 +216,64 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
     } finally {
       if (mounted) setState(() => importing = false);
     }
+  }
+
+  bool _isStructuredReceiptFile(String name) {
+    final lower = name.toLowerCase();
+    return lower.endsWith('.pdf') || isReceiptImageFile(lower);
+  }
+
+  String _unreadableMessage(List<String> files) {
+    final hasImage = files.any(isReceiptImageFile);
+    if (hasImage && !supportsReceiptImageOcr) {
+      return '${files.length} Datei(en) enthalten keinen auslesbaren Text. '
+          'Bildbon-OCR ist auf dieser Plattform nicht verfügbar; bitte einen '
+          'durchsuchbaren PDF-Bon auswählen oder die Zeilen manuell einfügen.';
+    }
+    return '${files.length} Datei(en) enthalten keinen auslesbaren Text. '
+        'Bitte einen durchsuchbaren PDF-Bon auswählen oder die Zeilen manuell '
+        'einfügen.';
+  }
+
+  Future<void> _mergeRecognizedReceipts({
+    required List<({String name, ReceiptDraft draft})> newDrafts,
+    required List<String> importedNames,
+    required List<String> extractedTexts,
+    required int duplicateCount,
+    required List<String> unreadableFiles,
+  }) async {
+    if (!mounted) return;
+    for (final entry in newDrafts) {
+      final draft = entry.draft;
+      if (draft.retailer != null) {
+        for (final row in draft.rows.where((r) => r.kind == ReceiptRowKind.item)) {
+          final learnedId = await aliasStore.learnedProductId(
+            storeName: draft.retailer!,
+            rawLabel: row.label,
+          );
+          if (learnedId != null &&
+              availableProducts.any((product) => product.id == learnedId)) {
+            assignedProducts[_rowKey(draft, row)] = learnedId;
+          }
+        }
+      }
+      // Price suggestions are rendered later and deliberately start
+      // unselected; only an explicit checkbox action confirms them.
+    }
+    if (!mounted) return;
+    setState(() {
+      importedFileNames.addAll(importedNames);
+      receiptDrafts.addAll(newDrafts);
+      duplicateReceipts += duplicateCount;
+      if (receiptDrafts.length == 1) {
+        receiptDate = receiptDrafts.single.draft.receiptDate;
+        storeController.text = receiptDrafts.single.draft.retailer ?? '';
+      }
+      _appendReceiptText(extractedTexts);
+      if (unreadableFiles.isNotEmpty) {
+        errorMessage = _unreadableMessage(unreadableFiles);
+      }
+    });
   }
 
   void _appendReceiptText(List<String> texts) {
@@ -416,7 +487,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
               OutlinedButton.icon(
                 onPressed: saving || importing ? null : pickReceipt,
                 icon: const Icon(Icons.photo_camera_outlined),
-                label: const Text('Foto aufnehmen (noch ohne Texterkennung)'),
+                label: const Text('Foto aufnehmen und Bon lesen'),
               ),
               const SizedBox(height: 6),
               OutlinedButton.icon(
@@ -599,7 +670,9 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                                 products: availableProducts,
                                                 selectedProductId: assignedProducts[key],
                                               );
-                                              if (!mounted || value == null) return;
+                                              if (!mounted || value == null) {
+                                                return;
+                                              }
                                               setState(() {
                                                 if (value.isEmpty) {
                                                   assignedProducts.remove(key);
@@ -622,7 +695,9 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                                   rawLabel: row.label,
                                                   quantityUnit: row.quantityUnit,
                                                 );
-                                                if (!mounted || product == null) return;
+                                                if (!mounted || product == null) {
+                                                  return;
+                                                }
                                                 final next = await widget.onCreateProduct!(product);
                                                 if (!mounted) return;
                                                 setState(() {

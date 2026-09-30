@@ -92,7 +92,11 @@ Bonimporte, eigene Preise oder andere belegte Quellen routenfähig.
 - Mehrere Dateien können in einem Import verarbeitet werden.
 - Doppelte PDF-Bons werden über einen Bon-Fingerprint erkannt.
 - Kaufhistorie kann bearbeitet oder gelöscht werden.
-- Fotos/Scans ohne auslesbare Textebene besitzen noch keine automatische OCR.
+- JPG-/PNG-Bons und Kameraaufnahmen werden auf Android/iOS lokal per ML Kit OCR
+  gelesen und danach in denselben Bonreview mit Identitäts- und Preisprüfung
+  geführt. Web, macOS und Linux zeigen für Bild-OCR einen klaren manuellen
+  Fallback. Bildbasierte PDF-Seiten ohne Textebene werden auf Android/iOS
+  lokal gerendert und ebenfalls durch diesen OCR-Review geführt.
 
 ### Budget
 - Lebensmittelbudget und bisherige Lebensmittelausgaben werden lokal geführt.
@@ -374,7 +378,8 @@ Diese Funktionen benötigen eine Internetverbindung.
 
 ## 13. Bekannte Grenzen
 
-- Keine automatische OCR für Bonfotos oder gescannte PDFs ohne Textebene.
+- Bild-OCR für JPG/PNG, Kameraaufnahmen und bildbasierte PDF-Seiten ist auf
+  Android/iOS verfügbar; auf Web/Desktop bleibt der manuelle Fallback aktiv.
 - Keine garantierte vollständige Preisabdeckung.
 - Historische Bonpreise sind Beobachtungen und keine Garantie für den heutigen Regalpreis.
 - Familien-Fallbacks dürfen Varianten nicht als identisch ausgeben.
@@ -397,6 +402,9 @@ Grundregel: kleine, klar verantwortliche Module; keine unnötige doppelte Logik.
 ## 15. Entwicklung und CI
 
 Voraussetzung: Flutter/Dart gemäß `pubspec.yaml` (Dart SDK aktuell `^3.13.4`).
+Für die mobile OCR-Integration ist iOS 15.5 oder neuer erforderlich; die
+versionierte `ios/Podfile` und das Runner-Projekt setzen dieses Ziel für alle
+Konfigurationen. Eine native Geräteabnahme bleibt zusätzlich erforderlich.
 
 ```sh
 flutter pub get

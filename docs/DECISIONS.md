@@ -214,3 +214,13 @@ Cache werden Angebotsdatensätze vor der Anzeige und Routenplanung mit ihrer
 Gültigkeit gefiltert; abgelaufene oder unvollständige Datensätze bleiben
 Historie bzw. Nachweis und werden nicht als aktuelle Preise ausgegeben. Der
 Feed wird sichtbar als Cache-Ergebnis unterscheidbar gehalten.
+
+## D047 – Bildbon-OCR bleibt lokal und durchläuft denselben Review
+JPG-/PNG-Bons und Kameraaufnahmen werden auf Android/iOS lokal mit ML Kit
+ausgelesen. Der erkannte Text wird ausschließlich als `ReceiptDraft` in den
+bestehenden Bonreview gegeben; ohne ausgeglichenen Bon und explizite
+Preisbestätigung entsteht weder eine Preisbeobachtung noch ein Routenpreis.
+Web, macOS und Linux verwenden einen sichtbaren manuellen Fallback, weil der
+mobile OCR-Adapter dort nicht verfügbar ist. Bildbasierte PDFs ohne
+Textebene werden auf mobilen Geräten ebenfalls gerendert und lokal gelesen;
+OCR- oder Renderfehler bleiben als unlesbare Referenz im Review.
