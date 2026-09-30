@@ -44,7 +44,7 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [ ] Quellpriorität vollständig mit Tests absichern
 - [ ] Angebotspreise vs. Normalpreise konsistent behandeln
 - [ ] Angebotsquellen automatisiert importieren: Händler, Bild, Gültigkeit, Produktidentität
-- [ ] Angebote per + direkt in die Einkaufsliste übernehmen
+- [x] Angebote per + direkt in die Einkaufsliste übernehmen
 - [x] ausgewiesenen Normalpreis eines Angebots nur als bestätigte Preisbasis speichern
 - [ ] UI klar zwischen historischem Hinweis und route-tauglichem Planungspreis unterscheiden
 
@@ -53,7 +53,7 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [ ] Suchbegriff zeigt alle passenden Interpretationen (z. B. Tomate → frisch/Rispe/Party, getrennt von Tomatenmark/-sauce)
 - [ ] für jede Position alle belastbaren Marktpreise aufbauen
 - [ ] fehlende Preise explizit markieren
-- [ ] Produkt×Markt-Matrix als interne Diagnose-/Teststruktur
+- [x] Produkt×Markt-Matrix als sichtbare Einkaufslisten-/Teststruktur
 - [ ] neuester/Median/Quelle/Alter/Vergleichbarkeit je Preis
 - [ ] Einkaufsliste automatisch mit bekannten Daten aktualisieren
 - [ ] Preisänderungen atomar in Planung übernehmen
@@ -88,7 +88,7 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [ ] schneller Einkaufsliste→Route-Flow
 - [ ] klare Hinweise, wenn Daten für Empfehlung fehlen
 - [ ] kompakte iPhone-Darstellung
-- [ ] Detailansicht pro Produkt/Markt
+- [x] Detailansicht pro Produkt/Markt
 - [ ] historische Preisentwicklung als optionale Detailansicht
 
 ### Phase 7 – Produktreife

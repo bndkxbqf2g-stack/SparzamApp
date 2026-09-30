@@ -134,3 +134,11 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Bring-Angebote laufen mit Gültigkeit und Nachweis durch den bestehenden Angebots-/PriceObservation-Vertrag.
 - [ ] Live-Abruf in GitHub aktivieren, sobald die drei Bring-Zugangsdaten als Repository-Secrets hinterlegt sind; bis dahin bleiben die offiziellen Händleradapter führend.
 - [ ] Bild-only-Prospektinhalte nur dann zusätzlich per OCR auswerten, wenn ein eigener Confidence-/Review-Pfad verhindert, dass erkannte Texte oder Preise ungeprüft routenfähig werden.
+
+## Update 01.10.2026 – Preisabdeckung direkt in der Einkaufsliste
+- [x] Das Preisfenster zeigt für jeden aktivierten Markt eine eigene Zeile.
+- [x] Aktive Angebote werden je Markt vor Bon- und eigenen Preisbelegen gewählt;
+  Märkte ohne exakte Evidenz bleiben als fehlend sichtbar.
+- [x] Bei leerer Marktauswahl werden die sechs konfigurierten Projektmärkte
+  dargestellt. Die Anzeige erzeugt keinen geschätzten Preis und verändert nicht
+  die verbindliche Routenzuordnung.

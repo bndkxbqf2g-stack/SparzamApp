@@ -442,3 +442,17 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Die plattformneutrale Regression prüft Bildweiterleitung, Pfadübergabe und
   dass der erkannte Text in denselben Bonreview geparst wird. Eine native
   Geräteabnahme steht noch aus.
+
+## Update 01.10.2026 – Produkt×Markt-Preisabdeckung in der Einkaufsliste
+- Das Preisfenster eines Listenartikels löst jetzt die aktivierten Märkte einzeln
+  auf. Bei leerer Marktauswahl werden alle sechs konfigurierten Projektmärkte
+  gezeigt.
+- Je Markt bleibt die Quelle getrennt: ein gültiges Angebot steht vor einem
+  Bon- oder eigenen Preis; ohne exakten Preisbeleg erscheint ausdrücklich
+  „fehlt“. Es wird kein Kategoriepreis in die Matrix eingesetzt.
+- Die Detailansicht zeigt zusätzlich die Belegabdeckung und listet auch Märkte
+  ohne Preis. Damit ist vor der Routenansicht erkennbar, ob ein günstiger
+  Einzelpreis nur für einen Teil des Warenkorbs bekannt ist.
+- Regressionen decken Angebotsvorrang, Bonpreis, fehlende Märkte und die sechs
+  Standardmärkte ab. `flutter analyze` ist ohne Befund, alle 444 Flutter-Tests
+  sind grün und `flutter build web --release` war erfolgreich.
