@@ -139,12 +139,7 @@ class RouteOptimizer {
         .map(buildPlan)
         .where((plan) => plan.pricedItemCount > 0)
         .toList()
-      ..sort((a, b) {
-        final coverage = b.priceCoverage.compareTo(a.priceCoverage);
-        if (coverage != 0) return coverage;
-        final total = a.planningScore.compareTo(b.planningScore);
-        return total != 0 ? total : a.stores.length.compareTo(b.stores.length);
-      });
+      ..sort(_comparePlans);
   }
 
   RoutePlan? bestPlan() {
@@ -188,12 +183,24 @@ class RouteOptimizer {
         .map((store) => buildPlan([store]))
         .where((plan) => plan.pricedItemCount > 0)
         .toList()
-      ..sort((a, b) {
-        final coverage = b.priceCoverage.compareTo(a.priceCoverage);
-        return coverage != 0
-            ? coverage
-            : a.planningScore.compareTo(b.planningScore);
-      });
+      ..sort(_comparePlans);
     return plans.isEmpty ? null : plans.first;
+  }
+
+  /// Keeps equal coverage/cost choices reproducible across all callers.
+  ///
+  /// Coverage remains the primary criterion, followed by the quality-adjusted
+  /// planning score and fewer stores. Store names are the final tie-breaker so
+  /// a price tie cannot depend on the order in which a source was assembled.
+  int _comparePlans(RoutePlan a, RoutePlan b) {
+    final coverage = b.priceCoverage.compareTo(a.priceCoverage);
+    if (coverage != 0) return coverage;
+    final planning = a.planningScore.compareTo(b.planningScore);
+    if (planning != 0) return planning;
+    final storeCount = a.stores.length.compareTo(b.stores.length);
+    if (storeCount != 0) return storeCount;
+    final aNames = a.stores.map((store) => store.name).join('|');
+    final bNames = b.stores.map((store) => store.name).join('|');
+    return aNames.compareTo(bNames);
   }
 }

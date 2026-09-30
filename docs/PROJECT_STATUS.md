@@ -456,3 +456,12 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Regressionen decken Angebotsvorrang, Bonpreis, fehlende Märkte und die sechs
   Standardmärkte ab. `flutter analyze` ist ohne Befund, alle 444 Flutter-Tests
   sind grün und `flutter build web --release` war erfolgreich.
+
+## Update 01.10.2026 – Deterministische Routen-Gleichstände
+- `RouteOptimizer` löst gleiche Preisabdeckung und gleiche qualitätsbereinigte
+  Planungswerte jetzt zuerst über weniger Märkte und danach über kanonische
+  Marktnamen auf.
+- Eine Regression mit gleich teuren EDEKA-/Lidl-Preisen verhindert, dass die
+  Empfehlung von der Reihenfolge der Preisquelle abhängt.
+- `flutter analyze` ist ohne Befund, alle 445 Flutter-Tests sind grün und
+  `flutter build web --release` war erfolgreich.

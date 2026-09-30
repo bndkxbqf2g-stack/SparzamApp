@@ -240,4 +240,37 @@ void main() {
     expect(optimizer.bestPlan()!.priceCoverage, 1);
     expect(optimizer.bestPlan()!.priceCoverage, 1);
   });
+
+  test('gleiche Planwerte werden über den Marktnamen entschieden', () {
+    const equalProduct = Product(
+      id: 'equal-price',
+      name: 'Gleichpreis',
+      unit: 'Stück',
+      group: 'test',
+    );
+    final optimizer = RouteOptimizer(
+      [ListItem(product: equalProduct)],
+      const [],
+      euroPerKm: 0,
+      maxStores: 1,
+      enabledStoreNames: const ['Lidl', 'EDEKA'],
+      marketPrices: [
+        MarketPrice(
+          productId: equalProduct.id,
+          storeName: 'Lidl',
+          price: 1,
+          updatedAt: _baselineDate,
+        ),
+        MarketPrice(
+          productId: equalProduct.id,
+          storeName: 'EDEKA',
+          price: 1,
+          updatedAt: _baselineDate,
+        ),
+      ],
+    );
+
+    expect(optimizer.bestSingleStorePlan()!.stores.single.name, 'EDEKA');
+    expect(optimizer.alternatives().first.stores.single.name, 'EDEKA');
+  });
 }

@@ -142,3 +142,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Bei leerer Marktauswahl werden die sechs konfigurierten Projektmärkte
   dargestellt. Die Anzeige erzeugt keinen geschätzten Preis und verändert nicht
   die verbindliche Routenzuordnung.
+
+## Update 01.10.2026 – Deterministische Routen-Gleichstände
+- [x] Gleiche Preisabdeckung und gleiche Planungswerte werden über weniger
+  Märkte und danach kanonische Marktnamen stabil aufgelöst.
+- [x] Eine Regression prüft den Gleichstand zwischen EDEKA und Lidl und schützt
+  die Auswahl vor einer zufälligen Quellreihenfolge.
