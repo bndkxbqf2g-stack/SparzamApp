@@ -38,6 +38,23 @@
 - Explizite Zuordnung unklar abgekürzter Kaufland-Milchzeilen ermöglicht.
 - Milch-Auswahl nur für sicher zuordenbare, ausgeglichene und nicht rabattierte Bonzeilen.
 
+## Update 30.09.2026 – Keine synthetischen Produktionspreise
+- Die sechs Produktionsmärkte enthalten keine fest eingebauten Beispielpreise
+  mehr. `Store.prices` wird nur durch belegte Beobachtungen, aktuelle Angebote
+  oder ausdrücklich gepflegte Nutzerpreise befüllt.
+- Eine frische Installation legt keine Demoangebote und keine synthetische
+  Preishistorie mehr an. Bekannte Altbestände werden einmalig anhand ihrer
+  reservierten Demo-IDs bzw. exakten Beobachtungsschlüssel bereinigt; eigene
+  Einträge bleiben erhalten.
+- Die Einkaufslisten-Preisauflösung berücksichtigt `validFrom` und
+  `validUntil`, sodass ein zukünftiges Angebot vor seinem Startdatum weder als
+  Treffer noch als Routenpreis erscheint.
+- Die Route-Regressionstests liefern ihre Marktpreise jetzt explizit als
+  versionierte Fixture. Dadurch testen sie Preislogik, ohne Produktionsdaten
+  als echte Marktbeobachtung auszugeben.
+- Für diesen Block: Flutter-Analyse ohne Befund, 423 Tests bestanden und
+  `flutter build web --release` erfolgreich.
+
 ## Audit 30.09.2026
 - Die App startet jetzt in der Einkaufsliste; ein Widget-Test prüft den sichtbaren Einstieg bei 390 × 844 px.
 - Ein doppelter Import in `app_shell.dart` wurde entfernt.

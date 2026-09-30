@@ -68,4 +68,7 @@ void main() {
     expect(branchIds.toSet(), hasLength(6));
   });
 
+  test('Produktionsmärkte enthalten keine ungeprüften Beispielpreise', () {
+    expect(stores.every((store) => store.prices.isEmpty), isTrue);
+  });
 }

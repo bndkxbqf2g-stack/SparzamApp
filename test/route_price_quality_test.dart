@@ -45,6 +45,8 @@ void main() {
           source: MarketPriceSource.receipt, discounted: true),
       MarketPrice(productId: 'schmand', storeName: 'EDEKA', price: 0.89,
           updatedAt: today),
+      MarketPrice(productId: 'nudeln', storeName: 'Lidl', price: 0.89,
+          updatedAt: today),
     ];
     RouteOptimizer optimizer(List<ListItem> items) => RouteOptimizer(
       items, const [], marketPrices: prices, now: today,

@@ -5,17 +5,16 @@ import '../models/offer.dart';
 
 class OfferStore {
   static const _key = 'offers_v2';
-  static const _demoVersionKey = 'offers_demo_version';
-  static const _demoVersion = 3;
 
   Future<List<Offer>> load() async {
     final prefs = await SharedPreferences.getInstance();
     final raw = prefs.getStringList(_key);
 
     if (raw == null) {
-      await save(sampleOffers);
-      await prefs.setInt(_demoVersionKey, _demoVersion);
-      return [...sampleOffers];
+      // A fresh installation must not make up current offers. Offers enter
+      // the store through the verified prospect feed or explicit user input.
+      await save(const <Offer>[]);
+      return <Offer>[];
     }
 
     final offers = <Offer>[];
@@ -26,18 +25,24 @@ class OfferStore {
         // Einzelne defekte Angebote dürfen den restlichen Bestand nicht blockieren.
       }
     }
-    var current = offers;
-    if ((prefs.getInt(_demoVersionKey) ?? 0) < _demoVersion) {
-      current = _refreshDemoOffers(current);
+    // Older releases seeded sample offers on first start. Remove exactly
+    // those known demo IDs while preserving all user-created offers.
+    final sampleIds = sampleOffers.map((offer) => offer.id).toSet();
+    final current = offers
+        .where((offer) => !sampleIds.contains(offer.id))
+        .toList(growable: false);
+    if (current.length != offers.length) {
       await save(current);
-      await prefs.setInt(_demoVersionKey, _demoVersion);
     }
     return current;
   }
 
   Future<void> save(List<Offer> offers) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(_key, offers.map((offer) => offer.toJson()).toList());
+    await prefs.setStringList(
+      _key,
+      offers.map((offer) => offer.toJson()).toList(),
+    );
   }
 
   Future<List<Offer>> upsert(Offer offer, List<Offer> current) async {
@@ -52,10 +57,5 @@ class OfferStore {
     final next = current.where((offer) => offer.id != id).toList();
     await save(next);
     return next;
-  }
-
-  List<Offer> _refreshDemoOffers(List<Offer> current) {
-    final demos = {for (final offer in sampleOffers) offer.id: offer};
-    return current.map((offer) => demos[offer.id] ?? offer).toList();
   }
 }

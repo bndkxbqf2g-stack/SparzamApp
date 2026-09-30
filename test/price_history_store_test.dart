@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:sparzamapp/data/price_history.dart';
 import 'package:sparzamapp/models/price_point.dart';
 import 'package:sparzamapp/services/price_history_store.dart';
 
@@ -15,6 +16,29 @@ void main() {
 
   tearDown(() {
     SharedPreferencesAsyncPlatform.instance = null;
+  });
+
+  test('frische Installation enthält keine synthetische Preishistorie', () async {
+    expect(await PriceHistoryStore().load(), isEmpty);
+  });
+
+  test('entfernt alte Demo-Historie und bewahrt echte Einträge', () async {
+    final custom = PricePoint(
+      productId: 'real_product',
+      storeName: 'Lidl',
+      price: 2.11,
+      date: DateTime(2026, 9, 20),
+      source: PricePointSource.manual,
+    );
+    final store = PriceHistoryStore();
+    await store.save([...samplePriceHistory, custom]);
+
+    final loaded = await store.load();
+
+    expect(loaded, hasLength(1));
+    expect(loaded.single.observationKey, custom.observationKey);
+    expect(loaded.single.price, custom.price);
+    expect(loaded.single.source, custom.source);
   });
 
   test('gleiche Quelle am selben Tag wird aktualisiert statt dupliziert',
