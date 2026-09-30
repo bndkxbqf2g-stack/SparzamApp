@@ -209,4 +209,56 @@ void main() {
       isFalse,
     );
   });
+
+  test('everyday pantry families keep concrete variants separate', () {
+    expect(identifyProduct('Basmati Reis').productType, 'basmati');
+    expect(identifyProduct('Parboiled Reis').productType, 'parboiled');
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Reis'),
+        identifyProduct('Basmati Reis'),
+      ),
+      isTrue,
+    );
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Basmati Reis'),
+        identifyProduct('Parboiled Reis'),
+      ),
+      isFalse,
+    );
+
+    expect(identifyProduct('Weizenmehl Type 405').familyKey, 'mehl');
+    expect(identifyProduct('Weizenmehl Type 405').productType, 'type405');
+    expect(identifyProduct('Rapsöl').productType, 'raps');
+    expect(identifyProduct('Puderzucker').productType, 'puder');
+    expect(identifyProduct('Speisesalz').familyKey, 'salz');
+  });
+
+  test('common dairy and egg variants remain identifiable', () {
+    expect(identifyProduct('Laktosefreie Milch').productType, 'laktosefrei');
+    expect(identifyProduct('Griechischer Joghurt').variant, 'griechisch');
+    expect(identifyProduct('Fruchtjoghurt').variant, 'frucht');
+    expect(identifyProduct('Bio-Eier').variant, 'bio');
+    expect(identifyProduct('Freilandeier').variant, 'freiland');
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Bio-Eier'),
+        identifyProduct('Freilandeier'),
+      ),
+      isFalse,
+    );
+  });
+
+  test('preserved tomato products stay outside the fresh tomato family', () {
+    expect(identifyProduct('Passierte Tomaten').familyKey, 'tomatenkonserve');
+    expect(identifyProduct('Gehackte Tomaten').familyKey, 'tomatenkonserve');
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Tomate'),
+        identifyProduct('Passierte Tomaten'),
+      ),
+      isFalse,
+    );
+  });
 }

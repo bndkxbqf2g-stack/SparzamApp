@@ -62,15 +62,14 @@ ProductIdentity identifyProduct(String value) {
     return ProductIdentity(
       familyKey: 'milch',
       variant: _hasWord(text, 'h milch') ? 'h' : null,
+      productType: _milkType(text),
       fatPercent: _percent(text),
     );
   }
   if (text.contains('joghurt') || text.contains('jogurt')) {
     return ProductIdentity(
       familyKey: 'joghurt',
-      variant: _hasAny(text, const ['naturjoghurt', 'natur joghurt', 'natur'])
-          ? 'natur'
-          : null,
+      variant: _yoghurtVariant(text),
     );
   }
   if (_hasAny(text, const [
@@ -128,10 +127,50 @@ ProductIdentity identifyProduct(String value) {
     'bodenhaltungseier',
     'bioeier',
   ])) {
-    return const ProductIdentity(familyKey: 'eier');
+    return ProductIdentity(familyKey: 'eier', variant: _eggVariant(text));
   }
   if (_hasAny(text, const ['kartoffel', 'kartoffeln'])) {
     return const ProductIdentity(familyKey: 'kartoffeln');
+  }
+  if (_hasAny(text, const ['butter'])) {
+    return const ProductIdentity(familyKey: 'butter');
+  }
+  if (_hasAny(text, const [
+    'reis',
+    'basmatireis',
+    'parboiledreis',
+    'risottoreis',
+  ])) {
+    return ProductIdentity(familyKey: 'reis', productType: _riceType(text));
+  }
+  if (_hasAny(text, const [
+    'mehl',
+    'weizenmehl',
+    'vollkornmehl',
+    'dinkelmehl',
+    'type 405',
+    'type 550',
+  ])) {
+    return ProductIdentity(familyKey: 'mehl', productType: _flourType(text));
+  }
+  if (_hasAny(text, const [
+    'oel',
+    'rapsoel',
+    'sonnenblumenoel',
+    'olivenoel',
+    'speiseoel',
+    'kokosoel',
+  ])) {
+    return ProductIdentity(familyKey: 'oel', productType: _oilType(text));
+  }
+  if (_hasAny(text, const ['zucker', 'puderzucker', 'haushaltszucker'])) {
+    return ProductIdentity(familyKey: 'zucker', productType: _sugarType(text));
+  }
+  if (_hasAny(text, const ['salz', 'speisesalz'])) {
+    return const ProductIdentity(familyKey: 'salz');
+  }
+  if (_hasAny(text, const ['ketchup'])) {
+    return const ProductIdentity(familyKey: 'ketchup');
   }
   // Tomato products must be classified before fresh tomatoes. Matching the
   // token "tomate" alone must never turn tomato paste/sauce into fresh produce.
@@ -140,6 +179,8 @@ ProductIdentity identifyProduct(String value) {
   }
   if (_hasAny(text, const [
     'passata',
+    'passierte tomaten',
+    'passierte',
     'geh tomaten',
     'gehackte tomaten',
     'dosentomaten',
@@ -312,6 +353,79 @@ String? _coffeeType(String text) {
   if (_hasAny(text, const ['espresso'])) return 'espresso';
   if (_hasAny(text, const ['filterkaffee', 'filter'])) return 'filter';
   if (_hasAny(text, const ['kaffeebohnen', 'bohnenkaffee'])) return 'beans';
+  return null;
+}
+
+String? _milkType(String text) =>
+    _hasAny(text, const ['laktosefrei', 'laktosefreie']) ? 'laktosefrei' : null;
+
+String? _yoghurtVariant(String text) {
+  if (_hasAny(text, const ['griechisch', 'griechischer', 'griechische'])) {
+    return 'griechisch';
+  }
+  if (_hasAny(text, const ['fruchtjoghurt', 'frucht joghurt', 'frucht'])) {
+    return 'frucht';
+  }
+  if (_hasWord(text, 'skyr')) return 'skyr';
+  if (_hasAny(text, const ['naturjoghurt', 'natur joghurt', 'natur'])) {
+    return 'natur';
+  }
+  return null;
+}
+
+String? _eggVariant(String text) {
+  if (_hasAny(text, const ['bioeier', 'bio eier', 'bio ei'])) return 'bio';
+  if (_hasAny(text, const ['freilandeier', 'freiland eier', 'freiland ei'])) {
+    return 'freiland';
+  }
+  if (_hasAny(text, const ['bodenhaltungseier', 'bodenhaltung eier'])) {
+    return 'boden';
+  }
+  return null;
+}
+
+String? _riceType(String text) {
+  if (_hasWord(text, 'basmati') || _hasWord(text, 'basmatireis')) {
+    return 'basmati';
+  }
+  if (_hasWord(text, 'parboiled') || _hasWord(text, 'parboiledreis')) {
+    return 'parboiled';
+  }
+  if (_hasWord(text, 'risotto') || _hasWord(text, 'risottoreis')) {
+    return 'risotto';
+  }
+  return null;
+}
+
+String? _flourType(String text) {
+  if (_hasWord(text, 'dinkel') || _hasWord(text, 'dinkelmehl')) {
+    return 'dinkel';
+  }
+  if (_hasWord(text, 'vollkorn') || _hasWord(text, 'vollkornmehl')) {
+    return 'vollkorn';
+  }
+  if (_hasWord(text, '405') || _hasWord(text, 'type 405')) return 'type405';
+  if (_hasWord(text, '550') || _hasWord(text, 'type 550')) return 'type550';
+  if (_hasWord(text, 'weizen') || _hasWord(text, 'weizenmehl')) {
+    return 'weizen';
+  }
+  return null;
+}
+
+String? _oilType(String text) {
+  if (_hasAny(text, const ['rapsoel', 'raps oel'])) return 'raps';
+  if (_hasAny(text, const ['sonnenblumenoel', 'sonnenblumen oel'])) {
+    return 'sonnenblume';
+  }
+  if (_hasAny(text, const ['olivenoel', 'oliven oel'])) return 'olive';
+  if (_hasAny(text, const ['kokosoel', 'kokos oel'])) return 'kokos';
+  return null;
+}
+
+String? _sugarType(String text) {
+  if (_hasAny(text, const ['puderzucker', 'puder zucker'])) return 'puder';
+  if (_hasAny(text, const ['brauner zucker', 'braunzucker'])) return 'braun';
+  if (_hasAny(text, const ['weisser zucker', 'weisszucker'])) return 'weiss';
   return null;
 }
 

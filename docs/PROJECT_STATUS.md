@@ -357,3 +357,19 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   unvollständige Preisabdeckung.
 - Regressionen prüfen Schnellzugriff und Suchbarkeit für die Grundbedarfsbegriffe
   sowie das Speichern des neuen Katalogmerkmals.
+
+## Update 30.09.2026 – Grundvorrat mit hierarchischer Variantenwahl
+- Der Basiskatalog enthält jetzt zusätzliche, preisfreie Varianten für Milch,
+  Eier, Joghurt, Wurst, Käse, Nudeln und Kaffee sowie Kartoffeln, Äpfel und
+  Paprika.
+- Reis, Mehl, Öl, Zucker, Salz, Ketchup und haltbare Tomatenprodukte besitzen
+  eigene Produktfamilien. Oberbegriffe finden kompatible Varianten; konkrete
+  Varianten bleiben für Preis- und Bonzuordnung getrennt.
+- „Passierte Tomaten“, „Gehackte Tomaten“, Tomatenmark und Tomatensauce werden
+  nicht als frische Tomaten angeboten. Das verhindert, dass eine Konserve in
+  der Einkaufsliste oder Route eine Frischware-Preisidentität übernimmt.
+- Gruppenbezeichnungen führen die neuen Grundvorratsgruppen einheitlich unter
+  „Vorrat“ bzw. „Milch & Käse“; die Preisabdeckung bleibt bewusst leer, bis
+  aktuelle Prospekte oder belegte Beobachtungen vorliegen.
+- Regressionen decken Identität, Hierarchie, Suchvorschläge und sichtbare
+  Warengruppen ab.

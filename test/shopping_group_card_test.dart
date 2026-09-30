@@ -8,6 +8,9 @@ void main() {
     expect(shoppingGroupLabel('obst'), 'Obst & Gemüse');
     expect(shoppingGroupLabel('fleisch'), 'Fleisch & Fisch');
     expect(shoppingGroupLabel('nudeln'), 'Vorrat');
+    expect(shoppingGroupLabel('reis'), 'Vorrat');
+    expect(shoppingGroupLabel('eier'), 'Milch & Käse');
+    expect(shoppingGroupLabel('obst_gemuese'), 'Obst & Gemüse');
     expect(shoppingGroupLabel('custom'), 'Weitere Produkte');
   });
 }

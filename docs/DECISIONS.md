@@ -186,3 +186,13 @@ historischen Bon- oder normalen Marktpreisen angezeigt. Innerhalb des
 Angebotsvorrangs zählt der effektive Preis einschließlich sicher berechenbarer
 Coupon-/Cashback-Effekte. Historische Preise bleiben als Evidenz sichtbar und
 werden nicht gelöscht oder zur aktuellen Angebotsbehauptung umetikettiert.
+
+## D044 – Der Grundvorrat erweitert Suche, nicht Preiswissen
+Der Basiskatalog darf häufige Varianten und Grundvorratsfamilien enthalten,
+damit Wünsche wie „Reis“, „Öl“, „Mehl“ oder „Joghurt“ auf einer leeren Liste
+direkt auflösbar sind. Die zentrale Identitätslogik trennt konkrete Varianten
+wie Basmati/Parboiled, Raps-/Olivenöl und Bio-/Freilandeier; Aliase dienen nur
+der Suche und erzeugen keine Preisbeobachtung. Neue Starterprodukte bleiben
+preisfrei, bis ein aktuelles Angebot oder eine nachvollziehbare Markt-/Bonquelle
+vorliegt. Verarbeitete Tomaten bleiben als Konservenfamilie von frischen
+Tomaten getrennt.

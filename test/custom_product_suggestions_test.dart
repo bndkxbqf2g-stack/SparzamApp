@@ -185,4 +185,55 @@ void main() {
       );
     }
   });
+
+  test('Grundvorrat findet konkrete Varianten über die gemeinsame Familie', () {
+    for (final query in [
+      'Reis',
+      'Basmati Reis',
+      'Öl',
+      'Rapsöl',
+      'Mehl',
+      'Puderzucker',
+      'Salz',
+      'Ketchup',
+      'Passata',
+    ]) {
+      expect(
+        buildSuggestions(
+          query: query,
+          knownItems: const [],
+          recentPurchases: const [],
+          preferredProductByGroup: const {},
+          catalogProducts: products,
+        ),
+        isNotEmpty,
+        reason: 'Grundvorrat muss über "$query" auffindbar sein',
+      );
+    }
+
+    final rice = buildSuggestions(
+      query: 'Basmati Reis',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: products,
+    );
+    expect(rice.first.id, 'reis_basmati');
+
+    final freshTomatoes = buildSuggestions(
+      query: 'Tomate',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: products,
+    );
+    expect(
+      freshTomatoes.map((product) => product.id),
+      isNot(contains('tomaten_passata')),
+    );
+    expect(
+      freshTomatoes.map((product) => product.id),
+      isNot(contains('tomatenmark')),
+    );
+  });
 }

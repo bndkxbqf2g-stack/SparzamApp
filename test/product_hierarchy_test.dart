@@ -45,4 +45,22 @@ void main() {
       expect(productHierarchyLabel(coffee).path, 'Kaffee › Espresso');
     },
   );
+
+  test('pantry identity displays a readable family and variant', () {
+    const rice = Product(
+      id: 'rice',
+      name: 'Basmati Reis',
+      unit: '1 kg',
+      group: 'vorrat',
+    );
+    const oil = Product(
+      id: 'oil',
+      name: 'Rapsöl',
+      unit: '1 l',
+      group: 'vorrat',
+    );
+
+    expect(productHierarchyLabel(rice).path, 'Reis › Basmati');
+    expect(productHierarchyLabel(oil).path, 'Öl › Raps');
+  });
 }
