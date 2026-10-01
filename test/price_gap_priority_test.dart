@@ -70,4 +70,32 @@ void main() {
     expect(gaps.map((gap) => gap.item.product.id), ['alpha', 'beta']);
     expect(gaps.first.knownMarketCount, 0);
   });
+
+  test('priorisiert bekannte Wiederkäufe vor der Listenmenge', () {
+    const frequent = Product(
+      id: 'frequent',
+      name: 'Hafermilch',
+      unit: '1 l',
+      group: 'milch',
+    );
+    const occasional = Product(
+      id: 'occasional',
+      name: 'Kokosdrink',
+      unit: '1 l',
+      group: 'milch',
+    );
+
+    final gaps = prioritizePriceGaps(
+      [
+        ListItem(product: occasional, quantity: 4),
+        ListItem(product: frequent, quantity: 1),
+      ],
+      marketCount: 2,
+      purchaseCountFor: (item) => item.product.id == 'frequent' ? 6 : 1,
+    );
+
+    expect(gaps.map((gap) => gap.item.product.id), ['frequent', 'occasional']);
+    expect(gaps.first.purchaseCount, 6);
+    expect(gaps.first.detailLabel, contains('bisher 6 Käufe'));
+  });
 }

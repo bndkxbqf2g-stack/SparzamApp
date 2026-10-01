@@ -152,6 +152,7 @@ List<Widget> buildShellPages({
       offers: offers,
       mobility: mobility,
       marketPrices: marketPrices,
+      recentPurchases: recentPurchases,
       onRoadDistancesChanged: onRoadDistancesChanged,
       onRoadMatrixChanged: onRoadMatrixChanged,
     ),
