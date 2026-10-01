@@ -616,7 +616,7 @@ String normalizeIdentityText(String value) {
       .replaceAll('ü', 'ue')
       .replaceAll('ß', 'ss')
       .replaceAll('é', 'e')
-      .replaceAll(RegExp(r'[._/-]+'), ' ')
+      .replaceAll(RegExp(r'[._/*-]+'), ' ')
       .replaceAll(RegExp(r'\s+'), ' ')
       .trim();
 

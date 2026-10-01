@@ -668,3 +668,11 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Regressionen in `product_identity_test.dart` und
   `shopping_suggestions_test.dart` decken Prospekt- und Lernfälle ab. Die
   vollständigen Flutter-/Web-Gates laufen für diesen Änderungsstand in CI.
+
+## Update 01.10.2026 – Prospekt-Sternchen bleiben bei der Milchsuche sichtbar
+- Penny kennzeichnete „Frische Vollmilch*“ mit einem Sternchen direkt am
+  Produktwort. Die Identitätsnormalisierung behandelt dieses redaktionelle
+  Zeichen jetzt als Trenner, sodass das aktuelle Milchangebot auch in der
+  Einkaufssuche gefunden und preislich gerankt wird.
+- Eine Regression deckt die echte Prospektbezeichnung mit Sternchen ab; die
+  Originalbezeichnung und ihr Nachweis bleiben unverändert.

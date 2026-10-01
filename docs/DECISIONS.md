@@ -389,3 +389,10 @@ Textfallback ist bei bereits bekannter Identität auf eine vollständige
 Bezeichnung begrenzt. Das gilt gleichermaßen für Prospektprodukte und gelernte
 Einkäufe. Konkrete Suchanfragen bleiben über ihre eigene Bezeichnung auffindbar,
 ohne fremde Preisidentitäten zu übernehmen.
+
+## D067 – Prospekt-Sonderzeichen sind keine Produktbestandteile
+Händlerfeeds markieren Angebote teilweise mit einem Sternchen direkt am
+Produktwort, etwa `Vollmilch*`. Solche redaktionellen Zeichen werden bei der
+internen Identitätsnormalisierung als Worttrenner behandelt. Die unveränderte
+Originalbezeichnung bleibt weiterhin die sichtbare Quelle; nur die Zuordnung
+zur Produktfamilie wird dadurch robust genug für Angebots- und Preisranking.

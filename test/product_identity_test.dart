@@ -161,6 +161,17 @@ void main() {
     );
   });
 
+  test('prospect punctuation does not hide a concrete milk identity', () {
+    final identity = identifyProduct(
+      'PENNY ZUKUNFTSBAUER Frische Vollmilch* je 1 l',
+    );
+    expect(identity.familyKey, 'milch');
+    expect(
+      compatibleProductIdentity(identifyProduct('Milch'), identity),
+      isTrue,
+    );
+  });
+
   test(
     'fresh tomato request is not compatible with preserved tomato products',
     () {
