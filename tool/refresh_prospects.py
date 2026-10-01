@@ -581,7 +581,7 @@ def _kaufland_ssr_payload(html_text):
     raise ValueError("Kaufland Angebotsseite enthält keine strukturierten Angebotsdaten")
 
 
-def parse_kaufland_api(html_text, base_url, available_ids=None):
+def parse_kaufland_api(html_text, base_url, available_ids=None, today=None):
     payload = _kaufland_ssr_payload(html_text)
     props = payload.get("props", {})
     offer_data = props.get("offerData", {}) if isinstance(props, dict) else {}
@@ -589,8 +589,8 @@ def parse_kaufland_api(html_text, base_url, available_ids=None):
     if not isinstance(cycles, list):
         raise ValueError("Kaufland Angebotsdaten: cycles ist keine Liste")
 
-    today = date.today()
-    horizon = today + timedelta(days=14)
+    reference_day = today or date.today()
+    horizon = reference_day + timedelta(days=14)
     offers = []
     seen_offer_ids = set()
     for cycle in cycles:
@@ -614,7 +614,7 @@ def parse_kaufland_api(html_text, base_url, available_ids=None):
                 valid_until = _lidl_offer_date(raw.get("dateTo"))
                 if valid_from is None or valid_until is None:
                     continue
-                if valid_until < today or valid_from > horizon:
+                if valid_until < reference_day or valid_from > horizon:
                     continue
 
                 sale = _json_money(

@@ -612,6 +612,7 @@ class ProspectParserTest(unittest.TestCase):
             html,
             refresh.KAUFLAND_OVERVIEW_URL,
             {"123", "456"},
+            today=refresh.date(2026, 9, 24),
         )
         self.assertEqual(len(offers), 1)
         self.assertEqual(
@@ -662,6 +663,7 @@ class ProspectParserTest(unittest.TestCase):
             html,
             refresh.KAUFLAND_OVERVIEW_URL,
             {"111"},
+            today=refresh.date(2026, 9, 24),
         )
         self.assertEqual(len(offers), 1)
         self.assertEqual(offers[0]["productLabel"], "Lokales Produkt")

@@ -571,3 +571,16 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   ab; die übrige Angebots- und Routenlogik bleibt unverändert.
 - `flutter analyze` ist ohne Befund, alle 458 Flutter-Tests sind grün und
   `flutter build web --release` war erfolgreich.
+
+## Update 01.10.2026 – Aktueller Prospektfeed wieder mit Netto-Nachweisen
+- Der versionierte öffentliche Feed wurde mit dem offiziellen Netto-Filialabruf
+  aktualisiert. Netto liefert wieder 28 aktuelle, nachweisbare Angebote mit
+  `proofRef` und – soweit vorhanden – Produktbild; zusammen mit ALDI Süd,
+  EDEKA, Kaufland, Lidl und PENNY sind damit alle sechs Projektmärkte im
+  aktuellen Feed vertreten.
+- Der Feed enthält 838 Angebote, die zum Erfassungsstand 01.10.2026 innerhalb
+  ihres `validFrom`-/`validUntil`-Fensters liegen. Die App filtert beim Anzeigen
+  und Planen zusätzlich immer gegen den aktuellen Tag.
+- Die bestehenden Python-Parserregressionen und die JSON-/Diff-Prüfung bleiben
+  ohne Befund; es wurden keine Preise oder Produktidentitäten ergänzt, die
+  nicht aus der öffentlichen Händlerquelle stammen.
