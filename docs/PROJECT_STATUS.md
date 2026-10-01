@@ -584,3 +584,9 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Die bestehenden Python-Parserregressionen und die JSON-/Diff-Prüfung bleiben
   ohne Befund; es wurden keine Preise oder Produktidentitäten ergänzt, die
   nicht aus der öffentlichen Händlerquelle stammen.
+
+## Update 01.10.2026 – Prospekt-Refresh vor Branch-Schreibzugriff geschützt
+- Der Refresh-Workflow reagiert auf `push` jetzt ausschließlich auf `main`.
+  Zeitplan und manueller Start bleiben erhalten.
+- Damit kann ein PR-Branch den öffentlichen Feed prüfen, aber nicht mehr über
+  `git push HEAD:main` ungeprüfte oder konkurrierende Daten in `main` schreiben.

@@ -326,3 +326,10 @@ der Adapter einen normalen Browser-User-Agent verwenden; Preise werden dabei
 nicht aus Vermutungen oder privaten Daten ergänzt. Der aktuelle Netto-Adapter
 liefert dadurch wieder belegte Artikel mit Bild- und Nachweis-URL für die
 sechs konfigurierten Märkte.
+
+## D060 – Der Prospekt-Refresh schreibt nur aus main nach main
+Der automatische Prospekt-Refresh darf den versionierten Feed nur aus einem
+Lauf auf `main`, aus dem Zeitplan oder aus einem manuellen Lauf aktualisieren.
+Der `push`-Trigger ist deshalb auf `main` begrenzt. Ein Push auf einen
+Arbeits- oder PR-Branch darf niemals per `git push HEAD:main` fremde Änderungen
+in den Hauptbranch schreiben und dadurch einen Pull Request überholen.
