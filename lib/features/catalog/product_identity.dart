@@ -225,6 +225,14 @@ ProductIdentity identifyProduct(String value) {
   if (_hasAny(text, const ['zucker', 'puderzucker', 'haushaltszucker'])) {
     return ProductIdentity(familyKey: 'zucker', productType: _sugarType(text));
   }
+  if (_hasAny(text, const [
+    'salz staengli',
+    'salzstaengli',
+    'kaese staengli',
+    'kaese oder salz staengli',
+  ])) {
+    return const ProductIdentity(familyKey: 'snack', productType: 'staengli');
+  }
   if (_hasAny(text, const ['salz', 'speisesalz'])) {
     return const ProductIdentity(familyKey: 'salz');
   }
@@ -322,6 +330,9 @@ ProductIdentity identifyProduct(String value) {
   if (_hasWord(text, 'fischstäbchen')) {
     return const ProductIdentity(familyKey: 'fischstäbchen');
   }
+  if (_hasAny(text, const ['donut', 'franzbroetchen', 'franz broetchen'])) {
+    return const ProductIdentity(familyKey: 'backware', productType: 'donut');
+  }
   if (_hasAny(text, const [
         'aufbackbroetchen',
         'aufback broetchen',
@@ -340,6 +351,18 @@ ProductIdentity identifyProduct(String value) {
   }
   if (_hasAny(text, const ['marmelade', 'konfituere', 'fruchtaufstrich'])) {
     return const ProductIdentity(familyKey: 'marmelade');
+  }
+  if (_hasAny(text, const [
+    'pasta sauce',
+    'pastasauce',
+    'pasta sosse',
+    'pastasosse',
+    'nudel sauce',
+    'nudelsauce',
+    'nudel sosse',
+    'nudelsosse',
+  ])) {
+    return const ProductIdentity(familyKey: 'sauce', productType: 'pasta');
   }
   if (_hasAny(text, const [
     'nudel',

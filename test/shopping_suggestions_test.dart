@@ -222,6 +222,76 @@ void main() {
     },
   );
 
+  test('generic staple searches exclude compound ingredient products', () {
+    const products = [
+      Product(
+        id: 'donut',
+        name: 'BÄCKERKRÖNUNG Donut Franzbrötchen-Style je Stück',
+        unit: 'Stück',
+        group: 'backwaren',
+      ),
+      Product(
+        id: 'rolls',
+        name: 'K-CLASSIC Brötchen je 300 g',
+        unit: '300 g',
+        group: 'backwaren',
+      ),
+      Product(
+        id: 'pasta-sauce',
+        name: 'BARILLA Pasta-Sauce je 400-g-Glas',
+        unit: '400 g',
+        group: 'sauce',
+      ),
+      Product(
+        id: 'pasta',
+        name: 'BARILLA Classic Pasta je 500 g',
+        unit: '500 g',
+        group: 'nudeln',
+      ),
+      Product(
+        id: 'snack-sticks',
+        name: 'K-CLASSIC Käse- oder Salz-Stängli je 150 g',
+        unit: '150 g',
+        group: 'snacks',
+      ),
+      Product(
+        id: 'salt',
+        name: 'K-CLASSIC Speisesalz je 500 g',
+        unit: '500 g',
+        group: 'salz',
+      ),
+    ];
+
+    final rolls = buildSuggestions(
+      query: 'Brötchen',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: products,
+      now: now,
+    );
+    final pasta = buildSuggestions(
+      query: 'Nudeln',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: products,
+      now: now,
+    );
+    final salt = buildSuggestions(
+      query: 'Salz',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: products,
+      now: now,
+    );
+
+    expect(rolls.map((product) => product.id), ['rolls']);
+    expect(pasta.map((product) => product.id), ['pasta']);
+    expect(salt.map((product) => product.id), ['salt']);
+  });
+
   test('generic potato search keeps plain potatoes before wedges', () {
     final results = buildSuggestions(
       query: 'Kartoffeln 2,5Kg',

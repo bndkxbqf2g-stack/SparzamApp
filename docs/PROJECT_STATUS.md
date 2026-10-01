@@ -687,3 +687,13 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   verwechselt.
 - [x] Regressionen sichern sowohl die Identität als auch die sichtbare
   Suchauswahl für Kaffee und Käse.
+
+## Update 01.10.2026 – Backwaren, Saucen und Snacks nicht als Grundartikel führen
+- [x] Donut-/Franzbrötchen-Bezeichnungen bleiben außerhalb der generischen
+  Brötchenfamilie.
+- [x] Pasta- und Nudelsaucen werden nicht mehr als Nudeln vorgeschlagen.
+- [x] Käse- oder Salz-Stängli bleiben Snackartikel und werden nicht als
+  Speisesalz gerankt.
+- [x] Die Identitäts- und Suchregressionen prüfen die drei Negativzuordnungen
+  mit den aktuellen Prospektlabels. Originalbezeichnung, Quelle und Preis
+  bleiben unverändert; nur die Familienzuordnung wird korrigiert.

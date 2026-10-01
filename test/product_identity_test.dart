@@ -188,6 +188,39 @@ void main() {
     expect(identifyProduct('OLD AMSTERDAM Holl. Hartkäse').familyKey, 'kaese');
   });
 
+  test('bread, pasta and salt ingredients keep snack products separate', () {
+    expect(
+      identifyProduct('BÄCKERKRÖNUNG Donut Franzbrötchen-Style').familyKey,
+      'backware',
+    );
+    expect(identifyProduct('BARILLA Pasta-Sauce').familyKey, 'sauce');
+    expect(
+      identifyProduct('K-CLASSIC Käse- oder Salz-Stängli').familyKey,
+      'snack',
+    );
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Brötchen'),
+        identifyProduct('BÄCKERKRÖNUNG Donut Franzbrötchen-Style'),
+      ),
+      isFalse,
+    );
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Nudeln'),
+        identifyProduct('BARILLA Pasta-Sauce'),
+      ),
+      isFalse,
+    );
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Salz'),
+        identifyProduct('K-CLASSIC Käse- oder Salz-Stängli'),
+      ),
+      isFalse,
+    );
+  });
+
   test('milk ingredient compounds stay out of the plain milk family', () {
     expect(identifyProduct('K-CLASSIC Kondensmilch XXL').familyKey, isNull);
     expect(identifyProduct('K-CLASSIC Milch-Riegel').familyKey, 'snack');

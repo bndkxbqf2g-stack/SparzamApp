@@ -409,3 +409,12 @@ nur im nachgewiesenen Hollandaise-Kontext als Sauce gelesen, damit „Holl.
 Hartkäse“ nicht aus der Käsesuche fällt. Diese Regeln verhindern falsche
 Preis- und Routenzuordnungen; die sichtbare Originalbezeichnung bleibt
 unverändert.
+
+## D069 – Zusammengesetzte Back-, Saucen- und Snacklabels behalten ihre Familie
+Die Produktidentität löst Donut-/Franzbrötchen-Bezeichnungen vor der generischen
+Brötchenfamilie auf. Pasta- und Nudelsaucen bleiben ebenso außerhalb der
+Nudelfamilie wie Käse- oder Salz-Stängli außerhalb der Speisesalzfamilie.
+Damit erzeugt eine generische Einkaufssuche keine fremden Preisidentitäten oder
+Routenpositionen. Die Händlerbezeichnung, Quelle und der Preis werden nicht
+verändert; die Regel wirkt ausschließlich auf die hierarchische
+Identitätszuordnung und ist durch negative Suchregressionen abgesichert.
