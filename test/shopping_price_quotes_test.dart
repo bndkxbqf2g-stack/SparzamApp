@@ -38,9 +38,32 @@ void main() {
         now: DateTime(2026, 9, 24));
     expect(quotes, hasLength(2));
     expect(quotes.first.kind, ShoppingQuoteKind.offer);
-    expect(quotes.first.unitPrice, 0.89);
+    expect(quotes.first.unitPrice, 0.80);
+    expect(quotes.first.sourceLabel, 'Angebot, effektiv bis 30.09.2026');
     expect(quotes.last.sourceLabel, 'Bonpreis vom 14.07.2026');
     expect(quotes.last.unitPrice, 1.05);
+  });
+
+  test('cashback is shown as the effective shopping-list price', () {
+    final cashbackOffer = Offer(
+      id: 'cashback_offer',
+      productId: 'milch_35',
+      storeName: 'ALDI Süd',
+      originalPrice: 1.29,
+      offerPrice: 0.99,
+      cashbackAmount: 0.20,
+      validUntil: DateTime(2026, 9, 30),
+    );
+
+    final quote = shoppingQuotes(
+      item,
+      prices: const [],
+      offers: [cashbackOffer],
+      now: DateTime(2026, 9, 24),
+    ).single;
+
+    expect(quote.unitPrice, 0.79);
+    expect(quote.sourceLabel, 'Angebot, effektiv bis 30.09.2026');
   });
 
   test('demo offers, Open Prices and unlike products are not used', () {

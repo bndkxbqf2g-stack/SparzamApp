@@ -46,11 +46,6 @@ class ShoppingPriceBadge extends StatelessWidget {
         : receiptQuotes.isNotEmpty
             ? receiptQuotes.first
             : quotes.isNotEmpty ? quotes.first : null;
-    final prefix = highlighted?.kind == ShoppingQuoteKind.offer
-        ? 'Angebot'
-        : highlighted?.kind == ShoppingQuoteKind.receipt
-            ? 'Bonpreis'
-            : 'Eigener Preis';
     return InkWell(
       onTap: matrix.isEmpty ? null : () => _showQuotes(context, matrix),
       borderRadius: BorderRadius.circular(12),
@@ -66,7 +61,7 @@ class ShoppingPriceBadge extends StatelessWidget {
               child: Text(
                 highlighted == null
                     ? 'Noch kein belegter Marktpreis'
-                    : '$prefix ${highlighted.storeName}: ${highlighted.amountLabel}'
+                    : '${highlighted.displayPrefix} ${highlighted.storeName}: ${highlighted.amountLabel}'
                       '${quotes.length > 1 ? ' · +${quotes.length - 1}' : ''}',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

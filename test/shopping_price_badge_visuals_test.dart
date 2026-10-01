@@ -8,6 +8,38 @@ import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/models/product.dart';
 
 void main() {
+  testWidgets('Preisfenster zeigt Coupon als effektiven Preis', (tester) async {
+    const product = Product(
+      id: 'coupon-milk',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'milch',
+    );
+    final offer = Offer(
+      id: 'coupon-offer',
+      productId: product.id,
+      storeName: 'Kaufland',
+      originalPrice: 1.29,
+      offerPrice: 0.89,
+      couponPercent: 10,
+      validUntil: DateTime(2099, 1, 1),
+    );
+
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: ShoppingPriceBadge(
+          item: ListItem(product: product),
+          prices: const <MarketPrice>[],
+          offers: <Offer>[offer],
+          enabledStores: const <String>[],
+        ),
+      ),
+    ));
+
+    expect(find.textContaining('Angebot, effektiv Kaufland'), findsOneWidget);
+    expect(find.textContaining('0,80 €'), findsOneWidget);
+  });
+
   testWidgets('Preisfenster zeigt Produktbild und Angebotsbild', (tester) async {
     final product = Product(
       id: 'cheese',
