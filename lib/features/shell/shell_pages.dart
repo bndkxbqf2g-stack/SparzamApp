@@ -130,6 +130,7 @@ List<Widget> buildShellPages({
   OffersScreen(
     offers: offers,
     prospectRecords: prospectRecords,
+    prospectIssues: prospectIssues,
     generatedAt: prospectFeedGeneratedAt,
     fromCache: prospectFeedFromCache,
     priceHistory: priceHistory,

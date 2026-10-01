@@ -8,6 +8,7 @@ import 'offer_import.dart';
 import 'prospect_offer_products.dart';
 import '../prospects/prospect_category_presentation.dart';
 import '../../services/prospect_branch_resolver.dart';
+import '../../services/prospect_feed_service.dart';
 import '../prospects/prospect_feed_status.dart';
 
 class OffersScreen extends StatefulWidget {
@@ -19,6 +20,7 @@ class OffersScreen extends StatefulWidget {
     this.onDelete,
     required this.catalogProducts,
     this.prospectRecords = const [],
+    this.prospectIssues = const [],
     this.onAddToShoppingList,
     this.now,
     this.generatedAt,
@@ -34,6 +36,7 @@ class OffersScreen extends StatefulWidget {
   final Future<List<Offer>> Function(Offer offer)? onDelete;
   final List<Product> catalogProducts;
   final List<OfferImportRecord> prospectRecords;
+  final List<ProspectIssue> prospectIssues;
   final ValueChanged<Product>? onAddToShoppingList;
   final DateTime? now;
   final DateTime? generatedAt;
@@ -110,6 +113,7 @@ class _OffersScreenState extends State<OffersScreen> {
               widget.prospectRecords,
               now: widget.now,
             ),
+            issues: widget.prospectIssues,
             query: query,
             catalogProducts: widget.catalogProducts,
             onAddToShoppingList: widget.onAddToShoppingList,
@@ -123,12 +127,14 @@ class _OffersScreenState extends State<OffersScreen> {
 class _ProspectOffers extends StatefulWidget {
   const _ProspectOffers({
     required this.records,
+    required this.issues,
     required this.query,
     required this.catalogProducts,
     this.onAddToShoppingList,
   });
 
   final List<OfferImportRecord> records;
+  final List<ProspectIssue> issues;
   final String query;
   final List<Product> catalogProducts;
   final ValueChanged<Product>? onAddToShoppingList;
@@ -157,11 +163,18 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     }
 
     if (byStore.isEmpty) {
-      return const Text('Keine passenden Prospektangebote gefunden.');
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ..._sourceNotices(),
+          const Text('Keine passenden Prospektangebote gefunden.'),
+        ],
+      );
     }
 
     return Column(
       children: [
+        ..._sourceNotices(),
         for (final entry in byStore.entries)
           ExpansionTile(
             key: PageStorageKey('prospect-store-${entry.key}'),
@@ -217,6 +230,98 @@ class _ProspectOffersState extends State<_ProspectOffers> {
                 : const [],
           ),
       ],
+    );
+  }
+
+  List<Widget> _sourceNotices() {
+    if (widget.query.trim().isNotEmpty) return const <Widget>[];
+    final currentCounts = <String, int>{};
+    for (final record in widget.records) {
+      currentCounts.update(
+        record.storeName,
+        (count) => count + 1,
+        ifAbsent: () => 1,
+      );
+    }
+    final visible = <String, ProspectIssue>{};
+    for (final issue in widget.issues) {
+      final count = currentCounts[issue.storeName] ?? 0;
+      if (count > 0) continue;
+      final status = issue.sourceStatus == 'ok'
+          ? 'no_current_offers'
+          : issue.sourceStatus;
+      visible.putIfAbsent(
+        issue.storeName,
+        () => ProspectIssue(
+          storeName: issue.storeName,
+          title: issue.title,
+          pages: issue.pages,
+          url: issue.url,
+          thumbnailUrl: issue.thumbnailUrl,
+          branchId: issue.branchId,
+          location: issue.location,
+          address: issue.address,
+          sourceStatus: status,
+          recordCount: count,
+          validFrom: issue.validFrom,
+          validUntil: issue.validUntil,
+        ),
+      );
+    }
+    return [
+      for (final issue in visible.values)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: _OfferSourceNotice(issue: issue),
+        ),
+    ];
+  }
+}
+
+class _OfferSourceNotice extends StatelessWidget {
+  const _OfferSourceNotice({required this.issue});
+
+  final ProspectIssue issue;
+
+  @override
+  Widget build(BuildContext context) {
+    final message = switch (issue.sourceStatus) {
+      'no_current_offers' => 'Keine aktuell gültigen Angebotsdaten geladen.',
+      'metadata_only' =>
+        'Prospektquelle gefunden; Produktdaten fehlen aktuell.',
+      'error' =>
+        'Automatischer Abruf aktuell nicht verfügbar. '
+            'Der offizielle Prospekt bleibt direkt erreichbar.',
+      _ => 'Für diesen Markt sind aktuell keine Angebotsdaten verfügbar.',
+    };
+    final location = issue.location?.trim();
+    return Card(
+      color: Colors.orange.shade50,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.info_outline, color: Colors.orange.shade900),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    location == null || location.isEmpty
+                        ? issue.storeName
+                        : '${issue.storeName} $location',
+                    style: const TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(message),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

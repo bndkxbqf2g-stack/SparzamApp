@@ -923,3 +923,14 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Auch beim geschützten Quellenabruf werden solche Labels nicht aus dem
   vorherigen Feed weitergereicht. Der Bestands-Fallback behält nur weiterhin
   belastbare Netto-Produktlabels.
+
+## Update 01.10.2026 – Fehlende Angebotsquellen im Angebotstab sichtbar halten
+- Der Tab „Angebote“ zeigt jetzt auch Märkte ohne aktuelle Datensätze als
+  transparente Statuskarte. Ein nicht erreichbarer Händlerfeed verschwindet
+  dadurch nicht still aus dem Angebotsvergleich.
+- Die Anzeige unterscheidet fehlende aktuelle Angebote, fehlende strukturierte
+  Produktdaten und einen fehlgeschlagenen automatischen Abruf. Händlername und
+  Filialort bleiben sichtbar; die eigentlichen Angebote werden nicht durch
+  Schätzungen ersetzt.
+- Eine Widgetregression prüft den Netto-Fall „Automatischer Abruf aktuell
+  nicht verfügbar“ direkt im Angebotstab.

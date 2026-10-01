@@ -4,8 +4,40 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/offers/offers_screen.dart';
 import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/models/product.dart';
+import 'package:sparzamapp/services/prospect_feed_service.dart';
 
 void main() {
+  testWidgets('zeigt einen nicht verfügbaren Angebotsfeed transparent an', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: OffersScreen(
+          catalogProducts: const <Product>[],
+          prospectIssues: [
+            ProspectIssue(
+              storeName: 'Netto',
+              title: 'Aktionsprospekt',
+              pages: const <ProspectPage>[],
+              location: 'Thüngersheim',
+              sourceStatus: 'error',
+              url: 'https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371',
+            ),
+          ],
+          now: DateTime(2026, 10, 1),
+        ),
+      ),
+    );
+
+    expect(find.text('Netto Thüngersheim'), findsOneWidget);
+    expect(
+      find.text(
+        'Automatischer Abruf aktuell nicht verfügbar. Der offizielle Prospekt bleibt direkt erreichbar.',
+      ),
+      findsOneWidget,
+    );
+  });
+
   testWidgets(
     'unbekannter aktueller Prospektartikel kann zur Liste hinzugefügt werden',
     (tester) async {
