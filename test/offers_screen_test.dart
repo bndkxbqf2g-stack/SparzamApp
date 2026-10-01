@@ -85,4 +85,34 @@ void main() {
     expect(addButton, findsOneWidget);
     expect(tester.widget<IconButton>(addButton).onPressed, isNull);
   });
+
+  testWidgets('uses retailer category provenance for offer grouping', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: OffersScreen(
+          catalogProducts: const <Product>[],
+          prospectRecords: [
+            OfferImportRecord(
+              sourceId: 'source-category',
+              productLabel: 'Kaiseralm Bergkäse',
+              storeName: 'Lidl',
+              offerPrice: 2.39,
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+              proofRef: 'https://example.test/source-category',
+              category: 'Kühlregal',
+            ),
+          ],
+          now: DateTime(2026, 9, 30),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Lidl'));
+    await tester.pumpAndSettle();
+    expect(find.text('Kühlregal'), findsOneWidget);
+    expect(find.text('Milchprodukte'), findsNothing);
+  });
 }

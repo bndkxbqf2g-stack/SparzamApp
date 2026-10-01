@@ -549,3 +549,11 @@ Stand. Diese Anzeige beschreibt nur die Datenherkunft. Die Gültigkeit bleibt
 pro Angebotsdatensatz das maßgebliche Gate; `generatedAt` verlängert kein
 Angebot, erhöht keine Preisabdeckung und macht keinen abgelaufenen Preis für
 die Routenplanung verwendbar.
+
+## D085 – Händlerkategorien bleiben Quellenmetadaten
+Wenn ein strukturierter Händleradapter eine Kategorie liefert, wird sie am
+`OfferImportRecord` erhalten und darf die Gruppierung und Suche in den
+Prospektansichten steuern. Fehlt sie, verwendet die UI ihren bestehenden
+konservativen Label-Fallback. Eine Kategorie darf weder eine Produktidentität
+bestätigen noch Preise, Vergleichbarkeit, Angebotsgültigkeit oder
+Routenfähigkeit verändern; nicht gelieferte Kategorien werden nicht erfunden.

@@ -141,7 +141,9 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     final normalizedQuery = widget.query.trim().toLowerCase();
     final byStore = <String, List<OfferImportRecord>>{};
     for (final record in widget.records) {
-      final searchable = '${record.storeName} ${record.productLabel}'.toLowerCase();
+      final searchable = '${record.storeName} ${record.category ?? ''} '
+              '${record.productLabel}'
+          .toLowerCase();
       if (normalizedQuery.isNotEmpty && !searchable.contains(normalizedQuery)) {
         continue;
       }
@@ -241,8 +243,8 @@ class _ProspectOfferCard extends StatelessWidget {
             child: record.imageUrl?.isNotEmpty == true
                 ? Image.network(record.imageUrl!, fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) =>
-                        Icon(_categoryIcon(_offerCategory(record.productLabel))))
-                : Icon(_categoryIcon(_offerCategory(record.productLabel))),
+                        Icon(_categoryIcon(_offerCategory(record))))
+                : Icon(_categoryIcon(_offerCategory(record))),
           ),
           Expanded(
             child: Padding(
@@ -279,14 +281,19 @@ class _ProspectOfferCard extends StatelessWidget {
 Map<String, List<OfferImportRecord>> _grouped(List<OfferImportRecord> records) {
   final grouped = <String, List<OfferImportRecord>>{};
   for (final record in records) {
-    grouped.putIfAbsent(_offerCategory(record.productLabel), () => []).add(record);
+    grouped.putIfAbsent(_offerCategory(record), () => []).add(record);
   }
   final entries = grouped.entries.toList()
     ..sort((a, b) => _categoryRank(a.key).compareTo(_categoryRank(b.key)));
   return {for (final entry in entries) entry.key: entry.value};
 }
 
-String _offerCategory(String label) {
+String _offerCategory(OfferImportRecord record) {
+  final sourceCategory = record.category?.trim();
+  if (sourceCategory != null && sourceCategory.isNotEmpty) {
+    return sourceCategory;
+  }
+  final label = record.productLabel;
   final value = label.toLowerCase();
   if (RegExp(r'gemüse|salat|tomat|gurk|kartoff|obst|apfel|banane|traube').hasMatch(value)) {
     return 'Obst & Gemüse';
