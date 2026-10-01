@@ -750,5 +750,7 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Datenlückenliste und erklärt, welche belegte Quelle für die Berechnung noch
   benötigt wird.
 - Eine reine Fachlogik-Regression prüft die Reihenfolge und den stabilen
-  Namens-Tiebreaker; Flutter-Analyse, Gesamttests und Web-Build folgen für den
-  Änderungsstand.
+  Namens-Tiebreaker. Flutter-CI bestätigt Analyse, 485 Tests und Web-Build;
+  der Release-Lauf bestätigt Web, Android und Pages-Deployment.
+- Der veröffentlichte Route-Screen zeigt die priorisierte Karte bei einer
+  unbelegten Testposition; deren Marktdeckung bleibt mit `0/6` sichtbar.

@@ -16,6 +16,9 @@ class RouteSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final multi = best.stores.length > 1;
     final complete = !best.hasDataGaps;
+    final missingLabel = best.unassigned.length == 1
+        ? '1 Position'
+        : '${best.unassigned.length} Positionen';
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -85,7 +88,7 @@ class RouteSummaryCard extends StatelessWidget {
                 child: Text(
                   '${best.pricedItemCount} von ${best.totalItemCount} Artikeln '
                   'preislich belegt. Noch ohne belastbaren Preis: '
-                  '${best.unassigned.length} Positionen. Die angezeigten '
+                  '$missingLabel. Die angezeigten '
                   'Kosten enthalten diese Artikel nicht; die priorisierte '
                   'Datenlückenliste folgt darunter.',
                   style: TextStyle(
