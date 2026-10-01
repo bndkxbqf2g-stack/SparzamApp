@@ -212,3 +212,12 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Fehlende Artikel und die vorläufige Ersparnis werden im Abschluss sichtbar
   genannt.
 - [x] Der App-Handler blockiert Teilrouten auch außerhalb der UI.
+
+## Update 01.10.2026 – Sparroute direkt aus der Einkaufsliste
+- [x] Eine gefüllte Einkaufsliste zeigt jetzt direkt die Aktion „Sparroute
+  prüfen“.
+- [x] Der Einstieg führt dieselbe aktuelle Liste in die vorhandene
+  Routenberechnung, damit Angebote, Marktpreise, Datenlücken und Fahrtkosten
+  ohne Umweg gemeinsam bewertet werden.
+- [x] Der sichtbare Klickpfad ist als Widgetregression abgesichert; bei einer
+  leeren Liste oder ohne Route-Callback erscheint die Aktion nicht.

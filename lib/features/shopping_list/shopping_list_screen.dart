@@ -52,6 +52,7 @@ class ShoppingListScreen extends StatefulWidget {
     required this.onClearPurchased,
     required this.shoppingListStore,
     required this.onOpenScanner,
+    this.onOpenRoute,
     required this.offers,
     required this.priceHistory,
     required this.mobility,
@@ -81,6 +82,7 @@ class ShoppingListScreen extends StatefulWidget {
   final void Function(Set<String> productIds) onClearPurchased;
   final ShoppingListStore shoppingListStore;
   final VoidCallback onOpenScanner;
+  final VoidCallback? onOpenRoute;
   final List<Offer> offers;
   final List<PricePoint> priceHistory;
   final MobilitySettings mobility;
@@ -418,6 +420,19 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 },
               ),
               const SizedBox(height: 14),
+              if (widget.items.isNotEmpty && widget.onOpenRoute != null) ...[
+                FilledButton.icon(
+                  onPressed: widget.onOpenRoute,
+                  icon: const Icon(Icons.route_outlined),
+                  label: const Text('Sparroute prüfen'),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  'Angebote, Marktpreise und Fahrtkosten für diese Liste vergleichen.',
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+              ],
               ShoppingInput(
                 controller: controller,
                 focusNode: _inputFocusNode,
