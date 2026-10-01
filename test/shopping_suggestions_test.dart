@@ -187,26 +187,26 @@ void main() {
     );
 
     expect(results.map((product) => product.id), [lowFat.id, regular.id]);
-    expect(
-      shoppingSuggestionPriceForProduct(
-        results.first,
-        receiptPriceStats: [
-          ReceiptPriceStat(
-            familyKey: 'milch',
-            productId: lowFat.id,
-            storeName: 'ALDI Süd',
-            latestPrice: 1.05,
-            latestAt: DateTime(2026, 9, 29),
-            observationCount: 4,
-            medianPrice: 0.95,
-            comparable: true,
-            priceBasis: '1 l',
-          ),
-        ],
-        now: now,
-      )?.displayLabel,
-      contains('Bon-Median ALDI Süd 0,95 €'),
+    final hint = shoppingSuggestionPriceForProduct(
+      results.first,
+      receiptPriceStats: [
+        ReceiptPriceStat(
+          familyKey: 'milch',
+          productId: lowFat.id,
+          storeName: 'ALDI Süd',
+          latestPrice: 1.05,
+          latestAt: DateTime(2026, 9, 29),
+          observationCount: 4,
+          medianPrice: 0.95,
+          comparable: true,
+          priceBasis: '1 l',
+        ),
+      ],
+      now: now,
     );
+    expect(hint?.isHistorical, isTrue);
+    expect(hint?.displayLabel, contains('Bon-Median ALDI Süd 0,95 €'));
+    expect(hint?.displayLabel, contains('Stand 29.09.2026'));
   });
 
   test('stale receipts and disabled-market offers do not rank products', () {

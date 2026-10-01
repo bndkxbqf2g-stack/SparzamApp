@@ -540,3 +540,15 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Der anschließende Release-Workflow `36795819509` ist vollständig grün:
   Android-APK inklusive Artifact-Upload, Web-Build, Pages-Deployment und die
   Flutter-CI liefen erfolgreich.
+
+## Update 01.10.2026 – Bon-Mediane in Suchvorschlägen datiert
+- Vergleichbare Bon-Mediane aus der historischen Statistik werden in den
+  Suchvorschlägen jetzt ebenfalls als historische Werte mit Beobachtungsstand
+  angezeigt. Dadurch ist die Herkunft auch bei einer direkten Eingabe wie
+  „Milch“ sichtbar.
+- Aktive Angebote und aktuelle Preisbelege behalten Vorrang. Sind mehrere
+  Suchtreffer in derselben Evidenzklasse, wird der günstigere vergleichbare
+  Wert zuerst angezeigt.
+- `shopping_suggestions_test.dart` schützt Kennzeichnung und Rangfolge;
+  `flutter analyze` ist ohne Befund, alle 456 Flutter-Tests sind grün und
+  `flutter build web --release` war erfolgreich.
