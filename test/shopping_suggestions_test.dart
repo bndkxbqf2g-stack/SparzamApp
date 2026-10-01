@@ -741,13 +741,23 @@ void main() {
       unit: 'Packung',
       group: 'joghurt',
     );
+    const expensiveUnknownPackage = Product(
+      id: 'yoghurt-multipack',
+      name: 'Mix-in Joghurt XXL',
+      unit: '6 x 115',
+      group: 'joghurt',
+    );
 
     final results = buildSuggestions(
       query: 'Joghurt',
       knownItems: const [],
       recentPurchases: const [],
       preferredProductByGroup: const {},
-      catalogProducts: const [unknownPackage, knownPackage],
+      catalogProducts: const [
+        expensiveUnknownPackage,
+        unknownPackage,
+        knownPackage,
+      ],
       offers: [
         Offer(
           id: 'known-offer',
@@ -765,6 +775,14 @@ void main() {
           offerPrice: 0.44,
           validUntil: DateTime(2026, 10, 7),
         ),
+        Offer(
+          id: 'expensive-unknown-offer',
+          productId: expensiveUnknownPackage.id,
+          storeName: 'Kaufland',
+          originalPrice: 4.99,
+          offerPrice: 3.99,
+          validUntil: DateTime(2026, 10, 7),
+        ),
       ],
       now: now,
     );
@@ -772,6 +790,7 @@ void main() {
     expect(results.map((product) => product.id), [
       knownPackage.id,
       unknownPackage.id,
+      expensiveUnknownPackage.id,
     ]);
   });
 
