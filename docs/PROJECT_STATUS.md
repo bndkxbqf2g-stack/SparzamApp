@@ -959,3 +959,12 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   geprüften Prospektstand und die aktuell fehlende automatische Aktualisierung.
 - Die Anzeige ist preisfrei und wird durch eine Widgetregression abgesichert;
   sie reaktiviert keine abgelaufenen Angebote und erzeugt keine neue Quelle.
+
+## Update 02.10.2026 – Fallback-Provenienz in beiden Prospektansichten
+- Der Angebotstab und der Prospekte-Tab kennzeichnen gültige Datensätze aus
+  einem vorübergehend fehlgeschlagenen Händlerabruf jetzt einheitlich als
+  letzten geprüften Prospektstand.
+- Die Prospektkarte nennt zusätzlich die Anzahl der gültigen Fallbackangebote;
+  die Detailansicht wiederholt den preisfreien Aktualisierungshinweis.
+- Eine Widgetregression deckt Karten- und Detailansicht ab. Angebotsgültigkeit,
+  Nachweis und Preisfluss bleiben unverändert.

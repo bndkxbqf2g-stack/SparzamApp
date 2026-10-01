@@ -303,3 +303,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   Identitätserfindung.
 - [ ] Die Händlerquelle muss weiterhin regelmäßig erfolgreich aktualisieren,
   damit der Hinweis wieder in einen frischen Live-Status übergeht.
+
+## Update 02.10.2026 – Fallback-Provenienz in Angebote und Prospekte
+- [x] Beide Prospektansichten kennzeichnen gültige Bestandsangebote eines
+  fehlgeschlagenen Händlerabrufs als letzten geprüften Prospektstand.
+- [x] Die Prospektkarte zeigt dabei die Anzahl der gültigen Datensätze; die
+  Detailansicht bleibt preisfrei und verweist auf die fehlende Aktualisierung.
+- [x] Karten- und Detailpfad sind als Widgetregression abgesichert.

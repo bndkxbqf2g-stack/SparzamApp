@@ -135,6 +135,16 @@ ProspectIssue _visibleIssue(
       )
       .firstOrNull;
   final selected = current ?? entries.first;
+  final String sourceStatus;
+  if (current == null &&
+      currentRecordCount == 0 &&
+      selected.sourceStatus == 'ok') {
+    sourceStatus = 'no_current_offers';
+  } else if (selected.sourceStatus == 'error' && currentRecordCount > 0) {
+    sourceStatus = 'current_fallback';
+  } else {
+    sourceStatus = selected.sourceStatus;
+  }
   return ProspectIssue(
     storeName: selected.storeName,
     title: current?.title ?? 'Aktionsprospekt',
@@ -144,12 +154,7 @@ ProspectIssue _visibleIssue(
     branchId: current?.branchId ?? selected.branchId,
     location: current?.location ?? selected.location,
     address: current?.address ?? selected.address,
-    sourceStatus:
-        current == null &&
-            currentRecordCount == 0 &&
-            selected.sourceStatus == 'ok'
-        ? 'no_current_offers'
-        : selected.sourceStatus,
+    sourceStatus: sourceStatus,
     recordCount: currentRecordCount,
     validFrom: current?.validFrom,
     validUntil: current?.validUntil,
@@ -211,9 +216,7 @@ class _ProspectCard extends StatelessWidget {
                         style: const TextStyle(fontSize: 12),
                       ),
                     Text(
-                      issue.recordCount > 0
-                          ? '${issue.recordCount} Angebote geladen'
-                          : _sourceStatusLabel(issue),
+                      _prospectCardSummary(issue),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -234,9 +237,22 @@ class _ProspectCard extends StatelessWidget {
   }
 }
 
+String _prospectCardSummary(ProspectIssue issue) {
+  if (issue.sourceStatus == 'current_fallback') {
+    return '${issue.recordCount} Angebote aus dem letzten geprüften '
+        'Prospektstand. Automatische Aktualisierung aktuell nicht verfügbar.';
+  }
+  if (issue.recordCount > 0) return '${issue.recordCount} Angebote geladen';
+  return _sourceStatusLabel(issue);
+}
+
 String _sourceStatusLabel(ProspectIssue issue) {
   if (issue.sourceStatus == 'no_current_offers') {
     return 'Keine aktuell gültigen Angebotsdaten geladen.';
+  }
+  if (issue.sourceStatus == 'current_fallback') {
+    return 'Der letzte geprüfte Prospektstand wird verwendet; die automatische '
+        'Aktualisierung ist aktuell nicht verfügbar.';
   }
   if (issue.sourceStatus == 'error') {
     return 'Automatischer Abruf aktuell nicht verfügbar. '
