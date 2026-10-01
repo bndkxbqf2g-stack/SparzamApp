@@ -7,6 +7,7 @@ import '../../models/product.dart';
 import 'offer_import.dart';
 import 'prospect_offer_products.dart';
 import '../../services/prospect_branch_resolver.dart';
+import '../prospects/prospect_feed_status.dart';
 
 class OffersScreen extends StatefulWidget {
   const OffersScreen({
@@ -19,6 +20,8 @@ class OffersScreen extends StatefulWidget {
     this.prospectRecords = const [],
     this.onAddToShoppingList,
     this.now,
+    this.generatedAt,
+    this.fromCache = false,
   });
 
   // Kept for the shell/route data contract. The Angebote tab deliberately
@@ -32,6 +35,8 @@ class OffersScreen extends StatefulWidget {
   final List<OfferImportRecord> prospectRecords;
   final ValueChanged<Product>? onAddToShoppingList;
   final DateTime? now;
+  final DateTime? generatedAt;
+  final bool fromCache;
 
   @override
   State<OffersScreen> createState() => _OffersScreenState();
@@ -88,6 +93,11 @@ class _OffersScreenState extends State<OffersScreen> {
             ),
           ),
           const SizedBox(height: 18),
+          ProspectFeedStatusCard(
+            generatedAt: widget.generatedAt,
+            fromCache: widget.fromCache,
+          ),
+          const SizedBox(height: 12),
           Text('Aktuelles Prospekt',
               style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 6),

@@ -141,6 +141,7 @@ class _AppShellState extends State<AppShell> {
   List<OfferImportRecord> prospectRecords = const <OfferImportRecord>[];
   List<ProspectIssue> prospectIssues = const <ProspectIssue>[];
   bool prospectFeedFromCache = false;
+  DateTime? prospectFeedGeneratedAt;
   List<Product> prospectProducts = const <Product>[];
   final priceObservationStore = PriceObservationStore();
   late PriceDataSettings priceDataSettings;
@@ -281,6 +282,7 @@ class _AppShellState extends State<AppShell> {
           prospectRecords = currentProspectRecords(feed.records);
           prospectIssues = feed.prospects;
           prospectFeedFromCache = feed.fromCache;
+          prospectFeedGeneratedAt = feed.generatedAt;
         });
       }
 
@@ -1029,6 +1031,7 @@ class _AppShellState extends State<AppShell> {
       prospectRecords: prospectRecords,
       prospectIssues: prospectIssues,
       prospectFeedFromCache: prospectFeedFromCache,
+      prospectFeedGeneratedAt: prospectFeedGeneratedAt,
       priceHistory: priceHistory,
       mobility: mobility,
       catalogProducts: catalogProducts,
