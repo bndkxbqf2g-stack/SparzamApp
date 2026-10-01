@@ -20,6 +20,7 @@ class ReceiptRow {
   final num? quantity;
   final String quantityUnit;
   final int? unitCents;
+
   /// Only immediate, unambiguous item discounts are linked.
   final int? linkedItemLine;
 }
@@ -44,7 +45,8 @@ class ReceiptDraft {
   final String fingerprint;
 
   bool get balances =>
-      totalCents != null && totalCents == calculatedCents &&
+      totalCents != null &&
+      totalCents == calculatedCents &&
       unresolvedLines.isEmpty;
 }
 
@@ -54,7 +56,10 @@ ReceiptDraft parseReceiptLedger(String text) {
   final lines = text.split(RegExp(r'\r?\n'));
   final rows = <ReceiptRow>[];
   final unresolved = <int>[];
-  final amount = RegExp(r'(-?\d+[,.]\d{2})(?:\*?\s*[AB])?\s*$');
+  // Some mobile OCR engines render a printed zero as `@`. Accept that
+  // character only inside a trailing money token and normalize it in
+  // `_cents`; product labels remain untouched and still require review.
+  final amount = RegExp(r'(-?[\d@]+[,.][\d@]{2})(?:\*?\s*[AB])?\s*$');
   final total = RegExp(
     r'^\s*(?:Summe|SUMME\s*\[\d+\]|zu zahlen)\s*(?:€|EUR)?\s+(\d+[,.]\d{2})\s*$',
     caseSensitive: false,
@@ -63,17 +68,18 @@ ReceiptDraft parseReceiptLedger(String text) {
   // multiplication sign. Keep all forms equivalent without changing the
   // observed label or price evidence.
   final quantityBefore = RegExp(
-    r'^\s*(\d+)\s*[x×]\s*(\d+[,.]\d{2})\s*$',
+    r'^\s*(\d+)\s*[x×]\s*([\d@]+[,.][\d@]{2})\s*$',
     caseSensitive: false,
   );
-  final quantityInline = RegExp(r'(\d+)\s*[×*]\s*(\d+[,.]\d{2})\s*$');
+  final quantityInline = RegExp(r'(\d+)\s*[×*]\s*([\d@]+[,.][\d@]{2})\s*$');
   final unitPriceThenQuantity = RegExp(
-    r'(\d+[,.]\d{2})\s*€?\s*[x×]\s*(\d+)\s*$',
+    r'([\d@]+[,.][\d@]{2})\s*€?\s*[x×]\s*(\d+)\s*$',
     caseSensitive: false,
   );
   final weightUnit = RegExp(
-      r'^(\d+[,.]\d+)\s*kg\s*x\s*(\d+[,.]\d{2})\s*EUR/kg$',
-      caseSensitive: false);
+    r'^(\d+[,.]\d+)\s*kg\s*x\s*(\d+[,.]\d{2})\s*EUR/kg$',
+    caseSensitive: false,
+  );
   final inlineWeight = RegExp(
     r'\s(\d+[,.]\d{3})\s+kg\s*$',
     caseSensitive: false,
@@ -104,7 +110,8 @@ ReceiptDraft parseReceiptLedger(String text) {
     }
     // Netto prints the weight and exact kilogram price after the item.
     final weightMatch = weightUnit.firstMatch(line);
-    if (weightMatch != null && rows.isNotEmpty &&
+    if (weightMatch != null &&
+        rows.isNotEmpty &&
         rows.last.kind == ReceiptRowKind.item) {
       final quantity = double.parse(weightMatch.group(1)!.replaceAll(',', '.'));
       final unitCents = _cents(weightMatch.group(2)!);
@@ -177,29 +184,36 @@ ReceiptDraft parseReceiptLedger(String text) {
     pendingQuantity = null;
     pendingUnit = null;
     final lower = label.toLowerCase();
-    final isDiscount = cents < 0 && (lower.contains('rabatt') ||
-        lower.contains('preisvorteil'));
+    final isDiscount =
+        cents < 0 &&
+        (lower.contains('rabatt') || lower.contains('preisvorteil'));
     final isReturn = lower.startsWith('leergut getränke') && cents < 0;
-    final isDeposit = lower.contains('pfand') ||
-        lower.startsWith('leergut ');
-    final kind = isDiscount ? ReceiptRowKind.discount
-        : isReturn ? ReceiptRowKind.returnDeposit
-        : isDeposit ? ReceiptRowKind.deposit
-        : cents < 0 ? ReceiptRowKind.unresolved
+    final isDeposit = lower.contains('pfand') || lower.startsWith('leergut ');
+    final kind = isDiscount
+        ? ReceiptRowKind.discount
+        : isReturn
+        ? ReceiptRowKind.returnDeposit
+        : isDeposit
+        ? ReceiptRowKind.deposit
+        : cents < 0
+        ? ReceiptRowKind.unresolved
         : ReceiptRowKind.item;
-    final linked = isDiscount && !lower.contains('warenkorb') &&
-        lastItemLine != null
-        ? lastItemLine : null;
-    rows.add(ReceiptRow(
-      line: index + 1,
-      label: label,
-      cents: cents,
-      kind: kind,
-      quantity: quantity,
-      quantityUnit: quantityUnit,
-      unitCents: unitCents,
-      linkedItemLine: linked,
-    ));
+    final linked =
+        isDiscount && !lower.contains('warenkorb') && lastItemLine != null
+        ? lastItemLine
+        : null;
+    rows.add(
+      ReceiptRow(
+        line: index + 1,
+        label: label,
+        cents: cents,
+        kind: kind,
+        quantity: quantity,
+        quantityUnit: quantityUnit,
+        unitCents: unitCents,
+        linkedItemLine: linked,
+      ),
+    );
     if (kind == ReceiptRowKind.item) {
       lastItemLine = index + 1;
     }
@@ -207,7 +221,8 @@ ReceiptDraft parseReceiptLedger(String text) {
         kind == ReceiptRowKind.returnDeposit) {
       lastItemLine = null;
     }
-    if (quantity != null && unitCents != null &&
+    if (quantity != null &&
+        unitCents != null &&
         quantity * unitCents != cents) {
       unresolved.add(index + 1);
     }
@@ -220,9 +235,13 @@ ReceiptDraft parseReceiptLedger(String text) {
   }
   final date = _receiptDate(text);
   final retailer = _receiptRetailer(text);
-  final basis = [retailer ?? '', date?.toIso8601String() ?? '',
+  final basis = [
+    retailer ?? '',
+    date?.toIso8601String() ?? '',
     printedTotal?.toString() ?? '',
-    ...rows.map((row) => '${row.kind.name}|${row.label}|${row.cents}|${row.quantity}'),
+    ...rows.map(
+      (row) => '${row.kind.name}|${row.label}|${row.cents}|${row.quantity}',
+    ),
   ].join('\\n');
   return ReceiptDraft(
     receiptDate: date,
@@ -248,7 +267,11 @@ String? _receiptRetailer(String text) {
 
 int _cents(String value) {
   final negative = value.startsWith('-');
-  final parts = value.replaceAll('-', '').replaceAll(',', '.').split('.');
+  final parts = value
+      .replaceAll('-', '')
+      .replaceAll('@', '0')
+      .replaceAll(',', '.')
+      .split('.');
   final result = int.parse(parts[0]) * 100 + int.parse(parts[1]);
   return negative ? -result : result;
 }
@@ -258,9 +281,8 @@ DateTime? _receiptDate(String text) {
     r'\bDatum\s*:?\s*(\d{2})[.](\d{2})[.](\d{2,4})\b',
     caseSensitive: false,
   ).firstMatch(text);
-  final timed = RegExp(
-    r'\b(\d{2})[.](\d{2})[.](\d{2,4})\s+\d{2}:\d{2}\b',
-  ).firstMatch(text);
+  final timed = RegExp(r'\b(\d{2})[.](\d{2})[.](\d{2,4})\s+\d{2}:\d{2}\b')
+      .firstMatch(text);
   final match = labeled ?? timed;
   if (match == null) return null;
   final day = int.parse(match.group(1)!);

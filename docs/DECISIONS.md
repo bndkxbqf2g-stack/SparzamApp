@@ -533,3 +533,11 @@ Die Angaben stammen ausschließlich aus der bestehenden Markt-Konfiguration;
 sie ändern weder den kanonischen Händlernamen noch Preisidentität oder
 Routenpreis. Fehlende Artikelbilder, Kategorien und bild-only OCR bleiben
 separate Datenqualitäts- und Review-Aufgaben.
+
+## D083 – OCR-Korrekturen bleiben auf Geldtokens begrenzt
+Wenn ein OCR-Lauf eine gedruckte Null in einem Geldbetrag als `@` liefert,
+darf der Bon-Parser dieses Zeichen ausschließlich innerhalb des erkannten
+Geldtokens als Null lesen. Produktlabels und Identitätsbestandteile werden
+nicht verändert. Mengen-, Preis- und Bilanzabweichungen bleiben sichtbar und
+blockieren die automatische Bestätigung; eine OCR-Korrektur darf keine
+fehlende Zeile oder einen abweichenden Gesamtbetrag erfinden.
