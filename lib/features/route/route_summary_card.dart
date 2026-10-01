@@ -85,8 +85,9 @@ class RouteSummaryCard extends StatelessWidget {
                 child: Text(
                   '${best.pricedItemCount} von ${best.totalItemCount} Artikeln '
                   'preislich belegt. Noch ohne belastbaren Preis: '
-                  '${best.unassigned.map((item) => item.product.name).join(', ')}. '
-                  'Die angezeigten Kosten enthalten diese Artikel nicht.',
+                  '${best.unassigned.length} Positionen. Die angezeigten '
+                  'Kosten enthalten diese Artikel nicht; die priorisierte '
+                  'Datenlückenliste folgt darunter.',
                   style: TextStyle(
                     color: Colors.amber.shade900,
                     fontWeight: FontWeight.w600,

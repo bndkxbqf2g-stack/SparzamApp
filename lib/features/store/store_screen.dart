@@ -9,6 +9,8 @@ import '../../services/road_distance_service.dart';
 import '../../services/road_distance_store.dart';
 import 'store_shopping_summary.dart';
 import 'store_value.dart';
+import '../price_gaps/price_gap_card.dart';
+import '../price_gaps/price_gap_priority.dart';
 import '../route/travel_estimator.dart';
 
 class StoreScreen extends StatefulWidget {
@@ -81,6 +83,10 @@ class _StoreScreenState extends State<StoreScreen> {
       widget.items,
       widget.offers,
       marketPrices: widget.marketPrices,
+    );
+    final priceGaps = prioritizePriceGaps(
+      summary.unpricedItems,
+      marketCount: 1,
     );
     final value = evaluateStoreValue(
       widget.store,
@@ -205,12 +211,22 @@ class _StoreScreenState extends State<StoreScreen> {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      'Ohne Preis: ${summary.unpricedItems.map((item) => item.product.name).join(', ')}',
+                      'Die fehlenden Positionen sind unten nach fehlender '
+                      'Marktabdeckung, Grundbedarf und Listenmenge sortiert.',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),
               ),
+            ),
+          ],
+          if (priceGaps.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            PriceGapCard(
+              gaps: priceGaps,
+              description:
+                  'Kosten und Ersparnis gelten nur für den belegten Teil '
+                  'deiner Liste.',
             ),
           ],
           const SizedBox(height: 16),

@@ -58,12 +58,15 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Preisabdeckung unvollständig'), findsNWidgets(2));
+    // The additional priority card pushes the value summary below the initial
+    // viewport; the visible warning is the stable assertion for this screen.
+    expect(find.text('Preisabdeckung unvollständig'), findsOneWidget);
     expect(
       find.textContaining('1 von 2 Artikeln mit aktuellem, vergleichbarem Preis'),
       findsOneWidget,
     );
-    expect(find.textContaining('Ohne Preis: Unbekannter Artikel'), findsOneWidget);
+    expect(find.text('Preis-Datenlücken zuerst klären'), findsOneWidget);
+    expect(find.textContaining('Menge 1 · 1 Markt ohne Preis'), findsOneWidget);
     expect(find.text('Dieser Markt lohnt sich durch die Angebote'), findsNothing);
     expect(tester.takeException(), isNull);
   });

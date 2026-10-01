@@ -10,6 +10,8 @@ import '../../models/route_plan.dart';
 import '../../services/road_distance_service.dart';
 import '../../services/road_distance_store.dart';
 import '../../services/road_route_matrix_store.dart';
+import '../price_gaps/price_gap_card.dart';
+import '../price_gaps/price_gap_priority.dart';
 import 'route_alternative_card.dart';
 import 'route_recommendation.dart';
 import 'route_recommendation_card.dart';
@@ -139,7 +141,11 @@ class _RouteScreenState extends State<RouteScreen> {
           widget.mobility.mode == MobilityMode.car ? roadMatrix : null,
     );
     final best = optimizer.bestPlan();
-    if (best == null) return const _MissingPrices();
+    final priceGaps = _buildPriceGaps(
+      optimizer,
+      best?.unassigned ?? widget.items,
+    );
+    if (best == null) return _MissingPrices(gaps: priceGaps);
 
     final single = optimizer.bestSingleStorePlan();
     final savings = single == null
@@ -210,6 +216,10 @@ class _RouteScreenState extends State<RouteScreen> {
         ),
         const SizedBox(height: 18),
         RouteSummaryCard(best: best, extraSavings: savings),
+        if (priceGaps.isNotEmpty) ...[
+          const SizedBox(height: 10),
+          PriceGapCard(gaps: priceGaps),
+        ],
         const SizedBox(height: 10),
         RouteRecommendationCard(
           info: recommendation,
@@ -277,6 +287,30 @@ class _RouteScreenState extends State<RouteScreen> {
   }
 }
 
+List<PriceGapPriority> _buildPriceGaps(
+  RouteOptimizer optimizer,
+  Iterable<ListItem> items,
+) {
+  final gapItems = items.toList(growable: false);
+  final enabledStores = optimizer.availableStores;
+  final marketCount = enabledStores.length;
+  final missingByProduct = <String, int>{};
+
+  for (final item in gapItems) {
+    missingByProduct[item.product.id] = enabledStores.where((store) {
+      final quote = optimizer.prices.quote(store, item);
+      return quote == null || quote.isEstimated;
+    }).length;
+  }
+
+  return prioritizePriceGaps(
+    gapItems,
+    marketCount: marketCount,
+    missingMarketCountFor: (item) =>
+        missingByProduct[item.product.id] ?? marketCount,
+  );
+}
+
 List<RoutePlan> _uniqueAlternatives(List<RoutePlan> plans) {
   final seen = <String>{};
   return plans.where((plan) {
@@ -318,16 +352,41 @@ class _EmptyRoute extends StatelessWidget {
 }
 
 class _MissingPrices extends StatelessWidget {
-  const _MissingPrices();
+  const _MissingPrices({required this.gaps});
+
+  final List<PriceGapPriority> gaps;
 
   @override
-  Widget build(BuildContext context) => const Center(
-        child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Text(
-            'Für mindestens einen Artikel ist noch kein Marktpreis hinterlegt.',
-            textAlign: TextAlign.center,
+  Widget build(BuildContext context) => ListView(
+        padding: const EdgeInsets.fromLTRB(20, 24, 20, 28),
+        children: [
+          Text(
+            'Einkaufsoptimierung',
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
           ),
-        ),
+          const SizedBox(height: 8),
+          const Text(
+            'Für diese Liste liegt in den aktivierten Märkten noch kein '
+            'belastbarer Preis vor. Ergänze ein aktuelles Angebot, einen '
+            'Bonpreis oder einen eigenen Preis, damit die Route rechnen kann.',
+          ),
+          const SizedBox(height: 14),
+          if (gaps.isNotEmpty)
+            PriceGapCard(
+              gaps: gaps,
+              description:
+                  'Die Reihenfolge nutzt nur fehlende Marktbelege, '
+                  'Grundbedarf und Listenmenge.',
+            )
+          else
+            const Card(
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Text('Keine aktivierten Märkte ausgewählt.'),
+              ),
+            ),
+        ],
       );
 }

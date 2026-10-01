@@ -739,3 +739,16 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   der Beleg keine belastbare Grammangabe enthält; ein Preis wird nicht
   erfunden.
 - Eine Regression prüft die Variante und hält Fruchtjoghurt getrennt.
+
+## Update 01.10.2026 – Fehlende Marktpreise werden priorisiert
+- Route und Marktansicht nennen fehlende Preisbelege jetzt in einer stabilen
+  Reihenfolge statt nur als ungeordnete Sammelmeldung.
+- Die Reihenfolge nutzt ausschließlich die Zahl fehlender aktivierter Märkte,
+  die Grundbedarfsmarkierung und die Listenmenge. Schätzpreise, historische
+  Werte oder fremde Varianten werden nicht als Prioritätssignal verwendet.
+- Bei einer vollständigen Preislosigkeit zeigt die Route dieselbe priorisierte
+  Datenlückenliste und erklärt, welche belegte Quelle für die Berechnung noch
+  benötigt wird.
+- Eine reine Fachlogik-Regression prüft die Reihenfolge und den stabilen
+  Namens-Tiebreaker; Flutter-Analyse, Gesamttests und Web-Build folgen für den
+  Änderungsstand.
