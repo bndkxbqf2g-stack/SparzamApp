@@ -506,3 +506,13 @@ Gültigkeitsende, damit die Herkunft der Orientierung nachvollziehbar bleibt.
 Historische Beobachtungen zählen weiterhin nicht zur aktuellen Preisabdeckung,
 werden nicht als aktuelles Angebot ausgegeben und dürfen nicht als Preisquelle
 für `RoutePriceResolver` oder eine Routenempfehlung dienen.
+
+## D080 – Unbekannte Prospektartikel bleiben exakt und explizit auswählbar
+Ein aktuell gültiger Prospektdatensatz mit belastbarem Nachweis darf aus dem
+Angebotstab zur Einkaufsliste übernommen werden, auch wenn die lokale
+Produktidentität noch keinen Katalogtreffer besitzt. Dafür wird ausschließlich
+das unveränderte Händlerlabel als separates Prospektprodukt verwendet. Es
+werden keine Aliase, Familienvarianten oder fremden Preisidentitäten ergänzt;
+die Übernahme durch den Nutzer ist die ausdrückliche Bestätigung dieses
+Kandidaten. Erst danach kann die bestehende Katalog- und Preislernlogik daran
+weiterarbeiten.

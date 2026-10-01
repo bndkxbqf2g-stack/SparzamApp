@@ -824,3 +824,14 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Routenfähigkeit und werden nicht als aktuelle Angebote ausgegeben.
 - Eine Widget-Regression prüft das Öffnen der Detailansicht und ihre
   Markt-/Quell-/Datumskennzeichnung.
+
+## Update 01.10.2026 – Neue Prospektartikel aus dem Angebotstab nutzbar
+- Ein aktuell gültiger, nachweisbarer Prospektartikel ohne vorhandenen
+  Katalogeintrag kann jetzt auch im Tab „Angebote“ zur Einkaufsliste
+  hinzugefügt werden.
+- Dafür bleibt die exakte Händlerbezeichnung als separates Prospektprodukt
+  erhalten. Es werden keine Aliase, Varianten oder Preise auf andere Produkte
+  übertragen; der explizite Klick des Nutzers speichert den Artikel später als
+  lokalen Katalogkandidaten.
+- Eine Widget-Regression prüft den Add-to-List-Flow für ein unbekanntes,
+  aber nachgewiesenes aktuelles Prospektlabel.
