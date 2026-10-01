@@ -344,6 +344,12 @@ void main() {
         group: 'getraenke',
       ),
       Product(
+        id: 'iced-tea',
+        name: 'Freeway Eistee',
+        unit: '1,5 l',
+        group: 'getraenke',
+      ),
+      Product(
         id: 'pet-food',
         name: 'K-CARINURA Hundenahrung Premium-Fleischgenuss',
         unit: '800 g',
@@ -719,6 +725,53 @@ void main() {
     expect(results.map((product) => product.id), [
       pastaOneKg.id,
       pastaHalfKg.id,
+    ]);
+  });
+
+  test('unknown package basis does not outrank comparable offer prices', () {
+    const knownPackage = Product(
+      id: 'yoghurt-500g',
+      name: 'Naturjoghurt',
+      unit: '500 g',
+      group: 'joghurt',
+    );
+    const unknownPackage = Product(
+      id: 'yoghurt-pack',
+      name: 'Rahmjoghurt',
+      unit: 'Packung',
+      group: 'joghurt',
+    );
+
+    final results = buildSuggestions(
+      query: 'Joghurt',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: const [unknownPackage, knownPackage],
+      offers: [
+        Offer(
+          id: 'known-offer',
+          productId: knownPackage.id,
+          storeName: 'PENNY',
+          originalPrice: 1.09,
+          offerPrice: 0.89,
+          validUntil: DateTime(2026, 10, 3),
+        ),
+        Offer(
+          id: 'unknown-offer',
+          productId: unknownPackage.id,
+          storeName: 'Kaufland',
+          originalPrice: 0.69,
+          offerPrice: 0.44,
+          validUntil: DateTime(2026, 10, 7),
+        ),
+      ],
+      now: now,
+    );
+
+    expect(results.map((product) => product.id), [
+      knownPackage.id,
+      unknownPackage.id,
     ]);
   });
 

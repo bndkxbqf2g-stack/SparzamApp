@@ -101,12 +101,22 @@ List<Product> buildSuggestions({
       // first so historical receipt medians remain useful for staple searches.
       final aComparable = _comparisonPrice(a, aPrice.price);
       final bComparable = _comparisonPrice(b, bPrice.price);
-      if (aComparable != null &&
-          bComparable != null &&
-          aComparable.dimension == bComparable.dimension) {
-        final byUnitPrice = aComparable.price.compareTo(bComparable.price);
-        if (byUnitPrice != 0) return byUnitPrice;
-      } else if (_normalizedUnitLabel(a.unit) == _normalizedUnitLabel(b.unit)) {
+      if (aComparable != null && bComparable != null) {
+        if (aComparable.dimension == bComparable.dimension) {
+          final byUnitPrice = aComparable.price.compareTo(bComparable.price);
+          if (byUnitPrice != 0) return byUnitPrice;
+        }
+      } else if (aComparable == null || bComparable == null) {
+        // A package without a reliable quantity must not outrank a product
+        // whose price can be compared on the same request. Keep that item
+        // visible, but make the missing package basis explicit through its
+        // unchanged unit label instead of pretending that its raw package
+        // price is a unit price.
+        return aComparable == null ? 1 : -1;
+      } else {
+        // Both prices are package-only observations. A raw price is still a
+        // useful deterministic fallback within that evidence bucket, while
+        // the UI continues to show the original package labels.
         final byPackagePrice = aPrice.price.compareTo(bPrice.price);
         if (byPackagePrice != 0) return byPackagePrice;
       }
@@ -408,13 +418,6 @@ int _compareHistoricalHints(
   if (quantity == null || unitPrice == null) return null;
   return (price: unitPrice, dimension: quantity.dimension);
 }
-
-String _normalizedUnitLabel(String value) => value
-    .toLowerCase()
-    .replaceAll('stück', 'stk')
-    .replaceAll('stueck', 'stk')
-    .replaceAll(RegExp(r'\s+'), ' ')
-    .trim();
 
 /// Keeps the text fallback conservative once the query has a known product
 /// identity. An unknown candidate is only safe when its complete label is the

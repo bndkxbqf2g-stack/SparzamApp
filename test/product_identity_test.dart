@@ -233,6 +233,7 @@ void main() {
       expect(identifyProduct('K-CLASSIC Apfelsaft').familyKey, 'saft');
       expect(identifyProduct('REINERT Teewurst').familyKey, 'wurst');
       expect(identifyProduct('MAYFAIR Kamillentee').familyKey, 'tee');
+      expect(identifyProduct('Freeway Eistee').productType, 'eistee');
       expect(
         identifyProduct('K-CARINURA Hundenahrung Premium-Fleischgenuss')
             .familyKey,
@@ -284,6 +285,20 @@ void main() {
           identifyProduct('REINERT Teewurst'),
         ),
         isFalse,
+      );
+      expect(
+        compatibleProductIdentity(
+          identifyProduct('Tee'),
+          identifyProduct('Freeway Eistee'),
+        ),
+        isFalse,
+      );
+      expect(
+        compatibleProductIdentity(
+          identifyProduct('Eistee'),
+          identifyProduct('Freeway Eistee'),
+        ),
+        isTrue,
       );
       expect(
         compatibleProductIdentity(
