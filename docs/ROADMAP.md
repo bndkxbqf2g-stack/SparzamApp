@@ -285,3 +285,12 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   werden erst bei nachweisbarer Händlerantwort wieder als Angebote angezeigt.
 - [x] Der Status führt direkt zum offiziellen Händlerprospekt, ohne die
   fehlende Quelle durch einen Preis zu ersetzen.
+
+## Update 01.10.2026 – Netto-Reader-Fallback
+- [x] Der offizielle öffentliche Reader-Fallback liest Netto-Markdown-Kacheln
+  mit Produktlink, Preis, Packung, Bild und Gültigkeitsende.
+- [x] Die sechs konfigurierten Märkte liefern wieder einen sichtbaren
+  Quellenstatus; Netto-Angebote werden nur mit ihrem offiziellen Nachweis und
+  eigenem Gültigkeitsfenster übernommen.
+- [x] Parserregressionen sichern den Fallback gegen reine Rabatt-/Sorten- und
+  Herkunftsplatzhalter ab.

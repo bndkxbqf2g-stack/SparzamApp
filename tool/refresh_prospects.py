@@ -8,7 +8,7 @@ import time
 from datetime import date, datetime, timedelta, timezone
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import quote, urljoin
+from urllib.parse import parse_qs, quote, unquote, urljoin, urlsplit
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
@@ -1495,6 +1495,16 @@ def parse_netto(html_text, base_url):
                 valid_from = parsed_value
             else:
                 valid_until = parsed_value
+    else:
+        reader_start = re.search(
+            r"ab\s+\w+[,\s]+(\d{2}\.\d{2}\.\d{2,4})",
+            html_text,
+            flags=re.I,
+        )
+        if reader_start:
+            value = reader_start.group(1)
+            fmt = "%d.%m.%y" if len(value.rsplit(".", 1)[-1]) == 2 else "%d.%m.%Y"
+            valid_from = datetime.strptime(value, fmt).date()
 
     offers = []
     # The Thüngersheim store page renders its current filial offers as
@@ -1571,24 +1581,155 @@ def parse_netto(html_text, base_url):
     # Netto intermittently protects the page with HTTP 403. The Jina reader
     # proxy exposes the same public official page as plain text.
     lines = [clean(line) for line in html_text.splitlines() if clean(line)]
-    for index, line in enumerate(lines):
-        price = re.search(r"(?:UVP|statt)\s+(\d+[,.]\d{2})\s+(\d+[,.]\d{2})", line, flags=re.I)
-        if price is None:
-            continue
-        label = ""
-        for candidate in reversed(lines[max(0, index - 3):index]):
-            if not re.search(r"\d+[,.]?\d*\s*(?:/\s*kg|€)|gültig|angebot", candidate, re.I):
-                label = candidate
-                break
-        if not label:
-            continue
-        if not _is_actionable_netto_label(label):
-            continue
-        offers.append(record(
-            "Netto", label, _netto_money(price.group(2)), valid_from, valid_until,
-            base_url + "#filialangebote", _netto_money(price.group(1)),
-        ))
+    # The Markdown reader has its own product-link adapter below. Do not also
+    # interpret its compact price lines as a second, less precise record.
+    if "ViewMMPWishlist-AddStoreArticle" not in html_text:
+        for index, line in enumerate(lines):
+            price = re.search(r"(?:UVP|statt)\s+(\d+[,.]\d{2})\s+(\d+[,.]\d{2})", line, flags=re.I)
+            if price is None:
+                continue
+            label = ""
+            for candidate in reversed(lines[max(0, index - 3):index]):
+                if not re.search(r"\d+[,.]?\d*\s*(?:/\s*kg|€)|gültig|angebot", candidate, re.I):
+                    label = candidate
+                    break
+            if not label:
+                continue
+            if not _is_actionable_netto_label(label):
+                continue
+            offers.append(record(
+                "Netto", label, _netto_money(price.group(2)), valid_from, valid_until,
+                base_url + "#filialangebote", _netto_money(price.group(1)),
+            ))
+    offers.extend(
+        _parse_netto_markdown_tiles(
+            html_text,
+            base_url,
+            valid_from=valid_from,
+            valid_until=valid_until,
+        )
+    )
     return dedupe(offers), []
+
+
+def _parse_netto_markdown_tiles(
+    markdown_text,
+    base_url,
+    *,
+    valid_from,
+    valid_until,
+):
+    """Parse the public reader's Markdown representation of filial tiles.
+
+    Netto returns HTTP 403 to the scheduled fetcher from time to time. The
+    public reader fallback then exposes the same official page as Markdown.
+    Its product tiles carry an official `ViewMMPWishlist-AddStoreArticle`
+    link with the product name, expiry and image in the query string, while
+    the stated regular/offer price remains in the preceding tile text. Keep
+    this adapter conservative: only a paired stated price or explicit
+    ``Aktion`` price becomes an offer, and the link itself remains the proof.
+    """
+    if "ViewMMPWishlist-AddStoreArticle" not in markdown_text:
+        return []
+
+    lines = markdown_text.splitlines()
+    offers = []
+    link_re = re.compile(
+        r"\]\((https?://[^)\s]*ViewMMPWishlist-AddStoreArticle\?[^)\s]+)"
+        r"(?:\s+\"[^\"]*\")?\)",
+        flags=re.I,
+    )
+    label_re = re.compile(r"(?<!\w)_([^_\n]{2,200})_(?!\w)")
+    quantity_re = re.compile(
+        r"\b\d+\s*x\s*\d+(?:[,.]\d+)?\s*"
+        r"(?:kg|g|ml|l|liter)\b"
+        r"|\b\d+(?:[,.]\d+)?\s*"
+        r"(?:kg|g|ml|l|liter|stück|topf|schale|wl)\b"
+        r"(?:\s*[-–]\s*\d+(?:[,.]\d+)?\s*"
+        r"(?:kg|g|ml|l|liter))?",
+        flags=re.I,
+    )
+
+    for line_index, line in enumerate(lines):
+        link_match = link_re.search(line)
+        if link_match is None:
+            continue
+        href = html.unescape(link_match.group(1))
+        query = parse_qs(urlsplit(href).query)
+        name_values = query.get("Name") or []
+        name = clean(unquote(name_values[0])) if name_values else ""
+
+        label_index = None
+        label = ""
+        for previous_index in range(line_index, max(-1, line_index - 20), -1):
+            candidates = label_re.findall(lines[previous_index])
+            if candidates:
+                label_index = previous_index
+                label = clean(candidates[-1])
+                break
+        if not name:
+            name = label
+        if not name or not _is_actionable_netto_label(name):
+            continue
+
+        start_index = label_index if label_index is not None else max(0, line_index - 8)
+        segment = "\n".join(lines[start_index:line_index + 1])
+        stated = re.search(
+            r"(?:UVP|statt)\s+(\d+[,.]\d{2})\s+"
+            r"(\d+[,.](?:\d{2}|[.–-]))",
+            segment,
+            flags=re.I,
+        )
+        original = None
+        sale = None
+        if stated is not None:
+            original = _netto_money(stated.group(1))
+            sale = _netto_money(stated.group(2))
+        else:
+            action = re.search(
+                r"\bAktion\s+(\d+[,.](?:\d{2}|[.–-]))",
+                segment,
+                flags=re.I,
+            )
+            if action is not None:
+                sale = _netto_money(action.group(1))
+        if sale is None or sale <= 0:
+            continue
+
+        quantity = quantity_re.search(segment)
+        quantity_text = clean(quantity.group(0)) if quantity is not None else ""
+        if not quantity_text and re.search(r"\bStück\b", segment, flags=re.I):
+            quantity_text = "Stück"
+        product_label = name
+        if quantity_text and quantity_text.lower() not in name.lower():
+            product_label = f"{name} {quantity_text}"
+
+        expiry = valid_until
+        valid_to_values = query.get("ValidTo") or []
+        if valid_to_values:
+            raw_expiry = unquote(valid_to_values[0]).split("T", 1)[0]
+            try:
+                expiry = date.fromisoformat(raw_expiry)
+            except ValueError:
+                pass
+        image = None
+        image_values = query.get("Image") or []
+        if image_values:
+            image = unquote(image_values[0])
+
+        offers.append(
+            record(
+                "Netto",
+                product_label,
+                sale,
+                valid_from,
+                expiry,
+                urljoin(base_url, href),
+                original,
+                image,
+            )
+        )
+    return dedupe(offers)
 
 
 def parse_rewe(html_text, base_url):

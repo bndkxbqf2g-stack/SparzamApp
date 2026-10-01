@@ -599,3 +599,15 @@ Prospekt-URL öffnen. Der Link dient ausschließlich der manuellen Prüfung der
 Quelle; er erzeugt keinen Preis, keine Produktidentität und keine automatische
 Routenbeobachtung. So bleibt die Nutzerin handlungsfähig, ohne die
 Nachweisgrenze der App zu umgehen.
+
+## D091 – Netto-Readerdaten bleiben offizielle Prospektevidenz
+Wenn die öffentliche Netto-Filialseite für den automatischen Abruf geschützt
+ist, darf der bereits vorgesehene öffentliche Reader-Fallback dessen
+Markdown-Kacheln auswerten. Ein Datensatz wird nur aus einem offiziellen
+`ViewMMPWishlist-AddStoreArticle`-Link mit Produktname, Preis und
+Gültigkeitsende übernommen; der Link bleibt der Nachweis und die Bild- bzw.
+Packungsangabe wird nur übernommen, wenn sie im selben Reader-Block steht.
+Die Gültigkeit des einzelnen Links bleibt maßgeblich. Reine Rabatt-, Sorten-
+oder Herkunftszeilen erzeugen weiterhin keine Produkte. So werden belastbare
+Netto-Angebote wieder sichtbar, ohne einen Preis aus einer Schätzung oder
+einem fremden Feed zu erzeugen.
