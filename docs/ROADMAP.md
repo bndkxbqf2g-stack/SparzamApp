@@ -310,3 +310,11 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Die Prospektkarte zeigt dabei die Anzahl der gültigen Datensätze; die
   Detailansicht bleibt preisfrei und verweist auf die fehlende Aktualisierung.
 - [x] Karten- und Detailpfad sind als Widgetregression abgesichert.
+
+## Update 02.10.2026 – Sparorientierte Reihenfolge verwandter Varianten
+- [x] Verwandte Interpretationen werden nach aktueller Angebots-/Preisevidenz
+  und danach nach dem belastbaren Preis sortiert.
+- [x] Unbelegte Varianten bleiben sichtbar und als Interpretation getrennt;
+  die Sortierung erweitert keine Preisidentität.
+- [x] Der offene `K.H-Milch`-Fall ist mit einer Preisrangfolge-Regression
+  abgesichert.

@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/data/products.dart';
 import 'package:sparzamapp/features/shopping_list/shopping_suggestions.dart';
+import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/models/product.dart';
 
 void main() {
@@ -138,6 +139,63 @@ void main() {
       );
     },
   );
+
+  test('related milk interpretations prioritize current offer prices', () {
+    const primary = Product(
+      id: 'h-milk',
+      name: 'H-Milch',
+      unit: '1 l',
+      group: 'milch',
+    );
+    const cheap = Product(
+      id: 'fresh-milk',
+      name: 'Frische Vollmilch',
+      unit: '1 l',
+      group: 'milch',
+    );
+    const expensive = Product(
+      id: 'premium-milk',
+      name: 'Vollmilch 3,5 %',
+      unit: '1 l',
+      group: 'milch',
+    );
+    final offers = [
+      Offer(
+        id: 'cheap-offer',
+        productId: cheap.id,
+        storeName: 'PENNY',
+        originalPrice: 1.19,
+        offerPrice: 0.99,
+        validFrom: DateTime(2026, 9, 28),
+        validUntil: DateTime(2026, 10, 3),
+      ),
+      Offer(
+        id: 'expensive-offer',
+        productId: expensive.id,
+        storeName: 'Kaufland',
+        originalPrice: 2.49,
+        offerPrice: 1.49,
+        validFrom: DateTime(2026, 9, 28),
+        validUntil: DateTime(2026, 10, 3),
+      ),
+    ];
+
+    final related = buildRelatedProductInterpretations(
+      query: 'K.H-Milch',
+      primarySuggestions: const [primary],
+      catalogProducts: const [primary, expensive, cheap],
+      priceFor: (product) => shoppingSuggestionPriceForProduct(
+        product,
+        offers: offers,
+        now: DateTime(2026, 10, 1),
+      ),
+    );
+
+    expect(related.map((product) => product.id), [
+      'fresh-milk',
+      'premium-milk',
+    ]);
+  });
 
   test('eigene Favoriten erscheinen beim Schnellhinzufügen', () {
     const custom = Product(

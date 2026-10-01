@@ -627,3 +627,11 @@ Marktangeboten; der Prospekte-Tab nennt zusätzlich die Anzahl der gültigen
 Datensätze. Beide Ansichten verwenden weiterhin ausschließlich die eigene
 Gültigkeit und den Originalnachweis eines Datensatzes. Die gemeinsame
 Kennzeichnung ist ein Herkunftshinweis und erzeugt weder Preis noch Identität.
+
+## D094 – Verwandte Interpretationen werden nach aktueller Evidenz sortiert
+Wenn eine unklare Anfrage mehrere ausdrücklich als verwandte Interpretation
+angezeigte Produktvarianten zulässt, stehen aktuelle Angebote und danach
+aktuelle belegte Preise vor historischen Hinweisen und unbelegten Varianten.
+Innerhalb derselben Evidenzstufe wird der günstigste belastbare Preis zuerst
+gezeigt. Die Sortierung ändert weder die Produktidentität noch überträgt sie
+den Preis einer verwandten Variante auf die ursprünglich angefragte Identität.
