@@ -737,6 +737,15 @@ bool compatibleProductIdentity(
   if (!request.isKnown || !sameFamily) {
     return false;
   }
+  // A generic "Tee" request means hot tea (tea bags/leaves). Iced tea is a
+  // separate ready-to-drink beverage and must only match an explicit
+  // "Eistee" request. Without this guard, a cheap iced-tea offer can displace
+  // household tea suggestions in the shopping list.
+  if (request.familyKey == 'tee' &&
+      request.productType == null &&
+      candidate.productType == 'eistee') {
+    return false;
+  }
   if (request.productType != null &&
       request.productType != candidate.productType) {
     return false;
