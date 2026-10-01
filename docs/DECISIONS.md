@@ -443,3 +443,12 @@ keine sichere Packungsgröße. Sie wird deshalb als eigene Joghurtvariante
 `ecke` geführt und mit der neutralen Einheit `Packung` angeboten. Die Variante
 teilt weder Identität noch Preisbasis mit Natur- oder Fruchtjoghurt, bis eine
 konkrete Packung bestätigt ist.
+
+## D073 – Preis-Datenlücken werden ohne Preisannahmen priorisiert
+Route und Marktansicht sortieren ungeklärte Listenpositionen zuerst nach der
+Anzahl aktivierter Märkte ohne belastbaren Preis. Bei gleicher Abdeckung folgen
+Grundbedarfsmarkierung und gewünschte Listenmenge; Produktname und ID bilden
+den stabilen Tiebreaker. Diese Reihenfolge dient nur der Arbeitsplanung für
+fehlende Daten. Sie darf weder geschätzte Preise erzeugen noch historische
+Familienwerte, fremde Varianten oder unbestätigte Belege als Marktpreis
+hochwerten.

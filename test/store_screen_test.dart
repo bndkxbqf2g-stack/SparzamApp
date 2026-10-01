@@ -63,7 +63,8 @@ void main() {
       find.textContaining('1 von 2 Artikeln mit aktuellem, vergleichbarem Preis'),
       findsOneWidget,
     );
-    expect(find.textContaining('Ohne Preis: Unbekannter Artikel'), findsOneWidget);
+    expect(find.text('Preis-Datenlücken zuerst klären'), findsOneWidget);
+    expect(find.textContaining('Menge 1 · 1 Markt ohne Preis'), findsOneWidget);
     expect(find.text('Dieser Markt lohnt sich durch die Angebote'), findsNothing);
     expect(tester.takeException(), isNull);
   });
