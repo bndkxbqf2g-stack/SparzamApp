@@ -227,6 +227,15 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Datenlücken und Fahrtkosten.
 - Bei leerer Liste oder fehlender Route-Funktion bleibt der Einstieg verborgen;
   ein Widgettest prüft den sichtbaren Klickpfad.
+
+## Update 01.10.2026 – Prospektquellen zeigen den konkreten Markt
+- Die sechs offiziellen Prospektquellen führen jetzt Filial-ID, Ort und
+  Adresse aus der bestehenden Markt-Konfiguration mit.
+- Prospektkarten und die Detailansicht zeigen den Ort neben dem Händlernamen;
+  so bleibt die Entfernungssituation bei Angeboten nachvollziehbar.
+- Die bestehende Preisidentität bleibt an den kanonischen Händlernamen gebunden;
+  die Filialdaten ergänzen nur die Herkunftsanzeige und erzeugen keine neuen
+  Preise.
 - Bereits sicher erkannte oder exakt aliasgleiche Produkte werden wiederverwendet; dadurch entstehen bei wiederholten Bons keine unnötigen Dubletten.
 - Unklare Varianten werden konservativ unter der tatsächlich gelesenen Bonbezeichnung angelegt. Nicht belegte Details (z. B. 1,5 %/3,5 % bei unspezifischer H-Milch) werden nicht ergänzt.
 - Pfand und reine Rabattzeilen bleiben ausgeschlossen.

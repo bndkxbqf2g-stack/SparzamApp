@@ -59,6 +59,13 @@ const configuredProspectBranches = <ProspectBranch>[
   ),
 ];
 
+ProspectBranch? configuredProspectBranch(String storeName) {
+  for (final branch in configuredProspectBranches) {
+    if (branch.storeName == storeName) return branch;
+  }
+  return null;
+}
+
 class ProspectBranchResolver {
   const ProspectBranchResolver();
 

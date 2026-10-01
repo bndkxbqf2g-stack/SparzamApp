@@ -34,6 +34,7 @@ void main() {
 
       await tester.tap(find.text('Lidl'));
       await tester.pumpAndSettle();
+      expect(find.text('Zellingen · 1 Angebote'), findsOneWidget);
       await tester.tap(find.text('Weitere Angebote'));
       await tester.pumpAndSettle();
 

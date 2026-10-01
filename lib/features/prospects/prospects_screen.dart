@@ -147,6 +147,9 @@ ProspectIssue _visibleIssue(
     pages: current?.pages ?? const <ProspectPage>[],
     url: current?.url ?? officialProspectUrl(selected.storeName, selected.url),
     thumbnailUrl: current?.thumbnailUrl,
+    branchId: current?.branchId ?? selected.branchId,
+    location: current?.location ?? selected.location,
+    address: current?.address ?? selected.address,
     sourceStatus:
         current == null &&
             currentRecordCount == 0 &&
@@ -206,6 +209,13 @@ class _ProspectCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
+                    if (issue.location?.trim().isNotEmpty == true)
+                      Text(
+                        issue.location!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 12),
+                      ),
                     Text(
                       issue.recordCount > 0
                           ? '${issue.recordCount} Angebote geladen'
@@ -283,6 +293,17 @@ class _ProspectViewer extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(12),
         children: [
+          if (issue.location?.trim().isNotEmpty == true)
+            Card(
+              child: ListTile(
+                dense: true,
+                leading: const Icon(Icons.store_outlined),
+                title: Text(issue.location!),
+                subtitle: issue.address?.trim().isNotEmpty == true
+                    ? Text(issue.address!)
+                    : null,
+              ),
+            ),
           if (issue.url != null)
             Align(
               alignment: Alignment.centerLeft,

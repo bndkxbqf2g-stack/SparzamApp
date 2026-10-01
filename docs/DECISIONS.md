@@ -523,3 +523,13 @@ unbekannten Produktlabel mit nicht leerem `proofRef`. Ungültige Preis- oder
 Gültigkeitsdaten, fehlende Nachweise und mehrdeutige Identitäten bleiben
 gesperrt. So erweitert der Fallback die Produktabdeckung, ohne die
 Nachweisgrenze der Angebots- und Routenpipeline zu umgehen.
+
+## D082 – Prospektpreise behalten den konkreten Filialbezug
+Die sechs offiziellen Prospektquellen schreiben ihre konfigurierte Filial-ID,
+ihren Ort und ihre Adresse in den Feed-Metadatenblock. Die App zeigt diese
+Angaben in der Prospektkarte und im Detail, damit ein Angebot vor der
+Routenentscheidung als Zellingen, Thüngersheim oder Würzburg erkennbar bleibt.
+Die Angaben stammen ausschließlich aus der bestehenden Markt-Konfiguration;
+sie ändern weder den kanonischen Händlernamen noch Preisidentität oder
+Routenpreis. Fehlende Artikelbilder, Kategorien und bild-only OCR bleiben
+separate Datenqualitäts- und Review-Aufgaben.

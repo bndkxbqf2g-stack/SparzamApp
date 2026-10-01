@@ -6,6 +6,7 @@ import '../../models/price_point.dart';
 import '../../models/product.dart';
 import 'offer_import.dart';
 import 'prospect_offer_products.dart';
+import '../../services/prospect_branch_resolver.dart';
 
 class OffersScreen extends StatefulWidget {
   const OffersScreen({
@@ -149,7 +150,10 @@ class _ProspectOffersState extends State<_ProspectOffers> {
             initiallyExpanded: false,
             title: Text(entry.key,
                 style: const TextStyle(fontWeight: FontWeight.w800)),
-            subtitle: Text('${entry.value.length} Angebote'),
+            subtitle: Text(
+              '${configuredProspectBranch(entry.key)?.location ?? 'Filiale'} · '
+              '${entry.value.length} Angebote',
+            ),
             onExpansionChanged: (expanded) => setState(() {
               if (expanded) {
                 expandedStores.add(entry.key);
@@ -274,16 +278,34 @@ Map<String, List<OfferImportRecord>> _grouped(List<OfferImportRecord> records) {
 
 String _offerCategory(String label) {
   final value = label.toLowerCase();
-  if (RegExp(r'gemüse|salat|tomat|gurk|kartoff|obst|apfel|banane|traube').hasMatch(value)) return 'Obst & Gemüse';
-  if (RegExp(r'milch|joghurt|käse|schmand|sahne|quark|butter').hasMatch(value)) return 'Milchprodukte';
-  if (RegExp(r'hack|fleisch|wurst|schinken|fisch|lachs|hähnchen').hasMatch(value)) return 'Fleisch & Fisch';
-  if (RegExp(r'brot|bröt|toast|backwaren|croissant').hasMatch(value)) return 'Backwaren';
-  if (RegExp(r'getränk|wasser|saft|cola|bier|wein|kaffee|tee').hasMatch(value)) return 'Getränke';
+  if (RegExp(r'gemüse|salat|tomat|gurk|kartoff|obst|apfel|banane|traube').hasMatch(value)) {
+    return 'Obst & Gemüse';
+  }
+  if (RegExp(r'milch|joghurt|käse|schmand|sahne|quark|butter').hasMatch(value)) {
+    return 'Milchprodukte';
+  }
+  if (RegExp(r'hack|fleisch|wurst|schinken|fisch|lachs|hähnchen').hasMatch(value)) {
+    return 'Fleisch & Fisch';
+  }
+  if (RegExp(r'brot|bröt|toast|backwaren|croissant').hasMatch(value)) {
+    return 'Backwaren';
+  }
+  if (RegExp(r'getränk|wasser|saft|cola|bier|wein|kaffee|tee').hasMatch(value)) {
+    return 'Getränke';
+  }
   if (RegExp(r'tiefkühl|tk |pizza|eis ').hasMatch(value)) return 'Tiefkühl';
-  if (RegExp(r'reis|nudel|mehl|zucker|dose|konserve|sauce|öl|gewürz').hasMatch(value)) return 'Vorrat & Konserven';
-  if (RegExp(r'seife|shampoo|zahnpasta|deo|waschmittel|reiniger').hasMatch(value)) return 'Drogerie';
-  if (RegExp(r'küche|haushalt|müll|papier|lampe|werkzeug|akku|bastel|raum-weiß').hasMatch(value)) return 'Haushalt';
-  if (RegExp(r'non-food|bekleidung|schuh|spielzeug|dekoration').hasMatch(value)) return 'Non-Food';
+  if (RegExp(r'reis|nudel|mehl|zucker|dose|konserve|sauce|öl|gewürz').hasMatch(value)) {
+    return 'Vorrat & Konserven';
+  }
+  if (RegExp(r'seife|shampoo|zahnpasta|deo|waschmittel|reiniger').hasMatch(value)) {
+    return 'Drogerie';
+  }
+  if (RegExp(r'küche|haushalt|müll|papier|lampe|werkzeug|akku|bastel|raum-weiß').hasMatch(value)) {
+    return 'Haushalt';
+  }
+  if (RegExp(r'non-food|bekleidung|schuh|spielzeug|dekoration').hasMatch(value)) {
+    return 'Non-Food';
+  }
   return 'Weitere Angebote';
 }
 

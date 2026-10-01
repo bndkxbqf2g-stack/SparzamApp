@@ -221,3 +221,13 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   ohne Umweg gemeinsam bewertet werden.
 - [x] Der sichtbare Klickpfad ist als Widgetregression abgesichert; bei einer
   leeren Liste oder ohne Route-Callback erscheint die Aktion nicht.
+
+## Update 01.10.2026 – Prospektquellen zeigen den konkreten Markt
+- [x] Alle sechs offiziellen Prospektquellen tragen jetzt die konfigurierte
+  Filial-ID, den Ort und die Adresse im Feed-Metadatenblock.
+- [x] Die Prospektkarten und die Prospektdetailansicht zeigen den Ort, damit
+  ein Angebot eindeutig als Zellingen, Thüngersheim oder Würzburg erkennbar
+  bleibt.
+- [x] Parser- und Widgetregressionen sichern die vollständige Zuordnung der
+  sechs Quellen; Artikelbilder, Kategorien und OCR für bild-only Seiten bleiben
+  weiterhin getrennte offene Ausbaustufen.

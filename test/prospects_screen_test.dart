@@ -14,6 +14,9 @@ void main() {
         title: 'Aktionsprospekt',
         pages: [],
         url: 'https://example.test/aldi-prospekt',
+        branchId: 'B384',
+        location: 'Zellingen',
+        address: 'Würzburger Str. 74, 97225 Zellingen, Germany',
         recordCount: 322,
       ),
       ProspectIssue(storeName: 'EDEKA', title: 'Aktionsprospekt', pages: []),
@@ -53,6 +56,7 @@ void main() {
 
     expect(find.text('Prospekte'), findsOneWidget);
     expect(find.text('Alle Märkte'), findsOneWidget);
+    expect(find.text('Zellingen'), findsOneWidget);
     expect(find.text('1 Angebote geladen'), findsOneWidget);
     expect(
       find.text('Aktuelle Prospekte. Produkte antippen und vormerken.'),
