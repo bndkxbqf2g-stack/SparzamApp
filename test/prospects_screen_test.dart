@@ -109,6 +109,58 @@ void main() {
     expect(find.textContaining('abgelaufene Angebote'), findsOneWidget);
   });
 
+  testWidgets('kennzeichnet gültige Angebote aus einem Händler-Fallback', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: [
+            OfferImportRecord(
+              sourceId: 'penny-fallback',
+              productLabel: 'MILPRIMA Schmand 200 g',
+              storeName: 'PENNY',
+              offerPrice: 0.69,
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+              proofRef: 'https://example.test/penny-fallback',
+            ),
+          ],
+          prospects: const [
+            ProspectIssue(
+              storeName: 'PENNY',
+              title: 'Aktionsprospekt',
+              pages: [],
+              location: 'Zellingen',
+              sourceStatus: 'error',
+              recordCount: 232,
+              url: 'https://www.penny.de/angebote',
+            ),
+          ],
+          now: DateTime(2026, 10, 1),
+        ),
+      ),
+    );
+
+    expect(
+      find.text(
+        '1 Angebote aus dem letzten geprüften Prospektstand. '
+        'Automatische Aktualisierung aktuell nicht verfügbar.',
+      ),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('PENNY'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text(
+        'Der letzte geprüfte Prospektstand wird verwendet; die automatische '
+        'Aktualisierung ist aktuell nicht verfügbar.',
+      ),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('keeps official opening action for a browsable prospect', (
     tester,
   ) async {

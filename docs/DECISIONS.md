@@ -619,3 +619,11 @@ Hinweis auf den letzten geprüften Prospektstand. Die Datensätze bleiben durch
 ihre eigene Gültigkeit anzeigbar und routenfähig; der Hinweis erzeugt keinen
 Preis und verlängert kein Angebotsfenster. So bleiben Datenherkunft und
 Aktualisierungsstatus für die Nutzerin unterscheidbar.
+
+## D093 – Fallback-Provenienz gilt in Angebote und Prospekte
+Ein gültiger Bestands-Fallback wird in den beiden Prospekt-Einstiegspunkten
+gleich bezeichnet. Der Angebotstab zeigt den Hinweis direkt bei den
+Marktangeboten; der Prospekte-Tab nennt zusätzlich die Anzahl der gültigen
+Datensätze. Beide Ansichten verwenden weiterhin ausschließlich die eigene
+Gültigkeit und den Originalnachweis eines Datensatzes. Die gemeinsame
+Kennzeichnung ist ein Herkunftshinweis und erzeugt weder Preis noch Identität.
