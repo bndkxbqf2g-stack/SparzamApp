@@ -290,13 +290,15 @@ Abschluss-Handler verweigert eine direkte oder veraltete Teilroutenübergabe.
 Ist nur die Einzelmarkt-Baseline unvollständig, darf eine vollständige Route
 bestätigt werden, aber ihr Ersparnisvergleich wird als vorläufig gekennzeichnet.
 
-## D056 – Historische Bonmediane bleiben in der Einkaufsliste klar datiert
+## D056 – Historische Bonmediane bleiben in Einkaufsliste und Suche klar datiert
 Bonmediane aus der historischen Preisstatistik dürfen als Orientierung an einem
-Listenartikel erscheinen, sind aber keine Zusage für den heutigen Regalpreis.
-Die Einkaufsliste kennzeichnet sie deshalb ausdrücklich als historischen
-Bon-Median und zeigt bei einem einzelnen Markt den Zeitpunkt der letzten
+Listenartikel oder einem Suchvorschlag erscheinen, sind aber keine Zusage für
+den heutigen Regalpreis. Einkaufsliste und Produktsuche kennzeichnen sie deshalb
+ausdrücklich als historischen Bon-Median und zeigen den Zeitpunkt der letzten
 Beobachtung. Aktuelle Angebots- und route-taugliche Preisbelege bleiben davon
-getrennt und behalten ihre eigene Quellenkennzeichnung.
+getrennt und behalten ihre eigene Quellenkennzeichnung. Aktive Angebote
+behalten Vorrang; innerhalb derselben Evidenzklasse darf der günstigere
+vergleichbare historische Wert zuerst erscheinen.
 
 ## D057 – ML-Kit-Spracherweiterungen werden im Android-Release gebündelt
 Der Flutter-Plugin-Code für die lokale Bon-OCR referenziert neben Latein auch

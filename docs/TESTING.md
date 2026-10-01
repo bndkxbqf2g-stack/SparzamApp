@@ -24,7 +24,9 @@ Die Testsuite enthält Domänen-, Store-, Service-, Widget- und Ablaufprüfungen
 - UI/Flows: `widget_test.dart`, `home_screen_test.dart`, `store_screen_test.dart`, `prospects_screen_test.dart`, `shopping_price_badge_visuals_test.dart`, `scan_to_list_flow_test.dart`, `receipt_import_display_test.dart`.
 - Historische Preis-Hinweise: `receipt_family_price_hint_test.dart` prüft, dass
   Bon-Mediane in der Einkaufsliste als historische Beobachtung mit Stand
-  erscheinen und nicht wie ein aktuelles Angebot wirken.
+  erscheinen und nicht wie ein aktuelles Angebot wirken; `shopping_suggestions_test.dart`
+  prüft dasselbe für Suchvorschläge und dass vergleichbare historische Werte
+  innerhalb ihrer Evidenzklasse nach Preis sortiert werden.
 - Dashboarddaten/Teilrouten: `shell_dashboard_test.dart` prüft, dass
   unvollständige Preisabdeckung weder Sparpotenzial noch Budgetverbrauch
   vortäuscht.

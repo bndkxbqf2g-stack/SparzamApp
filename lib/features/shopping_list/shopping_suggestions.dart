@@ -113,19 +113,19 @@ List<Product> buildSuggestions({
         return aPrice.isHistorical ? 1 : -1;
       }
       if (aPrice.isOffer != bPrice.isOffer) return aPrice.isOffer ? -1 : 1;
-      if (!aPrice.isHistorical) {
-        final aComparable = _comparisonPrice(a, aPrice.price);
-        final bComparable = _comparisonPrice(b, bPrice.price);
-        if (aComparable != null &&
-            bComparable != null &&
-            aComparable.dimension == bComparable.dimension) {
-          final byUnitPrice = aComparable.price.compareTo(bComparable.price);
-          if (byUnitPrice != 0) return byUnitPrice;
-        } else if (_normalizedUnitLabel(a.unit) ==
-            _normalizedUnitLabel(b.unit)) {
-          final byPackagePrice = aPrice.price.compareTo(bPrice.price);
-          if (byPackagePrice != 0) return byPackagePrice;
-        }
+      // Offers/current observations still outrank historical values above.
+      // Within the same evidence bucket, keep the cheapest comparable item
+      // first so historical receipt medians remain useful for staple searches.
+      final aComparable = _comparisonPrice(a, aPrice.price);
+      final bComparable = _comparisonPrice(b, bPrice.price);
+      if (aComparable != null &&
+          bComparable != null &&
+          aComparable.dimension == bComparable.dimension) {
+        final byUnitPrice = aComparable.price.compareTo(bComparable.price);
+        if (byUnitPrice != 0) return byUnitPrice;
+      } else if (_normalizedUnitLabel(a.unit) == _normalizedUnitLabel(b.unit)) {
+        final byPackagePrice = aPrice.price.compareTo(bPrice.price);
+        if (byPackagePrice != 0) return byPackagePrice;
       }
     }
 
@@ -295,6 +295,7 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
         storeName: stat.storeName,
         sourceLabel: 'Bon-Median',
         observedAt: stat.latestAt,
+        isHistorical: true,
       ),
     );
   }
