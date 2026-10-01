@@ -75,7 +75,7 @@ RoutePriceEvidenceSummary summarizeRoutePriceEvidence(
           openPrices++;
       }
       if (oldestObservation == null ||
-          observation.updatedAt.isBefore(oldestObservation!)) {
+          observation.updatedAt.isBefore(oldestObservation)) {
         oldestObservation = observation.updatedAt;
       }
     }
