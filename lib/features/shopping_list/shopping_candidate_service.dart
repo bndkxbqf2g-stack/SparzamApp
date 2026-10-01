@@ -118,6 +118,7 @@ List<ShoppingCandidate> buildShoppingCandidates({
             : receiptStatsForProduct(product, receiptPriceStats))
         .where(
       (stat) =>
+          stat.comparable &&
           stat.storeName.isNotEmpty &&
           stat.latestAt.isAfter(cutoff) &&
           _storeEnabled(stat.storeName, enabledStores),
@@ -129,8 +130,8 @@ List<ShoppingCandidate> buildShoppingCandidates({
       }
       quotes.add(ShoppingCandidateQuote(
         storeName: stat.storeName,
-        price: stat.latestPrice,
-        label: 'Bonpreis',
+        price: stat.medianPrice,
+        label: 'Bon-Median (historisch)',
         observedAt: stat.latestAt,
       ));
     }
