@@ -309,6 +309,13 @@ const products = <Product>[
     isStaple: true,
   ),
   Product(
+    id: 'kloesse_kartoffel',
+    name: 'Kartoffelklöße',
+    unit: '750 g',
+    group: 'vorrat',
+    aliases: ['Kloß', 'Klöße', 'Kartoffelklöße'],
+  ),
+  Product(
     id: 'aepfel',
     name: 'Äpfel',
     unit: '1 kg',

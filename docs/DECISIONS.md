@@ -429,3 +429,10 @@ Schokoladen-Snacks mit „Chips“ werden ebenfalls vor der Kartoffelchipsfamili
 aufgelöst. Die Regeln ändern weder Händlerlabels noch Preise oder Quellen und
 werden mit aktuellen Feed-Labels sowie synthetischen Negativ- und Positivfällen
 geprüft.
+
+## D071 – Abgekürzte Klöße werden vor Haushaltskürzeln erkannt
+Kaufland kann Kartoffelklöße als `K.Klo Frän.Art750g` drucken. Die zentrale
+Identität löst dieses belegte Kürzel vor der allgemeinen `Klo`-Zuordnung für
+Toilettenpapier auf und führt es in eine eigene Klöße-Familie. Die Regel bleibt
+auf den erkennbaren Kloß-Kontext begrenzt; ein unklarer Händlercode erhält keine
+erfundene Produktidentität und keine Preisübernahme.

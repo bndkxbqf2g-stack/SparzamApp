@@ -32,8 +32,16 @@ void main() {
       expect(firstSuggestion('K.Kochhinterschink').id, 'wurst_kochschinken');
       expect(firstSuggestion('KLC.Kn.Mäuse Salz').id, 'chips');
       expect(firstSuggestion('KLCToilettenpapier').id, 'toilettenpapier');
+      expect(firstSuggestion('K.Klo Frän.Art750g').id, 'kloesse_kartoffel');
     },
   );
+
+  test('does not confuse fränkische potato dumplings with toilet paper', () {
+    final dumplings = identifyProduct('K.Klo Frän.Art750g');
+    expect(dumplings.familyKey, 'kloesse');
+    expect(dumplings.productType, 'kartoffel');
+    expect(identifyProduct('KLCToilettenpapier').familyKey, 'toilettenpapier');
+  });
 
   test('receipt families remain distinct while variants are searchable', () {
     expect(identifyProduct('KLC.Geh. Tomaten').familyKey, 'tomatenkonserve');
