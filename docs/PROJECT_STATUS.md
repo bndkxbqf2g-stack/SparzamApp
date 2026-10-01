@@ -800,3 +800,15 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Fach- und Widgetregressionen prüfen die historische Fallback-Zeile, den
   Vorrang eines aktuellen Preises und die sichtbare Kennzeichnung im
   Preisfenster.
+
+## Update 01.10.2026 – Spar-Empfehlung bei generischen Produktwünschen
+- Die Variantenwahl für Oberbegriffe wie „Milch“ oder „Käse“ wählt jetzt die
+  erste Variante mit einem aktuellen Angebot, Markt- oder Bonpreis vor.
+- Die Empfehlung bleibt reversibel: alle kompatiblen Varianten bleiben sichtbar,
+  die Vorauswahl kann geändert oder erweitert werden, bevor sie in die Liste
+  übernommen wird.
+- Historische Prospekt-Mediane liefern weiterhin Orientierung, lösen aber keine
+  automatische Produktwahl aus. So wird ein alter Angebotswert nicht als
+  aktueller Kaufwunsch ausgegeben.
+- Eine Widget-Regression prüft Vorauswahl, sichtbare Empfehlung und den
+  Übernahme-Flow.
