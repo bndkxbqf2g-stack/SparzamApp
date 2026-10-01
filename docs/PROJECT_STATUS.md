@@ -612,3 +612,20 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Regressionen in `receipt_ledger_test.dart` decken die neuen Darstellungen ab;
   der vollständige Analyse-, Test- und Web-Build-Gate folgt für den
   Änderungsstand.
+
+## Update 01.10.2026 – Kaufland-Bon erneut gegen die Produktsuche geprüft
+- Der freigegebene PDF-Bon `20260923_100506.pdf` wurde lokal erneut ausgelesen:
+  102 Buchungszeilen, 78 echte Produktzeilen und eine ausgeglichene Summe von
+  184,08 €. Die Originaldatei bleibt außerhalb des Repositories.
+- Von 72 unterschiedlichen Produktlabels erhalten 70 eine passende
+  preisfreie Katalogauswahl. `KLCToilettenpapier` wird jetzt trotz fehlendem
+  Trennzeichen als Toilettenpapier erkannt; `Kartoffeln 2,5Kg` schlägt nicht
+  mehr fälschlich Kartoffel-Wedges vor.
+- Die zwei nicht belastbar interpretierbaren Händlercodes
+  `bev.sen.SoSp 50` und `bev.KidsRoll50` bleiben bewusst zur manuellen Prüfung
+  offen. Es werden daraus weder Identität noch Preis abgeleitet.
+- Regressionen in `receipt_label_resolution_test.dart`,
+  `receipt_search_products_test.dart` und `shopping_suggestions_test.dart`
+  sichern Präfixnormalisierung, Dublettenvermeidung und die generische
+  Variantenrangfolge ab; Analyse, Gesamttests und Web-Build folgen für den
+  Änderungsstand.

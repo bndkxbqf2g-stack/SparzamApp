@@ -77,6 +77,34 @@ void main() {
     );
   });
 
+  test('generic potato search keeps plain potatoes before wedges', () {
+    final results = buildSuggestions(
+      query: 'Kartoffeln 2,5Kg',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: const [
+        Product(
+          id: 'wedges',
+          name: 'Kartoffel-Wedges',
+          unit: '750 g',
+          group: 'tiefkuehl',
+          aliases: ['kartoffeln'],
+        ),
+        Product(
+          id: 'plain',
+          name: 'Kartoffeln',
+          unit: '2 kg',
+          group: 'obst_gemuese',
+          aliases: ['kartoffel'],
+        ),
+      ],
+      now: now,
+    );
+
+    expect(results.map((product) => product.id), ['plain', 'wedges']);
+  });
+
   test(
     'ambiguous H-milk label offers both fat choices without merging them',
     () {

@@ -31,6 +31,7 @@ void main() {
       expect(firstSuggestion('K.Gelbwurst').id, 'wurst_gelbwurst');
       expect(firstSuggestion('K.Kochhinterschink').id, 'wurst_kochschinken');
       expect(firstSuggestion('KLC.Kn.Mäuse Salz').id, 'chips');
+      expect(firstSuggestion('KLCToilettenpapier').id, 'toilettenpapier');
     },
   );
 

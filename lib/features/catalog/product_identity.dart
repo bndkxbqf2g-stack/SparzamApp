@@ -588,16 +588,27 @@ String? _sugarType(String text) {
   return null;
 }
 
-String normalizeIdentityText(String value) => value
-    .toLowerCase()
-    .replaceAll('ä', 'ae')
-    .replaceAll('ö', 'oe')
-    .replaceAll('ü', 'ue')
-    .replaceAll('ß', 'ss')
-    .replaceAll('é', 'e')
-    .replaceAll(RegExp(r'[._/-]+'), ' ')
-    .replaceAll(RegExp(r'\s+'), ' ')
-    .trim();
+String normalizeIdentityText(String value) {
+  final normalized = value
+      .toLowerCase()
+      .replaceAll('ä', 'ae')
+      .replaceAll('ö', 'oe')
+      .replaceAll('ü', 'ue')
+      .replaceAll('ß', 'ss')
+      .replaceAll('é', 'e')
+      .replaceAll(RegExp(r'[._/-]+'), ' ')
+      .replaceAll(RegExp(r'\s+'), ' ')
+      .trim();
+
+  // Kaufland's house-brand marker is sometimes printed without a separator,
+  // e.g. `KLCToilettenpapier`. Insert a boundary for the known compound
+  // markers so the following product token can still be identified. This is
+  // normalization only; it does not create an alias or a price identity.
+  return normalized.replaceFirstMapped(
+    RegExp(r'^(?:klc|kbio)(?=[a-z])'),
+    (match) => '${match.group(0)} ',
+  );
+}
 
 bool _hasWord(String text, String word) {
   final normalized = normalizeIdentityText(word);
