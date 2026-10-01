@@ -343,3 +343,11 @@ gewählt und trägt die übrigen Marktmediane als Alternativen mit. Diese Werte
 bleiben ausdrücklich historisch; sie werden weder als aktuelles Angebot noch
 als bestätigter Routenpreis verwendet. Ein aktivierter Marktfilter beschränkt
 auch diesen Hinweis auf die ausgewählten Märkte.
+
+## D062 – Mengentrenner im Bonparser bleiben semantisch gleich
+Bon- und OCR-Exporte verwenden für Mehrfachmengen sowohl `x`/`X` als auch das
+typografische Multiplikationszeichen `×`. Diese Schreibweisen werden in den
+drei bereits unterstützten Layouts (Menge vor Preis, Menge in der Produktzeile
+und Einzelpreis vor Menge) gleich behandelt. Die Parseränderung verändert
+weder das gelesene Label noch die Preisbelege; eine abweichende Gesamtsumme
+bleibt weiterhin als ungeklärte Bonzeile sichtbar.
