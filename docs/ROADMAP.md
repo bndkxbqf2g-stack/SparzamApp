@@ -318,3 +318,11 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   die Sortierung erweitert keine Preisidentität.
 - [x] Der offene `K.H-Milch`-Fall ist mit einer Preisrangfolge-Regression
   abgesichert.
+
+## Update 02.10.2026 – Normale Milch aus unklaren Bonkürzeln auswählbar
+- [x] `K.H-Milch` öffnet neben getrennten H-Milch-Fettstufen auch eindeutig
+  normale Milchprodukte für den Preisvergleich.
+- [x] Aktuelle Angebote für normale Milch werden im Such- und Kandidatenpfad
+  zuerst berücksichtigt, ohne Produktidentitäten oder Preise zu verschmelzen.
+- [x] Regressionen sichern beide Auswahlpfade und den bestehenden Schutz vor
+  unbestätigten Varianten ab.

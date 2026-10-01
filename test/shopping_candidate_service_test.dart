@@ -84,6 +84,37 @@ void main() {
     );
   });
 
+  test('ambiguous H-milk label also considers ordinary milk offers', () {
+    final candidates = buildShoppingCandidates(
+      request: 'K.H-Milch',
+      catalogProducts: [
+        Product(
+          id: 'fresh-milk',
+          name: 'Frische Vollmilch',
+          unit: '1 l',
+          group: 'milch',
+        ),
+      ],
+      offers: [
+        Offer(
+          id: 'fresh-sale',
+          productId: 'fresh-milk',
+          storeName: 'PENNY',
+          originalPrice: 1.19,
+          offerPrice: 0.99,
+          validUntil: DateTime(2026, 9, 30),
+        ),
+      ],
+      marketPrices: const [],
+      receiptPriceStats: const [],
+      now: now,
+    );
+
+    expect(candidates, hasLength(1));
+    expect(candidates.single.product.id, 'fresh-milk');
+    expect(candidates.single.bestPrice, 0.99);
+  });
+
   test('only active offers and receipt prices from the last 60 days are shown', () {
     final candidates = buildShoppingCandidates(
       request: 'Käse',

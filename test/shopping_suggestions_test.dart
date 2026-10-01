@@ -494,6 +494,40 @@ void main() {
     },
   );
 
+  test('abbreviated H-milk search ranks ordinary milk offers first', () {
+    const ordinary = Product(
+      id: 'fresh-milk',
+      name: 'Frische Vollmilch',
+      unit: '1 l',
+      group: 'milch',
+    );
+    final results = buildSuggestions(
+      query: 'K.H-Milch',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: const [regular, lowFat, ordinary],
+      offers: [
+        Offer(
+          id: 'fresh-milk-sale',
+          productId: ordinary.id,
+          storeName: 'PENNY',
+          originalPrice: 1.19,
+          offerPrice: 0.99,
+          validFrom: DateTime(2026, 9, 28),
+          validUntil: DateTime(2026, 10, 2),
+        ),
+      ],
+      now: now,
+    );
+
+    expect(results.first.id, ordinary.id);
+    expect(
+      results.map((product) => product.id),
+      containsAll([ordinary.id, lowFat.id, regular.id]),
+    );
+  });
+
   test('beef mince query never suggests mixed mince as the same item', () {
     final results = buildSuggestions(
       query: 'XXL R.-Hackfleisch',
