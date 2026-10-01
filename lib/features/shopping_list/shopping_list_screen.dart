@@ -440,6 +440,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 ReplenishmentCard(
                   suggestions: widget.replenishmentSuggestions,
                   onAdd: addReplenishment,
+                  priceHintFor: priceHintFor,
                 ),
               ],
               if (controller.text.trim().isNotEmpty)
