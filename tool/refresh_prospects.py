@@ -1441,6 +1441,39 @@ def _netto_money(value):
     return money(normalized)
 
 
+def _is_actionable_netto_label(label):
+    """Return whether a Netto label contains a usable product identity.
+
+    The protected Netto fallback sometimes exposes only a discount, origin,
+    or merchandising descriptor. Those strings must not become synthetic
+    products in the shopping search. Keep this guard deliberately narrow so
+    real product labels remain untouched and the missing source data stays
+    visible through the feed's existing provenance.
+    """
+    normalized = clean(label).lower()
+    if not normalized:
+        return False
+    if re.fullmatch(r"-\s*\d{1,2}\s*%", normalized):
+        return False
+    if re.fullmatch(
+        r"[a-zäöüß]+(?:\s*/\s*[a-zäöüß]+)+,\s*kl\.?\s*i\.?",
+        normalized,
+        flags=re.I,
+    ):
+        return False
+    if normalized in {
+        "versch. sorten",
+        "verschiedene sorten",
+        "gekühlt",
+        "tiefgekühlt",
+        "gekühlt, versch. sorten",
+        "tiefgekühlt, versch. sorten",
+        "multipack in sauce",
+    }:
+        return False
+    return True
+
+
 def parse_netto(html_text, base_url):
     page = parsed(html_text)
     whole = "\n".join(page.lines)
@@ -1505,7 +1538,7 @@ def parse_netto(html_text, base_url):
             flags=re.I,
         )[0]
         label = clean(label)
-        if len(label) < 2 or sale <= 0:
+        if len(label) < 2 or sale <= 0 or not _is_actionable_netto_label(label):
             continue
         regular_match = regular_re.search(aria)
         regular = _netto_money(regular_match.group(1)) if regular_match else None
@@ -1529,7 +1562,7 @@ def parse_netto(html_text, base_url):
         label = clean(match.group(1))
         regular = money(match.group(2))
         sale = _netto_money(match.group(3))
-        if len(label) < 2:
+        if len(label) < 2 or not _is_actionable_netto_label(label):
             continue
         offers.append(record(
             "Netto", label, sale, valid_from, valid_until,
@@ -1548,6 +1581,8 @@ def parse_netto(html_text, base_url):
                 label = candidate
                 break
         if not label:
+            continue
+        if not _is_actionable_netto_label(label):
             continue
         offers.append(record(
             "Netto", label, _netto_money(price.group(2)), valid_from, valid_until,
