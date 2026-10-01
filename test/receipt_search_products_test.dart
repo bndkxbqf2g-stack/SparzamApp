@@ -77,4 +77,20 @@ void main() {
       'hackfleisch',
     ]);
   });
+
+  test('adjacent Kaufland house-brand marker does not duplicate catalog item', () {
+    final candidates = receiptSearchProducts(
+      [observation('paper', 'KLCToilettenpapier')],
+      catalogProducts: const [
+        Product(
+          id: 'toilettenpapier',
+          name: 'Toilettenpapier',
+          unit: '8 Rollen',
+          group: 'haushalt',
+        ),
+      ],
+    );
+
+    expect(candidates, isEmpty);
+  });
 }

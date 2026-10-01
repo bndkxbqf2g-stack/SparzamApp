@@ -129,6 +129,20 @@ List<Product> buildSuggestions({
       }
     }
 
+    // A generic request should keep a generic catalog identity ahead of a
+    // more specific sibling when both have no stronger evidence. For example,
+    // "Kartoffeln 2,5 kg" must not default to frozen wedges merely because
+    // both share the potato family and the sibling sorts first by name.
+    final aIdentity = identifyProduct(a.name);
+    final bIdentity = identifyProduct(b.name);
+    if (queryIdentity.isGeneric &&
+        aIdentity.familyKey == queryIdentity.familyKey &&
+        bIdentity.familyKey == queryIdentity.familyKey) {
+      final bySpecificity = _identitySpecificity(aIdentity)
+          .compareTo(_identitySpecificity(bIdentity));
+      if (bySpecificity != 0) return bySpecificity;
+    }
+
     final aExact = _matchesExactSearchLabel(a, query);
     final bExact = _matchesExactSearchLabel(b, query);
     if (aExact != bExact) return aExact ? -1 : 1;
@@ -165,6 +179,15 @@ List<Product> buildSuggestions({
 
   return matches;
 }
+
+int _identitySpecificity(ProductIdentity identity) => [
+      identity.variant,
+      identity.productType,
+      identity.fatPercent,
+      identity.color,
+      identity.shape,
+      identity.meatType,
+    ].where((value) => value != null).length;
 
 bool _matchesExactSearchLabel(Product product, String query) {
   final normalized = normalizeIdentityText(query);

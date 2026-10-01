@@ -351,3 +351,12 @@ drei bereits unterstützten Layouts (Menge vor Preis, Menge in der Produktzeile
 und Einzelpreis vor Menge) gleich behandelt. Die Parseränderung verändert
 weder das gelesene Label noch die Preisbelege; eine abweichende Gesamtsumme
 bleibt weiterhin als ungeklärte Bonzeile sichtbar.
+
+## D063 – Händlerpräfixe dürfen die Produktidentität nicht verdecken
+Kaufland-Bons können das bekannte Hausmarkenpräfix `KLC` oder `KBio` ohne
+Trennzeichen vor dem Produktnamen drucken. Die Identitätsnormalisierung fügt
+für diese bekannten Präfixe nur eine interne Wortgrenze ein; sie erzeugt weder
+ein Alias noch eine neue Preisidentität. Im unbestätigten Bon-Suchvorschlag
+wird das Präfix zusätzlich aus der Anzeige entfernt, wobei die rohe
+Bezeichnung als Alias erhalten bleibt. Undurchsichtige Händlercodes ohne
+erkennbares Produkt bleiben weiterhin ungeklärt.

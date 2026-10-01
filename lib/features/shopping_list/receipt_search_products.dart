@@ -39,8 +39,14 @@ List<Product> receiptSearchProducts(
   for (final entry in recent) {
     final raw = entry.rawLabel.trim();
     final key = normalizeIdentityText(raw);
-    if (key.isEmpty || existing.contains(key) || !seen.add(key)) continue;
     final display = _displayName(raw, entry.storeName);
+    final displayKey = normalizeIdentityText(display);
+    if (key.isEmpty ||
+        existing.contains(key) ||
+        existing.contains(displayKey) ||
+        !seen.add(key)) {
+      continue;
+    }
     final identity = identifyProduct(display);
     result.add(
       Product(
@@ -58,12 +64,20 @@ List<Product> receiptSearchProducts(
 
 String _displayName(String raw, String storeName) {
   if (storeName == 'Kaufland') {
-    // Only remove a delimited house-brand marker. The original remains an
-    // alias; abbreviation expansion and variant claims require user review.
-    return raw.replaceFirst(
-      RegExp(r'^(?:KLC|KBio|K)\.\s*', caseSensitive: false),
+    // Remove only the known Kaufland house-brand marker. The original remains
+    // an alias; abbreviation expansion and variant claims require user review.
+    var display = raw.replaceFirst(
+      RegExp(
+        r'^(?:KLC|KBio)(?:\.\s*|\s+|(?=[A-Za-zÄÖÜäöü]))',
+        caseSensitive: false,
+      ),
       '',
     );
+    display = display.replaceFirst(
+      RegExp(r'^K(?:\.\s*|\s+)', caseSensitive: false),
+      '',
+    );
+    return display;
   }
   return raw;
 }
