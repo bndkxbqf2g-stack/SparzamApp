@@ -602,3 +602,13 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   `prospect_price_statistics_test.dart` und `shopping_suggestions_test.dart`
   verankert; der vollständige Analyse-, Test- und Web-Build-Gate folgt für den
   Änderungsstand.
+
+## Update 01.10.2026 – Bonparser erkennt typografische Mengentrenner
+- Mehrfachmengen aus PDF-/OCR-Text werden jetzt mit `x`, `X` und `×` erkannt.
+  Das gilt für vorgelagerte Mengenzeilen sowie kompakte Produktzeilen mit
+  Menge vor oder nach dem Einzelpreis.
+- Die Preis- und Summenprüfung bleibt unverändert streng: Bei einer
+  Abweichung wird die Zeile nicht korrigiert, sondern als ungeklärt markiert.
+- Regressionen in `receipt_ledger_test.dart` decken die neuen Darstellungen ab;
+  der vollständige Analyse-, Test- und Web-Build-Gate folgt für den
+  Änderungsstand.

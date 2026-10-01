@@ -59,10 +59,16 @@ ReceiptDraft parseReceiptLedger(String text) {
     r'^\s*(?:Summe|SUMME\s*\[\d+\]|zu zahlen)\s*(?:€|EUR)?\s+(\d+[,.]\d{2})\s*$',
     caseSensitive: false,
   );
-  final quantityBefore = RegExp(r'^\s*(\d+)\s*x\s*(\d+[,.]\d{2})\s*$');
-  final quantityInline = RegExp(r'(\d+)\s*\*\s*(\d+[,.]\d{2})\s*$');
+  // OCR/PDF exports use ASCII `x`, a capital `X`, or the typographic
+  // multiplication sign. Keep all forms equivalent without changing the
+  // observed label or price evidence.
+  final quantityBefore = RegExp(
+    r'^\s*(\d+)\s*[x×]\s*(\d+[,.]\d{2})\s*$',
+    caseSensitive: false,
+  );
+  final quantityInline = RegExp(r'(\d+)\s*[×*]\s*(\d+[,.]\d{2})\s*$');
   final unitPriceThenQuantity = RegExp(
-    r'(\d+[,.]\d{2})\s*€?\s*x\s*(\d+)\s*$',
+    r'(\d+[,.]\d{2})\s*€?\s*[x×]\s*(\d+)\s*$',
     caseSensitive: false,
   );
   final weightUnit = RegExp(

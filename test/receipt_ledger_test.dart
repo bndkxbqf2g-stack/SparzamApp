@@ -39,6 +39,40 @@ Kartenzahlung EUR 2,53
     expect(draft.balances, isTrue);
   });
 
+  test('accepts typographic multiplication signs in quantity layouts', () {
+    final draft = parseReceiptLedger('''
+Kaufland
+Preis EUR
+2 × 0,85
+Milch 1,5% 1L 1,70 B
+Joghurt 0,79 € × 2 1,58 A
+Summe 3,28
+Kartenzahlung 3,28
+''');
+
+    expect(draft.rows, hasLength(2));
+    expect(draft.rows[0].quantity, 2);
+    expect(draft.rows[0].unitCents, 85);
+    expect(draft.rows[1].quantity, 2);
+    expect(draft.rows[1].unitCents, 79);
+    expect(draft.balances, isTrue);
+  });
+
+  test('accepts capital X in compact quantity layouts', () {
+    final draft = parseReceiptLedger('''
+EUR
+2 X 0,85
+Milch 1,70 B
+Brot 1,70 B
+Summe 3,40
+''');
+
+    expect(draft.rows, hasLength(2));
+    expect(draft.rows[0].quantity, 2);
+    expect(draft.rows[0].unitCents, 85);
+    expect(draft.balances, isTrue);
+  });
+
   test('flags a quantity mismatch instead of inventing a correction', () {
     final draft = parseReceiptLedger('''
 Preis EUR
