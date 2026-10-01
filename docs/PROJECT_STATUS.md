@@ -713,3 +713,12 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   betroffenen Suchbegriffe keine Geräte-, Tierfutter-, Aufstrich-, Wurst- oder
   Kosmetiktreffer mehr. Händlerlabels, Quellen und Preise wurden nicht
   verändert.
+
+## Update 01.10.2026 – Fränkische Klöße im Bon-Suchlauf korrekt identifiziert
+- Die Bonzeile `K.Klo Frän.Art750g` wird als Kartoffelklöße erkannt. Das
+  Händlerkürzel `Klo` darf nicht wegen der bestehenden Toilettenpapier-Abkürzung
+  als Haushaltsartikel erscheinen.
+- Kartoffelklöße sind als preisfreies Katalogprodukt mit 750-g-Einheit
+  auswählbar; es werden keine Preise oder Angebote aus der Bonzeile erfunden.
+- Eine Regression prüft die Zuordnung und stellt gleichzeitig sicher, dass
+  `KLCToilettenpapier` weiterhin Toilettenpapier bleibt.

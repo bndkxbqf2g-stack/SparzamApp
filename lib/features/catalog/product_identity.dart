@@ -307,6 +307,17 @@ ProductIdentity identifyProduct(String value) {
   if (_hasAny(text, const ['spaetzle', 'spätzle', 'linguine', 'kritharaki'])) {
     return ProductIdentity(familyKey: 'nudeln', productType: _pastaType(text));
   }
+  // Kaufland abbreviates "Kloß Fränkische Art" as `K.Klo Frän.Art750g`.
+  // The short token `Klo` is also used in the household alias `Klopapier`,
+  // so resolve the dumpling family before the generic toilet-paper rule.
+  if (text.contains('kloss') ||
+      text.contains('kloesse') ||
+      RegExp(r'\bklo\s+fraen(?:kisch)?\b').hasMatch(text)) {
+    return const ProductIdentity(
+      familyKey: 'kloesse',
+      productType: 'kartoffel',
+    );
+  }
   if (_hasAny(text, const [
     'eier',
     'ei',
