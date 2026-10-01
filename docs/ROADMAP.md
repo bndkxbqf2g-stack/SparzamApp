@@ -231,3 +231,12 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Parser- und Widgetregressionen sichern die vollständige Zuordnung der
   sechs Quellen; Artikelbilder, Kategorien und OCR für bild-only Seiten bleiben
   weiterhin getrennte offene Ausbaustufen.
+
+## Update 01.10.2026 – OCR-Geldtokens robust gegen Nullverwechslung
+- [x] Der Bon-Parser erkennt die häufige OCR-Verwechslung `@` für `0` in
+  Geldbeträgen und normalisiert sie nur innerhalb des Geldtokens.
+- [x] Negative Rabatte, Stückpreise und Zeilenbeträge bleiben dabei derselben
+  Quellen- und Mengenprüfung unterworfen.
+- [ ] Vollständige Bild-OCR, Produktidentität und Geräteakzeptanz bleiben
+  separate offene Ausbaustufen; ungeklärte Mengen- oder Bilanzabweichungen
+  werden weiterhin zur Nutzerprüfung vorgelegt.

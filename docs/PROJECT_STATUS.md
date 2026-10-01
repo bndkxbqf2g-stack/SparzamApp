@@ -861,3 +861,15 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Identitäten bleiben nicht auswählbar und werden nicht als Katalogkandidat
   gespeichert.
 - Ein Positiv- und ein Negativ-Widgettest sichern beide Bedienpfade.
+
+## Update 01.10.2026 – OCR-Nullzeichen im Bon-Parser begrenzt normalisieren
+- Die Simulation des bereitgestellten Kaufland-Bons hat eine typische OCR-
+  Verwechslung erkannt: gedruckte Nullen wurden in Geldbeträgen als `@`
+  gelesen.
+- Der Parser normalisiert `@` ausschließlich innerhalb erkannter Geldtokens;
+  Produktbezeichnungen bleiben unverändert. Dadurch werden gültige Zeilen
+  wie `@,39` oder `-@,20` nicht mehr still übersprungen.
+- Mengen-/Preisabweichungen und die Bilanzprüfung bleiben sichtbar und werden
+  nicht automatisch korrigiert. Der Originalbeleg und sein OCR-Rohtext bleiben
+  außerhalb des Repositories; der generische Fall ist als Regressionstest
+  versioniert.
