@@ -1,6 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sparzamapp/features/offers/prospect_price_statistics.dart';
 import 'package:sparzamapp/features/shopping_list/shopping_candidate_service.dart';
+import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/offer.dart';
+import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/receipt_price_stat.dart';
 
@@ -210,5 +213,74 @@ void main() {
     expect(quotes.map((quote) => quote.storeName), ['EDEKA']);
     expect(quotes.single.price, 1.59);
     expect(quotes.single.label, 'Bon-Median (historisch)');
+  });
+
+  test('historical prospect medians fill stores without a current quote', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda],
+      offers: const [],
+      marketPrices: const [],
+      receiptPriceStats: const [],
+      prospectPriceHistory: {
+        gouda.id: ProspectPriceHistorySummary(
+          productId: gouda.id,
+          storeName: 'Lidl',
+          medianPrice: 1.19,
+          latestValidUntil: DateTime(2026, 9, 20),
+          kind: PriceObservationKind.offer,
+          observationCount: 2,
+          alternatives: [
+            ProspectPriceHistorySummary(
+              productId: gouda.id,
+              storeName: 'EDEKA',
+              medianPrice: 1.49,
+              latestValidUntil: DateTime(2026, 9, 18),
+              kind: PriceObservationKind.regular,
+              observationCount: 1,
+            ),
+          ],
+        ),
+      },
+      now: now,
+    );
+
+    final quotes = candidates.single.quotes;
+    expect(quotes.map((quote) => quote.storeName), ['Lidl', 'EDEKA']);
+    expect(quotes.first.label, 'Früheres Angebot (Median)');
+    expect(quotes.first.isHistorical, isTrue);
+    expect(quotes.first.observedAt, DateTime(2026, 9, 20));
+  });
+
+  test('current quote keeps a learned prospect quote as historical context only', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda],
+      offers: const [],
+      marketPrices: [
+        MarketPrice(
+          productId: gouda.id,
+          storeName: 'Lidl',
+          price: 1.99,
+          updatedAt: now,
+        ),
+      ],
+      receiptPriceStats: const [],
+      prospectPriceHistory: {
+        gouda.id: ProspectPriceHistorySummary(
+          productId: gouda.id,
+          storeName: 'Lidl',
+          medianPrice: 0.79,
+          latestValidUntil: DateTime(2026, 9, 20),
+          kind: PriceObservationKind.offer,
+          observationCount: 1,
+        ),
+      },
+      now: now,
+    );
+
+    expect(candidates.single.quotes, hasLength(1));
+    expect(candidates.single.quotes.single.price, 1.99);
+    expect(candidates.single.quotes.single.isHistorical, isFalse);
   });
 }

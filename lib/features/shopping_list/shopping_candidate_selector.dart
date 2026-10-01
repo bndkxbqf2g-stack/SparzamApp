@@ -4,6 +4,7 @@ import '../../models/market_price.dart';
 import '../../models/offer.dart';
 import '../../models/product.dart';
 import '../../models/receipt_price_stat.dart';
+import '../offers/prospect_price_statistics.dart';
 import 'shopping_candidate_service.dart';
 
 Future<List<Product>?> showShoppingCandidateSelector({
@@ -13,6 +14,7 @@ Future<List<Product>?> showShoppingCandidateSelector({
   required List<Offer> offers,
   required List<MarketPrice> marketPrices,
   required List<ReceiptPriceStat> receiptPriceStats,
+  Map<String, ProspectPriceHistorySummary> prospectPriceHistory = const {},
   required List<String> enabledStores,
 }) {
   final candidates = buildShoppingCandidates(
@@ -21,6 +23,7 @@ Future<List<Product>?> showShoppingCandidateSelector({
     offers: offers,
     marketPrices: marketPrices,
     receiptPriceStats: receiptPriceStats,
+    prospectPriceHistory: prospectPriceHistory,
     enabledStores: enabledStores,
   );
   return showModalBottomSheet<List<Product>>(
@@ -120,7 +123,14 @@ String _quoteText(ShoppingCandidate candidate) {
   if (candidate.quotes.isEmpty) return 'Kein Preis in den letzten 60 Tagen';
   return candidate.quotes
       .take(4)
-      .map((quote) => '${quote.storeName}: ${quote.price.toStringAsFixed(2).replaceAll('.', ',')} € (${quote.label}${quote.validUntil == null ? '' : ' bis ${_date(quote.validUntil!)}'})')
+      .map((quote) {
+        final date = quote.validUntil == null
+            ? quote.isHistorical && quote.observedAt != null
+                ? ' · Stand ${_date(quote.observedAt!)}'
+                : ''
+            : ' · bis ${_date(quote.validUntil!)}';
+        return '${quote.storeName}: ${quote.price.toStringAsFixed(2).replaceAll('.', ',')} € (${quote.label}$date)';
+      })
       .join('\n');
 }
 

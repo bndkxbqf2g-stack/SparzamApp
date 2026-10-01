@@ -629,3 +629,20 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   sichern Präfixnormalisierung, Dublettenvermeidung und die generische
   Variantenrangfolge ab; Analyse, Gesamttests und Web-Build folgen für den
   Änderungsstand.
+
+## Update 01.10.2026 – Varianten-Dialog nutzt gelernte Prospektmediane
+- Der Auswahl-Dialog für generische Einkaufswünsche wie „Käse“ oder „Milch“
+  erhält jetzt dieselben marktbezogenen historischen Prospektmediane wie die
+  direkte Produktsuche.
+- Aktive Angebote sowie aktuelle, belegte Markt-/Bonpreise bleiben vorrangig.
+  Ein historischer Prospektwert ergänzt nur einen Markt ohne aktuelle Evidenz
+  und wird als „Früheres Angebot (Median)“ bzw. „Prospekt-Normalpreis
+  (historisch)“ mit Beobachtungsstand angezeigt.
+- Historische Prospektwerte werden weder zu aktuellen Angeboten noch zu
+  bestätigten Routenpreisen hochgestuft. Pro Markt bleibt im Dialog höchstens
+  ein konservativer historischer Hinweis sichtbar.
+- `shopping_candidate_service_test.dart` und
+  `shopping_candidate_selector_test.dart` sichern Ranking, Marktfilter,
+  Evidenztrennung und die sichtbare Datierung ab.
+- `flutter analyze` ist ohne Befund, alle 467 Flutter-Tests sind grün und
+  `flutter build web --release` war erfolgreich.

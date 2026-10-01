@@ -360,3 +360,13 @@ ein Alias noch eine neue Preisidentität. Im unbestätigten Bon-Suchvorschlag
 wird das Präfix zusätzlich aus der Anzeige entfernt, wobei die rohe
 Bezeichnung als Alias erhalten bleibt. Undurchsichtige Händlercodes ohne
 erkennbares Produkt bleiben weiterhin ungeklärt.
+
+## D064 – Varianten-Dialoge dürfen historische Prospektpreise nur als Kontext nutzen
+Der Dialog zur Konkretisierung eines generischen Einkaufswunsches verwendet
+dieselbe marktbezogene Prospekthistorie wie die direkte Produktsuche. Aktive
+Angebote und aktuelle belegte Markt-/Bonpreise behalten ihre Vorrangklassen.
+Ein historischer Prospektmedian ergänzt nur einen Markt ohne aktuelle Evidenz,
+bleibt als historische Quelle mit Beobachtungsstand gekennzeichnet und wird
+nicht als aktuelles Angebot oder bestätigter Routenpreis weitergereicht. Pro
+Markt wird höchstens ein solcher Hinweis angezeigt, damit mehrere historische
+Prospektzeilen nicht wie mehrere aktuelle Preisbelege wirken.
