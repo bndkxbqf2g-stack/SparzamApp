@@ -176,7 +176,7 @@ void main() {
   testWidgets('zeigt die Evidenzzusammenfassung verständlich an', (
     tester,
   ) async {
-    const summary = RoutePriceEvidenceSummary(
+    final summary = RoutePriceEvidenceSummary(
       pricedPositions: 2,
       offers: 1,
       receipts: 1,
@@ -187,7 +187,7 @@ void main() {
     );
 
     await tester.pumpWidget(
-      const MaterialApp(
+      MaterialApp(
         home: Scaffold(body: RoutePriceEvidenceCard(summary: summary)),
       ),
     );
