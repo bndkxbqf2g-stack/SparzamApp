@@ -106,13 +106,15 @@ List<Product> buildSuggestions({
           final byUnitPrice = aComparable.price.compareTo(bComparable.price);
           if (byUnitPrice != 0) return byUnitPrice;
         }
-      } else if (aComparable == null || bComparable == null) {
+      } else if (aComparable == null && bComparable != null) {
         // A package without a reliable quantity must not outrank a product
         // whose price can be compared on the same request. Keep that item
         // visible, but make the missing package basis explicit through its
         // unchanged unit label instead of pretending that its raw package
         // price is a unit price.
-        return aComparable == null ? 1 : -1;
+        return 1;
+      } else if (aComparable != null && bComparable == null) {
+        return -1;
       } else {
         // Both prices are package-only observations. A raw price is still a
         // useful deterministic fallback within that evidence bucket, while
