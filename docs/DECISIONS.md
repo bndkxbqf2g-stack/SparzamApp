@@ -497,3 +497,12 @@ Bonpreis vorauswählen. Historische Prospekt-Mediane bleiben sichtbare
 Orientierung und lösen keine automatische Produktauswahl aus. Die Vorauswahl
 ist eine reversible UI-Empfehlung; erst die ausdrückliche Übernahme ändert die
 Einkaufsliste.
+
+## D079 – Prospekt-Historie bleibt eine erklärende Detailansicht
+Die Einkaufsliste darf gelernte Prospekt-Mediane je Markt in einer optionalen
+Detailansicht zusammenfassen. Diese Ansicht zeigt Medianpreis,
+Beobachtungsanzahl, Angebots- oder Normalpreishistorie und das letzte
+Gültigkeitsende, damit die Herkunft der Orientierung nachvollziehbar bleibt.
+Historische Beobachtungen zählen weiterhin nicht zur aktuellen Preisabdeckung,
+werden nicht als aktuelles Angebot ausgegeben und dürfen nicht als Preisquelle
+für `RoutePriceResolver` oder eine Routenempfehlung dienen.

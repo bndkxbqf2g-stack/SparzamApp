@@ -812,3 +812,15 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   aktueller Kaufwunsch ausgegeben.
 - Eine Widget-Regression prüft Vorauswahl, sichtbare Empfehlung und den
   Übernahme-Flow.
+
+## Update 01.10.2026 – Prospekt-Historie als optionale Detailansicht
+- Das Preisfenster eines Listenartikels bietet jetzt eine eigene Detailansicht
+  für gelernte Prospektwerte je Markt.
+- Die Ansicht zeigt Medianpreis, Beobachtungsanzahl, Angebots- oder
+  Normalpreishistorie und das letzte Gültigkeitsende der abgeschlossenen
+  Prospekte.
+- Die Erklärung macht sichtbar, dass diese Werte nur Orientierung aus der
+  Historie sind. Sie erhöhen weder die aktuelle Preisabdeckung noch die
+  Routenfähigkeit und werden nicht als aktuelle Angebote ausgegeben.
+- Eine Widget-Regression prüft das Öffnen der Detailansicht und ihre
+  Markt-/Quell-/Datumskennzeichnung.
