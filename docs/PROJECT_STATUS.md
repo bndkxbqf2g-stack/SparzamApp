@@ -537,5 +537,6 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Devanagari, Japanisch und Koreanisch explizit. Damit bleibt die lokale
   lateinische Bon-OCR unverändert und der Release-Build kann alle vom Plugin
   referenzierten Klassen auflösen.
-- Der Fix wartet auf den separaten Release-Workflow; Flutter CI bleibt von
-  diesem Android-spezifischen Build getrennt.
+- Der anschließende Release-Workflow `36795819509` ist vollständig grün:
+  Android-APK inklusive Artifact-Upload, Web-Build, Pages-Deployment und die
+  Flutter-CI liefen erfolgreich.
