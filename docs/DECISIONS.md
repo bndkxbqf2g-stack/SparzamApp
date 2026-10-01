@@ -316,3 +316,13 @@ Die Anzahl der aktuellen Angebote im Dashboard verwendet dieselbe
 `validFrom`-/`validUntil`-Prüfung wie Angebotsansicht, Suche und Route. Ein
 zukünftiges oder abgelaufenes Angebot darf nicht als heutiges Highlight
 erscheinen.
+
+## D059 – Der versionierte Prospektfeed enthält nur nachweisbare aktuelle Angebote
+Der versionierte Feed wird nach jedem Abruf auf die dominante aktuell gültige
+Prospektperiode je Händler reduziert. Jeder übernommene Datensatz braucht eine
+öffentliche `proofRef`, einen positiven Angebotspreis und ein gültiges
+Zeitfenster. Wenn ein Händler seine Seite gegen einfache Abrufe schützt, darf
+der Adapter einen normalen Browser-User-Agent verwenden; Preise werden dabei
+nicht aus Vermutungen oder privaten Daten ergänzt. Der aktuelle Netto-Adapter
+liefert dadurch wieder belegte Artikel mit Bild- und Nachweis-URL für die
+sechs konfigurierten Märkte.
