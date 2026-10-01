@@ -908,3 +908,15 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Fach- und Widgetregressionen decken Kaufland-Nummernkategorien,
   Händler-Slugs, unbekannte Werte und die bestehende Fallback-Klassifikation
   ab.
+
+## Update 01.10.2026 – Unvollständige Netto-Labels nicht als Produkte führen
+- Der Netto-Adapter verwirft jetzt nachweislich unvollständige Platzhalter wie
+  reine Rabattwerte (`-21%`), `versch. Sorten`, `gekühlt` und reine
+  Herkunftszeilen. Solche Texte sind keine belastbare Produktidentität und
+  dürfen deshalb weder als Einkaufslistenvorschlag noch als Preisvergleich
+  erscheinen.
+- Echte Netto-Produktlabels bleiben unverändert; die Filterung greift nur in
+  den drei bestehenden Parserpfaden (Kacheln, Links und Text-Fallback).
+- Es werden keine Produktnamen, Bilder oder Preise aus den fehlenden
+  Quellinformationen ergänzt. Der offizielle Quellnachweis und die sichtbare
+  Datenlücke bleiben erhalten.

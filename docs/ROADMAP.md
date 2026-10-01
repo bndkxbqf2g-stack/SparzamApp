@@ -264,3 +264,12 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [ ] Fehlende Kategorien in ALDI-, EDEKA- und Netto-Live-Antworten werden erst
   ergänzt, wenn die Händlerquelle sie belastbar liefert; UI-Klassifikation
   ersetzt keine Quellenangabe.
+
+## Update 01.10.2026 – Netto-Labels auf verwertbare Produkte begrenzen
+- [x] Offensichtliche Netto-Platzhalter und reine Rabatt-/Herkunftszeilen
+  werden vor der Feed-Erzeugung verworfen.
+- [x] Gültige Produktlabels bleiben in Kachel-, Link- und Text-Fallbacks
+  erhalten; ein Regressionstest deckt die Abgrenzung ab.
+- [ ] Die Netto-Quelle muss weiterhin belastbare Produktdaten und Bilder
+  liefern, bevor die fehlenden aktuellen Angebote wieder ergänzt werden
+  können. Der Adapter erfindet diese Daten nicht.

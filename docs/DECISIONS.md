@@ -566,3 +566,13 @@ Die Rohkategorie bleibt unverändert am Importdatensatz erhalten. Die
 Normalisierung ist weder eine neue Identitätslogik noch eine Preis- oder
 Gültigkeitsannahme; unbekannte Werte werden lediglich sprachlich formatiert,
 und fehlende Quellkategorien bleiben fehlend.
+
+## D087 – Unvollständige Netto-Labels werden nicht zu Produktidentitäten
+Wenn eine geschützte Netto-Quelle nur einen Rabatt, eine Sorten-/Kühlungs-
+beschreibung oder eine reine Herkunftszeile liefert, wird dieser Datensatz
+vor der Feed-Erzeugung verworfen. Ein solcher Text darf weder als unbekannter
+Prospektartikel noch als Preisbeobachtung in die Einkaufsliste gelangen.
+Die Prüfung ist bewusst auf bekannte, eindeutig unvollständige Muster
+begrenzt, damit echte Produktlabels unverändert bleiben. Fehlende Namen,
+Bilder und Preise werden nicht aus Kontext ergänzt; nur ein später belastbarer
+Quellbeleg darf diese Datenlücke schließen.
