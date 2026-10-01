@@ -144,6 +144,84 @@ void main() {
     expect(results.map((product) => product.id), [regular.id]);
   });
 
+  test('generic coffee search excludes pastry and machine offers', () {
+    final results = buildSuggestions(
+      query: 'Kaffee',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: const [
+        Product(
+          id: 'coffee-pastry',
+          name: 'BRANDT Kaffee-Gebäck je 201 g',
+          unit: '201 g',
+          group: 'backwaren',
+        ),
+        Product(
+          id: 'coffee-machine',
+          name: 'KRUPS Dolce Gusto Piccolo XS',
+          unit: 'Stück',
+          group: 'haushalt',
+        ),
+        Product(
+          id: 'coffee-capsules',
+          name: 'JACOBS Kaffeekapseln je 20 Stück',
+          unit: '20 Stück',
+          group: 'kaffee',
+        ),
+        Product(
+          id: 'coffee-beans',
+          name: 'Kaffeebohnen',
+          unit: '500 g',
+          group: 'kaffee',
+        ),
+      ],
+      now: now,
+    );
+
+    expect(
+      results.map((product) => product.id),
+      containsAll(<String>['coffee-capsules', 'coffee-beans']),
+    );
+    expect(
+      results.map((product) => product.id),
+      isNot(contains('coffee-pastry')),
+    );
+    expect(
+      results.map((product) => product.id),
+      isNot(contains('coffee-machine')),
+    );
+  });
+
+  test(
+    'generic cheese search excludes cheese sausage but keeps hard cheese',
+    () {
+      final results = buildSuggestions(
+        query: 'Käse',
+        knownItems: const [],
+        recentPurchases: const [],
+        preferredProductByGroup: const {},
+        catalogProducts: const [
+          Product(
+            id: 'cheese-sausage',
+            name: 'Mühlenhof Käse-Wiener je 600 g',
+            unit: '600 g',
+            group: 'wurst',
+          ),
+          Product(
+            id: 'hard-cheese',
+            name: 'OLD AMSTERDAM Holl. Hartkäse je 100 g',
+            unit: '100 g',
+            group: 'milch',
+          ),
+        ],
+        now: now,
+      );
+
+      expect(results.map((product) => product.id), ['hard-cheese']);
+    },
+  );
+
   test('generic potato search keeps plain potatoes before wedges', () {
     final results = buildSuggestions(
       query: 'Kartoffeln 2,5Kg',
