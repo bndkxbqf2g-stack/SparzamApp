@@ -489,3 +489,11 @@ Marktpreis verdrängt diesen Hinweis für denselben Markt. Der historische Wert
 trägt seinen Preisstand und die Kennzeichnung „historisch“, zählt nicht zur
 aktuellen Preisabdeckung und wird weder als Angebot noch als `MarketPrice` für
 die Routenplanung verwendet.
+
+## D078 – Produktempfehlungen werden nur aus aktueller Evidenz vorausgewählt
+Bei einer generischen Einkaufsanfrage darf die Variantenwahl die erste
+kompatible Produktvariante mit aktuellem Angebot, Marktpreis oder routenfähigem
+Bonpreis vorauswählen. Historische Prospekt-Mediane bleiben sichtbare
+Orientierung und lösen keine automatische Produktauswahl aus. Die Vorauswahl
+ist eine reversible UI-Empfehlung; erst die ausdrückliche Übernahme ändert die
+Einkaufsliste.

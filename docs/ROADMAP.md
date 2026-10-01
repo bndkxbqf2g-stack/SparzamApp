@@ -151,6 +151,14 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Preisstand und historische Kennzeichnung sind im Preisfenster sichtbar
   und durch Fach-/Widgettests abgesichert.
 
+## Update 01.10.2026 – Vorauswahl der belegten Spar-Variante
+- [x] Generische Wünsche wählen im Variantenfenster die erste aktuell belegte
+  Spar-Variante vor.
+- [x] Historische Prospektwerte bleiben Hinweise und lösen keine stille
+  Produktwahl aus.
+- [x] Die Empfehlung bleibt manuell änderbar und ist im Übernahme-Flow
+  getestet.
+
 ## Update 01.10.2026 – Deterministische Routen-Gleichstände
 - [x] Gleiche Preisabdeckung und gleiche Planungswerte werden über weniger
   Märkte und danach kanonische Marktnamen stabil aufgelöst.
