@@ -379,3 +379,13 @@ und im Quellhinweis ausdrücklich markiert. Mehrfachkauf bleibt mengenabhängig 
 wird weiterhin erst in der Routenberechnung auf die konkrete Listenmenge
 angewandt. So zeigt die Liste keine scheinbare Ersparnis, die von Suche oder
 Route abweicht.
+
+## D066 – Zutatenbegriffe dürfen keine fremde Produktsuche öffnen
+Ein allgemeiner Einkaufswunsch wie „Milch“ darf nicht über einen bloßen
+Teilstring auf Kondensmilch, Milchriegel, Milchschokolade oder Käse mit
+„Milch“ im Markennamen springen. Die Identitätsauflösung prüft solche
+zusammengesetzten Bezeichnungen vor der Milchfamilie; der verbleibende
+Textfallback ist bei bereits bekannter Identität auf eine vollständige
+Bezeichnung begrenzt. Das gilt gleichermaßen für Prospektprodukte und gelernte
+Einkäufe. Konkrete Suchanfragen bleiben über ihre eigene Bezeichnung auffindbar,
+ohne fremde Preisidentitäten zu übernehmen.
