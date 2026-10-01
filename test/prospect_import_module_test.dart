@@ -2,6 +2,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:sparzamapp/services/prospect_import_module.dart';
+import 'package:sparzamapp/services/prospect_feed_cache.dart';
+
+class _MemoryProspectFeedCache implements ProspectFeedCache {
+  String? value;
+
+  @override
+  Future<String?> load() async => value;
+
+  @override
+  Future<void> save(String raw) async => value = raw;
+}
 
 void main() {
   test(
@@ -25,8 +36,10 @@ void main() {
 ''', 200),
       );
 
-      final result = await ProspectImportModule(client: client)
-          .execute(startAddress: '97225 Zellingen, Germany');
+      final result = await ProspectImportModule(
+        client: client,
+        cache: _MemoryProspectFeedCache(),
+      ).execute(startAddress: '97225 Zellingen, Germany');
       final aldi = result.prospects.firstWhere(
         (issue) => issue.storeName == 'ALDI Süd',
       );
