@@ -370,3 +370,12 @@ bleibt als historische Quelle mit Beobachtungsstand gekennzeichnet und wird
 nicht als aktuelles Angebot oder bestätigter Routenpreis weitergereicht. Pro
 Markt wird höchstens ein solcher Hinweis angezeigt, damit mehrere historische
 Prospektzeilen nicht wie mehrere aktuelle Preisbelege wirken.
+
+## D065 – Einkaufsliste zeigt denselben effektiven Angebotspreis wie Suche und Route
+Das Preisfenster eines Listenartikels verwendet für aktive Angebote dieselbe
+`effectivePrice`-Berechnung wie die Produktsuche und die Routenauflösung.
+Prozent-/Euro-Coupons und Cashback werden deshalb als effektiver Preis angezeigt
+und im Quellhinweis ausdrücklich markiert. Mehrfachkauf bleibt mengenabhängig und
+wird weiterhin erst in der Routenberechnung auf die konkrete Listenmenge
+angewandt. So zeigt die Liste keine scheinbare Ersparnis, die von Suche oder
+Route abweicht.

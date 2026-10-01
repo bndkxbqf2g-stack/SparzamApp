@@ -3,6 +3,7 @@ import '../../data/stores.dart';
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/offer.dart';
+import '../offers/effective_price.dart';
 import '../offers/offer_filter.dart';
 
 bool isSampleOffer(Offer offer) => sampleOffers.any((sample) =>
@@ -31,7 +32,16 @@ class ShoppingQuote {
   String get sourceLabel => switch (kind) {
         ShoppingQuoteKind.receipt => 'Bonpreis vom ${_date(observedAt!)}',
         ShoppingQuoteKind.ownPrice => 'Eigener Preis vom ${_date(observedAt!)}',
-        ShoppingQuoteKind.offer => 'Angebot bis ${_date(offer!.validUntil)}',
+        ShoppingQuoteKind.offer =>
+            'Angebot${(offer!.hasCoupon || offer!.hasCashback) ? ', effektiv' : ''} '
+            'bis ${_date(offer!.validUntil)}',
+      };
+
+  String get displayPrefix => switch (kind) {
+        ShoppingQuoteKind.receipt => 'Bonpreis',
+        ShoppingQuoteKind.ownPrice => 'Eigener Preis',
+        ShoppingQuoteKind.offer =>
+            'Angebot${(offer!.hasCoupon || offer!.hasCashback) ? ', effektiv' : ''}',
       };
 
   String get amountLabel =>
@@ -102,10 +112,13 @@ List<ShoppingQuote> shoppingQuotes(
         isSampleOffer(offer)) {
       continue;
     }
-    // Coupon, cashback and multi-buy conditions are not assumed to apply.
+    // Coupon and cashback are deterministic price adjustments and therefore
+    // belong in the visible saving price. Multi-buy remains quantity
+    // dependent and is calculated by the route resolver.
+    final effective = effectivePrice(offer);
     candidates.add(ShoppingQuote(
       storeName: offer.storeName,
-      unitPrice: offer.offerPrice,
+      unitPrice: effective.finalPrice,
       kind: ShoppingQuoteKind.offer,
       offer: offer,
     ));

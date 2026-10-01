@@ -646,3 +646,12 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Evidenztrennung und die sichtbare Datierung ab.
 - `flutter analyze` ist ohne Befund, alle 467 Flutter-Tests sind grün und
   `flutter build web --release` war erfolgreich.
+## Update 01.10.2026 – Effektiver Angebotspreis im Preisfenster
+- Das Preisfenster der Einkaufsliste zeigt Coupon- und Cashback-Angebote jetzt
+  mit dem berechneten effektiven Preis und kennzeichnet sie sichtbar als
+  „Angebot, effektiv“.
+- Suche, Liste und Route verwenden damit dieselbe Berechnung; Mehrfachkauf
+  bleibt korrekt mengenabhängig in der Routenplanung.
+- Regressionen prüfen Coupon, Cashback und die tatsächlich sichtbare
+  Preiszeile. `flutter analyze` ist ohne Befund, alle 469 Flutter-Tests und
+  `flutter build web --release` sind erfolgreich.
