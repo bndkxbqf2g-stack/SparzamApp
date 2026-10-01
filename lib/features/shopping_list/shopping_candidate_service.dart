@@ -1,10 +1,12 @@
 import '../../models/market_price.dart';
 import '../../models/offer.dart';
+import '../../models/price_observation.dart';
 import '../../models/product.dart';
 import '../../models/receipt_price_stat.dart';
 import '../catalog/product_identity.dart';
 import '../offers/effective_price.dart';
 import '../offers/offer_filter.dart';
+import '../offers/prospect_price_statistics.dart';
 import 'receipt_product_price_match.dart';
 
 class ShoppingCandidateQuote {
@@ -16,6 +18,7 @@ class ShoppingCandidateQuote {
     this.validUntil,
     this.imageUrl,
     this.isOffer = false,
+    this.isHistorical = false,
   });
 
   final String storeName;
@@ -25,6 +28,7 @@ class ShoppingCandidateQuote {
   final DateTime? validUntil;
   final String? imageUrl;
   final bool isOffer;
+  final bool isHistorical;
 }
 
 class ShoppingCandidate {
@@ -34,9 +38,12 @@ class ShoppingCandidate {
   final List<ShoppingCandidateQuote> quotes;
 
   double? get bestPrice {
+    final currentQuotes = quotes.where((quote) => !quote.isHistorical);
     final rankedQuotes = hasOffer
         ? quotes.where((quote) => quote.isOffer)
-        : quotes;
+        : currentQuotes.isNotEmpty
+            ? currentQuotes
+            : quotes;
     if (rankedQuotes.isEmpty) return null;
     return rankedQuotes.map((quote) => quote.price).reduce(
           (a, b) => a < b ? a : b,
@@ -60,6 +67,7 @@ List<ShoppingCandidate> buildShoppingCandidates({
   required Iterable<Offer> offers,
   required Iterable<MarketPrice> marketPrices,
   required Iterable<ReceiptPriceStat> receiptPriceStats,
+  Map<String, ProspectPriceHistorySummary> prospectPriceHistory = const {},
   Iterable<String> enabledStores = const <String>[],
   DateTime? now,
   int historyDays = 60,
@@ -135,8 +143,33 @@ List<ShoppingCandidate> buildShoppingCandidates({
         observedAt: stat.latestAt,
       ));
     }
+    final historical = prospectPriceHistory[product.id]?.allSummaries ??
+        const <ProspectPriceHistorySummary>[];
+    final coveredStores = quotes.map((quote) => quote.storeName).toSet();
+    for (final summary in historical) {
+      if (summary.storeName.isEmpty ||
+          coveredStores.contains(summary.storeName) ||
+          !_storeEnabled(summary.storeName, enabledStores) ||
+          !summary.medianPrice.isFinite ||
+          summary.medianPrice <= 0) {
+        continue;
+      }
+      quotes.add(ShoppingCandidateQuote(
+        storeName: summary.storeName,
+        price: summary.medianPrice,
+        label: summary.kind == PriceObservationKind.offer
+            ? 'Früheres Angebot (Median)'
+            : 'Prospekt-Normalpreis (historisch)',
+        observedAt: summary.latestValidUntil,
+        isHistorical: true,
+      ));
+      // The primary summary is followed by alternatives for the same store.
+      // Keep one conservative historical quote per store in the selector.
+      coveredStores.add(summary.storeName);
+    }
     quotes.sort((a, b) {
       if (a.isOffer != b.isOffer) return a.isOffer ? -1 : 1;
+      if (a.isHistorical != b.isHistorical) return a.isHistorical ? 1 : -1;
       final price = a.price.compareTo(b.price);
       return price != 0 ? price : a.storeName.compareTo(b.storeName);
     });

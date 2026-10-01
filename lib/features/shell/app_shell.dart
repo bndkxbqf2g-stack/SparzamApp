@@ -489,6 +489,10 @@ class _AppShellState extends State<AppShell> {
         receiptObservations,
         maxAgeDays: 60,
       ),
+      prospectPriceHistory: prospectPriceHistorySummaries(
+        historicalPriceObservations,
+        enabledStores: mobility.enabledStoreNames,
+      ),
       enabledStores: mobility.enabledStoreNames,
     );
     if (!mounted || selected == null || selected.isEmpty) return;
