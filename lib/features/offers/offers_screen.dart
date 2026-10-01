@@ -213,7 +213,10 @@ class _ProspectOfferCard extends StatelessWidget {
     // fallback deliberately carries no aliases or inferred variant; adding
     // it is the user's explicit decision and the catalog can learn it later.
     final product = resolution.product ??
-        productForProspectOffer(record, catalogProducts);
+        (resolution.reason == 'unknown_identity' &&
+                record.proofRef?.trim().isNotEmpty == true
+            ? productForProspectOffer(record, catalogProducts)
+            : null);
     return Card(
       clipBehavior: Clip.antiAlias,
       child: Row(
@@ -248,7 +251,9 @@ class _ProspectOfferCard extends StatelessWidget {
           if (onAddToShoppingList != null)
             IconButton(
               tooltip: 'Zur Einkaufsliste',
-              onPressed: () => onAddToShoppingList!(product),
+              onPressed: product == null
+                  ? null
+                  : () => onAddToShoppingList!(product),
               icon: const Icon(Icons.add_shopping_cart_outlined),
             ),
         ],

@@ -516,3 +516,10 @@ werden keine Aliase, Familienvarianten oder fremden Preisidentitäten ergänzt;
 die Übernahme durch den Nutzer ist die ausdrückliche Bestätigung dieses
 Kandidaten. Erst danach kann die bestehende Katalog- und Preislernlogik daran
 weiterarbeiten.
+
+## D081 – Prospekt-Fallbacks benötigen weiterhin belastbare Evidenz
+Der Prospekt-Fallback im Angebotstab greift ausschließlich bei einem
+unbekannten Produktlabel mit nicht leerem `proofRef`. Ungültige Preis- oder
+Gültigkeitsdaten, fehlende Nachweise und mehrdeutige Identitäten bleiben
+gesperrt. So erweitert der Fallback die Produktabdeckung, ohne die
+Nachweisgrenze der Angebots- und Routenpipeline zu umgehen.

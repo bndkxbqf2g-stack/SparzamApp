@@ -48,4 +48,37 @@ void main() {
       expect(added!.group, 'prospekt');
     },
   );
+
+  testWidgets('Prospektartikel ohne Nachweis bleiben nicht auswählbar', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: OffersScreen(
+          catalogProducts: const <Product>[],
+          prospectRecords: [
+            OfferImportRecord(
+              sourceId: 'unproven-special',
+              productLabel: 'Unbestätigter Sonderartikel',
+              storeName: 'Lidl',
+              offerPrice: 2.49,
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+            ),
+          ],
+          now: DateTime(2026, 9, 30),
+          onAddToShoppingList: (_) {},
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Lidl'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Weitere Angebote'));
+    await tester.pumpAndSettle();
+
+    final addButton = find.byTooltip('Zur Einkaufsliste');
+    expect(addButton, findsOneWidget);
+    expect(tester.widget<IconButton>(addButton).onPressed, isNull);
+  });
 }
