@@ -146,6 +146,7 @@ String _prettyVariant(String value) => switch (value) {
   'dinkel' => 'Dinkel',
   'espresso' => 'Espresso',
   'eisberg' => 'Eisberg',
+  'ecke' => 'Mit der Ecke',
   'erbsen' => 'Erbsen',
   'erbsen_moehren' => 'Erbsen & Möhren',
   'frucht' => 'Frucht',

@@ -436,3 +436,10 @@ Identität löst dieses belegte Kürzel vor der allgemeinen `Klo`-Zuordnung für
 Toilettenpapier auf und führt es in eine eigene Klöße-Familie. Die Regel bleibt
 auf den erkennbaren Kloß-Kontext begrenzt; ein unklarer Händlercode erhält keine
 erfundene Produktidentität und keine Preisübernahme.
+
+## D072 – „Joghurt mit der Ecke“ bleibt eine konkrete Joghurtvariante
+Die Bonabkürzung `Mü.Jogh.m.d.Ecke` enthält eine belastbare Produktart, aber
+keine sichere Packungsgröße. Sie wird deshalb als eigene Joghurtvariante
+`ecke` geführt und mit der neutralen Einheit `Packung` angeboten. Die Variante
+teilt weder Identität noch Preisbasis mit Natur- oder Fruchtjoghurt, bis eine
+konkrete Packung bestätigt ist.

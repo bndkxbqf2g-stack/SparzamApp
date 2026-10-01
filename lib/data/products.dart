@@ -214,6 +214,13 @@ const products = <Product>[
     aliases: ['joghurt', 'fruchtjoghurt'],
   ),
   Product(
+    id: 'joghurt_ecke',
+    name: 'Joghurt mit der Ecke',
+    unit: 'Packung',
+    group: 'joghurt',
+    aliases: ['joghurt mit der ecke', 'ecke'],
+  ),
+  Product(
     id: 'wurst_salami',
     name: 'Salami',
     unit: '200 g',

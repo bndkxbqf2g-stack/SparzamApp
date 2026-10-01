@@ -731,3 +731,11 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   geschätzt und kein historischer Wert als aktuelles Angebot ausgegeben.
 - Ein Widget-Test sichert die sichtbare Angebotszeile und den bestehenden
   Hinzufügen-Flow ab.
+
+## Update 01.10.2026 – Joghurt mit der Ecke bleibt eine eigene Variante
+- Die belegte Abkürzung `Mü.Jogh.m.d.Ecke` wird jetzt als „Joghurt mit der
+  Ecke“ vorgeschlagen und nicht mehr als beliebiger Fruchtjoghurt vorgezogen.
+- Die neue Katalogvariante verwendet bewusst `Packung` als Einheit, solange
+  der Beleg keine belastbare Grammangabe enthält; ein Preis wird nicht
+  erfunden.
+- Eine Regression prüft die Variante und hält Fruchtjoghurt getrennt.
