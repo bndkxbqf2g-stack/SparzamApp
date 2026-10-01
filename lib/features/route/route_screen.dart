@@ -5,6 +5,7 @@ import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/mobility_settings.dart';
 import '../../models/offer.dart';
+import '../../models/price_observation.dart';
 import '../../models/road_route_matrix.dart';
 import '../../models/route_plan.dart';
 import '../../models/recent_purchase.dart';
@@ -12,6 +13,7 @@ import '../../services/road_distance_service.dart';
 import '../../services/road_distance_store.dart';
 import '../../services/road_route_matrix_store.dart';
 import '../price_gaps/price_gap_card.dart';
+import '../price_gaps/price_gap_history.dart';
 import '../price_gaps/price_gap_priority.dart';
 import 'route_alternative_card.dart';
 import 'route_recommendation.dart';
@@ -31,6 +33,7 @@ class RouteScreen extends StatefulWidget {
     required this.mobility,
     required this.marketPrices,
     this.recentPurchases = const <RecentPurchase>[],
+    this.historicalPriceObservations = const <PriceObservation>[],
     this.onRoadDistancesChanged,
     this.onRoadMatrixChanged,
   });
@@ -40,6 +43,7 @@ class RouteScreen extends StatefulWidget {
   final MobilitySettings mobility;
   final List<MarketPrice> marketPrices;
   final List<RecentPurchase> recentPurchases;
+  final List<PriceObservation> historicalPriceObservations;
   final ValueChanged<Map<String, double>>? onRoadDistancesChanged;
   final ValueChanged<RoadRouteMatrix?>? onRoadMatrixChanged;
 
@@ -150,6 +154,7 @@ class _RouteScreenState extends State<RouteScreen> {
       optimizer,
       best?.unassigned ?? widget.items,
       recentPurchases: widget.recentPurchases,
+      historicalPriceObservations: widget.historicalPriceObservations,
     );
     if (best == null) return _MissingPrices(gaps: priceGaps);
     final priceEvidence = summarizeRoutePriceEvidence(best, optimizer.prices);
@@ -233,7 +238,9 @@ class _RouteScreenState extends State<RouteScreen> {
             gaps: priceGaps,
             description:
                 'Die Reihenfolge nutzt fehlende Marktbelege, Grundbedarf, '
-                'deine bisherigen Käufe und Listenmenge.',
+                'deine bisherigen Käufe, historische Preisniveaus und '
+                'Listenmenge. Historische Werte sind keine aktuellen '
+                'Marktpreise.',
           ),
         ],
         const SizedBox(height: 10),
@@ -307,6 +314,8 @@ List<PriceGapPriority> _buildPriceGaps(
   RouteOptimizer optimizer,
   Iterable<ListItem> items, {
   List<RecentPurchase> recentPurchases = const <RecentPurchase>[],
+  List<PriceObservation> historicalPriceObservations =
+      const <PriceObservation>[],
 }) {
   final gapItems = items.toList(growable: false);
   final enabledStores = optimizer.availableStores;
@@ -319,6 +328,11 @@ List<PriceGapPriority> _buildPriceGaps(
     final previous = purchasesByProduct[purchase.id] ?? 0;
     if (count > previous) purchasesByProduct[purchase.id] = count;
   }
+
+  final historicalMedianByProduct = historicalPriceLevelsByProduct(
+    items: gapItems,
+    observations: historicalPriceObservations,
+  );
 
   for (final item in gapItems) {
     missingByProduct[item.product.id] = enabledStores.where((store) {
@@ -333,6 +347,7 @@ List<PriceGapPriority> _buildPriceGaps(
     missingMarketCountFor: (item) =>
         missingByProduct[item.product.id] ?? marketCount,
     purchaseCountFor: (item) => purchasesByProduct[item.product.id] ?? 0,
+    historicalPriceLevelFor: (item) => historicalMedianByProduct[item.product.id],
   );
 }
 
@@ -403,7 +418,9 @@ class _MissingPrices extends StatelessWidget {
               gaps: gaps,
               description:
                   'Die Reihenfolge nutzt nur fehlende Marktbelege, '
-                  'Grundbedarf, deine bisherigen Käufe und Listenmenge.',
+                  'Grundbedarf, deine bisherigen Käufe, historische '
+                  'Preisniveaus und Listenmenge. Historische Werte sind keine '
+                  'aktuellen Marktpreise.',
             )
           else
             const Card(
