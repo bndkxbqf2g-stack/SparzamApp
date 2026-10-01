@@ -107,7 +107,7 @@ void main() {
         ),
         Product(
           id: 'fresh-milk',
-          name: 'PENNY ZUKUNFTSBAUER Frische Vollmilch je 1 l',
+          name: 'PENNY ZUKUNFTSBAUER Frische Vollmilch* je 1 l',
           unit: '1 l',
           group: 'prospekt',
         ),
