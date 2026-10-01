@@ -5,6 +5,8 @@ on:
     - cron: '15 4 * * 1,4'
   workflow_dispatch:
   push:
+    branches:
+      - main
     paths:
       - 'tool/refresh_prospects.py'
       - 'tool/bring_prospects.py'
