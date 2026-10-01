@@ -302,17 +302,24 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
 
   if (quotes.isEmpty) {
     final history = prospectPriceHistory[product.id];
-    if (history == null ||
-        (enabled.isNotEmpty && !enabled.contains(history.storeName))) {
+    if (history == null) {
       return null;
     }
+    final histories = history.allSummaries
+        .where(
+          (summary) => enabled.isEmpty || enabled.contains(summary.storeName),
+        )
+        .toList(growable: false);
+    if (histories.isEmpty) return null;
+    final selected = [...histories]..sort(_compareHistoricalHints);
+    final bestHistory = selected.first;
     return ShoppingSuggestionPrice(
-      price: history.medianPrice,
-      storeName: history.storeName,
-      sourceLabel: history.kind == PriceObservationKind.offer
+      price: bestHistory.medianPrice,
+      storeName: bestHistory.storeName,
+      sourceLabel: bestHistory.kind == PriceObservationKind.offer
           ? 'Früheres Angebot (Median)'
           : 'Prospekt-Normalpreis (historisch)',
-      observedAt: history.latestValidUntil,
+      observedAt: bestHistory.latestValidUntil,
       isHistorical: true,
     );
   }
@@ -323,6 +330,20 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
     return a.storeName.compareTo(b.storeName);
   });
   return quotes.first;
+}
+
+int _compareHistoricalHints(
+  ProspectPriceHistorySummary a,
+  ProspectPriceHistorySummary b,
+) {
+  if (a.kind != b.kind) {
+    return a.kind == PriceObservationKind.offer ? -1 : 1;
+  }
+  final byPrice = a.medianPrice.compareTo(b.medianPrice);
+  if (byPrice != 0) return byPrice;
+  final byDate = b.latestValidUntil.compareTo(a.latestValidUntil);
+  if (byDate != 0) return byDate;
+  return a.storeName.compareTo(b.storeName);
 }
 
 ({double price, QuantityDimension dimension})? _comparisonPrice(

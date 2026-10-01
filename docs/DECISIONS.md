@@ -333,3 +333,13 @@ Lauf auf `main`, aus dem Zeitplan oder aus einem manuellen Lauf aktualisieren.
 Der `push`-Trigger ist deshalb auf `main` begrenzt. Ein Push auf einen
 Arbeits- oder PR-Branch darf niemals per `git push HEAD:main` fremde Änderungen
 in den Hauptbranch schreiben und dadurch einen Pull Request überholen.
+
+## D061 – Historische Prospektmediane bleiben je Markt erhalten
+Ein Produkt kann in abgelaufenen Prospekten bei mehreren Märkten beobachtet
+worden sein. Die Einkaufssuche darf diese Marktinformationen nicht auf den
+zuletzt verarbeiteten Markt reduzieren. Der primäre historische Hinweis wird
+deshalb deterministisch aus der günstigsten belastbaren Angebotsstatistik
+gewählt und trägt die übrigen Marktmediane als Alternativen mit. Diese Werte
+bleiben ausdrücklich historisch; sie werden weder als aktuelles Angebot noch
+als bestätigter Routenpreis verwendet. Ein aktivierter Marktfilter beschränkt
+auch diesen Hinweis auf die ausgewählten Märkte.
