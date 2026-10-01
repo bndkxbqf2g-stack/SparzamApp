@@ -43,4 +43,42 @@ void main() {
     await tester.tap(find.byTooltip('Zur Liste hinzufügen'));
     expect(added, suggestion);
   });
+
+  testWidgets('zeigt den aktuellen Preis-Hinweis vor dem Hinzufügen', (
+    tester,
+  ) async {
+    const product = Product(
+      id: 'milk',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'milch',
+    );
+    final suggestion = ReplenishmentSuggestion(
+      product: product,
+      purchaseCount: 2,
+      averageQuantity: 1,
+      intervalDays: 7,
+      lastPurchasedAt: DateTime(2026, 9, 8),
+      dueAt: DateTime(2026, 9, 15),
+      daysUntilDue: 0,
+      urgency: ReplenishmentUrgency.overdue,
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ReplenishmentCard(
+            suggestions: [suggestion],
+            onAdd: (_) {},
+            priceHintFor: (_) => 'Angebot ALDI Süd 0,95 € · bis 02.10.2026',
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      find.text('Angebot ALDI Süd 0,95 € · bis 02.10.2026'),
+      findsOneWidget,
+    );
+  });
 }

@@ -722,3 +722,12 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   auswählbar; es werden keine Preise oder Angebote aus der Bonzeile erfunden.
 - Eine Regression prüft die Zuordnung und stellt gleichzeitig sicher, dass
   `KLCToilettenpapier` weiterhin Toilettenpapier bleibt.
+
+## Update 01.10.2026 – Wiederkehrende Einkäufe zeigen aktuelle Preis-Hinweise
+- Der Bereich „Bald wieder nötig“ verwendet jetzt dieselbe Preisauflösung wie
+  die Einkaufssuche. Aktive Angebote werden dadurch bereits vor dem Hinzufügen
+  mit Markt, Preis und Gültigkeit sichtbar.
+- Fehlt belastbare Evidenz, bleibt der Hinweis leer; es wird kein Preis
+  geschätzt und kein historischer Wert als aktuelles Angebot ausgegeben.
+- Ein Widget-Test sichert die sichtbare Angebotszeile und den bestehenden
+  Hinzufügen-Flow ab.
