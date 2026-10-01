@@ -8,6 +8,7 @@ import '../../models/receipt_price_stat.dart';
 import 'shopping_price_badge.dart';
 import 'receipt_family_price_hint.dart';
 import '../catalog/product_identity.dart';
+import '../offers/prospect_price_statistics.dart';
 
 class ShoppingGroupCard extends StatelessWidget {
   const ShoppingGroupCard({
@@ -19,6 +20,7 @@ class ShoppingGroupCard extends StatelessWidget {
     required this.enabledStoreNames,
     required this.marketPrices,
     required this.priceObservations,
+    required this.prospectPriceHistory,
     this.receiptPriceStats = const <ReceiptPriceStat>[],
     required this.onToggle,
     this.onSelectFamily,
@@ -35,6 +37,7 @@ class ShoppingGroupCard extends StatelessWidget {
   final List<String> enabledStoreNames;
   final List<MarketPrice> marketPrices;
   final List<MarketPrice> priceObservations;
+  final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
   final List<ReceiptPriceStat> receiptPriceStats;
   final ValueChanged<Product> onToggle;
   final ValueChanged<ListItem>? onSelectFamily;
@@ -45,78 +48,77 @@ class ShoppingGroupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Text(
-              shoppingGroupLabel(group),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Text(
+          shoppingGroupLabel(group),
+          style: Theme.of(context).textTheme.titleMedium
+              ?.copyWith(fontWeight: FontWeight.w800),
+        ),
+      ),
+      if (tileView)
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final columns = constraints.maxWidth >= 650 ? 3 : 2;
+            final width = (constraints.maxWidth - (columns - 1) * 8) / columns;
+            return Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final item in items)
+                  SizedBox(
+                    width: width,
+                    child: _ShoppingItemCard(
+                      item: item,
+                      offers: offers,
+                      marketPrices: marketPrices,
+                      priceObservations: priceObservations,
+                      prospectPriceHistory: prospectPriceHistory,
+                      receiptPriceStats: receiptPriceStats,
+                      enabledStoreNames: enabledStoreNames,
+                      onOpenOffer: onOpenOffer,
+                      checked: checkedProductIds.contains(item.product.id),
+                      onToggle: onToggle,
+                      onSelectFamily: onSelectFamily,
+                      onChangeQuantity: onChangeQuantity,
+                      onEditDetails: onEditDetails,
+                    ),
                   ),
-            ),
+              ],
+            );
+          },
+        )
+      else
+        Card(
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            children: [
+              for (var index = 0; index < items.length; index++) ...[
+                _ShoppingItemTile(
+                  item: items[index],
+                  checked: checkedProductIds.contains(items[index].product.id),
+                  offers: offers,
+                  enabledStoreNames: enabledStoreNames,
+                  marketPrices: marketPrices,
+                  priceObservations: priceObservations,
+                  prospectPriceHistory: prospectPriceHistory,
+                  receiptPriceStats: receiptPriceStats,
+                  onToggle: onToggle,
+                  onSelectFamily: onSelectFamily,
+                  onChangeQuantity: onChangeQuantity,
+                  onEditDetails: onEditDetails,
+                  onOpenOffer: onOpenOffer,
+                ),
+                if (index < items.length - 1) const Divider(height: 1),
+              ],
+            ],
           ),
-          if (tileView)
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final columns = constraints.maxWidth >= 650 ? 3 : 2;
-                final width = (constraints.maxWidth - (columns - 1) * 8) / columns;
-                return Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    for (final item in items)
-                      SizedBox(
-                        width: width,
-                        child: _ShoppingItemCard(
-                          item: item,
-                          offers: offers,
-                          marketPrices: marketPrices,
-                          priceObservations: priceObservations,
-                          receiptPriceStats: receiptPriceStats,
-                          enabledStoreNames: enabledStoreNames,
-                          onOpenOffer: onOpenOffer,
-                          checked: checkedProductIds.contains(item.product.id),
-                          onToggle: onToggle,
-                          onSelectFamily: onSelectFamily,
-                          onChangeQuantity: onChangeQuantity,
-                          onEditDetails: onEditDetails,
-                        ),
-                      ),
-                  ],
-                );
-              },
-            )
-          else
-            Card(
-              clipBehavior: Clip.antiAlias,
-              child: Column(
-                children: [
-                  for (var index = 0; index < items.length; index++) ...[
-                    _ShoppingItemTile(
-                    item: items[index],
-                    checked: checkedProductIds.contains(
-                      items[index].product.id,
-                    ),
-                    offers: offers,
-                    enabledStoreNames: enabledStoreNames,
-                    marketPrices: marketPrices,
-                    priceObservations: priceObservations,
-                    receiptPriceStats: receiptPriceStats,
-                    onToggle: onToggle,
-                    onSelectFamily: onSelectFamily,
-                    onChangeQuantity: onChangeQuantity,
-                    onEditDetails: onEditDetails,
-                    onOpenOffer: onOpenOffer,
-                    ),
-                    if (index < items.length - 1) const Divider(height: 1),
-                  ],
-                ],
-              ),
-            ),
-          const SizedBox(height: 16),
-        ],
-      );
+        ),
+      const SizedBox(height: 16),
+    ],
+  );
 }
 
 class _ShoppingItemCard extends StatelessWidget {
@@ -126,6 +128,7 @@ class _ShoppingItemCard extends StatelessWidget {
     required this.offers,
     required this.marketPrices,
     required this.priceObservations,
+    required this.prospectPriceHistory,
     required this.receiptPriceStats,
     required this.enabledStoreNames,
     required this.onOpenOffer,
@@ -140,6 +143,7 @@ class _ShoppingItemCard extends StatelessWidget {
   final List<Offer> offers;
   final List<MarketPrice> marketPrices;
   final List<MarketPrice> priceObservations;
+  final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
   final List<ReceiptPriceStat> receiptPriceStats;
   final List<String> enabledStoreNames;
   final ValueChanged<Offer> onOpenOffer;
@@ -150,78 +154,81 @@ class _ShoppingItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Card(
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: () => _tapItem(item, onToggle, onSelectFamily),
-          onLongPress: () => onEditDetails(item),
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    clipBehavior: Clip.antiAlias,
+    child: InkWell(
+      onTap: () => _tapItem(item, onToggle, onSelectFamily),
+      onLongPress: () => onEditDetails(item),
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _ProductImage(product: item.product, height: 96),
+            Row(
               children: [
-                _ProductImage(product: item.product, height: 96),
-                Row(
-                  children: [
-                    Icon(
-                      checked ? Icons.check_circle : Icons.circle_outlined,
-                      color: checked ? Colors.green.shade600 : Colors.black38,
-                    ),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        item.product.name,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          decoration:
-                              checked ? TextDecoration.lineThrough : null,
-                        ),
-                      ),
-                    ),
-                  ],
+                Icon(
+                  checked ? Icons.check_circle : Icons.circle_outlined,
+                  color: checked ? Colors.green.shade600 : Colors.black38,
                 ),
-                if (item.note.isNotEmpty)
-                  Text(
-                    item.note,
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    item.product.name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      decoration: checked ? TextDecoration.lineThrough : null,
+                    ),
                   ),
-                ReceiptFamilyPriceHint(product: item.product, stats: receiptPriceStats),
-                ShoppingPriceBadge(
-                  item: item,
-                  prices: marketPrices,
-                  offers: offers,
-                  enabledStores: enabledStoreNames,
-                  onOpenOffer: onOpenOffer,
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      visualDensity: VisualDensity.compact,
-                      onPressed: checked
-                          ? null
-                          : () => onChangeQuantity(item.product.id, -1),
-                      icon: const Icon(Icons.remove_circle_outline),
-                    ),
-                    Text('${item.quantity}'),
-                    IconButton(
-                      visualDensity: VisualDensity.compact,
-                      onPressed: checked
-                          ? null
-                          : () => onChangeQuantity(item.product.id, 1),
-                      icon: const Icon(Icons.add_circle_outline),
-                    ),
-                  ],
                 ),
               ],
             ),
-          ),
+            if (item.note.isNotEmpty)
+              Text(
+                item.note,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ReceiptFamilyPriceHint(
+              product: item.product,
+              stats: receiptPriceStats,
+            ),
+            ShoppingPriceBadge(
+              item: item,
+              prices: marketPrices,
+              offers: offers,
+              prospectPriceHistory: prospectPriceHistory,
+              enabledStores: enabledStoreNames,
+              onOpenOffer: onOpenOffer,
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  onPressed: checked
+                      ? null
+                      : () => onChangeQuantity(item.product.id, -1),
+                  icon: const Icon(Icons.remove_circle_outline),
+                ),
+                Text('${item.quantity}'),
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  onPressed: checked
+                      ? null
+                      : () => onChangeQuantity(item.product.id, 1),
+                  icon: const Icon(Icons.add_circle_outline),
+                ),
+              ],
+            ),
+          ],
         ),
-      );
+      ),
+    ),
+  );
 }
 
 class _ShoppingItemTile extends StatelessWidget {
@@ -232,6 +239,7 @@ class _ShoppingItemTile extends StatelessWidget {
     required this.enabledStoreNames,
     required this.marketPrices,
     required this.priceObservations,
+    required this.prospectPriceHistory,
     required this.receiptPriceStats,
     required this.onToggle,
     this.onSelectFamily,
@@ -246,6 +254,7 @@ class _ShoppingItemTile extends StatelessWidget {
   final List<String> enabledStoreNames;
   final List<MarketPrice> marketPrices;
   final List<MarketPrice> priceObservations;
+  final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
   final List<ReceiptPriceStat> receiptPriceStats;
   final ValueChanged<Product> onToggle;
   final ValueChanged<ListItem>? onSelectFamily;
@@ -297,11 +306,15 @@ class _ShoppingItemTile extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(color: Colors.blueGrey.shade700),
             ),
-          ReceiptFamilyPriceHint(product: item.product, stats: receiptPriceStats),
+          ReceiptFamilyPriceHint(
+            product: item.product,
+            stats: receiptPriceStats,
+          ),
           ShoppingPriceBadge(
             item: item,
             prices: marketPrices,
             offers: offers,
+            prospectPriceHistory: prospectPriceHistory,
             enabledStores: enabledStoreNames,
             onOpenOffer: onOpenOffer,
           ),
@@ -347,8 +360,11 @@ class _ProductImage extends StatelessWidget {
       height: height,
       width: double.infinity,
       child: imageUrl == null || imageUrl.isEmpty
-          ? Icon(Icons.local_grocery_store_outlined,
-              size: 42, color: Colors.green.shade700)
+          ? Icon(
+              Icons.local_grocery_store_outlined,
+              size: 42,
+              color: Colors.green.shade700,
+            )
           : Image.network(
               imageUrl,
               fit: BoxFit.contain,
@@ -363,34 +379,35 @@ class _ProductImage extends StatelessWidget {
 }
 
 String shoppingGroupLabel(String group) => switch (group) {
-      'milch' || 'butter' || 'joghurt' || 'eier' => 'Milch & Käse',
-      'obst' => 'Obst & Gemüse',
-      'obst_gemuese' => 'Obst & Gemüse',
-      'fleisch' => 'Fleisch & Fisch',
-      'backwaren' => 'Backwaren',
-      'getraenke' => 'Getränke',
-      'nudeln' ||
-      'vorrat' ||
-      'kaffee' ||
-      'reis' ||
-      'mehl' ||
-      'oel' ||
-      'zucker' ||
-      'salz' ||
-      'saucen' => 'Vorrat',
-      'tiefkuehl' => 'Tiefkühl',
-      'haushalt' => 'Haushalt',
-      'drogerie' => 'Drogerie',
-      'nonfood' => 'Non-Food',
-      _ => 'Weitere Produkte',
-    };
+  'milch' || 'butter' || 'joghurt' || 'eier' => 'Milch & Käse',
+  'obst' => 'Obst & Gemüse',
+  'obst_gemuese' => 'Obst & Gemüse',
+  'fleisch' => 'Fleisch & Fisch',
+  'backwaren' => 'Backwaren',
+  'getraenke' => 'Getränke',
+  'nudeln' ||
+  'vorrat' ||
+  'kaffee' ||
+  'reis' ||
+  'mehl' ||
+  'oel' ||
+  'zucker' ||
+  'salz' ||
+  'saucen' => 'Vorrat',
+  'tiefkuehl' => 'Tiefkühl',
+  'haushalt' => 'Haushalt',
+  'drogerie' => 'Drogerie',
+  'nonfood' => 'Non-Food',
+  _ => 'Weitere Produkte',
+};
 
 void _tapItem(
   ListItem item,
   ValueChanged<Product> onToggle,
   ValueChanged<ListItem>? onSelectFamily,
 ) {
-  final isGenericCustom = item.product.id.startsWith('custom_') &&
+  final isGenericCustom =
+      item.product.id.startsWith('custom_') &&
       identifyProduct(item.product.name).isGeneric;
   if (isGenericCustom && onSelectFamily != null) {
     onSelectFamily(item);

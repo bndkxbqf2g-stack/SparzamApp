@@ -480,3 +480,12 @@ Preisniveau wird ausdrücklich als Historie angezeigt und weder als aktueller
 Marktpreis gespeichert noch durch `RoutePriceResolver` für eine Route
 verwendet. Fehlende Historie lässt die Position in der bisherigen
 deterministischen Reihenfolge weiterlaufen.
+
+## D077 – Prospekt-Historie ergänzt fehlende Listenpreise nur sichtbar
+Die Einkaufsliste darf einen historischen Prospekt-Median je Markt als
+Orientierung zeigen, wenn für die exakte Produktidentität kein aktueller
+Preisbeleg vorhanden ist. Ein aktuelles Angebot oder ein aktueller
+Marktpreis verdrängt diesen Hinweis für denselben Markt. Der historische Wert
+trägt seinen Preisstand und die Kennzeichnung „historisch“, zählt nicht zur
+aktuellen Preisabdeckung und wird weder als Angebot noch als `MarketPrice` für
+die Routenplanung verwendet.

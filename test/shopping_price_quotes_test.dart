@@ -4,7 +4,9 @@ import 'package:sparzamapp/features/shopping_list/shopping_price_quotes.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/offer.dart';
+import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/product.dart';
+import 'package:sparzamapp/features/offers/prospect_price_statistics.dart';
 
 void main() {
   const milk = Product(
@@ -32,10 +34,12 @@ void main() {
   );
 
   test('older receipts remain dated observations alongside current offers', () {
-    final quotes = shoppingQuotes(item,
-        prices: [receipt],
-        offers: [offer],
-        now: DateTime(2026, 9, 24));
+    final quotes = shoppingQuotes(
+      item,
+      prices: [receipt],
+      offers: [offer],
+      now: DateTime(2026, 9, 24),
+    );
     expect(quotes, hasLength(2));
     expect(quotes.first.kind, ShoppingQuoteKind.offer);
     expect(quotes.first.unitPrice, 0.80);
@@ -67,38 +71,50 @@ void main() {
   });
 
   test('demo offers, Open Prices and unlike products are not used', () {
-    final quotes = shoppingQuotes(item,
-        prices: [
-          MarketPrice(
-            productId: 'milch_15',
-            storeName: 'Beispielmarkt',
-            price: 0.85,
-            updatedAt: DateTime(2026, 9, 24),
-            source: MarketPriceSource.receipt,
-          ),
-          MarketPrice(
-            productId: 'milch_35',
-            storeName: 'Beispielmarkt',
-            price: 0.81,
-            updatedAt: DateTime(2026, 9, 24),
-            source: MarketPriceSource.openPrices,
-          ),
-        ],
-        offers: sampleOffers,
-        now: DateTime(2026, 9, 24));
+    final quotes = shoppingQuotes(
+      item,
+      prices: [
+        MarketPrice(
+          productId: 'milch_15',
+          storeName: 'Beispielmarkt',
+          price: 0.85,
+          updatedAt: DateTime(2026, 9, 24),
+          source: MarketPriceSource.receipt,
+        ),
+        MarketPrice(
+          productId: 'milch_35',
+          storeName: 'Beispielmarkt',
+          price: 0.81,
+          updatedAt: DateTime(2026, 9, 24),
+          source: MarketPriceSource.openPrices,
+        ),
+      ],
+      offers: sampleOffers,
+      now: DateTime(2026, 9, 24),
+    );
     expect(quotes, isEmpty);
   });
 
   test('store preference and offer expiry are respected', () {
-    expect(shoppingQuotes(item,
+    expect(
+      shoppingQuotes(
+        item,
         prices: [receipt],
         offers: [offer],
         enabledStores: ['Beispielmarkt'],
-        now: DateTime(2026, 9, 24)), hasLength(1));
-    expect(shoppingQuotes(item,
+        now: DateTime(2026, 9, 24),
+      ),
+      hasLength(1),
+    );
+    expect(
+      shoppingQuotes(
+        item,
         prices: [],
         offers: [offer],
-        now: DateTime(2026, 10, 1)), isEmpty);
+        now: DateTime(2026, 10, 1),
+      ),
+      isEmpty,
+    );
   });
 
   test('future offers are hidden before their validFrom date', () {
@@ -113,17 +129,21 @@ void main() {
     );
 
     expect(
-      shoppingQuotes(item,
-          prices: const [],
-          offers: [future],
-          now: DateTime(2026, 9, 27)),
+      shoppingQuotes(
+        item,
+        prices: const [],
+        offers: [future],
+        now: DateTime(2026, 9, 27),
+      ),
       isEmpty,
     );
     expect(
-      shoppingQuotes(item,
-          prices: const [],
-          offers: [future],
-          now: DateTime(2026, 9, 28)),
+      shoppingQuotes(
+        item,
+        prices: const [],
+        offers: [future],
+        now: DateTime(2026, 9, 28),
+      ),
       hasLength(1),
     );
   });
@@ -157,5 +177,65 @@ void main() {
 
     expect(matrix, hasLength(6));
     expect(matrix.every((entry) => entry.quote == null), isTrue);
+  });
+
+  test('historical prospect median fills a market without a current quote', () {
+    final matrix = shoppingPriceMatrix(
+      item,
+      prices: const [],
+      offers: const [],
+      prospectPriceHistory: {
+        milk.id: ProspectPriceHistorySummary(
+          productId: milk.id,
+          storeName: 'ALDI Süd',
+          medianPrice: 0.95,
+          latestValidUntil: DateTime(2026, 9, 20),
+          kind: PriceObservationKind.offer,
+          observationCount: 2,
+        ),
+      },
+      enabledStores: const ['ALDI Süd', 'PENNY'],
+      now: DateTime(2026, 9, 24),
+    );
+
+    expect(matrix[0].storeName, 'ALDI Süd');
+    expect(matrix[0].quote?.kind, ShoppingQuoteKind.prospectHistory);
+    expect(
+      matrix[0].quote?.sourceLabel,
+      'Prospekt-Median (historisch, bis 20.09.2026)',
+    );
+    expect(matrix[0].hasCurrentQuote, isFalse);
+    expect(matrix[0].hasHistoricalQuote, isTrue);
+    expect(matrix[1].quote, isNull);
+  });
+
+  test('current quote takes precedence over historical prospect context', () {
+    final matrix = shoppingPriceMatrix(
+      item,
+      prices: [
+        MarketPrice(
+          productId: milk.id,
+          storeName: 'ALDI Süd',
+          price: 1.09,
+          updatedAt: DateTime(2026, 9, 24),
+        ),
+      ],
+      offers: const [],
+      prospectPriceHistory: {
+        milk.id: ProspectPriceHistorySummary(
+          productId: milk.id,
+          storeName: 'ALDI Süd',
+          medianPrice: 0.95,
+          latestValidUntil: DateTime(2026, 9, 20),
+          kind: PriceObservationKind.offer,
+          observationCount: 2,
+        ),
+      },
+      enabledStores: const ['ALDI Süd'],
+      now: DateTime(2026, 9, 24),
+    );
+
+    expect(matrix.single.quote?.kind, ShoppingQuoteKind.ownPrice);
+    expect(matrix.single.quote?.unitPrice, 1.09);
   });
 }
