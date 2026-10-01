@@ -934,3 +934,6 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Schätzungen ersetzt.
 - Eine Widgetregression prüft den Netto-Fall „Automatischer Abruf aktuell
   nicht verfügbar“ direkt im Angebotstab.
+- Die Statuskarte bietet zusätzlich den direkten Button „Offiziellen Prospekt
+  öffnen“, damit die fehlende Automatikquelle ohne Umweg beim Händler geprüft
+  werden kann.

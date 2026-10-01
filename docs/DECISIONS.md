@@ -592,3 +592,10 @@ nennt Händler und Filiale sowie die konkrete Ursache (kein aktueller Zeitraum,
 fehlende strukturierte Daten oder Abruffehler), liefert aber keinen Preis und
 keine erfundene Produktidentität. So bleibt der Angebotsvergleich vollständig
 und die Nutzerin kann eine Datenlücke von „kein Angebot gefunden“ unterscheiden.
+
+## D090 – Statuskarten verlinken nur auf die offizielle Händlerquelle
+Wenn ein Angebotsfeed fehlt, darf die Statuskarte die konfigurierte offizielle
+Prospekt-URL öffnen. Der Link dient ausschließlich der manuellen Prüfung der
+Quelle; er erzeugt keinen Preis, keine Produktidentität und keine automatische
+Routenbeobachtung. So bleibt die Nutzerin handlungsfähig, ohne die
+Nachweisgrenze der App zu umgehen.

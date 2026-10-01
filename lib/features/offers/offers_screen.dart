@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../design/sparzam_theme.dart';
 import '../../models/offer.dart';
@@ -316,6 +317,18 @@ class _OfferSourceNotice extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(message),
+                  if (issue.url?.trim().isNotEmpty == true)
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton.icon(
+                        onPressed: () => launchUrl(
+                          Uri.parse(issue.url!),
+                          mode: LaunchMode.externalApplication,
+                        ),
+                        icon: const Icon(Icons.open_in_new, size: 18),
+                        label: const Text('Offiziellen Prospekt öffnen'),
+                      ),
+                    ),
                 ],
               ),
             ),

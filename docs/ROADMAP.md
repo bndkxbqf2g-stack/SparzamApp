@@ -283,3 +283,5 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   Angebotszeitraum werden getrennt benannt; kein Status erzeugt einen Preis.
 - [ ] Belastbare Netto-Produktdaten und Bilder bleiben eine Quellaufgabe und
   werden erst bei nachweisbarer Händlerantwort wieder als Angebote angezeigt.
+- [x] Der Status führt direkt zum offiziellen Händlerprospekt, ohne die
+  fehlende Quelle durch einen Preis zu ersetzen.
