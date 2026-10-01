@@ -864,6 +864,14 @@ String? _creamType(String text) {
 }
 
 String? _yoghurtVariant(String text) {
+  if (_hasAny(text, const [
+    'joghurt mit der ecke',
+    'jogh mit der ecke',
+    'mit der ecke',
+    'ecke',
+  ])) {
+    return 'ecke';
+  }
   if (_hasAny(text, const ['griechisch', 'griechischer', 'griechische'])) {
     return 'griechisch';
   }

@@ -33,6 +33,7 @@ void main() {
       expect(firstSuggestion('KLC.Kn.Mäuse Salz').id, 'chips');
       expect(firstSuggestion('KLCToilettenpapier').id, 'toilettenpapier');
       expect(firstSuggestion('K.Klo Frän.Art750g').id, 'kloesse_kartoffel');
+      expect(firstSuggestion('Mü.Jogh.m.d.Ecke').id, 'joghurt_ecke');
     },
   );
 
@@ -41,6 +42,13 @@ void main() {
     expect(dumplings.familyKey, 'kloesse');
     expect(dumplings.productType, 'kartoffel');
     expect(identifyProduct('KLCToilettenpapier').familyKey, 'toilettenpapier');
+  });
+
+  test('keeps Joghurt mit der Ecke separate from generic yoghurt variants', () {
+    final identity = identifyProduct('Mü.Jogh.m.d.Ecke');
+    expect(identity.familyKey, 'joghurt');
+    expect(identity.variant, 'ecke');
+    expect(identifyProduct('Fruchtjoghurt').variant, 'frucht');
   });
 
   test('receipt families remain distinct while variants are searchable', () {
