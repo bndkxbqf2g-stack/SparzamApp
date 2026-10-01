@@ -7,6 +7,7 @@ import '../../models/replenishment_suggestion.dart';
 import '../../models/road_route_matrix.dart';
 import '../budget/budget_calculator.dart';
 import '../home/dashboard_data.dart';
+import '../offers/offer_filter.dart';
 import '../receipt/purchase_summary.dart';
 import '../route/travel_estimator.dart';
 import 'shell_routing.dart';
@@ -45,8 +46,15 @@ DashboardData buildShellDashboard({
   final monthly = summarizeMonth(purchaseHistory, now: now);
   final current = now ?? DateTime.now();
   final day = DateTime(current.year, current.month, current.day);
-  final activeOffers =
-      offers.where((offer) => !offer.validUntil.isBefore(day)).length;
+  final activeOffers = offers
+      .where(
+        (offer) => isOfferDateRangeActive(
+          validFrom: offer.validFrom,
+          validUntil: offer.validUntil,
+          now: day,
+        ),
+      )
+      .length;
 
   return DashboardData(
     itemCount: shoppingList.length,

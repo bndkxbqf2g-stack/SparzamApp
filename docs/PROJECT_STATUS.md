@@ -562,3 +562,12 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - `shopping_candidate_service_test.dart` schützt Medianbasis und Ausschluss;
   `flutter analyze` ist ohne Befund, alle 457 Flutter-Tests sind grün und
   `flutter build web --release` war erfolgreich.
+
+## Update 01.10.2026 – Dashboard zählt nur aktuell gültige Angebote
+- Die Highlight-Anzahl im Dashboard verwendet jetzt das vollständige
+  Angebotsfenster aus `validFrom` und `validUntil`. Künftige Angebote werden
+  nicht vorzeitig als heutige Angebote angezeigt.
+- `shell_dashboard_test.dart` deckt aktuelle, künftige und abgelaufene Angebote
+  ab; die übrige Angebots- und Routenlogik bleibt unverändert.
+- `flutter analyze` ist ohne Befund, alle 458 Flutter-Tests sind grün und
+  `flutter build web --release` war erfolgreich.

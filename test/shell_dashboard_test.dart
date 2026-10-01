@@ -5,6 +5,7 @@ import 'package:sparzamapp/models/budget_plan.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/mobility_settings.dart';
+import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/models/product.dart';
 
 void main() {
@@ -36,6 +37,60 @@ void main() {
     expect(data.routeNames, 'Noch keine Route');
     expect(data.todaySavings, 0);
     expect(data.activeOffers, 0);
+  });
+
+  test('Dashboard zählt Angebote erst ab validFrom als aktuell', () {
+    const mobility = MobilitySettings();
+    final routing = ShellRouting(
+      items: [],
+      offers: [],
+      mobility: mobility,
+      marketPrices: [],
+      roadDistances: {},
+      roadMatrix: null,
+    );
+
+    final data = buildShellDashboard(
+      shoppingList: const [],
+      offers: [
+        Offer(
+          id: 'today',
+          productId: 'milk-15',
+          storeName: 'ALDI Süd',
+          originalPrice: 1.49,
+          offerPrice: 0.95,
+          validFrom: DateTime(2026, 9, 21),
+          validUntil: DateTime(2026, 9, 28),
+        ),
+        Offer(
+          id: 'future',
+          productId: 'milk-35',
+          storeName: 'Lidl',
+          originalPrice: 1.49,
+          offerPrice: 0.99,
+          validFrom: DateTime(2026, 9, 23),
+          validUntil: DateTime(2026, 9, 30),
+        ),
+        Offer(
+          id: 'expired',
+          productId: 'milk-35',
+          storeName: 'EDEKA',
+          originalPrice: 1.49,
+          offerPrice: 1.09,
+          validUntil: DateTime(2026, 9, 20),
+        ),
+      ],
+      mobility: mobility,
+      roadDistances: const {},
+      roadMatrix: null,
+      routing: routing,
+      budget: const BudgetPlan(),
+      purchaseHistory: const [],
+      replenishment: const [],
+      now: DateTime(2026, 9, 22),
+    );
+
+    expect(data.activeOffers, 1);
   });
 
   test('Teilroute verändert weder Sparpotenzial noch Budgetplanung', () {

@@ -31,7 +31,8 @@ Die Testsuite enthält Domänen-, Store-, Service-, Widget- und Ablaufprüfungen
   vergleichbare Packungspreise aus.
 - Dashboarddaten/Teilrouten: `shell_dashboard_test.dart` prüft, dass
   unvollständige Preisabdeckung weder Sparpotenzial noch Budgetverbrauch
-  vortäuscht.
+  vortäuscht und dass zukünftige oder abgelaufene Angebote nicht als aktuell
+  gezählt werden.
 - Kaufabschluss: `receipt_completion_feedback_test.dart` prüft, dass eine
   Teilroute nicht bestätigt werden kann und fehlende Artikel sichtbar bleiben.
 

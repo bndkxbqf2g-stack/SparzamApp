@@ -310,3 +310,9 @@ Debug-Konfiguration vertrauen. Die vier optionalen Recognizer werden als
 explizite App-Abhängigkeiten gebündelt, damit der Release-Build reproduzierbar
 auflösbar bleibt und die OCR-Script-Auswahl keinen fehlenden Klassenfehler
 erzeugt.
+
+## D058 – Dashboard zählt Angebote nach vollständigem Gültigkeitsfenster
+Die Anzahl der aktuellen Angebote im Dashboard verwendet dieselbe
+`validFrom`-/`validUntil`-Prüfung wie Angebotsansicht, Suche und Route. Ein
+zukünftiges oder abgelaufenes Angebot darf nicht als heutiges Highlight
+erscheinen.
