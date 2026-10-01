@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-01T10:57:14.759553Z",
+  "generatedAt": "2026-10-01T12:02:33.673201Z",
   "sources": [
     {
       "id": "aldi_sued",
       "storeName": "ALDI Süd",
       "url": "https://www.aldi-sued.de/",
       "status": "ok",
-      "recordCount": 237,
+      "recordCount": 216,
       "mode": "structured_api",
       "prospects": [],
       "branchId": "B384",
@@ -9008,8 +9008,8 @@
       "imageUrl": "https://cdn.penny.de/dam/jcr:9c08438b-db5e-4b96-98e9-b19d088debe5/37053689.png?impolicy=penny&imwidth=800"
     },
     {
-      "sourceId": "1f26bc18459b873f1ee7",
-      "productLabel": "COVO Schoko Waffelröllchen je 125 g",
+      "sourceId": "10a9de5f2bc341caa6b7",
+      "productLabel": "COVO Schoko Waffelröllchen* je 125 g",
       "storeName": "PENNY",
       "offerPrice": 1.49,
       "validFrom": "2026-09-28",
@@ -9020,8 +9020,8 @@
       "imageUrl": "https://cdn.penny.de/dam/jcr:b8554098-bb1a-4696-b029-542f93c59271/2229116_23274835.png?impolicy=penny&imwidth=800"
     },
     {
-      "sourceId": "5630ed51ee37be8684e7",
-      "productLabel": "COVO Feine Butterwaffeln je 6 x 40-g-Packung",
+      "sourceId": "4fb8b1afc81aaa76e53d",
+      "productLabel": "COVO Feine Butterwaffeln* je 6 x 40-g-Packung",
       "storeName": "PENNY",
       "offerPrice": 1.49,
       "validFrom": "2026-09-28",
@@ -9032,8 +9032,8 @@
       "imageUrl": "https://cdn.penny.de/dam/jcr:4bf2619c-a1f2-43a9-b286-cfad9ca20f1f/7665794_40535494.png?impolicy=penny&imwidth=800"
     },
     {
-      "sourceId": "b82e51dff1766f900a34",
-      "productLabel": "COVO Schoko Butterkeks je 125 g",
+      "sourceId": "e2fb79b7fe9fa884e3c1",
+      "productLabel": "COVO Schoko Butterkeks* je 125 g",
       "storeName": "PENNY",
       "offerPrice": 1.39,
       "validFrom": "2026-09-28",
@@ -9044,8 +9044,8 @@
       "imageUrl": "https://cdn.penny.de/dam/jcr:d6bf7e1f-b87a-4b88-a419-eee43a23e701/8255559_29977083.png?impolicy=penny&imwidth=800"
     },
     {
-      "sourceId": "23cbbbf2f03055701d53",
-      "productLabel": "COVO Doppelkeks je 500 g",
+      "sourceId": "904037e402988f3d72c1",
+      "productLabel": "COVO Doppelkeks* je 500 g",
       "storeName": "PENNY",
       "offerPrice": 1.69,
       "validFrom": "2026-09-28",
@@ -9056,8 +9056,8 @@
       "imageUrl": "https://cdn.penny.de/dam/jcr:9dfec246-6509-44bd-b0b1-54917fc6b083/7596682_56051291.png?impolicy=penny&imwidth=800"
     },
     {
-      "sourceId": "92ca3804d2b1212b2b7c",
-      "productLabel": "POPPIES Flämische Törtchen je 400 g",
+      "sourceId": "858872b8d954bc0627f1",
+      "productLabel": "POPPIES Flämische Törtchen* je 400 g",
       "storeName": "PENNY",
       "offerPrice": 2.49,
       "validFrom": "2026-09-28",
@@ -9068,8 +9068,8 @@
       "imageUrl": "https://cdn.penny.de/dam/jcr:14576180-0164-44ae-b824-81bb719baf4b/9049850_21351299.png?impolicy=penny&imwidth=800"
     },
     {
-      "sourceId": "d7b7002165d8ba8e801b",
-      "productLabel": "COVO Jaffa Cake je 300 g",
+      "sourceId": "f9c66d90f60411f81d4b",
+      "productLabel": "COVO Jaffa Cake* je 300 g",
       "storeName": "PENNY",
       "offerPrice": 1.79,
       "validFrom": "2026-09-28",
@@ -9080,8 +9080,8 @@
       "imageUrl": "https://cdn.penny.de/dam/jcr:b88edd91-97cb-49cb-8047-261d7704fbb3/2233513_23301563.png?impolicy=penny&imwidth=800"
     },
     {
-      "sourceId": "13f846fa7d0b5531bced",
-      "productLabel": "COVO Schoko Keks-Sticks je 90 g",
+      "sourceId": "82ab58c8740ecd8d0cef",
+      "productLabel": "COVO Schoko Keks-Sticks* je 90 g",
       "storeName": "PENNY",
       "offerPrice": 1.29,
       "validFrom": "2026-09-28",
@@ -9092,8 +9092,8 @@
       "imageUrl": "https://cdn.penny.de/dam/jcr:e460c229-900d-4d79-9d40-3a844a31183c/8040655_30841688.png?impolicy=penny&imwidth=800"
     },
     {
-      "sourceId": "728e2dc370f149034783",
-      "productLabel": "COVO Spritzgebäck je 300 g",
+      "sourceId": "4708bf6302284ecad797",
+      "productLabel": "COVO Spritzgebäck* je 300 g",
       "storeName": "PENNY",
       "offerPrice": 1.79,
       "validFrom": "2026-09-28",
@@ -9104,8 +9104,8 @@
       "imageUrl": "https://cdn.penny.de/dam/jcr:b699495b-65e3-4548-ad6d-eed7d640de98/9601963_50695207.png?impolicy=penny&imwidth=800"
     },
     {
-      "sourceId": "ad0b87f72b3a1ff9637e",
-      "productLabel": "COVO Gebäckmischung je 500 g",
+      "sourceId": "5c30716975ce7d0085a1",
+      "productLabel": "COVO Gebäckmischung* je 500 g",
       "storeName": "PENNY",
       "offerPrice": 2.79,
       "validFrom": "2026-09-28",
@@ -9116,8 +9116,8 @@
       "imageUrl": "https://cdn.penny.de/dam/jcr:eb86f17e-fd53-4b4b-b6cf-3aad1fe95210/9070662_43776041.png?impolicy=penny&imwidth=800"
     },
     {
-      "sourceId": "cb6abf5c95479c0dbbeb",
-      "productLabel": "COVO Gebäckmischung je 400 g",
+      "sourceId": "43867f27c52f8537d357",
+      "productLabel": "COVO Gebäckmischung* je 400 g",
       "storeName": "PENNY",
       "offerPrice": 2.79,
       "validFrom": "2026-09-28",
@@ -9128,8 +9128,8 @@
       "imageUrl": "https://cdn.penny.de/dam/jcr:7a58f995-9847-46a4-8a08-cddc74400778/9071444_43776052.png?impolicy=penny&imwidth=800"
     },
     {
-      "sourceId": "f57b1e731da49421a4c3",
-      "productLabel": "SAN FABIO Löffelbiskuits je 2 x 200 g",
+      "sourceId": "e1d790e075bc5db60b67",
+      "productLabel": "SAN FABIO Löffelbiskuits* je 2 x 200 g",
       "storeName": "PENNY",
       "offerPrice": 1.69,
       "validFrom": "2026-09-28",
@@ -9140,8 +9140,8 @@
       "imageUrl": "https://cdn.penny.de/dam/jcr:c8a2f528-400d-426e-ac44-26ba21069e74/2191402_22708605.png?impolicy=penny&imwidth=800"
     },
     {
-      "sourceId": "43700bd2c1b0345fb666",
-      "productLabel": "CHOCO’LA Tafelschokolade gefüllt je 200 g",
+      "sourceId": "378a6ef9ea122ed0d215",
+      "productLabel": "CHOCO’LA Tafelschokolade gefüllt* je 200 g",
       "storeName": "PENNY",
       "offerPrice": 1.99,
       "validFrom": "2026-09-28",
@@ -9152,8 +9152,8 @@
       "imageUrl": "https://cdn.penny.de/dam/jcr:4ceee33e-50ad-4997-bbcd-e032c57200f5/8682397_35220306.png?impolicy=penny&imwidth=800"
     },
     {
-      "sourceId": "94fcc12426a27097916a",
-      "productLabel": "CHOCO’LA Tafelschokolade weiss je 200 g",
+      "sourceId": "b7ec100b8d2a6203511a",
+      "productLabel": "CHOCO’LA Tafelschokolade weiss* je 200 g",
       "storeName": "PENNY",
       "offerPrice": 1.99,
       "validFrom": "2026-09-28",
@@ -9164,8 +9164,8 @@
       "imageUrl": "https://cdn.penny.de/dam/jcr:61b11c47-57db-4d6e-a590-3e63fe7dc585/1101287_18530390.png?impolicy=penny&imwidth=800"
     },
     {
-      "sourceId": "82d258a6bfaa96a05198",
-      "productLabel": "CHOCO’LA Riegel je 6 x 50 g",
+      "sourceId": "d0b52af7213ebaf01b38",
+      "productLabel": "CHOCO’LA Riegel* je 6 x 50 g",
       "storeName": "PENNY",
       "offerPrice": 1.99,
       "validFrom": "2026-09-28",
