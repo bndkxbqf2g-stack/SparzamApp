@@ -3,16 +3,20 @@ import '../../data/stores.dart';
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/offer.dart';
+import '../../models/price_observation.dart';
 import '../offers/effective_price.dart';
 import '../offers/offer_filter.dart';
+import '../offers/prospect_price_statistics.dart';
 
-bool isSampleOffer(Offer offer) => sampleOffers.any((sample) =>
-    sample.id == offer.id &&
-    sample.productId == offer.productId &&
-    sample.storeName == offer.storeName &&
-    sample.offerPrice == offer.offerPrice);
+bool isSampleOffer(Offer offer) => sampleOffers.any(
+  (sample) =>
+      sample.id == offer.id &&
+      sample.productId == offer.productId &&
+      sample.storeName == offer.storeName &&
+      sample.offerPrice == offer.offerPrice,
+);
 
-enum ShoppingQuoteKind { receipt, ownPrice, offer }
+enum ShoppingQuoteKind { receipt, ownPrice, offer, prospectHistory }
 
 class ShoppingQuote {
   const ShoppingQuote({
@@ -30,19 +34,24 @@ class ShoppingQuote {
   final Offer? offer;
 
   String get sourceLabel => switch (kind) {
-        ShoppingQuoteKind.receipt => 'Bonpreis vom ${_date(observedAt!)}',
-        ShoppingQuoteKind.ownPrice => 'Eigener Preis vom ${_date(observedAt!)}',
-        ShoppingQuoteKind.offer =>
-            'Angebot${(offer!.hasCoupon || offer!.hasCashback) ? ', effektiv' : ''} '
-            'bis ${_date(offer!.validUntil)}',
-      };
+    ShoppingQuoteKind.receipt => 'Bonpreis vom ${_date(observedAt!)}',
+    ShoppingQuoteKind.ownPrice => 'Eigener Preis vom ${_date(observedAt!)}',
+    ShoppingQuoteKind.offer =>
+      'Angebot${(offer!.hasCoupon || offer!.hasCashback) ? ', effektiv' : ''} '
+          'bis ${_date(offer!.validUntil)}',
+    ShoppingQuoteKind.prospectHistory =>
+      'Prospekt-Median (historisch, bis ${_date(observedAt!)})',
+  };
 
   String get displayPrefix => switch (kind) {
-        ShoppingQuoteKind.receipt => 'Bonpreis',
-        ShoppingQuoteKind.ownPrice => 'Eigener Preis',
-        ShoppingQuoteKind.offer =>
-            'Angebot${(offer!.hasCoupon || offer!.hasCashback) ? ', effektiv' : ''}',
-      };
+    ShoppingQuoteKind.receipt => 'Bonpreis',
+    ShoppingQuoteKind.ownPrice => 'Eigener Preis',
+    ShoppingQuoteKind.offer =>
+      'Angebot${(offer!.hasCoupon || offer!.hasCashback) ? ', effektiv' : ''}',
+    ShoppingQuoteKind.prospectHistory => 'Prospekt-Median',
+  };
+
+  bool get isHistorical => kind == ShoppingQuoteKind.prospectHistory;
 
   String get amountLabel =>
       '${unitPrice.toStringAsFixed(2).replaceAll('.', ',')} €';
@@ -58,15 +67,16 @@ class ShoppingQuote {
 /// one of the six configured markets), but no current, comparable evidence is
 /// available for this exact product identity.
 class ShoppingPriceMatrixEntry {
-  const ShoppingPriceMatrixEntry({
-    required this.storeName,
-    this.quote,
-  });
+  const ShoppingPriceMatrixEntry({required this.storeName, this.quote});
 
   final String storeName;
   final ShoppingQuote? quote;
 
   bool get hasQuote => quote != null;
+
+  bool get hasCurrentQuote => quote != null && !quote!.isHistorical;
+
+  bool get hasHistoricalQuote => quote?.isHistorical == true;
 }
 
 /// Exact product identity only. Receipts are observations of a purchase,
@@ -75,6 +85,7 @@ List<ShoppingQuote> shoppingQuotes(
   ListItem item, {
   required List<MarketPrice> prices,
   required List<Offer> offers,
+  Map<String, ProspectPriceHistorySummary> prospectPriceHistory = const {},
   List<String> enabledStores = const [],
   DateTime? now,
 }) {
@@ -90,14 +101,16 @@ List<ShoppingQuote> shoppingQuotes(
             !enabledStores.contains(price.storeName))) {
       continue;
     }
-    candidates.add(ShoppingQuote(
-      storeName: price.storeName,
-      unitPrice: price.price,
-      kind: price.source == MarketPriceSource.receipt
-          ? ShoppingQuoteKind.receipt
-          : ShoppingQuoteKind.ownPrice,
-      observedAt: price.updatedAt,
-    ));
+    candidates.add(
+      ShoppingQuote(
+        storeName: price.storeName,
+        unitPrice: price.price,
+        kind: price.source == MarketPriceSource.receipt
+            ? ShoppingQuoteKind.receipt
+            : ShoppingQuoteKind.ownPrice,
+        observedAt: price.updatedAt,
+      ),
+    );
   }
 
   for (final offer in offers) {
@@ -116,18 +129,53 @@ List<ShoppingQuote> shoppingQuotes(
     // belong in the visible saving price. Multi-buy remains quantity
     // dependent and is calculated by the route resolver.
     final effective = effectivePrice(offer);
-    candidates.add(ShoppingQuote(
-      storeName: offer.storeName,
-      unitPrice: effective.finalPrice,
-      kind: ShoppingQuoteKind.offer,
-      offer: offer,
-    ));
+    candidates.add(
+      ShoppingQuote(
+        storeName: offer.storeName,
+        unitPrice: effective.finalPrice,
+        kind: ShoppingQuoteKind.offer,
+        offer: offer,
+      ),
+    );
+  }
+
+  // Historical prospect medians provide context when a market has no current
+  // quote. They remain explicitly historical and never become route prices.
+  final storesWithCurrentQuote = candidates
+      .map((quote) => quote.storeName)
+      .toSet();
+  final historicalByStore = <String, ProspectPriceHistorySummary>{};
+  for (final summary
+      in prospectPriceHistory[item.product.id]?.allSummaries ??
+          const <ProspectPriceHistorySummary>[]) {
+    if (summary.storeName.trim().isEmpty ||
+        storesWithCurrentQuote.contains(summary.storeName) ||
+        (enabledStores.isNotEmpty &&
+            !enabledStores.contains(summary.storeName)) ||
+        !summary.medianPrice.isFinite ||
+        summary.medianPrice <= 0 ||
+        !summary.latestValidUntil.isBefore(today)) {
+      continue;
+    }
+    final previous = historicalByStore[summary.storeName];
+    if (previous == null ||
+        _compareHistoricalSummaries(summary, previous) < 0) {
+      historicalByStore[summary.storeName] = summary;
+    }
+  }
+  for (final summary in historicalByStore.values) {
+    candidates.add(
+      ShoppingQuote(
+        storeName: summary.storeName,
+        unitPrice: summary.medianPrice,
+        kind: ShoppingQuoteKind.prospectHistory,
+        observedAt: summary.latestValidUntil,
+      ),
+    );
   }
 
   candidates.sort((a, b) {
-    final sourceOrder =
-        (a.kind == ShoppingQuoteKind.offer ? 0 : 1)
-            .compareTo(b.kind == ShoppingQuoteKind.offer ? 0 : 1);
+    final sourceOrder = _quoteSourceOrder(a).compareTo(_quoteSourceOrder(b));
     if (sourceOrder != 0) return sourceOrder;
     final storeOrder = a.storeName.compareTo(b.storeName);
     if (storeOrder != 0) return storeOrder;
@@ -144,6 +192,7 @@ List<ShoppingPriceMatrixEntry> shoppingPriceMatrix(
   ListItem item, {
   required List<MarketPrice> prices,
   required List<Offer> offers,
+  Map<String, ProspectPriceHistorySummary> prospectPriceHistory = const {},
   List<String> enabledStores = const [],
   DateTime? now,
 }) {
@@ -151,6 +200,7 @@ List<ShoppingPriceMatrixEntry> shoppingPriceMatrix(
     item,
     prices: prices,
     offers: offers,
+    prospectPriceHistory: prospectPriceHistory,
     enabledStores: enabledStores,
     now: now,
   );
@@ -174,10 +224,7 @@ List<ShoppingPriceMatrixEntry> shoppingPriceMatrix(
       return ShoppingPriceMatrixEntry(storeName: storeName);
     }
     final sorted = [...storeQuotes]..sort(_compareMatrixQuotes);
-    return ShoppingPriceMatrixEntry(
-      storeName: storeName,
-      quote: sorted.first,
-    );
+    return ShoppingPriceMatrixEntry(storeName: storeName, quote: sorted.first);
   }).toList();
 
   result.sort((a, b) {
@@ -194,10 +241,9 @@ List<ShoppingPriceMatrixEntry> shoppingPriceMatrix(
 }
 
 int _compareMatrixQuotes(ShoppingQuote a, ShoppingQuote b) {
-  final aOffer = a.kind == ShoppingQuoteKind.offer;
-  final bOffer = b.kind == ShoppingQuoteKind.offer;
-  if (aOffer != bOffer) return aOffer ? -1 : 1;
-  if (aOffer) {
+  final sourceOrder = _quoteSourceOrder(a).compareTo(_quoteSourceOrder(b));
+  if (sourceOrder != 0) return sourceOrder;
+  if (a.kind == ShoppingQuoteKind.offer) {
     final byPrice = a.unitPrice.compareTo(b.unitPrice);
     if (byPrice != 0) return byPrice;
   } else {
@@ -213,4 +259,26 @@ int _compareMatrixQuotes(ShoppingQuote a, ShoppingQuote b) {
     if (byPrice != 0) return byPrice;
   }
   return a.sourceLabel.compareTo(b.sourceLabel);
+}
+
+int _quoteSourceOrder(ShoppingQuote quote) => switch (quote.kind) {
+  ShoppingQuoteKind.offer => 0,
+  ShoppingQuoteKind.receipt || ShoppingQuoteKind.ownPrice => 1,
+  ShoppingQuoteKind.prospectHistory => 2,
+};
+
+int _compareHistoricalSummaries(
+  ProspectPriceHistorySummary candidate,
+  ProspectPriceHistorySummary previous,
+) {
+  if (candidate.kind != previous.kind) {
+    return candidate.kind == PriceObservationKind.offer ? -1 : 1;
+  }
+  final byPrice = candidate.medianPrice.compareTo(previous.medianPrice);
+  if (byPrice != 0) return byPrice;
+  final byDate = previous.latestValidUntil.compareTo(
+    candidate.latestValidUntil,
+  );
+  if (byDate != 0) return byDate;
+  return previous.observationCount.compareTo(candidate.observationCount);
 }

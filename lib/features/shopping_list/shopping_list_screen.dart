@@ -491,6 +491,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     enabledStoreNames: widget.mobility.enabledStoreNames,
                     marketPrices: widget.marketPrices,
                     priceObservations: widget.priceObservations,
+                    prospectPriceHistory: widget.prospectPriceHistory,
                     receiptPriceStats: receiptPriceStats,
                     onToggle: toggleChecked,
                     onSelectFamily: widget.onSelectFamily,

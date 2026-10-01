@@ -4,6 +4,7 @@ import '../../design/sparzam_theme.dart';
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/offer.dart';
+import '../offers/prospect_price_statistics.dart';
 import 'shopping_price_quotes.dart';
 
 class ShoppingPriceBadge extends StatelessWidget {
@@ -13,6 +14,7 @@ class ShoppingPriceBadge extends StatelessWidget {
     required this.prices,
     required this.offers,
     required this.enabledStores,
+    this.prospectPriceHistory = const {},
     this.onOpenOffer,
   });
 
@@ -20,6 +22,7 @@ class ShoppingPriceBadge extends StatelessWidget {
   final List<MarketPrice> prices;
   final List<Offer> offers;
   final List<String> enabledStores;
+  final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
   final ValueChanged<Offer>? onOpenOffer;
 
   @override
@@ -28,24 +31,35 @@ class ShoppingPriceBadge extends StatelessWidget {
       item,
       prices: prices,
       offers: offers,
+      prospectPriceHistory: prospectPriceHistory,
       enabledStores: enabledStores,
     );
     final matrix = shoppingPriceMatrix(
       item,
       prices: prices,
       offers: offers,
+      prospectPriceHistory: prospectPriceHistory,
       enabledStores: enabledStores,
     );
-    final pricedMarkets = matrix.where((entry) => entry.hasQuote).length;
-    final offersToday = quotes.where((q) => q.kind == ShoppingQuoteKind.offer).toList();
+    final pricedMarkets = matrix.where((entry) => entry.hasCurrentQuote).length;
+    final historicalMarkets = matrix
+        .where((entry) => entry.hasHistoricalQuote)
+        .length;
+    final offersToday = quotes
+        .where((q) => q.kind == ShoppingQuoteKind.offer)
+        .toList();
     offersToday.sort((a, b) => a.unitPrice.compareTo(b.unitPrice));
-    final receiptQuotes = quotes.where((q) => q.kind == ShoppingQuoteKind.receipt).toList();
+    final receiptQuotes = quotes
+        .where((q) => q.kind == ShoppingQuoteKind.receipt)
+        .toList();
     receiptQuotes.sort((a, b) => b.observedAt!.compareTo(a.observedAt!));
     final highlighted = offersToday.isNotEmpty
         ? offersToday.first
         : receiptQuotes.isNotEmpty
-            ? receiptQuotes.first
-            : quotes.isNotEmpty ? quotes.first : null;
+        ? receiptQuotes.first
+        : quotes.isNotEmpty
+        ? quotes.first
+        : null;
     return InkWell(
       onTap: matrix.isEmpty ? null : () => _showQuotes(context, matrix),
       borderRadius: BorderRadius.circular(12),
@@ -54,15 +68,14 @@ class ShoppingPriceBadge extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.sell_outlined,
-                size: 15, color: SparzamTheme.deepGreen),
+            Icon(Icons.sell_outlined, size: 15, color: SparzamTheme.deepGreen),
             const SizedBox(width: 5),
             Flexible(
               child: Text(
                 highlighted == null
                     ? 'Noch kein belegter Marktpreis'
                     : '${highlighted.displayPrefix} ${highlighted.storeName}: ${highlighted.amountLabel}'
-                      '${quotes.length > 1 ? ' · +${quotes.length - 1}' : ''}',
+                          '${quotes.length > 1 ? ' · +${quotes.length - 1}' : ''}',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -76,7 +89,8 @@ class ShoppingPriceBadge extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 6),
                 child: Text(
-                  '$pricedMarkets/${matrix.length} Märkte',
+                  '$pricedMarkets/${matrix.length} Märkte'
+                  '${historicalMarkets == 0 ? '' : ' · $historicalMarkets Historie'}',
                   style: const TextStyle(
                     color: SparzamTheme.deepGreen,
                     fontSize: 11,
@@ -85,8 +99,11 @@ class ShoppingPriceBadge extends StatelessWidget {
                 ),
               ),
             if (matrix.isNotEmpty)
-              const Icon(Icons.chevron_right,
-                  size: 16, color: SparzamTheme.deepGreen),
+              const Icon(
+                Icons.chevron_right,
+                size: 16,
+                color: SparzamTheme.deepGreen,
+              ),
           ],
         ),
       ),
@@ -97,7 +114,10 @@ class ShoppingPriceBadge extends StatelessWidget {
     BuildContext context,
     List<ShoppingPriceMatrixEntry> matrix,
   ) {
-    final pricedMarkets = matrix.where((entry) => entry.hasQuote).length;
+    final pricedMarkets = matrix.where((entry) => entry.hasCurrentQuote).length;
+    final historicalMarkets = matrix
+        .where((entry) => entry.hasHistoricalQuote)
+        .length;
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -109,8 +129,10 @@ class ShoppingPriceBadge extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(item.product.name,
-                  style: Theme.of(context).textTheme.titleLarge),
+              Text(
+                item.product.name,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
               if (item.product.imageUrl?.trim().isNotEmpty == true) ...[
                 const SizedBox(height: 10),
                 ClipRRect(
@@ -120,19 +142,23 @@ class ShoppingPriceBadge extends StatelessWidget {
                     height: 130,
                     width: double.infinity,
                     fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+                    errorBuilder: (context, error, stackTrace) =>
+                        const SizedBox.shrink(),
                   ),
                 ),
               ],
               const SizedBox(height: 6),
               const Text(
                 'Bonpreise zeigen einen vergangenen Einkauf. '
-                'Angebote gelten nur unter den Bedingungen des Händlers.',
+                'Historische Prospekt-Mediane zeigen frühere Angebots- oder '
+                'Normalpreisniveaus. Angebote gelten nur unter den Bedingungen '
+                'des Händlers.',
               ),
               const SizedBox(height: 6),
               Text(
-                '$pricedMarkets von ${matrix.length} Märkten mit belastbarem '
-                'Preisbeleg für genau diese Produktvariante.',
+                '$pricedMarkets von ${matrix.length} Märkten mit aktuellem '
+                'Preisbeleg für genau diese Produktvariante.'
+                '${historicalMarkets == 0 ? '' : ' $historicalMarkets Markt${historicalMarkets == 1 ? '' : 'e'} mit historischer Prospektorientierung.'}',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 12),
@@ -174,15 +200,21 @@ class ShoppingPriceBadge extends StatelessWidget {
                                     const Icon(Icons.local_offer_outlined),
                               ),
                             )
-                          : const Icon(Icons.local_offer_outlined),
+                          : Icon(
+                              quote.isHistorical
+                                  ? Icons.history_toggle_off_outlined
+                                  : Icons.local_offer_outlined,
+                            ),
                       title: Text(
                         '${item.product.name} · ${entry.storeName}',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                       subtitle: Text(quote.sourceLabel),
-                      trailing: Text(quote.amountLabel,
-                          style: const TextStyle(fontWeight: FontWeight.w700)),
+                      trailing: Text(
+                        quote.amountLabel,
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
                       onTap: quote.offer == null || onOpenOffer == null
                           ? null
                           : () {

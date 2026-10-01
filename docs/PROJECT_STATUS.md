@@ -785,3 +785,18 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Die Karte nennt den historischen Median ausdrücklich als Historie. Er wird
   nicht in den aktuellen Marktpreis übernommen und nicht für die Route
   verwendet; die Fachlogik-Regression schützt Reihenfolge und Anzeige.
+
+## Update 01.10.2026 – Gelernte Prospektpreise in der Einkaufsliste
+- Die Preiszeile eines Listenartikels übernimmt jetzt historische Prospekt-
+  Mediane je Markt, wenn für diesen Markt kein aktueller Preisbeleg vorhanden
+  ist.
+- Historische Werte werden mit Preisstand und dem Hinweis „Prospekt-Median
+  (historisch)“ dargestellt. Sie erhöhen nicht die aktuelle Preisabdeckung,
+  werden nicht als Angebot ausgegeben und gelangen nicht in die Route.
+- Ein aktueller Marktpreis oder ein gültiges Angebot hat je Markt Vorrang vor
+  dem historischen Prospektwert. Die sechs Projektmärkte bleiben auch bei
+  ausschließlich historischen Daten als fehlende bzw. historische Zeilen
+  unterscheidbar.
+- Fach- und Widgetregressionen prüfen die historische Fallback-Zeile, den
+  Vorrang eines aktuellen Preises und die sichtbare Kennzeichnung im
+  Preisfenster.

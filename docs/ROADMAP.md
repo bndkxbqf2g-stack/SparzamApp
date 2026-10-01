@@ -143,6 +143,14 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   dargestellt. Die Anzeige erzeugt keinen geschätzten Preis und verändert nicht
   die verbindliche Routenzuordnung.
 
+## Update 01.10.2026 – Historische Prospektorientierung je Markt
+- [x] Gelernte Prospekt-Mediane werden in der Einkaufsliste je Markt als
+  historische Orientierung gezeigt, wenn ein aktueller Preisbeleg fehlt.
+- [x] Aktuelle Angebote und aktuelle Marktpreise haben Vorrang; historische
+  Prospektwerte bleiben aus aktueller Preisabdeckung und Routenplanung heraus.
+- [x] Preisstand und historische Kennzeichnung sind im Preisfenster sichtbar
+  und durch Fach-/Widgettests abgesichert.
+
 ## Update 01.10.2026 – Deterministische Routen-Gleichstände
 - [x] Gleiche Preisabdeckung und gleiche Planungswerte werden über weniger
   Märkte und danach kanonische Marktnamen stabil aufgelöst.
