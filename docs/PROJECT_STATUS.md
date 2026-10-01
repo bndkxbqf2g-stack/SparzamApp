@@ -977,3 +977,12 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Interpretationen“.
 - Die Sortierung überträgt keine Produktidentität und keinen Preis in die
   Routenplanung. Eine Regression prüft den PENNY-/Kaufland-Milchfall.
+
+## Update 02.10.2026 – Normale Milch bei unklarer H-Milch-Abkürzung einbeziehen
+- `K.H-Milch` öffnet im Einkaufsfluss jetzt zusätzlich eindeutig normale
+  Milchprodukte neben den getrennten H-Milch- und Fettstufenvarianten.
+- Ein aktuelles Angebot für normale Milch kann dadurch an erster Stelle stehen;
+  die Produktauswahl bleibt trotzdem getrennt und überträgt keinen Preis auf
+  die unbekannte Bonzeile.
+- Suchauswahl und Kandidatenfenster haben dieselbe Regel; Regressionen prüfen
+  den günstigen normalen Milchpreis in beiden Pfaden.

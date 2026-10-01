@@ -81,9 +81,13 @@ List<ShoppingCandidate> buildShoppingCandidates({
     final identities = [product.name, ...product.aliases]
         .map(identifyProduct)
         .where((candidate) => candidate.isKnown);
-    return identities.any((candidate) =>
-        compatibleProductIdentity(identity, candidate) ||
-        _openMilkChoice(identity, candidate));
+    if (identities.isEmpty) return false;
+    final nameIdentity = identities.first;
+    return compatibleProductIdentity(identity, nameIdentity) ||
+        _openMilkChoice(identity, nameIdentity) ||
+        identities
+            .skip(1)
+            .any((candidate) => compatibleProductIdentity(identity, candidate));
   });
 
   final result = <ShoppingCandidate>[];
@@ -188,14 +192,10 @@ List<ShoppingCandidate> buildShoppingCandidates({
 bool _storeEnabled(String store, Iterable<String> enabledStores) =>
     enabledStores.isEmpty || enabledStores.contains(store);
 
-// Receipt labels such as "K.H-Milch" identify the H-milk family but do not
-// print the fat percentage. Keep both catalog variants selectable until the
-// user chooses one; this mirrors the regular shopping search and never
-// transfers a variant's price to the other one.
+// Receipt labels such as "K.H-Milch" identify the milk family but do not
+// state whether the shopper bought fresh milk or a fat-level H-milk variant.
+// Keep each catalog identity selectable until the user chooses one; this
+// mirrors the regular shopping search and never transfers a price between
+// products.
 bool _openMilkChoice(ProductIdentity request, ProductIdentity candidate) =>
-    request.familyKey == 'milch' &&
-    request.variant == 'h' &&
-    request.fatPercent == null &&
-    candidate.familyKey == 'milch' &&
-    candidate.fatPercent != null &&
-    candidate.variant == null;
+    isOpenMilkChoice(request, candidate);

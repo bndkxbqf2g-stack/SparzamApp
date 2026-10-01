@@ -635,3 +635,11 @@ aktuelle belegte Preise vor historischen Hinweisen und unbelegten Varianten.
 Innerhalb derselben Evidenzstufe wird der günstigste belastbare Preis zuerst
 gezeigt. Die Sortierung ändert weder die Produktidentität noch überträgt sie
 den Preis einer verwandten Variante auf die ursprünglich angefragte Identität.
+
+## D095 – Unklare H-Milch-Kürzel öffnen die normale Milchauswahl
+Ein Bonkürzel wie `K.H-Milch` enthält keine belastbare Fettstufe und darf im
+Einkaufsfluss deshalb neben 1,5-%- und 3,5-%-H-Milch auch eindeutig als normale
+Milch erkannte Produkte zur Auswahl stellen. Jede Produktidentität bleibt
+getrennt; ein Angebot für Frischmilch bestätigt weder die Bonzeile noch eine
+andere Milchvariante. Die aktuelle Angebots- und Preisrangfolge entscheidet,
+welche Auswahl zuerst angezeigt wird, ohne einen Preis zu übertragen.

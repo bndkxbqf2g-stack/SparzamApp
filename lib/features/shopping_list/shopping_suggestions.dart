@@ -194,11 +194,12 @@ bool _matchesProductQuery(
     ...product.aliases,
   ].map(identifyProduct).where((identity) => identity.isKnown).toList();
   if (identities.isNotEmpty) {
-    return identities.any(
-      (candidate) =>
-          compatibleProductIdentity(queryIdentity, candidate) ||
-          _openMilkChoice(queryIdentity, candidate),
-    );
+    final nameIdentity = identities.first;
+    return compatibleProductIdentity(queryIdentity, nameIdentity) ||
+        _openMilkChoice(queryIdentity, nameIdentity) ||
+        identities.skip(1).any(
+          (candidate) => compatibleProductIdentity(queryIdentity, candidate),
+        );
   }
   return textMatch;
 }
@@ -245,16 +246,11 @@ int _queryLabelScore(Product product, String query) {
   return score;
 }
 
-// Search may offer a fat-level choice for an unspecified H-milk receipt label.
-// This only retrieves separate products; it never transfers their prices or
-// confirms that the receipt's unknown fat level matches either choice.
+// Search may offer ordinary milk choices for an unspecified H-milk receipt
+// label. This only retrieves separate products; it never transfers their
+// prices or confirms which variant the receipt contained.
 bool _openMilkChoice(ProductIdentity query, ProductIdentity candidate) =>
-    query.familyKey == 'milch' &&
-    query.variant == 'h' &&
-    query.fatPercent == null &&
-    candidate.familyKey == 'milch' &&
-    candidate.fatPercent != null &&
-    candidate.variant == null;
+    isOpenMilkChoice(query, candidate);
 
 /// Returns the lowest usable exact price or comparable recent receipt median
 /// for one product. This is search ranking evidence, not a price guarantee.

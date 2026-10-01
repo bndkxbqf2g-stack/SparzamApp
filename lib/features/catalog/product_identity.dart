@@ -780,6 +780,20 @@ bool compatibleProductIdentity(
   return true;
 }
 
+/// Opens an abbreviated H-milk request to the ordinary milk choices that can
+/// be compared without guessing a fat level. Kaufland receipt labels such as
+/// `K.H-Milch` do not state whether the shopper bought 1.5 %, 3.5 %, or plain
+/// fresh milk. Keep each catalog product and its price identity separate, but
+/// let the shopping flow rank all ordinary milk choices by current evidence.
+bool isOpenMilkChoice(ProductIdentity request, ProductIdentity candidate) =>
+    request.familyKey == 'milch' &&
+    request.variant == 'h' &&
+    request.fatPercent == null &&
+    request.productType == null &&
+    candidate.familyKey == 'milch' &&
+    candidate.variant == null &&
+    candidate.productType == null;
+
 String? _pastaType(String text) {
   for (final type in const [
     'spaghetti',
