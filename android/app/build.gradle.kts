@@ -38,6 +38,16 @@ android {
     }
 }
 
+// google_mlkit_text_recognition declares the non-Latin recognizers as
+// compile-only dependencies. Include them in the application so R8 can
+// resolve the plugin's script dispatch during a release build.
+dependencies {
+    implementation("com.google.mlkit:text-recognition-chinese:16.0.1")
+    implementation("com.google.mlkit:text-recognition-devanagari:16.0.1")
+    implementation("com.google.mlkit:text-recognition-japanese:16.0.1")
+    implementation("com.google.mlkit:text-recognition-korean:16.0.1")
+}
+
 kotlin {
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
