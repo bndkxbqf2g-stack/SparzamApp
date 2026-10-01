@@ -359,9 +359,53 @@ ProductIdentity identifyProduct(String value) {
   ])) {
     return ProductIdentity(familyKey: 'nudeln', productType: _pastaType(text));
   }
+  // Coffee also appears as an ingredient or as part of a non-coffee product
+  // name. Keep those products out of a generic coffee search while still
+  // recognizing capsules and pads as coffee variants.
+  if (_hasAny(text, const [
+    'kaffee gebaeck',
+    'kaffeegebaeck',
+    'kaffee kuchen',
+    'kaffeekuchen',
+    'kaffee torte',
+    'kaffeetorte',
+    'kaffee bonbon',
+    'kaffeebonbon',
+  ])) {
+    return const ProductIdentity(
+      familyKey: 'backware',
+      productType: 'kaffeegebaeck',
+    );
+  }
+  if (_hasAny(text, const [
+    'kaffee getraenk',
+    'kaffeegetraenk',
+    'kaffee drink',
+  ])) {
+    return const ProductIdentity(familyKey: 'kaffeegetraenk');
+  }
+  if (_hasAny(text, const [
+    'kaffeemaschine',
+    'kaffee maschine',
+    'kaffeevollautomat',
+    'espressomaschine',
+    'dolce gusto piccolo',
+    'dolce gusto genio',
+    'dolce gusto maschine',
+  ])) {
+    return const ProductIdentity(familyKey: 'kaffeemaschine');
+  }
   if (_hasAny(text, const [
     'kaffee',
     'cafe',
+    'landkaffee',
+    'kaffeekapsel',
+    'kaffeekapseln',
+    'kaffee kapsel',
+    'kaffeepad',
+    'kaffeepads',
+    'kaffee pads',
+    'dolce gusto',
     'nescafe',
     'espresso',
     'kaffeebohnen',
@@ -373,6 +417,26 @@ ProductIdentity identifyProduct(String value) {
   }
   if (_hasAny(text, const ['sandwichtoast', 'toast'])) {
     return const ProductIdentity(familyKey: 'toast');
+  }
+  // Cheese can be only an ingredient in a sausage or snack. Those products
+  // retain their own identity so a generic cheese request cannot route them
+  // as cheese.
+  if (_hasAny(text, const [
+    'kaese wiener',
+    'kaesewiener',
+    'kaese salami',
+    'kaesesalami',
+    'leberkaese',
+    'leber kaese',
+  ])) {
+    return ProductIdentity(
+      familyKey: 'wurst',
+      variant: _hasAny(text, const ['leberkaese', 'leber kaese'])
+          ? 'leberkaese'
+          : _hasAny(text, const ['kaese salami', 'kaesesalami'])
+          ? 'salami'
+          : 'wiener',
+    );
   }
   if (_hasAny(text, const [
     'käse',
@@ -387,6 +451,18 @@ ProductIdentity identifyProduct(String value) {
     'butterkaese',
     'tilsiter',
     'camembert',
+    'hartkaese',
+    'hart kaese',
+    'schnittkaese',
+    'schnitt kaese',
+    'weichkaese',
+    'weich kaese',
+    'schafkaese',
+    'schaf kaese',
+    'ziegenkaese',
+    'ziegen kaese',
+    'kaesescheiben',
+    'kaese scheiben',
     'frischkaese',
     'frischk',
     'schmelzkaese',
@@ -447,7 +523,12 @@ ProductIdentity identifyProduct(String value) {
   if (_hasAny(text, const ['haribo', 'baella', 'balla', 'suessigkeit'])) {
     return const ProductIdentity(familyKey: 'suessigkeit');
   }
-  if (_hasAny(text, const ['hollandaise', 'holl'])) {
+  if (_hasAny(text, const [
+    'hollandaise',
+    'hollandaise sauce',
+    'holl legere',
+    'holl zitrone',
+  ])) {
     return const ProductIdentity(
       familyKey: 'sauce',
       productType: 'hollandaise',
@@ -670,6 +751,18 @@ String? _cheeseVariant(String text) {
     'butterkaese',
     'tilsiter',
     'camembert',
+    'hartkaese',
+    'hart kaese',
+    'schnittkaese',
+    'schnitt kaese',
+    'weichkaese',
+    'weich kaese',
+    'schafkaese',
+    'schaf kaese',
+    'ziegenkaese',
+    'ziegen kaese',
+    'kaesescheiben',
+    'kaese scheiben',
     'frischkaese',
     'frischk',
     'schmelzkaese',
@@ -678,6 +771,12 @@ String? _cheeseVariant(String text) {
     if (_hasWord(text, term)) {
       return switch (term) {
         'gou' => 'gouda',
+        'hart kaese' => 'hartkaese',
+        'schnitt kaese' => 'schnittkaese',
+        'weich kaese' => 'weichkaese',
+        'schaf kaese' => 'schafkaese',
+        'ziegen kaese' => 'ziegenkaese',
+        'kaese scheiben' => 'kaesescheiben',
         'frischk' => 'frischkaese',
         'schmelzk' => 'schmelzkaese',
         _ => term,

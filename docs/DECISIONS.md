@@ -396,3 +396,16 @@ Produktwort, etwa `Vollmilch*`. Solche redaktionellen Zeichen werden bei der
 internen Identitätsnormalisierung als Worttrenner behandelt. Die unveränderte
 Originalbezeichnung bleibt weiterhin die sichtbare Quelle; nur die Zuordnung
 zur Produktfamilie wird dadurch robust genug für Angebots- und Preisranking.
+
+## D068 – Zutaten und Gerätekontexte bleiben von Grundprodukten getrennt
+Die zentrale Produktidentität behandelt zusammengesetzte Händlerlabels vor der
+Familienzuordnung. Kaffeegebäck und Kaffeegetränke dürfen eine Suche nach
+Kaffee nicht als Kaffeepackung ausgeben; Kaffeemaschinen und ähnliche Geräte
+bleiben ebenfalls außerhalb der Lebensmittelidentität. Kaffeekapseln und
+-pads sind dagegen konkrete Kaffeevarianten. Entsprechend bleiben Käse-Wiener
+und Leberkäse Wurstidentitäten, während Hart-, Schnitt-, Weich-, Schaf- und
+Ziegenkäse als Käsevarianten auffindbar sind. Abkürzungen wie `Holl.` werden
+nur im nachgewiesenen Hollandaise-Kontext als Sauce gelesen, damit „Holl.
+Hartkäse“ nicht aus der Käsesuche fällt. Diese Regeln verhindern falsche
+Preis- und Routenzuordnungen; die sichtbare Originalbezeichnung bleibt
+unverändert.

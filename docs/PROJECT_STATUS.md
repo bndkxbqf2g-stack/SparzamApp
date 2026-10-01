@@ -676,3 +676,14 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Einkaufssuche gefunden und preislich gerankt wird.
 - Eine Regression deckt die echte Prospektbezeichnung mit Sternchen ab; die
   Originalbezeichnung und ihr Nachweis bleiben unverändert.
+
+## Update 01.10.2026 – Zusammengesetzte Produktlabels sauber trennen
+- [x] Die zentrale Identität erkennt Kaffee-Kapseln und -Pads, ohne
+  Kaffeemaschinen, Kaffeegetränke oder Kaffeegebäck als Kaffeepackung zu
+  behandeln.
+- [x] Käse-Wiener und Leberkäse bleiben Wurstidentitäten; Hart-, Schnitt-,
+  Weich-, Schaf- und Ziegenkäse werden als Käsevarianten gefunden.
+- [x] Die Hollandaise-Abkürzung `Holl.` wird nicht mehr mit „Holl. Hartkäse“
+  verwechselt.
+- [x] Regressionen sichern sowohl die Identität als auch die sichtbare
+  Suchauswahl für Kaffee und Käse.

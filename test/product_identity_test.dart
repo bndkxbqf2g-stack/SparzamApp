@@ -145,6 +145,49 @@ void main() {
     );
   });
 
+  test(
+    'coffee compounds keep appliances and pastries out of coffee search',
+    () {
+      expect(
+        identifyProduct('BRANDT Kaffee-Gebäck 201 g').familyKey,
+        'backware',
+      );
+      expect(
+        identifyProduct('NESCAFÉ Latte Kaffeegetränk 205 ml').familyKey,
+        'kaffeegetraenk',
+      );
+      expect(
+        identifyProduct('KRUPS Nescafé Dolce Gusto Piccolo XS').familyKey,
+        'kaffeemaschine',
+      );
+      expect(
+        identifyProduct('JACOBS Kaffeekapseln 20 Stück').familyKey,
+        'kaffee',
+      );
+      expect(
+        compatibleProductIdentity(
+          identifyProduct('Kaffee'),
+          identifyProduct('BRANDT Kaffee-Gebäck 201 g'),
+        ),
+        isFalse,
+      );
+    },
+  );
+
+  test('cheese compounds keep sausages out of cheese search', () {
+    final cheese = identifyProduct('Käse');
+    expect(identifyProduct('Mühlenhof Käse-Wiener 600 g').familyKey, 'wurst');
+    expect(identifyProduct('K-CLASSIC Bayr. Leberkäse').familyKey, 'wurst');
+    expect(
+      compatibleProductIdentity(
+        cheese,
+        identifyProduct('Mühlenhof Käse-Wiener 600 g'),
+      ),
+      isFalse,
+    );
+    expect(identifyProduct('OLD AMSTERDAM Holl. Hartkäse').familyKey, 'kaese');
+  });
+
   test('milk ingredient compounds stay out of the plain milk family', () {
     expect(identifyProduct('K-CLASSIC Kondensmilch XXL').familyKey, isNull);
     expect(identifyProduct('K-CLASSIC Milch-Riegel').familyKey, 'snack');
