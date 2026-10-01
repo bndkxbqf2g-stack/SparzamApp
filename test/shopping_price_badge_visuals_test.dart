@@ -134,13 +134,13 @@ void main() {
     expect(find.textContaining('0/2 Märkte · 1 Historie'), findsOneWidget);
     await tester.tap(find.textContaining('Prospekt-Median ALDI Süd'));
     await tester.pumpAndSettle();
-    expect(
-      find.text('Prospekt-Median (historisch, bis 20.09.2026)'),
-      findsOneWidget,
-    );
-    expect(
-      find.textContaining('historischer Prospektorientierung'),
-      findsOneWidget,
-    );
+    expect(find.text('Prospekt-Historie (1 Markt)'), findsOneWidget);
+    await tester.tap(find.text('Prospekt-Historie (1 Markt)'));
+    await tester.pumpAndSettle();
+    expect(find.text('Milch · Prospekt-Historie'), findsOneWidget);
+    expect(find.text('ALDI Süd'), findsOneWidget);
+    expect(find.textContaining('2 Prospektbeobachtung(en)'), findsOneWidget);
+    expect(find.textContaining('Angebotshistorie'), findsOneWidget);
+    expect(find.text('0,95 €'), findsOneWidget);
   });
 }

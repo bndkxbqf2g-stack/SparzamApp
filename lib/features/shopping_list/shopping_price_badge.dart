@@ -4,6 +4,7 @@ import '../../design/sparzam_theme.dart';
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/offer.dart';
+import '../../models/price_observation.dart';
 import '../offers/prospect_price_statistics.dart';
 import 'shopping_price_quotes.dart';
 
@@ -118,6 +119,7 @@ class ShoppingPriceBadge extends StatelessWidget {
     final historicalMarkets = matrix
         .where((entry) => entry.hasHistoricalQuote)
         .length;
+    final history = _prospectHistorySummaries();
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -161,6 +163,18 @@ class ShoppingPriceBadge extends StatelessWidget {
                 '${historicalMarkets == 0 ? '' : ' $historicalMarkets Markt${historicalMarkets == 1 ? '' : 'e'} mit historischer Prospektorientierung.'}',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
+              if (history.isNotEmpty)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton.icon(
+                    onPressed: () => _showProspectHistory(context, history),
+                    icon: const Icon(Icons.history, size: 18),
+                    label: Text(
+                      'Prospekt-Historie (${history.length} '
+                      '${history.length == 1 ? 'Markt' : 'Märkte'})',
+                    ),
+                  ),
+                ),
               const SizedBox(height: 12),
               Flexible(
                 child: ListView.builder(
@@ -231,4 +245,79 @@ class ShoppingPriceBadge extends StatelessWidget {
       ),
     );
   }
+
+  List<ProspectPriceHistorySummary> _prospectHistorySummaries() {
+    final summaries = [
+      ...(prospectPriceHistory[item.product.id]?.allSummaries ??
+          const <ProspectPriceHistorySummary>[]),
+    ].where((summary) {
+      return summary.storeName.trim().isNotEmpty &&
+          summary.medianPrice.isFinite &&
+          summary.medianPrice > 0 &&
+          (enabledStores.isEmpty || enabledStores.contains(summary.storeName));
+    }).toList();
+    summaries.sort((a, b) {
+      final store = a.storeName.compareTo(b.storeName);
+      if (store != 0) return store;
+      return b.latestValidUntil.compareTo(a.latestValidUntil);
+    });
+    return summaries;
+  }
+
+  void _showProspectHistory(
+    BuildContext context,
+    List<ProspectPriceHistorySummary> history,
+  ) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (historyContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${item.product.name} · Prospekt-Historie',
+                style: Theme.of(historyContext).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'Diese Mediane stammen aus abgeschlossenen Prospekten. '
+                'Sie zeigen gelernte Preisniveaus und sind keine aktuellen '
+                'Angebote oder Routenpreise.',
+              ),
+              const SizedBox(height: 10),
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    for (final summary in history)
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(summary.storeName),
+                        subtitle: Text(
+                          '${summary.observationCount} '
+                          'Prospektbeobachtung(en) · '
+                          '${summary.kind == PriceObservationKind.offer ? 'Angebotshistorie' : 'Normalpreishistorie'} · '
+                          'bis ${_formatDate(summary.latestValidUntil)}',
+                        ),
+                        trailing: Text(
+                          '${summary.medianPrice.toStringAsFixed(2).replaceAll('.', ',')} €',
+                          style: const TextStyle(fontWeight: FontWeight.w800),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
+
+String _formatDate(DateTime value) =>
+    '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.${value.year}';

@@ -151,6 +151,14 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Preisstand und historische Kennzeichnung sind im Preisfenster sichtbar
   und durch Fach-/Widgettests abgesichert.
 
+## Update 01.10.2026 – Prospekt-Historie als Detailansicht
+- [x] Die Einkaufsliste bietet pro Produkt eine optionale Detailansicht der
+  abgeschlossenen Prospektbeobachtungen je Markt.
+- [x] Median, Beobachtungsanzahl, Quellart und letztes Gültigkeitsende bleiben
+  in der Historie nachvollziehbar.
+- [x] Die Detailansicht ist erklärend; historische Werte werden nicht in die
+  aktuelle Preisabdeckung oder Routenplanung übernommen.
+
 ## Update 01.10.2026 – Vorauswahl der belegten Spar-Variante
 - [x] Generische Wünsche wählen im Variantenfenster die erste aktuell belegte
   Spar-Variante vor.
