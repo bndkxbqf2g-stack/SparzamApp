@@ -36,6 +36,7 @@ void main() {
       ),
       findsOneWidget,
     );
+    expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
   });
 
   testWidgets(
