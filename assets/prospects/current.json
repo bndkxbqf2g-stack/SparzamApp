@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-01T20:22:17.612237Z",
+  "generatedAt": "2026-10-01T20:40:52.412480Z",
   "sources": [
     {
       "id": "aldi_sued",
       "storeName": "ALDI Süd",
       "url": "https://www.aldi-sued.de/",
       "status": "ok",
-      "recordCount": 236,
+      "recordCount": 217,
       "mode": "structured_api",
       "prospects": [],
       "branchId": "B384",
@@ -501,7 +501,7 @@
       "storeName": "Netto",
       "url": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371",
       "status": "error",
-      "recordCount": 21,
+      "recordCount": 0,
       "error": "keine sicher extrahierbaren Angebote gefunden; edeka-sample=",
       "branchId": "4371",
       "location": "Thüngersheim",
@@ -11259,237 +11259,6 @@
       "originalPrice": 6.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:9927731e-1894-4c19-9b54-d394db2b81c6/55597455.png?impolicy=penny&imwidth=800",
       "category": "framstag"
-    },
-    {
-      "sourceId": "088d4740460e0c334f4f",
-      "productLabel": "Marokko/Spanien, Kl. I",
-      "storeName": "Netto",
-      "offerPrice": 1.99,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 2.79
-    },
-    {
-      "sourceId": "51e55e58be62f5150d75",
-      "productLabel": "versch. Sorten",
-      "storeName": "Netto",
-      "offerPrice": 0.88,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 1.99
-    },
-    {
-      "sourceId": "825775b2728e443aa065",
-      "productLabel": "tiefgekühlt",
-      "storeName": "Netto",
-      "offerPrice": 2.49,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 4.89
-    },
-    {
-      "sourceId": "cd4b3782ab93c94663f0",
-      "productLabel": "gekühlt, versch. Sorten",
-      "storeName": "Netto",
-      "offerPrice": 1.59,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 3.49
-    },
-    {
-      "sourceId": "4618f426c6b63eeeb53a",
-      "productLabel": "-21%",
-      "storeName": "Netto",
-      "offerPrice": 1.79,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 2.29
-    },
-    {
-      "sourceId": "e56c3cf08007ae0a58e7",
-      "productLabel": "-46%",
-      "storeName": "Netto",
-      "offerPrice": 0.69,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 1.29
-    },
-    {
-      "sourceId": "a37839de0c0be90e45f8",
-      "productLabel": "-23%",
-      "storeName": "Netto",
-      "offerPrice": 2.29,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 2.99
-    },
-    {
-      "sourceId": "d89e4b722681fe21e2cf",
-      "productLabel": "gekühlt",
-      "storeName": "Netto",
-      "offerPrice": 2.99,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 3.49
-    },
-    {
-      "sourceId": "d9e797fa9904bbf57b17",
-      "productLabel": "gekühlt, versch. Sorten",
-      "storeName": "Netto",
-      "offerPrice": 1.99,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 2.69
-    },
-    {
-      "sourceId": "8cbe3def2744602007b9",
-      "productLabel": "-16%",
-      "storeName": "Netto",
-      "offerPrice": 1.99,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 2.39
-    },
-    {
-      "sourceId": "0732c89ab04d8a1e115d",
-      "productLabel": "gekühlt",
-      "storeName": "Netto",
-      "offerPrice": 1.11,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 1.59
-    },
-    {
-      "sourceId": "b46c0b848972b6652487",
-      "productLabel": "-20%",
-      "storeName": "Netto",
-      "offerPrice": 16.99,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 21.49
-    },
-    {
-      "sourceId": "89221fbfb018e669ee3a",
-      "productLabel": "-21%",
-      "storeName": "Netto",
-      "offerPrice": 14.99,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 18.99
-    },
-    {
-      "sourceId": "28e0c1352a1d9d2e6dde",
-      "productLabel": "Multipack in Sauce",
-      "storeName": "Netto",
-      "offerPrice": 3.99,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 4.79
-    },
-    {
-      "sourceId": "57bb218623aabaec52b9",
-      "productLabel": "versch. Sorten",
-      "storeName": "Netto",
-      "offerPrice": 1.29,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 1.49
-    },
-    {
-      "sourceId": "069a63e38746b2c7676a",
-      "productLabel": "versch. Sorten",
-      "storeName": "Netto",
-      "offerPrice": 1.69,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 1.95
-    },
-    {
-      "sourceId": "588add23ba32e0edbdf8",
-      "productLabel": "versch. Sorten",
-      "storeName": "Netto",
-      "offerPrice": 7.95,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 9.45
-    },
-    {
-      "sourceId": "f214ceec808f86cee40d",
-      "productLabel": "gekühlt, versch. Sorten",
-      "storeName": "Netto",
-      "offerPrice": 0.39,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 0.99
-    },
-    {
-      "sourceId": "65df62d1a3696ea3404e",
-      "productLabel": "-25%",
-      "storeName": "Netto",
-      "offerPrice": 1.49,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 1.99
-    },
-    {
-      "sourceId": "b00524b8e56d5268f152",
-      "productLabel": "-37%",
-      "storeName": "Netto",
-      "offerPrice": 5.99,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 9.54
-    },
-    {
-      "sourceId": "9fcd179ec3fff9378ebc",
-      "productLabel": "versch. Sorten",
-      "storeName": "Netto",
-      "offerPrice": 8.49,
-      "validFrom": "2026-09-28",
-      "validUntil": "2026-10-03",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371#filialangebote",
-      "originalPrice": 14.99
     }
   ]
 }
