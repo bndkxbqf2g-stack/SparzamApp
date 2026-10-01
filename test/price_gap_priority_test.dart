@@ -68,6 +68,6 @@ void main() {
     ], marketCount: 1);
 
     expect(gaps.map((gap) => gap.item.product.id), ['alpha', 'beta']);
-    expect(gaps.single.knownMarketCount, 0);
+    expect(gaps.first.knownMarketCount, 0);
   });
 }
