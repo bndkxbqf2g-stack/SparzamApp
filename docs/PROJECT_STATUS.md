@@ -516,3 +516,15 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - `receipt_completion_feedback_test.dart` deckt die blockierte Teilroute ab.
 - `flutter analyze` ist ohne Befund, alle 454 Flutter-Tests sind grün und
   `flutter build web --release` war erfolgreich.
+
+## Update 01.10.2026 – Historische Bonmediane sichtbar datiert
+- Die Einkaufsliste kennzeichnet vergleichbare Bonfamilienwerte jetzt als
+  „Bon-Median (historisch)“ und zeigt bei einem einzelnen Markt den Stand der
+  letzten Beobachtung.
+- Mehrere historische Marktmediane tragen ebenfalls einen gemeinsamen
+  Historie-Hinweis; aktuelle Angebote und route-taugliche Belege bleiben im
+  Preisfenster separat gekennzeichnet.
+- `receipt_family_price_hint_test.dart` schützt die sichtbare Einzel- und
+  Mehrmarktkennzeichnung.
+- `flutter analyze` ist ohne Befund, alle 456 Flutter-Tests sind grün und
+  `flutter build web --release` war erfolgreich.

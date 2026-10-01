@@ -28,7 +28,9 @@ SparzamApp ist ein Flutter-Prototyp für intelligent geplante Lebensmitteleinkä
   belegte Preise routenfähig.
 - Eigene freie Produkte können angelegt werden.
 - Barcode-Scanner verwendet vorhandene Katalogdaten bzw. Open Food Facts.
-- Historische Bonpreise werden als Preis-Hinweis am Produkt angezeigt.
+- Historische Bonpreise werden am Produkt ausdrücklich als historischer
+  Bon-Median mit Beobachtungsstand angezeigt; sie bleiben von aktuellen
+  Angebots- und route-tauglichen Preisbelegen getrennt.
 - Unbestätigte Produktbezeichnungen aus früheren Bons können als klar markierte
   Suchvorschläge wiedergefunden werden. Vor einer Auswahl bleiben Sorte und
   Packung offen; der Vorschlag setzt keinen Markt- oder Routenpreis.
