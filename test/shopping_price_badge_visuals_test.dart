@@ -141,6 +141,6 @@ void main() {
     expect(find.text('ALDI Süd'), findsOneWidget);
     expect(find.textContaining('2 Prospektbeobachtung(en)'), findsOneWidget);
     expect(find.textContaining('Angebotshistorie'), findsOneWidget);
-    expect(find.text('0,95 €'), findsOneWidget);
+    expect(find.text('0,95 €'), findsNWidgets(2));
   });
 }
