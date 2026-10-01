@@ -461,3 +461,12 @@ Die Anzeige ist rein erklärend und ändert weder die Routenfähigkeit noch die
 Qualitäts- und Fahrtkostenberechnung. Eine Zusammenfassung der Route zählt nur
 belegte Positionen; fehlende Positionen bleiben in der separaten Datenlückenliste
 und werden nicht als Schätzpreise ausgegeben.
+
+## D075 – Wiederkäufe schärfen die Datenlücken-Priorität
+Die Route darf die bekannte Kaufhäufigkeit einer exakt identischen
+Produkt-ID als zusätzliches, preisfreies Relevanzsignal verwenden. Sie folgt
+weiterhin zuerst der fehlenden Marktdeckung und der Grundbedarfsmarkierung;
+erst danach entscheidet die gespeicherte Kaufhäufigkeit vor der gewünschten
+Listenmenge. Die Historie liefert dabei weder einen Preis noch eine Variante:
+IDs werden nicht über Aliasnamen oder Produktfamilien zusammengeführt. Fehlt
+die Kaufhistorie, bleibt die bisherige deterministische Reihenfolge bestehen.

@@ -983,6 +983,7 @@ class _AppShellState extends State<AppShell> {
                 offers: offers,
                 mobility: mobility,
                 marketPrices: planningMarketPrices,
+                recentPurchases: recentPurchases,
                 onRoadDistancesChanged: (value) {
                   setState(() => roadDistances = value);
                   refreshRoute(() {});

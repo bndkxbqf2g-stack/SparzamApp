@@ -7,6 +7,7 @@ import '../../models/mobility_settings.dart';
 import '../../models/offer.dart';
 import '../../models/road_route_matrix.dart';
 import '../../models/route_plan.dart';
+import '../../models/recent_purchase.dart';
 import '../../services/road_distance_service.dart';
 import '../../services/road_distance_store.dart';
 import '../../services/road_route_matrix_store.dart';
@@ -29,6 +30,7 @@ class RouteScreen extends StatefulWidget {
     required this.offers,
     required this.mobility,
     required this.marketPrices,
+    this.recentPurchases = const <RecentPurchase>[],
     this.onRoadDistancesChanged,
     this.onRoadMatrixChanged,
   });
@@ -37,6 +39,7 @@ class RouteScreen extends StatefulWidget {
   final List<Offer> offers;
   final MobilitySettings mobility;
   final List<MarketPrice> marketPrices;
+  final List<RecentPurchase> recentPurchases;
   final ValueChanged<Map<String, double>>? onRoadDistancesChanged;
   final ValueChanged<RoadRouteMatrix?>? onRoadMatrixChanged;
 
@@ -146,6 +149,7 @@ class _RouteScreenState extends State<RouteScreen> {
     final priceGaps = _buildPriceGaps(
       optimizer,
       best?.unassigned ?? widget.items,
+      recentPurchases: widget.recentPurchases,
     );
     if (best == null) return _MissingPrices(gaps: priceGaps);
     final priceEvidence = summarizeRoutePriceEvidence(best, optimizer.prices);
@@ -225,7 +229,12 @@ class _RouteScreenState extends State<RouteScreen> {
         ],
         if (priceGaps.isNotEmpty) ...[
           const SizedBox(height: 10),
-          PriceGapCard(gaps: priceGaps),
+          PriceGapCard(
+            gaps: priceGaps,
+            description:
+                'Die Reihenfolge nutzt fehlende Marktbelege, Grundbedarf, '
+                'deine bisherigen Käufe und Listenmenge.',
+          ),
         ],
         const SizedBox(height: 10),
         RouteRecommendationCard(
@@ -296,12 +305,20 @@ class _RouteScreenState extends State<RouteScreen> {
 
 List<PriceGapPriority> _buildPriceGaps(
   RouteOptimizer optimizer,
-  Iterable<ListItem> items,
-) {
+  Iterable<ListItem> items, {
+  List<RecentPurchase> recentPurchases = const <RecentPurchase>[],
+}) {
   final gapItems = items.toList(growable: false);
   final enabledStores = optimizer.availableStores;
   final marketCount = enabledStores.length;
   final missingByProduct = <String, int>{};
+  final purchasesByProduct = <String, int>{};
+
+  for (final purchase in recentPurchases) {
+    final count = purchase.purchaseCount < 0 ? 0 : purchase.purchaseCount;
+    final previous = purchasesByProduct[purchase.id] ?? 0;
+    if (count > previous) purchasesByProduct[purchase.id] = count;
+  }
 
   for (final item in gapItems) {
     missingByProduct[item.product.id] = enabledStores.where((store) {
@@ -315,6 +332,7 @@ List<PriceGapPriority> _buildPriceGaps(
     marketCount: marketCount,
     missingMarketCountFor: (item) =>
         missingByProduct[item.product.id] ?? marketCount,
+    purchaseCountFor: (item) => purchasesByProduct[item.product.id] ?? 0,
   );
 }
 
@@ -385,7 +403,7 @@ class _MissingPrices extends StatelessWidget {
               gaps: gaps,
               description:
                   'Die Reihenfolge nutzt nur fehlende Marktbelege, '
-                  'Grundbedarf und Listenmenge.',
+                  'Grundbedarf, deine bisherigen Käufe und Listenmenge.',
             )
           else
             const Card(

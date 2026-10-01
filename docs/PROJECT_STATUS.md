@@ -765,3 +765,13 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Datenlückenanzeige und werden nicht als Schätzbeleg gezählt.
 - Die neue Fachlogik ist in `route_price_evidence_test.dart` gegen Angebots-,
   Bon-, Open-Prices-, eigene und undokumentierte Preisquellen abgesichert.
+
+## Update 01.10.2026 – Wiederkäufe priorisieren offene Preisbelege
+- Die Route übernimmt jetzt die lokal gespeicherte Kaufhäufigkeit aus den
+  exakten Produkt-IDs der letzten Einkäufe in ihre Datenlückenkarte.
+- Bei gleicher Marktdeckung und gleicher Grundbedarfsmarkierung stehen häufig
+  gekaufte Positionen vor selten gekauften; die Liste zeigt die bekannte
+  Kaufzahl direkt an.
+- Die Kaufhistorie erzeugt weder Preise noch Varianten. Ohne passenden
+  historischen Produktdatensatz bleibt die bisherige preisfreie Reihenfolge
+  erhalten. Eine Fachlogik-Regression schützt Sortierung und Anzeige.
