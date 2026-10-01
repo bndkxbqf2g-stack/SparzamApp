@@ -584,3 +584,11 @@ Produktlabel-Prüfung erneut auf die Bestandsdaten angewendet. So werden alte
 Rabatt-, Sorten-, Kühlungs- oder Herkunftsplatzhalter nicht erneut als
 aktuelle Einkaufsoptionen angeboten, während belastbare Produktlabels und
 ihre ursprünglichen Nachweise erhalten bleiben.
+
+## D089 – Fehlende Angebotsquellen bleiben im Angebotsvergleich sichtbar
+Ein Händler ohne aktuell belastbare Angebotsdaten wird im Tab „Angebote“ als
+Quellenstatus angezeigt, sofern der Prospektfeed ihn kennt. Die Statuskarte
+nennt Händler und Filiale sowie die konkrete Ursache (kein aktueller Zeitraum,
+fehlende strukturierte Daten oder Abruffehler), liefert aber keinen Preis und
+keine erfundene Produktidentität. So bleibt der Angebotsvergleich vollständig
+und die Nutzerin kann eine Datenlücke von „kein Angebot gefunden“ unterscheiden.

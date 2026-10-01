@@ -275,3 +275,11 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   können. Der Adapter erfindet diese Daten nicht.
 - [x] Der Bestands-Fallback entfernt dieselben unvollständigen Labels, wenn
   die offizielle Netto-Seite vorübergehend nicht auslesbar ist.
+
+## Update 01.10.2026 – Angebotsquellen transparent ausweisen
+- [x] Märkte ohne aktuelle Angebotsdatensätze bleiben im Tab „Angebote“ mit
+  Händler- und Filialstatus sichtbar.
+- [x] Abruffehler, fehlende strukturierte Produktdaten und ein leerer aktueller
+  Angebotszeitraum werden getrennt benannt; kein Status erzeugt einen Preis.
+- [ ] Belastbare Netto-Produktdaten und Bilder bleiben eine Quellaufgabe und
+  werden erst bei nachweisbarer Händlerantwort wieder als Angebote angezeigt.
