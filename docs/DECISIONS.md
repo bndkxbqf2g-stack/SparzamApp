@@ -611,3 +611,11 @@ Die Gültigkeit des einzelnen Links bleibt maßgeblich. Reine Rabatt-, Sorten-
 oder Herkunftszeilen erzeugen weiterhin keine Produkte. So werden belastbare
 Netto-Angebote wieder sichtbar, ohne einen Preis aus einer Schätzung oder
 einem fremden Feed zu erzeugen.
+
+## D092 – Aktive Fallbackangebote bleiben als Fallback sichtbar
+Wenn ein Händlerabruf fehlschlägt, aber bereits gespeicherte Angebotsdatensätze
+mit gültigem Zeitfenster verbleiben, zeigt die Angebotsansicht einen preisfreien
+Hinweis auf den letzten geprüften Prospektstand. Die Datensätze bleiben durch
+ihre eigene Gültigkeit anzeigbar und routenfähig; der Hinweis erzeugt keinen
+Preis und verlängert kein Angebotsfenster. So bleiben Datenherkunft und
+Aktualisierungsstatus für die Nutzerin unterscheidbar.
