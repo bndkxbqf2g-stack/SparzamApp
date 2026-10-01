@@ -77,7 +77,10 @@ void main() {
     await tester.tap(find.text('Weitere Angebote'));
     await tester.pumpAndSettle();
 
-    final addButton = find.byTooltip('Zur Einkaufsliste');
+    final addButton = find.widgetWithIcon(
+      IconButton,
+      Icons.add_shopping_cart_outlined,
+    );
     expect(addButton, findsOneWidget);
     expect(tester.widget<IconButton>(addButton).onPressed, isNull);
   });
