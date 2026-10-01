@@ -292,6 +292,148 @@ void main() {
     expect(salt.map((product) => product.id), ['salt']);
   });
 
+  test('staple searches ignore beverage, household and food compounds', () {
+    const products = [
+      Product(
+        id: 'spread',
+        name: 'RAMA Brotaufstrich',
+        unit: '225 g',
+        group: 'aufstrich',
+      ),
+      Product(
+        id: 'bread',
+        name: 'Kastenweißbrot',
+        unit: '750 g',
+        group: 'brot',
+      ),
+      Product(id: 'toast', name: 'Sandwichtoast', unit: '500 g', group: 'brot'),
+      Product(
+        id: 'water-device',
+        name: 'BRAUN Wasserkocher',
+        unit: 'Stück',
+        group: 'haushalt',
+      ),
+      Product(
+        id: 'water',
+        name: 'ADELHOLZENER Mineralwasser',
+        unit: '1 l',
+        group: 'getraenke',
+      ),
+      Product(
+        id: 'juice-sausage',
+        name: 'MEICA Saft-Bockwurst',
+        unit: '380 g',
+        group: 'wurst',
+      ),
+      Product(
+        id: 'juice',
+        name: 'K-CLASSIC Apfelsaft',
+        unit: '1 l',
+        group: 'getraenke',
+      ),
+      Product(
+        id: 'tea-sausage',
+        name: 'REINERT Teewurst',
+        unit: '125 g',
+        group: 'wurst',
+      ),
+      Product(
+        id: 'tea',
+        name: 'MAYFAIR Kamillentee',
+        unit: '37,5 g',
+        group: 'getraenke',
+      ),
+      Product(
+        id: 'pet-food',
+        name: 'K-CARINURA Hundenahrung Premium-Fleischgenuss',
+        unit: '800 g',
+        group: 'tierbedarf',
+      ),
+      Product(
+        id: 'meat-salad',
+        name: 'POPP Fleischsalat',
+        unit: '300 g',
+        group: 'salat',
+      ),
+      Product(
+        id: 'mince',
+        name: 'Hackfleisch gemischt',
+        unit: '500 g',
+        group: 'fleisch',
+      ),
+      Product(
+        id: 'steak',
+        name: 'Rindersteak',
+        unit: '300 g',
+        group: 'fleisch',
+      ),
+      Product(
+        id: 'protein',
+        name: 'IRONMAXX Sahne-Protein',
+        unit: '500 g',
+        group: 'sport',
+      ),
+      Product(
+        id: 'cosmetics',
+        name: 'NIVEA Creme',
+        unit: '150 ml',
+        group: 'kosmetik',
+      ),
+      Product(
+        id: 'spread-sweet',
+        name: 'NUTELLA Nuss-Nugat-Creme',
+        unit: '450 g',
+        group: 'suessigkeit',
+      ),
+      Product(id: 'cream', name: 'Schlagsahne', unit: '200 g', group: 'milch'),
+      Product(
+        id: 'chocolate-chips',
+        name: 'NESTLÉ Choco Crossies Original oder Choclait Chips',
+        unit: '150 g',
+        group: 'suessigkeit',
+      ),
+      Product(
+        id: 'potato-chips',
+        name: 'Kartoffelchips',
+        unit: '175 g',
+        group: 'snacks',
+      ),
+    ];
+
+    List<String> ids(String query) => buildSuggestions(
+      query: query,
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: products,
+      now: now,
+    ).map((product) => product.id).toList();
+
+    final bread = ids('Brot');
+    expect(bread, containsAll(<String>['bread', 'toast']));
+    expect(bread, isNot(contains('spread')));
+
+    final water = ids('Wasser');
+    expect(water, ['water']);
+
+    final juice = ids('Saft');
+    expect(juice, ['juice']);
+
+    final tea = ids('Tee');
+    expect(tea, ['tea']);
+
+    final meat = ids('Fleisch');
+    expect(meat, containsAll(<String>['mince', 'steak']));
+    expect(meat, isNot(contains('pet-food')));
+    expect(meat, isNot(contains('meat-salad')));
+
+    final cream = ids('Sahne');
+    expect(cream, ['cream']);
+
+    final chips = ids('Chips');
+    expect(chips, ['potato-chips']);
+  });
+
   test('generic potato search keeps plain potatoes before wedges', () {
     final results = buildSuggestions(
       query: 'Kartoffeln 2,5Kg',

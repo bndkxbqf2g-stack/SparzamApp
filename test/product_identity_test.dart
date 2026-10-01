@@ -221,6 +221,101 @@ void main() {
     );
   });
 
+  test(
+    'beverage, bread and household compounds keep staple searches precise',
+    () {
+      expect(identifyProduct('RAMA Brotaufstrich').familyKey, 'aufstrich');
+      expect(identifyProduct('Kastenweißbrot').familyKey, 'brot');
+      expect(identifyProduct('Kastenweißbrot').productType, 'weiss');
+      expect(identifyProduct('BRAUN Wasserkocher').familyKey, 'wassergeraet');
+      expect(identifyProduct('ADELHOLZENER Mineralwasser').familyKey, 'wasser');
+      expect(identifyProduct('MEICA Saft-Bockwurst').familyKey, 'wurst');
+      expect(identifyProduct('K-CLASSIC Apfelsaft').familyKey, 'saft');
+      expect(identifyProduct('REINERT Teewurst').familyKey, 'wurst');
+      expect(identifyProduct('MAYFAIR Kamillentee').familyKey, 'tee');
+      expect(
+        identifyProduct('K-CARINURA Hundenahrung Premium-Fleischgenuss')
+            .familyKey,
+        'tiernahrung',
+      );
+      expect(identifyProduct('IRONMAXX Sahne-Protein').familyKey, 'protein');
+      expect(identifyProduct('NIVEA Creme').familyKey, 'kosmetik');
+      expect(
+        identifyProduct('NUTELLA Nuss-Nugat-Creme').familyKey,
+        'suessigkeit',
+      );
+      expect(
+        identifyProduct('NESTLÉ Choco Crossies Original oder Choclait Chips')
+            .familyKey,
+        'schokolade',
+      );
+
+      expect(
+        compatibleProductIdentity(
+          identifyProduct('Brot'),
+          identifyProduct('RAMA Brotaufstrich'),
+        ),
+        isFalse,
+      );
+      expect(
+        compatibleProductIdentity(
+          identifyProduct('Brot'),
+          identifyProduct('Sandwichtoast'),
+        ),
+        isTrue,
+      );
+      expect(
+        compatibleProductIdentity(
+          identifyProduct('Wasser'),
+          identifyProduct('BRAUN Wasserkocher'),
+        ),
+        isFalse,
+      );
+      expect(
+        compatibleProductIdentity(
+          identifyProduct('Saft'),
+          identifyProduct('MEICA Saft-Bockwurst'),
+        ),
+        isFalse,
+      );
+      expect(
+        compatibleProductIdentity(
+          identifyProduct('Tee'),
+          identifyProduct('REINERT Teewurst'),
+        ),
+        isFalse,
+      );
+      expect(
+        compatibleProductIdentity(
+          identifyProduct('Fleisch'),
+          identifyProduct('Hackfleisch gemischt'),
+        ),
+        isTrue,
+      );
+      expect(
+        compatibleProductIdentity(
+          identifyProduct('Fleisch'),
+          identifyProduct('K-CARINURA Hundenahrung Premium-Fleischgenuss'),
+        ),
+        isFalse,
+      );
+      expect(
+        compatibleProductIdentity(
+          identifyProduct('Sahne'),
+          identifyProduct('IRONMAXX Sahne-Protein'),
+        ),
+        isFalse,
+      );
+      expect(
+        compatibleProductIdentity(
+          identifyProduct('Chips'),
+          identifyProduct('NESTLÉ Choco Crossies Original oder Choclait Chips'),
+        ),
+        isFalse,
+      );
+    },
+  );
+
   test('milk ingredient compounds stay out of the plain milk family', () {
     expect(identifyProduct('K-CLASSIC Kondensmilch XXL').familyKey, isNull);
     expect(identifyProduct('K-CLASSIC Milch-Riegel').familyKey, 'snack');
