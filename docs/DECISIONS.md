@@ -541,3 +541,11 @@ Geldtokens als Null lesen. Produktlabels und Identitätsbestandteile werden
 nicht verändert. Mengen-, Preis- und Bilanzabweichungen bleiben sichtbar und
 blockieren die automatische Bestätigung; eine OCR-Korrektur darf keine
 fehlende Zeile oder einen abweichenden Gesamtbetrag erfinden.
+
+## D084 – Feed-Frische und Cache-Provenienz bleiben sichtbar
+Die Ansichten „Angebote“ und „Prospekte“ zeigen den Zeitstempel des
+Prospektfeeds und kennzeichnen einen Offline-Fallback als letzten geprüften
+Stand. Diese Anzeige beschreibt nur die Datenherkunft. Die Gültigkeit bleibt
+pro Angebotsdatensatz das maßgebliche Gate; `generatedAt` verlängert kein
+Angebot, erhöht keine Preisabdeckung und macht keinen abgelaufenen Preis für
+die Routenplanung verwendbar.

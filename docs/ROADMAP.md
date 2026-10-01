@@ -240,3 +240,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [ ] Vollständige Bild-OCR, Produktidentität und Geräteakzeptanz bleiben
   separate offene Ausbaustufen; ungeklärte Mengen- oder Bilanzabweichungen
   werden weiterhin zur Nutzerprüfung vorgelegt.
+
+## Update 01.10.2026 – Prospektfeed-Frische sichtbar
+- [x] Angebote und Prospekte zeigen den Zeitstempel des geladenen Feeds.
+- [x] Offline-Fallback wird als letzter geprüfter Stand gekennzeichnet, ohne
+  abgelaufene Angebote wieder gültig zu machen.
+- [ ] Artikelbilder, Kategorien, bild-only OCR und Geräteakzeptanz bleiben
+  separate Ausbaustufen für die vollständige Prospektabdeckung.
