@@ -159,6 +159,13 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Die Detailansicht ist erklärend; historische Werte werden nicht in die
   aktuelle Preisabdeckung oder Routenplanung übernommen.
 
+## Update 01.10.2026 – Neue Prospektartikel aus dem Angebotstab
+- [x] Aktuelle, nachgewiesene Prospektlabels ohne Katalogidentität können aus
+  dem Angebotstab zur Einkaufsliste übernommen werden.
+- [x] Der Fallback bleibt an das exakte Händlerlabel gebunden und erfindet
+  weder Variante noch Alias; Preis- und Quellenbeleg bleiben am Prospektfluss.
+- [x] Der sichtbare Add-to-List-Flow ist als Widget-Regression abgesichert.
+
 ## Update 01.10.2026 – Vorauswahl der belegten Spar-Variante
 - [x] Generische Wünsche wählen im Variantenfenster die erste aktuell belegte
   Spar-Variante vor.

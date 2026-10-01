@@ -5,6 +5,7 @@ import '../../models/offer.dart';
 import '../../models/price_point.dart';
 import '../../models/product.dart';
 import 'offer_import.dart';
+import 'prospect_offer_products.dart';
 
 class OffersScreen extends StatefulWidget {
   const OffersScreen({
@@ -206,7 +207,13 @@ class _ProspectOfferCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final product = resolveOfferImport(record, catalogProducts).product;
+    final resolution = resolveOfferImport(record, catalogProducts);
+    // A verified current offer may still describe a product that is not in
+    // the local catalog yet. Keep that exact retailer label selectable. The
+    // fallback deliberately carries no aliases or inferred variant; adding
+    // it is the user's explicit decision and the catalog can learn it later.
+    final product = resolution.product ??
+        productForProspectOffer(record, catalogProducts);
     return Card(
       clipBehavior: Clip.antiAlias,
       child: Row(
@@ -241,7 +248,7 @@ class _ProspectOfferCard extends StatelessWidget {
           if (onAddToShoppingList != null)
             IconButton(
               tooltip: 'Zur Einkaufsliste',
-              onPressed: product == null ? null : () => onAddToShoppingList!(product),
+              onPressed: () => onAddToShoppingList!(product),
               icon: const Icon(Icons.add_shopping_cart_outlined),
             ),
         ],
