@@ -69,7 +69,27 @@ ProductIdentity identifyProduct(String value) {
   if (_hasAny(text, const ['muellermilch', 'milchgetraenk', 'milchdrink'])) {
     return const ProductIdentity(familyKey: 'milchgetraenk');
   }
-  if (_hasAny(text, const ['milch', 'h milch', 'vollmilch'])) {
+  // "Milch" also appears as an ingredient in unrelated products. Keep
+  // those products out of the milk price family so a generic milk search does
+  // not surface condensed milk, milk bars, chocolate or cheese first. The
+  // later family rules still resolve the concrete product (for example
+  // `Milch-Schokolade` as chocolate).
+  if (_hasAny(text, const ['milch', 'h milch', 'vollmilch']) &&
+      !_isMilkIngredientCompound(text) &&
+      !_hasAny(text, const [
+        'kaese',
+        'gouda',
+        'edamer',
+        'emmentaler',
+        'bergkaese',
+        'butterkaese',
+        'tilsiter',
+        'camembert',
+        'frischkaese',
+        'frischk',
+        'schmelzkaese',
+        'schmelzk',
+      ])) {
     return ProductIdentity(
       familyKey: 'milch',
       variant: _hasWord(text, 'h milch') ? 'h' : null,
@@ -620,6 +640,18 @@ bool _hasWord(String text, String word) {
 
 bool _hasAny(String text, List<String> words) =>
     words.any((word) => _hasWord(text, word));
+
+bool _isMilkIngredientCompound(String text) => _hasAny(text, const [
+  'kondensmilch',
+  'milchreis',
+  'milchschokolade',
+  'milch schokolade',
+  'milchschokoladen',
+  'milch schokoladen',
+  'milch schoko',
+  'milchriegel',
+  'milch riegel',
+]);
 
 double? _percent(String text) {
   final match = RegExp(r'(\d+(?:[,.]\d+)?)\s*%').firstMatch(text);

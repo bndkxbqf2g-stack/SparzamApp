@@ -655,3 +655,16 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Regressionen prüfen Coupon, Cashback und die tatsächlich sichtbare
   Preiszeile. `flutter analyze` ist ohne Befund, alle 469 Flutter-Tests und
   `flutter build web --release` sind erfolgreich.
+
+## Update 01.10.2026 – Milchsuche trennt Zutaten von Standardmilch
+- Die veröffentlichte Einkaufsliste zeigte bei der Eingabe „Milch“ zunächst
+  Kondensmilch, Milchriegel, Milchschokolade und Käse aus dem aktuellen
+  Prospektfeed. Ursache war eine zu frühe Familienzuordnung des Wortteils
+  „Milch“.
+- Zusammengesetzte Bezeichnungen werden jetzt vor der Milchfamilie aufgelöst;
+  die Produktsuche filtert denselben Identitätsfehler auch bei gelernten
+  Einkäufen. Dadurch bleiben normale Voll-/H-Milch und ihre Varianten nach
+  Angebots- und Preisbeleg-Rangfolge sichtbar.
+- Regressionen in `product_identity_test.dart` und
+  `shopping_suggestions_test.dart` decken Prospekt- und Lernfälle ab. Die
+  vollständigen Flutter-/Web-Gates laufen für diesen Änderungsstand in CI.

@@ -145,6 +145,22 @@ void main() {
     );
   });
 
+  test('milk ingredient compounds stay out of the plain milk family', () {
+    expect(identifyProduct('K-CLASSIC Kondensmilch XXL').familyKey, isNull);
+    expect(identifyProduct('K-CLASSIC Milch-Riegel').familyKey, 'snack');
+    expect(
+      identifyProduct('LINDENHOF Faire Milch Gouda jung').familyKey,
+      'kaese',
+    );
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Milch'),
+        identifyProduct('LINDENHOF Faire Milch Gouda jung'),
+      ),
+      isFalse,
+    );
+  });
+
   test(
     'fresh tomato request is not compatible with preserved tomato products',
     () {

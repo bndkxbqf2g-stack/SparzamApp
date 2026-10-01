@@ -77,6 +77,73 @@ void main() {
     );
   });
 
+  test(
+    'generic milk search ignores prospect products using milk as an ingredient',
+    () {
+      const prospectProducts = [
+        Product(
+          id: 'condensed',
+          name: 'K-CLASSIC Kondensmilch XXL 4 % Fett je 500-g-Großpackg.',
+          unit: '500 g',
+          group: 'prospekt',
+        ),
+        Product(
+          id: 'bar',
+          name: 'K-CLASSIC Milch-Riegel je 100-g-Packg.',
+          unit: '100 g',
+          group: 'prospekt',
+        ),
+        Product(
+          id: 'chocolate',
+          name: 'K-CLASSIC Milch-Schokoladen-Bonbons je 210-g-Pack.',
+          unit: '210 g',
+          group: 'prospekt',
+        ),
+        Product(
+          id: 'cheese',
+          name: 'LINDENHOF Faire Milch Gouda jung je 125 g',
+          unit: '125 g',
+          group: 'prospekt',
+        ),
+        Product(
+          id: 'fresh-milk',
+          name: 'PENNY ZUKUNFTSBAUER Frische Vollmilch je 1 l',
+          unit: '1 l',
+          group: 'prospekt',
+        ),
+      ];
+
+      final results = buildSuggestions(
+        query: 'Milch',
+        knownItems: const [],
+        recentPurchases: const [],
+        preferredProductByGroup: const {},
+        catalogProducts: prospectProducts,
+      );
+
+      expect(results.map((product) => product.id), ['fresh-milk']);
+    },
+  );
+
+  test('generic milk search also filters learned ingredient products', () {
+    final results = buildSuggestions(
+      query: 'Milch',
+      knownItems: const [
+        RecentPurchase(
+          id: 'learned-chocolate',
+          name: 'Milch-Schokoladen-Bonbons',
+          unit: '210 g',
+          group: 'suessigkeit',
+        ),
+      ],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: const [regular],
+    );
+
+    expect(results.map((product) => product.id), [regular.id]);
+  });
+
   test('generic potato search keeps plain potatoes before wedges', () {
     final results = buildSuggestions(
       query: 'Kartoffeln 2,5Kg',

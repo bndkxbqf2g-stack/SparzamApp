@@ -59,30 +59,13 @@ List<Product> buildSuggestions({
   final normalized = query.trim().toLowerCase();
   if (normalized.isEmpty) return const <Product>[];
 
+  final queryIdentity = identifyProduct(query);
   final learnedMatches = knownItems
       .map((item) => item.toProduct())
-      .where((product) => product.name.toLowerCase().contains(normalized));
-  final queryIdentity = identifyProduct(query);
-  final catalogMatches = catalogProducts.where((product) {
-    final values = [product.name, product.group, ...product.aliases];
-    final textMatch = values.any(
-      (value) => value.toLowerCase().contains(normalized),
-    );
-    if (!queryIdentity.isKnown) return textMatch;
-
-    final identities = [
-      product.name,
-      ...product.aliases,
-    ].map(identifyProduct).where((identity) => identity.isKnown).toList();
-    if (identities.isNotEmpty) {
-      return identities.any(
-        (candidate) =>
-            compatibleProductIdentity(queryIdentity, candidate) ||
-            _openMilkChoice(queryIdentity, candidate),
-      );
-    }
-    return textMatch;
-  });
+      .where((product) => _matchesProductQuery(product, query, queryIdentity));
+  final catalogMatches = catalogProducts.where(
+    (product) => _matchesProductQuery(product, query, queryIdentity),
+  );
 
   final seen = <String>{};
   final matches = <Product>[
@@ -178,6 +161,34 @@ List<Product> buildSuggestions({
   });
 
   return matches;
+}
+
+bool _matchesProductQuery(
+  Product product,
+  String query,
+  ProductIdentity queryIdentity,
+) {
+  final normalized = query.trim().toLowerCase();
+  final values = [product.name, product.group, ...product.aliases];
+  final textMatch = values.any(
+    (value) => queryIdentity.isKnown
+        ? _containsSearchPhrase(value, query)
+        : value.toLowerCase().contains(normalized),
+  );
+  if (!queryIdentity.isKnown) return textMatch;
+
+  final identities = [
+    product.name,
+    ...product.aliases,
+  ].map(identifyProduct).where((identity) => identity.isKnown).toList();
+  if (identities.isNotEmpty) {
+    return identities.any(
+      (candidate) =>
+          compatibleProductIdentity(queryIdentity, candidate) ||
+          _openMilkChoice(queryIdentity, candidate),
+    );
+  }
+  return textMatch;
 }
 
 int _identitySpecificity(ProductIdentity identity) => [
@@ -404,6 +415,17 @@ String _normalizedUnitLabel(String value) => value
     .replaceAll('stueck', 'stk')
     .replaceAll(RegExp(r'\s+'), ' ')
     .trim();
+
+/// Keeps the text fallback conservative once the query has a known product
+/// identity. An unknown candidate is only safe when its complete label is the
+/// query; otherwise a family term could match an ingredient in a different
+/// product, such as "Milch" in "Milch-Schokoladen-Bonbons".
+bool _containsSearchPhrase(String value, String query) {
+  final normalizedValue = normalizeIdentityText(value);
+  final normalizedQuery = normalizeIdentityText(query);
+  if (normalizedValue.isEmpty || normalizedQuery.isEmpty) return false;
+  return normalizedValue == normalizedQuery;
+}
 
 List<Product> buildRelatedProductInterpretations({
   required String query,
