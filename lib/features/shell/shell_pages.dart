@@ -6,6 +6,7 @@ import '../../models/mobility_settings.dart';
 import '../../models/named_shopping_list.dart';
 import '../../models/offer.dart';
 import '../../models/price_point.dart';
+import '../../models/price_observation.dart';
 import '../../models/product.dart';
 import '../../models/purchase_record.dart';
 import '../../models/recent_purchase.dart';
@@ -58,6 +59,7 @@ List<Widget> buildShellPages({
   required List<Product> catalogProducts,
   required List<MarketPrice> marketPrices,
   required List<MarketPrice> priceObservations,
+  required List<PriceObservation> historicalPriceObservations,
   Map<String, ProspectPriceHistorySummary> prospectPriceHistory = const {},
   required List<ReplenishmentSuggestion> replenishmentSuggestions,
   required ValueChanged<Map<String, double>> onRoadDistancesChanged,
@@ -153,6 +155,7 @@ List<Widget> buildShellPages({
       mobility: mobility,
       marketPrices: marketPrices,
       recentPurchases: recentPurchases,
+      historicalPriceObservations: historicalPriceObservations,
       onRoadDistancesChanged: onRoadDistancesChanged,
       onRoadMatrixChanged: onRoadMatrixChanged,
     ),

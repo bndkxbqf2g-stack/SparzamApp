@@ -775,3 +775,13 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Die Kaufhistorie erzeugt weder Preise noch Varianten. Ohne passenden
   historischen Produktdatensatz bleibt die bisherige preisfreie Reihenfolge
   erhalten. Eine Fachlogik-Regression schützt Sortierung und Anzeige.
+
+## Update 01.10.2026 – Teure offene Positionen zuerst belegbar machen
+- Die Route erhält exakt zugeordneten historischen Preisverlauf zusätzlich
+  als Datenlücken-Signal und priorisiert bei gleicher Kaufhäufigkeit das
+  höhere bekannte Preisniveau.
+- Rabattierte/aktive Angebotswerte, Schätzungen, unsichere Identitäten und
+  nicht vergleichbare Packungsgrößen werden aus diesem Signal ausgeschlossen.
+- Die Karte nennt den historischen Median ausdrücklich als Historie. Er wird
+  nicht in den aktuellen Marktpreis übernommen und nicht für die Route
+  verwendet; die Fachlogik-Regression schützt Reihenfolge und Anzeige.

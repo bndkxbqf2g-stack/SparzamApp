@@ -10,12 +10,14 @@ class PriceGapPriority {
     required this.missingMarketCount,
     required this.marketCount,
     this.purchaseCount = 0,
+    this.historicalPriceLevel,
   });
 
   final ListItem item;
   final int missingMarketCount;
   final int marketCount;
   final int purchaseCount;
+  final double? historicalPriceLevel;
 
   int get knownMarketCount =>
       (marketCount - missingMarketCount).clamp(0, marketCount).toInt();
@@ -32,22 +34,29 @@ class PriceGapPriority {
     final purchaseLabel = purchaseCount <= 0
         ? ''
         : ' · bisher $purchaseCount ${purchaseCount == 1 ? 'Kauf' : 'Käufe'}';
-    return '$quantity · $marketLabel$relevance$purchaseLabel';
+    final historyLabel = historicalPriceLevel == null
+        ? ''
+        : ' · Historie-Median '
+              '${historicalPriceLevel!.toStringAsFixed(2).replaceAll('.', ',')} €';
+    return '$quantity · $marketLabel$relevance$purchaseLabel$historyLabel';
   }
 }
 
-/// Returns a stable, price-free order for unresolved list positions.
+/// Returns a stable order for unresolved list positions without creating a
+/// route price from history.
 ///
 /// The sort keys are intentionally explicit: first the number of markets
 /// without evidence, then the starter-catalog relevance, then the known
-/// purchase frequency, then list quantity, followed by product name and id.
-/// This keeps the result reproducible when the same observations are
-/// assembled in a different order.
+/// purchase frequency, then a known historical price level, then list
+/// quantity, followed by product name and id. This keeps the result
+/// reproducible when the same observations are assembled in a different
+/// order.
 List<PriceGapPriority> prioritizePriceGaps(
   Iterable<ListItem> items, {
   required int marketCount,
   int Function(ListItem item)? missingMarketCountFor,
   int Function(ListItem item)? purchaseCountFor,
+  double? Function(ListItem item)? historicalPriceLevelFor,
 }) {
   final normalizedMarketCount = marketCount < 0 ? 0 : marketCount;
   final result = items.map((item) {
@@ -56,11 +65,19 @@ List<PriceGapPriority> prioritizePriceGaps(
     final missing = rawMissing.clamp(0, normalizedMarketCount).toInt();
     final rawPurchaseCount = purchaseCountFor?.call(item) ?? 0;
     final purchaseCount = rawPurchaseCount < 0 ? 0 : rawPurchaseCount;
+    final rawHistoricalPrice = historicalPriceLevelFor?.call(item);
+    final historicalPriceLevel =
+        rawHistoricalPrice != null &&
+            rawHistoricalPrice.isFinite &&
+            rawHistoricalPrice > 0
+        ? rawHistoricalPrice
+        : null;
     return PriceGapPriority(
       item: item,
       missingMarketCount: missing,
       marketCount: normalizedMarketCount,
       purchaseCount: purchaseCount,
+      historicalPriceLevel: historicalPriceLevel,
     );
   }).toList();
 
@@ -73,6 +90,14 @@ List<PriceGapPriority> prioritizePriceGaps(
     if (staple != 0) return staple;
     final purchases = b.purchaseCount.compareTo(a.purchaseCount);
     if (purchases != 0) return purchases;
+    if (a.historicalPriceLevel != null || b.historicalPriceLevel != null) {
+      if (a.historicalPriceLevel == null) return 1;
+      if (b.historicalPriceLevel == null) return -1;
+      final historical = b.historicalPriceLevel!.compareTo(
+        a.historicalPriceLevel!,
+      );
+      if (historical != 0) return historical;
+    }
     final quantity = b.item.quantity.compareTo(a.item.quantity);
     if (quantity != 0) return quantity;
     final names = a.item.product.name.toLowerCase().compareTo(

@@ -98,4 +98,33 @@ void main() {
     expect(gaps.first.purchaseCount, 6);
     expect(gaps.first.detailLabel, contains('bisher 6 Käufe'));
   });
+
+  test('priorisiert ein bekannt hohes historisches Preisniveau', () {
+    const expensive = Product(
+      id: 'expensive',
+      name: 'Kaffee',
+      unit: '500 g',
+      group: 'kaffee',
+    );
+    const affordable = Product(
+      id: 'affordable',
+      name: 'Tee',
+      unit: '40 Beutel',
+      group: 'tee',
+    );
+
+    final gaps = prioritizePriceGaps(
+      [
+        ListItem(product: affordable, quantity: 4),
+        ListItem(product: expensive, quantity: 1),
+      ],
+      marketCount: 2,
+      historicalPriceLevelFor: (item) =>
+          item.product.id == 'expensive' ? 8.50 : 1.20,
+    );
+
+    expect(gaps.map((gap) => gap.item.product.id), ['expensive', 'affordable']);
+    expect(gaps.first.historicalPriceLevel, 8.50);
+    expect(gaps.first.detailLabel, contains('Historie-Median 8,50 €'));
+  });
 }

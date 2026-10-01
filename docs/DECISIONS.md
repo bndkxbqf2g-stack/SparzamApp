@@ -470,3 +470,13 @@ erst danach entscheidet die gespeicherte Kaufhäufigkeit vor der gewünschten
 Listenmenge. Die Historie liefert dabei weder einen Preis noch eine Variante:
 IDs werden nicht über Aliasnamen oder Produktfamilien zusammengeführt. Fehlt
 die Kaufhistorie, bleibt die bisherige deterministische Reihenfolge bestehen.
+
+## D076 – Historisches Preisniveau bleibt ein reines Datenlücken-Signal
+Für eine offene Listenposition darf ein Median aus exakt zugeordneten,
+regulären historischen Preisbeobachtungen die Reihenfolge der Datenlücken
+schärfen. Rabattierte/Angebotsbeobachtungen, Schätzquellen, unsichere
+Identitäten und nicht vergleichbare Packungen werden ausgeschlossen. Das
+Preisniveau wird ausdrücklich als Historie angezeigt und weder als aktueller
+Marktpreis gespeichert noch durch `RoutePriceResolver` für eine Route
+verwendet. Fehlende Historie lässt die Position in der bisherigen
+deterministischen Reihenfolge weiterlaufen.

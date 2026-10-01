@@ -984,6 +984,7 @@ class _AppShellState extends State<AppShell> {
                 mobility: mobility,
                 marketPrices: planningMarketPrices,
                 recentPurchases: recentPurchases,
+                historicalPriceObservations: historicalPriceObservations,
                 onRoadDistancesChanged: (value) {
                   setState(() => roadDistances = value);
                   refreshRoute(() {});
@@ -1033,6 +1034,7 @@ class _AppShellState extends State<AppShell> {
       catalogProducts: catalogProducts,
       marketPrices: planningMarketPrices,
       priceObservations: [...planningMarketPrices],
+      historicalPriceObservations: historicalPriceObservations,
       prospectPriceHistory: prospectPriceHistorySummaries(
         historicalPriceObservations,
         enabledStores: mobility.enabledStoreNames,
