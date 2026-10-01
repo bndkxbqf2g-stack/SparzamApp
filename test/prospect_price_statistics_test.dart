@@ -44,6 +44,25 @@ void main() {
     expect(summary.observationCount, 2);
   });
 
+  test(
+    'retains all store medians and chooses the cheapest historical offer',
+    () {
+      final summaries = prospectPriceHistorySummaries([
+        observation('netto', 5, DateTime(2026, 9, 20), storeName: 'Netto'),
+        observation('lidl', 3, DateTime(2026, 9, 27), storeName: 'Lidl'),
+        observation('edeka', 4, DateTime(2026, 9, 25), storeName: 'EDEKA'),
+      ], now: DateTime(2026, 9, 30));
+
+      final summary = summaries['coffee-500']!;
+      expect(summary.storeName, 'Lidl');
+      expect(summary.medianPrice, 3);
+      expect(
+        summary.alternatives.map((entry) => entry.storeName),
+        containsAll(<String>['Netto', 'EDEKA']),
+      );
+    },
+  );
+
   test('disabled markets and old claims do not produce price hints', () {
     final summaries = prospectPriceHistorySummaries(
       [

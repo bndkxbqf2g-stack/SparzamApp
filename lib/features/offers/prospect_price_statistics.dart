@@ -9,6 +9,7 @@ class ProspectPriceHistorySummary {
     required this.latestValidUntil,
     required this.kind,
     required this.observationCount,
+    this.alternatives = const <ProspectPriceHistorySummary>[],
   });
 
   final String productId;
@@ -17,6 +18,12 @@ class ProspectPriceHistorySummary {
   final DateTime latestValidUntil;
   final PriceObservationKind kind;
   final int observationCount;
+
+  /// Other store/kind summaries for the same product. They remain historical
+  /// hints and are never promoted to current route prices.
+  final List<ProspectPriceHistorySummary> alternatives;
+
+  List<ProspectPriceHistorySummary> get allSummaries => [this, ...alternatives];
 }
 
 /// Historical context for search only. These amounts are never promoted to
@@ -54,7 +61,7 @@ Map<String, ProspectPriceHistorySummary> prospectPriceHistorySummaries(
         .add(entry);
   }
 
-  final byProduct = <String, ProspectPriceHistorySummary>{};
+  final summariesByProduct = <String, List<ProspectPriceHistorySummary>>{};
   for (final group in groups.entries) {
     final entries = group.value;
     final sortedPrices = entries.map((entry) => entry.price).toList()..sort();
@@ -73,26 +80,46 @@ Map<String, ProspectPriceHistorySummary> prospectPriceHistorySummaries(
       kind: group.key.$3,
       observationCount: entries.length,
     );
-    final previous = byProduct[summary.productId];
-    if (previous == null || _prefer(summary, previous)) {
-      byProduct[summary.productId] = summary;
-    }
+    summariesByProduct
+        .putIfAbsent(summary.productId, () => <ProspectPriceHistorySummary>[])
+        .add(summary);
+  }
+
+  final byProduct = <String, ProspectPriceHistorySummary>{};
+  for (final entry in summariesByProduct.entries) {
+    final sorted = [...entry.value]..sort(_compareSummaries);
+    final primary = sorted.first;
+    byProduct[entry.key] = ProspectPriceHistorySummary(
+      productId: primary.productId,
+      storeName: primary.storeName,
+      medianPrice: primary.medianPrice,
+      latestValidUntil: primary.latestValidUntil,
+      kind: primary.kind,
+      observationCount: primary.observationCount,
+      alternatives: sorted.skip(1).toList(growable: false),
+    );
   }
   return byProduct;
 }
 
-bool _prefer(
+int _compareSummaries(
   ProspectPriceHistorySummary candidate,
   ProspectPriceHistorySummary previous,
 ) {
   if (candidate.kind != previous.kind) {
-    return candidate.kind == PriceObservationKind.offer;
+    return candidate.kind == PriceObservationKind.offer ? -1 : 1;
   }
-  final byDate = candidate.latestValidUntil.compareTo(
-    previous.latestValidUntil,
+  final byPrice = candidate.medianPrice.compareTo(previous.medianPrice);
+  if (byPrice != 0) return byPrice;
+  final byDate = previous.latestValidUntil.compareTo(
+    candidate.latestValidUntil,
   );
-  if (byDate != 0) return byDate > 0;
-  return candidate.storeName.compareTo(previous.storeName) < 0;
+  if (byDate != 0) return byDate;
+  final byCount = previous.observationCount.compareTo(
+    candidate.observationCount,
+  );
+  if (byCount != 0) return byCount;
+  return candidate.storeName.compareTo(previous.storeName);
 }
 
 bool _isProspectSource(PriceObservationSource source) =>

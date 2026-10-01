@@ -381,4 +381,46 @@ void main() {
       );
     },
   );
+
+  test('cheapest enabled historical prospect market is used as the hint', () {
+    final history = prospectPriceHistorySummaries([
+      PriceObservation(
+        id: 'netto-history',
+        productId: regular.id,
+        storeName: 'Netto',
+        price: 1.19,
+        quantity: 1,
+        unit: 'l',
+        observedAt: DateTime(2026, 9, 1),
+        source: PriceObservationSource.leaflet,
+        kind: PriceObservationKind.offer,
+        validUntil: DateTime(2026, 9, 10),
+        proofRef: 'https://example.test/netto-history',
+      ),
+      PriceObservation(
+        id: 'lidl-history',
+        productId: regular.id,
+        storeName: 'Lidl',
+        price: 0.89,
+        quantity: 1,
+        unit: 'l',
+        observedAt: DateTime(2026, 9, 1),
+        source: PriceObservationSource.leaflet,
+        kind: PriceObservationKind.offer,
+        validUntil: DateTime(2026, 9, 10),
+        proofRef: 'https://example.test/lidl-history',
+      ),
+    ], now: DateTime(2026, 9, 30));
+
+    final hint = shoppingSuggestionPriceForProduct(
+      regular,
+      prospectPriceHistory: history,
+      enabledStores: const ['Lidl'],
+      now: DateTime(2026, 9, 30),
+    );
+
+    expect(hint?.storeName, 'Lidl');
+    expect(hint?.price, 0.89);
+    expect(hint?.isHistorical, isTrue);
+  });
 }

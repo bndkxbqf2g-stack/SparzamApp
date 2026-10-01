@@ -590,3 +590,15 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Zeitplan und manueller Start bleiben erhalten.
 - Damit kann ein PR-Branch den öffentlichen Feed prüfen, aber nicht mehr über
   `git push HEAD:main` ungeprüfte oder konkurrierende Daten in `main` schreiben.
+
+## Update 01.10.2026 – Historische Prospektpreise marktübergreifend sichtbar
+- Die historische Prospektstatistik bewahrt jetzt alle belastbaren
+  Produkt×Markt-Mediane statt nur eines einzelnen Markt-Hinweises.
+- Die Produktsuche wählt daraus den günstigsten zulässigen historischen
+  Angebotsmedian und berücksichtigt den Marktfilter. Der Wert bleibt mit
+  Markt- und Beobachtungsstand gekennzeichnet und wird nicht als aktueller
+  Routenpreis verwendet.
+- Die neuen Markt- und Filterregressionen sind in
+  `prospect_price_statistics_test.dart` und `shopping_suggestions_test.dart`
+  verankert; der vollständige Analyse-, Test- und Web-Build-Gate folgt für den
+  Änderungsstand.
