@@ -115,4 +115,34 @@ void main() {
     expect(find.text('Kühlregal'), findsOneWidget);
     expect(find.text('Milchprodukte'), findsNothing);
   });
+
+  testWidgets('formats technical retailer categories for offer grouping', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: OffersScreen(
+          catalogProducts: const <Product>[],
+          prospectRecords: [
+            OfferImportRecord(
+              sourceId: 'source-category-slug',
+              productLabel: 'Kaiseralm Bergkäse',
+              storeName: 'Kaufland',
+              offerPrice: 2.39,
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+              proofRef: 'https://example.test/source-category-slug',
+              category: '02_Obst__Gemuese__Pflanzen',
+            ),
+          ],
+          now: DateTime(2026, 9, 30),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Kaufland'));
+    await tester.pumpAndSettle();
+    expect(find.text('Obst & Gemüse'), findsOneWidget);
+    expect(find.text('02_Obst__Gemuese__Pflanzen'), findsNothing);
+  });
 }

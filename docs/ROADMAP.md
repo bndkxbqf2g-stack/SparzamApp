@@ -255,3 +255,12 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   aktiv; Identität und Preise werden dadurch nicht verändert.
 - [ ] Vollständige Artikelbilder, Kategorieabdeckung in jedem Live-Feed,
   bild-only OCR und Geräteakzeptanz bleiben offene Datenqualitätsstufen.
+
+## Update 01.10.2026 – Händlerkategorien lesbar gruppieren
+- [x] Technische Nummern- und Slugwerte der Händlerquellen werden in eine
+  einheitliche UI-Darstellung normalisiert.
+- [x] Die Rohkategorie bleibt als Quellenmetadatum erhalten; die Darstellung
+  greift nicht in Identität, Preis, Gültigkeit oder Route ein.
+- [ ] Fehlende Kategorien in ALDI-, EDEKA- und Netto-Live-Antworten werden erst
+  ergänzt, wenn die Händlerquelle sie belastbar liefert; UI-Klassifikation
+  ersetzt keine Quellenangabe.
