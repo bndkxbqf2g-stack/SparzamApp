@@ -28,6 +28,9 @@ class ProspectIssue {
     required this.pages,
     this.url,
     this.thumbnailUrl,
+    this.branchId,
+    this.location,
+    this.address,
     this.sourceStatus = 'unknown',
     this.recordCount = 0,
     this.validFrom,
@@ -38,6 +41,9 @@ class ProspectIssue {
   final List<ProspectPage> pages;
   final String? url;
   final String? thumbnailUrl;
+  final String? branchId;
+  final String? location;
+  final String? address;
   final String sourceStatus;
   final int recordCount;
   final DateTime? validFrom;
@@ -144,6 +150,9 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
   final refreshedStores = <String>[];
   final availableStores = <String>[...configuredProspectStores];
   final availableStoreUrls = <String, String>{};
+  final sourceBranchIds = <String, String>{};
+  final sourceLocations = <String, String>{};
+  final sourceAddresses = <String, String>{};
   final sourceStatuses = <String, String>{};
   final sourceRecordCounts = <String, int>{};
   for (final source in (json['sources'] as List<dynamic>? ?? const [])) {
@@ -159,6 +168,18 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     final sourceUrl = source['url'] as String?;
     if (sourceUrl != null && sourceUrl.trim().isNotEmpty) {
       availableStoreUrls[storeName] = sourceUrl;
+    }
+    final branchId = source['branchId'] as String?;
+    if (branchId != null && branchId.trim().isNotEmpty) {
+      sourceBranchIds[storeName] = branchId;
+    }
+    final location = source['location'] as String?;
+    if (location != null && location.trim().isNotEmpty) {
+      sourceLocations[storeName] = location;
+    }
+    final address = source['address'] as String?;
+    if (address != null && address.trim().isNotEmpty) {
+      sourceAddresses[storeName] = address;
     }
     if (source['status'] == 'ok' && !refreshedStores.contains(storeName)) {
       refreshedStores.add(storeName);
@@ -196,6 +217,9 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
             pages: pages,
             url: raw['url'] as String?,
             thumbnailUrl: raw['thumbnailUrl'] as String?,
+            branchId: sourceBranchIds[storeName],
+            location: sourceLocations[storeName],
+            address: sourceAddresses[storeName],
             sourceStatus: sourceStatuses[storeName] ?? 'unknown',
             recordCount: sourceRecordCounts[storeName] ?? 0,
             validFrom: DateTime.tryParse(
@@ -223,6 +247,9 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
           title: 'Aktionsprospekt',
           pages: const <ProspectPage>[],
           url: officialProspectUrl(storeName, availableStoreUrls[storeName]),
+          branchId: sourceBranchIds[storeName],
+          location: sourceLocations[storeName],
+          address: sourceAddresses[storeName],
           sourceStatus: sourceStatuses[storeName] ?? 'unavailable',
           recordCount: sourceRecordCounts[storeName] ?? 0,
         ),

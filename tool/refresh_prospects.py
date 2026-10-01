@@ -31,6 +31,47 @@ SOURCES = (
     ("netto_thuengersheim", "Netto", "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371", "netto"),
 )
 
+# These are the configured target branches used by the route and mobility
+# model. Keeping the branch reference on every feed source prevents a price
+# from being presented as a generic retailer price when the user is deciding
+# between a nearby store and a farther branch.
+SOURCE_BRANCH_METADATA = {
+    "aldi_sued": {
+        "branchId": "B384",
+        "location": "Zellingen",
+        "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
+    },
+    "edeka_zellingen": {
+        "branchId": "023738",
+        "location": "Zellingen",
+        "address": "Würzburger Str. 100, 97225 Zellingen, Germany",
+    },
+    "kaufland_grombuehl": {
+        "branchId": "DE5103",
+        "location": "Würzburg · Nürnberger Straße",
+        "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
+    },
+    "lidl_zellingen": {
+        "branchId": "lidl_zellingen",
+        "location": "Zellingen",
+        "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
+    },
+    "penny_retzbach": {
+        "branchId": "230061",
+        "location": "Zellingen",
+        "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
+    },
+    "netto_thuengersheim": {
+        "branchId": "4371",
+        "location": "Thüngersheim",
+        "address": "Am Straßacker 1, 97291 Thüngersheim, Germany",
+    },
+}
+
+
+def source_branch_metadata(source_id):
+    return dict(SOURCE_BRANCH_METADATA.get(source_id, {}))
+
 class VisibleTextParser(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
@@ -1735,7 +1776,7 @@ def main(selected_source_ids=None):
                 diagnostics = "edeka-sample=" + snippet[:220]
                 raise ValueError("keine sicher extrahierbaren Angebote gefunden; " + diagnostics)
             all_offers.extend(offers)
-            sources.append({"id": source_id, "storeName": store, "url": url, "status": "metadata_only" if metadata_only else "ok", "recordCount": len(offers), "mode": source_mode, "prospects": prospects})
+            sources.append({"id": source_id, "storeName": store, "url": url, "status": "metadata_only" if metadata_only else "ok", "recordCount": len(offers), "mode": source_mode, "prospects": prospects, **source_branch_metadata(source_id)})
         except Exception as error:
             bring_data = bring_by_store.get(store)
             if bring_data:
@@ -1751,11 +1792,12 @@ def main(selected_source_ids=None):
                     "mode": "bring_brochure_fallback",
                     "prospects": [bring_prospect] if isinstance(bring_prospect, dict) else [],
                     "retailerError": clean(str(error))[:240],
+                    **source_branch_metadata(source_id),
                 })
                 continue
             kept = active_previous(previous, store)
             all_offers.extend(kept)
-            sources.append({"id": source_id, "storeName": store, "url": url, "status": "error", "recordCount": len(kept), "error": clean(str(error))[:240]})
+            sources.append({"id": source_id, "storeName": store, "url": url, "status": "error", "recordCount": len(kept), "error": clean(str(error))[:240], **source_branch_metadata(source_id)})
     all_offers = current_prospect_offers(all_offers)
     payload = {"schemaVersion": 1, "generatedAt": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"), "sources": sources, "offers": all_offers}
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)

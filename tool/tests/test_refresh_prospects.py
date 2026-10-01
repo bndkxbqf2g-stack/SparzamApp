@@ -8,6 +8,15 @@ refresh = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(refresh)
 
 class ProspectParserTest(unittest.TestCase):
+    def test_every_configured_source_keeps_its_target_branch_metadata(self):
+        source_ids = {source[0] for source in refresh.SOURCES}
+        self.assertEqual(source_ids, set(refresh.SOURCE_BRANCH_METADATA))
+        for source_id in source_ids:
+            metadata = refresh.source_branch_metadata(source_id)
+            self.assertTrue(metadata["branchId"])
+            self.assertTrue(metadata["location"])
+            self.assertTrue(metadata["address"])
+
     def test_current_prospect_offers_drop_overlapping_old_periods(self):
         offers = [
             {"storeName": "Kaufland", "validFrom": "2026-09-24", "validUntil": "2026-09-30", "productLabel": str(i), "offerPrice": 1.0}

@@ -7,7 +7,13 @@ void main() {
 {
   "generatedAt": "2026-09-25T04:15:00Z",
   "sources": [
-    {"storeName": "ALDI Süd", "status": "ok"},
+    {
+      "storeName": "ALDI Süd",
+      "status": "ok",
+      "branchId": "B384",
+      "location": "Zellingen",
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
+    },
     {"storeName": "Lidl", "status": "metadata_only"}
   ],
   "offers": [
@@ -40,6 +46,12 @@ void main() {
     expect(result.refreshedStores, ['ALDI Süd']);
     expect(result.records.first.originalPrice, 0.89);
     expect(result.records.last.originalPrice, isNull);
+    final aldi = result.prospects.firstWhere(
+      (item) => item.storeName == 'ALDI Süd',
+    );
+    expect(aldi.branchId, 'B384');
+    expect(aldi.location, 'Zellingen');
+    expect(aldi.address, contains('Würzburger Str. 74'));
   });
 
   test(

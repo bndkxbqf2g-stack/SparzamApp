@@ -9,7 +9,10 @@
       "status": "ok",
       "recordCount": 237,
       "mode": "structured_api",
-      "prospects": []
+      "prospects": [],
+      "branchId": "B384",
+      "location": "Zellingen",
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "id": "edeka_zellingen",
@@ -18,7 +21,10 @@
       "status": "ok",
       "recordCount": 16,
       "mode": "structured_api",
-      "prospects": []
+      "prospects": [],
+      "branchId": "023738",
+      "location": "Zellingen",
+      "address": "Würzburger Str. 100, 97225 Zellingen, Germany"
     },
     {
       "id": "kaufland_grombuehl",
@@ -27,7 +33,10 @@
       "status": "ok",
       "recordCount": 718,
       "mode": "structured_api",
-      "prospects": []
+      "prospects": [],
+      "branchId": "DE5103",
+      "location": "Würzburg · Nürnberger Straße",
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "id": "lidl_zellingen",
@@ -470,7 +479,10 @@
             }
           ]
         }
-      ]
+      ],
+      "branchId": "lidl_zellingen",
+      "location": "Zellingen",
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "id": "penny_retzbach",
@@ -479,7 +491,10 @@
       "status": "ok",
       "recordCount": 232,
       "mode": "structured_api",
-      "prospects": []
+      "prospects": [],
+      "branchId": "230061",
+      "location": "Zellingen",
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "id": "netto_thuengersheim",
@@ -488,7 +503,10 @@
       "status": "ok",
       "recordCount": 21,
       "mode": "netto",
-      "prospects": []
+      "prospects": [],
+      "branchId": "4371",
+      "location": "Thüngersheim",
+      "address": "Am Straßacker 1, 97291 Thüngersheim, Germany"
     }
   ],
   "offers": [
