@@ -289,3 +289,11 @@ Bestätigen deaktiviert und nennt die fehlenden Artikel; auch der
 Abschluss-Handler verweigert eine direkte oder veraltete Teilroutenübergabe.
 Ist nur die Einzelmarkt-Baseline unvollständig, darf eine vollständige Route
 bestätigt werden, aber ihr Ersparnisvergleich wird als vorläufig gekennzeichnet.
+
+## D056 – Historische Bonmediane bleiben in der Einkaufsliste klar datiert
+Bonmediane aus der historischen Preisstatistik dürfen als Orientierung an einem
+Listenartikel erscheinen, sind aber keine Zusage für den heutigen Regalpreis.
+Die Einkaufsliste kennzeichnet sie deshalb ausdrücklich als historischen
+Bon-Median und zeigt bei einem einzelnen Markt den Zeitpunkt der letzten
+Beobachtung. Aktuelle Angebots- und route-taugliche Preisbelege bleiben davon
+getrennt und behalten ihre eigene Quellenkennzeichnung.

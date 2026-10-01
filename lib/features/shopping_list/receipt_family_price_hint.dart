@@ -28,9 +28,8 @@ class ReceiptFamilyPriceHint extends StatelessWidget {
           _summary(matches),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+          style: Theme.of(context).textTheme.bodySmall
+              ?.copyWith(fontWeight: FontWeight.w600),
         ),
       ),
     );
@@ -42,14 +41,21 @@ class ReceiptFamilyPriceHint extends StatelessWidget {
     if (matches.length == 1) {
       final stat = matches.first;
       final suffix = stat.comparable ? 'Median' : 'historisch, Packung prüfen';
-      return '${stat.storeName}: ${price(stat)} € · $suffix · ${stat.observationCount}×';
+      final date = _date(stat.latestAt);
+      return '${stat.storeName}: ${price(stat)} € · '
+          '${stat.comparable ? 'Bon-Median (historisch)' : suffix} · '
+          '${stat.observationCount}× · Stand $date';
     }
-    final preview = matches.take(2)
+    final preview = matches
+        .take(2)
         .map((stat) => '${stat.storeName} ${price(stat)} €')
         .join(' · ');
     final more = matches.length > 2 ? ' · +${matches.length - 2} Märkte' : '';
-    return '$preview$more ›';
+    return '$preview · Bon-Mediane (historisch)$more ›';
   }
+
+  String _date(DateTime value) =>
+      '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.${value.year}';
 
   void _showMarketPrices(BuildContext context, List<ReceiptPriceStat> matches) {
     showModalBottomSheet<void>(
@@ -64,7 +70,9 @@ class ReceiptFamilyPriceHint extends StatelessWidget {
             children: [
               Text(product.name, style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 4),
-              const Text('Belegte Preise aus deinen Kassenbons nach Markt. Nicht vergleichbare Packungen sind gekennzeichnet.'),
+              const Text(
+                'Belegte Preise aus deinen Kassenbons nach Markt. Nicht vergleichbare Packungen sind gekennzeichnet.',
+              ),
               const SizedBox(height: 10),
               Flexible(
                 child: ListView(
@@ -74,9 +82,11 @@ class ReceiptFamilyPriceHint extends StatelessWidget {
                       ListTile(
                         contentPadding: EdgeInsets.zero,
                         title: Text(stat.storeName),
-                        subtitle: Text(stat.comparable
-                            ? '${stat.observationCount} Bonbeobachtung(en) · ${stat.priceBasis}'
-                            : '${stat.observationCount} Bonbeobachtung(en) · Packung prüfen'),
+                        subtitle: Text(
+                          stat.comparable
+                              ? '${stat.observationCount} Bonbeobachtung(en) · ${stat.priceBasis}'
+                              : '${stat.observationCount} Bonbeobachtung(en) · Packung prüfen',
+                        ),
                         trailing: Text(
                           '${stat.medianPrice.toStringAsFixed(2).replaceAll('.', ',')} €',
                           style: const TextStyle(fontWeight: FontWeight.w800),

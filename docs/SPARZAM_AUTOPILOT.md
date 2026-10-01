@@ -46,7 +46,7 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [ ] Angebotsquellen automatisiert importieren: Händler, Bild, Gültigkeit, Produktidentität
 - [x] Angebote per + direkt in die Einkaufsliste übernehmen
 - [x] ausgewiesenen Normalpreis eines Angebots nur als bestätigte Preisbasis speichern
-- [ ] UI klar zwischen historischem Hinweis und route-tauglichem Planungspreis unterscheiden
+- [x] UI klar zwischen historischem Hinweis und route-tauglichem Planungspreis unterscheiden
 
 ### Phase 3 – Einkaufslisten- und Preis-Matrix
 - [ ] hierarchischen Produktkatalog aus Oberbegriff → Produktfamilie → Variante aufbauen

@@ -22,6 +22,9 @@ Die Testsuite enthält Domänen-, Store-, Service-, Widget- und Ablaufprüfungen
 - Datenqualität/Quellen: `offer_import_test.dart`, `open_prices_service_test.dart`, `receipt_observation_store_test.dart`, `receipt_price_review_test.dart`, `prospect_feed_service_test.dart`, `real_receipt_evidence_e2e_test.dart`.
 - Route: `route_price_resolver_test.dart`, `route_price_quality_test.dart`, `route_road_distance_test.dart`, `route_recommendation_test.dart`, `route_multi_market_e2e_test.dart`, `list_to_route_flow_test.dart`, `route_to_purchase_flow_test.dart`.
 - UI/Flows: `widget_test.dart`, `home_screen_test.dart`, `store_screen_test.dart`, `prospects_screen_test.dart`, `shopping_price_badge_visuals_test.dart`, `scan_to_list_flow_test.dart`, `receipt_import_display_test.dart`.
+- Historische Preis-Hinweise: `receipt_family_price_hint_test.dart` prüft, dass
+  Bon-Mediane in der Einkaufsliste als historische Beobachtung mit Stand
+  erscheinen und nicht wie ein aktuelles Angebot wirken.
 - Dashboarddaten/Teilrouten: `shell_dashboard_test.dart` prüft, dass
   unvollständige Preisabdeckung weder Sparpotenzial noch Budgetverbrauch
   vortäuscht.
