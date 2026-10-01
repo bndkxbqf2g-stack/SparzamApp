@@ -754,3 +754,14 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   der Release-Lauf bestätigt Web, Android und Pages-Deployment.
 - Der veröffentlichte Route-Screen zeigt die priorisierte Karte bei einer
   unbelegten Testposition; deren Marktdeckung bleibt mit `0/6` sichtbar.
+
+## Update 01.10.2026 – Evidenz der Routenpreise sichtbar
+- Zugewiesene Routenpositionen zeigen jetzt unmittelbar Quelle, Preisstand und
+  Qualitätsstufe eines beobachteten Preises beziehungsweise Quelle und
+  Gültigkeitsfenster eines aktiven Angebots.
+- Die Route fasst zusätzlich zusammen, wie viele Positionen aus Angeboten,
+  Bons, eigenen Preisen, Open Prices oder einem hinterlegten Preis ohne
+  Quellenstand stammen. Unbepreiste Positionen bleiben ausschließlich in der
+  Datenlückenanzeige und werden nicht als Schätzbeleg gezählt.
+- Die neue Fachlogik ist in `route_price_evidence_test.dart` gegen Angebots-,
+  Bon-, Open-Prices-, eigene und undokumentierte Preisquellen abgesichert.

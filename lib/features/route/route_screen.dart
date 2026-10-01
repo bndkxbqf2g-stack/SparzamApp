@@ -16,6 +16,8 @@ import 'route_alternative_card.dart';
 import 'route_recommendation.dart';
 import 'route_recommendation_card.dart';
 import 'route_optimizer.dart';
+import 'route_price_evidence.dart';
+import 'route_price_evidence_card.dart';
 import 'route_store_card.dart';
 import 'route_summary_card.dart';
 import 'travel_estimator.dart';
@@ -146,6 +148,7 @@ class _RouteScreenState extends State<RouteScreen> {
       best?.unassigned ?? widget.items,
     );
     if (best == null) return _MissingPrices(gaps: priceGaps);
+    final priceEvidence = summarizeRoutePriceEvidence(best, optimizer.prices);
 
     final single = optimizer.bestSingleStorePlan();
     final savings = single == null
@@ -216,6 +219,10 @@ class _RouteScreenState extends State<RouteScreen> {
         ),
         const SizedBox(height: 18),
         RouteSummaryCard(best: best, extraSavings: savings),
+        if (priceEvidence.hasEvidence) ...[
+          const SizedBox(height: 10),
+          RoutePriceEvidenceCard(summary: priceEvidence),
+        ],
         if (priceGaps.isNotEmpty) ...[
           const SizedBox(height: 10),
           PriceGapCard(gaps: priceGaps),

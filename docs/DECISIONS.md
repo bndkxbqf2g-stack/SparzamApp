@@ -452,3 +452,12 @@ den stabilen Tiebreaker. Diese Reihenfolge dient nur der Arbeitsplanung für
 fehlende Daten. Sie darf weder geschätzte Preise erzeugen noch historische
 Familienwerte, fremde Varianten oder unbestätigte Belege als Marktpreis
 hochwerten.
+
+## D074 – Routenpreise zeigen ihre Evidenz direkt an
+Jede zugewiesene Routenposition zeigt die verwendete Evidenzklasse: aktives
+Angebot mit Quelle und Gültigkeit, beobachteter Preis mit Quelle und
+Beobachtungsstand oder ein hinterlegter Preis ohne dokumentierten Quellenstand.
+Die Anzeige ist rein erklärend und ändert weder die Routenfähigkeit noch die
+Qualitäts- und Fahrtkostenberechnung. Eine Zusammenfassung der Route zählt nur
+belegte Positionen; fehlende Positionen bleiben in der separaten Datenlückenliste
+und werden nicht als Schätzpreise ausgegeben.
