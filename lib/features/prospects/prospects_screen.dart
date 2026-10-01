@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../design/sparzam_theme.dart';
 import '../offers/offer_import.dart';
 import '../offers/prospect_offer_products.dart';
+import 'prospect_category_presentation.dart';
 import '../../models/product.dart';
 import '../../services/prospect_feed_service.dart';
 import '../offers/offer_filter.dart';
@@ -426,12 +427,16 @@ const _prospectCategoryRanks = <String, int>{
   'Milchprodukte': 1,
   'Fleisch & Fisch': 2,
   'Backwaren': 3,
-  'Getränke': 4,
-  'Vorrat & Konserven': 5,
-  'Tiefkühl': 6,
+  'Kaffee & Snacks': 4,
+  'Getränke': 5,
+  'Vorrat & Konserven': 6,
+  'Tiefkühl': 7,
+  'Kühlregal': 8,
   'Haushalt': 20,
   'Drogerie': 21,
+  'Garten & Pflanzen': 22,
   'Non-Food': 30,
+  'Dauerhaft günstiger': 39,
   'Weitere Angebote': 40,
 };
 
@@ -485,7 +490,7 @@ String _prospectCategoryForRecord(OfferImportRecord record) {
   final sourceCategory = record.category?.trim();
   return sourceCategory == null || sourceCategory.isEmpty
       ? _prospectCategory(record.productLabel)
-      : sourceCategory;
+      : presentProspectCategory(sourceCategory);
 }
 
 class _ProspectProductCard extends StatelessWidget {
@@ -612,6 +617,12 @@ IconData _categoryIcon(String category) {
       return Icons.home_outlined;
     case 'Drogerie':
       return Icons.clean_hands_outlined;
+    case 'Kaffee & Snacks':
+      return Icons.local_cafe_outlined;
+    case 'Kühlregal':
+      return Icons.kitchen_outlined;
+    case 'Garten & Pflanzen':
+      return Icons.local_florist_outlined;
     case 'Non-Food':
       return Icons.shopping_bag_outlined;
     default:

@@ -557,3 +557,12 @@ Prospektansichten steuern. Fehlt sie, verwendet die UI ihren bestehenden
 konservativen Label-Fallback. Eine Kategorie darf weder eine Produktidentität
 bestätigen noch Preise, Vergleichbarkeit, Angebotsgültigkeit oder
 Routenfähigkeit verändern; nicht gelieferte Kategorien werden nicht erfunden.
+
+## D086 – Kategorieanzeige normalisiert nur die Präsentation
+Technische Händlerwerte dürfen für die Anzeige in gemeinsame, lesbare Gruppen
+übersetzt werden, damit Nummernpräfixe, Unterstriche, Transliterationen und
+bekannte Slugvarianten nicht als uneinheitliche Bedienoberfläche erscheinen.
+Die Rohkategorie bleibt unverändert am Importdatensatz erhalten. Die
+Normalisierung ist weder eine neue Identitätslogik noch eine Preis- oder
+Gültigkeitsannahme; unbekannte Werte werden lediglich sprachlich formatiert,
+und fehlende Quellkategorien bleiben fehlend.

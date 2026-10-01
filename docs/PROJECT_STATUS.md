@@ -894,3 +894,17 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   konservative Label-Klassifikation als sichtbarer Fallback bestehen.
 - Parser- und Widgetregressionen prüfen Kategorieerhalt für strukturierte
   ALDI-, EDEKA-, Lidl-, Kaufland- und PENNY-Daten sowie den UI-Fallback.
+
+## Update 01.10.2026 – Händlerkategorien einheitlich darstellen
+- Technische Quellwerte wie `02_Obst__Gemuese__Pflanzen`, `getraenke1` oder
+  `kuehlregal` werden in Angebote und Prospekte als lesbare, gemeinsame
+  Anzeigegruppen dargestellt.
+- Die Normalisierung ist ausschließlich Präsentation: Der unveränderte
+  Quellwert bleibt am Importdatensatz erhalten und verändert keine
+  Produktidentität, Preisbeobachtung, Gültigkeit oder Routenentscheidung.
+- Suche und Gruppierung berücksichtigen jetzt sowohl den Quellwert als auch
+  die lesbare Darstellung. Unbekannte Quellenkategorien werden nur sprachlich
+  formatiert, nicht inhaltlich erfunden.
+- Fach- und Widgetregressionen decken Kaufland-Nummernkategorien,
+  Händler-Slugs, unbekannte Werte und die bestehende Fallback-Klassifikation
+  ab.
