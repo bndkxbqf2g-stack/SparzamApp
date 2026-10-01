@@ -873,3 +873,13 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   nicht automatisch korrigiert. Der Originalbeleg und sein OCR-Rohtext bleiben
   außerhalb des Repositories; der generische Fall ist als Regressionstest
   versioniert.
+
+## Update 01.10.2026 – Prospektstand in den aktuellen Ansichten verifizieren
+- Die Ansichten „Angebote“ und „Prospekte“ zeigen jetzt den Zeitstempel des
+  geladenen Prospektfeeds und unterscheiden einen Live-Feed vom geprüften
+  Offline-Cache.
+- Der Hinweis bleibt informativ: Pro Angebot wird weiterhin das eigene
+  Gültigkeitsfenster geprüft; ein Feed-Zeitstempel verlängert kein Angebot und
+  macht abgelaufene Daten nicht routenfähig.
+- Die Widgetregression prüft Zeitformat, Live-/Cache-Provenienz und die
+  unveränderte Aussage, dass nur aktuell gültige Angebote angezeigt werden.
