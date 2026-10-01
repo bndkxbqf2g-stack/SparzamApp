@@ -25,6 +25,18 @@ class ProspectParserTest(unittest.TestCase):
         result = refresh.current_prospect_offers(offers, refresh.date(2026, 9, 29))
         self.assertEqual(len(result), 3)
 
+    def test_netto_previous_fallback_drops_unactionable_labels(self):
+        valid_until = (refresh.date.today() + refresh.timedelta(days=2)).isoformat()
+        previous = {
+            "offers": [
+                {"storeName": "Netto", "productLabel": "-21%", "validUntil": valid_until},
+                {"storeName": "Netto", "productLabel": "gekühlt", "validUntil": valid_until},
+                {"storeName": "Netto", "productLabel": "Milka Schokolade 100 g", "validUntil": valid_until},
+            ],
+        }
+        result = refresh.active_previous(previous, "Netto")
+        self.assertEqual([item["productLabel"] for item in result], ["Milka Schokolade 100 g"])
+
     def test_netto_parses_official_reader_proxy_text(self):
         offers, _ = refresh.parse_netto(
             "gültig von Montag, 28.09.26 - Freitag, 02.10.26\n"
