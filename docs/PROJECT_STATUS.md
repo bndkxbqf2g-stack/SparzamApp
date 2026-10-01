@@ -162,6 +162,17 @@ Eine intelligente und alltagstaugliche Preisdatenbank aufbauen:
 - Wiederkehrende Käufe für schnellere, zuverlässigere Zuordnung nutzen.
 - Regalvideo-Erfassung separat evaluieren. Aktuell daraus noch KEINE Code- oder Datenänderungen ableiten.
 
+## Update 02.10.2026 – Wegezeit in Routenalternativen
+- Die Vergleichskarten im Routenbildschirm zeigen jetzt neben Warenkorb,
+  Fahrtkosten und Preisabdeckung auch die geschätzte Wegezeit der jeweiligen
+  Ein- oder Mehrmarktroute.
+- Die Berechnung verwendet dieselben gespeicherten Straßen-/Fallbackdistanzen
+  und das gewählte Verkehrsmittel wie die empfohlene Route. Es entstehen keine
+  neuen Preisannahmen; die Zeitinformation dient der transparenten Abwägung
+  von Ersparnis, Fahrtkosten und Aufwand.
+- Ein Widgettest prüft die sichtbare Zeitangabe zusammen mit Fahrtkosten und
+  Preisabdeckung.
+
 ## Übergaberegel
 Jeder Work-Lauf beendet ein möglichst kleines Arbeitspaket vollständig. Vor Ende:
 1. flutter analyze

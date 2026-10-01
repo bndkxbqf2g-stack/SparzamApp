@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 import '../../models/route_plan.dart';
 
 class RouteAlternativeCard extends StatelessWidget {
-  const RouteAlternativeCard({super.key, required this.plan});
+  const RouteAlternativeCard({
+    super.key,
+    required this.plan,
+    required this.travelLabel,
+  });
 
   final RoutePlan plan;
+  final String travelLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +34,7 @@ class RouteAlternativeCard extends StatelessWidget {
           '${plan.hasDataGaps ? 'bekannter Teilwarenkorb' : 'Warenkorb'} '
           '${plan.basket.toStringAsFixed(2)} € · '
           'Fahrt ${plan.travel.toStringAsFixed(2)} € · '
+          'Wegezeit $travelLabel · '
           'Preisabdeckung ${(plan.priceCoverage * 100).round()} % · '
           'Planungswert ${plan.planningScore.toStringAsFixed(2)} €',
         ),

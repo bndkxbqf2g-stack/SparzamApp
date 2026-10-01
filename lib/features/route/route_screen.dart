@@ -286,7 +286,17 @@ class _RouteScreenState extends State<RouteScreen> {
         for (final plan in visibleAlternatives.take(5))
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
-            child: RouteAlternativeCard(plan: plan),
+            child: RouteAlternativeCard(
+              plan: plan,
+              travelLabel: estimateRoundTrips(
+                plan.stores,
+                mobility: widget.mobility,
+                roadDistances: roadDistances,
+                roadMatrix: widget.mobility.mode == MobilityMode.car
+                    ? roadMatrix
+                    : null,
+              ).durationLabel,
+            ),
           ),
         const SizedBox(height: 10),
         Card(
