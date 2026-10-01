@@ -165,6 +165,8 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Der Fallback bleibt an das exakte Händlerlabel gebunden und erfindet
   weder Variante noch Alias; Preis- und Quellenbeleg bleiben am Prospektfluss.
 - [x] Der sichtbare Add-to-List-Flow ist als Widget-Regression abgesichert.
+- [x] Der Fallback bleibt bei fehlendem Nachweis oder mehrdeutiger Identität
+  gesperrt.
 
 ## Update 01.10.2026 – Vorauswahl der belegten Spar-Variante
 - [x] Generische Wünsche wählen im Variantenfenster die erste aktuell belegte

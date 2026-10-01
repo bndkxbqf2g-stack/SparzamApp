@@ -835,3 +835,11 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   lokalen Katalogkandidaten.
 - Eine Widget-Regression prüft den Add-to-List-Flow für ein unbekanntes,
   aber nachgewiesenes aktuelles Prospektlabel.
+
+## Update 01.10.2026 – Prospekt-Fallback bleibt nachweisgebunden
+- Der neue Fallback im Angebotstab wird nur für ein unbekanntes Label mit
+  belastbarem `proofRef` aktiviert.
+- Fehlende Nachweise, ungültige Preise/Gültigkeitsfenster und mehrdeutige
+  Identitäten bleiben nicht auswählbar und werden nicht als Katalogkandidat
+  gespeichert.
+- Ein Positiv- und ein Negativ-Widgettest sichern beide Bedienpfade.
