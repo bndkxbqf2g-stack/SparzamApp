@@ -883,3 +883,14 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   macht abgelaufene Daten nicht routenfähig.
 - Die Widgetregression prüft Zeitformat, Live-/Cache-Provenienz und die
   unveränderte Aussage, dass nur aktuell gültige Angebote angezeigt werden.
+
+## Update 01.10.2026 – Händlerkategorien aus dem Prospektfeed erhalten
+- Strukturierte Händleradapter übernehmen jetzt eine ausdrücklich gelieferte
+  Kategorie in das Prospektangebot. Die Kategorie bleibt Quellenmetadatum und
+  wird nicht in Produktidentität, Preisvergleich oder Routenfähigkeit
+  umgedeutet.
+- Angebote und Prospekte gruppieren und durchsuchen nach dieser Kategorie,
+  wenn sie vorhanden ist. Für Quellen ohne Kategorie bleibt die bisherige
+  konservative Label-Klassifikation als sichtbarer Fallback bestehen.
+- Parser- und Widgetregressionen prüfen Kategorieerhalt für strukturierte
+  ALDI-, EDEKA-, Lidl-, Kaufland- und PENNY-Daten sowie den UI-Fallback.

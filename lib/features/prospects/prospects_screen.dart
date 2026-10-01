@@ -272,7 +272,7 @@ class _ProspectViewer extends StatelessWidget {
     final groupedItems = <String, List<OfferImportRecord>>{};
     for (final record in items) {
       groupedItems
-          .putIfAbsent(_prospectCategory(record.productLabel), () => [])
+          .putIfAbsent(_prospectCategoryForRecord(record), () => [])
           .add(record);
     }
     final categories = groupedItems.keys.toList()
@@ -479,6 +479,13 @@ String _prospectCategory(String label) {
     return 'Non-Food';
   }
   return 'Weitere Angebote';
+}
+
+String _prospectCategoryForRecord(OfferImportRecord record) {
+  final sourceCategory = record.category?.trim();
+  return sourceCategory == null || sourceCategory.isEmpty
+      ? _prospectCategory(record.productLabel)
+      : sourceCategory;
 }
 
 class _ProspectProductCard extends StatelessWidget {

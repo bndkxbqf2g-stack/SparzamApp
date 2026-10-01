@@ -293,6 +293,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         source: value['source'] as String? ?? 'retailerWebsite',
         proofRef: value['proofRef'] as String?,
         imageUrl: value['imageUrl'] as String?,
+        category: value['category'] as String?,
       ),
     );
   }

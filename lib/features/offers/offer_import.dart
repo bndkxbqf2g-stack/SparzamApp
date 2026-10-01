@@ -15,6 +15,7 @@ class OfferImportRecord {
     this.source = 'leaflet',
     this.proofRef,
     this.imageUrl,
+    this.category,
   });
 
   final String sourceId;
@@ -27,6 +28,11 @@ class OfferImportRecord {
   final String source;
   final String? proofRef;
   final String? imageUrl;
+
+  /// Category supplied by the retailer feed, when the source exposes one.
+  /// The UI may fall back to its conservative label classifier when absent;
+  /// this field is never inferred into product identity or price evidence.
+  final String? category;
 }
 
 /// Returns only records belonging to a prospect that is valid today.

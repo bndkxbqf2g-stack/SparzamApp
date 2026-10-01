@@ -22,6 +22,7 @@ void main() {
       "productLabel": "Schmand",
       "storeName": "ALDI Süd",
       "offerPrice": 0.69,
+      "category": "Milchprodukte",
       "originalPrice": 0.89,
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
@@ -45,6 +46,7 @@ void main() {
     expect(result.records, hasLength(2));
     expect(result.refreshedStores, ['ALDI Süd']);
     expect(result.records.first.originalPrice, 0.89);
+    expect(result.records.first.category, 'Milchprodukte');
     expect(result.records.last.originalPrice, isNull);
     final aldi = result.prospects.firstWhere(
       (item) => item.storeName == 'ALDI Süd',

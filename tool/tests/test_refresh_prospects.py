@@ -86,6 +86,7 @@ class ProspectParserTest(unittest.TestCase):
               "preis": 0.69,
               "originalPrice": "0,89 €",
               "nachlass": "22%",
+              "category": "Milchprodukte",
               "bild_app": "https://offer-images.api.edeka/schmand.jpg"
             }
           ]
@@ -98,6 +99,7 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(len(offers), 1)
         self.assertEqual(offers[0]["productLabel"], "K.Frischer Schmand")
         self.assertEqual(offers[0]["offerPrice"], 0.69)
+        self.assertEqual(offers[0]["category"], "Milchprodukte")
         self.assertEqual(offers[0]["originalPrice"], 0.89)
         self.assertEqual(offers[0]["validFrom"], "2026-09-21")
         self.assertEqual(offers[0]["validUntil"], "2026-09-26")
@@ -193,6 +195,7 @@ class ProspectParserTest(unittest.TestCase):
               "name": "Orangensaft 1 l",
               "brandName": "VALENSINA",
               "urlSlugText": "valensina-orangensaft-1-l",
+              "category": "Getränke",
               "assets": [{"url": "https://img.example/{width}/orangensaft.jpg"}],
               "price": {
                 "amount": 149,
@@ -224,6 +227,7 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(len(offers), 2)
         self.assertEqual(offers[0]["productLabel"], "VALENSINA Orangensaft 1 l")
         self.assertEqual(offers[0]["offerPrice"], 1.49)
+        self.assertEqual(offers[0]["category"], "Getränke")
         self.assertEqual(offers[0]["originalPrice"], 2.49)
         self.assertEqual(
             offers[0]["imageUrl"],
@@ -281,6 +285,7 @@ class ProspectParserTest(unittest.TestCase):
               "offerType": "StoreSpecialPriceDiscount",
               "redemptionChannel": "Store",
               "imageUrl": "https://static-coupons.lidlplus.com/thunfisch.jpg",
+              "category": "Vorrat & Konserven",
               "priceBox": {
                 "strikethrough": true,
                 "largePartNumeric": 3.79,
@@ -304,6 +309,7 @@ class ProspectParserTest(unittest.TestCase):
             "Saupiquet MSC Thunfisch-Salat Je 2x 160 g",
         )
         self.assertEqual(offers[0]["offerPrice"], 3.79)
+        self.assertEqual(offers[0]["category"], "Vorrat & Konserven")
         self.assertEqual(offers[0]["originalPrice"], 3.99)
         self.assertEqual(offers[0]["validFrom"], "2026-09-24")
         self.assertEqual(offers[0]["validUntil"], "2026-09-26")
@@ -437,10 +443,12 @@ class ProspectParserTest(unittest.TestCase):
             "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1",
             refresh.date(2026, 9, 21),
             refresh.date(2026, 9, 26),
+            "Kühlregal",
         )
         self.assertEqual(len(offers), 1)
         self.assertEqual(offers[0]["productLabel"], "MILPRIMA Schmand je 200 g")
         self.assertEqual(offers[0]["offerPrice"], 0.69)
+        self.assertEqual(offers[0]["category"], "Kühlregal")
         self.assertEqual(offers[0]["originalPrice"], 0.79)
         self.assertEqual(offers[0]["imageUrl"], "https://cdn.penny.de/schmand.png")
         self.assertEqual(offers[0]["validFrom"], "2026-09-21")
@@ -586,6 +594,7 @@ class ProspectParserTest(unittest.TestCase):
                         {
                             "categories": [
                                 {
+                                    "name": "Milchprodukte",
                                     "offers": [
                                         {
                                             "offerId": "offer-1",
@@ -629,6 +638,7 @@ class ProspectParserTest(unittest.TestCase):
             "Kerrygold Butter je 250-g-Packung",
         )
         self.assertEqual(offers[0]["offerPrice"], 1.99)
+        self.assertEqual(offers[0]["category"], "Milchprodukte")
         self.assertEqual(offers[0]["originalPrice"], 2.49)
         self.assertEqual(offers[0]["validFrom"], "2026-09-24")
         self.assertEqual(offers[0]["validUntil"], "2026-09-30")

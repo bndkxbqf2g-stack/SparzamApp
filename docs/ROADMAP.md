@@ -247,3 +247,11 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   abgelaufene Angebote wieder gültig zu machen.
 - [ ] Artikelbilder, Kategorien, bild-only OCR und Geräteakzeptanz bleiben
   separate Ausbaustufen für die vollständige Prospektabdeckung.
+
+## Update 01.10.2026 – Händlerkategorien als Quellenmetadatum
+- [x] Explizite Kategorien strukturierter Händlerantworten werden im Feed
+  erhalten und in Angebote/Prospekte für Gruppierung und Suche verwendet.
+- [x] Fehlt eine Kategorie, bleibt die bestehende sichtbare Fallback-Kategorie
+  aktiv; Identität und Preise werden dadurch nicht verändert.
+- [ ] Vollständige Artikelbilder, Kategorieabdeckung in jedem Live-Feed,
+  bild-only OCR und Geräteakzeptanz bleiben offene Datenqualitätsstufen.

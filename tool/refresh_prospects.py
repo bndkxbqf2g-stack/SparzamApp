@@ -164,7 +164,49 @@ def stable_id(store, proof, text):
     raw = (store + "|" + proof + "|" + text).encode("utf-8")
     return hashlib.sha256(raw).hexdigest()[:20]
 
-def record(store, label, offer_price, valid_from, valid_until, proof, original=None, image=None):
+def _source_category(raw, *keys):
+    """Return a category explicitly supplied by a retailer payload.
+
+    Categories are provenance only. The app may use them for presentation,
+    but they never participate in product identity or price projection.
+    """
+    if not isinstance(raw, dict):
+        return None
+    candidates = keys or (
+        "category",
+        "categoryName",
+        "category_name",
+        "productCategory",
+        "department",
+        "warengruppe",
+        "sortiment",
+    )
+    for key in candidates:
+        value = raw.get(key)
+        if isinstance(value, dict):
+            value = (
+                value.get("name")
+                or value.get("title")
+                or value.get("label")
+            )
+        if isinstance(value, str):
+            value = clean(value)
+            if value:
+                return value
+    return None
+
+
+def record(
+    store,
+    label,
+    offer_price,
+    valid_from,
+    valid_until,
+    proof,
+    original=None,
+    image=None,
+    category=None,
+):
     result = {
         "sourceId": stable_id(store, proof, label + str(offer_price)),
         "productLabel": clean(label),
@@ -179,6 +221,9 @@ def record(store, label, offer_price, valid_from, valid_until, proof, original=N
         result["originalPrice"] = round(float(original), 2)
     if image:
         result["imageUrl"] = image
+    category = clean(category or "")
+    if category:
+        result["category"] = category
     return result
 
 ALDI_API_URL = "https://api.aldi-sued.de/v3/product-search"
@@ -279,6 +324,7 @@ def parse_aldi_api_page(json_text, promotion_day):
             proof,
             regular,
             image,
+            _source_category(item),
         ))
 
     return dedupe(offers), int(total_count or len(data))
@@ -467,6 +513,7 @@ def parse_edeka_api(json_text, base_url):
             proof,
             regular,
             image,
+            _source_category(doc),
         ))
     return dedupe(offers), []
 
@@ -640,6 +687,7 @@ def parse_kaufland_api(html_text, base_url, available_ids=None, today=None):
         for category in cycle.get("categories", []):
             if not isinstance(category, dict):
                 continue
+            category_name = _source_category(category, "name", "title", "label")
             for raw in category.get("offers", []):
                 if not isinstance(raw, dict):
                     continue
@@ -696,6 +744,7 @@ def parse_kaufland_api(html_text, base_url, available_ids=None, today=None):
                     proof,
                     regular,
                     image,
+                    category_name,
                 ))
 
     return dedupe(offers), []
@@ -932,6 +981,7 @@ def parse_lidl_store_offers(json_text, proof_url=LIDL_ZELLINGEN_STORE_PAGE):
             proof,
             _lidl_regular_price(raw, sale),
             image,
+            _source_category(raw),
         ))
 
     return dedupe(offers), []
@@ -1269,7 +1319,7 @@ def _penny_offer_url(week, category, region):
     )
 
 
-def parse_penny_api(json_text, base_url, valid_from, valid_until):
+def parse_penny_api(json_text, base_url, valid_from, valid_until, category=None):
     payload = json.loads(json_text)
     tiles = payload.get("offerTiles", []) if isinstance(payload, dict) else []
     if not isinstance(tiles, list):
@@ -1317,6 +1367,7 @@ def parse_penny_api(json_text, base_url, valid_from, valid_until):
             proof,
             regular,
             image,
+            category,
         ))
     return dedupe(offers), []
 
@@ -1339,6 +1390,7 @@ def fetch_penny_api_offers(base_url):
                 base_url,
                 valid_from,
                 valid_until,
+                category,
             )
         except Exception:
             continue
@@ -1589,6 +1641,7 @@ def parse_rewe_api(json_text, base_url):
                 proof += "#article-" + str(article)
             offers.append(record(
                 "REWE", label, sale, valid_from, valid_until, proof, regular,
+                None, _source_category(category),
             ))
     return dedupe(offers), []
 
