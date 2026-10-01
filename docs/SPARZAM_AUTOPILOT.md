@@ -85,7 +85,7 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [ ] empfohlene Route prominent
 - [ ] Gesamtpreis + Fahrtkosten + Ersparnis
 - [x] Preisabdeckung und Unsicherheit verständlich
-- [ ] schneller Einkaufsliste→Route-Flow
+- [x] schneller Einkaufsliste→Route-Flow
 - [x] klare Hinweise, wenn Daten für Empfehlung fehlen
 - [ ] kompakte iPhone-Darstellung
 - [x] Detailansicht pro Produkt/Markt

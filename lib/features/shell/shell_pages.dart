@@ -109,6 +109,7 @@ List<Widget> buildShellPages({
     onClearPurchased: onClearPurchased,
     shoppingListStore: shoppingListStore,
     onOpenScanner: onOpenScanner,
+    onOpenRoute: onOpenRoute,
     offers: offers,
     priceHistory: priceHistory,
     mobility: mobility,

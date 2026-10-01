@@ -218,6 +218,15 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 
 ## Update 24.09.2026 – Automatische Übernahme aller erkannten Bonprodukte
 - Alle echten Produktpositionen eines vollständig geprüften Bons werden beim Speichern automatisch dem Produktkatalog zugeführt.
+
+## Update 01.10.2026 – Sparroute direkt aus der Einkaufsliste
+- Eine gefüllte Einkaufsliste bietet jetzt den sichtbaren Einstieg
+  „Sparroute prüfen“.
+- Der Callback öffnet die bestehende Routenberechnung mit derselben Liste und
+  bewahrt dadurch die gemeinsame Bewertung von Angeboten, Marktpreisen,
+  Datenlücken und Fahrtkosten.
+- Bei leerer Liste oder fehlender Route-Funktion bleibt der Einstieg verborgen;
+  ein Widgettest prüft den sichtbaren Klickpfad.
 - Bereits sicher erkannte oder exakt aliasgleiche Produkte werden wiederverwendet; dadurch entstehen bei wiederholten Bons keine unnötigen Dubletten.
 - Unklare Varianten werden konservativ unter der tatsächlich gelesenen Bonbezeichnung angelegt. Nicht belegte Details (z. B. 1,5 %/3,5 % bei unspezifischer H-Milch) werden nicht ergänzt.
 - Pfand und reine Rabattzeilen bleiben ausgeschlossen.
