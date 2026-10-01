@@ -273,3 +273,5 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [ ] Die Netto-Quelle muss weiterhin belastbare Produktdaten und Bilder
   liefern, bevor die fehlenden aktuellen Angebote wieder ergänzt werden
   können. Der Adapter erfindet diese Daten nicht.
+- [x] Der Bestands-Fallback entfernt dieselben unvollständigen Labels, wenn
+  die offizielle Netto-Seite vorübergehend nicht auslesbar ist.

@@ -576,3 +576,11 @@ Die Prüfung ist bewusst auf bekannte, eindeutig unvollständige Muster
 begrenzt, damit echte Produktlabels unverändert bleiben. Fehlende Namen,
 Bilder und Preise werden nicht aus Kontext ergänzt; nur ein später belastbarer
 Quellbeleg darf diese Datenlücke schließen.
+
+## D088 – Bestands-Fallbacks dürfen verworfene Netto-Labels nicht reaktivieren
+Wenn der offizielle Netto-Abruf fehlschlägt, darf der letzte gültige Feed als
+vorsichtiger Fallback dienen. Dabei wird dieselbe konservative
+Produktlabel-Prüfung erneut auf die Bestandsdaten angewendet. So werden alte
+Rabatt-, Sorten-, Kühlungs- oder Herkunftsplatzhalter nicht erneut als
+aktuelle Einkaufsoptionen angeboten, während belastbare Produktlabels und
+ihre ursprünglichen Nachweise erhalten bleiben.

@@ -1736,7 +1736,16 @@ def load_previous():
 
 def active_previous(previous, store):
     today = date.today().isoformat()
-    return [item for item in previous.get("offers", []) if item.get("storeName") == store and item.get("validUntil", "") >= today]
+    active = [
+        item for item in previous.get("offers", [])
+        if item.get("storeName") == store and item.get("validUntil", "") >= today
+    ]
+    if store == "Netto":
+        return [
+            item for item in active
+            if _is_actionable_netto_label(item.get("productLabel", ""))
+        ]
+    return active
 
 def main(selected_source_ids=None):
     previous = load_previous()

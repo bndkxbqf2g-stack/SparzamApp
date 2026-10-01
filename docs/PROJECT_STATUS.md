@@ -920,3 +920,6 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Es werden keine Produktnamen, Bilder oder Preise aus den fehlenden
   Quellinformationen ergänzt. Der offizielle Quellnachweis und die sichtbare
   Datenlücke bleiben erhalten.
+- Auch beim geschützten Quellenabruf werden solche Labels nicht aus dem
+  vorherigen Feed weitergereicht. Der Bestands-Fallback behält nur weiterhin
+  belastbare Netto-Produktlabels.
