@@ -42,6 +42,16 @@ class ProductIdentity {
 ProductIdentity identifyProduct(String value) {
   final text = normalizeIdentityText(value);
 
+  // Chocolate snacks may contain the word "chips", but they do not share
+  // the potato-chip price identity.
+  if (_hasAny(text, const [
+    'choco crossies',
+    'choclait chips',
+    'schoko chips',
+    'schokochips',
+  ])) {
+    return const ProductIdentity(familyKey: 'schokolade', productType: 'snack');
+  }
   if (_hasAny(text, const [
     'chips',
     'pringles',
@@ -111,7 +121,43 @@ ProductIdentity identifyProduct(String value) {
   if (_hasAny(text, const ['ice cream', 'eis', 'pirulo', 'bounty ice'])) {
     return const ProductIdentity(familyKey: 'eis', productType: 'eis');
   }
-  if (_hasAny(text, const ['creme', 'sahne', 'kochcreme'])) {
+  if (_hasAny(text, const [
+        'protein',
+        'proteccino',
+        'eiweissshake',
+        'eiweiss drink',
+      ]) &&
+      !_hasAny(text, const [
+        'fleisch',
+        'rind',
+        'schwein',
+        'kalb',
+        'gefluegel',
+        'haehnchen',
+      ])) {
+    return const ProductIdentity(familyKey: 'protein');
+  }
+  if (_hasAny(text, const [
+    'nivea',
+    "l'oreal",
+    'l oreal',
+    'kosmetik',
+    'make up',
+    'shampoo',
+    'duschgel',
+  ])) {
+    return const ProductIdentity(familyKey: 'kosmetik');
+  }
+  if (_hasAny(text, const ['nutella', 'nuss nougat', 'nussnougat'])) {
+    return const ProductIdentity(familyKey: 'suessigkeit');
+  }
+  if (_hasAny(text, const [
+    'creme',
+    'sahne',
+    'schlagsahne',
+    'schlag sahne',
+    'kochcreme',
+  ])) {
     return ProductIdentity(familyKey: 'creme', productType: _creamType(text));
   }
   if (_hasAny(text, const [
@@ -127,6 +173,91 @@ ProductIdentity identifyProduct(String value) {
   }
   if (_hasAny(text, const ['limonade', 'gazoz', 'uludag'])) {
     return const ProductIdentity(familyKey: 'limonade');
+  }
+  if (_hasAny(text, const [
+    'wasserkocher',
+    'wasserkessel',
+    'wasserfilter',
+    'wasserflter',
+    'tischwasserfilter',
+    'wassersprudler',
+    'wasserfilter kartuschen',
+    'maxtra',
+  ])) {
+    return const ProductIdentity(
+      familyKey: 'wassergeraet',
+      productType: 'haushalt',
+    );
+  }
+  if (_hasAny(text, const [
+    'wasser',
+    'mineralwasser',
+    'tafelwasser',
+    'quellwasser',
+    'stillwasser',
+    'wasser medium',
+  ])) {
+    return ProductIdentity(
+      familyKey: 'wasser',
+      productType:
+          _hasAny(text, const ['mineralwasser', 'tafelwasser', 'quellwasser'])
+          ? 'mineral'
+          : null,
+    );
+  }
+  // These labels contain beverage words but are sausage/salad products. They
+  // must be resolved before the generic juice/tea families below.
+  if (_hasAny(text, const ['fleischsalat'])) {
+    return const ProductIdentity(
+      familyKey: 'salat',
+      productType: 'fleischsalat',
+    );
+  }
+  if (_hasAny(text, const [
+    'bockwurst',
+    'teewurst',
+    'fruehstuecksfleisch',
+    'fruehstuecks fleisch',
+  ])) {
+    return ProductIdentity(familyKey: 'wurst', variant: _sausageVariant(text));
+  }
+  if (_hasAny(text, const [
+    'saft',
+    'fruchtsaft',
+    'fruchtsaftgetraenk',
+    'fruchtnektar',
+    'apfelsaft',
+    'orangensaft',
+    'traubensaft',
+    'nektar',
+    'saftgetraenk',
+  ])) {
+    return ProductIdentity(familyKey: 'saft', productType: _juiceType(text));
+  }
+  if (_hasAny(text, const [
+    'tee',
+    'eistee',
+    'teegetraenk',
+    'kamillentee',
+    'kamillen tee',
+    'kraeutertee',
+    'kraeuter tee',
+    'pfefferminztee',
+    'pfefferminz tee',
+    'schwarztee',
+    'gruenentee',
+    'gruen tee',
+  ])) {
+    return ProductIdentity(familyKey: 'tee', productType: _teaType(text));
+  }
+  if (_hasAny(text, const [
+    'hundenahrung',
+    'hundefutter',
+    'katzenfutter',
+    'tierfutter',
+    'tiernahrung',
+  ])) {
+    return const ProductIdentity(familyKey: 'tiernahrung');
   }
   if (_hasAny(text, const [
     'hackfleisch',
@@ -349,6 +480,23 @@ ProductIdentity identifyProduct(String value) {
           : null,
     );
   }
+  if (_hasAny(text, const ['brotaufstrich', 'brotaufstriche', 'brotbelag'])) {
+    return const ProductIdentity(
+      familyKey: 'aufstrich',
+      productType: 'brotaufstrich',
+    );
+  }
+  if (_hasAny(text, const [
+    'brot',
+    'weissbrot',
+    'kastenweissbrot',
+    'landbrot',
+    'vollkornbrot',
+    'roggenbrot',
+    'mischbrot',
+  ])) {
+    return ProductIdentity(familyKey: 'brot', productType: _breadType(text));
+  }
   if (_hasAny(text, const ['marmelade', 'konfituere', 'fruchtaufstrich'])) {
     return const ProductIdentity(familyKey: 'marmelade');
   }
@@ -526,6 +674,19 @@ ProductIdentity identifyProduct(String value) {
   if (_hasAny(text, const ['schlemmerbraten', 'braten'])) {
     return const ProductIdentity(familyKey: 'fleisch', productType: 'braten');
   }
+  if (_hasAny(text, const [
+    'fleisch',
+    'rindfleisch',
+    'schweinefleisch',
+    'kalbfleisch',
+    'rind',
+    'schwein',
+    'kalb',
+    'gefluegel',
+    'haehnchen',
+  ])) {
+    return ProductIdentity(familyKey: 'fleisch', meatType: _meatType(text));
+  }
   if (_hasAny(text, const ['nudeltopf', 'linseneintopf', 'eintopf'])) {
     return ProductIdentity(
       familyKey: 'eintopf',
@@ -564,7 +725,16 @@ bool compatibleProductIdentity(
   ProductIdentity request,
   ProductIdentity candidate,
 ) {
-  if (!request.isKnown || request.familyKey != candidate.familyKey) {
+  final sameFamily =
+      request.familyKey == candidate.familyKey ||
+      // Toast is a stored legacy family. A generic bread request may still
+      // include it, while a specific toast request remains distinct.
+      (request.familyKey == 'brot' && candidate.familyKey == 'toast') ||
+      // Mince is a meat subfamily and remains useful for a generic meat list.
+      (request.familyKey == 'fleisch' &&
+          request.isGeneric &&
+          candidate.familyKey == 'hackfleisch');
+  if (!request.isKnown || !sameFamily) {
     return false;
   }
   if (request.productType != null &&
@@ -616,6 +786,46 @@ String? _coffeeType(String text) {
   if (_hasAny(text, const ['espresso'])) return 'espresso';
   if (_hasAny(text, const ['filterkaffee', 'filter'])) return 'filter';
   if (_hasAny(text, const ['kaffeebohnen', 'bohnenkaffee'])) return 'beans';
+  return null;
+}
+
+String? _juiceType(String text) {
+  if (_hasAny(text, const ['apfelsaft'])) return 'apfel';
+  if (_hasAny(text, const ['orangensaft'])) return 'orange';
+  if (_hasAny(text, const ['traubensaft'])) return 'traube';
+  if (_hasAny(text, const ['nektar', 'fruchtnektar'])) return 'nektar';
+  if (_hasAny(text, const ['fruchtsaft', 'fruchtsaftgetraenk'])) {
+    return 'frucht';
+  }
+  return null;
+}
+
+String? _teaType(String text) {
+  if (_hasAny(text, const ['eistee'])) return 'eistee';
+  if (_hasAny(text, const ['kamillentee', 'kamillen tee'])) return 'kamille';
+  if (_hasAny(text, const ['pfefferminztee', 'pfefferminz tee'])) {
+    return 'pfefferminze';
+  }
+  if (_hasAny(text, const ['schwarztee'])) return 'schwarz';
+  if (_hasAny(text, const ['kraeutertee', 'kraeuter tee'])) return 'kraeuter';
+  if (_hasAny(text, const ['gruenentee', 'gruen tee'])) return 'gruen';
+  return null;
+}
+
+String? _breadType(String text) {
+  if (_hasAny(text, const ['weissbrot', 'kastenweissbrot'])) return 'weiss';
+  if (_hasAny(text, const ['landbrot'])) return 'land';
+  if (_hasAny(text, const ['vollkornbrot'])) return 'vollkorn';
+  if (_hasAny(text, const ['roggenbrot'])) return 'roggen';
+  if (_hasAny(text, const ['mischbrot'])) return 'misch';
+  return null;
+}
+
+String? _meatType(String text) {
+  if (_hasAny(text, const ['rindfleisch', 'rind'])) return 'rind';
+  if (_hasAny(text, const ['schweinefleisch', 'schwein'])) return 'schwein';
+  if (_hasAny(text, const ['kalbfleisch', 'kalb'])) return 'kalb';
+  if (_hasAny(text, const ['gefluegel', 'haehnchen'])) return 'gefluegel';
   return null;
 }
 
@@ -736,10 +946,9 @@ String normalizeIdentityText(String value) {
 
 bool _hasWord(String text, String word) {
   final normalized = normalizeIdentityText(word);
-  return text == normalized ||
-      text.startsWith('$normalized ') ||
-      text.endsWith(' $normalized') ||
-      text.contains(' $normalized ');
+  if (normalized.isEmpty) return false;
+  return RegExp(r'(?<![a-z0-9])' + RegExp.escape(normalized) + r'(?![a-z0-9])')
+      .hasMatch(text);
 }
 
 bool _hasAny(String text, List<String> words) =>
@@ -818,6 +1027,9 @@ String? _sausageVariant(String text) {
     'lyoner',
     'schinkenwurst',
     'fleischwurst',
+    'bockwurst',
+    'teewurst',
+    'fruehstuecksfleisch',
     'mortadella',
     'cervelat',
     'wiener',

@@ -418,3 +418,14 @@ Damit erzeugt eine generische Einkaufssuche keine fremden Preisidentitäten oder
 Routenpositionen. Die Händlerbezeichnung, Quelle und der Preis werden nicht
 verändert; die Regel wirkt ausschließlich auf die hierarchische
 Identitätszuordnung und ist durch negative Suchregressionen abgesichert.
+
+## D070 – Grundfamilien werden vor semantisch fremden Zusammensetzungen erkannt
+Die generischen Suchfamilien Brot, Wasser, Saft, Tee und Fleisch dürfen nicht
+durch einen enthaltenen Wortteil auf Aufstriche, Geräte, Wurst, Tiernahrung oder
+andere Nicht-Grundartikel springen. Solche Bezeichnungen erhalten zuerst eine
+eigene hierarchische Identität; Toast und Hackfleisch bleiben als bestehende
+Unterfamilien kompatibel, wenn die Anfrage ausdrücklich generisch ist.
+Schokoladen-Snacks mit „Chips“ werden ebenfalls vor der Kartoffelchipsfamilie
+aufgelöst. Die Regeln ändern weder Händlerlabels noch Preise oder Quellen und
+werden mit aktuellen Feed-Labels sowie synthetischen Negativ- und Positivfällen
+geprüft.

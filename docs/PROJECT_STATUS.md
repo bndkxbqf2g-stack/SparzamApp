@@ -697,3 +697,19 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - [x] Die Identitäts- und Suchregressionen prüfen die drei Negativzuordnungen
   mit den aktuellen Prospektlabels. Originalbezeichnung, Quelle und Preis
   bleiben unverändert; nur die Familienzuordnung wird korrigiert.
+
+## Update 01.10.2026 – Grundbegriffe gegen Händlerzusammensetzungen abgesichert
+- [x] Brot, Wasser, Saft, Tee und Fleisch sind jetzt eigene bekannte
+  Suchfamilien. Toast bleibt als gespeicherte Alt-Familie abrufbar und wird
+  bei einer generischen Brotsuche hierarchisch berücksichtigt.
+- [x] Brotaufstriche, Wassergeräte/-filter, Saft-Bockwurst, Teewurst,
+  Fleischsalat, Tiernahrung, Proteinprodukte, Kosmetik und Nuss-Nougat-Creme
+  werden vor der jeweiligen Grundfamilie erkannt.
+- [x] Choco-Crossies-/Choclait-Chips bleiben Schokoladen-Snacks und werden bei
+  der Kartoffelchips-Suche nicht mehr als Preisidentität geführt. Ein
+  generischer Fleischwunsch kann weiterhin Hackfleisch einschließen; die
+  gespeicherte Hackfleisch-Unterfamilie bleibt dabei erhalten.
+- [x] Die aktuelle Prüfung über 876 Angebote aus sechs Märkten zeigt für die
+  betroffenen Suchbegriffe keine Geräte-, Tierfutter-, Aufstrich-, Wurst- oder
+  Kosmetiktreffer mehr. Händlerlabels, Quellen und Preise wurden nicht
+  verändert.
