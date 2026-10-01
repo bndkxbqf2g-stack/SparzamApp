@@ -7,6 +7,7 @@ import '../offers/prospect_offer_products.dart';
 import '../../models/product.dart';
 import '../../services/prospect_feed_service.dart';
 import '../offers/offer_filter.dart';
+import 'prospect_feed_status.dart';
 
 class ProspectsScreen extends StatelessWidget {
   const ProspectsScreen({
@@ -17,6 +18,7 @@ class ProspectsScreen extends StatelessWidget {
     this.onAddProduct,
     this.now,
     this.fromCache = false,
+    this.generatedAt,
   });
 
   final List<OfferImportRecord> records;
@@ -25,6 +27,7 @@ class ProspectsScreen extends StatelessWidget {
   final ValueChanged<Product>? onAddProduct;
   final DateTime? now;
   final bool fromCache;
+  final DateTime? generatedAt;
 
   @override
   Widget build(BuildContext context) {
@@ -67,17 +70,7 @@ class ProspectsScreen extends StatelessWidget {
         const Center(
           child: Text('Aktuelle Prospekte. Produkte antippen und vormerken.'),
         ),
-        if (fromCache)
-          Card(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest,
-            child: const ListTile(
-              leading: Icon(Icons.cloud_off_outlined),
-              title: Text('Letzter geprüfter Prospektstand'),
-              subtitle: Text(
-                'Der Live-Abruf war nicht verfügbar. Gültigkeiten werden weiterhin geprüft; abgelaufene Angebote bleiben ausgeblendet.',
-              ),
-            ),
-          ),
+        ProspectFeedStatusCard(generatedAt: generatedAt, fromCache: fromCache),
         const SizedBox(height: 20),
         if (visibleProspects.isEmpty)
           const Card(
