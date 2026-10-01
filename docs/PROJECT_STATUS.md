@@ -968,3 +968,12 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   die Detailansicht wiederholt den preisfreien Aktualisierungshinweis.
 - Eine Widgetregression deckt Karten- und Detailansicht ab. Angebotsgültigkeit,
   Nachweis und Preisfluss bleiben unverändert.
+
+## Update 02.10.2026 – Verwandte Suchvarianten sparenorientiert ordnen
+- Bei offenen Bonkürzeln wie `K.H-Milch` werden verwandte, klar getrennte
+  Varianten jetzt nach aktueller Evidenz und Angebotspreis sortiert.
+- Ein günstiges gültiges Angebot kann dadurch vor unbelegten Varianten stehen;
+  die Oberfläche kennzeichnet den Bereich weiterhin als „Weitere
+  Interpretationen“.
+- Die Sortierung überträgt keine Produktidentität und keinen Preis in die
+  Routenplanung. Eine Regression prüft den PENNY-/Kaufland-Milchfall.

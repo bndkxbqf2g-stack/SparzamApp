@@ -436,6 +436,7 @@ List<Product> buildRelatedProductInterpretations({
   required String query,
   required List<Product> primarySuggestions,
   List<Product> catalogProducts = products,
+  ShoppingSuggestionPrice? Function(Product product)? priceFor,
 }) {
   final request = identifyProduct(query);
   if (!request.isKnown) return const <Product>[];
@@ -461,7 +462,28 @@ List<Product> buildRelatedProductInterpretations({
     }
   }
 
-  matches.sort((a, b) => a.name.compareTo(b.name));
+  final prices = <String, ShoppingSuggestionPrice?>{
+    for (final product in matches) product.id: priceFor?.call(product),
+  };
+  matches.sort((a, b) {
+    final aPrice = prices[a.id];
+    final bPrice = prices[b.id];
+    if (aPrice != null || bPrice != null) {
+      if (aPrice == null) return 1;
+      if (bPrice == null) return -1;
+      if (aPrice.isHistorical != bPrice.isHistorical) {
+        return aPrice.isHistorical ? 1 : -1;
+      }
+      if (aPrice.isOffer != bPrice.isOffer) {
+        return aPrice.isOffer ? -1 : 1;
+      }
+      final byPrice = aPrice.price.compareTo(bPrice.price);
+      if (byPrice != 0) return byPrice;
+      final byStore = aPrice.storeName.compareTo(bPrice.storeName);
+      if (byStore != 0) return byStore;
+    }
+    return a.name.compareTo(b.name);
+  });
   return matches;
 }
 

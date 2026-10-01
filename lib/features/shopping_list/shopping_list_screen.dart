@@ -169,20 +169,25 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     enabledStores: widget.mobility.enabledStoreNames,
   );
 
-  String? priceHintFor(Product product) => shoppingSuggestionPriceForProduct(
-    product,
-    offers: widget.offers,
-    marketPrices: widget.marketPrices,
-    receiptPriceStats: receiptPriceStats,
-    prospectPriceHistory: widget.prospectPriceHistory,
-    enabledStores: widget.mobility.enabledStoreNames,
-  )?.displayLabel;
+  ShoppingSuggestionPrice? suggestionPriceFor(Product product) =>
+      shoppingSuggestionPriceForProduct(
+        product,
+        offers: widget.offers,
+        marketPrices: widget.marketPrices,
+        receiptPriceStats: receiptPriceStats,
+        prospectPriceHistory: widget.prospectPriceHistory,
+        enabledStores: widget.mobility.enabledStoreNames,
+      );
+
+  String? priceHintFor(Product product) =>
+      suggestionPriceFor(product)?.displayLabel;
 
   List<Product> get relatedInterpretations =>
       buildRelatedProductInterpretations(
         query: controller.text,
         primarySuggestions: suggestions,
         catalogProducts: [...widget.catalogProducts, ...receiptCandidates],
+        priceFor: suggestionPriceFor,
       );
 
   List<Product> get quickProducts => buildQuickProducts(
