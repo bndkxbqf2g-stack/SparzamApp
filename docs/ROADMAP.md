@@ -294,3 +294,12 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   eigenem Gültigkeitsfenster übernommen.
 - [x] Parserregressionen sichern den Fallback gegen reine Rabatt-/Sorten- und
   Herkunftsplatzhalter ab.
+
+## Update 01.10.2026 – Aktive Fallbackangebote kenntlich machen
+- [x] Gültige Bestandsangebote eines vorübergehend nicht erreichbaren
+  Händlerfeeds bleiben sichtbar, solange ihr eigenes Angebotsfenster gilt.
+- [x] Der Angebotstab kennzeichnet diesen Stand als letzten geprüften
+  Prospekt und zeigt die fehlende automatische Aktualisierung ohne Preis- oder
+  Identitätserfindung.
+- [ ] Die Händlerquelle muss weiterhin regelmäßig erfolgreich aktualisieren,
+  damit der Hinweis wieder in einen frischen Live-Status übergeht.

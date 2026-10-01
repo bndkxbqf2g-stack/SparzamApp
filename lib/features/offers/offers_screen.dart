@@ -247,10 +247,16 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     final visible = <String, ProspectIssue>{};
     for (final issue in widget.issues) {
       final count = currentCounts[issue.storeName] ?? 0;
-      if (count > 0) continue;
-      final status = issue.sourceStatus == 'ok'
-          ? 'no_current_offers'
-          : issue.sourceStatus;
+      final usesCurrentFallback = issue.sourceStatus == 'error' && count > 0;
+      if (count > 0 && !usesCurrentFallback) continue;
+      final String status;
+      if (issue.sourceStatus == 'ok') {
+        status = 'no_current_offers';
+      } else if (usesCurrentFallback) {
+        status = 'current_fallback';
+      } else {
+        status = issue.sourceStatus;
+      }
       visible.putIfAbsent(
         issue.storeName,
         () => ProspectIssue(
@@ -290,6 +296,9 @@ class _OfferSourceNotice extends StatelessWidget {
       'no_current_offers' => 'Keine aktuell gültigen Angebotsdaten geladen.',
       'metadata_only' =>
         'Prospektquelle gefunden; Produktdaten fehlen aktuell.',
+      'current_fallback' =>
+        'Der letzte geprüfte Prospektstand wird verwendet; die automatische '
+            'Aktualisierung ist aktuell nicht verfügbar.',
       'error' =>
         'Automatischer Abruf aktuell nicht verfügbar. '
             'Der offizielle Prospekt bleibt direkt erreichbar.',

@@ -951,3 +951,11 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Filterung unvollständiger Labels bleibt aktiv.
 - Eine versionierte Reader-Regression prüft regulären Angebotspreis, Aktion,
   Packungsgröße, Bild, Nachweis und Gültigkeitsende.
+
+## Update 01.10.2026 – Gültige Händler-Fallbacks transparent kennzeichnen
+- Wenn ein Händlerabruf zeitweise fehlschlägt, bleiben bereits vorhandene
+  Angebote nur mit ihrem eigenen gültigen Zeitraum verwendbar.
+- Der Angebotstab zeigt für solche Datensätze jetzt ausdrücklich den letzten
+  geprüften Prospektstand und die aktuell fehlende automatische Aktualisierung.
+- Die Anzeige ist preisfrei und wird durch eine Widgetregression abgesichert;
+  sie reaktiviert keine abgelaufenen Angebote und erzeugt keine neue Quelle.
