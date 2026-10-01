@@ -297,3 +297,12 @@ Die Einkaufsliste kennzeichnet sie deshalb ausdrücklich als historischen
 Bon-Median und zeigt bei einem einzelnen Markt den Zeitpunkt der letzten
 Beobachtung. Aktuelle Angebots- und route-taugliche Preisbelege bleiben davon
 getrennt und behalten ihre eigene Quellenkennzeichnung.
+
+## D057 – ML-Kit-Spracherweiterungen werden im Android-Release gebündelt
+Der Flutter-Plugin-Code für die lokale Bon-OCR referenziert neben Latein auch
+optionale ML-Kit-Recognizer. Diese Bibliotheken sind im Plugin nur
+`compileOnly`; ein Android-Release mit R8 darf deshalb nicht auf eine lokale
+Debug-Konfiguration vertrauen. Die vier optionalen Recognizer werden als
+explizite App-Abhängigkeiten gebündelt, damit der Release-Build reproduzierbar
+auflösbar bleibt und die OCR-Script-Auswahl keinen fehlenden Klassenfehler
+erzeugt.

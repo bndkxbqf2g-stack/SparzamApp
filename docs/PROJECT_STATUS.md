@@ -528,3 +528,14 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Mehrmarktkennzeichnung.
 - `flutter analyze` ist ohne Befund, alle 456 Flutter-Tests sind grün und
   `flutter build web --release` war erfolgreich.
+
+## Update 01.10.2026 – Android-Release mit ML-Kit-OCR stabilisiert
+- Der Release-Workflow scheiterte in R8, weil `google_mlkit_text_recognition`
+  seine vier nicht-lateinischen Recognizer nur als `compileOnly` deklariert,
+  der Plugin-Code sie aber referenziert.
+- Das Android-App-Modul bündelt die ML-Kit-Abhängigkeiten für Chinesisch,
+  Devanagari, Japanisch und Koreanisch explizit. Damit bleibt die lokale
+  lateinische Bon-OCR unverändert und der Release-Build kann alle vom Plugin
+  referenzierten Klassen auflösen.
+- Der Fix wartet auf den separaten Release-Workflow; Flutter CI bleibt von
+  diesem Android-spezifischen Build getrennt.

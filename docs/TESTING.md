@@ -50,5 +50,7 @@ Keine privaten Bons, Preislisten oder Kundendaten in Goldens, Snapshots oder CI-
 - `flutter test` grün.
 - `flutter build web --release` grün.
 - GitHub Flutter CI grün.
+- Der separate Release-Workflow muss den Android-Release-Build ebenfalls
+  erfolgreich abschließen; native Geräteabnahme bleibt davon getrennt.
 - Bei Daten-/Preis-/Routenänderungen die passenden Regressionen benennen; bei UI-Änderungen die geprüften Screens/Viewport dokumentieren.
 - Release-Workflow separat bewerten, falls er durch den Auftrag berührt wird.
