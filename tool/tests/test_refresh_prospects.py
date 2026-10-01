@@ -541,6 +541,34 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(len(offers), 1)
         self.assertEqual(offers[0]["productLabel"], "Rispentomaten, 1 kg")
 
+    def test_netto_reads_public_reader_markdown_tiles(self):
+        markdown = """
+_Minipflaumentomaten_ 500 g Schale
+3.98 / kg
+-28%UVP 2.79 1.99*
+[](https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=46111&Name=Minipflaumentomaten&ValidTo=2026-10-08T22%3A40%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2Ftomaten.webp "Auf den Einkaufszettel")
+
+_Kiwi gold_ Stück
+Aktion
+0.59*
+[](https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=40141&Name=Kiwi+gold&ValidTo=2026-10-08T22%3A40%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2Fkiwi.webp "Auf den Einkaufszettel")
+
+ab Montag, 28.09.26
+"""
+        offers, _ = refresh.parse_netto(
+            markdown,
+            "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371",
+        )
+        self.assertEqual(len(offers), 2)
+        self.assertEqual(offers[0]["productLabel"], "Minipflaumentomaten 500 g")
+        self.assertEqual(offers[0]["offerPrice"], 1.99)
+        self.assertEqual(offers[0]["originalPrice"], 2.79)
+        self.assertEqual(offers[0]["validFrom"], "2026-09-28")
+        self.assertEqual(offers[0]["validUntil"], "2026-10-08")
+        self.assertTrue(offers[0]["imageUrl"].endswith("/tomaten.webp"))
+        self.assertEqual(offers[1]["productLabel"], "Kiwi gold Stück")
+        self.assertEqual(offers[1]["offerPrice"], 0.59)
+
     def test_rewe_reads_public_action_price(self):
         html = """
         <p>Diese Woche 21.9. bis 27.9.</p>

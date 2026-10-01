@@ -937,3 +937,17 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Die Statuskarte bietet zusätzlich den direkten Button „Offiziellen Prospekt
   öffnen“, damit die fehlende Automatikquelle ohne Umweg beim Händler geprüft
   werden kann.
+
+## Update 01.10.2026 – Netto-Reader-Fallback wieder mit aktuellen Angeboten
+- Die geschützte Netto-Filialseite wird bei Bedarf über den bereits
+  vorgesehenen öffentlichen Reader-Fallback als Markdown gelesen.
+- Offizielle Produktlinks liefern wieder belastbare Netto-Angebote mit
+  Produktname, ausgewiesenem Angebots-/Normalpreis, Packungsangabe, Bild,
+  Gültigkeitsende und Originalnachweis. Der Feed enthält damit wieder Daten
+  für alle sechs konfigurierten Märkte; zuletzt wurden 28 Netto-Angebote
+  übernommen.
+- Der Parser bleibt konservativ: Ohne offiziellen Produktlink und ein
+  gekoppeltes Preis-/Gültigkeitsfeld wird kein Angebot erzeugt. Die bestehende
+  Filterung unvollständiger Labels bleibt aktiv.
+- Eine versionierte Reader-Regression prüft regulären Angebotspreis, Aktion,
+  Packungsgröße, Bild, Nachweis und Gültigkeitsende.
