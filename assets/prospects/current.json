@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-01T01:52:46.888899Z",
+  "generatedAt": "2026-10-01T10:57:14.759553Z",
   "sources": [
     {
       "id": "aldi_sued",
       "storeName": "ALDI Süd",
       "url": "https://www.aldi-sued.de/",
       "status": "ok",
-      "recordCount": 328,
+      "recordCount": 237,
       "mode": "structured_api",
       "prospects": []
     },
@@ -34,7 +34,7 @@
       "storeName": "Lidl",
       "url": "https://www.lidl.de/c/online-prospekte/s10005610/",
       "status": "ok",
-      "recordCount": 42,
+      "recordCount": 43,
       "mode": "structured_api",
       "prospects": [
         {
@@ -7640,6 +7640,18 @@
       "proofRef": "https://www.lidl.de/s/de-DE/filialen/zellingen/am-guessgraben-2/#offer-11557599-2c66-4b72-8cb2-9780930e5fb8",
       "originalPrice": 1.49,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/11557599-2c66-4b72-8cb2-9780930e5fb8.jpg?t=1789387796"
+    },
+    {
+      "sourceId": "ae9d7eb119d35b1f9db3",
+      "productLabel": "Bioland Käse Ca. 220 g",
+      "storeName": "Lidl",
+      "offerPrice": 15.99,
+      "validFrom": "2026-09-27",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.lidl.de/s/de-DE/filialen/zellingen/am-guessgraben-2/#offer-32bdbf8f-52b5-4e2a-88c6-4ad304116d36",
+      "originalPrice": 19.89,
+      "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/32bdbf8f-52b5-4e2a-88c6-4ad304116d36.jpg?t=1789544400"
     },
     {
       "sourceId": "a27fa2362300338bd805",
