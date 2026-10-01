@@ -298,7 +298,9 @@ ausdrücklich als historischen Bon-Median und zeigen den Zeitpunkt der letzten
 Beobachtung. Aktuelle Angebots- und route-taugliche Preisbelege bleiben davon
 getrennt und behalten ihre eigene Quellenkennzeichnung. Aktive Angebote
 behalten Vorrang; innerhalb derselben Evidenzklasse darf der günstigere
-vergleichbare historische Wert zuerst erscheinen.
+vergleichbare historische Wert zuerst erscheinen. Die Varianten-Auswahl nutzt
+dafür den gespeicherten Median vergleichbarer Bonbeobachtungen; unklare
+Packungspreise bleiben aus dem Preisranking heraus.
 
 ## D057 – ML-Kit-Spracherweiterungen werden im Android-Release gebündelt
 Der Flutter-Plugin-Code für die lokale Bon-OCR referenziert neben Latein auch

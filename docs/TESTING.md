@@ -26,7 +26,9 @@ Die Testsuite enthält Domänen-, Store-, Service-, Widget- und Ablaufprüfungen
   Bon-Mediane in der Einkaufsliste als historische Beobachtung mit Stand
   erscheinen und nicht wie ein aktuelles Angebot wirken; `shopping_suggestions_test.dart`
   prüft dasselbe für Suchvorschläge und dass vergleichbare historische Werte
-  innerhalb ihrer Evidenzklasse nach Preis sortiert werden.
+  innerhalb ihrer Evidenzklasse nach Preis sortiert werden. `shopping_candidate_service_test.dart`
+  schützt zusätzlich die Medianbasis der Varianten-Auswahl und schließt nicht
+  vergleichbare Packungspreise aus.
 - Dashboarddaten/Teilrouten: `shell_dashboard_test.dart` prüft, dass
   unvollständige Preisabdeckung weder Sparpotenzial noch Budgetverbrauch
   vortäuscht.

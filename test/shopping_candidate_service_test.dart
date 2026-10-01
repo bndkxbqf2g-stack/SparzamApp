@@ -172,4 +172,43 @@ void main() {
     expect(candidates.first.quotes.first.isOffer, isTrue);
     expect(candidates.first.quotes.first.price, 1.35);
   });
+
+  test('candidate prices use comparable receipt medians, not latest outliers', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda],
+      offers: const [],
+      marketPrices: const [],
+      receiptPriceStats: [
+        ReceiptPriceStat(
+          familyKey: 'kaese',
+          productId: gouda.id,
+          storeName: 'EDEKA',
+          latestPrice: 2.49,
+          latestAt: DateTime(2026, 9, 27),
+          observationCount: 4,
+          medianPrice: 1.59,
+          comparable: true,
+          priceBasis: '250 g',
+        ),
+        ReceiptPriceStat(
+          familyKey: 'kaese',
+          productId: gouda.id,
+          storeName: 'Lidl',
+          latestPrice: 0.49,
+          latestAt: DateTime(2026, 9, 26),
+          observationCount: 1,
+          medianPrice: 0.49,
+          comparable: false,
+          priceBasis: 'Packung',
+        ),
+      ],
+      now: now,
+    );
+
+    final quotes = candidates.single.quotes;
+    expect(quotes.map((quote) => quote.storeName), ['EDEKA']);
+    expect(quotes.single.price, 1.59);
+    expect(quotes.single.label, 'Bon-Median (historisch)');
+  });
 }

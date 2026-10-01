@@ -552,3 +552,13 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - `shopping_suggestions_test.dart` schützt Kennzeichnung und Rangfolge;
   `flutter analyze` ist ohne Befund, alle 456 Flutter-Tests sind grün und
   `flutter build web --release` war erfolgreich.
+
+## Update 01.10.2026 – Varianten-Auswahl nutzt robuste Bonstatistik
+- Die Auswahl konkreter Produkte aus einem Oberbegriff verwendet jetzt den
+  gespeicherten Median vergleichbarer Bonpreise statt eines einzelnen letzten
+  Bons. Dadurch entscheidet ein Ausreißer nicht allein über die Empfehlung.
+- Bonwerte ohne sichere gemeinsame Packungs-/Einheitsbasis bleiben in dieser
+  Auswahl sichtbar, aber nicht als Preisranking wirksam.
+- `shopping_candidate_service_test.dart` schützt Medianbasis und Ausschluss;
+  `flutter analyze` ist ohne Befund, alle 457 Flutter-Tests sind grün und
+  `flutter build web --release` war erfolgreich.
