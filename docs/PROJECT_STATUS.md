@@ -6,7 +6,7 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter bei Einrichtung geprüfter Commit: 8ada2e33112cc86894dda2a92a7b37a5f1f0eb34
+- Letzter bei Einrichtung geprüfter Commit: 52009fb5a498e9df70217b19b9328bb7186e87cf
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -172,6 +172,24 @@ Eine intelligente und alltagstaugliche Preisdatenbank aufbauen:
   von Ersparnis, Fahrtkosten und Aufwand.
 - Ein Widgettest prüft die sichtbare Zeitangabe zusammen mit Fahrtkosten und
   Preisabdeckung.
+
+## Update 02.10.2026 – Verifizierte Web-Abnahme des aktuellen Stands
+- Der gemergte Stand `52009fb` wurde nach dem Deployment im veröffentlichten
+  Web-Build geprüft. Flutter CI (`36942607555`) und Release artifacts
+  (`36942607423`) waren einschließlich Web-Build, Pages-Deployment und
+  Android-APK erfolgreich.
+- Der Angebotstab zeigte den datierten aktuellen Prospektstand mit allen sechs
+  Filialen und 884 Angeboten: ALDI Süd 46, EDEKA 16, Kaufland 540, Lidl 22,
+  PENNY 232 und Netto 28. Abgelaufene Datensätze wurden nicht angezeigt.
+- Die Suche nach „Milch“ stellte aktuelle Angebote vor unbelegten Varianten
+  dar, darunter PENNY Frische Vollmilch für 0,99 € und PENNY H-Milch für
+  1,35 €. Varianten und Packungsangaben blieben getrennt.
+- Ein Mehrmarkt-Test zeigte im Routenvergleich die Wegezeiten für die
+  Alternativen. Der temporäre Testzustand wurde anschließend aus der
+  Browserliste entfernt.
+- Die native Geräteabnahme für Kamera, lokale OCR, Neustart und Offlinebetrieb
+  bleibt eine separate offene Abnahme, die ein echtes Android- oder iOS-Gerät
+  erfordert.
 
 ## Übergaberegel
 Jeder Work-Lauf beendet ein möglichst kleines Arbeitspaket vollständig. Vor Ende:
