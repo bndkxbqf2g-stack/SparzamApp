@@ -111,6 +111,13 @@ class ProspectsScreen extends StatelessWidget {
             ),
           ),
         ],
+        if (visibleProspects.isNotEmpty)
+          ProspectCoverageCard(
+            coverage: calculateProspectCoverage(
+              issues: visibleProspects,
+              records: currentRecords,
+            ),
+          ),
       ],
     );
   }
