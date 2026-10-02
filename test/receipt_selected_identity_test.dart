@@ -48,4 +48,33 @@ Datum 23.09.26
       isEmpty,
     );
   });
+
+  test('unchecking a learned suggestion removes its row assignment', () {
+    final draft = parseReceiptLedger('''
+Kaufland
+Preis EUR
+Milch 3,5 % 1,29 B
+Summe 1,29
+Datum 23.09.26
+''');
+    final review = reviewReceiptPrices(draft, products);
+    final suggestion = review.suggestions.single;
+    final selectedKeys = <String>{
+      '${draft.fingerprint}|milch_35',
+    };
+    final assigned = <String, String>{
+      '${draft.fingerprint}|${suggestion.row.line}': 'milch_35',
+    };
+
+    updateReceiptSuggestionSelection(
+      draft: draft,
+      suggestion: suggestion,
+      checked: false,
+      selectedPriceKeys: selectedKeys,
+      assignedProducts: assigned,
+    );
+
+    expect(selectedKeys, isEmpty);
+    expect(assigned, isEmpty);
+  });
 }

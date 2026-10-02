@@ -1055,3 +1055,11 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Vorschläge werden weiterhin nur als Preis- und Beobachtungshinweis geführt.
 - Eine Regression prüft die Zuordnung sowohl für die bestätigte als auch für
   die nicht ausgewählte Vorschlagszeile.
+
+## Update 02.10.2026 – Bon-Zuordnung explizit zurücknehmen
+- Das Abwählen eines Bonpreisvorschlags entfernt jetzt auch eine zuvor an
+  derselben Bonzeile gelernte Zuordnung. Dadurch kann eine Nutzerkorrektur
+  einen automatischen Lernvorschlag ohne versteckte Restzuordnung verwerfen.
+- Eine vorhandene abweichende manuelle Zuordnung wird dabei nicht überschrieben
+  oder gelöscht.
+- Die Regression prüft die reversible Auswahl inklusive Beleg-Fingerprint.
