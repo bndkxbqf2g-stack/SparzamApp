@@ -226,7 +226,7 @@ class ShoppingPriceBadge extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       subtitle: Text(
-                        '${quote.sourceLabel}'
+                        '${quote.evidenceLabel}'
                         '${quote.savingsLabel == null ? '' : ' · ${quote.savingsLabel}'}',
                       ),
                       trailing: Text(
