@@ -88,6 +88,14 @@
 ## Aktueller Schwerpunkt
 Eine intelligente und alltagstaugliche Preisdatenbank aufbauen:
 1. Wiederkehrende Einkäufe und bekannte Produktidentitäten lernen.
+
+## Update 02.10.2026 – Ungültige Mehrfachkaufdaten abgesichert
+- Mehrfachkaufregeln werden nur noch bei positiven Kauf-/Bezahlmengen mit
+  echter Ersparnis angewendet. Importierte Altwerte wie „3 kaufen, 0 bezahlen“
+  fallen auf den normalen Angebotspreis zurück und können keine kostenlose
+  Route erzeugen.
+- Eine Resolver-Regression prüft den Schutz; Produktidentität, Angebotsgültigkeit
+  und die bestehende Angebotsquelle bleiben unverändert.
 2. Unklare Bonpositionen nicht dauerhaft starr behandeln.
 3. Varianten (z. B. Fettstufe, Packungsgröße, Marke) getrennt halten.
 4. Bestätigte Nutzerzuordnungen als Lernsignal verwenden.

@@ -132,7 +132,7 @@ class RoutePriceResolver {
   int _paidUnits(int quantity, Offer offer) {
     final buy = offer.buyQuantity;
     final pay = offer.payQuantity;
-    if (buy == null || pay == null || buy <= 0 || pay < 0 || pay >= buy) {
+    if (!offer.hasMultiBuy || buy == null || pay == null) {
       return quantity;
     }
     return (quantity ~/ buy) * pay + quantity % buy;
