@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: f5c118baab0e30f872ec49c3309263d5f3954486
-- PR-CI zu diesem Stand: 558 Tests, Analyse und Web-Build erfolgreich; Main-CI `36993681052` und Release `36993681189` sind nach dem Merge einschließlich Pages-Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: 34d8590dd44e5c21efa3df1bde21da444feb4187
+- PR-CI zu diesem Stand: 558 Tests, Analyse und Web-Build erfolgreich; Main-CI `36996246800` und Release `36996246805` sind nach dem Merge einschließlich Pages-Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -1266,3 +1266,12 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - PR #139 (`f5c118b`) ergänzt die Widgetregression für diesen Fall. Die PR-CI
   bestand mit 558 Tests; Main-CI und Release-Artefakte sind nach dem Merge
   einschließlich Pages-Deployment und Android-APK grün.
+
+## Update 02.10.2026 – Prospektlernen verlangt einen Feed-Zeitstempel
+- Prospektpreise werden nur noch dann in die historische Preisbeobachtung
+  übernommen, wenn der Feed einen `generatedAt`-Zeitpunkt liefert.
+- Fehlt dieser Provenienznachweis, bleiben aktuelle Angebote sichtbar, werden
+  aber nicht mit der Ladezeit als frisch gelernt markiert.
+- PR #141 (`34d8590`) ergänzt die Regression für einen Feed ohne Zeitstempel.
+  Die PR-CI bestand mit 558 Tests; Main-CI und Release-Artefakte sind nach dem
+  Merge einschließlich Pages-Deployment und Android-APK grün.
