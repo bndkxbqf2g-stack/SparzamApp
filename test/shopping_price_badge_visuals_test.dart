@@ -60,7 +60,10 @@ void main() {
       storeName: 'Kaufland',
       originalPrice: 2.39,
       offerPrice: 1.49,
-      validUntil: DateTime(2026, 10, 1),
+      // Keep the visual fixture active independently of the calendar date on
+      // which CI runs. The test verifies imagery and matrix rendering, not
+      // expiry behaviour (which has dedicated date-bound tests).
+      validUntil: DateTime(2099, 1, 1),
       imageUrl: 'https://example.com/offer.jpg',
       source: 'leaflet',
       proofRef: 'proof',
