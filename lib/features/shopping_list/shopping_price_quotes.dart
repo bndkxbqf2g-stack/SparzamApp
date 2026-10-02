@@ -56,6 +56,30 @@ class ShoppingQuote {
   String get amountLabel =>
       '${unitPrice.toStringAsFixed(2).replaceAll('.', ',')} €';
 
+  /// The visible saving is only trustworthy when the imported or entered
+  /// normal price was explicitly verified. Effective offer prices already
+  /// include deterministic coupon and cashback adjustments.
+  double? get savings {
+    final sourceOffer = offer;
+    if (kind != ShoppingQuoteKind.offer ||
+        sourceOffer == null ||
+        !sourceOffer.originalPriceVerified ||
+        !sourceOffer.originalPrice.isFinite ||
+        sourceOffer.originalPrice <= unitPrice) {
+      return null;
+    }
+    final value = double.parse(
+      (sourceOffer.originalPrice - unitPrice).toStringAsFixed(2),
+    );
+    return value > 0 ? value : null;
+  }
+
+  String? get savingsLabel {
+    final value = savings;
+    if (value == null) return null;
+    return 'Ersparnis ${value.toStringAsFixed(2).replaceAll('.', ',')} €';
+  }
+
   static String _date(DateTime date) =>
       '${date.day.toString().padLeft(2, '0')}.'
       '${date.month.toString().padLeft(2, '0')}.${date.year}';

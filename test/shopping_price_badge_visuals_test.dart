@@ -42,6 +42,7 @@ void main() {
 
     expect(find.textContaining('Angebot, effektiv Kaufland'), findsOneWidget);
     expect(find.textContaining('0,80 €'), findsOneWidget);
+    expect(find.textContaining('Ersparnis 0,49 €'), findsOneWidget);
   });
 
   testWidgets('Preisfenster zeigt Produktbild und Angebotsbild', (
