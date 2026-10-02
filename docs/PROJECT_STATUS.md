@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: 07d830e31d6499ee28b6bcfbffe959c1038395aa
-- Main-CI zu diesem Stand: 544 Tests, Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: ccba4c38fb07a4af593da37884abead98b6a2bea
+- Main-CI zu diesem Stand: 545 Tests, Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -1177,3 +1177,15 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   mit 544 Tests, Analyse und Web-Build; Main-CI `36975457591` und Release
   `36975457595` sind erfolgreich, einschließlich Pages-Deployment und
   Android-APK.
+
+## Update 02.10.2026 – Nachweisstatus in der Routen-Evidenz
+- Routenpositionen zeigen bei aktiven Angeboten jetzt Quelle und ausdrücklich,
+  ob ein `proofRef` vorhanden ist.
+- Händler-Website-Quellen mit und ohne Unterstrich werden einheitlich
+  dargestellt.
+- Preisberechnung, Gültigkeit und Routenauswahl bleiben unverändert; die
+  Änderung verbessert die Nachvollziehbarkeit der verwendeten Evidenz.
+- PR #127 (`b10bdf6`) ergänzt Fachregressionen. Die PR-CI bestand mit 545
+  Tests, Analyse und Web-Build; Main-CI `36977247429` und Release
+  `36977247450` sind nach dem Merge erfolgreich, einschließlich
+  Pages-Deployment und Android-APK.
