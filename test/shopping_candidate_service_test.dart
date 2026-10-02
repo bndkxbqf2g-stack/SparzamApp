@@ -207,6 +207,43 @@ void main() {
     expect(candidates.first.quotes.first.price, 1.35);
   });
 
+  test('cashback offers hide a duplicate historical quote for that market', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda],
+      offers: [
+        Offer(
+          id: 'cashback-sale',
+          productId: 'gouda',
+          storeName: 'ALDI Süd',
+          originalPrice: 2,
+          offerPrice: 1.50,
+          cashbackAmount: 0.20,
+          validUntil: DateTime(2026, 9, 30),
+        ),
+      ],
+      marketPrices: const [],
+      receiptPriceStats: [
+        ReceiptPriceStat(
+          familyKey: 'kaese',
+          productId: gouda.id,
+          storeName: 'ALDI Süd',
+          latestPrice: 1.29,
+          latestAt: DateTime(2026, 9, 27),
+          observationCount: 2,
+          medianPrice: 1.39,
+          comparable: true,
+          priceBasis: '250 g',
+        ),
+      ],
+      now: now,
+    );
+
+    expect(candidates.single.quotes, hasLength(1));
+    expect(candidates.single.quotes.single.isOffer, isTrue);
+    expect(candidates.single.quotes.single.label, 'Angebot, effektiv');
+  });
+
   test('candidate prices use comparable receipt medians, not latest outliers', () {
     final candidates = buildShoppingCandidates(
       request: 'Käse',

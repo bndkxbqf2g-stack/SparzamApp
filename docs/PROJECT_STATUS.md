@@ -96,6 +96,14 @@ Eine intelligente und alltagstaugliche Preisdatenbank aufbauen:
   Route erzeugen.
 - Eine Resolver-Regression prüft den Schutz; Produktidentität, Angebotsgültigkeit
   und die bestehende Angebotsquelle bleiben unverändert.
+
+## Update 02.10.2026 – Cashback-Angebote führen im Variantenfenster
+- Ein aktuelles Angebot verdrängt jetzt auch dann den historischen Bon-Median
+  desselben Marktes, wenn der sichtbare Angebotsname wegen Cashback „Angebot,
+  effektiv“ lautet.
+- Die historische Beobachtung bleibt im Preisverlauf erhalten; die Auswahl
+  zeigt je Markt keine doppelte, widersprüchliche Preiszeile mehr.
+- Eine Regression prüft den Cashback-Fall mit effektivem Angebotspreis.
 2. Unklare Bonpositionen nicht dauerhaft starr behandeln.
 3. Varianten (z. B. Fettstufe, Packungsgröße, Marke) getrennt halten.
 4. Bestätigte Nutzerzuordnungen als Lernsignal verwenden.

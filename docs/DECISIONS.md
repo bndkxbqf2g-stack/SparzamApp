@@ -676,3 +676,10 @@ Ein Mehrfachkauf-Angebot ist nur dann routenwirksam, wenn Kauf- und
 Bezahlmenge positiv sind und die Bezahlmenge darunter liegt. Ungültige oder
 alte importierte Werte bleiben als normales Angebot lesbar; sie dürfen weder
 als Mehrfachkauf angezeigt noch die erwarteten Kassenkosten auf null senken.
+
+## D100 – Aktive Angebote verdrängen historische Marktzeilen derselben Auswahl
+Wenn ein aktuelles Angebot für eine konkrete Produkt-/Markt-Kombination
+vorliegt, wird der historische Bon-Median dieses Marktes im Variantenfenster
+nicht zusätzlich als zweite gleichrangige Zeile angezeigt. Das Angebot bleibt
+mit seinem effektiven Coupon-/Cashbackpreis sichtbar; historische Belege
+bleiben in der getrennten Historie erhalten und werden nicht gelöscht.
