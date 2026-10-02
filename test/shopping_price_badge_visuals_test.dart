@@ -210,7 +210,7 @@ void main() {
     expect(find.textContaining('Kassenbon · Normalpreis'), findsOneWidget);
     expect(find.textContaining('Packung 1 l'), findsOneWidget);
     expect(find.textContaining('Grundpreis 0,95 €/l'), findsOneWidget);
-    expect(find.textContaining('Nachweis vorhanden'), findsOneWidget);
+    expect(find.textContaining('Nachweis vorhanden'), findsNWidgets(2));
     expect(find.text('0,95 €'), findsOneWidget);
   });
 }
