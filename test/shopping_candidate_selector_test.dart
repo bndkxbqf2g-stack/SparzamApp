@@ -86,6 +86,8 @@ void main() {
           storeName: 'ALDI Süd',
           originalPrice: 1.29,
           offerPrice: 0.95,
+          source: 'leaflet',
+          proofRef: 'https://example.test/milk-offer',
           validUntil: DateTime(2099, 1, 1),
         ),
       ],
@@ -96,6 +98,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Milch 1,5 % · Empfehlung'), findsOneWidget);
+    expect(find.textContaining('Prospekt · Nachweis vorhanden'), findsOneWidget);
+    expect(find.textContaining('Ersparnis 0,34 €'), findsOneWidget);
     expect(find.text('1 Artikel übernehmen'), findsOneWidget);
     expect(
       tester.widget<CheckboxListTile>(find.byType(CheckboxListTile)).value,

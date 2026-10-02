@@ -233,6 +233,57 @@ void main() {
     expect(candidates.first.quotes.first.price, 1.35);
   });
 
+  test('candidate offer exposes provenance and verified savings', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda],
+      offers: [
+        Offer(
+          id: 'proven-offer',
+          productId: gouda.id,
+          storeName: 'ALDI Süd',
+          originalPrice: 2,
+          offerPrice: 1.50,
+          source: 'leaflet',
+          proofRef: 'https://example.test/leaflet',
+          validUntil: DateTime(2026, 9, 30),
+        ),
+      ],
+      marketPrices: const [],
+      receiptPriceStats: const [],
+      now: now,
+    );
+
+    final quote = candidates.single.quotes.single;
+    expect(quote.evidenceLabel, 'Prospekt · Nachweis vorhanden');
+    expect(quote.savings, 0.50);
+  });
+
+  test('unverified candidate normal price has no savings claim', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda],
+      offers: [
+        Offer(
+          id: 'unverified-offer',
+          productId: gouda.id,
+          storeName: 'ALDI Süd',
+          originalPrice: 2,
+          originalPriceVerified: false,
+          offerPrice: 1.50,
+          validUntil: DateTime(2026, 9, 30),
+        ),
+      ],
+      marketPrices: const [],
+      receiptPriceStats: const [],
+      now: now,
+    );
+
+    final quote = candidates.single.quotes.single;
+    expect(quote.evidenceLabel, 'Manuell · Nachweis fehlt');
+    expect(quote.savings, isNull);
+  });
+
   test('cashback offers hide a duplicate historical quote for that market', () {
     final candidates = buildShoppingCandidates(
       request: 'Käse',

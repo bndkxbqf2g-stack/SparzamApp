@@ -20,6 +20,8 @@ class ShoppingCandidateQuote {
     this.imageUrl,
     this.isOffer = false,
     this.isHistorical = false,
+    this.evidenceLabel,
+    this.savings,
   });
 
   final String storeName;
@@ -30,6 +32,8 @@ class ShoppingCandidateQuote {
   final String? imageUrl;
   final bool isOffer;
   final bool isHistorical;
+  final String? evidenceLabel;
+  final double? savings;
 }
 
 class ShoppingCandidate {
@@ -112,7 +116,9 @@ List<ShoppingCandidate> buildShoppingCandidates({
           label: effective.cashback > 0 ? 'Angebot, effektiv' : 'Angebot',
           validUntil: offer.validUntil,
           imageUrl: offer.imageUrl,
-          isOffer: true));
+          isOffer: true,
+          evidenceLabel: offerEvidenceLabel(offer),
+          savings: _verifiedOfferSavings(offer, effective.finalPrice)));
     }
     for (final price in marketPrices) {
       if (price.productId != product.id ||
@@ -194,6 +200,18 @@ List<ShoppingCandidate> buildShoppingCandidates({
 
 bool _storeEnabled(String store, Iterable<String> enabledStores) =>
     enabledStores.isEmpty || enabledStores.contains(store);
+
+double? _verifiedOfferSavings(Offer offer, double effectivePrice) {
+  if (!offer.originalPriceVerified ||
+      !offer.originalPrice.isFinite ||
+      offer.originalPrice <= effectivePrice) {
+    return null;
+  }
+  final savings = double.parse(
+    (offer.originalPrice - effectivePrice).toStringAsFixed(2),
+  );
+  return savings > 0 ? savings : null;
+}
 
 // Receipt labels such as "K.H-Milch" identify the milk family but do not
 // state whether the shopper bought fresh milk or a fat-level H-milk variant.
