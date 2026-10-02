@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: 3e9628167576411d75b3d60338b74a1943e3ae7d
-- Main-CI zu diesem Stand: 540 Tests, Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: fd67a0774c0d1b05ee084367b58aa61c012717d7
+- Main-CI zu diesem Stand: 542 Tests, Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -1155,3 +1155,13 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Der gemergte Main-Stand `42bef668` enthält jetzt 540 bestandene Tests.
 - Main-CI `36970553111` und Release `36970552957` sind erfolgreich; Analyse,
   Web-Build, Pages-Deployment und Android-APK bleiben grün.
+
+## Update 02.10.2026 – Preisquelle und Nachweis im Preisfenster
+- Die Detailansicht eines Angebots zeigt jetzt Herkunft (z. B. Prospekt oder
+  Händler-Website) und ausdrücklich, ob ein `proofRef` vorhanden ist.
+- Fehlt der Nachweis, bleibt das sichtbar; dadurch wird ein manueller Preis
+  nicht stillschweigend wie ein bestätigter Händlerbeleg dargestellt.
+- PR #123 (`c88ab75`) ergänzt Fach- und Widgetregressionen. Die PR-CI bestand
+  mit 542 Tests, Analyse und Web-Build; Main-CI `36972753662` und Release
+  `36972753666` sind nach dem Merge erfolgreich, einschließlich Analyse,
+  Web-Build, Pages-Deployment und Android-APK.
