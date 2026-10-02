@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: 6d6fdc006aca5f7168cb06a22e6afc27b0699361
-- Main-CI zu diesem Stand: 553 Tests, Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: d0d38eeb1ed469b9299cd13d06198e012b46807b
+- PR-CI zu diesem Stand: 556 Tests, Analyse und Web-Build erfolgreich; Main-/Release-Läufe nach dem Merge werden separat verifiziert.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -38,6 +38,19 @@
 - Kaufland-Milch 1,5 % und 3,5 % als getrennte Produkte behandelt.
 - Explizite Zuordnung unklar abgekürzter Kaufland-Milchzeilen ermöglicht.
 - Milch-Auswahl nur für sicher zuordenbare, ausgeglichene und nicht rabattierte Bonzeilen.
+
+## Update 02.10.2026 – Provisorische Bonartikel bleiben preisfrei
+- Automatisch angelegte `receipt_auto_*`-Produkte bleiben in der Einkaufssuche
+  sichtbar und werden mit „Früher gekauft · Sorte und Packung prüfen“ markiert.
+- Die Bonpreisstatistik führt jetzt die Identitätsbestätigung mit. Unbestätigte
+  automatische Zuordnungen erzeugen weder einen historischen Suchmedian noch
+  einen Preis im Variantenfenster oder im Preis-Hinweis der Einkaufsliste.
+- Bestätigte Produktzuordnungen und reine, generische Familienbeobachtungen
+  bleiben für die jeweils passende Preislogik nutzbar; Preise werden nicht
+  gelöscht, sondern bis zur Bestätigung aus den konkreten Empfehlungen
+  herausgehalten.
+- PR #135 (`3a0dbc3`) ergänzte drei Regressionen. Beide PR-CI-Läufe mit 556
+  Tests, Analyse und Web-Build waren erfolgreich.
 
 ## Update 30.09.2026 – Keine synthetischen Produktionspreise
 - Die sechs Produktionsmärkte enthalten keine fest eingebauten Beispielpreise
