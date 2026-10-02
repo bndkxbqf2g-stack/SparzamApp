@@ -119,6 +119,7 @@ List<Widget> buildShellPages({
     catalogProducts: catalogProducts,
     marketPrices: marketPrices,
     priceObservations: priceObservations,
+    historicalPriceObservations: historicalPriceObservations,
     prospectPriceHistory: prospectPriceHistory,
     onSavePrices: (prices) async {
       for (final price in prices) {
