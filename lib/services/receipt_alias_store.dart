@@ -11,15 +11,18 @@ class ReceiptAliasStore {
   Future<List<ReceiptAlias>> load() async {
     final values = await _preferences.getStringList(_key);
     if (values == null) return <ReceiptAlias>[];
-    return values.map((value) {
-      try {
-        return ReceiptAlias.fromJson(
-          jsonDecode(value) as Map<String, dynamic>,
-        );
-      } catch (_) {
-        return null;
-      }
-    }).whereType<ReceiptAlias>().toList();
+    return values
+        .map((value) {
+          try {
+            return ReceiptAlias.fromJson(
+              jsonDecode(value) as Map<String, dynamic>,
+            );
+          } catch (_) {
+            return null;
+          }
+        })
+        .whereType<ReceiptAlias>()
+        .toList();
   }
 
   Future<void> confirm({
@@ -32,14 +35,17 @@ class ReceiptAliasStore {
     if (normalized.isEmpty) return;
     final current = await load();
     final key = '${storeName.toLowerCase()}|$normalized';
-    final byKey = <String, ReceiptAlias>{for (final item in current) item.key: item};
+    final byKey = <String, ReceiptAlias>{
+      for (final item in current) item.key: item,
+    };
     final previous = byKey[key];
     byKey[key] = ReceiptAlias(
       storeName: storeName,
       normalizedLabel: normalized,
       productId: productId,
-      confirmations:
-          previous?.productId == productId ? previous!.confirmations + 1 : 1,
+      confirmations: previous?.productId == productId
+          ? previous!.confirmations + 1
+          : 1,
       updatedAt: now,
     );
     await _preferences.setStringList(
@@ -53,8 +59,7 @@ class ReceiptAliasStore {
     required String rawLabel,
     int minConfirmations = 2,
   }) async {
-    final key =
-        '${storeName.toLowerCase()}|${normalizeReceiptAlias(rawLabel)}';
+    final key = '${storeName.toLowerCase()}|${normalizeReceiptAlias(rawLabel)}';
     for (final item in await load()) {
       if (item.key == key && item.confirmations >= minConfirmations) {
         return item.productId;
@@ -62,6 +67,11 @@ class ReceiptAliasStore {
     }
     return null;
   }
+
+  Future<void> save(List<ReceiptAlias> aliases) => _preferences.setStringList(
+    _key,
+    aliases.map((item) => jsonEncode(item.toJson())).toList(),
+  );
 }
 
 String normalizeReceiptAlias(String value) => value

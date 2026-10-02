@@ -86,6 +86,9 @@ List<Widget> buildShellPages({
   required Future<List<Offer>> Function(Offer offer) onSaveOffer,
   required Future<List<Offer>> Function(Offer offer) onDeleteOffer,
   required VoidCallback onOpenDiagnostics,
+  required Future<void> Function() onExportBackup,
+  required Future<void> Function() onImportBackup,
+  required int dataRevision,
 }) => [
   HomeScreen(
     data: dashboard,
@@ -96,6 +99,7 @@ List<Widget> buildShellPages({
     onOpenScanner: onOpenScanner,
   ),
   ShoppingListScreen(
+    key: ValueKey('shopping-list-$dataRevision'),
     items: shoppingList,
     shoppingLists: shoppingLists,
     activeShoppingListId: activeShoppingListId,
@@ -195,6 +199,8 @@ List<Widget> buildShellPages({
       onEditPriceData: onEditPriceData,
       priceDataSummary: priceDataSummary,
       onOpenDiagnostics: onOpenDiagnostics,
+      onExportBackup: onExportBackup,
+      onImportBackup: onImportBackup,
     ),
   ),
 ];

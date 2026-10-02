@@ -31,4 +31,6 @@ class RoadRouteMatrixStore {
 
   Future<void> save(RoadRouteMatrix matrix) =>
       _preferences.setString(_key, jsonEncode(matrix.toJson()));
+
+  Future<void> clear() => _preferences.remove(_key);
 }

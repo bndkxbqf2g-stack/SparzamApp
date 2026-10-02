@@ -17,7 +17,9 @@ class ShoppingListStore {
   final SharedPreferencesAsync _preferences = SharedPreferencesAsync();
 
   Future<Map<String, String>> loadPreferredProducts() async {
-    final values = await _preferences.getStringList(_preferredProductsStorageKey);
+    final values = await _preferences.getStringList(
+      _preferredProductsStorageKey,
+    );
     if (values == null) return <String, String>{'butter': 'butter_streichzart'};
 
     final result = <String, String>{};
@@ -61,6 +63,20 @@ class ShoppingListStore {
       next.map((entry) => entry.toJson()).toList(),
     );
   }
+
+  Future<void> saveKnownItems(List<RecentPurchase> items) =>
+      _preferences.setStringList(
+        _knownItemsStorageKey,
+        items.map((entry) => entry.toJson()).toList(),
+      );
+
+  Future<void> savePreferredProducts(Map<String, String> products) =>
+      _preferences.setStringList(
+        _preferredProductsStorageKey,
+        products.entries
+            .map((entry) => '\${entry.key}|\${entry.value}')
+            .toList(),
+      );
 
   Future<void> removeKnownItem(String id) async {
     final current = await loadKnownItems();
@@ -116,17 +132,21 @@ class ShoppingListStore {
   Future<void> save(List<ListItem> items) async {
     await _preferences.setStringList(
       _storageKey,
-      items.map((item) => jsonEncode({
-        'id': item.product.id,
-        'name': item.product.name,
-        'unit': item.product.unit,
-        'group': item.product.group,
-        'ean': item.product.ean,
-        'imageUrl': item.product.imageUrl,
-        'quantity': item.quantity,
-        'note': item.note,
-        'checked': item.checked,
-      })).toList(),
+      items
+          .map(
+            (item) => jsonEncode({
+              'id': item.product.id,
+              'name': item.product.name,
+              'unit': item.product.unit,
+              'group': item.product.group,
+              'ean': item.product.ean,
+              'imageUrl': item.product.imageUrl,
+              'quantity': item.quantity,
+              'note': item.note,
+              'checked': item.checked,
+            }),
+          )
+          .toList(),
     );
   }
 
@@ -138,9 +158,9 @@ class ShoppingListStore {
     final result = <NamedShoppingList>[];
     for (final value in values) {
       try {
-        result.add(NamedShoppingList.fromJson(
-          jsonDecode(value) as Map<String, dynamic>,
-        ));
+        result.add(
+          NamedShoppingList.fromJson(jsonDecode(value) as Map<String, dynamic>),
+        );
       } catch (_) {
         // Beschädigte Listen werden ignoriert, die übrigen bleiben nutzbar.
       }
