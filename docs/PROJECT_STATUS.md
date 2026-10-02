@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: 34d8590dd44e5c21efa3df1bde21da444feb4187
-- PR-CI zu diesem Stand: 558 Tests, Analyse und Web-Build erfolgreich; Main-CI `36996246800` und Release `36996246805` sind nach dem Merge einschließlich Pages-Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: f7d3fc213cfee221e10455376ffc45d34a918d73
+- PR-CI zu diesem Stand: 558 Tests, Analyse und Web-Build erfolgreich; Main-CI `36998715169` und Release `36998715105` sind nach dem Merge einschließlich Pages-Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -1275,3 +1275,13 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - PR #141 (`34d8590`) ergänzt die Regression für einen Feed ohne Zeitstempel.
   Die PR-CI bestand mit 558 Tests; Main-CI und Release-Artefakte sind nach dem
   Merge einschließlich Pages-Deployment und Android-APK grün.
+
+## Update 02.10.2026 – Fallbackangebote werden nicht frisch gelernt
+- Angebotszeilen eines Marktes, dessen Quelle im Feed nicht erfolgreich
+  aktualisiert wurde, bleiben als geprüfter Fallback sichtbar.
+- Für die Preis-Historie werden sie nicht mit dem globalen Feed-Zeitpunkt als
+  neue Beobachtung datiert; gelernt werden nur Datensätze der erfolgreich
+  aktualisierten Märkte.
+- PR #143 (`f7d3fc2`) ergänzt die Regression für frische und nicht aktualisierte
+  Märkte. Die PR-CI bestand mit 558 Tests; Main-CI und Release-Artefakte sind
+  nach dem Merge einschließlich Pages-Deployment und Android-APK grün.
