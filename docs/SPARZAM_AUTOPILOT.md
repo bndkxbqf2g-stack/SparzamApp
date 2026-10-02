@@ -40,6 +40,8 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [x] ältere Receipt-Daten für Historie behalten
 - [x] Paketgrößen normalisieren
 - [x] Vergleichbarkeit für Stück/Gewicht/Volumen systematisch härten
+- [x] Unbelegte Marktpreise als Datenlücke behandeln; keine Kategoriepreise
+  oder fremden Marktmediane in die Route übertragen
 - [ ] Marktpreis-Konfidenz und Preisbasis vereinheitlichen
 - [ ] Quellpriorität vollständig mit Tests absichern
 - [ ] Angebotspreise vs. Normalpreise konsistent behandeln

@@ -79,7 +79,7 @@ void main() {
     expect(quote!.total, 3.0);
   });
 
-  test('estimates a missing price and marks it as estimated', () {
+  test('leaves a missing price unresolved instead of inventing a category price', () {
     const missing = Product(
       id: 'unknown-milk',
       name: 'Milch',
@@ -97,9 +97,7 @@ void main() {
       ListItem(product: missing),
     );
 
-    expect(quote, isNotNull);
-    expect(quote!.unitPrice, 1.29);
-    expect(quote.isEstimated, isTrue);
+    expect(quote, isNull);
   });
 
   test('does not route an unresolved generic custom shopping request', () {
@@ -117,7 +115,7 @@ void main() {
     expect(quote, isNull);
   });
 
-  test('uses the median of observed prices for an unknown store', () {
+  test('does not assign another market median to an unknown store', () {
     const missingStore = Store(
       name: 'Unbekannt',
       location: 'Ort',
@@ -154,8 +152,7 @@ void main() {
       ],
     ).quote(missingStore, ListItem(product: product));
 
-    expect(quote!.unitPrice, 1.4);
-    expect(quote.isEstimated, isTrue);
+    expect(quote, isNull);
   });
 
   test('fresh receipt can beat a dearer manual price regardless of order', () {
@@ -196,11 +193,10 @@ void main() {
     ], now: DateTime(2026, 9, 24))
         .quote(noCatalogPrice, ListItem(product: product));
 
-    expect(quote!.isEstimated, isTrue);
-    expect(quote.observation, isNull);
+    expect(quote, isNull);
   });
 
-  test('stale receipt is excluded from unknown-store median estimate', () {
+  test('stale receipt leaves an unknown store unresolved', () {
     const missingStore = Store(
       name: 'Unbekannt',
       location: 'Ort',
@@ -218,9 +214,7 @@ void main() {
     ], now: DateTime(2026, 9, 24))
         .quote(missingStore, ListItem(product: product));
 
-    expect(quote!.unitPrice, 2.49);
-    expect(quote.isEstimated, isTrue);
-    expect(quote.observation, isNull);
+    expect(quote, isNull);
   });
 
   test('old discounted receipt cannot beat a fresh confirmed price', () {

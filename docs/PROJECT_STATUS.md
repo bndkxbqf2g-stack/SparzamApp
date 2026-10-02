@@ -1035,3 +1035,13 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   gespeichert und nach der Rückkehr sofort in die Route übernommen.
 - Eine Widgetregression prüft den Klickpfad. Historische Hinweise bleiben von
   der Bestätigung getrennt und werden nicht automatisch zu Routenpreisen.
+
+## Update 02.10.2026 – Unbelegte Routenpreise bleiben Datenlücken
+- Der Routenresolver erzeugt für fehlende Produkt×Markt-Belege keine festen
+  Kategoriepreise und überträgt auch keinen Median eines anderen Marktes auf
+  den unbekannten Markt.
+- Aktive, nachgewiesene Angebote und explizit gespeicherte Markt-/Bonpreise
+  bleiben routenfähig; fehlende Positionen erscheinen stattdessen in der
+  bestehenden Preis-Datenlücke.
+- Resolver-Regressionen sichern ab, dass unbekannte und veraltete Preisstände
+  nicht als scheinbare Marktpreise in Route oder Marktansicht gelangen.
