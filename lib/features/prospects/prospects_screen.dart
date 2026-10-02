@@ -136,9 +136,8 @@ ProspectIssue _visibleIssue(
       .firstOrNull;
   final selected = current ?? entries.first;
   final String sourceStatus;
-  if (current == null &&
-      currentRecordCount == 0 &&
-      selected.sourceStatus == 'ok') {
+  if (currentRecordCount == 0 &&
+      (current?.sourceStatus ?? selected.sourceStatus) == 'ok') {
     sourceStatus = 'no_current_offers';
   } else if (selected.sourceStatus == 'error' && currentRecordCount > 0) {
     sourceStatus = 'current_fallback';
