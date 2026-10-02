@@ -683,3 +683,14 @@ vorliegt, wird der historische Bon-Median dieses Marktes im Variantenfenster
 nicht zusätzlich als zweite gleichrangige Zeile angezeigt. Das Angebot bleibt
 mit seinem effektiven Coupon-/Cashbackpreis sichtbar; historische Belege
 bleiben in der getrennten Historie erhalten und werden nicht gelöscht.
+
+## D101 – Historische Bonpreise brauchen eine gemeinsame Mengeneinheit
+Eine Bonpreisstatistik gilt nur dann als grundpreisbasiert vergleichbar, wenn
+alle Beobachtungen einen gültigen positiven Einzelpreis besitzen und ihre
+Mengenmetadaten dieselbe Einheitendimension (Masse, Volumen oder Stück)
+belegen. Unterschiedliche Packungsmengen innerhalb derselben Dimension dürfen
+weiter über den Grundpreis zusammengefasst werden. Gemischte Dimensionen,
+ungültige Mengen oder nur teilweise vorhandene Mengenmetadaten fallen auf den
+historischen Packungspreis zurück. Alte Beobachtungen ohne Mengenmetadaten
+bleiben aus Kompatibilitätsgründen lesbar und vergleichbar, sofern ihre
+Einzelpreise gültig sind.

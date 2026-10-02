@@ -10,21 +10,20 @@ ReceiptObservation obs({
   String store = 'Kaufland',
   String family = 'hackfleisch',
   int day = 20,
-}) =>
-    ReceiptObservation(
-      id: id,
-      receiptFingerprint: 'bon$id',
-      rowLine: 1,
-      rawLabel: 'Hackfleisch',
-      familyKey: family,
-      storeName: store,
-      observedAt: DateTime(2026, 9, day),
-      totalPrice: price,
-      quantity: null,
-      quantityUnit: 'Stück',
-      unitPrice: unitPrice,
-      discounted: discounted,
-    );
+}) => ReceiptObservation(
+  id: id,
+  receiptFingerprint: 'bon$id',
+  rowLine: 1,
+  rawLabel: 'Hackfleisch',
+  familyKey: family,
+  storeName: store,
+  observedAt: DateTime(2026, 9, day),
+  totalPrice: price,
+  quantity: null,
+  quantityUnit: 'Stück',
+  unitPrice: unitPrice,
+  discounted: discounted,
+);
 
 void main() {
   test('uses robust median and keeps discounted purchases as history', () {
@@ -38,7 +37,6 @@ void main() {
     expect(stats.single.observationCount, 3);
     expect(stats.single.comparable, isFalse);
   });
-
 
   test('discounted Schmand remains available to the shopping list', () {
     final stats = buildReceiptPriceStats([
@@ -76,13 +74,101 @@ void main() {
     expect(stats.single.comparable, isTrue);
   });
 
+  test(
+    'unit prices remain comparable across package amounts in one dimension',
+    () {
+      ReceiptObservation weighted(
+        String id,
+        double quantity,
+        double unitPrice,
+      ) => ReceiptObservation(
+        id: id,
+        receiptFingerprint: 'bon$id',
+        rowLine: 1,
+        rawLabel: 'Tomaten',
+        familyKey: 'tomaten',
+        storeName: 'Kaufland',
+        observedAt: DateTime(2026, 9, 23),
+        totalPrice: quantity * unitPrice,
+        quantity: quantity,
+        quantityUnit: 'kg',
+        unitPrice: unitPrice,
+        discounted: false,
+      );
+
+      final stats = buildReceiptPriceStats([
+        weighted('half', 0.5, 5),
+        weighted('whole', 1, 6),
+      ], now: DateTime(2026, 9, 24));
+
+      expect(stats.single.comparable, isTrue);
+      expect(stats.single.medianPrice, 5.5);
+      expect(stats.single.priceBasis, 'kg');
+    },
+  );
+
+  test('mixed quantity dimensions fall back to package prices', () {
+    ReceiptObservation priced(
+      String id,
+      double quantity,
+      String unit,
+      double totalPrice,
+      double unitPrice,
+    ) => ReceiptObservation(
+      id: id,
+      receiptFingerprint: 'bon$id',
+      rowLine: 1,
+      rawLabel: 'Tomaten',
+      familyKey: 'tomaten',
+      storeName: 'Kaufland',
+      observedAt: DateTime(2026, 9, 23),
+      totalPrice: totalPrice,
+      quantity: quantity,
+      quantityUnit: unit,
+      unitPrice: unitPrice,
+      discounted: false,
+    );
+
+    final stats = buildReceiptPriceStats([
+      priced('mass', 0.5, 'kg', 2, 4),
+      priced('volume', 0.5, 'l', 1, 2),
+    ], now: DateTime(2026, 9, 24));
+
+    expect(stats.single.comparable, isFalse);
+    expect(stats.single.medianPrice, 1.5);
+    expect(stats.single.latestPrice, 1);
+    expect(stats.single.priceBasis, 'Packung');
+  });
+
+  test('partial quantity metadata is not treated as a common unit basis', () {
+    final stats = buildReceiptPriceStats([
+      obs(id: 'legacy', price: 2, unitPrice: 4),
+      ReceiptObservation(
+        id: 'weighted',
+        receiptFingerprint: 'bon-weighted',
+        rowLine: 1,
+        rawLabel: 'Tomaten',
+        familyKey: 'tomaten',
+        storeName: 'Kaufland',
+        observedAt: DateTime(2026, 9, 23),
+        totalPrice: 3,
+        quantity: 0.5,
+        quantityUnit: 'kg',
+        unitPrice: 6,
+        discounted: false,
+      ),
+    ], now: DateTime(2026, 9, 24));
+
+    expect(stats.single.comparable, isFalse);
+    expect(stats.single.medianPrice, 2.5);
+  });
+
   test('drops stale observations', () {
     final stats = buildReceiptPriceStats([
       obs(id: 'old', price: 4.79, day: 1),
     ], now: DateTime(2027, 1, 24));
     expect(stats, isEmpty);
   });
-
 
   test('repairs stale family keys from raw labels for every product', () {
     final stats = buildReceiptPriceStats([
@@ -132,7 +218,9 @@ void main() {
     ], now: DateTime(2026, 9, 24));
 
     expect(stats, hasLength(2));
-    expect(stats.map((item) => item.productId).toSet(),
-        {'milch_15', 'milch_35'});
+    expect(stats.map((item) => item.productId).toSet(), {
+      'milch_15',
+      'milch_35',
+    });
   });
 }
