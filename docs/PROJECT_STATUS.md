@@ -6,7 +6,7 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: 49ac3b500a3527e564b9811a4c53d05f49ee7c78
+- Letzter geprüfter Main-Stand: 3d4fc0871967a1e08d92f5432e99885fcce23eb5
 - Main-CI zu diesem Stand: 530 Tests, Analyse und Web-Build erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
@@ -1106,3 +1106,10 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Mengenmetadaten bleiben lesbar, solange ihre Einzelpreise gültig sind.
 - Die Regression deckt sichere Gewichtsvergleiche, gemischte Dimensionen und
   teilweise fehlende Mengenmetadaten ab.
+
+## Update 02.10.2026 – iOS-Kamerafreigabe erklärt Bon-OCR
+- Die native iOS-Kamerabeschreibung nennt jetzt sowohl Barcode-Scans als auch
+  das lokale Auslesen von Kassenbonfotos. Damit entspricht der Systemhinweis
+  den beiden tatsächlich angebotenen Kamerawegen.
+- Die Verarbeitung bleibt im bestehenden lokalen OCR-/Review-Pfad; es werden
+  keine Belegbilder in das Repository übernommen.
