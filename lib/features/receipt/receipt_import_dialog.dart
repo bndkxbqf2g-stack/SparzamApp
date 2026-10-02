@@ -355,6 +355,19 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
     for (final entry in receiptDrafts) {
       final draft = entry.draft;
       final review = reviewReceiptPrices(draft, availableProducts);
+      // A checked unambiguous suggestion confirms its identity as well as its
+      // price. Keep that decision for observations and alias learning below.
+      final selectedAssignments = selectedReceiptProductAssignments(
+        draft: draft,
+        review: review,
+        selectedPriceKeys: selectedReceiptPrices,
+      );
+      for (final assignment in selectedAssignments.entries) {
+        final row = draft.rows.firstWhere((row) => row.line == assignment.key);
+        final key = _rowKey(draft, row);
+        assignedProducts[key] = assignment.value;
+        automaticProductAssignments.remove(key);
+      }
       final usedProducts = <String>{};
       for (final suggestion in review.suggestions) {
         if (selectedReceiptPrices.contains(
@@ -775,4 +788,21 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
           ),
         ],
       );
+}
+
+/// Returns explicit product identities represented by checked receipt
+/// suggestions. The fingerprint prevents selections from crossing receipts.
+Map<int, String> selectedReceiptProductAssignments({
+  required ReceiptDraft draft,
+  required ReceiptPriceReview review,
+  required Set<String> selectedPriceKeys,
+}) {
+  final assignments = <int, String>{};
+  for (final suggestion in review.suggestions) {
+    final key = '${draft.fingerprint}|${suggestion.product.id}';
+    if (selectedPriceKeys.contains(key)) {
+      assignments[suggestion.row.line] = suggestion.product.id;
+    }
+  }
+  return assignments;
 }
