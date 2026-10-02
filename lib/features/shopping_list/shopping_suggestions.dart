@@ -326,7 +326,8 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
       : receiptStatsForProduct(product, receiptPriceStats);
   for (final stat in matchingReceiptStats) {
     if (!stat.comparable ||
-        !stat.latestAt.isAfter(cutoff) ||
+        stat.latestAt.isBefore(cutoff) ||
+        stat.latestAt.isAfter(current) ||
         (enabled.isNotEmpty && !enabled.contains(stat.storeName)) ||
         existingReceiptStores.contains(stat.storeName)) {
       continue;

@@ -708,3 +708,11 @@ Kalendertages von Erfassung und Prüfzeitpunkt berechnet. Die gemeinsame
 `PriceObservation`-Projektion und das daraus entstehende `MarketPrice`
 verwenden dadurch am Grenztag dieselbe Entscheidung; Uhrzeiten innerhalb
 eines Tages machen einen Beleg weder früher noch später routenfähig.
+
+## D104 – Bon-Suchhinweise verwenden eine inklusive Kalendertagsgrenze
+Bon-Mediane und unbestätigte Bonzeilen dürfen am konfigurierten Altersgrenzentag
+noch als Such- bzw. Auswahlhinweis erscheinen. Erst Beobachtungen vor diesem
+Tag werden ausgeschlossen; zukünftige Beobachtungen bleiben ausgeschlossen.
+Damit verwendet die Suche dieselbe lokale, inklusive Frischegrenze wie die
+Bonstatistik und die Preisprojektion, ohne historische Hinweise zu aktuellen
+Routenpreisen hochzustufen.
