@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: 5140febeb7386655b86517b8ca788413b26364aa
-- Main-CI zu diesem Stand: 538 Tests, Analyse und Web-Build erfolgreich.
+- Letzter geprüfter Main-Stand: eeee59350c2d8212bc135c307dc2254000d919a0
+- Main-CI zu diesem Stand: 538 Tests, Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -1131,3 +1131,7 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   gemeinsame Preisprojektion derselben kalendertaggenauen Frischegrenze.
 - Regressionen prüfen den eingeschlossenen Grenztag und den ausgeschlossenen
   Vortag für beide Sucharten.
+
+## Update 02.10.2026 – Main-Stand nach Status-Synchronisierung
+- Der Status wurde nach dem Merge von PR #116 auf `eeee59350c2d8212bc135c307dc2254000d919a0` synchronisiert.
+- Der nachgelagerte Main-CI-Lauf `36965653783` und der Release-Lauf `36965653777` sind erfolgreich; der veröffentlichte Webstand und das Android-Artefakt entsprechen damit wieder dem dokumentierten Main-Stand.
