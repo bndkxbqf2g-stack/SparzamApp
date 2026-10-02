@@ -5,14 +5,25 @@ import 'package:sparzamapp/models/product.dart';
 
 void main() {
   const products = [
-    Product(id: 'bananen', name: 'Bananen',
-        unit: '1 kg', group: 'obst'),
-    Product(id: 'weintrauben', name: 'Weintrauben',
-        unit: '500 g', group: 'obst'),
-    Product(id: 'milch_35', name: 'Vollmilch 3,5 %',
-        unit: '1 l', group: 'milch'),
-    Product(id: 'hackfleisch', name: 'Hackfleisch gemischt',
-        unit: '500 g', group: 'fleisch'),
+    Product(id: 'bananen', name: 'Bananen', unit: '1 kg', group: 'obst'),
+    Product(
+      id: 'weintrauben',
+      name: 'Weintrauben',
+      unit: '500 g',
+      group: 'obst',
+    ),
+    Product(
+      id: 'milch_35',
+      name: 'Vollmilch 3,5 %',
+      unit: '1 l',
+      group: 'milch',
+    ),
+    Product(
+      id: 'hackfleisch',
+      name: 'Hackfleisch gemischt',
+      unit: '500 g',
+      group: 'fleisch',
+    ),
   ];
 
   test('two balanced Kaufland receipts keep separate dates and amounts', () {
@@ -37,7 +48,10 @@ Datum 26.05.24
     expect(julyReview.suggestions, hasLength(1));
     expect(julyReview.suggestions.single.price.productId, 'weintrauben');
     expect(julyReview.suggestions.single.price.price, 1.73);
-    expect(julyReview.suggestions.single.price.updatedAt, DateTime(2024, 7, 23));
+    expect(
+      julyReview.suggestions.single.price.updatedAt,
+      DateTime(2024, 7, 23),
+    );
     expect(may.balances, isTrue);
     expect(mayReview.suggestions, isEmpty);
   });
@@ -118,6 +132,72 @@ Trauben 500g hell 1,83 B
 Summe 3,56
 Datum 23.07.24
 ''');
+    expect(reviewReceiptPrices(draft, products).suggestions, isEmpty);
+  });
+
+  test(
+    'unique learned receipt alias wins over compatible sibling variants',
+    () {
+      final draft = parseReceiptLedger('''
+Kaufland
+Preis EUR
+K.H-Milch 2 * 0,85 1,70 B
+Summe 1,70
+Datum 23.07.24
+''');
+      final matches = reviewReceiptPrices(draft, [
+        const Product(
+          id: 'h-milk',
+          name: 'H-Milch',
+          unit: '1 l',
+          group: 'milch',
+          aliases: ['K.H-Milch'],
+        ),
+        const Product(
+          id: 'milk-15',
+          name: 'Milch 1,5 %',
+          unit: '1 l',
+          group: 'milch',
+        ),
+        const Product(
+          id: 'milk-35',
+          name: 'Vollmilch 3,5 %',
+          unit: '1 l',
+          group: 'milch',
+        ),
+      ]).suggestions;
+
+      expect(matches, hasLength(1));
+      expect(matches.single.product.id, 'h-milk');
+      expect(matches.single.price.price, 0.85);
+    },
+  );
+
+  test('conflicting exact aliases remain unresolved', () {
+    final draft = parseReceiptLedger('''
+Kaufland
+Preis EUR
+K.H-Milch 0,85 B
+Summe 0,85
+Datum 23.07.24
+''');
+    final products = [
+      const Product(
+        id: 'milk-a',
+        name: 'H-Milch A',
+        unit: '1 l',
+        group: 'milch',
+        aliases: ['K.H-Milch'],
+      ),
+      const Product(
+        id: 'milk-b',
+        name: 'H-Milch B',
+        unit: '1 l',
+        group: 'milch',
+        aliases: ['K.H-Milch'],
+      ),
+    ];
+
     expect(reviewReceiptPrices(draft, products).suggestions, isEmpty);
   });
 }
