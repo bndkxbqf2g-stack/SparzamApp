@@ -6,7 +6,7 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: 3d4fc0871967a1e08d92f5432e99885fcce23eb5
+- Letzter geprüfter Main-Stand: e91da42d94d0ab81754d88f9e740fb8cb8429051
 - Main-CI zu diesem Stand: 530 Tests, Analyse und Web-Build erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
@@ -1113,3 +1113,11 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   den beiden tatsächlich angebotenen Kamerawegen.
 - Die Verarbeitung bleibt im bestehenden lokalen OCR-/Review-Pfad; es werden
   keine Belegbilder in das Repository übernommen.
+
+## Update 02.10.2026 – Preisprojektion nutzt taggenaue Altersgrenzen
+- Die gemeinsame Projektion von `PriceObservation` zu `MarketPrice` verwendet
+  jetzt dieselbe lokale Kalendertagsgrenze wie die direkte Preisprüfung.
+- Ein Beleg am 30-Tage-Grenztag bleibt in Liste und Route konsistent nutzbar;
+  ein Beleg am Vortag bleibt ausgeschlossen. Uhrzeitunterschiede erzeugen
+  keine widersprüchliche Preisabdeckung mehr.
+- Eine Regression deckt den Grenztag und den unmittelbar vorherigen Tag ab.
