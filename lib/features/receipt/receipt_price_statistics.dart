@@ -39,6 +39,7 @@ List<ReceiptPriceStat> buildReceiptPriceStats(
       unitPrice: item.unitPrice,
       discounted: item.discounted,
       productId: item.productId,
+      identityConfirmed: item.identityConfirmed,
     );
     final identity = item.productId == null
         ? 'family:$familyKey'
@@ -72,6 +73,9 @@ List<ReceiptPriceStat> buildReceiptPriceStats(
         medianPrice: _median(values),
         comparable: comparable,
         priceBasis: comparable ? entries.first.quantityUnit : 'Packung',
+        identityConfirmed: entries.every(
+          (entry) => entry.productId == null || entry.identityConfirmed,
+        ),
       ),
     );
   }

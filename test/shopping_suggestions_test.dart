@@ -625,6 +625,37 @@ void main() {
     },
   );
 
+  test(
+    'provisional automatic receipt product never receives its own median',
+    () {
+      const provisional = Product(
+        id: 'receipt_auto_specialitaet',
+        name: 'Spezialität unbekannt',
+        unit: 'Stück',
+        group: 'sonstiges',
+      );
+      final hint = shoppingSuggestionPriceForProduct(
+        provisional,
+        receiptPriceStats: [
+          ReceiptPriceStat(
+            familyKey: 'sonstiges',
+            productId: provisional.id,
+            storeName: 'Kaufland',
+            latestPrice: 1.29,
+            latestAt: DateTime(2026, 9, 29),
+            observationCount: 1,
+            medianPrice: 1.29,
+            comparable: true,
+            priceBasis: 'Stück',
+            identityConfirmed: false,
+          ),
+        ],
+        now: now,
+      );
+      expect(hint, isNull);
+    },
+  );
+
   test('receipt median ranks known prices when no active offer exists', () {
     final results = buildSuggestions(
       query: 'Milch',

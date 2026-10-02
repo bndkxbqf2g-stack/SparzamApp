@@ -144,4 +144,35 @@ void main() {
     await tester.tap(find.text('H-Milch'));
     expect(added, recalled);
   });
+
+  testWidgets('automatic receipt product is visibly marked for review', (
+    tester,
+  ) async {
+    const provisional = Product(
+      id: 'receipt_auto_specialitaet',
+      name: 'Spezialität unbekannt',
+      unit: 'Stück',
+      group: 'sonstiges',
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ShoppingSearchResults(
+            query: 'Spezialität',
+            suggestions: const [provisional],
+            relatedInterpretations: const [],
+            preferredProductByGroup: const {},
+            recentPurchases: const [],
+            onAdd: (_) {},
+            onAddCustom: () {},
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      find.textContaining('Früher gekauft · Sorte und Packung prüfen'),
+      findsOneWidget,
+    );
+  });
 }

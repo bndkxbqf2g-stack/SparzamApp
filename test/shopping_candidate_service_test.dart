@@ -196,6 +196,39 @@ void main() {
     expect(candidates.single.quotes.single.price, 1.79);
   });
 
+  test('provisional receipt median is not a candidate quote', () {
+    final provisional = Product(
+      id: 'receipt_auto_schmand',
+      name: 'Schmand',
+      unit: 'Stück',
+      group: 'milchprodukte',
+    );
+    final candidates = buildShoppingCandidates(
+      request: 'Schmand',
+      catalogProducts: [provisional],
+      offers: const [],
+      marketPrices: const [],
+      receiptPriceStats: [
+        ReceiptPriceStat(
+          familyKey: 'schmand',
+          productId: provisional.id,
+          storeName: 'Kaufland',
+          latestPrice: 0.79,
+          latestAt: DateTime(2026, 9, 27),
+          observationCount: 1,
+          medianPrice: 0.79,
+          comparable: true,
+          priceBasis: 'Stück',
+          identityConfirmed: false,
+        ),
+      ],
+      now: now,
+    );
+
+    expect(candidates, hasLength(1));
+    expect(candidates.single.quotes, isEmpty);
+  });
+
   test('active offers are ranked before cheaper historical quotes', () {
     final candidates = buildShoppingCandidates(
       request: 'Käse',
