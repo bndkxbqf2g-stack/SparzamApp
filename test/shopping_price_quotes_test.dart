@@ -43,6 +43,8 @@ void main() {
     expect(quotes, hasLength(2));
     expect(quotes.first.kind, ShoppingQuoteKind.offer);
     expect(quotes.first.unitPrice, 0.80);
+    expect(quotes.first.savings, 0.49);
+    expect(quotes.first.savingsLabel, 'Ersparnis 0,49 €');
     expect(quotes.first.sourceLabel, 'Angebot, effektiv bis 30.09.2026');
     expect(quotes.last.sourceLabel, 'Bonpreis vom 14.07.2026');
     expect(quotes.last.unitPrice, 1.05);
@@ -67,7 +69,31 @@ void main() {
     ).single;
 
     expect(quote.unitPrice, 0.79);
+    expect(quote.savings, 0.50);
+    expect(quote.savingsLabel, 'Ersparnis 0,50 €');
     expect(quote.sourceLabel, 'Angebot, effektiv bis 30.09.2026');
+  });
+
+  test('unverified normal prices never become a displayed saving', () {
+    final offer = Offer(
+      id: 'unverified_offer',
+      productId: milk.id,
+      storeName: 'Netto',
+      originalPrice: 8,
+      originalPriceVerified: false,
+      offerPrice: 5,
+      validUntil: DateTime(2026, 9, 30),
+    );
+
+    final quote = shoppingQuotes(
+      item,
+      prices: const [],
+      offers: [offer],
+      now: DateTime(2026, 9, 24),
+    ).single;
+
+    expect(quote.savings, isNull);
+    expect(quote.savingsLabel, isNull);
   });
 
   test('demo offers, Open Prices and unlike products are not used', () {
