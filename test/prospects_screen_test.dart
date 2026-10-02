@@ -212,6 +212,7 @@ void main() {
                 ),
               ],
               url: 'https://example.test/official-prospect',
+              sourceStatus: 'ok',
               validFrom: DateTime(2026, 9, 28),
               validUntil: DateTime(2026, 10, 3),
             ),
