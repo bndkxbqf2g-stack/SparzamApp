@@ -6,7 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter bei Einrichtung geprüfter Commit: 52009fb5a498e9df70217b19b9328bb7186e87cf
+- Letzter geprüfter Main-Stand: 8c7bea538f9ae4ec8c54eef30d6bde4d8b7293f8
+- Main-CI zu diesem Stand: 530 Tests, Analyse und Web-Build erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -81,7 +82,9 @@
 - Die App startet jetzt in der Einkaufsliste; ein Widget-Test prüft den sichtbaren Einstieg bei 390 × 844 px.
 - Ein doppelter Import in `app_shell.dart` wurde entfernt.
 - `flutter analyze`: keine Befunde. `flutter test`: 377 Tests bestanden. `flutter build web --release`: erfolgreich.
-- Offener UX-/Katalogbefund: Der Basiskatalog enthält keine frischen Tomatenvarianten. Auf einer frischen Installation wird „Tomate“ deshalb als freies Produkt angeboten, obwohl die Roadmap dieses Beispiel als hierarchische Produktsuche vorsieht. Die vorhandenen Tomatentests verwenden eigens angelegte Testprodukte.
+- Der frühere UX-/Katalogbefund zu frischen Tomaten ist durch die getrennten
+  Basiskatalogprodukte für Rispen-, Party- und Cherrytomaten (Commit 25bd1ba)
+  behoben. Verarbeitete Tomatenprodukte bleiben separat.
 - Architekturhinweis: `app_shell.dart` ist mit rund 1.050 Zeilen weiterhin deutlich größer als die in `ARCHITECTURE.md` angestrebten kleinen Verantwortungsbereiche.
 - Die verpflichtenden Kamera-/Neustarttests auf einem echten Android- oder iOS-Gerät sind lokal nicht ausgeführt. Zwei in `REAL_RECEIPT_MATRIX.md` benannte Originalbons fehlen weiterhin als Quelldateien.
 
