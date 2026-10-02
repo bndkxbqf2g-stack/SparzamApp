@@ -309,11 +309,10 @@ class _AppShellState extends State<AppShell> {
 
       await widget.offerStore.save(next);
 
-      final observedAt = feed.generatedAt ?? DateTime.now();
-      final learnedPrices = prospectPriceObservations(
+      final learnedPrices = datedProspectPriceObservations(
         records: feed.records,
         catalogProducts: buildCatalogProducts(customProducts),
-        observedAt: observedAt,
+        observedAt: feed.generatedAt,
       );
       if (learnedPrices.isNotEmpty) {
         await priceObservationStore.append(learnedPrices);

@@ -6,6 +6,25 @@ import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/services/market_price_observation_adapter.dart';
 
 void main() {
+  test('does not date prospect prices when the feed timestamp is missing', () {
+    final evidence = datedProspectPriceObservations(
+      records: [
+        OfferImportRecord(
+          sourceId: 'missing-time',
+          productLabel: 'Kaffee 500 g',
+          storeName: 'Lidl',
+          offerPrice: 4.99,
+          validFrom: DateTime(2026, 9, 28),
+          validUntil: DateTime(2026, 10, 3),
+          proofRef: 'https://example.test/offer',
+        ),
+      ],
+      catalogProducts: const [],
+    );
+
+    expect(evidence, isEmpty);
+  });
+
   const coffee = Product(
     id: 'coffee-500',
     name: 'Jacobs Kaffee Crema 500 g',
