@@ -52,16 +52,25 @@ ProductIdentity identifyProduct(String value) {
   ])) {
     return const ProductIdentity(familyKey: 'schokolade', productType: 'snack');
   }
-  if (_hasAny(text, const [
-    'chips',
-    'pringles',
-    'lays',
-    'kartoffelchips',
-    'knabbermaeuse',
-    'knabbermäuse',
-    'maeuse',
-  ])) {
+  // A Pizza-Donut is a baked snack with its own price identity. The pizza
+  // token must not make it share a route price with frozen pizza.
+  if (_hasAny(text, const ['pizza donut', 'pizzadonut'])) {
+    return ProductIdentity(
+      familyKey: 'backware',
+      productType: 'donut',
+      variant: _donutVariant(text),
+    );
+  }
+  if (_hasAny(text, const ['chips', 'pringles', 'lays', 'kartoffelchips'])) {
     return const ProductIdentity(familyKey: 'chips', productType: 'chips');
+  }
+  // Kaufland abbreviates "Knabbermäuse Salz" as `Kn.Mäuse Salz`. It is a
+  // snack product, not a potato-chip identity.
+  if (_hasAny(text, const ['knabbermaeuse', 'knabber maeuse', 'kn maeuse'])) {
+    return const ProductIdentity(
+      familyKey: 'snack',
+      productType: 'knabbermaeuse',
+    );
   }
   if (_hasWord(text, 'pizza')) {
     return const ProductIdentity(familyKey: 'pizza', productType: 'pizza');
@@ -432,17 +441,28 @@ ProductIdentity identifyProduct(String value) {
     return const ProductIdentity(familyKey: 'tomatenmark', productType: 'mark');
   }
   if (_hasAny(text, const [
-    'passata',
-    'passierte tomaten',
-    'passierte',
-    'geh tomaten',
+    'tomatenkonserve',
+    'konserventomaten',
+    'konserven tomaten',
+  ])) {
+    return const ProductIdentity(familyKey: 'tomatenkonserve');
+  }
+  if (_hasAny(text, const ['passata', 'passierte tomaten', 'passierte'])) {
+    return const ProductIdentity(
+      familyKey: 'tomatenkonserve',
+      productType: 'passata',
+    );
+  }
+  if (_hasAny(text, const [
     'gehackte tomaten',
+    'gehackte',
+    'geh tomaten',
     'dosentomaten',
     'dosen tomaten',
   ])) {
     return const ProductIdentity(
       familyKey: 'tomatenkonserve',
-      productType: 'konserve',
+      productType: 'gehackt',
     );
   }
   if (_hasAny(text, const ['tomatensauce', 'tomaten sauce'])) {
@@ -1091,6 +1111,11 @@ String? _tomatoVariant(String text) {
   if (_hasAny(text, const ['cocktailtomaten', 'cocktail tomaten'])) {
     return 'cocktail';
   }
+  return null;
+}
+
+String? _donutVariant(String text) {
+  if (_hasAny(text, const ['schinken', 'schink', 'schin'])) return 'schinken';
   return null;
 }
 

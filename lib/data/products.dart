@@ -468,11 +468,25 @@ const products = <Product>[
     aliases: ['pizza'],
   ),
   Product(
+    id: 'pizza_donut_schinken',
+    name: 'Pizza-Donut Schinken',
+    unit: 'Packung',
+    group: 'backwaren',
+    aliases: ['Pizza-Donut Schin.'],
+  ),
+  Product(
     id: 'chips',
     name: 'Kartoffelchips',
     unit: '150 g',
     group: 'vorrat',
     aliases: ['chips', 'kartoffelchips'],
+  ),
+  Product(
+    id: 'knabbermaeuse_salz',
+    name: 'Knabbermäuse Salz',
+    unit: 'Packung',
+    group: 'vorrat',
+    aliases: ['KLC.Kn.Mäuse Salz', 'Knabbermäuse'],
   ),
   Product(
     id: 'schmand',
