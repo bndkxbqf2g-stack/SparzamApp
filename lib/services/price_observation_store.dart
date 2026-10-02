@@ -8,7 +8,7 @@ import '../models/price_observation.dart';
 /// indexed backend can replace this store without changing observation IDs.
 class PriceObservationStore {
   PriceObservationStore({SharedPreferencesAsync? preferences})
-      : _preferences = preferences ?? SharedPreferencesAsync();
+    : _preferences = preferences ?? SharedPreferencesAsync();
 
   static const storageKey = 'price_observations_v1';
   static Future<void> _pending = Future<void>.value();
@@ -19,8 +19,9 @@ class PriceObservationStore {
     final observations = <PriceObservation>[];
     for (final value in raw) {
       try {
-        observations.add(PriceObservation.fromJson(
-            jsonDecode(value) as Map<String, dynamic>));
+        observations.add(
+          PriceObservation.fromJson(jsonDecode(value) as Map<String, dynamic>),
+        );
       } catch (_) {
         // A corrupt entry does not hide the remaining price evidence.
       }
@@ -28,8 +29,7 @@ class PriceObservationStore {
     return observations;
   }
 
-  Future<List<PriceObservation>> append(
-      Iterable<PriceObservation> incoming) {
+  Future<List<PriceObservation>> append(Iterable<PriceObservation> incoming) {
     final valid = incoming.where((entry) => entry.isValid).toList();
     final result = _pending.then((_) async {
       final existing = await load();
@@ -37,8 +37,10 @@ class PriceObservationStore {
       final additions = valid.where((entry) => ids.add(entry.id)).toList();
       if (additions.isEmpty) return existing;
       final next = [...existing, ...additions];
-      await _preferences.setStringList(storageKey,
-          next.map((entry) => jsonEncode(entry.toJson())).toList());
+      await _preferences.setStringList(
+        storageKey,
+        next.map((entry) => jsonEncode(entry.toJson())).toList(),
+      );
       return next;
     });
     _pending = result.then<void>((_) {}, onError: (Object _) {});
@@ -49,7 +51,8 @@ class PriceObservationStore {
   /// deterministic derived observations (for example reinterpreted receipts),
   /// so identity improvements do not leave stale projections behind.
   Future<List<PriceObservation>> upsertById(
-      Iterable<PriceObservation> incoming) {
+    Iterable<PriceObservation> incoming,
+  ) {
     final valid = incoming.where((entry) => entry.isValid).toList();
     final result = _pending.then((_) async {
       final existing = await load();
@@ -59,8 +62,9 @@ class PriceObservationStore {
       var changed = false;
       for (final entry in valid) {
         final previous = byId[entry.id];
-        final previousJson =
-            previous == null ? null : jsonEncode(previous.toJson());
+        final previousJson = previous == null
+            ? null
+            : jsonEncode(previous.toJson());
         final nextJson = jsonEncode(entry.toJson());
         if (previousJson != nextJson) changed = true;
         byId[entry.id] = entry;
@@ -72,6 +76,21 @@ class PriceObservationStore {
         next.map((entry) => jsonEncode(entry.toJson())).toList(),
       );
       return next;
+    });
+    _pending = result.then<void>((_) {}, onError: (Object _) {});
+    return result;
+  }
+
+  Future<List<PriceObservation>> replaceAll(
+    Iterable<PriceObservation> observations,
+  ) {
+    final valid = observations.where((entry) => entry.isValid).toList();
+    final result = _pending.then((_) async {
+      await _preferences.setStringList(
+        storageKey,
+        valid.map((entry) => jsonEncode(entry.toJson())).toList(),
+      );
+      return valid;
     });
     _pending = result.then<void>((_) {}, onError: (Object _) {});
     return result;

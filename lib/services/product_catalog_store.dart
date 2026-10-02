@@ -15,9 +15,7 @@ class ProductCatalogStore {
     final result = <Product>[];
     for (final value in values) {
       try {
-        result.add(
-          Product.fromJson(jsonDecode(value) as Map<String, dynamic>),
-        );
+        result.add(Product.fromJson(jsonDecode(value) as Map<String, dynamic>));
       } catch (_) {
         // Defekte Einzel-Einträge werden ignoriert.
       }
@@ -26,10 +24,8 @@ class ProductCatalogStore {
   }
 
   Future<List<Product>> upsert(Product product, List<Product> current) async {
-    final next = [
-      product,
-      ...current.where((item) => item.id != product.id),
-    ]..sort((a, b) => a.name.compareTo(b.name));
+    final next = [product, ...current.where((item) => item.id != product.id)]
+      ..sort((a, b) => a.name.compareTo(b.name));
     await _save(next);
     return next;
   }
@@ -40,9 +36,10 @@ class ProductCatalogStore {
     return next;
   }
 
-  Future<void> _save(List<Product> products) =>
-      _preferences.setStringList(
-        _key,
-        products.map((product) => jsonEncode(product.toJson())).toList(),
-      );
+  Future<void> save(List<Product> products) => _save(products);
+
+  Future<void> _save(List<Product> products) => _preferences.setStringList(
+    _key,
+    products.map((product) => jsonEncode(product.toJson())).toList(),
+  );
 }

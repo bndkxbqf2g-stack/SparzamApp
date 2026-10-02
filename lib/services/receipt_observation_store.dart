@@ -14,9 +14,11 @@ class ReceiptObservationStore {
     final result = <ReceiptObservation>[];
     for (final value in values) {
       try {
-        result.add(ReceiptObservation.fromJson(
-          jsonDecode(value) as Map<String, dynamic>,
-        ));
+        result.add(
+          ReceiptObservation.fromJson(
+            jsonDecode(value) as Map<String, dynamic>,
+          ),
+        );
       } catch (_) {
         // Defekte Einzelbeobachtungen blockieren die übrige Preishistorie nicht.
       }
@@ -55,4 +57,10 @@ class ReceiptObservationStore {
     // identity is not reported as an empty save.
     return changedCount;
   }
+
+  Future<void> replaceAll(List<ReceiptObservation> observations) =>
+      _preferences.setStringList(
+        _key,
+        observations.map((item) => jsonEncode(item.toJson())).toList(),
+      );
 }
