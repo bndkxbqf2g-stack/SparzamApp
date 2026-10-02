@@ -653,3 +653,11 @@ gespeicherten Euro-Wert pro Stunde berechnet und fließt ausschließlich in den
 Kaufkosten bleiben unverändert. Der Standardwert ist `0 €`, damit bestehende
 Nutzerdaten nicht stillschweigend mit einer fremden Zeitbewertung belastet
 werden; Wegezeit bleibt auch dann sichtbar.
+
+## D097 – Preis-Datenlücken führen direkt zur bestehenden Bestätigung
+Eine offene Preis-Datenlücke darf aus der Routenansicht direkt die bestehende
+Marktpreis-Ansicht öffnen. Die Nutzerin bestätigt dort weiterhin jeden
+Marktpreis einzeln als manuellen Preis mit Erfassungsdatum; historische
+Mediane, Angebote und Schätzwerte werden nicht automatisch übernommen. Nach
+der Rückkehr wird die Route mit den gespeicherten Preisen neu berechnet, damit
+die Datenlücke sichtbar und ohne Medienbruch schließbar bleibt.
