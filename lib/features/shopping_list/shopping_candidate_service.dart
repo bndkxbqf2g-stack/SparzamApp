@@ -137,7 +137,7 @@ List<ShoppingCandidate> buildShoppingCandidates({
     );
     for (final stat in productStats) {
       if (quotes.any((quote) =>
-          quote.storeName == stat.storeName && quote.label == 'Angebot')) {
+          quote.storeName == stat.storeName && quote.isOffer)) {
         continue;
       }
       quotes.add(ShoppingCandidateQuote(
