@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sparzamapp/data/offers.dart';
 import 'package:sparzamapp/features/offers/prospect_price_statistics.dart';
 import 'package:sparzamapp/features/shopping_list/shopping_candidate_service.dart';
 import 'package:sparzamapp/models/market_price.dart';
@@ -375,5 +376,27 @@ void main() {
     expect(candidates.single.quotes, hasLength(1));
     expect(candidates.single.quotes.single.price, 1.99);
     expect(candidates.single.quotes.single.isHistorical, isFalse);
+  });
+
+  test('reserved sample offers never enter the candidate selector', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Butter',
+      catalogProducts: [
+        Product(
+          id: 'butter_block',
+          name: 'Butterblock',
+          unit: '250 g',
+          group: 'butter',
+          aliases: const ['butter'],
+        ),
+      ],
+      offers: sampleOffers,
+      marketPrices: const [],
+      receiptPriceStats: const [],
+      now: DateTime(2026, 9, 20),
+    );
+
+    expect(candidates, hasLength(1));
+    expect(candidates.single.quotes, isEmpty);
   });
 }

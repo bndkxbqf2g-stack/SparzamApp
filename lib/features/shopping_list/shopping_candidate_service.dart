@@ -8,6 +8,7 @@ import '../offers/effective_price.dart';
 import '../offers/offer_filter.dart';
 import '../offers/prospect_price_statistics.dart';
 import 'receipt_product_price_match.dart';
+import 'shopping_price_quotes.dart';
 
 class ShoppingCandidateQuote {
   const ShoppingCandidateQuote({
@@ -96,6 +97,7 @@ List<ShoppingCandidate> buildShoppingCandidates({
     for (final offer in offers) {
       if (offer.productId != product.id ||
           !_storeEnabled(offer.storeName, enabledStores) ||
+          isSampleOffer(offer) ||
           !isOfferDateRangeActive(
             validFrom: offer.validFrom,
             validUntil: offer.validUntil,
