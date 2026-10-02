@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: a987274e083e85d8ca7fa73b4ee7cd7b1ccd0a2c
-- PR-CI zu diesem Stand: 564 Tests, Analyse und Web-Build erfolgreich; Main-CI `37005197693` und Release `37005197686` sind nach dem Merge einschließlich Pages-Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: ee7dc9fcb0ea3f165bf081a6323cd767f666f97a
+- PR-CI zu diesem Stand: 568 Tests, Analyse und Web-Build erfolgreich; Main-CI `37010345548` und Release `37010345631` sind nach dem Merge einschließlich Pages-Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -40,6 +40,25 @@
 - Kaufland-Milch 1,5 % und 3,5 % als getrennte Produkte behandelt.
 - Explizite Zuordnung unklar abgekürzter Kaufland-Milchzeilen ermöglicht.
 - Milch-Auswahl nur für sicher zuordenbare, ausgeglichene und nicht rabattierte Bonzeilen.
+
+## Update 02.10.2026 – Lokales Backup für den Alltag
+- Das Profil bietet jetzt „Lokales Backup exportieren“ und „Lokales Backup
+  importieren“. Die Sicherung ist eine lesbare JSON-Datei und braucht keinen
+  Server- oder Supabase-Zugang.
+- Gesichert werden Listen und Listenpräferenzen, Budget, Mobilität,
+  Preisdaten-Einstellungen, eigene Produkte, aktuelle Nutzerangebote,
+  Marktpreise, Kauf-/Preisbeobachtungen, Bon-Aliase, bekannte Artikel,
+  Markt-/Gangreihenfolge, Kachelansicht und vorhandene Routendaten.
+- Import und Export bewahren Quelle, Nachweisreferenz, Angebotsgültigkeit,
+  Mengenbasis und Vertrauensstatus. Der Import prüft Schema-Version, Datum,
+  Zahlenbereiche und Datenformen strikt, bevor lokale Stores geändert werden.
+- Originale Bondateien und Diagnoseprotokolle werden nicht kopiert;
+  vorhandene Nachweisreferenzen bleiben erhalten. Der aktuelle Prospektfeed
+  bleibt eine eigene, zeitabhängige Quelle und wird durch ein Backup nicht
+  künstlich verlängert.
+- PR #149 (`ee7dc9f`) ergänzte drei Fachtests und einen Widget-Test. PR-CI,
+  Main-CI `37010345548` und Release `37010345631` waren mit 568 Tests,
+  Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
 
 ## Update 02.10.2026 – Exakter Preisverlauf im Listenartikel
 - Der Preisdialog eines Einkaufslistenartikels bietet jetzt einen eigenen
