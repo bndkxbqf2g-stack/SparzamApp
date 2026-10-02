@@ -9,12 +9,14 @@ class PriceGapCard extends StatelessWidget {
     this.title = 'Preis-Datenlücken zuerst klären',
     this.description = 'Ohne belastbaren Preis bleibt die Planung für diese Positionen vorläufig.',
     this.maxItems = 5,
+    this.onResolveGap,
   });
 
   final List<PriceGapPriority> gaps;
   final String title;
   final String description;
   final int maxItems;
+  final Future<void> Function(PriceGapPriority gap)? onResolveGap;
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +69,17 @@ class PriceGapCard extends StatelessWidget {
                           shown[index].detailLabel,
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
+                        if (onResolveGap != null)
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: TextButton.icon(
+                              onPressed: () async {
+                                await onResolveGap!(shown[index]);
+                              },
+                              icon: const Icon(Icons.edit_outlined),
+                              label: const Text('Preis ergänzen'),
+                            ),
+                          ),
                       ],
                     ),
                   ),

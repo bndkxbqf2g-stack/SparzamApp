@@ -47,8 +47,10 @@ import '../profile/mobility_settings_screen.dart';
 import '../profile/price_data_settings_screen.dart';
 import '../profile/store_selection_screen.dart';
 import '../profile/diagnostic_log_screen.dart';
+import '../price_gaps/price_gap_priority.dart';
 import '../route/route_optimizer.dart';
 import '../route/route_screen.dart';
+import '../catalog/market_price_editor_screen.dart';
 import '../scanner/scanner_screen.dart';
 import '../receipt/receipt_observation_migration.dart';
 import '../shopping_list/replenishment_analyzer.dart';
@@ -889,6 +891,20 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
+  Future<void> openPriceGapEditor(PriceGapPriority gap) async {
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute(
+        builder: (_) => MarketPriceEditorScreen(
+          product: gap.item.product,
+          prices: marketPrices,
+          onSave: saveMarketPrice,
+          onDelete: deleteMarketPrice,
+          openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
+        ),
+      ),
+    );
+  }
+
   Future<List<Offer>> saveOffer(Offer offer) async {
     final next = await widget.offerStore.upsert(offer, offers);
     final observedAt = DateTime.now();
@@ -989,6 +1005,10 @@ class _AppShellState extends State<AppShell> {
                 marketPrices: planningMarketPrices,
                 recentPurchases: recentPurchases,
                 historicalPriceObservations: historicalPriceObservations,
+                onResolvePriceGap: (gap) async {
+                  await openPriceGapEditor(gap);
+                  if (mounted) refreshRoute(() {});
+                },
                 onRoadDistancesChanged: (value) {
                   setState(() => roadDistances = value);
                   refreshRoute(() {});
@@ -1059,6 +1079,7 @@ class _AppShellState extends State<AppShell> {
       onEditStores: openStoreSettings,
       storeCount: activeStoreCount(mobility.enabledStoreNames),
       onOpenCatalog: openCatalog,
+      onResolvePriceGap: openPriceGapEditor,
       onEditPriceData: openPriceDataSettings,
       onSavePrice: saveMarketPrice,
       onSaveProduct: saveCatalogProduct,

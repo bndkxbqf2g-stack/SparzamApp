@@ -1026,3 +1026,12 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   die unbekannte Bonzeile.
 - Suchauswahl und Kandidatenfenster haben dieselbe Regel; Regressionen prüfen
   den günstigen normalen Milchpreis in beiden Pfaden.
+
+## Update 02.10.2026 – Preis-Datenlücken direkt bearbeiten
+- Routen- und Datenlückenkarten bieten pro offener Listenposition jetzt die
+  Aktion „Preis ergänzen“.
+- Die Aktion öffnet die bestehende Marktpreis-Ansicht mit allen sechs Märkten;
+  manuelle Preise werden weiterhin pro Markt, Quelle und Erfassungsdatum
+  gespeichert und nach der Rückkehr sofort in die Route übernommen.
+- Eine Widgetregression prüft den Klickpfad. Historische Hinweise bleiben von
+  der Bestätigung getrennt und werden nicht automatisch zu Routenpreisen.

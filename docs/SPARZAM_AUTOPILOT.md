@@ -52,7 +52,7 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [ ] hierarchischen Produktkatalog aus Oberbegriff → Produktfamilie → Variante aufbauen
 - [ ] Suchbegriff zeigt alle passenden Interpretationen (z. B. Tomate → frisch/Rispe/Party, getrennt von Tomatenmark/-sauce)
 - [ ] für jede Position alle belastbaren Marktpreise aufbauen
-- [ ] fehlende Preise explizit markieren
+- [x] fehlende Preise explizit markieren und direkt zur Preiseingabe führen
 - [x] Produkt×Markt-Matrix als sichtbare Einkaufslisten-/Teststruktur
 - [ ] neuester/Median/Quelle/Alter/Vergleichbarkeit je Preis
 - [ ] Einkaufsliste automatisch mit bekannten Daten aktualisieren
@@ -78,7 +78,7 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [ ] erkannte Produkte automatisch als Beobachtungen aufnehmen
 - [ ] Dubletten-/Receipt-Fingerprint-Härtung
 - [ ] Open Prices als optionale Ergänzung optimieren
-- [ ] manuelle Preisbestätigung vereinfachen
+- [x] manuelle Preisbestätigung aus der Datenlückenkarte vereinfachen
 - [ ] spätere Video-/Regalerfassung nur nach stabiler Foto/OCR-Basis prüfen
 
 ### Phase 6 – UX / Dashboard

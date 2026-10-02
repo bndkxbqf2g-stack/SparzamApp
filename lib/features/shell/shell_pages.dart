@@ -23,6 +23,7 @@ import 'more_screen.dart';
 import '../offers/offer_import.dart';
 import '../offers/prospect_price_statistics.dart';
 import '../offers/offers_screen.dart';
+import '../price_gaps/price_gap_priority.dart';
 import '../profile/profile_screen.dart';
 import '../receipt/receipt_screen.dart';
 import '../route/route_screen.dart';
@@ -76,6 +77,7 @@ List<Widget> buildShellPages({
   required VoidCallback onEditStores,
   required int storeCount,
   required VoidCallback onOpenCatalog,
+  Future<void> Function(PriceGapPriority gap)? onResolvePriceGap,
   required VoidCallback onEditPriceData,
   required String priceDataSummary,
   required Future<List<MarketPrice>> Function(MarketPrice price) onSavePrice,
@@ -164,6 +166,7 @@ List<Widget> buildShellPages({
       historicalPriceObservations: historicalPriceObservations,
       onRoadDistancesChanged: onRoadDistancesChanged,
       onRoadMatrixChanged: onRoadMatrixChanged,
+      onResolvePriceGap: onResolvePriceGap,
     ),
     receiptPage: ReceiptScreen(
       plan: currentPlan,

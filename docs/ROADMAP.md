@@ -55,6 +55,8 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 - Markt-/Routenoptimierung unter Berücksichtigung des tatsächlichen Mehrwegs und der daraus entstehenden Fahrtkosten.
 - Persönlichen Zeitwert optional monetarisieren, ohne ihn mit tatsächlichen
   Kassen- oder Fahrtkosten zu vermischen.
+- Fehlende Preisbelege direkt aus der Routen-Datenlücke zur bestehenden
+  Marktpreis-Eingabe führen, ohne historische Werte zu bestätigen.
 - Routenempfehlung erklärt vollständige Preisabdeckung gegenüber einer unvollständigen Einzelmarkt-Teilroute.
 - Einen zusätzlichen Markt nur wählen, wenn die Ersparnis des gesamten Teilwarenkorbs den zusätzlichen Aufwand wirtschaftlich rechtfertigt.
 - Primäres Ergebnis: konkrete Empfehlung der wirtschaftlichsten Einkaufsstrategie (z. B. nur Lidl, Lidl + Aldi oder nur Kaufland), nicht bloß eine Liste billiger Einzelpreise.

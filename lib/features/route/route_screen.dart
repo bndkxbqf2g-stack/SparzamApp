@@ -36,6 +36,7 @@ class RouteScreen extends StatefulWidget {
     this.historicalPriceObservations = const <PriceObservation>[],
     this.onRoadDistancesChanged,
     this.onRoadMatrixChanged,
+    this.onResolvePriceGap,
   });
 
   final List<ListItem> items;
@@ -46,6 +47,7 @@ class RouteScreen extends StatefulWidget {
   final List<PriceObservation> historicalPriceObservations;
   final ValueChanged<Map<String, double>>? onRoadDistancesChanged;
   final ValueChanged<RoadRouteMatrix?>? onRoadMatrixChanged;
+  final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
 
   @override
   State<RouteScreen> createState() => _RouteScreenState();
@@ -154,7 +156,12 @@ class _RouteScreenState extends State<RouteScreen> {
       recentPurchases: widget.recentPurchases,
       historicalPriceObservations: widget.historicalPriceObservations,
     );
-    if (best == null) return _MissingPrices(gaps: priceGaps);
+    if (best == null) {
+      return _MissingPrices(
+        gaps: priceGaps,
+        onResolvePriceGap: widget.onResolvePriceGap,
+      );
+    }
     final priceEvidence = summarizeRoutePriceEvidence(best, optimizer.prices);
 
     final single = optimizer.bestSingleStorePlan();
@@ -231,6 +238,7 @@ class _RouteScreenState extends State<RouteScreen> {
           const SizedBox(height: 10),
           PriceGapCard(
             gaps: priceGaps,
+            onResolveGap: widget.onResolvePriceGap,
             description:
                 'Die Reihenfolge nutzt fehlende Marktbelege, Grundbedarf, '
                 'deine bisherigen Käufe, historische Preisniveaus und '
@@ -404,9 +412,10 @@ class _EmptyRoute extends StatelessWidget {
 }
 
 class _MissingPrices extends StatelessWidget {
-  const _MissingPrices({required this.gaps});
+  const _MissingPrices({required this.gaps, this.onResolvePriceGap});
 
   final List<PriceGapPriority> gaps;
+  final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
 
   @override
   Widget build(BuildContext context) => ListView(
@@ -427,6 +436,7 @@ class _MissingPrices extends StatelessWidget {
       if (gaps.isNotEmpty)
         PriceGapCard(
           gaps: gaps,
+          onResolveGap: onResolvePriceGap,
           description:
               'Die Reihenfolge nutzt nur fehlende Marktbelege, '
               'Grundbedarf, deine bisherigen Käufe, historische '
