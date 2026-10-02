@@ -7,6 +7,7 @@ import '../../models/named_shopping_list.dart';
 import '../../models/offer.dart';
 import '../../models/product.dart';
 import '../../models/price_point.dart';
+import '../../models/price_observation.dart';
 import '../../models/recent_purchase.dart';
 import '../../models/replenishment_suggestion.dart';
 import '../../models/receipt_price_stat.dart';
@@ -60,6 +61,7 @@ class ShoppingListScreen extends StatefulWidget {
     required this.catalogProducts,
     required this.marketPrices,
     this.priceObservations = const <MarketPrice>[],
+    this.historicalPriceObservations = const <PriceObservation>[],
     this.prospectPriceHistory = const {},
     this.onSavePrices,
     this.onCreateProduct,
@@ -90,6 +92,7 @@ class ShoppingListScreen extends StatefulWidget {
   final List<Product> catalogProducts;
   final List<MarketPrice> marketPrices;
   final List<MarketPrice> priceObservations;
+  final List<PriceObservation> historicalPriceObservations;
   final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
   final Future<void> Function(List<MarketPrice>)? onSavePrices;
   final Future<List<Product>> Function(Product product)? onCreateProduct;
@@ -544,6 +547,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     enabledStoreNames: widget.mobility.enabledStoreNames,
                     marketPrices: widget.marketPrices,
                     priceObservations: widget.priceObservations,
+                    historicalPriceObservations:
+                        widget.historicalPriceObservations,
                     prospectPriceHistory: widget.prospectPriceHistory,
                     receiptPriceStats: receiptPriceStats,
                     onToggle: toggleChecked,

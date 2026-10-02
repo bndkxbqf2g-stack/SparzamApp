@@ -151,4 +151,60 @@ void main() {
     expect(find.textContaining('Angebotshistorie'), findsOneWidget);
     expect(find.text('0,95 €'), findsNWidgets(2));
   });
+
+  testWidgets('Preisfenster zeigt den exakten gelernten Preisverlauf', (
+    tester,
+  ) async {
+    const product = Product(
+      id: 'receipt-milk',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'milch',
+    );
+    final observedAt = DateTime.now().subtract(const Duration(days: 2));
+    final observation = PriceObservation(
+      id: 'receipt-milk-kaufland',
+      productId: product.id,
+      storeName: 'Kaufland',
+      price: 0.95,
+      observedAt: observedAt,
+      source: PriceObservationSource.receipt,
+      kind: PriceObservationKind.regular,
+      proofRef: 'receipt-fixture',
+    );
+    final offer = Offer(
+      id: 'current-milk-offer',
+      productId: product.id,
+      storeName: 'Kaufland',
+      originalPrice: 1.29,
+      offerPrice: 0.89,
+      validUntil: DateTime(2099, 1, 1),
+      proofRef: 'offer-fixture',
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ShoppingPriceBadge(
+            item: ListItem(product: product),
+            prices: const <MarketPrice>[],
+            offers: <Offer>[offer],
+            enabledStores: const <String>['Kaufland'],
+            historicalPriceObservations: <PriceObservation>[observation],
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.textContaining('Angebot Kaufland'));
+    await tester.pumpAndSettle();
+    expect(find.text('Preisverlauf (1 Beleg)'), findsOneWidget);
+
+    await tester.tap(find.text('Preisverlauf (1 Beleg)'));
+    await tester.pumpAndSettle();
+    expect(find.text('Milch · Preisverlauf'), findsOneWidget);
+    expect(find.text('Kaufland'), findsOneWidget);
+    expect(find.textContaining('Kassenbon · Normalpreis'), findsOneWidget);
+    expect(find.text('0,95 €'), findsOneWidget);
+  });
 }

@@ -6,6 +6,7 @@ import '../../models/market_price.dart';
 import '../../models/offer.dart';
 import '../../models/price_observation.dart';
 import '../offers/prospect_price_statistics.dart';
+import 'shopping_price_history.dart';
 import 'shopping_price_quotes.dart';
 
 class ShoppingPriceBadge extends StatelessWidget {
@@ -15,6 +16,7 @@ class ShoppingPriceBadge extends StatelessWidget {
     required this.prices,
     required this.offers,
     required this.enabledStores,
+    this.historicalPriceObservations = const <PriceObservation>[],
     this.prospectPriceHistory = const {},
     this.onOpenOffer,
   });
@@ -23,6 +25,7 @@ class ShoppingPriceBadge extends StatelessWidget {
   final List<MarketPrice> prices;
   final List<Offer> offers;
   final List<String> enabledStores;
+  final List<PriceObservation> historicalPriceObservations;
   final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
   final ValueChanged<Offer>? onOpenOffer;
 
@@ -121,6 +124,10 @@ class ShoppingPriceBadge extends StatelessWidget {
         .where((entry) => entry.hasHistoricalQuote)
         .length;
     final history = _prospectHistorySummaries();
+    final priceHistory = shoppingPriceHistory(
+      product: item.product,
+      observations: historicalPriceObservations,
+    );
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -173,6 +180,18 @@ class ShoppingPriceBadge extends StatelessWidget {
                     label: Text(
                       'Prospekt-Historie (${history.length} '
                       '${history.length == 1 ? 'Markt' : 'Märkte'})',
+                    ),
+                  ),
+                ),
+              if (priceHistory.isNotEmpty)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton.icon(
+                    onPressed: () => _showPriceHistory(context, priceHistory),
+                    icon: const Icon(Icons.timeline_outlined, size: 18),
+                    label: Text(
+                      'Preisverlauf (${priceHistory.length} '
+                      '${priceHistory.length == 1 ? 'Beleg' : 'Belege'})',
                     ),
                   ),
                 ),
@@ -241,6 +260,60 @@ class ShoppingPriceBadge extends StatelessWidget {
                             },
                     );
                   },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showPriceHistory(
+    BuildContext context,
+    List<ShoppingPriceHistoryEntry> entries,
+  ) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (historyContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${item.product.name} · Preisverlauf',
+                style: Theme.of(historyContext).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'Diese Belege zeigen gelernte Preise für genau diese '
+                'Produktvariante. Sie ersetzen keinen aktuellen Regalpreis.',
+              ),
+              const SizedBox(height: 10),
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    for (final entry in entries)
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: const Icon(Icons.receipt_long_outlined),
+                        title: Text(entry.storeName),
+                        subtitle: Text(
+                          '${entry.sourceLabel} · ${entry.kindLabel} · '
+                          '${_formatDate(entry.observedAt)}'
+                          '${entry.validUntil == null ? '' : ' · gültig bis ${_formatDate(entry.validUntil!)}'}',
+                        ),
+                        trailing: Text(
+                          '${entry.price.toStringAsFixed(2).replaceAll('.', ',')} €',
+                          style: const TextStyle(fontWeight: FontWeight.w800),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ],

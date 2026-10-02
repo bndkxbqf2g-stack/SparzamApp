@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/offer.dart';
+import '../../models/price_observation.dart';
 import '../../models/product.dart';
 import '../../models/receipt_price_stat.dart';
 import 'shopping_price_badge.dart';
@@ -20,6 +21,7 @@ class ShoppingGroupCard extends StatelessWidget {
     required this.enabledStoreNames,
     required this.marketPrices,
     required this.priceObservations,
+    this.historicalPriceObservations = const <PriceObservation>[],
     required this.prospectPriceHistory,
     this.receiptPriceStats = const <ReceiptPriceStat>[],
     required this.onToggle,
@@ -37,6 +39,7 @@ class ShoppingGroupCard extends StatelessWidget {
   final List<String> enabledStoreNames;
   final List<MarketPrice> marketPrices;
   final List<MarketPrice> priceObservations;
+  final List<PriceObservation> historicalPriceObservations;
   final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
   final List<ReceiptPriceStat> receiptPriceStats;
   final ValueChanged<Product> onToggle;
@@ -75,6 +78,7 @@ class ShoppingGroupCard extends StatelessWidget {
                       offers: offers,
                       marketPrices: marketPrices,
                       priceObservations: priceObservations,
+                      historicalPriceObservations: historicalPriceObservations,
                       prospectPriceHistory: prospectPriceHistory,
                       receiptPriceStats: receiptPriceStats,
                       enabledStoreNames: enabledStoreNames,
@@ -103,6 +107,7 @@ class ShoppingGroupCard extends StatelessWidget {
                   enabledStoreNames: enabledStoreNames,
                   marketPrices: marketPrices,
                   priceObservations: priceObservations,
+                  historicalPriceObservations: historicalPriceObservations,
                   prospectPriceHistory: prospectPriceHistory,
                   receiptPriceStats: receiptPriceStats,
                   onToggle: onToggle,
@@ -128,6 +133,7 @@ class _ShoppingItemCard extends StatelessWidget {
     required this.offers,
     required this.marketPrices,
     required this.priceObservations,
+    this.historicalPriceObservations = const <PriceObservation>[],
     required this.prospectPriceHistory,
     required this.receiptPriceStats,
     required this.enabledStoreNames,
@@ -143,6 +149,7 @@ class _ShoppingItemCard extends StatelessWidget {
   final List<Offer> offers;
   final List<MarketPrice> marketPrices;
   final List<MarketPrice> priceObservations;
+  final List<PriceObservation> historicalPriceObservations;
   final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
   final List<ReceiptPriceStat> receiptPriceStats;
   final List<String> enabledStoreNames;
@@ -200,6 +207,7 @@ class _ShoppingItemCard extends StatelessWidget {
               prices: marketPrices,
               offers: offers,
               prospectPriceHistory: prospectPriceHistory,
+              historicalPriceObservations: historicalPriceObservations,
               enabledStores: enabledStoreNames,
               onOpenOffer: onOpenOffer,
             ),
@@ -239,6 +247,7 @@ class _ShoppingItemTile extends StatelessWidget {
     required this.enabledStoreNames,
     required this.marketPrices,
     required this.priceObservations,
+    this.historicalPriceObservations = const <PriceObservation>[],
     required this.prospectPriceHistory,
     required this.receiptPriceStats,
     required this.onToggle,
@@ -254,6 +263,7 @@ class _ShoppingItemTile extends StatelessWidget {
   final List<String> enabledStoreNames;
   final List<MarketPrice> marketPrices;
   final List<MarketPrice> priceObservations;
+  final List<PriceObservation> historicalPriceObservations;
   final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
   final List<ReceiptPriceStat> receiptPriceStats;
   final ValueChanged<Product> onToggle;
@@ -315,6 +325,7 @@ class _ShoppingItemTile extends StatelessWidget {
             prices: marketPrices,
             offers: offers,
             prospectPriceHistory: prospectPriceHistory,
+            historicalPriceObservations: historicalPriceObservations,
             enabledStores: enabledStoreNames,
             onOpenOffer: onOpenOffer,
           ),
