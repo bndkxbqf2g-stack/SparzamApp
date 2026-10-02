@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: d0d38eeb1ed469b9299cd13d06198e012b46807b
-- PR-CI zu diesem Stand: 556 Tests, Analyse und Web-Build erfolgreich; Main-/Release-Läufe nach dem Merge werden separat verifiziert.
+- Letzter geprüfter Main-Stand: 37eb72f3dc6f1afc8154a57bc58596ff24f4a59c
+- PR-CI zu diesem Stand: 558 Tests, Analyse und Web-Build erfolgreich; Main-/Release-Läufe nach dem Merge werden separat verifiziert.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -51,6 +51,18 @@
   herausgehalten.
 - PR #135 (`3a0dbc3`) ergänzte drei Regressionen. Beide PR-CI-Läufe mit 556
   Tests, Analyse und Web-Build waren erfolgreich.
+
+## Update 02.10.2026 – Korrigierte Bonzuordnung wird als Änderung erkannt
+- `ReceiptObservationStore.addMany` zählt neben neuen Beobachtungen jetzt auch
+  echte Änderungen, zum Beispiel die nachträgliche Bestätigung eines zuvor
+  provisorischen Bonartikels.
+- Ein unveränderter erneuter Import bleibt bei null Änderungen; dadurch werden
+  Wiederholungen nicht als neue Lernbelege gezählt.
+- Der Importdialog kann eine korrigierte Zuordnung auch dann erfolgreich
+  abschließen, wenn daraus wegen fehlender Packungssemantik noch kein direkter
+  Marktpreis entsteht.
+- PR #137 (`bbf6332`) ergänzt die Persistenzregressionen. Beide PR-CI-Läufe
+  mit 558 Tests, Analyse und Web-Build waren erfolgreich.
 
 ## Update 30.09.2026 – Keine synthetischen Produktionspreise
 - Die sechs Produktionsmärkte enthalten keine fest eingebauten Beispielpreise
