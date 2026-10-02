@@ -42,6 +42,28 @@ Kartenzahlung EUR 2,53
     },
   );
 
+  test('ignores Kaufland subtotal and keeps basket discount unlinked', () {
+    final draft = parseReceiptLedger('''
+Kaufland
+Preis EUR
+Apfel 2,00 B
+Leergut Getränke -1,00 A
+Zwischensumme 1,00
+--------------Rabattaktion--------------
+K Card XTRA Rabatt -0,10
+Summe 0,90
+Kartenzahlung 0,90
+''');
+
+    expect(draft.rows.map((row) => row.label),
+        isNot(contains('Zwischensumme')));
+    final basketDiscount = draft.rows.last;
+    expect(basketDiscount.kind, ReceiptRowKind.discount);
+    expect(basketDiscount.linkedItemLine, isNull);
+    expect(draft.calculatedCents, 90);
+    expect(draft.balances, isTrue);
+  });
+
   test('accepts typographic multiplication signs in quantity layouts', () {
     final draft = parseReceiptLedger('''
 Kaufland
