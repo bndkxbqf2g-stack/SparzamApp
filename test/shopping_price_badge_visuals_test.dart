@@ -99,6 +99,10 @@ void main() {
     );
     expect(find.text('Käse · Kaufland'), findsOneWidget);
     expect(find.text('Käse'), findsOneWidget);
+    expect(
+      find.textContaining('Prospekt · Nachweis vorhanden'),
+      findsOneWidget,
+    );
     expect(find.byType(Image), findsNWidgets(2));
   });
 

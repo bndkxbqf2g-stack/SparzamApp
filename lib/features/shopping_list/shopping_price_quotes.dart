@@ -43,6 +43,16 @@ class ShoppingQuote {
       'Prospekt-Median (historisch, bis ${_date(observedAt!)})',
   };
 
+  /// Keeps the evidence class visible in the detail view without changing
+  /// the ranking label or treating a missing proof reference as a valid one.
+  String get evidenceLabel {
+    if (kind != ShoppingQuoteKind.offer || offer == null) return sourceLabel;
+    final proof = offer!.proofRef?.trim();
+    return '${_offerSourceLabel(offer!.source)} · '
+        '${proof == null || proof.isEmpty ? 'Nachweis fehlt' : 'Nachweis vorhanden'} · '
+        '$sourceLabel';
+  }
+
   String get displayPrefix => switch (kind) {
     ShoppingQuoteKind.receipt => 'Bonpreis',
     ShoppingQuoteKind.ownPrice => 'Eigener Preis',
@@ -290,6 +300,17 @@ int _quoteSourceOrder(ShoppingQuote quote) => switch (quote.kind) {
   ShoppingQuoteKind.receipt || ShoppingQuoteKind.ownPrice => 1,
   ShoppingQuoteKind.prospectHistory => 2,
 };
+
+String _offerSourceLabel(String source) =>
+    switch (source.trim().toLowerCase()) {
+      'leaflet' => 'Prospekt',
+      'retailer' => 'Händler',
+      'retailerwebsite' || 'retailer_website' => 'Händler-Website',
+      'receipt' => 'Kassenbon',
+      'manual' => 'Manuell',
+      'openprices' || 'open_prices' => 'Open Prices',
+      _ => source.trim().isEmpty ? 'Quelle unbekannt' : source.trim(),
+    };
 
 int _compareHistoricalSummaries(
   ProspectPriceHistorySummary candidate,

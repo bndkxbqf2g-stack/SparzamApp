@@ -50,6 +50,42 @@ void main() {
     expect(quotes.last.unitPrice, 1.05);
   });
 
+  test('offer evidence keeps source and proof state visible', () {
+    final sourcedOffer = Offer(
+      id: 'sourced_offer',
+      productId: milk.id,
+      storeName: 'Kaufland',
+      originalPrice: 1.29,
+      offerPrice: 0.89,
+      source: 'retailerWebsite',
+      proofRef: 'https://example.test/offer',
+      validUntil: DateTime(2026, 9, 30),
+    );
+
+    final quote = shoppingQuotes(
+      item,
+      prices: const [],
+      offers: [sourcedOffer],
+      now: DateTime(2026, 9, 24),
+    ).single;
+
+    expect(
+      quote.evidenceLabel,
+      'Händler-Website · Nachweis vorhanden · Angebot bis 30.09.2026',
+    );
+  });
+
+  test('missing offer proof remains explicit', () {
+    final quote = shoppingQuotes(
+      item,
+      prices: const [],
+      offers: [offer],
+      now: DateTime(2026, 9, 24),
+    ).single;
+
+    expect(quote.evidenceLabel, startsWith('Manuell · Nachweis fehlt · '));
+  });
+
   test('cashback is shown as the effective shopping-list price', () {
     final cashbackOffer = Offer(
       id: 'cashback_offer',
