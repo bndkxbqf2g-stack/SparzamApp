@@ -29,15 +29,16 @@ class ReceiptObservationStore {
     final byId = <String, ReceiptObservation>{
       for (final item in current) item.id: item,
     };
-    var added = 0;
+    var changedCount = 0;
     var changed = false;
     for (final observation in observations) {
       final previous = byId[observation.id];
       if (previous == null) {
-        added++;
+        changedCount++;
         changed = true;
       } else if (jsonEncode(previous.toJson()) !=
           jsonEncode(observation.toJson())) {
+        changedCount++;
         changed = true;
       }
       byId[observation.id] = observation;
@@ -49,6 +50,9 @@ class ReceiptObservationStore {
       _key,
       next.map((item) => jsonEncode(item.toJson())).toList(),
     );
-    return added;
+    // The import dialog uses this value to decide whether an import changed
+    // anything. Count updates as well as first-time inserts so a corrected
+    // identity is not reported as an empty save.
+    return changedCount;
   }
 }
