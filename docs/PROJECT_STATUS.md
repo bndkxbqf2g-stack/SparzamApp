@@ -6,7 +6,7 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: fbd9da38ad3a95ecbd67159b4b43cc10fa264faa
+- Letzter geprüfter Main-Stand: 3e9628167576411d75b3d60338b74a1943e3ae7d
 - Main-CI zu diesem Stand: 539 Tests, Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
@@ -1139,3 +1139,14 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 ## Update 02.10.2026 – Sample-Angebote aus Variantenwahl ausgeschlossen
 - Der Varianten-/Wiederkaufspfad filtert reservierte Demoangebote jetzt ebenso wie die direkte Einkaufssuche.
 - Die Regression erhöht den geprüften Main-Stand auf 539 Tests; Main-CI `36967553100` und Release `36967553168` sind erfolgreich.
+
+## Update 02.10.2026 – Verifizierte Angebotserparnis in der Einkaufsliste
+- Aktive Angebote zeigen in der Einkaufsliste neben dem effektiven Preis jetzt
+  die konkrete Ersparnis gegenüber dem verifizierten Normalpreis.
+- Coupon- und Cashback-Effekte sind in diesem Betrag enthalten. Ein nicht
+  verifizierter oder nicht belegter Normalpreis erzeugt weiterhin keine
+  Ersparnisanzeige.
+- PR #120 (`8858e871`) ergänzt Fach- und Widgetregressionen; Main-CI
+  `36969611852` und Release `36969611952` sind erfolgreich. Der Live-Smoke-Test
+  zeigt für das aktuelle Kaufland-Müllermilch-Angebot `0,69 € · Ersparnis
+  0,80 €`.
