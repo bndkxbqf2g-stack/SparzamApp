@@ -8,28 +8,28 @@ import 'package:sparzamapp/models/offer.dart';
 final _baselineDate = DateTime(2026, 9, 24);
 
 List<MarketPrice> _baselinePrices() => [
-      for (final entry in const <(String, double, double)>[
-        ('Lidl', 1.29, 0.89),
-        ('EDEKA', 1.39, 1.29),
-        ('PENNY', 1.19, 0.79),
-        ('ALDI Süd', 1.15, 0.75),
-        ('Netto', 1.35, 0.79),
-        ('Kaufland', 1.19, 0.72),
-      ]) ...[
-        MarketPrice(
-          productId: 'milch_35',
-          storeName: entry.$1,
-          price: entry.$2,
-          updatedAt: _baselineDate,
-        ),
-        MarketPrice(
-          productId: 'nudeln',
-          storeName: entry.$1,
-          price: entry.$3,
-          updatedAt: _baselineDate,
-        ),
-      ],
-    ];
+  for (final entry in const <(String, double, double)>[
+    ('Lidl', 1.29, 0.89),
+    ('EDEKA', 1.39, 1.29),
+    ('PENNY', 1.19, 0.79),
+    ('ALDI Süd', 1.15, 0.75),
+    ('Netto', 1.35, 0.79),
+    ('Kaufland', 1.19, 0.72),
+  ]) ...[
+    MarketPrice(
+      productId: 'milch_35',
+      storeName: entry.$1,
+      price: entry.$2,
+      updatedAt: _baselineDate,
+    ),
+    MarketPrice(
+      productId: 'nudeln',
+      storeName: entry.$1,
+      price: entry.$3,
+      updatedAt: _baselineDate,
+    ),
+  ],
+];
 
 void main() {
   const milk = Product(
@@ -46,9 +46,9 @@ void main() {
   );
 
   List<ListItem> items() => [
-        ListItem(product: milk),
-        ListItem(product: noodles),
-      ];
+    ListItem(product: milk),
+    ListItem(product: noodles),
+  ];
 
   test('maxStores begrenzt erzeugte Routen', () {
     final optimizer = RouteOptimizer(
@@ -88,69 +88,112 @@ void main() {
     expect(relaxed.bestPlan()!.stores.length, 2);
   });
 
-  test('zusätzlicher Markt muss seinen Mindestvorteil nach Fahrtkosten erreichen', () {
-    final strict = RouteOptimizer(
-      items(),
-      const [],
-      marketPrices: _baselinePrices(),
-      euroPerKm: 0.22,
-      maxStores: 2,
-      minExtraStoreSavings: 0.05,
-    );
-
-    final recommended = strict.bestPlan()!;
-    final alternatives = strict.alternatives();
-    final cheaperWithMoreStores = alternatives.where(
-      (plan) => plan.stores.length > recommended.stores.length &&
-          plan.planningScore < recommended.planningScore,
-    );
-
-    for (final candidate in cheaperWithMoreStores) {
-      final required = strict.minExtraStoreSavings *
-          (candidate.stores.length - recommended.stores.length);
-      expect(
-        recommended.planningScore - candidate.planningScore <= required,
-        isTrue,
+  test(
+    'zusätzlicher Markt muss seinen Mindestvorteil nach Fahrtkosten erreichen',
+    () {
+      final strict = RouteOptimizer(
+        items(),
+        const [],
+        marketPrices: _baselinePrices(),
+        euroPerKm: 0.22,
+        maxStores: 2,
+        minExtraStoreSavings: 0.05,
       );
-    }
-  });
 
-  test('Angebot rechtfertigt zweiten Markt nur bei Gesamtvorteil inkl Fahrt', () {
-    final offer = Offer(
-      id: 'lidl-milk-special',
-      productId: 'milch_35',
-      storeName: 'Lidl',
-      originalPrice: 1.29,
-      offerPrice: 0.10,
-      validFrom: DateTime(2026, 9, 25),
-      validUntil: DateTime(2026, 9, 26),
-      source: 'leaflet',
-    );
+      final recommended = strict.bestPlan()!;
+      final alternatives = strict.alternatives();
+      final cheaperWithMoreStores = alternatives.where(
+        (plan) =>
+            plan.stores.length > recommended.stores.length &&
+            plan.planningScore < recommended.planningScore,
+      );
 
-    final withoutTravel = RouteOptimizer(
+      for (final candidate in cheaperWithMoreStores) {
+        final required =
+            strict.minExtraStoreSavings *
+            (candidate.stores.length - recommended.stores.length);
+        expect(
+          recommended.planningScore - candidate.planningScore <= required,
+          isTrue,
+        );
+      }
+    },
+  );
+
+  test(
+    'Angebot rechtfertigt zweiten Markt nur bei Gesamtvorteil inkl Fahrt',
+    () {
+      final offer = Offer(
+        id: 'lidl-milk-special',
+        productId: 'milch_35',
+        storeName: 'Lidl',
+        originalPrice: 1.29,
+        offerPrice: 0.10,
+        validFrom: DateTime(2026, 9, 25),
+        validUntil: DateTime(2026, 9, 26),
+        source: 'leaflet',
+      );
+
+      final withoutTravel = RouteOptimizer(
+        items(),
+        [offer],
+        marketPrices: _baselinePrices(),
+        now: DateTime(2026, 9, 25),
+        euroPerKm: 0,
+        maxStores: 2,
+        enabledStoreNames: const ['Lidl', 'Kaufland'],
+      ).bestPlan()!;
+
+      final withTravel = RouteOptimizer(
+        items(),
+        [offer],
+        marketPrices: _baselinePrices(),
+        now: DateTime(2026, 9, 25),
+        euroPerKm: 0.22,
+        maxStores: 2,
+        enabledStoreNames: const ['Lidl', 'Kaufland'],
+      ).bestPlan()!;
+
+      expect(withoutTravel.stores.map((store) => store.name).toSet(), {
+        'Lidl',
+        'Kaufland',
+      });
+      expect(withTravel.stores, hasLength(1));
+      expect(withTravel.stores.single.name, 'Lidl');
+    },
+  );
+
+  test('persönlicher Zeitwert kann zusätzliche Marktfahrten abwerten', () {
+    final timeAware = RouteOptimizer(
       items(),
-      [offer],
-      marketPrices: _baselinePrices(),
+      [
+        Offer(
+          id: 'lidl-milk-time-value',
+          productId: 'milch_35',
+          storeName: 'Lidl',
+          originalPrice: 1.29,
+          offerPrice: 0.10,
+          validFrom: DateTime(2026, 9, 25),
+          validUntil: DateTime(2026, 9, 26),
+          source: 'leaflet',
+        ),
+      ],
       now: DateTime(2026, 9, 25),
       euroPerKm: 0,
       maxStores: 2,
+      timeValuePerHour: 30,
+      travelMinutesPerKm: 60,
+      roadDistances: const {'Lidl': 1, 'Kaufland': 10},
       enabledStoreNames: const ['Lidl', 'Kaufland'],
-    ).bestPlan()!;
-
-    final withTravel = RouteOptimizer(
-      items(),
-      [offer],
       marketPrices: _baselinePrices(),
-      now: DateTime(2026, 9, 25),
-      euroPerKm: 0.22,
-      maxStores: 2,
-      enabledStoreNames: const ['Lidl', 'Kaufland'],
-    ).bestPlan()!;
+    );
 
-    expect(withoutTravel.stores.map((store) => store.name).toSet(),
-        {'Lidl', 'Kaufland'});
-    expect(withTravel.stores, hasLength(1));
-    expect(withTravel.stores.single.name, 'Lidl');
+    final recommended = timeAware.bestPlan()!;
+
+    expect(recommended.stores, hasLength(1));
+    expect(recommended.stores.single.name, 'Lidl');
+    expect(recommended.timeCost, greaterThan(0));
+    expect(recommended.planningScore, greaterThan(recommended.total));
   });
 
   test('deaktivierte Märkte werden aus der Optimierung entfernt', () {
@@ -162,16 +205,16 @@ void main() {
       enabledStoreNames: const ['Lidl', 'PENNY'],
     );
 
-    expect(
-      optimizer.availableStores.map((store) => store.name),
-      ['Lidl', 'PENNY'],
-    );
+    expect(optimizer.availableStores.map((store) => store.name), [
+      'Lidl',
+      'PENNY',
+    ]);
     expect(
       optimizer.alternatives().every(
-            (plan) => plan.stores.every(
-              (store) => const ['Lidl', 'PENNY'].contains(store.name),
-            ),
-          ),
+        (plan) => plan.stores.every(
+          (store) => const ['Lidl', 'PENNY'].contains(store.name),
+        ),
+      ),
       isTrue,
     );
   });
@@ -213,14 +256,24 @@ void main() {
       now: now,
     );
 
-    final singleStorePlans = optimizer.alternatives().where((plan) => plan.stores.length == 1);
+    final singleStorePlans = optimizer.alternatives().where(
+      (plan) => plan.stores.length == 1,
+    );
     expect(singleStorePlans.any((plan) => plan.priceCoverage == 0.5), isTrue);
-    expect(optimizer.alternatives().any((plan) => plan.priceCoverage == 1), isTrue);
+    expect(
+      optimizer.alternatives().any((plan) => plan.priceCoverage == 1),
+      isTrue,
+    );
     expect(optimizer.bestPlan()!.priceCoverage, 1);
   });
 
   test('Mindestvorteil darf bessere Preisabdeckung nicht blockieren', () {
-    const secondItem = Product(id: 'coverage_only', name: 'Coverage', unit: 'Stück', group: 'test');
+    const secondItem = Product(
+      id: 'coverage_only',
+      name: 'Coverage',
+      unit: 'Stück',
+      group: 'test',
+    );
     final now = DateTime(2026, 9, 24);
     final optimizer = RouteOptimizer(
       [ListItem(product: milk), ListItem(product: secondItem)],
@@ -230,9 +283,24 @@ void main() {
       minExtraStoreSavings: 1000,
       enabledStoreNames: const ['Lidl', 'EDEKA'],
       marketPrices: [
-        MarketPrice(productId: 'coverage_only', storeName: 'EDEKA', price: 100, updatedAt: now),
-        MarketPrice(productId: 'milch_35', storeName: 'Lidl', price: 1.29, updatedAt: now),
-        MarketPrice(productId: 'milch_35', storeName: 'EDEKA', price: 1.39, updatedAt: now),
+        MarketPrice(
+          productId: 'coverage_only',
+          storeName: 'EDEKA',
+          price: 100,
+          updatedAt: now,
+        ),
+        MarketPrice(
+          productId: 'milch_35',
+          storeName: 'Lidl',
+          price: 1.29,
+          updatedAt: now,
+        ),
+        MarketPrice(
+          productId: 'milch_35',
+          storeName: 'EDEKA',
+          price: 1.39,
+          updatedAt: now,
+        ),
       ],
       now: now,
     );

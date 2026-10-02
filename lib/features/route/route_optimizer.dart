@@ -17,15 +17,20 @@ class RouteOptimizer {
     this.euroPerKm = 0.22,
     this.maxStores = 3,
     this.minExtraStoreSavings = 0,
+    this.timeValuePerHour = 0,
+    this.travelMinutesPerKm = 60 / 45,
     List<String>? enabledStoreNames,
     List<MarketPrice> marketPrices = const <MarketPrice>[],
     this.roadMatrix,
     DateTime? now,
-  })  : roadDistances = roadDistances ?? const <String, double>{},
-        today = now ?? DateTime.now(),
-        enabledStoreNames =
-            (enabledStoreNames ?? const <String>[]).toSet(),
-        prices = RoutePriceResolver(offers, marketPrices: marketPrices, now: now);
+  }) : roadDistances = roadDistances ?? const <String, double>{},
+       today = now ?? DateTime.now(),
+       enabledStoreNames = (enabledStoreNames ?? const <String>[]).toSet(),
+       prices = RoutePriceResolver(
+         offers,
+         marketPrices: marketPrices,
+         now: now,
+       );
 
   final List<ListItem> items;
   final RoutePriceResolver prices;
@@ -36,6 +41,13 @@ class RouteOptimizer {
   final double euroPerKm;
   final int maxStores;
   final double minExtraStoreSavings;
+
+  /// User-provided value of time. It affects only route comparison, never the
+  /// expected amount paid at checkout.
+  final double timeValuePerHour;
+
+  /// Travel-time conversion for the selected mobility mode.
+  final double travelMinutesPerKm;
   final Set<String> enabledStoreNames;
 
   bool isStoreEnabled(Store store) =>
@@ -61,6 +73,12 @@ class RouteOptimizer {
   double travelCost(Iterable<Store> selectedStores) =>
       travelRoute(selectedStores).distanceKm * euroPerKm;
 
+  int travelTimeMinutes(Iterable<Store> selectedStores) =>
+      _travelMinutesForDistance(travelRoute(selectedStores).distanceKm);
+
+  double timeCost(Iterable<Store> selectedStores) =>
+      travelTimeMinutes(selectedStores) / 60 * timeValuePerHour;
+
   RoutePlan buildPlan(List<Store> selectedStores) {
     final assignments = <Store, List<ListItem>>{};
     final unassigned = <ListItem>[];
@@ -71,7 +89,8 @@ class RouteOptimizer {
 
       for (final store in selectedStores) {
         final quote = prices.quote(store, item);
-        if (quote != null && !quote.isEstimated &&
+        if (quote != null &&
+            !quote.isEstimated &&
             quote.total + priceUncertaintyReserve(quote, today) < bestScore) {
           bestScore = quote.total + priceUncertaintyReserve(quote, today);
           bestStore = store;
@@ -89,13 +108,19 @@ class RouteOptimizer {
       0,
       (sum, entry) => sum + basketCost(entry.key, entry.value),
     );
-    final uncertaintyReserve = assignments.entries.fold<double>(0, (sum, entry) =>
-        sum + entry.value.fold<double>(0, (subtotal, item) {
-          final quote = prices.quote(entry.key, item)!;
-          return subtotal + priceUncertaintyReserve(quote, today);
-        }));
+    final uncertaintyReserve = assignments.entries.fold<double>(
+      0,
+      (sum, entry) =>
+          sum +
+          entry.value.fold<double>(0, (subtotal, item) {
+            final quote = prices.quote(entry.key, item)!;
+            return subtotal + priceUncertaintyReserve(quote, today);
+          }),
+    );
     final optimizedTravel = travelRoute(assignments.keys);
     final travel = optimizedTravel.distanceKm * euroPerKm;
+    final travelMinutes = _travelMinutesForDistance(optimizedTravel.distanceKm);
+    final timeCost = travelMinutes / 60 * timeValuePerHour;
 
     return RoutePlan(
       stores: optimizedTravel.stores,
@@ -105,7 +130,19 @@ class RouteOptimizer {
       total: basket + travel,
       unassigned: unassigned,
       uncertaintyReserve: uncertaintyReserve,
+      travelMinutes: travelMinutes,
+      timeCost: timeCost,
     );
+  }
+
+  int _travelMinutesForDistance(double distanceKm) {
+    if (!distanceKm.isFinite ||
+        distanceKm <= 0 ||
+        !travelMinutesPerKm.isFinite ||
+        travelMinutesPerKm <= 0) {
+      return 0;
+    }
+    return (distanceKm * travelMinutesPerKm).round();
   }
 
   List<List<Store>> storeCombinations() {
@@ -152,12 +189,16 @@ class RouteOptimizer {
     }
 
     var recommended =
-        bestByCount[1] ?? bestByCount.values.reduce((a, b) =>
-            a.stores.length <= b.stores.length ? a : b);
+        bestByCount[1] ??
+        bestByCount.values.reduce(
+          (a, b) => a.stores.length <= b.stores.length ? a : b,
+        );
 
-    for (var count = recommended.stores.length + 1;
-        count <= maxStores;
-        count++) {
+    for (
+      var count = recommended.stores.length + 1;
+      count <= maxStores;
+      count++
+    ) {
       final candidate = bestByCount[count];
       if (candidate == null) continue;
       // A route that prices more of the requested basket is always preferred.
@@ -170,7 +211,8 @@ class RouteOptimizer {
 
       final addedStores = candidate.stores.length - recommended.stores.length;
       final requiredSavings = minExtraStoreSavings * addedStores;
-      if (recommended.planningScore - candidate.planningScore > requiredSavings) {
+      if (recommended.planningScore - candidate.planningScore >
+          requiredSavings) {
         recommended = candidate;
       }
     }
@@ -179,11 +221,12 @@ class RouteOptimizer {
   }
 
   RoutePlan? bestSingleStorePlan() {
-    final plans = availableStores
-        .map((store) => buildPlan([store]))
-        .where((plan) => plan.pricedItemCount > 0)
-        .toList()
-      ..sort(_comparePlans);
+    final plans =
+        availableStores
+            .map((store) => buildPlan([store]))
+            .where((plan) => plan.pricedItemCount > 0)
+            .toList()
+          ..sort(_comparePlans);
     return plans.isEmpty ? null : plans.first;
   }
 

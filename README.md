@@ -101,6 +101,10 @@ Bonimporte, eigene Preise oder andere belegte Quellen routenfähig.
 - Jede Vergleichsroute zeigt neben Warenkorb, Fahrtkosten und Preisabdeckung auch die geschätzte Wegezeit. So bleibt der Zeitaufwand einer zusätzlichen Fahrt bei der Auswahl sichtbar.
 - Fahrtstrecken können über OpenStreetMap/Nominatim und OSRM ermittelt und lokal zwischengespeichert werden.
 - Verkehrsmittel, Fahrtkosten, maximale Marktzahl und Mindestvorteil für einen zusätzlichen Markt sind einstellbar.
+- Ein persönlicher Zeitwert pro Stunde kann optional hinterlegt werden. Er wird
+  nur zum Vergleich der Routen verwendet, nicht als tatsächliche Ausgabe
+  verbucht. Bei `0 €` bleibt die bisherige Geldberechnung unverändert; die
+  Wegezeit bleibt trotzdem sichtbar.
 - Produkte ohne belastbaren Preis bleiben für die Route unzugeordnet; dadurch wird keine scheinbar günstige Route aus Schätzpreisen erzeugt.
 - Bei identischer Preisabdeckung und identischem Planungswert löst die Route
   Gleichstände deterministisch über die geringere Marktanzahl und danach den
@@ -283,6 +287,17 @@ Standardwert im Optimierer: **0,22 €/km**, sofern keine andere Einstellung üb
 
 ### Gesamtkosten
 `Gesamt = Warenkorb + Fahrtkosten`
+
+### Planungswert mit Zeitaufwand
+Wenn ein persönlicher Zeitwert `t` hinterlegt ist, wird zusätzlich gerechnet:
+
+`Zeitwert = Wegezeit in Stunden × t`
+
+`Planungswert = Gesamt + Preisunsicherheitsreserve + Zeitwert`
+
+Der Planungswert entscheidet zwischen Routen. Warenkorb und Fahrtkosten bleiben
+als erwartete tatsächliche Ausgaben getrennt sichtbar; der Zeitwert ist kein
+zusätzlicher Kassenbetrag.
 
 ### Marktzuordnung
 Für jeden Artikel wird innerhalb einer betrachteten Marktkombination der günstigste **nicht geschätzte** Preis gesucht. Gibt es keinen belastbaren Preis, bleibt der Artikel unzugeordnet.

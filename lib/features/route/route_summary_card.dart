@@ -30,14 +30,20 @@ class RouteSummaryCard extends StatelessWidget {
                 CircleAvatar(
                   backgroundColor: !complete
                       ? Colors.amber.shade50
-                      : multi ? Colors.orange.shade50 : Colors.green.shade50,
+                      : multi
+                      ? Colors.orange.shade50
+                      : Colors.green.shade50,
                   child: Icon(
                     !complete
                         ? Icons.info_outline
-                        : multi ? Icons.alt_route : Icons.check_circle_outline,
+                        : multi
+                        ? Icons.alt_route
+                        : Icons.check_circle_outline,
                     color: !complete
                         ? Colors.amber.shade800
-                        : multi ? Colors.orange.shade700 : Colors.green.shade700,
+                        : multi
+                        ? Colors.orange.shade700
+                        : Colors.green.shade700,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -46,8 +52,8 @@ class RouteSummaryCard extends StatelessWidget {
                     !complete
                         ? 'Vorläufige Teilroute'
                         : multi
-                            ? 'Wirtschaftlich sinnvoll: mehrere Märkte'
-                            : 'Wirtschaftlich sinnvoll: ein Markt',
+                        ? 'Wirtschaftlich sinnvoll: mehrere Märkte'
+                        : 'Wirtschaftlich sinnvoll: ein Markt',
                     style: const TextStyle(fontWeight: FontWeight.w800),
                   ),
                 ),
@@ -58,24 +64,33 @@ class RouteSummaryCard extends StatelessWidget {
               best.stores
                   .map((store) => '${store.name} · ${store.location}')
                   .join(' + '),
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+              style: Theme.of(context).textTheme.titleLarge
+                  ?.copyWith(fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 8),
             Text(
               complete
                   ? '${best.total.toStringAsFixed(2)} € erwartete Gesamtkosten'
                   : '${best.total.toStringAsFixed(2)} € bekannte Teilkosten',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+              style: Theme.of(context).textTheme.headlineSmall
+                  ?.copyWith(fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 8),
             Text(
               'Effektiver Warenkorb ${best.basket.toStringAsFixed(2)} € · '
               'Fahrt ${best.travel.toStringAsFixed(2)} €',
             ),
+            if (best.travelMinutes > 0) ...[
+              const SizedBox(height: 4),
+              Text('Geschätzte Wegezeit ${_formatMinutes(best.travelMinutes)}'),
+            ],
+            if (best.timeCost > 0) ...[
+              const SizedBox(height: 4),
+              Text(
+                'Zeitwert ${best.timeCost.toStringAsFixed(2)} € '
+                '(nur für den Routenvergleich)',
+              ),
+            ],
             if (best.hasDataGaps) ...[
               const SizedBox(height: 12),
               Container(
@@ -121,4 +136,11 @@ class RouteSummaryCard extends StatelessWidget {
       ),
     );
   }
+}
+
+String _formatMinutes(int minutes) {
+  if (minutes < 60) return '$minutes Min.';
+  final hours = minutes ~/ 60;
+  final rest = minutes % 60;
+  return rest == 0 ? '$hours Std.' : '$hours Std. $rest Min.';
 }

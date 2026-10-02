@@ -67,6 +67,7 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [x] realistische Mehrmarkt-End-to-End-Tests
 - [x] gleiche Produktliste gegen 1/2/3 Markt-Kombinationen vergleichen
 - [x] Entfernung, Fahrtkosten und Preisersparnis transparent aufschlüsseln
+- [x] optionalen persönlichen Zeitwert transparent in den Planungswert einbeziehen
 - [x] unvollständige Preisabdeckung sauber in Empfehlung einbeziehen
 - [x] robuste Tie-Breaker und Grenzfälle
 - [x] Routenempfehlung mit klarer Begründung ausgeben
