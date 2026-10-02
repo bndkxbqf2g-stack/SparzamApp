@@ -61,6 +61,7 @@ void main() {
     expect(stats.single.familyKey, 'schmand');
     expect(stats.single.medianPrice, 0.79);
     expect(stats.single.observationCount, 1);
+    expect(stats.single.identityConfirmed, isFalse);
   });
 
   test('unit prices are comparable when every observation has one', () {

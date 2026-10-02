@@ -138,6 +138,7 @@ List<ShoppingCandidate> buildShoppingCandidates({
             : receiptStatsForProduct(product, receiptPriceStats))
         .where(
       (stat) =>
+          stat.identityConfirmed &&
           stat.comparable &&
           stat.storeName.isNotEmpty &&
           !stat.latestAt.isBefore(cutoff) &&
