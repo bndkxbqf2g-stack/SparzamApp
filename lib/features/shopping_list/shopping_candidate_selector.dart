@@ -160,7 +160,13 @@ String _quoteText(ShoppingCandidate candidate) {
                 ? ' · Stand ${_date(quote.observedAt!)}'
                 : ''
             : ' · bis ${_date(quote.validUntil!)}';
-        return '${quote.storeName}: ${quote.price.toStringAsFixed(2).replaceAll('.', ',')} € (${quote.label}$date)';
+        final labels = <String>[
+          if (quote.evidenceLabel != null) quote.evidenceLabel!,
+          quote.label,
+          if (quote.savings != null)
+            'Ersparnis ${quote.savings!.toStringAsFixed(2).replaceAll('.', ',')} €',
+        ];
+        return '${quote.storeName}: ${quote.price.toStringAsFixed(2).replaceAll('.', ',')} € (${labels.join(' · ')}$date)';
       })
       .join('\n');
 }

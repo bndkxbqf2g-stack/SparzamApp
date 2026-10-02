@@ -47,10 +47,7 @@ class ShoppingQuote {
   /// the ranking label or treating a missing proof reference as a valid one.
   String get evidenceLabel {
     if (kind != ShoppingQuoteKind.offer || offer == null) return sourceLabel;
-    final proof = offer!.proofRef?.trim();
-    return '${_offerSourceLabel(offer!.source)} · '
-        '${proof == null || proof.isEmpty ? 'Nachweis fehlt' : 'Nachweis vorhanden'} · '
-        '$sourceLabel';
+    return '${offerEvidenceLabel(offer!)} · $sourceLabel';
   }
 
   String get displayPrefix => switch (kind) {
@@ -300,6 +297,12 @@ int _quoteSourceOrder(ShoppingQuote quote) => switch (quote.kind) {
   ShoppingQuoteKind.receipt || ShoppingQuoteKind.ownPrice => 1,
   ShoppingQuoteKind.prospectHistory => 2,
 };
+
+String offerEvidenceLabel(Offer offer) {
+  final proof = offer.proofRef?.trim();
+  return '${_offerSourceLabel(offer.source)} · '
+      '${proof == null || proof.isEmpty ? 'Nachweis fehlt' : 'Nachweis vorhanden'}';
+}
 
 String _offerSourceLabel(String source) =>
     switch (source.trim().toLowerCase()) {
