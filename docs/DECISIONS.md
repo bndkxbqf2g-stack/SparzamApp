@@ -661,3 +661,12 @@ Marktpreis einzeln als manuellen Preis mit Erfassungsdatum; historische
 Mediane, Angebote und Schätzwerte werden nicht automatisch übernommen. Nach
 der Rückkehr wird die Route mit den gespeicherten Preisen neu berechnet, damit
 die Datenlücke sichtbar und ohne Medienbruch schließbar bleibt.
+
+## D098 – Marktübergreifende Mediane bleiben Hinweise
+Der Routenresolver darf für ein Produkt×Markt-Paar nur einen belegten
+Marktpreis, ein gültiges Angebot oder einen ausdrücklich gepflegten
+Preisbeleg verwenden. Fehlt dieser Beleg, liefert der Resolver keine
+Kategorie-Schätzung und überträgt auch keinen Median eines anderen Marktes auf
+den unbekannten Markt. Historische bzw. marktübergreifende Mediane bleiben in
+der Einkaufssuche und Preis-Datenansicht als gekennzeichnete Orientierung
+erhalten; die Route zeigt die Position als Datenlücke.
