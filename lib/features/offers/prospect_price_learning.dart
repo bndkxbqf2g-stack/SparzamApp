@@ -14,10 +14,14 @@ List<PriceObservation> datedProspectPriceObservations({
   required Iterable<OfferImportRecord> records,
   required Iterable<Product> catalogProducts,
   DateTime? observedAt,
+  Iterable<String>? refreshedStores,
 }) {
   if (observedAt == null) return const <PriceObservation>[];
+  final eligibleRecords = refreshedStores == null
+      ? records
+      : records.where((record) => refreshedStores.contains(record.storeName));
   return prospectPriceObservations(
-    records: records,
+    records: eligibleRecords,
     catalogProducts: catalogProducts,
     observedAt: observedAt,
   );
