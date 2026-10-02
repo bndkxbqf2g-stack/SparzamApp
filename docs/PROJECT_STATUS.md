@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: fd67a0774c0d1b05ee084367b58aa61c012717d7
-- Main-CI zu diesem Stand: 542 Tests, Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: 07d830e31d6499ee28b6bcfbffe959c1038395aa
+- Main-CI zu diesem Stand: 544 Tests, Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -1165,3 +1165,15 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   mit 542 Tests, Analyse und Web-Build; Main-CI `36972753662` und Release
   `36972753666` sind nach dem Merge erfolgreich, einschließlich Analyse,
   Web-Build, Pages-Deployment und Android-APK.
+
+## Update 02.10.2026 – Angebotserparnis im Variantenfenster
+- Das Variantenfenster für Wiederkaufs- und Grundbedarfsartikel zeigt bei
+  aktiven Angeboten jetzt Quelle, Nachweisstatus und die verifizierte Ersparnis.
+- Coupon- und Cashback-Effekte fließen in die sichtbare Ersparnis ein. Ein
+  nicht verifizierter Normalpreis bleibt ohne Ersparnisbehauptung.
+- Die Produktidentität und die Angebotsrangfolge bleiben unverändert; die
+  Detailansicht macht dieselbe Evidenz jetzt bereits vor der Übernahme sichtbar.
+- PR #125 (`70bef3f`) ergänzt Fach- und Widgetregressionen. Die PR-CI bestand
+  mit 544 Tests, Analyse und Web-Build; Main-CI `36975457591` und Release
+  `36975457595` sind erfolgreich, einschließlich Pages-Deployment und
+  Android-APK.
