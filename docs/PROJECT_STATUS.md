@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: 940f44b6771a98512d3bf1a60d31d5cd08ea5667
-- Main-CI zu diesem Stand: 550 Tests, Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: 6d6fdc006aca5f7168cb06a22e6afc27b0699361
+- Main-CI zu diesem Stand: 553 Tests, Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -124,6 +124,20 @@ Eine intelligente und alltagstaugliche Preisdatenbank aufbauen:
 - PR #131 (`d5ac287`) ergänzt zwei Fachregressionen. PR-CI mit 550 Tests,
   Analyse und Web-Build; Main-CI `36981928067` und Release-Lauf
   `36981927972` waren nach dem Merge erfolgreich.
+
+## Update 02.10.2026 – Bon-Simulation trennt Produktvarianten
+- Die bereitgestellte Kaufland-PDF wurde lokal mit dem Ledger geprüft: 78
+  Artikelzeilen, ausgeglichene Summe und erkannter Bon vom 26.05.2026.
+- `Pizza-Donut Schin.` bleibt getrennt von Tiefkühlpizza und wird als
+  schinkenhaltige Backware vorgeschlagen.
+- `KLC.Kn.Mäuse Salz` wird nicht mehr als Kartoffelchip identifiziert; der
+  belegte Produktname bleibt als eigene Knabbermäuse-Identität auswählbar.
+- Passata und gehackte Tomaten tragen getrennte Identitätsvarianten, sodass
+  ihre Bonpreise unabhängig gelernt werden können. Die zwei unklaren
+  `bev...`-Labels bleiben zur Prüfung offen.
+- PR #133 (`4272ab3`) ergänzt die Identitäts- und Bon-Review-Regressionen.
+  PR-CI mit 553 Tests, Analyse und Web-Build; Main-CI `36985426027` und
+  Release-Lauf `36985426094` waren nach dem Merge erfolgreich.
 
 ## Update 30.09.2026 – Frische Tomaten im Basiskatalog
 - Auf einer frischen Installation bietet die Produktsuche jetzt
