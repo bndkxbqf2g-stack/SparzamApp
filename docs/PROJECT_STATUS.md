@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: 89fec094dfe95993523d36751f7d481ef5c97c4d
-- PR-CI zu diesem Stand: 564 Tests, Analyse und Web-Build erfolgreich; Main-CI `37002100088` und Release `37002100094` sind nach dem Merge einschließlich Pages-Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: a987274e083e85d8ca7fa73b4ee7cd7b1ccd0a2c
+- PR-CI zu diesem Stand: 564 Tests, Analyse und Web-Build erfolgreich; Main-CI `37005197693` und Release `37005197686` sind nach dem Merge einschließlich Pages-Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -55,6 +55,18 @@
   keine Planungswerte.
 - PR #145 (`89fec09`) ergänzt Fach- und Widget-Regressionen. Main-CI
   `37002100088` und Release `37002100094` waren mit 564 Tests, Analyse,
+  Web-Build, Pages-Deployment und Android-APK erfolgreich.
+
+## Update 02.10.2026 – Evidenzdetails im exakten Preisverlauf
+- Der exakte Preisverlauf zeigt zusätzlich Menge, Einheit und einen vorhandenen
+  Grundpreis. So bleibt die Packungsbasis für die Sparentscheidung sichtbar.
+- Jede Zeile kennzeichnet außerdem, ob eine Nachweisreferenz hinterlegt ist;
+  der Referenzwert selbst wird nicht als privater Dateipfad in die Oberfläche
+  übernommen.
+- Die Darstellung bleibt rein erklärend. Sie verändert weder Angebotsrangfolge
+  noch aktuelle Marktpreise oder Routenwerte.
+- PR #147 (`a987274`) ergänzt die UI- und Fachregressionen. Main-CI
+  `37005197693` und Release `37005197686` waren mit 564 Tests, Analyse,
   Web-Build, Pages-Deployment und Android-APK erfolgreich.
 
 ## Update 02.10.2026 – Provisorische Bonartikel bleiben preisfrei
