@@ -19,8 +19,12 @@ String routePriceEvidenceLabel(RoutePriceQuote quote, {required DateTime now}) {
     final effective = offer.hasCoupon || offer.hasCashback
         ? 'Angebot, effektiv'
         : 'Angebot';
+    final proof = offer.proofRef?.trim();
+    final proofLabel = proof == null || proof.isEmpty
+        ? 'Nachweis fehlt'
+        : 'Nachweis vorhanden';
     return '$effective · ${_offerSourceLabel(offer.source)} · '
-        '${_offerValidityLabel(offer)}';
+        '$proofLabel · ${_offerValidityLabel(offer)}';
   }
 
   final observation = quote.observation;
@@ -118,7 +122,7 @@ String _offerSourceLabel(String source) =>
     switch (source.trim().toLowerCase()) {
       'leaflet' => 'Prospekt',
       'retailer' => 'Händler',
-      'retailerwebsite' => 'Händler-Website',
+      'retailerwebsite' || 'retailer_website' => 'Händler-Website',
       'receipt' => 'Kassenbon',
       'manual' => 'manuell',
       'openprices' || 'open_prices' => 'Open Prices',

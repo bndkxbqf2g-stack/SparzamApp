@@ -47,7 +47,33 @@ void main() {
 
     expect(
       routePriceEvidenceLabel(quote, now: today),
-      'Angebot · Prospekt · gültig 29.09.2026–03.10.2026',
+      'Angebot · Prospekt · Nachweis fehlt · gültig 29.09.2026–03.10.2026',
+    );
+  });
+
+  test('kennzeichnet Nachweis und Händler-Website im Routenbeleg', () {
+    const product = Product(
+      id: 'coffee',
+      name: 'Kaffee',
+      unit: '500 g',
+      group: 'kaffee',
+    );
+    final quote = RoutePriceResolver([
+      Offer(
+        id: 'coffee-offer',
+        productId: product.id,
+        storeName: store.name,
+        originalPrice: 8,
+        offerPrice: 5,
+        validUntil: DateTime(2026, 10, 3),
+        source: 'retailer_website',
+        proofRef: 'https://example.test/coffee',
+      ),
+    ], now: today).quote(store, ListItem(product: product))!;
+
+    expect(
+      routePriceEvidenceLabel(quote, now: today),
+      'Angebot · Händler-Website · Nachweis vorhanden · gültig bis 03.10.2026',
     );
   });
 
