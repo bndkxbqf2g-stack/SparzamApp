@@ -175,6 +175,23 @@ List<Product> buildSuggestions({
   return matches;
 }
 
+/// Chooses the first currently evidenced suggestion for a query with real
+/// alternatives. The list is already ranked by offer/current-price evidence,
+/// so this helper exposes that decision without promoting a historical hint
+/// into a silent product choice.
+String? recommendedShoppingProductId({
+  required Iterable<Product> suggestions,
+  required ShoppingSuggestionPrice? Function(Product product) priceFor,
+  required bool hasAlternatives,
+}) {
+  if (!hasAlternatives) return null;
+  for (final product in suggestions) {
+    final price = priceFor(product);
+    if (price != null && !price.isHistorical) return product.id;
+  }
+  return null;
+}
+
 bool _matchesProductQuery(
   Product product,
   String query,
@@ -197,21 +214,24 @@ bool _matchesProductQuery(
     final nameIdentity = identities.first;
     return compatibleProductIdentity(queryIdentity, nameIdentity) ||
         _openMilkChoice(queryIdentity, nameIdentity) ||
-        identities.skip(1).any(
-          (candidate) => compatibleProductIdentity(queryIdentity, candidate),
-        );
+        identities
+            .skip(1)
+            .any(
+              (candidate) =>
+                  compatibleProductIdentity(queryIdentity, candidate),
+            );
   }
   return textMatch;
 }
 
 int _identitySpecificity(ProductIdentity identity) => [
-      identity.variant,
-      identity.productType,
-      identity.fatPercent,
-      identity.color,
-      identity.shape,
-      identity.meatType,
-    ].where((value) => value != null).length;
+  identity.variant,
+  identity.productType,
+  identity.fatPercent,
+  identity.color,
+  identity.shape,
+  identity.meatType,
+].where((value) => value != null).length;
 
 bool _matchesExactSearchLabel(Product product, String query) {
   final normalized = normalizeIdentityText(query);

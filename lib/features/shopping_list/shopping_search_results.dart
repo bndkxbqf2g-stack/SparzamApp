@@ -12,6 +12,7 @@ class ShoppingSearchResults extends StatelessWidget {
     required this.relatedInterpretations,
     required this.preferredProductByGroup,
     required this.recentPurchases,
+    this.recommendedProductId,
     this.priceHintFor,
     required this.onAdd,
     required this.onAddCustom,
@@ -22,6 +23,7 @@ class ShoppingSearchResults extends StatelessWidget {
   final List<Product> relatedInterpretations;
   final Map<String, String> preferredProductByGroup;
   final List<RecentPurchase> recentPurchases;
+  final String? recommendedProductId;
   final String? Function(Product product)? priceHintFor;
   final ValueChanged<Product> onAdd;
   final VoidCallback onAddCustom;
@@ -83,11 +85,18 @@ class ShoppingSearchResults extends StatelessWidget {
 
   Widget _productTile(Product product, {bool related = false}) {
     final preferred = preferredProductByGroup[product.group] == product.id;
+    final recommended = !related && recommendedProductId == product.id;
+    final labels = <String>[
+      if (preferred) 'deine Auswahl',
+      if (recommended) 'Empfehlung',
+    ];
     return ListTile(
       onTap: () => onAdd(product),
       leading: _ProductSuggestionImage(product: product, related: related),
       title: Text(
-        preferred ? '${product.name} · deine Auswahl' : product.name,
+        labels.isEmpty
+            ? product.name
+            : '${product.name} · ${labels.join(' · ')}',
         style: const TextStyle(fontWeight: FontWeight.w600),
       ),
       subtitle: Text(_subtitle(product)),

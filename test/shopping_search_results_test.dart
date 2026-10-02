@@ -42,6 +42,29 @@ void main() {
     expect(added, product);
   });
 
+  testWidgets('shopping search labels the current price recommendation', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ShoppingSearchResults(
+            query: 'Milch',
+            suggestions: const [product],
+            relatedInterpretations: const [],
+            preferredProductByGroup: const {},
+            recentPurchases: const [],
+            recommendedProductId: product.id,
+            onAdd: (_) {},
+            onAddCustom: () {},
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Milch 1,5 % · Empfehlung'), findsOneWidget);
+  });
+
   testWidgets('shopping search labels learned leaflet prices as historical', (
     tester,
   ) async {
