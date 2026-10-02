@@ -25,6 +25,38 @@ void main() {
     expect(evidence, isEmpty);
   });
 
+  test(
+    'does not learn fallback records from a source that was not refreshed',
+    () {
+      final evidence = datedProspectPriceObservations(
+        records: [
+          OfferImportRecord(
+            sourceId: 'fresh',
+            productLabel: 'Kaffee 500 g',
+            storeName: 'Lidl',
+            offerPrice: 4.99,
+            validUntil: DateTime(2026, 10, 3),
+            proofRef: 'https://example.test/lidl/offer',
+          ),
+          OfferImportRecord(
+            sourceId: 'fallback',
+            productLabel: 'Kaffee 500 g',
+            storeName: 'Netto',
+            offerPrice: 3.99,
+            validUntil: DateTime(2026, 10, 3),
+            proofRef: 'https://example.test/netto/offer',
+          ),
+        ],
+        catalogProducts: const [],
+        observedAt: DateTime(2026, 10, 1),
+        refreshedStores: const ['Lidl'],
+      );
+
+      expect(evidence, hasLength(1));
+      expect(evidence.single.storeName, 'Lidl');
+    },
+  );
+
   const coffee = Product(
     id: 'coffee-500',
     name: 'Jacobs Kaffee Crema 500 g',

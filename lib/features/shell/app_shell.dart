@@ -313,6 +313,7 @@ class _AppShellState extends State<AppShell> {
         records: feed.records,
         catalogProducts: buildCatalogProducts(customProducts),
         observedAt: feed.generatedAt,
+        refreshedStores: feed.refreshedStores,
       );
       if (learnedPrices.isNotEmpty) {
         await priceObservationStore.append(learnedPrices);
