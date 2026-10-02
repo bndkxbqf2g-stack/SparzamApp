@@ -701,3 +701,10 @@ Produktbarcodes als auch das lokale Auslesen von Kassenbonfotos. Beide Wege
 verwenden dieselbe Kamera-Freigabe; die Bonbilder werden für die OCR lokal
 verarbeitet und nicht durch die Berechtigungsbeschreibung als Uploadquelle
 ausgegeben.
+
+## D103 – Altersgrenzen werden taggenau über alle Preisprojektionen angewendet
+Die Frischegrenze einer Preisbeobachtung wird anhand des lokalen
+Kalendertages von Erfassung und Prüfzeitpunkt berechnet. Die gemeinsame
+`PriceObservation`-Projektion und das daraus entstehende `MarketPrice`
+verwenden dadurch am Grenztag dieselbe Entscheidung; Uhrzeiten innerhalb
+eines Tages machen einen Beleg weder früher noch später routenfähig.
