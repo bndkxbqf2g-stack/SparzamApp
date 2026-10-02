@@ -221,6 +221,25 @@ void main() {
     );
   });
 
+  test('pizza donuts and knabbermaeuse stay separate from nearby families', () {
+    final pizzaDonut = identifyProduct('Pizza-Donut Schin.');
+    expect(pizzaDonut.familyKey, 'backware');
+    expect(pizzaDonut.productType, 'donut');
+    expect(pizzaDonut.variant, 'schinken');
+    expect(
+      compatibleProductIdentity(pizzaDonut, identifyProduct('Pizza')),
+      isFalse,
+    );
+
+    final mice = identifyProduct('KLC.Kn.Mäuse Salz');
+    expect(mice.familyKey, 'snack');
+    expect(mice.productType, 'knabbermaeuse');
+    expect(
+      compatibleProductIdentity(mice, identifyProduct('Kartoffelchips')),
+      isFalse,
+    );
+  });
+
   test(
     'beverage, bread and household compounds keep staple searches precise',
     () {
@@ -368,11 +387,11 @@ void main() {
   );
 
   test('preserved tomato request still accepts preserved tomato evidence', () {
+    final preserved = identifyProduct('Tomatenkonserve');
+    expect(preserved.familyKey, 'tomatenkonserve');
+    expect(preserved.productType, isNull);
     expect(
-      compatibleProductIdentity(
-        identifyProduct('Passata'),
-        identifyProduct('Gehackte Tomaten'),
-      ),
+      compatibleProductIdentity(preserved, identifyProduct('Gehackte Tomaten')),
       isTrue,
     );
   });
@@ -464,14 +483,16 @@ void main() {
   });
 
   test('preserved tomato products stay outside the fresh tomato family', () {
-    expect(identifyProduct('Passierte Tomaten').familyKey, 'tomatenkonserve');
-    expect(identifyProduct('Gehackte Tomaten').familyKey, 'tomatenkonserve');
+    final passata = identifyProduct('Passierte Tomaten');
+    final chopped = identifyProduct('Gehackte Tomaten');
+    expect(passata.familyKey, 'tomatenkonserve');
+    expect(passata.productType, 'passata');
+    expect(chopped.familyKey, 'tomatenkonserve');
+    expect(chopped.productType, 'gehackt');
     expect(
-      compatibleProductIdentity(
-        identifyProduct('Tomate'),
-        identifyProduct('Passierte Tomaten'),
-      ),
+      compatibleProductIdentity(identifyProduct('Tomate'), passata),
       isFalse,
     );
+    expect(compatibleProductIdentity(passata, chopped), isFalse);
   });
 }

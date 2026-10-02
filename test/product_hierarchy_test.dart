@@ -63,4 +63,22 @@ void main() {
     expect(productHierarchyLabel(rice).path, 'Reis › Basmati');
     expect(productHierarchyLabel(oil).path, 'Öl › Raps');
   });
+
+  test('receipt-specific baked and preserved variants stay readable', () {
+    const donut = Product(
+      id: 'pizza-donut',
+      name: 'Pizza-Donut Schinken',
+      unit: 'Packung',
+      group: 'backwaren',
+    );
+    const passata = Product(
+      id: 'passata',
+      name: 'Passierte Tomaten',
+      unit: '500 g',
+      group: 'vorrat',
+    );
+
+    expect(productHierarchyLabel(donut).path, 'Backwaren › Schinken · Donut');
+    expect(productHierarchyLabel(passata).path, 'Tomatenkonserve › Passata');
+  });
 }

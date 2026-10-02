@@ -200,4 +200,63 @@ Datum 23.07.24
 
     expect(reviewReceiptPrices(draft, products).suggestions, isEmpty);
   });
+
+  test(
+    'receipt simulation separates donut, knabbermaeuse and tomato variants',
+    () {
+      final draft = parseReceiptLedger('''
+Kaufland
+Preis EUR
+Pizza-Donut Schin. 0,89 B
+K.Passata Rus.Bas. 1,49 B
+KLC Geh. Tomaten 2 * 0,59 1,18 B
+KLC.Kn.Mäuse Salz 1,19 B
+Summe 4,75
+Datum 26.05.26
+''');
+      final matches = reviewReceiptPrices(draft, const [
+        Product(
+          id: 'pizza-donut',
+          name: 'Pizza-Donut Schinken',
+          unit: 'Packung',
+          group: 'backwaren',
+          aliases: ['Pizza-Donut Schin.'],
+        ),
+        Product(
+          id: 'passata',
+          name: 'Passierte Tomaten',
+          unit: '500 g',
+          group: 'vorrat',
+        ),
+        Product(
+          id: 'chopped',
+          name: 'Gehackte Tomaten',
+          unit: '400 g',
+          group: 'vorrat',
+          aliases: ['dosentomaten'],
+        ),
+        Product(
+          id: 'mice',
+          name: 'Knabbermäuse Salz',
+          unit: 'Packung',
+          group: 'vorrat',
+          aliases: ['KLC.Kn.Mäuse Salz'],
+        ),
+      ]);
+
+      expect(draft.balances, isTrue);
+      expect(matches.suggestions.map((entry) => entry.product.id), [
+        'pizza-donut',
+        'passata',
+        'chopped',
+        'mice',
+      ]);
+      expect(matches.suggestions.map((entry) => entry.price.price), [
+        0.89,
+        1.49,
+        0.59,
+        1.19,
+      ]);
+    },
+  );
 }
