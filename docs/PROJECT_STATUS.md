@@ -1045,3 +1045,13 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   bestehenden Preis-Datenlücke.
 - Resolver-Regressionen sichern ab, dass unbekannte und veraltete Preisstände
   nicht als scheinbare Marktpreise in Route oder Marktansicht gelangen.
+
+## Update 02.10.2026 – Bestätigte Bonvorschläge lernen Produktidentität
+- Ein gesetztes Häkchen bei einem eindeutigen Bonpreisvorschlag ordnet die
+  konkrete Bonzeile jetzt auch als bestätigte Produktidentität zu. Dadurch
+  bleibt die Zuordnung in der `ReceiptObservation` erhalten und kann in das
+  marktbezogene Alias-Lernen einfließen.
+- Die Auswahl bleibt auf denselben Beleg-Fingerprint begrenzt; unbestätigte
+  Vorschläge werden weiterhin nur als Preis- und Beobachtungshinweis geführt.
+- Eine Regression prüft die Zuordnung sowohl für die bestätigte als auch für
+  die nicht ausgewählte Vorschlagszeile.
