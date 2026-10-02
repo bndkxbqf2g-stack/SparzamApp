@@ -5,6 +5,24 @@ import '../catalog/product_identity.dart';
 import 'offer_import.dart';
 import 'prospect_product_match.dart';
 
+/// Learns prospect prices only when the feed supplies an observation time.
+///
+/// A missing feed timestamp is a provenance gap. Treating the load time as the
+/// observation time would make an old or cached legacy feed look fresh in the
+/// price history, so those records stay visible but are not learned.
+List<PriceObservation> datedProspectPriceObservations({
+  required Iterable<OfferImportRecord> records,
+  required Iterable<Product> catalogProducts,
+  DateTime? observedAt,
+}) {
+  if (observedAt == null) return const <PriceObservation>[];
+  return prospectPriceObservations(
+    records: records,
+    catalogProducts: catalogProducts,
+    observedAt: observedAt,
+  );
+}
+
 /// Turns a verified prospect claim into dated price evidence. An unknown or
 /// package-ambiguous label remains historical evidence, not an exact route
 /// price. Both the temporary offer price and a stated regular price are kept.
