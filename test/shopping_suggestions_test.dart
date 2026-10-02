@@ -663,6 +663,51 @@ void main() {
     expect(hint, isNull);
   });
 
+  test('receipt median on the history cutoff day remains a search hint', () {
+    final hint = shoppingSuggestionPriceForProduct(
+      lowFat,
+      receiptPriceStats: [
+        ReceiptPriceStat(
+          familyKey: 'milch',
+          productId: lowFat.id,
+          storeName: 'ALDI Süd',
+          latestPrice: 1.05,
+          latestAt: DateTime(2026, 8, 1),
+          observationCount: 2,
+          medianPrice: 0.95,
+          comparable: true,
+          priceBasis: '1 l',
+        ),
+      ],
+      now: now,
+    );
+
+    expect(hint?.isHistorical, isTrue);
+    expect(hint?.price, 0.95);
+  });
+
+  test('future receipt median is never used as a search hint', () {
+    final hint = shoppingSuggestionPriceForProduct(
+      lowFat,
+      receiptPriceStats: [
+        ReceiptPriceStat(
+          familyKey: 'milch',
+          productId: lowFat.id,
+          storeName: 'ALDI Süd',
+          latestPrice: 1.05,
+          latestAt: DateTime(2026, 10, 1),
+          observationCount: 2,
+          medianPrice: 0.95,
+          comparable: true,
+          priceBasis: '1 l',
+        ),
+      ],
+      now: now,
+    );
+
+    expect(hint, isNull);
+  });
+
   test('active offers outrank cheaper receipt prices for generic staples', () {
     const pastaOffer = Product(
       id: 'pasta-1kg',

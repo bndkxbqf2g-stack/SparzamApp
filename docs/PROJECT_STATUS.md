@@ -6,7 +6,7 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: e91da42d94d0ab81754d88f9e740fb8cb8429051
+- Letzter geprüfter Main-Stand: ff7e8871cb240bb6d1e69ea0e7dc129f2c441d23
 - Main-CI zu diesem Stand: 530 Tests, Analyse und Web-Build erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
@@ -1121,3 +1121,13 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   ein Beleg am Vortag bleibt ausgeschlossen. Uhrzeitunterschiede erzeugen
   keine widersprüchliche Preisabdeckung mehr.
 - Eine Regression deckt den Grenztag und den unmittelbar vorherigen Tag ab.
+
+## Update 02.10.2026 – Bon-Suchfenster schließt den Grenztag ein
+- Bon-Mediane und unbestätigte Bonzeilen bleiben in der Produktsuche und im
+  Variantenfenster bis einschließlich des konfigurierten Altersgrenzentags
+  verfügbar. Der unmittelbar vorherige Tag bleibt ausgeschlossen.
+- Zukünftige Beobachtungen werden in diesen Suchpfaden nicht als Preis- oder
+  Identitätshinweis verwendet. Damit folgen Suche, Kandidatenranking und
+  gemeinsame Preisprojektion derselben kalendertaggenauen Frischegrenze.
+- Regressionen prüfen den eingeschlossenen Grenztag und den ausgeschlossenen
+  Vortag für beide Sucharten.

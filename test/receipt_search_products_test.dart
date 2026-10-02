@@ -78,6 +78,21 @@ void main() {
     ]);
   });
 
+  test('unconfirmed receipt on the cutoff day remains searchable', () {
+    final candidates = receiptSearchProducts(
+      [
+        observation('cutoff', 'K.H-Milch', at: DateTime(2026, 8, 31)),
+        observation('old', 'K.Passata', at: DateTime(2026, 8, 30)),
+      ],
+      catalogProducts: const <Product>[],
+      now: DateTime(2026, 9, 30),
+      maxAgeDays: 30,
+    );
+
+    expect(candidates, hasLength(1));
+    expect(candidates.single.aliases, ['K.H-Milch']);
+  });
+
   test('adjacent Kaufland house-brand marker does not duplicate catalog item', () {
     final candidates = receiptSearchProducts(
       [observation('paper', 'KLCToilettenpapier')],

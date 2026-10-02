@@ -132,7 +132,8 @@ List<ShoppingCandidate> buildShoppingCandidates({
       (stat) =>
           stat.comparable &&
           stat.storeName.isNotEmpty &&
-          stat.latestAt.isAfter(cutoff) &&
+          !stat.latestAt.isBefore(cutoff) &&
+          !stat.latestAt.isAfter(current) &&
           _storeEnabled(stat.storeName, enabledStores),
     );
     for (final stat in productStats) {

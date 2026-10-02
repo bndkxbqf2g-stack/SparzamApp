@@ -170,6 +170,31 @@ void main() {
     expect(quotes.map((quote) => quote.storeName), isNot(contains('Lidl')));
   });
 
+  test('receipt median on the cutoff day remains a candidate quote', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda],
+      offers: const [],
+      marketPrices: const [],
+      receiptPriceStats: [
+        ReceiptPriceStat(
+          familyKey: 'kaese',
+          productId: gouda.id,
+          storeName: 'EDEKA',
+          latestPrice: 1.89,
+          latestAt: DateTime(2026, 7, 29),
+          observationCount: 2,
+          medianPrice: 1.79,
+          comparable: true,
+          priceBasis: '250 g',
+        ),
+      ],
+      now: now,
+    );
+
+    expect(candidates.single.quotes.single.price, 1.79);
+  });
+
   test('active offers are ranked before cheaper historical quotes', () {
     final candidates = buildShoppingCandidates(
       request: 'Käse',
