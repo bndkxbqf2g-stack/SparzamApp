@@ -1063,3 +1063,16 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Eine vorhandene abweichende manuelle Zuordnung wird dabei nicht überschrieben
   oder gelöscht.
 - Die Regression prüft die reversible Auswahl inklusive Beleg-Fingerprint.
+
+## Update 02.10.2026 – Wiederkaufsartikel vor dem Einfügen mit Angeboten prüfen
+- Wiederkaufsvorschläge zeigen neben dem schnellen Hinzufügen jetzt die Aktion
+  „Angebote und Varianten prüfen“.
+- Diese öffnet die bestehende belegbasierte Kandidatenauswahl mit aktuellen
+  Angeboten, bestätigten Markt-/Bonpreisen und getrennt sichtbaren historischen
+  Prospektwerten. Die Auswahl kann dadurch eine günstigere, kompatible Variante
+  vorschlagen, bevor sie in die Einkaufsliste übernommen wird.
+- Die aus der Kaufhistorie gelernte Menge wird auf die explizit ausgewählten
+  Produkte angewendet. Abbrechen verändert die Liste nicht; der schnelle
+  Direktpfad bleibt als bewusste Alternative verfügbar.
+- Widgetregressionen prüfen die neue Aktion und den vollständigen Flow inklusive
+  Mengenübernahme.
