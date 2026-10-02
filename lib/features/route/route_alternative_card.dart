@@ -18,8 +18,9 @@ class RouteAlternativeCard extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor:
-              single ? Colors.grey.shade100 : Colors.orange.shade50,
+          backgroundColor: single
+              ? Colors.grey.shade100
+              : Colors.orange.shade50,
           child: Icon(
             single ? Icons.storefront : Icons.alt_route,
             color: single ? Colors.black54 : Colors.orange.shade700,
@@ -36,6 +37,7 @@ class RouteAlternativeCard extends StatelessWidget {
           'Fahrt ${plan.travel.toStringAsFixed(2)} € · '
           'Wegezeit $travelLabel · '
           'Preisabdeckung ${(plan.priceCoverage * 100).round()} % · '
+          '${plan.timeCost > 0 ? 'Zeitwert ${plan.timeCost.toStringAsFixed(2)} € · ' : ''}'
           'Planungswert ${plan.planningScore.toStringAsFixed(2)} €',
         ),
         trailing: Text(

@@ -948,6 +948,8 @@ class _AppShellState extends State<AppShell> {
             euroPerKm: mobility.effectiveEuroPerKm,
             maxStores: mobility.maxStores,
             minExtraStoreSavings: mobility.minExtraStoreSavings,
+            timeValuePerHour: mobility.timeValuePerHour,
+            travelMinutesPerKm: 60 / mobility.mode.averageSpeedKmh,
             enabledStoreNames: mobility.enabledStoreNames,
             marketPrices: planningMarketPrices,
             roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,

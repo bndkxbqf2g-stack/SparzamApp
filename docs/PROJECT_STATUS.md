@@ -162,6 +162,17 @@ Eine intelligente und alltagstaugliche Preisdatenbank aufbauen:
 - Wiederkehrende Käufe für schnellere, zuverlässigere Zuordnung nutzen.
 - Regalvideo-Erfassung separat evaluieren. Aktuell daraus noch KEINE Code- oder Datenänderungen ableiten.
 
+## Update 02.10.2026 – Persönlichen Zeitaufwand in die Routenwahl einbeziehen
+- Die Mobilitätseinstellungen bieten jetzt einen optionalen persönlichen
+  Zeitwert pro Stunde. Ein Wert von `0 €` lässt die bisherige monetäre Auswahl
+  unverändert und zeigt die Wegezeit weiterhin an.
+- Wenn ein Wert gesetzt ist, fließt der geschätzte Rundweg als separater
+  Zeitwert in den Planungswert ein. Der Wert wird ausdrücklich nicht zu den
+  tatsächlichen Warenkorb- oder Fahrtkosten addiert.
+- Zusammenfassung und Vergleichskarten kennzeichnen Wegezeit, Zeitwert und
+  Planungswert getrennt; Persistenz, Grenzwerte und die Entscheidung für einen
+  näheren Einzelmarkt sind regressionsgetestet.
+
 ## Update 02.10.2026 – Wegezeit in Routenalternativen
 - Die Vergleichskarten im Routenbildschirm zeigen jetzt neben Warenkorb,
   Fahrtkosten und Preisabdeckung auch die geschätzte Wegezeit der jeweiligen

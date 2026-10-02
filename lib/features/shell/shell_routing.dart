@@ -34,6 +34,8 @@ class ShellRouting {
           euroPerKm: mobility.effectiveEuroPerKm,
           maxStores: mobility.maxStores,
           minExtraStoreSavings: mobility.minExtraStoreSavings,
+          timeValuePerHour: mobility.timeValuePerHour,
+          travelMinutesPerKm: 60 / mobility.mode.averageSpeedKmh,
           enabledStoreNames: mobility.enabledStoreNames,
           marketPrices: marketPrices,
           roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,

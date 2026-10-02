@@ -643,3 +643,13 @@ Milch erkannte Produkte zur Auswahl stellen. Jede Produktidentität bleibt
 getrennt; ein Angebot für Frischmilch bestätigt weder die Bonzeile noch eine
 andere Milchvariante. Die aktuelle Angebots- und Preisrangfolge entscheidet,
 welche Auswahl zuerst angezeigt wird, ohne einen Preis zu übertragen.
+
+## D096 – Persönlicher Zeitwert bleibt vom Kassenbetrag getrennt
+Die Routenplanung darf neben Warenkorb, Fahrtkosten und der bestehenden
+Preisunsicherheitsreserve einen optionalen persönlichen Zeitwert berücksichtigen.
+Er wird aus der geschätzten Wegezeit und einem in den Mobilitätseinstellungen
+gespeicherten Euro-Wert pro Stunde berechnet und fließt ausschließlich in den
+`planningScore` ein. `RoutePlan.total`, Budget, Kaufabschluss und gespeicherte
+Kaufkosten bleiben unverändert. Der Standardwert ist `0 €`, damit bestehende
+Nutzerdaten nicht stillschweigend mit einer fremden Zeitbewertung belastet
+werden; Wegezeit bleibt auch dann sichtbar.
