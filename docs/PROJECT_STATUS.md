@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: ee7dc9fcb0ea3f165bf081a6323cd767f666f97a
-- PR-CI zu diesem Stand: 568 Tests, Analyse und Web-Build erfolgreich; Main-CI `37010345548` und Release `37010345631` sind nach dem Merge einschließlich Pages-Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: 3690251013efa72501afb30dda576836cc161ef4
+- PR-CI zu diesem Stand: 568 Tests, Analyse und Web-Build erfolgreich; Main-CI `37013615016` und Release `37013614899` sind nach dem Merge einschließlich Pages-Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -58,6 +58,22 @@
   künstlich verlängert.
 - PR #149 (`ee7dc9f`) ergänzte drei Fachtests und einen Widget-Test. PR-CI,
   Main-CI `37010345548` und Release `37010345631` waren mit 568 Tests,
+  Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
+
+## Update 02.10.2026 – Bonledger mit Zwischensumme und Warenkorbrabatt
+- Eine lokale Kaufland-Bonprüfung mit einer Zwischensumme und einem
+  separaten Warenkorbrabatt wurde gegen den Ledger simuliert: Die gedruckte
+  und die berechnete Summe stimmen überein, ohne ungeklärte Ledgerzeilen.
+- `Zwischensumme` wird nicht als Produkt oder Preisbeobachtung übernommen.
+  Der separate `Rabattaktion`-Block bleibt ein Warenkorbrabatt ohne stille
+  Zuordnung zum letzten Produkt.
+- Mehrfachmengen, Pfand, Leergutrückgabe, XTRA-Artikelrabatte und die zwei
+  getrennten `K.H-Milch`-Zeilen bleiben als eigene, prüfbare Ledgerdaten
+  erhalten. Die Produktidentität und Preisbestätigung bleiben weiterhin ein
+  separater Review-Schritt.
+- Die private Quelldatei wurde nur lokal geprüft und nicht in das Repository
+  oder eine Test-Fixture kopiert. PR #151 (`3690251`) ergänzt die Regression;
+  Main-CI `37013615016` und Release `37013614899` waren mit 568 Tests,
   Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
 
 ## Update 02.10.2026 – Exakter Preisverlauf im Listenartikel
