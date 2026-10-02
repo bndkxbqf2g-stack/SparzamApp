@@ -9,12 +9,13 @@ ReceiptObservation obs({
   bool discounted = false,
   String store = 'Kaufland',
   String family = 'hackfleisch',
+  String rawLabel = 'Hackfleisch',
   int day = 20,
 }) => ReceiptObservation(
   id: id,
   receiptFingerprint: 'bon$id',
   rowLine: 1,
-  rawLabel: 'Hackfleisch',
+  rawLabel: rawLabel,
   familyKey: family,
   storeName: store,
   observedAt: DateTime(2026, 9, day),
@@ -114,6 +115,7 @@ void main() {
       String unit,
       double totalPrice,
       double unitPrice,
+      int day,
     ) => ReceiptObservation(
       id: id,
       receiptFingerprint: 'bon$id',
@@ -121,7 +123,7 @@ void main() {
       rawLabel: 'Tomaten',
       familyKey: 'tomaten',
       storeName: 'Kaufland',
-      observedAt: DateTime(2026, 9, 23),
+      observedAt: DateTime(2026, 9, day),
       totalPrice: totalPrice,
       quantity: quantity,
       quantityUnit: unit,
@@ -130,8 +132,8 @@ void main() {
     );
 
     final stats = buildReceiptPriceStats([
-      priced('mass', 0.5, 'kg', 2, 4),
-      priced('volume', 0.5, 'l', 1, 2),
+      priced('mass', 0.5, 'kg', 2, 4, 22),
+      priced('volume', 0.5, 'l', 1, 2, 23),
     ], now: DateTime(2026, 9, 24));
 
     expect(stats.single.comparable, isFalse);
@@ -142,7 +144,13 @@ void main() {
 
   test('partial quantity metadata is not treated as a common unit basis', () {
     final stats = buildReceiptPriceStats([
-      obs(id: 'legacy', price: 2, unitPrice: 4),
+      obs(
+        id: 'legacy',
+        price: 2,
+        unitPrice: 4,
+        family: 'tomaten',
+        rawLabel: 'Tomaten',
+      ),
       ReceiptObservation(
         id: 'weighted',
         receiptFingerprint: 'bon-weighted',
