@@ -43,7 +43,13 @@ class Offer {
   final double? cashbackPercent;
   final double? cashbackAmount;
 
-  bool get hasMultiBuy => buyQuantity != null && payQuantity != null;
+  /// Invalid legacy/imported counts are treated as a normal offer so a
+  /// malformed rule can never make a route price artificially free.
+  bool get hasMultiBuy => buyQuantity != null &&
+      payQuantity != null &&
+      buyQuantity! > 0 &&
+      payQuantity! > 0 &&
+      payQuantity! < buyQuantity!;
   bool get hasCoupon => coupon || couponPercent != null || couponAmount != null;
   bool get hasCashback => cashback || cashbackPercent != null || cashbackAmount != null;
 

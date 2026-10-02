@@ -79,6 +79,27 @@ void main() {
     expect(quote!.total, 3.0);
   });
 
+  test('ignores an invalid zero-pay multi-buy rule', () {
+    final offer = Offer(
+      id: 'invalid-zero-pay',
+      productId: 'test',
+      storeName: 'Markt',
+      originalPrice: 2,
+      offerPrice: 1.5,
+      validUntil: DateTime(2026, 9, 30),
+      buyQuantity: 3,
+      payQuantity: 0,
+    );
+    final quote = RoutePriceResolver(
+      [offer],
+      now: DateTime(2026, 9, 22),
+    ).quote(store, ListItem(product: product, quantity: 3));
+
+    expect(offer.hasMultiBuy, isFalse);
+    expect(quote!.total, 4.5);
+    expect(quote.usesOffer, isTrue);
+  });
+
   test('leaves a missing price unresolved instead of inventing a category price', () {
     const missing = Product(
       id: 'unknown-milk',

@@ -670,3 +670,9 @@ Kategorie-Schätzung und überträgt auch keinen Median eines anderen Marktes au
 den unbekannten Markt. Historische bzw. marktübergreifende Mediane bleiben in
 der Einkaufssuche und Preis-Datenansicht als gekennzeichnete Orientierung
 erhalten; die Route zeigt die Position als Datenlücke.
+
+## D099 – Ungültige Mehrfachkaufregeln werden nie zu Gratispreisen
+Ein Mehrfachkauf-Angebot ist nur dann routenwirksam, wenn Kauf- und
+Bezahlmenge positiv sind und die Bezahlmenge darunter liegt. Ungültige oder
+alte importierte Werte bleiben als normales Angebot lesbar; sie dürfen weder
+als Mehrfachkauf angezeigt noch die erwarteten Kassenkosten auf null senken.
