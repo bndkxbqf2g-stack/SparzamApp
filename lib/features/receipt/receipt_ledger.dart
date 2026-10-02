@@ -90,6 +90,7 @@ ReceiptDraft parseReceiptLedger(String text) {
   int? pendingUnit;
   String? pendingLabel;
   int? lastItemLine;
+  var basketDiscountSection = false;
 
   for (var index = 0; index < lines.length; index++) {
     final raw = lines[index];
@@ -106,6 +107,21 @@ ReceiptDraft parseReceiptLedger(String text) {
     if (line.isEmpty) continue;
     if (RegExp(r'^Posten\s*:', caseSensitive: false).hasMatch(line)) {
       pendingLabel = null;
+      continue;
+    }
+    // Kaufland prints a non-item subtotal before a separate basket-wide
+    // discount block. The subtotal is already represented by the item rows
+    // above and must never enter the receipt balance a second time.
+    if (RegExp(r'^Zwischensumme\b', caseSensitive: false).hasMatch(line)) {
+      pendingLabel = null;
+      lastItemLine = null;
+      basketDiscountSection = true;
+      continue;
+    }
+    if (RegExp(r'Rabattaktion', caseSensitive: false).hasMatch(line)) {
+      pendingLabel = null;
+      lastItemLine = null;
+      basketDiscountSection = true;
       continue;
     }
     // Netto prints the weight and exact kilogram price after the item.
@@ -199,7 +215,10 @@ ReceiptDraft parseReceiptLedger(String text) {
         ? ReceiptRowKind.unresolved
         : ReceiptRowKind.item;
     final linked =
-        isDiscount && !lower.contains('warenkorb') && lastItemLine != null
+        isDiscount &&
+        !basketDiscountSection &&
+        !lower.contains('warenkorb') &&
+        lastItemLine != null
         ? lastItemLine
         : null;
     rows.add(
