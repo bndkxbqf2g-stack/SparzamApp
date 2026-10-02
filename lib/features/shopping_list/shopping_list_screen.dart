@@ -32,6 +32,7 @@ import 'receipt_search_products.dart';
 import 'shopping_search_results.dart';
 import 'shopping_list_status.dart';
 import 'aisle_order_dialog.dart';
+import 'shopping_candidate_selector.dart';
 
 class ShoppingListScreen extends StatefulWidget {
   const ShoppingListScreen({
@@ -261,6 +262,27 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     _focusShoppingInput();
   }
 
+  Future<void> reviewReplenishment(ReplenishmentSuggestion suggestion) async {
+    final selected = await showShoppingCandidateSelector(
+      context: context,
+      request: suggestion.product.name,
+      catalogProducts: [...widget.catalogProducts, ...receiptCandidates],
+      offers: widget.offers,
+      marketPrices: widget.marketPrices,
+      receiptPriceStats: receiptPriceStats,
+      prospectPriceHistory: widget.prospectPriceHistory,
+      enabledStores: widget.mobility.enabledStoreNames,
+    );
+    if (!mounted || selected == null || selected.isEmpty) return;
+
+    for (final product in selected) {
+      for (var index = 0; index < suggestion.suggestedQuantity; index++) {
+        widget.onAdd(product);
+      }
+    }
+    _focusShoppingInput();
+  }
+
   void addRecentPurchase(RecentPurchase purchase) {
     for (final product in productsForRecentPurchase(purchase)) {
       widget.onAdd(product);
@@ -460,6 +482,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 ReplenishmentCard(
                   suggestions: widget.replenishmentSuggestions,
                   onAdd: addReplenishment,
+                  onReview: reviewReplenishment,
                   priceHintFor: priceHintFor,
                 ),
               ],

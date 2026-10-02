@@ -81,4 +81,39 @@ void main() {
       findsOneWidget,
     );
   });
+
+  testWidgets('öffnet die Angebots- und Variantenprüfung', (tester) async {
+    const product = Product(
+      id: 'milk',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'milch',
+    );
+    final suggestion = ReplenishmentSuggestion(
+      product: product,
+      purchaseCount: 2,
+      averageQuantity: 1,
+      intervalDays: 7,
+      lastPurchasedAt: DateTime(2026, 9, 8),
+      dueAt: DateTime(2026, 9, 15),
+      daysUntilDue: 0,
+      urgency: ReplenishmentUrgency.overdue,
+    );
+    ReplenishmentSuggestion? reviewed;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ReplenishmentCard(
+            suggestions: [suggestion],
+            onAdd: (_) {},
+            onReview: (value) => reviewed = value,
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byTooltip('Angebote und Varianten prüfen'));
+    expect(reviewed, suggestion);
+  });
 }

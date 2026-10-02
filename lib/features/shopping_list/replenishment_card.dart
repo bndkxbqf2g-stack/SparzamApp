@@ -8,11 +8,13 @@ class ReplenishmentCard extends StatelessWidget {
     super.key,
     required this.suggestions,
     required this.onAdd,
+    this.onReview,
     this.priceHintFor,
   });
 
   final List<ReplenishmentSuggestion> suggestions;
   final ValueChanged<ReplenishmentSuggestion> onAdd;
+  final ValueChanged<ReplenishmentSuggestion>? onReview;
   final String? Function(Product product)? priceHintFor;
 
   @override
@@ -78,10 +80,21 @@ class ReplenishmentCard extends StatelessWidget {
                     ),
                 ],
               ),
-              trailing: IconButton.filledTonal(
-                tooltip: 'Zur Liste hinzufügen',
-                onPressed: () => onAdd(suggestions[index]),
-                icon: const Icon(Icons.add),
+              trailing: Wrap(
+                spacing: 2,
+                children: [
+                  if (onReview != null)
+                    IconButton(
+                      tooltip: 'Angebote und Varianten prüfen',
+                      onPressed: () => onReview!(suggestions[index]),
+                      icon: const Icon(Icons.tune),
+                    ),
+                  IconButton.filledTonal(
+                    tooltip: 'Zur Liste hinzufügen',
+                    onPressed: () => onAdd(suggestions[index]),
+                    icon: const Icon(Icons.add),
+                  ),
+                ],
               ),
             ),
             if (index < suggestions.length - 1) const Divider(height: 1),
