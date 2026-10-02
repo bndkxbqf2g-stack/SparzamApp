@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: 903a10c30a5ba17112ddf8b3615533a47127481d
-- Main-CI zu diesem Stand: 548 Tests, Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: 940f44b6771a98512d3bf1a60d31d5cd08ea5667
+- Main-CI zu diesem Stand: 550 Tests, Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -107,11 +107,23 @@ Eine intelligente und alltagstaugliche Preisdatenbank aufbauen:
 - Die historische Beobachtung bleibt im Preisverlauf erhalten; die Auswahl
   zeigt je Markt keine doppelte, widersprüchliche Preiszeile mehr.
 - Eine Regression prüft den Cashback-Fall mit effektivem Angebotspreis.
+
 2. Unklare Bonpositionen nicht dauerhaft starr behandeln.
 3. Varianten (z. B. Fettstufe, Packungsgröße, Marke) getrennt halten.
 4. Bestätigte Nutzerzuordnungen als Lernsignal verwenden.
 5. Angebote als zeitabhängige Preise behandeln, nicht als neue Produkte.
 6. Preisqualität/Herkunft/Aktualität nachvollziehbar halten.
+
+## Update 02.10.2026 – Eindeutige Bon-Aliase vor Variantenfamilien
+- Das Bon-Review berücksichtigt Produktnamen und gelernte Aliase jetzt als
+  exakte Identitätsbelege.
+- Ein eindeutiger Alias (z. B. `K.H-Milch`) gewinnt vor kompatiblen
+  Geschwistervarianten; widersprüchliche exakte Aliase bleiben offen.
+- Unbestätigte automatische Zuordnungen werden dadurch weiterhin nicht zu
+  direkten Routenpreisen.
+- PR #131 (`d5ac287`) ergänzt zwei Fachregressionen. PR-CI mit 550 Tests,
+  Analyse und Web-Build; Main-CI `36981928067` und Release-Lauf
+  `36981927972` waren nach dem Merge erfolgreich.
 
 ## Update 30.09.2026 – Frische Tomaten im Basiskatalog
 - Auf einer frischen Installation bietet die Produktsuche jetzt
