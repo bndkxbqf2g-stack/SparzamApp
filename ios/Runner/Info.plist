@@ -50,7 +50,7 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>sparzamApp benötigt die Kamera zum Scannen von Produktbarcodes.</string>
+	<string>SparzamApp nutzt die Kamera zum Scannen von Produktbarcodes und zum lokalen Auslesen von Kassenbonfotos.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

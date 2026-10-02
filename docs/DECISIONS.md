@@ -694,3 +694,10 @@ ungültige Mengen oder nur teilweise vorhandene Mengenmetadaten fallen auf den
 historischen Packungspreis zurück. Alte Beobachtungen ohne Mengenmetadaten
 bleiben aus Kompatibilitätsgründen lesbar und vergleichbar, sofern ihre
 Einzelpreise gültig sind.
+
+## D102 – Die iOS-Kamerafreigabe erklärt beide lokalen Kamerawege
+Die iOS-Kamera-Berechtigungsbeschreibung nennt sowohl das Scannen von
+Produktbarcodes als auch das lokale Auslesen von Kassenbonfotos. Beide Wege
+verwenden dieselbe Kamera-Freigabe; die Bonbilder werden für die OCR lokal
+verarbeitet und nicht durch die Berechtigungsbeschreibung als Uploadquelle
+ausgegeben.
