@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: ccba4c38fb07a4af593da37884abead98b6a2bea
-- Main-CI zu diesem Stand: 545 Tests, Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: 903a10c30a5ba17112ddf8b3615533a47127481d
+- Main-CI zu diesem Stand: 548 Tests, Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -1189,3 +1189,19 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Tests, Analyse und Web-Build; Main-CI `36977247429` und Release
   `36977247450` sind nach dem Merge erfolgreich, einschließlich
   Pages-Deployment und Android-APK.
+
+## Update 02.10.2026 – Aktuelle Sparvariante in der Produktsuche markieren
+- Die normale Einkaufssuche kennzeichnet bei mehreren passenden Varianten die
+  erste aktuell belegte Sparvariante sichtbar als „Empfehlung“.
+- Eine aktive Angebots-, eigene Marktpreis- oder aktuelle Bonpreis-Evidenz
+  darf die Markierung auslösen. Ein historischer Prospektmedian bleibt eine
+  Orientierung und wird nicht zur stillen Produktauswahl.
+- Die Identitäts- und Preisrangfolge bleibt unverändert; der Hinweis macht die
+  bereits angewendete Angebotspriorität im Eingabefluss nachvollziehbar.
+- PR #129 (`8f45121`) ergänzt Such-, Widget- und Screenregressionen. Die
+  PR-CI bestand mit 548 Tests, Analyse und Web-Build; Main-CI `36979865886`
+  und Release `36979865819` sind nach dem Merge erfolgreich, einschließlich
+  Pages-Deployment und Android-APK.
+- Der veröffentlichte Web-Smoke mit `?v=903a10c` zeigt bei „Milch“ die
+  PENNY-Frischmilch für 0,99 € als „Empfehlung“ vor getrennten H-Milch- und
+  Fettstufenvarianten.
