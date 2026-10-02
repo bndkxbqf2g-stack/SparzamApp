@@ -588,13 +588,13 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                         suggestion.product.id)),
                                 onChanged: saving ? null : (checked) {
                                   setState(() {
-                                    final key = _priceKey(draft.fingerprint,
-                                        suggestion.product.id);
-                                    if (checked == true) {
-                                      selectedReceiptPrices.add(key);
-                                    } else {
-                                      selectedReceiptPrices.remove(key);
-                                    }
+                                    updateReceiptSuggestionSelection(
+                                      draft: draft,
+                                      suggestion: suggestion,
+                                      checked: checked == true,
+                                      selectedPriceKeys: selectedReceiptPrices,
+                                      assignedProducts: assignedProducts,
+                                    );
                                   });
                                 },
                                 title: Text(
@@ -805,4 +805,26 @@ Map<int, String> selectedReceiptProductAssignments({
     }
   }
   return assignments;
+}
+
+/// Keeps a checkbox change reversible when a learned assignment was already
+/// attached to the same receipt row. A different manual assignment is left
+/// untouched.
+void updateReceiptSuggestionSelection({
+  required ReceiptDraft draft,
+  required ReceiptPriceSuggestion suggestion,
+  required bool checked,
+  required Set<String> selectedPriceKeys,
+  required Map<String, String> assignedProducts,
+}) {
+  final priceKey = '${draft.fingerprint}|${suggestion.product.id}';
+  final rowKey = '${draft.fingerprint}|${suggestion.row.line}';
+  if (checked) {
+    selectedPriceKeys.add(priceKey);
+    return;
+  }
+  selectedPriceKeys.remove(priceKey);
+  if (assignedProducts[rowKey] == suggestion.product.id) {
+    assignedProducts.remove(rowKey);
+  }
 }
