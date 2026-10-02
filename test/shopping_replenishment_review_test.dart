@@ -80,4 +80,60 @@ void main() {
 
     expect(added, [milk, milk]);
   });
+
+  testWidgets('normale Suche kennzeichnet belegte Sparvariante', (
+    tester,
+  ) async {
+    const milk15 = Product(
+      id: 'milk-15',
+      name: 'Milch 1,5 %',
+      unit: '1 l',
+      group: 'milch',
+    );
+    const milk35 = Product(
+      id: 'milk-35',
+      name: 'Vollmilch 3,5 %',
+      unit: '1 l',
+      group: 'milch',
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ShoppingListScreen(
+            items: const [],
+            onAdd: (_) {},
+            onChangeQuantity: (_, _) {},
+            preferredProductByGroup: const {},
+            recentPurchases: const [],
+            onPurchased: (_, _) async {},
+            onClearPurchased: (_) {},
+            shoppingListStore: ShoppingListStore(),
+            onOpenScanner: () {},
+            offers: [
+              Offer(
+                id: 'milk-offer',
+                productId: milk15.id,
+                storeName: 'ALDI Süd',
+                originalPrice: 1.29,
+                offerPrice: 0.95,
+                validUntil: DateTime(2099, 1, 1),
+              ),
+            ],
+            priceHistory: const [],
+            mobility: const MobilitySettings(),
+            catalogProducts: const [milk15, milk35],
+            marketPrices: const [],
+            replenishmentSuggestions: const [],
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField), 'Milch');
+    await tester.pump();
+
+    expect(find.text('Milch 1,5 % · Empfehlung'), findsOneWidget);
+  });
 }

@@ -24,6 +24,54 @@ void main() {
   );
   final now = DateTime(2026, 9, 30);
 
+  test('recommends current evidence but never a historical hint alone', () {
+    const historical = ShoppingSuggestionPrice(
+      price: 0.79,
+      storeName: 'Lidl',
+      sourceLabel: 'Früheres Angebot (Median)',
+      isHistorical: true,
+    );
+    const current = ShoppingSuggestionPrice(
+      price: 0.95,
+      storeName: 'ALDI Süd',
+      sourceLabel: 'Angebot',
+      isOffer: true,
+    );
+    const historicalProduct = Product(
+      id: 'historical',
+      name: 'Milch 3,5 %',
+      unit: '1 l',
+      group: 'milch',
+    );
+    const currentProduct = Product(
+      id: 'current',
+      name: 'Milch 1,5 %',
+      unit: '1 l',
+      group: 'milch',
+    );
+
+    final prices = <String, ShoppingSuggestionPrice>{
+      historicalProduct.id: historical,
+      currentProduct.id: current,
+    };
+    expect(
+      recommendedShoppingProductId(
+        suggestions: [historicalProduct, currentProduct],
+        priceFor: (product) => prices[product.id],
+        hasAlternatives: true,
+      ),
+      currentProduct.id,
+    );
+    expect(
+      recommendedShoppingProductId(
+        suggestions: [historicalProduct],
+        priceFor: (_) => historical,
+        hasAlternatives: true,
+      ),
+      isNull,
+    );
+  });
+
   test('generic staple suggestions rank the lowest current offer first', () {
     final results = buildSuggestions(
       query: 'Milch',

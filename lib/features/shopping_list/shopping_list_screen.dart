@@ -183,6 +183,15 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   String? priceHintFor(Product product) =>
       suggestionPriceFor(product)?.displayLabel;
 
+  String? get recommendedSuggestionId {
+    return recommendedShoppingProductId(
+      suggestions: suggestions,
+      priceFor: suggestionPriceFor,
+      hasAlternatives:
+          suggestions.length > 1 || relatedInterpretations.isNotEmpty,
+    );
+  }
+
   List<Product> get relatedInterpretations =>
       buildRelatedProductInterpretations(
         query: controller.text,
@@ -493,6 +502,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   relatedInterpretations: relatedInterpretations,
                   preferredProductByGroup: widget.preferredProductByGroup,
                   recentPurchases: widget.recentPurchases,
+                  recommendedProductId: recommendedSuggestionId,
                   priceHintFor: priceHintFor,
                   onAdd: add,
                   onAddCustom: addCustomProduct,
