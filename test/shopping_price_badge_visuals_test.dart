@@ -170,6 +170,9 @@ void main() {
       observedAt: observedAt,
       source: PriceObservationSource.receipt,
       kind: PriceObservationKind.regular,
+      quantity: 1,
+      unit: 'l',
+      unitPrice: 0.95,
       proofRef: 'receipt-fixture',
     );
     final offer = Offer(
@@ -205,6 +208,9 @@ void main() {
     expect(find.text('Milch · Preisverlauf'), findsOneWidget);
     expect(find.text('Kaufland'), findsOneWidget);
     expect(find.textContaining('Kassenbon · Normalpreis'), findsOneWidget);
+    expect(find.textContaining('Packung 1 l'), findsOneWidget);
+    expect(find.textContaining('Grundpreis 0,95 €/l'), findsOneWidget);
+    expect(find.textContaining('Nachweis vorhanden'), findsOneWidget);
     expect(find.text('0,95 €'), findsOneWidget);
   });
 }

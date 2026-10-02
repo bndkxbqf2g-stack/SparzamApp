@@ -13,6 +13,10 @@ class ShoppingPriceHistoryEntry {
     required this.observedAt,
     required this.sourceLabel,
     required this.kindLabel,
+    this.quantity,
+    this.unit,
+    this.unitPrice,
+    required this.hasProof,
     this.validUntil,
   });
 
@@ -21,6 +25,10 @@ class ShoppingPriceHistoryEntry {
   final DateTime observedAt;
   final String sourceLabel;
   final String kindLabel;
+  final double? quantity;
+  final String? unit;
+  final double? unitPrice;
+  final bool hasProof;
   final DateTime? validUntil;
 }
 
@@ -47,6 +55,10 @@ List<ShoppingPriceHistoryEntry> shoppingPriceHistory({
               observedAt: observation.observedAt,
               sourceLabel: _sourceLabel(observation.source),
               kindLabel: _kindLabel(observation.kind),
+              quantity: observation.quantity,
+              unit: observation.unit,
+              unitPrice: observation.unitPrice,
+              hasProof: observation.proofRef?.trim().isNotEmpty == true,
               validUntil: observation.validUntil,
             ),
           )

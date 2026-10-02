@@ -30,6 +30,7 @@ void main() {
     validUntil: DateTime(2026, 9, 30),
     quantity: 1,
     unit: 'l',
+    unitPrice: price,
     identityConfidence: confidence,
     proofRef: 'https://example.test/$id',
   );
@@ -71,6 +72,10 @@ void main() {
     expect(result, hasLength(2));
     expect(result.first.storeName, 'ALDI Süd');
     expect(result.first.price, 0.99);
+    expect(result.first.quantity, 1);
+    expect(result.first.unit, 'l');
+    expect(result.first.unitPrice, 0.99);
+    expect(result.first.hasProof, isTrue);
     expect(result.first.kindLabel, 'Angebot');
     expect(result.last.storeName, 'Lidl');
   });

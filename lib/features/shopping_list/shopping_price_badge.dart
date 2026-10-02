@@ -306,7 +306,8 @@ class ShoppingPriceBadge extends StatelessWidget {
                         subtitle: Text(
                           '${entry.sourceLabel} · ${entry.kindLabel} · '
                           '${_formatDate(entry.observedAt)}'
-                          '${entry.validUntil == null ? '' : ' · gültig bis ${_formatDate(entry.validUntil!)}'}',
+                          '${entry.validUntil == null ? '' : ' · gültig bis ${_formatDate(entry.validUntil!)}'}'
+                          ' · ${_priceHistoryEvidenceLabel(entry)}',
                         ),
                         trailing: Text(
                           '${entry.price.toStringAsFixed(2).replaceAll('.', ',')} €',
@@ -398,3 +399,32 @@ class ShoppingPriceBadge extends StatelessWidget {
 
 String _formatDate(DateTime value) =>
     '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.${value.year}';
+
+String _priceHistoryEvidenceLabel(ShoppingPriceHistoryEntry entry) {
+  final details = <String>[];
+  final quantity = entry.quantity;
+  if (quantity != null && quantity.isFinite && quantity > 0) {
+    final amount = _formatNumber(quantity);
+    final unit = entry.unit?.trim();
+    details.add(
+      unit == null || unit.isEmpty ? 'Menge $amount' : 'Packung $amount $unit',
+    );
+  }
+  final unitPrice = entry.unitPrice;
+  if (unitPrice != null && unitPrice.isFinite && unitPrice > 0) {
+    final unit = entry.unit?.trim();
+    details.add(
+      'Grundpreis ${_formatNumber(unitPrice)} €${unit == null || unit.isEmpty ? '' : '/$unit'}',
+    );
+  }
+  details.add(entry.hasProof ? 'Nachweis vorhanden' : 'Nachweis fehlt');
+  return details.join(' · ');
+}
+
+String _formatNumber(double value) {
+  final fixed = value.toStringAsFixed(3);
+  final trimmed = fixed
+      .replaceFirst(RegExp(r'0+$'), '')
+      .replaceFirst(RegExp(r'\.$'), '');
+  return trimmed.replaceAll('.', ',');
+}
