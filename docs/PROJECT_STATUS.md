@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: 37eb72f3dc6f1afc8154a57bc58596ff24f4a59c
-- PR-CI zu diesem Stand: 558 Tests, Analyse und Web-Build erfolgreich; Main-/Release-Läufe nach dem Merge werden separat verifiziert.
+- Letzter geprüfter Main-Stand: f5c118baab0e30f872ec49c3309263d5f3954486
+- PR-CI zu diesem Stand: 558 Tests, Analyse und Web-Build erfolgreich; Main-CI `36993681052` und Release `36993681189` sind nach dem Merge einschließlich Pages-Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -1256,3 +1256,13 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - Der veröffentlichte Web-Smoke mit `?v=903a10c` zeigt bei „Milch“ die
   PENNY-Frischmilch für 0,99 € als „Empfehlung“ vor getrennten H-Milch- und
   Fettstufenvarianten.
+
+## Update 02.10.2026 – Strukturierte Prospektdatenlücke sichtbar
+- Ein aktuell gültiger, durchblätterbarer Prospekt ohne ausgelesene
+  strukturierte Angebotsdaten wird in der Prospektkarte jetzt ausdrücklich als
+  „Keine aktuell gültigen Angebotsdaten geladen“ gekennzeichnet.
+- Die offiziellen Seiten und der Händlerlink bleiben dabei erreichbar; die
+  Statusanzeige behauptet keine geladenen Preise, wenn nur die Quelle vorliegt.
+- PR #139 (`f5c118b`) ergänzt die Widgetregression für diesen Fall. Die PR-CI
+  bestand mit 558 Tests; Main-CI und Release-Artefakte sind nach dem Merge
+  einschließlich Pages-Deployment und Android-APK grün.
