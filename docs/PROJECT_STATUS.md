@@ -6,7 +6,7 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: 8c7bea538f9ae4ec8c54eef30d6bde4d8b7293f8
+- Letzter geprüfter Main-Stand: 49ac3b500a3527e564b9811a4c53d05f49ee7c78
 - Main-CI zu diesem Stand: 530 Tests, Analyse und Web-Build erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
@@ -1095,3 +1095,14 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Direktpfad bleibt als bewusste Alternative verfügbar.
 - Widgetregressionen prüfen die neue Aktion und den vollständigen Flow inklusive
   Mengenübernahme.
+
+## Update 02.10.2026 – Bonstatistik schützt Einheitenvergleich
+- Historische Bonmediane verwenden Grundpreise nur noch bei einer durchgängig
+  belegten und einheitlichen Mengendimension. Gemischte Masse-/Volumenbelege,
+  ungültige Mengen und teilweise fehlende Mengenmetadaten werden als
+  Packungspreise gekennzeichnet und nicht als günstiger Grundpreis gerankt.
+- Unterschiedliche Packungsmengen derselben Dimension (z. B. 500 g und 1 kg)
+  bleiben über den normalisierten Grundpreis vergleichbar. Legacy-Belege ohne
+  Mengenmetadaten bleiben lesbar, solange ihre Einzelpreise gültig sind.
+- Die Regression deckt sichere Gewichtsvergleiche, gemischte Dimensionen und
+  teilweise fehlende Mengenmetadaten ab.

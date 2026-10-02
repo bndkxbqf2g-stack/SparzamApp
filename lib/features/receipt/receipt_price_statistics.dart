@@ -1,5 +1,6 @@
 import '../../models/receipt_observation.dart';
 import '../../models/receipt_price_stat.dart';
+import '../../services/quantity_normalizer.dart';
 import 'receipt_observation_builder.dart';
 
 List<ReceiptPriceStat> buildReceiptPriceStats(
@@ -8,8 +9,11 @@ List<ReceiptPriceStat> buildReceiptPriceStats(
   int maxAgeDays = 90,
 }) {
   final today = now ?? DateTime.now();
-  final cutoff = DateTime(today.year, today.month, today.day)
-      .subtract(Duration(days: maxAgeDays));
+  final cutoff = DateTime(
+    today.year,
+    today.month,
+    today.day,
+  ).subtract(Duration(days: maxAgeDays));
   final groups = <String, List<ReceiptObservation>>{};
 
   for (final item in observations) {
@@ -46,28 +50,64 @@ List<ReceiptPriceStat> buildReceiptPriceStats(
   for (final entries in groups.values) {
     entries.sort((a, b) => b.observedAt.compareTo(a.observedAt));
     final unitEntries = entries.where((e) => e.unitPrice != null).toList();
-    final comparable = unitEntries.length == entries.length;
-    final values = (comparable
-            ? unitEntries.map((e) => e.unitPrice!)
-            : entries.map((e) => e.totalPrice))
-        .toList()
-      ..sort();
-    result.add(ReceiptPriceStat(
-      familyKey: entries.first.familyKey,
-      productId: entries.first.productId,
-      storeName: entries.first.storeName,
-      latestPrice: comparable
-          ? entries.first.unitPrice!
-          : entries.first.totalPrice,
-      latestAt: entries.first.observedAt,
-      observationCount: entries.length,
-      medianPrice: _median(values),
-      comparable: comparable,
-      priceBasis: comparable ? entries.first.quantityUnit : 'Packung',
-    ));
+    final comparable =
+        unitEntries.length == entries.length &&
+        _hasComparableUnitBasis(entries);
+    final values =
+        (comparable
+                ? unitEntries.map((e) => e.unitPrice!)
+                : entries.map((e) => e.totalPrice))
+            .toList()
+          ..sort();
+    result.add(
+      ReceiptPriceStat(
+        familyKey: entries.first.familyKey,
+        productId: entries.first.productId,
+        storeName: entries.first.storeName,
+        latestPrice: comparable
+            ? entries.first.unitPrice!
+            : entries.first.totalPrice,
+        latestAt: entries.first.observedAt,
+        observationCount: entries.length,
+        medianPrice: _median(values),
+        comparable: comparable,
+        priceBasis: comparable ? entries.first.quantityUnit : 'Packung',
+      ),
+    );
   }
   result.sort((a, b) => b.latestAt.compareTo(a.latestAt));
   return result;
+}
+
+bool _hasComparableUnitBasis(List<ReceiptObservation> entries) {
+  if (entries.any(
+    (entry) =>
+        entry.unitPrice == null ||
+        !entry.unitPrice!.isFinite ||
+        entry.unitPrice! <= 0,
+  )) {
+    return false;
+  }
+
+  // Legacy observations may contain a parsed unit price without quantity
+  // metadata. Keep those histories readable and comparable as before.
+  final quantified = entries.where((entry) => entry.quantity != null).toList();
+  if (quantified.isEmpty) return true;
+
+  // A unit price with only partial quantity metadata cannot establish a
+  // common basis for the whole history.
+  if (quantified.length != entries.length) return false;
+
+  final normalized = quantified
+      .map(
+        (entry) =>
+            normalizeQuantity(entry.quantity!.toDouble(), entry.quantityUnit),
+      )
+      .toList();
+  if (normalized.any((quantity) => quantity == null)) return false;
+
+  final dimension = normalized.first!.dimension;
+  return normalized.every((quantity) => quantity!.dimension == dimension);
 }
 
 double _median(List<double> values) {
