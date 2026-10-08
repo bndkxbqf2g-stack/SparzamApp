@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: 3690251013efa72501afb30dda576836cc161ef4
-- PR-CI zu diesem Stand: 568 Tests, Analyse und Web-Build erfolgreich; Main-CI `37013615016` und Release `37013614899` sind nach dem Merge einschließlich Pages-Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: `650c83b` (nach dem Merge der Prospekt-Datenabdeckung und nachfolgenden automatischen Prospektfeed-Aktualisierungen).
+- Für PR #153 waren PR-CI, Main-CI `37017836279` und Release `37017836256` mit 567 Tests, Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -75,6 +75,17 @@
   oder eine Test-Fixture kopiert. PR #151 (`3690251`) ergänzt die Regression;
   Main-CI `37013615016` und Release `37013614899` waren mit 568 Tests,
   Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
+
+## Update 02.10.2026 – Prospekt-Datenabdeckung je Markt
+- Die Prospektansicht zeigt jetzt eine aufklappbare Abdeckungskarte für alle
+  sichtbaren Märkte. Sie trennt strukturierte Angebotszeilen, Prospektbildseiten,
+  Produktbilder, Kategorien sowie Filial-ID, Ort, Adresse und Gültigkeitszeitraum.
+- Die Zählung verwendet nur die bereits datumsgefilterten aktuellen Datensätze
+  und den ausgewählten Prospektstand. Fehlende Quellfelder bleiben als Lücke
+  sichtbar; daraus werden weder Preise noch Produktidentitäten abgeleitet.
+- PR #153 (`0debc98`) ergänzt Fach- und Widgetregressionen. PR-CI,
+  Main-CI `37017836279` und Release `37017836256` waren einschließlich
+  Pages-Deployment und Android-APK erfolgreich.
 
 ## Update 02.10.2026 – Exakter Preisverlauf im Listenartikel
 - Der Preisdialog eines Einkaufslistenartikels bietet jetzt einen eigenen
