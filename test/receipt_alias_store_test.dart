@@ -32,6 +32,12 @@ void main() {
       storeName: 'Kaufland',
       rawLabel: 'K.H-Milch',
     ), 'milch_15');
+    final learned = await store.learnedAlias(
+      storeName: 'Kaufland',
+      rawLabel: 'K.H-Milch',
+    );
+    expect(learned?.productId, 'milch_15');
+    expect(learned?.confirmations, 2);
   });
 
   test('a conflicting correction resets confidence', () async {

@@ -44,6 +44,8 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
   final selectedReceiptPrices = <String>{};
   final assignedProducts = <String, String>{};
   final automaticProductAssignments = <String>{};
+  final learnedProductAssignments = <String>{};
+  final learnedAliasConfirmations = <String, int>{};
   late List<Product> availableProducts;
   DateTime? receiptDate;
   String? errorMessage;
@@ -74,27 +76,38 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
   ReceiptIdentityAssessment _suggestionIdentity(
     ReceiptDraft draft,
     ReceiptPriceSuggestion suggestion,
-  ) =>
-      assessReceiptIdentity(
-        productId: suggestion.product.id,
-        identityConfirmed: selectedReceiptPrices.contains(
-          _priceKey(draft.fingerprint, suggestion.product.id),
-        ),
-        familyKey: inferReceiptFamily(suggestion.row.label),
-      );
+  ) {
+    final key = _rowKey(draft, suggestion.row);
+    final learned = learnedProductAssignments.contains(key);
+    return assessReceiptIdentity(
+      productId: suggestion.product.id,
+      identityConfirmed: selectedReceiptPrices.contains(
+            _priceKey(draft.fingerprint, suggestion.product.id),
+          ) &&
+          !learned,
+      familyKey: inferReceiptFamily(suggestion.row.label),
+      learnedAlias: learned,
+    );
+  }
 
   ReceiptIdentityAssessment _assignedIdentity(
     ReceiptDraft draft,
     ReceiptRow row,
   ) {
     final key = _rowKey(draft, row);
+    final learned = learnedProductAssignments.contains(key);
     return assessReceiptIdentity(
       productId: assignedProducts[key],
       identityConfirmed: assignedProducts.containsKey(key) &&
-          !automaticProductAssignments.contains(key),
+          !automaticProductAssignments.contains(key) && !learned,
       familyKey: inferReceiptFamily(row.label),
+      learnedAlias: learned,
     );
   }
+
+  bool _isExplicitAssignment(String key) =>
+      !automaticProductAssignments.contains(key) &&
+      !learnedProductAssignments.contains(key);
 
   Future<void> pickReceiptDate() async {
     final chosen = await showDatePicker(
@@ -247,13 +260,16 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
       final draft = entry.draft;
       if (draft.retailer != null) {
         for (final row in draft.rows.where((r) => r.kind == ReceiptRowKind.item)) {
-          final learnedId = await aliasStore.learnedProductId(
+          final learned = await aliasStore.learnedAlias(
             storeName: draft.retailer!,
             rawLabel: row.label,
           );
-          if (learnedId != null &&
-              availableProducts.any((product) => product.id == learnedId)) {
-            assignedProducts[_rowKey(draft, row)] = learnedId;
+          if (learned != null &&
+              availableProducts.any((product) => product.id == learned.productId)) {
+            final key = _rowKey(draft, row);
+            assignedProducts[key] = learned.productId;
+            learnedProductAssignments.add(key);
+            learnedAliasConfirmations[key] = learned.confirmations;
           }
         }
       }
@@ -367,6 +383,8 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
         final key = _rowKey(draft, row);
         assignedProducts[key] = assignment.value;
         automaticProductAssignments.remove(key);
+        learnedProductAssignments.remove(key);
+        learnedAliasConfirmations.remove(key);
       }
       final usedProducts = <String>{};
       for (final suggestion in review.suggestions) {
@@ -388,8 +406,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
           draft: draft,
           row: row,
           product: products.single,
-          identityConfirmed:
-              !automaticProductAssignments.contains(_rowKey(draft, row)),
+          identityConfirmed: _isExplicitAssignment(_rowKey(draft, row)),
         );
         if (price != null && usedProducts.add(id)) {
           prices.add(price);
@@ -424,7 +441,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
           final productId = assignedProducts[key];
           if (productId != null) {
             assigned[row.line] = productId;
-            if (!automaticProductAssignments.contains(key)) {
+            if (_isExplicitAssignment(key)) {
               confirmedLines.add(row.line);
             }
           }
@@ -433,7 +450,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
           final productId = assigned[row.line];
           if (productId != null &&
               draft.retailer != null &&
-              !automaticProductAssignments.contains(_rowKey(draft, row))) {
+              _isExplicitAssignment(_rowKey(draft, row))) {
             await aliasStore.confirm(
               storeName: draft.retailer!,
               rawLabel: row.label,
@@ -594,6 +611,8 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                       checked: checked == true,
                                       selectedPriceKeys: selectedReceiptPrices,
                                       assignedProducts: assignedProducts,
+                                      learnedProductAssignments:
+                                          learnedProductAssignments,
                                     );
                                   });
                                 },
@@ -606,7 +625,8 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                   '${suggestion.row.label} · '
                                   '${suggestion.row.quantity == null ? '1 Stück' : '${suggestion.row.quantity} ${suggestion.row.quantityUnit}'} · '
                                   '${suggestion.price.price.toStringAsFixed(2).replaceAll('.', ',')} € je ${suggestion.product.unit}\n'
-                                  '${_suggestionIdentity(draft, suggestion).summary}',
+                                  '${_suggestionIdentity(draft, suggestion).summary}'
+                                  '${learnedProductAssignments.contains(_rowKey(draft, suggestion.row)) ? ' · ${learnedAliasConfirmations[_rowKey(draft, suggestion.row)] ?? 2} Bestätigungen' : ''}',
                                 ),
                               ),
                           if (review.unmatchedItems > 0)
@@ -664,7 +684,8 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                         if (assignedProducts.containsKey(_rowKey(draft, row)))
                                           Text(
                                             'Zuordnung: ${availableProducts.where((p) => p.id == assignedProducts[_rowKey(draft, row)]).first.name}\n'
-                                            '${_assignedIdentity(draft, row).summary}',
+                                            '${_assignedIdentity(draft, row).summary}'
+                                            '${learnedProductAssignments.contains(_rowKey(draft, row)) ? ' · ${learnedAliasConfirmations[_rowKey(draft, row)] ?? 2} Bestätigungen' : ''}',
                                             style: const TextStyle(fontWeight: FontWeight.w600),
                                           ),
                                         Align(
@@ -692,6 +713,9 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                                 } else {
                                                   assignedProducts[key] = value;
                                                 }
+                                                automaticProductAssignments.remove(key);
+                                                learnedProductAssignments.remove(key);
+                                                learnedAliasConfirmations.remove(key);
                                               });
                                             },
                                           ),
@@ -715,7 +739,11 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                                 if (!mounted) return;
                                                 setState(() {
                                                   availableProducts = next;
-                                                  assignedProducts[_rowKey(draft, row)] = product.id;
+                                                  final key = _rowKey(draft, row);
+                                                  assignedProducts[key] = product.id;
+                                                  automaticProductAssignments.remove(key);
+                                                  learnedProductAssignments.remove(key);
+                                                  learnedAliasConfirmations.remove(key);
                                                 });
                                               },
                                             ),
@@ -816,9 +844,11 @@ void updateReceiptSuggestionSelection({
   required bool checked,
   required Set<String> selectedPriceKeys,
   required Map<String, String> assignedProducts,
+  Set<String>? learnedProductAssignments,
 }) {
   final priceKey = '${draft.fingerprint}|${suggestion.product.id}';
   final rowKey = '${draft.fingerprint}|${suggestion.row.line}';
+  learnedProductAssignments?.remove(rowKey);
   if (checked) {
     selectedPriceKeys.add(priceKey);
     return;
