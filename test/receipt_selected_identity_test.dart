@@ -65,6 +65,7 @@ Datum 23.09.26
     final assigned = <String, String>{
       '${draft.fingerprint}|${suggestion.row.line}': 'milch_35',
     };
+    final learned = <String>{'${draft.fingerprint}|${suggestion.row.line}'};
 
     updateReceiptSuggestionSelection(
       draft: draft,
@@ -72,9 +73,11 @@ Datum 23.09.26
       checked: false,
       selectedPriceKeys: selectedKeys,
       assignedProducts: assigned,
+      learnedProductAssignments: learned,
     );
 
     expect(selectedKeys, isEmpty);
     expect(assigned, isEmpty);
+    expect(learned, isEmpty);
   });
 }

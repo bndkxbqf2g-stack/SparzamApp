@@ -31,7 +31,17 @@ ReceiptIdentityAssessment assessReceiptIdentity({
   String? productId,
   bool identityConfirmed = false,
   String familyKey = '',
+  bool learnedAlias = false,
 }) {
+  if (productId?.isNotEmpty == true && learnedAlias) {
+    return const ReceiptIdentityAssessment(
+      state: ReceiptIdentityState.provisional,
+      confidence: 0.75,
+      exactRouteEligible: false,
+      label: 'Gelernter Alias',
+      reason: 'Vorbefüllt; bitte diese Zuordnung im Bon-Review prüfen.',
+    );
+  }
   if (productId?.isNotEmpty == true && identityConfirmed) {
     return const ReceiptIdentityAssessment(
       state: ReceiptIdentityState.confirmed,

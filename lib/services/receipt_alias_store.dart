@@ -58,11 +58,21 @@ class ReceiptAliasStore {
     required String storeName,
     required String rawLabel,
     int minConfirmations = 2,
+  }) async => (await learnedAlias(
+    storeName: storeName,
+    rawLabel: rawLabel,
+    minConfirmations: minConfirmations,
+  ))?.productId;
+
+  Future<ReceiptAlias?> learnedAlias({
+    required String storeName,
+    required String rawLabel,
+    int minConfirmations = 2,
   }) async {
     final key = '${storeName.toLowerCase()}|${normalizeReceiptAlias(rawLabel)}';
     for (final item in await load()) {
       if (item.key == key && item.confirmations >= minConfirmations) {
-        return item.productId;
+        return item;
       }
     }
     return null;
