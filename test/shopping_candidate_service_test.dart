@@ -116,6 +116,44 @@ void main() {
     expect(candidates.single.bestPrice, 0.99);
   });
 
+  test('milk search excludes milchschnitte snack offers', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Milch',
+      catalogProducts: [
+        Product(
+          id: 'milchschnitte',
+          name: 'MILCH-SCHNITTE Snack',
+          unit: '10 Stück',
+          group: 'snack',
+        ),
+        Product(
+          id: 'ordinary-milk',
+          name: 'Frische Vollmilch',
+          unit: '1 l',
+          group: 'milch',
+        ),
+      ],
+      offers: [
+        Offer(
+          id: 'snack-offer',
+          productId: 'milchschnitte',
+          storeName: 'Kaufland',
+          originalPrice: 2.49,
+          offerPrice: 1.99,
+          validUntil: DateTime(2026, 9, 30),
+        ),
+      ],
+      marketPrices: const [],
+      receiptPriceStats: const [],
+      now: now,
+    );
+
+    expect(candidates.map((candidate) => candidate.product.id),
+        isNot(contains('milchschnitte')));
+    expect(candidates.map((candidate) => candidate.product.id),
+        contains('ordinary-milk'));
+  });
+
   test('only active offers and receipt prices from the last 60 days are shown', () {
     final candidates = buildShoppingCandidates(
       request: 'Käse',
