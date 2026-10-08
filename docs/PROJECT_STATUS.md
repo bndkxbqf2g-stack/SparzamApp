@@ -6,7 +6,7 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: `650c83b` (nach dem Merge der Prospekt-Datenabdeckung und nachfolgenden automatischen Prospektfeed-Aktualisierungen).
+- Letzter geprüfter Main-Stand: `1da02a7` (nach dem Merge der prüfbaren, vorbefüllten Bon-Aliase).
 - Für PR #153 waren PR-CI, Main-CI `37017836279` und Release `37017836256` mit 567 Tests, Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
@@ -40,6 +40,22 @@
 - Kaufland-Milch 1,5 % und 3,5 % als getrennte Produkte behandelt.
 - Explizite Zuordnung unklar abgekürzter Kaufland-Milchzeilen ermöglicht.
 - Milch-Auswahl nur für sicher zuordenbare, ausgeglichene und nicht rabattierte Bonzeilen.
+
+## Update 08.10.2026 – Gelernte Bon-Aliase bleiben prüfbar
+- Ein aus wiederkehrenden Bonzeilen gelernter Händleralias darf die Einkaufssuche
+  weiterhin vorbefüllen, wird aber als „Gelernter Alias“ mit seiner bisherigen
+  Bestätigungsanzahl angezeigt und bleibt bis zur ausdrücklichen Prüfung
+  provisorisch.
+- Die Vorbefüllung erzeugt dadurch weder eine bestätigte Produktidentität noch
+  einen exakten Routenpreis oder eine neue Preisbeobachtung. Erst das bewusste
+  Bestätigen der Zeile, die manuelle Produktauswahl oder das Anlegen eines neuen
+  Produkts macht die Zuordnung für diese Preislogik nutzbar.
+- Abwählen einer Vorschlagszeile entfernt den Vorbefüllungsmarker wieder. So
+  bleibt der Review-Schritt reversibel und automatische Alias-Lernen kann keine
+  stillen Fehlzuordnungen in die Sparroute übernehmen.
+- PR #155 (`1da02a7`) ergänzt Fach- und Auswahlregressionen. PR-CI
+  `37792946917` und `37792978661`, Main-CI `37793492647` mit 572 Tests sowie
+  Release `37793492726` mit Web-/Pages- und Android-Artefakt waren erfolgreich.
 
 ## Update 02.10.2026 – Lokales Backup für den Alltag
 - Das Profil bietet jetzt „Lokales Backup exportieren“ und „Lokales Backup
