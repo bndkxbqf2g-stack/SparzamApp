@@ -85,6 +85,15 @@ ProductIdentity identifyProduct(String value) {
       productType: 'croissant',
     );
   }
+  // Milchschnitte is a chilled snack, not ordinary milk. Resolve the
+  // compound before the generic milk rule so a search for "Milch" cannot
+  // recommend a snack offer as a staple product.
+  if (_hasAny(text, const ['milchschnitte', 'milch schnitte'])) {
+    return const ProductIdentity(
+      familyKey: 'snack',
+      productType: 'milchschnitte',
+    );
+  }
   if (_hasAny(text, const ['muellermilch', 'milchgetraenk', 'milchdrink'])) {
     return const ProductIdentity(familyKey: 'milchgetraenk');
   }

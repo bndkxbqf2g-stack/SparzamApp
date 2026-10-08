@@ -145,6 +145,17 @@ void main() {
     );
   });
 
+  test('milchschnitte stays separate from ordinary milk', () {
+    final snack = identifyProduct('MILCH-SCHNITTE Snack je 10 St.');
+
+    expect(snack.familyKey, 'snack');
+    expect(snack.productType, 'milchschnitte');
+    expect(
+      compatibleProductIdentity(identifyProduct('Milch'), snack),
+      isFalse,
+    );
+  });
+
   test(
     'coffee compounds keep appliances and pastries out of coffee search',
     () {
