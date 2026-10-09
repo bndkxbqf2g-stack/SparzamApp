@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: `975363e` (nach dem Merge der getrennten Suche für Säuglingsmilch-Prospektlabels).
-- Für PR #186 waren die PR-CI-Läufe `37985510403` und `37985523126`, Main-CI `37985945304` und Release `37985945543` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: `2b74e32` (nach dem Merge der Schutzregeln für zusammengesetzte Prospektlabels).
+- Für PR #189 waren die PR-CI-Läufe `37989837352` und `37989841549`, Main-CI `37990310996` und Release `37990311009` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -123,6 +123,28 @@
 - PR #186 (`975363e`) ergänzt Identitäts- und Einkaufssuchtests. Die PR-CI-Läufe
   `37985510403` und `37985523126`, Main-CI `37985945304` sowie Release
   `37985945543` waren mit Analyse, Tests, Web-/Pages-Build, Deployment und
+  Android-APK erfolgreich.
+
+## Update 09.10.2026 – Tee- und Eis-Suchen bleiben frei von Fremdprodukten
+- Fertiggetränke wie „Teegetränk“ werden von heißem Tee getrennt; Tee-Gläser
+  werden als Haushalt erkannt. Ein allgemeiner Tee-Vorschlag kann dadurch
+  keine Getränke- oder Geschirrpreise übernehmen.
+- Nicht-Lebensmittel wie ein erotischer Adventskalender mit dem Label „EIS“
+  werden aus der Eisfamilie ferngehalten. Eine gezielte Suche nach Eistee
+  bleibt weiterhin möglich.
+- PR #188 (`254bf46`) ergänzt Identitäts- und Einkaufssuchtests. Die PR-CI-Läufe
+  `37988247409` und `37988253971`, Main-CI `37988690763` sowie Release
+  `37988690791` waren erfolgreich.
+
+## Update 09.10.2026 – Zusammengesetzte Prospektlabels bleiben fachlich getrennt
+- Holz-Spielzeug mit „Kaffee und Kuchen“, Protein-Eisriegel, herzhafte
+  Feinkost-Cremes und Tierfutter mit „Protein“ werden nicht mehr als Kaffee,
+  Eis, Sahne oder Proteinartikel vorgeschlagen.
+- Käsecreme bleibt eine Käsevariante. Skyr wird als Joghurtvariante erkannt,
+  damit Standard-Suchen die tatsächliche Lebensmittelgruppe behalten.
+- PR #189 (`2b74e32`) ergänzt Identitäts- und Einkaufssuchtests. Die PR-CI-Läufe
+  `37989837352` und `37989841549`, Main-CI `37990310996` sowie Release
+  `37990311009` waren mit Analyse, Tests, Web-/Pages-Build, Deployment und
   Android-APK erfolgreich.
 
 ## Update 09.10.2026 – Zusammengesetzte Wurst-Prospektlabels werden gefunden
