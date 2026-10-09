@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: `47d3614` (nach dem Merge der Suche für zusammengesetzte Joghurt-Prospektlabels).
-- Für PR #180 waren die PR-CI-Läufe `37977196606` und `37977202950`, Main-CI `37977679983` und Release `37977679931` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: `f6884e4` (nach dem Merge der getrennten Suche für zusammengesetzte Butter-Prospektlabels).
+- Für PR #182 waren die PR-CI-Läufe `37979914225` und `37979930037`, Main-CI `37980376909` und Release `37980376915` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -146,6 +146,18 @@
 - PR #180 (`47d3614`) ergänzt Identitäts- und Einkaufssuchtests. Die PR-CI-Läufe
   `37977196606` und `37977202950`, Main-CI `37977679983` sowie Release
   `37977679931` waren mit Analyse, Tests, Web-/Pages-Build, Deployment und
+  Android-APK erfolgreich.
+
+## Update 09.10.2026 – Zusammengesetzte Butter-Prospektlabels bleiben getrennt
+- Prospektlabels wie „Butterkäse“ und „Buttergemüse“ werden jetzt als Käse
+  beziehungsweise Gemüse erkannt. Dadurch erscheinen ihre aktuellen,
+  belegten Preise nicht bei einer einfachen Suche nach „Butter“.
+- Normale Butter wie „Landliebe Butter oder Die Streichzarte“ bleibt in der
+  Butterfamilie. Die Identität bleibt damit für Butterpreis und Routenplanung
+  getrennt von Käse- und Gemüsepreisen.
+- PR #182 (`f6884e4`) ergänzt Identitäts- und Einkaufssuchtests. Die PR-CI-Läufe
+  `37979914225` und `37979930037`, Main-CI `37980376909` sowie Release
+  `37980376915` waren mit Analyse, Tests, Web-/Pages-Build, Deployment und
   Android-APK erfolgreich.
 
 ## Zuletzt umgesetzt
