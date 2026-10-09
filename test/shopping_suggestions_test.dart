@@ -1167,4 +1167,53 @@ void main() {
 
     expect(suggestions.map((product) => product.id), ['field-salad']);
   });
+
+  test('generic yoghurt search includes compound current prospect labels', () {
+    final products = <Product>[
+      Product(
+        id: 'almighurt',
+        name: 'Ehrmann Almighurt Je 150 g',
+        unit: '150 g',
+        group: 'prospekt',
+      ),
+      Product(
+        id: 'obstgarten',
+        name: 'EHRMANN Obstgarten* je 125 g',
+        unit: '125 g',
+        group: 'prospekt',
+      ),
+      Product(
+        id: 'fruit-crunch',
+        name: 'BERCHTESGADENER LAND Frucht & Knusper je 150-g-Becher',
+        unit: '150 g',
+        group: 'prospekt',
+      ),
+      Product(
+        id: 'fresh-cheese',
+        name: 'K-CLASSIC Frischkäsezubereitung light oder mit Joghurt',
+        unit: '200 g',
+        group: 'prospekt',
+      ),
+      Product(
+        id: 'fruit-gruetze',
+        name: 'DR. OETKER Löffelglück Fruchtgrütze',
+        unit: '400 g',
+        group: 'prospekt',
+      ),
+    ];
+
+    final suggestions = buildSuggestions(
+      query: 'Joghurt',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: products,
+      now: DateTime(2026, 10, 9),
+    );
+
+    expect(
+      suggestions.map((product) => product.id),
+      ['obstgarten', 'almighurt', 'fruit-crunch'],
+    );
+  });
 }

@@ -554,4 +554,22 @@ void main() {
     expect(identifyProduct('FRANK ROSIN Feinkostsalat').familyKey, isNot('salat'));
     expect(identifyProduct('Salatgurke').familyKey, isNot('salat'));
   });
+
+  test('compound yoghurt labels stay separate from yoghurt ingredients', () {
+    expect(identifyProduct('Ehrmann Almighurt Je 150 g').familyKey, 'joghurt');
+    expect(identifyProduct('EHRMANN Obstgarten* je 125 g').familyKey, 'joghurt');
+    expect(
+      identifyProduct('BERCHTESGADENER LAND Frucht & Knusper').familyKey,
+      'joghurt',
+    );
+    expect(
+      identifyProduct('K-CLASSIC Frischkäsezubereitung light oder mit Joghurt')
+          .familyKey,
+      'kaese',
+    );
+    expect(
+      identifyProduct('DR. OETKER Löffelglück Fruchtgrütze').familyKey,
+      isNot('joghurt'),
+    );
+  });
 }
