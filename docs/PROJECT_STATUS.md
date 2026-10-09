@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: `9001ffe` (nach dem Merge der Suche für zusammengesetzte Milch-Prospektlabels).
-- Für PR #172 waren die PR-CI-Läufe `37965347328` und `37965359717`, Main-CI `37965821978` und Release `37965821968` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: `a015314` (nach dem Merge der Suche für zusammengesetzte Wurst-Prospektlabels).
+- Für PR #174 waren die PR-CI-Läufe `37967975722` und `37967996937`, Main-CI `37968440727` und Release `37968440900` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -99,6 +99,19 @@
 - PR #172 (`9001ffe`) ergänzt Identitäts- und Einkaufssuchtests. Die PR-CI-Läufe
   `37965347328` und `37965359717`, Main-CI `37965821978` sowie Release
   `37965821968` waren erfolgreich.
+
+## Update 09.10.2026 – Zusammengesetzte Wurst-Prospektlabels werden gefunden
+- Prospektlabels wie „Grobe Bratwurst“, „Zwiebelmettwurst“ und „Leberwurst“
+  werden jetzt generisch als Wurstfamilie erkannt. Dadurch erscheinen aktuelle,
+  belegte Angebote auch bei einer einfachen Suche nach „Wurst“ in der
+  Einkaufsliste.
+- Ganze Wurst- und Schinkenkomposita werden erkannt, während Sonderfälle wie
+  Fleischsalat getrennt bleiben und Käsesalami weiterhin als Wurst-Untertyp
+  behandelt wird.
+- PR #174 (`a015314`) ergänzt Identitäts- und Einkaufssuchtests. Die PR-CI-Läufe
+  `37967975722` und `37967996937`, Main-CI `37968440727` sowie Release
+  `37968440900` waren mit Analyse, Tests, Web-/Pages-Build, Deployment und
+  Android-APK erfolgreich.
 
 ## Zuletzt umgesetzt
 - REWE wurde als Händlerintegration entfernt. Die Händlerauswahl umfasst damit
