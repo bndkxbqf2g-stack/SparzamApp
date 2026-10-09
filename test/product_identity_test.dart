@@ -433,6 +433,50 @@ void main() {
     );
   });
 
+  test('composite prospect labels stay out of unrelated staple families', () {
+    final toyCoffee = identifyProduct(
+      'TOYLINO Holz-Gebäck-Set, Kaffee und Kuchen',
+    );
+    final proteinIce = identifyProduct(
+      'FROZEN Ice Cream Protein Bar oder Energy Balls',
+    );
+    final antipasti = identifyProduct('Antipasti-Creme Doppelrahmstufe');
+    final herring = identifyProduct('Heringshappen in Dillcreme');
+    final cheeseCream = identifyProduct('KRAFT Käse Creme');
+    final skyr = identifyProduct('EHRMANN High Protein Skyr');
+    final dogProtein = identifyProduct(
+      'ZOOROYAL Hundetrockenfutter Monoprotein Huhn',
+    );
+
+    expect(toyCoffee.familyKey, 'haushalt');
+    expect(toyCoffee.productType, 'spielzeug');
+    expect(proteinIce.familyKey, 'snack');
+    expect(proteinIce.productType, 'protein_snack');
+    expect(antipasti.familyKey, 'feinkost');
+    expect(herring.familyKey, 'feinkost');
+    expect(cheeseCream.familyKey, 'kaese');
+    expect(cheeseCream.variant, 'creme');
+    expect(skyr.familyKey, 'joghurt');
+    expect(skyr.variant, 'skyr');
+    expect(dogProtein.familyKey, 'tiernahrung');
+    expect(
+      compatibleProductIdentity(identifyProduct('Kaffee'), toyCoffee),
+      isFalse,
+    );
+    expect(
+      compatibleProductIdentity(identifyProduct('Eis'), proteinIce),
+      isFalse,
+    );
+    expect(
+      compatibleProductIdentity(identifyProduct('Sahne'), antipasti),
+      isFalse,
+    );
+    expect(
+      compatibleProductIdentity(identifyProduct('Protein'), dogProtein),
+      isFalse,
+    );
+  });
+
   test('milk ingredient compounds stay out of the plain milk family', () {
     expect(identifyProduct('K-CLASSIC Kondensmilch XXL').familyKey, isNull);
     expect(identifyProduct('K-CLASSIC Milch-Riegel').familyKey, 'snack');
