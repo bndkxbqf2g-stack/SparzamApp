@@ -6,10 +6,21 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: `c49251c` (nach dem Merge des aktualisierten Projektstatus; Code-Stand `b0a99dc`).
-- Für PR #191 waren die erfolgreichen PR-CI-Läufe `37992927870` und `37992934178`; nach dem anschließenden Dokumentations-Merge waren Main-CI `37994441577` und Release `37994441507` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Code-Stand auf main: `87af7c7` (nach dem Merge der Prospekt-Packungsgrößenkorrektur).
+- Für PR #194 waren die erfolgreichen PR-CI-Läufe `37996176786` und `37996195576`; Main-CI `37996577735` und Release `37996577721` waren mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 10.10.2026 – Prospekt-Mehrfachpackungen behalten ihre Gesamtmenge
+- Unbekannte, aber geprüfte Prospektartikel übernehmen jetzt Mehrfachpackungen
+  wie „3 x 50-g-Packg.“ oder „6 x 1,5-l-Fl.“ vollständig. Die sichtbare
+  Packungsangabe bleibt erhalten; zusätzlich werden Gesamtmenge und Einheit
+  gespeichert.
+- Damit werden Grundpreis, Mengenvergleich und gelernte Prospektbeobachtung
+  nicht mehr versehentlich nur auf die Einzelportion bezogen. Unklare Angaben
+  ohne belastbare Mengeneinheit bleiben weiterhin ohne erfundene Packungsbasis.
+- PR #194 (`106eab3`) ergänzt Regressionen für Mehrfachpackungen. Die PR-CI,
+  Main-CI und Release-Läufe waren erfolgreich.
 
 ## Update 09.10.2026 – Preis-Datenlücken direkt in der Marktansicht bearbeiten
 - Die Marktansicht zeigt fehlende, vergleichbare Preise weiterhin als Datenlücke und bietet jetzt direkt den Button „Preis ergänzen“.
