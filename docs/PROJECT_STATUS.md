@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `87af7c7` (nach dem Merge der Prospekt-Packungsgrößenkorrektur).
-- Für PR #194 waren die erfolgreichen PR-CI-Läufe `37996176786` und `37996195576`; Main-CI `37996577735` und Release `37996577721` waren mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Code-Stand auf main: `74c24f2` (nach dem Merge der zusammengesetzten Prospekt-Lebensmittel-Erkennung).
+- Für PR #196 waren die erfolgreichen PR-CI-Läufe `37999315281` und `37999328616`; beide liefen mit Analyse, Tests und Web-Build erfolgreich. Die nachgelagerte Main-/Release-Prüfung steht noch aus.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -21,6 +21,20 @@
   ohne belastbare Mengeneinheit bleiben weiterhin ohne erfundene Packungsbasis.
 - PR #194 (`106eab3`) ergänzt Regressionen für Mehrfachpackungen. Die PR-CI,
   Main-CI und Release-Läufe waren erfolgreich.
+
+## Update 10.10.2026 – Zusammengesetzte Lebensmittel-Prospektlabels werden gefunden
+- Die Produktidentität erkennt jetzt weitere aktuelle Prospektkomposita
+  generisch: Fleischkäse und Hähnchensalami als Wurst, Hähnchenflügel als
+  Fleisch, Sahnepudding und Sprühsahne als Dessert bzw. Sahne, Schafskäse,
+  Grill-/Pfannen-/Reibekäse und Pizzakäse als Käse sowie Gemüsepfannen und
+  Steinofenpizza als Gemüse bzw. Pizza.
+- Zusätzlich werden Frühlingsquark, Rübenzucker, Schokoladenkränze,
+  Kokoswasser und Eisbecher in den passenden Familien gefunden. Zutaten- und
+  Fremdprodukt-Sonderfälle bleiben getrennt, zum Beispiel Pizzakäse von Pizza,
+  Erdnussbutter von Butter und Gemüsemais von der allgemeinen Gemüsefamilie.
+- PR #196 (`5598a4f`) ergänzt Identitäts- und Einkaufssuchtests. Die beiden
+  PR-CI-Läufe `37999315281` und `37999328616` waren mit Analyse, Tests und
+  Web-Build erfolgreich.
 
 ## Update 09.10.2026 – Preis-Datenlücken direkt in der Marktansicht bearbeiten
 - Die Marktansicht zeigt fehlende, vergleichbare Preise weiterhin als Datenlücke und bietet jetzt direkt den Button „Preis ergänzen“.
