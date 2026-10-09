@@ -52,9 +52,10 @@ class RoutePriceResolver {
     if (isGenericShoppingIntent(item.product)) return null;
     final offer = _bestOffer(store, item.product, item.quantity);
     final customPrice = marketPrices['${store.name}|${item.product.id}'];
+    final catalogPrice = store.prices[item.product.id];
     final observed =
         customPrice?.price ??
-        store.prices[item.product.id] ??
+        catalogPrice ??
         (offer == null
             ? null
             : offer.originalPriceVerified
@@ -79,7 +80,13 @@ class RoutePriceResolver {
     final offerTotal = effective * paidUnits;
     final regularTotal = regular * item.quantity;
 
-    if (offerTotal >= regularTotal && offer.originalPriceVerified) {
+    // A current market observation is still the comparison basis when the
+    // offer's regular price is unverified. Never route to an active offer
+    // that would cost more than the price we can actually substantiate.
+    if (offerTotal >= regularTotal &&
+        (offer.originalPriceVerified ||
+            customPrice != null ||
+            catalogPrice != null)) {
       return RoutePriceQuote(
         unitPrice: regular,
         total: regularTotal,

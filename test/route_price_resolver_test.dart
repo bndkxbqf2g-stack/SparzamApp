@@ -39,6 +39,38 @@ void main() {
     expect(quote.usesOffer, isTrue);
   });
 
+  test('does not let an unverified offer override a cheaper market price', () {
+    final offer = Offer(
+      id: 'unverified-expensive-offer',
+      productId: 'test',
+      storeName: 'Markt',
+      originalPrice: 99,
+      originalPriceVerified: false,
+      offerPrice: 1.25,
+      validUntil: DateTime(2026, 9, 30),
+    );
+    final resolver = RoutePriceResolver(
+      [offer],
+      now: DateTime(2026, 9, 22),
+      marketPrices: [
+        MarketPrice(
+          productId: 'test',
+          storeName: 'Markt',
+          price: 0.99,
+          updatedAt: DateTime(2026, 9, 21),
+          source: MarketPriceSource.receipt,
+        ),
+      ],
+    );
+
+    final quote = resolver.quote(store, ListItem(product: product));
+
+    expect(quote, isNotNull);
+    expect(quote!.total, 0.99);
+    expect(quote.usesOffer, isFalse);
+    expect(quote.observation?.source, MarketPriceSource.receipt);
+  });
+
   test('does not activate an offer before validFrom', () {
     final offer = Offer(
       id: 'future',
