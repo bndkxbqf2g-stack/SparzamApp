@@ -25,6 +25,7 @@ class ShoppingQuote {
     required this.kind,
     this.observedAt,
     this.offer,
+    this.historical = false,
   });
 
   final String storeName;
@@ -32,9 +33,11 @@ class ShoppingQuote {
   final ShoppingQuoteKind kind;
   final DateTime? observedAt;
   final Offer? offer;
+  final bool historical;
 
   String get sourceLabel => switch (kind) {
-    ShoppingQuoteKind.receipt => 'Bonpreis vom ${_date(observedAt!)}',
+    ShoppingQuoteKind.receipt =>
+      '${isHistorical ? 'Historischer ' : ''}Bonpreis vom ${_date(observedAt!)}',
     ShoppingQuoteKind.ownPrice => 'Eigener Preis vom ${_date(observedAt!)}',
     ShoppingQuoteKind.offer =>
       'Angebot${(offer!.hasCoupon || offer!.hasCashback) ? ', effektiv' : ''} '
@@ -51,14 +54,16 @@ class ShoppingQuote {
   }
 
   String get displayPrefix => switch (kind) {
-    ShoppingQuoteKind.receipt => 'Bonpreis',
+    ShoppingQuoteKind.receipt =>
+      isHistorical ? 'Historischer Bonpreis' : 'Bonpreis',
     ShoppingQuoteKind.ownPrice => 'Eigener Preis',
     ShoppingQuoteKind.offer =>
       'Angebot${(offer!.hasCoupon || offer!.hasCashback) ? ', effektiv' : ''}',
     ShoppingQuoteKind.prospectHistory => 'Prospekt-Median',
   };
 
-  bool get isHistorical => kind == ShoppingQuoteKind.prospectHistory;
+  bool get isHistorical =>
+      historical || kind == ShoppingQuoteKind.prospectHistory;
 
   String get amountLabel =>
       '${unitPrice.toStringAsFixed(2).replaceAll('.', ',')} €';
@@ -142,6 +147,8 @@ List<ShoppingQuote> shoppingQuotes(
             ? ShoppingQuoteKind.receipt
             : ShoppingQuoteKind.ownPrice,
         observedAt: price.updatedAt,
+        historical: price.source == MarketPriceSource.receipt &&
+            !price.isUsable(now: today, openPricesMaxAgeDays: 36500),
       ),
     );
   }
@@ -175,6 +182,7 @@ List<ShoppingQuote> shoppingQuotes(
   // Historical prospect medians provide context when a market has no current
   // quote. They remain explicitly historical and never become route prices.
   final storesWithCurrentQuote = candidates
+      .where((quote) => !quote.isHistorical)
       .map((quote) => quote.storeName)
       .toSet();
   final historicalByStore = <String, ProspectPriceHistorySummary>{};
