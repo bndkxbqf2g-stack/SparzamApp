@@ -542,4 +542,16 @@ void main() {
     );
     expect(identifyProduct('Bayerische Brotzeit').familyKey, isNot('brot'));
   });
+
+  test('compound fresh-salad labels stay separate from prepared salads', () {
+    expect(identifyProduct('Feldsalat* je 150-g-Schale').familyKey, 'salat');
+    expect(
+      identifyProduct('Deutsche Romana Salatherzen* je 2-Stück-Packung')
+          .familyKey,
+      'salat',
+    );
+    expect(identifyProduct('Dtsch. Mini-Romanasalat').familyKey, 'salat');
+    expect(identifyProduct('FRANK ROSIN Feinkostsalat').familyKey, isNot('salat'));
+    expect(identifyProduct('Salatgurke').familyKey, isNot('salat'));
+  });
 }
