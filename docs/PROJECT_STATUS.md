@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: `4d12d9c` (nach dem Merge der Datenlücken-Relevanz für offene Preisnachweise).
-- Für PR #161 waren PR-CI `37906553696` und `37906563186` mit Analyse, Tests und Web-Build erfolgreich; der Main- und Release-Lauf nach dem Merge wird nach diesem Status-Update geprüft.
+- Letzter geprüfter Main-Stand: `ec4c78d` (nach dem Merge der wirksamen Datenlücken-Priorisierung).
+- Für PR #163 waren PR-CI `37908383382` und `37908396540`, Main-CI `37908816819` und Release `37908816658` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -28,6 +28,19 @@
 - PR #161 (`4d12d9c`) ergänzt Fachregressionen für die Score-Berechnung und
   ihre neutrale Behandlung ohne Historie. Die beiden PR-CI-Läufe
   `37906553696` und `37906563186` waren erfolgreich.
+
+## Update 09.10.2026 – Kombinierte Datenlücken-Relevanz wirkt in der Reihenfolge
+- Die Datenlückenliste wendet den kombinierten Score jetzt vor den einzelnen
+  Tie-Breakern an. Eine Position mit größerer bekannter Auswirkung aus Menge,
+  bestätigter Kaufhäufigkeit, historischer Preisbasis und fehlender
+  Marktdeckung kann dadurch eine häufige, aber kleinere Lücke überholen.
+- Die Reihenfolge bleibt nach Marktdeckung und Grundbedarf nachvollziehbar;
+  bei gleicher Relevanz greifen Kaufhäufigkeit, Historie, Menge, Produktname
+  und Produkt-ID weiterhin deterministisch.
+- PR #163 (`ec4c78d`) ergänzt eine Regression für die kombinierte Bewertung.
+  PR-CI `37908383382` und `37908396540`, Main-CI `37908816819` sowie Release
+  `37908816658` waren mit Analyse, Tests, Web-/Pages-Build, Deployment und
+  Android-APK erfolgreich.
 
 ## Aktuell funktionsfähig
 - Einkaufsliste mit mehreren Listen, Mengen, Notizen, Kategorien und lokalem Zustand.
