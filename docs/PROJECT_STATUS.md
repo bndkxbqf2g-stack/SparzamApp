@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: `2b74e32` (nach dem Merge der Schutzregeln für zusammengesetzte Prospektlabels).
-- Für PR #189 waren die PR-CI-Läufe `37989837352` und `37989841549`, Main-CI `37990310996` und Release `37990311009` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: `b0a99dc` (nach dem Merge der Trennung von Fleisch-, Käse- und Schoko-Reis-Prospektlabels).
+- Für PR #191 waren die erfolgreichen PR-CI-Läufe `37992927870` und `37992934178`, Main-CI `37993296482` und Release `37993296407` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -146,6 +146,17 @@
   `37989837352` und `37989841549`, Main-CI `37990310996` sowie Release
   `37990311009` waren mit Analyse, Tests, Web-/Pages-Build, Deployment und
   Android-APK erfolgreich.
+
+## Update 09.10.2026 – Fleisch-, Käse- und Schoko-Reis-Labels bleiben getrennt
+- Hähnchen-Käse-Ecken werden als Snack erkannt; Schoko-Reis-Tafeln bleiben
+  Schokolade. Dadurch tauchen sie nicht als normale Käse- oder Reisprodukte
+  in der Einkaufsliste auf.
+- Schinkenkrustenbraten, Eisbein und Schnitzel bleiben Fleisch. Piccolinis
+  werden als Pizza gefunden, ohne als Salami-Wurst in die Wurstsuche zu fallen.
+- PR #191 (`b0a99dc`) ergänzt Identitäts- und Einkaufssuchtests. Die erfolgreichen
+  PR-CI-Läufe `37992927870` und `37992934178`, Main-CI `37993296482` sowie
+  Release `37993296407` waren mit Analyse, Tests, Web-/Pages-Build, Deployment
+  und Android-APK erfolgreich.
 
 ## Update 09.10.2026 – Zusammengesetzte Wurst-Prospektlabels werden gefunden
 - Prospektlabels wie „Grobe Bratwurst“, „Zwiebelmettwurst“ und „Leberwurst“
