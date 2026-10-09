@@ -526,10 +526,34 @@ void main() {
         group: 'getraenke',
       ),
       Product(
+        id: 'tea-drink',
+        name: 'ARIZONA Teegetränk',
+        unit: '1,5 l',
+        group: 'getraenke',
+      ),
+      Product(
+        id: 'tea-glasses',
+        name: 'Tee-Gläser doppelwandig',
+        unit: '2 Stück',
+        group: 'haushalt',
+      ),
+      Product(
         id: 'iced-tea',
         name: 'Freeway Eistee',
         unit: '1,5 l',
         group: 'getraenke',
+      ),
+      Product(
+        id: 'ice-cream',
+        name: 'Eis am Stiel',
+        unit: '4 Stück',
+        group: 'tiefkuehl',
+      ),
+      Product(
+        id: 'calendar',
+        name: 'EIS Erotischer Adventskalender DELUXE',
+        unit: '1 Stück',
+        group: 'haushalt',
       ),
       Product(
         id: 'pet-food',
@@ -609,6 +633,9 @@ void main() {
 
     final tea = ids('Tee');
     expect(tea, ['tea']);
+
+    final ice = ids('Eis');
+    expect(ice, ['ice-cream']);
 
     final meat = ids('Fleisch');
     expect(meat, containsAll(<String>['mince', 'steak']));
