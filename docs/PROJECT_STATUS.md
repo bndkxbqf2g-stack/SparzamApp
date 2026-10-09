@@ -6,9 +6,9 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `29d8aed` (nach dem Merge der erweiterten aktuellen Prospekt-Lebensmittelsuche); der aktuelle Dokumentationsstand vor diesem Update ist `b1b40f2`.
-- Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe werden nach dem Dokumentations-Merge ergänzt.
-- Die vorherigen Code- und Dokumentations-Merges bleiben in den folgenden Updates und den zugehörigen CI-Nachweisen nachvollziehbar.
+- Letzter geprüfter Code-Stand auf main: `29d8aed` (nach dem Merge der erweiterten aktuellen Prospekt-Lebensmittelsuche); der aktuelle Dokumentationsstand ist `8ee0de5`.
+- Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
+- Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
