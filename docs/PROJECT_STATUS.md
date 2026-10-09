@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: `ec4c78d` (nach dem Merge der wirksamen Datenlücken-Priorisierung).
-- Für PR #163 waren PR-CI `37908383382` und `37908396540`, Main-CI `37908816819` und Release `37908816658` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: `d941771` (nach dem Merge der Zeitvalidierung für externe Preisbeobachtungen).
+- Für PR #166 waren PR-CI `37920677029` und `37920692175`, Main-CI `37921104437` und Release `37921104249` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -53,6 +53,19 @@
 - Exakte gelernte Preisbeobachtungen sind im Preisdialog eines Listenartikels
   getrennt vom aktuellen Angebot und vom Routenpreis einsehbar.
 - Budget- und Diagnosefunktionen.
+
+## Update 09.10.2026 – Zukünftige externe Preise bleiben aus der Planung
+- Kassenbon- und Open-Prices-Beobachtungen mit einem Datum nach dem aktuellen
+  Tag werden zentral als nicht nutzbar behandelt. So können importierte oder
+  fehlerhaft datierte externe Werte weder als aktueller Suchpreis noch als
+  Routenpreis erscheinen.
+- Manuelle Preise bleiben davon getrennt zulässig. Die Einkaufssuche blendet
+  zukünftige Bonbeobachtungen ebenfalls aus, während historische Belege weiter
+  datiert sichtbar bleiben.
+- PR #166 (`d941771`) ergänzt die Zeitprüfung und Regressionen. PR-CI
+  `37920677029` und `37920692175`, Main-CI `37921104437` sowie Release
+  `37921104249` waren mit Analyse, Tests, Web-/Pages-Build, Deployment und
+  Android-APK erfolgreich.
 
 ## Zuletzt umgesetzt
 - REWE wurde als Händlerintegration entfernt. Die Händlerauswahl umfasst damit
