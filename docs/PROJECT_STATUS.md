@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: `c108275` (nach dem Merge der günstigeren Marktpreis-Auswahl gegenüber unbestätigten Angeboten).
-- Für PR #170 waren die korrigierten PR-CI-Läufe `37962180211` und `37962186250`, Main-CI `37962650886` und Release `37962650885` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: `9001ffe` (nach dem Merge der Suche für zusammengesetzte Milch-Prospektlabels).
+- Für PR #172 waren die PR-CI-Läufe `37965347328` und `37965359717`, Main-CI `37965821978` und Release `37965821968` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -89,6 +89,16 @@
 - PR #170 (`c108275`) ergänzt die Regression für beide Fälle. Die korrigierten
   PR-CI-Läufe `37962180211` und `37962186250`, Main-CI `37962650886` sowie Release
   `37962650885` waren erfolgreich.
+
+## Update 09.10.2026 – Zusammengesetzte Milch-Prospektlabels werden gefunden
+- Prospektlabels wie „Haltbare Berg- & Alpenmilch“ werden jetzt generisch als
+  Milchfamilie erkannt. Dadurch erscheinen aktuelle, belegte Angebote auch bei
+  einer einfachen Suche nach „Milch“ in der Einkaufsliste.
+- Die Identität bleibt konservativ: Kondensmilch, Milchreis, Milchschnitte und
+  Käseprodukte mit Milchbestandteil bleiben von der normalen Milchsuche getrennt.
+- PR #172 (`9001ffe`) ergänzt Identitäts- und Einkaufssuchtests. Die PR-CI-Läufe
+  `37965347328` und `37965359717`, Main-CI `37965821978` sowie Release
+  `37965821968` waren erfolgreich.
 
 ## Zuletzt umgesetzt
 - REWE wurde als Händlerintegration entfernt. Die Händlerauswahl umfasst damit
