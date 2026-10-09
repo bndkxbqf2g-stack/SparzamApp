@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: `465155d` (nach dem Merge der getrennten Suche für Buttermilch- und Pflanzenmilch-Prospektlabels).
-- Für PR #184 waren die PR-CI-Läufe `37982283850` und `37982298335`, Main-CI `37982752368` und Release `37982752555` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: `975363e` (nach dem Merge der getrennten Suche für Säuglingsmilch-Prospektlabels).
+- Für PR #186 waren die PR-CI-Läufe `37985510403` und `37985523126`, Main-CI `37985945304` und Release `37985945543` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -111,6 +111,19 @@
   `37982283850` und `37982298335`, Main-CI `37982752368` sowie der nach einem
   externen Maven-Downloadfehler erfolgreich wiederholte Release-Lauf
   `37982752555` waren erfolgreich.
+
+## Update 09.10.2026 – Säuglingsmilch bleibt von normaler Milch getrennt
+- Prospektlabels wie „Folgemilch“, „Anfangsmilch“, „Säuglingsmilch“,
+  „Babymilch“ und „Kindermilch“ werden jetzt als eigene Babynahrungsfamilie
+  erkannt. Dadurch erscheinen ihre Preise nicht bei einer einfachen Suche
+  nach normaler Milch.
+- Folgemilch und die weiteren Typen behalten ihre eigene Identität. Eine
+  gezielte Suche kann sie weiterhin finden, ohne die Preisidentität für
+  normale Kuhmilch zu verwässern.
+- PR #186 (`975363e`) ergänzt Identitäts- und Einkaufssuchtests. Die PR-CI-Läufe
+  `37985510403` und `37985523126`, Main-CI `37985945304` sowie Release
+  `37985945543` waren mit Analyse, Tests, Web-/Pages-Build, Deployment und
+  Android-APK erfolgreich.
 
 ## Update 09.10.2026 – Zusammengesetzte Wurst-Prospektlabels werden gefunden
 - Prospektlabels wie „Grobe Bratwurst“, „Zwiebelmettwurst“ und „Leberwurst“
