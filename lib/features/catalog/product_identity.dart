@@ -125,9 +125,11 @@ ProductIdentity identifyProduct(String value) {
       fatPercent: _percent(text),
     );
   }
-  if (text.contains('joghurt') ||
-      text.contains('jogurt') ||
-      _hasWord(text, 'jogh')) {
+  // Some current prospect feeds omit the generic noun from established
+  // yoghurt lines such as "Almighurt", "Obstgarten" and "Frucht &
+  // Knusper". Recognize those structural dairy labels, but keep yoghurt as
+  // an ingredient separate from products such as yoghurt-based fresh cheese.
+  if (_hasYoghurtFamilyToken(text)) {
     return ProductIdentity(
       familyKey: 'joghurt',
       variant: _yoghurtVariant(text),
@@ -667,6 +669,7 @@ ProductIdentity identifyProduct(String value) {
     'kaesescheiben',
     'kaese scheiben',
     'frischkaese',
+    'frischkaesezubereitung',
     'frischk',
     'schmelzkaese',
     'schmelzk',
@@ -739,6 +742,28 @@ ProductIdentity identifyProduct(String value) {
     );
   }
   return const ProductIdentity(familyKey: null);
+}
+
+bool _hasYoghurtFamilyToken(String text) {
+  if (_hasAny(text, const [
+    'frischkaesezubereitung',
+    'frischkaese zubereitung',
+    'joghurt dressing',
+    'joghurt dip',
+    'joghurt sauce',
+    'joghurt sosse',
+  ])) {
+    return false;
+  }
+  return text.contains('joghurt') ||
+      text.contains('jogurt') ||
+      _hasWord(text, 'jogh') ||
+      RegExp(r'\b[a-z]{3,}ghurt\b').hasMatch(text) ||
+      _hasAny(text, const [
+        'obstgarten',
+        'frucht knusper',
+        'frucht & knusper',
+      ]);
 }
 
 bool compatibleProductIdentity(
