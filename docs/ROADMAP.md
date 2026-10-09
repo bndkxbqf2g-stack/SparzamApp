@@ -13,7 +13,7 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 - Gemeinsame append-only Preisbeobachtungen für bestehende Quellen speichern; aktuelle Marktpreise als Projektion ableiten, ohne Historie zu verlieren.
 - Provider/Adapter schrittweise anschließen: Bon, manuell, Open Prices, Angebote, später geprüfte Händlerdaten und Regalbilder; keine produktbezogene Sonderlogik.
 - Confidence aus Herkunft und Alter getrennt modellieren und fehlende Preise als Unsicherheitsbereich behandeln; knappe Routenentscheidungen kennzeichnen.
-- dataGap-Score für häufige, teure und entscheidungsrelevante Einkaufspositionen; nur gezielt neue Preisbelege anfordern.
+- [x] Datenlücken-Relevanz aus fehlender Marktdeckung, Menge, bestätigter Kaufhäufigkeit und belastbarer Historie für häufige, teure und entscheidungsrelevante Einkaufspositionen priorisieren; die Beleganforderung bleibt UI-gesteuert.
 - Produktidentität von Preisbeobachtungen trennen.
 - Frische Tomatenvarianten im Basiskatalog getrennt von verarbeiteten
   Tomatenprodukten anbieten.
@@ -22,6 +22,15 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 - Wiederkehrende Käufe bevorzugt erkennen.
 - Korrekturen des Nutzers als Lernsignal verwenden.
 - Preisverlauf pro Produkt/Markt.
+
+## Update 09.10.2026 – Datenlücken-Relevanz abgeschlossen
+- Der deterministische Datenlücken-Score ist implementiert und wird vor den
+  einzelnen Tie-Breakern angewendet. Dadurch kann eine Position mit größerer
+  bekannter Auswirkung eine nur häufige, aber kleinere Lücke überholen.
+- Der Score bleibt ein Priorisierungsindex. Er erzeugt keinen Preis, verlängert
+  keine Angebotsgültigkeit und wird nicht als direkte Routenbasis verwendet.
+- PR #163 und der nachgelagerte Main-/Release-Check sind in
+  `docs/PROJECT_STATUS.md` dokumentiert.
 
 ## Phase C – Angebote intelligent einbeziehen
 - Angebote zeitlich begrenzen.
