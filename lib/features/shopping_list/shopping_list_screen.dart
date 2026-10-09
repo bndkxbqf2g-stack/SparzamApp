@@ -34,6 +34,7 @@ import 'shopping_search_results.dart';
 import 'shopping_list_status.dart';
 import 'aisle_order_dialog.dart';
 import 'shopping_candidate_selector.dart';
+import '../price_gaps/price_gap_priority.dart';
 
 class ShoppingListScreen extends StatefulWidget {
   const ShoppingListScreen({
@@ -66,6 +67,7 @@ class ShoppingListScreen extends StatefulWidget {
     this.onSavePrices,
     this.onCreateProduct,
     this.onReceiptObservationsChanged,
+    this.onResolvePriceGap,
     required this.replenishmentSuggestions,
   });
 
@@ -97,6 +99,7 @@ class ShoppingListScreen extends StatefulWidget {
   final Future<void> Function(List<MarketPrice>)? onSavePrices;
   final Future<List<Product>> Function(Product product)? onCreateProduct;
   final Future<void> Function()? onReceiptObservationsChanged;
+  final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
   final List<ReplenishmentSuggestion> replenishmentSuggestions;
 
   @override
@@ -396,6 +399,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           mobility: widget.mobility,
           catalogProducts: widget.catalogProducts,
           marketPrices: widget.marketPrices,
+          onResolvePriceGap: widget.onResolvePriceGap,
         ),
       ),
     );
