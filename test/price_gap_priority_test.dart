@@ -153,4 +153,38 @@ void main() {
     expect(gaps.single.historicalPriceLevel, isNull);
     expect(gaps.single.dataGapScore, 6);
   });
+
+  test('kombiniert die bekannten Signale für die Reihenfolge', () {
+    const highImpact = Product(
+      id: 'high-impact',
+      name: 'Kaffee',
+      unit: '500 g',
+      group: 'kaffee',
+    );
+    const frequent = Product(
+      id: 'frequent-only',
+      name: 'Tee',
+      unit: '40 Beutel',
+      group: 'tee',
+    );
+
+    final gaps = prioritizePriceGaps(
+      [
+        ListItem(product: frequent, quantity: 1),
+        ListItem(product: highImpact, quantity: 3),
+      ],
+      marketCount: 4,
+      missingMarketCountFor: (_) => 3,
+      purchaseCountFor: (item) =>
+          item.product.id == 'frequent-only' ? 6 : 2,
+      historicalPriceLevelFor: (item) =>
+          item.product.id == 'high-impact' ? 4.0 : 1.0,
+    );
+
+    // Kaffee: 3/4 × 3 × 2 × 4 = 18. Tee: 3/4 × 1 × 6 × 1 = 4.5.
+    expect(gaps.map((gap) => gap.item.product.id), [
+      'high-impact',
+      'frequent-only',
+    ]);
+  });
 }
