@@ -1112,4 +1112,31 @@ void main() {
     expect(hint?.price, 0.89);
     expect(hint?.isHistorical, isTrue);
   });
+  test('generic bread search includes current compound prospect labels', () {
+    final products = <Product>[
+      Product(
+        id: 'wheat-bread',
+        name: 'Weizenmischbrot je 1-kg-Stück',
+        unit: '1 kg',
+        group: 'brot',
+      ),
+      Product(
+        id: 'marzipan-bread',
+        name: 'K-WINTER EDITION Marzipanbrot',
+        unit: '175 g',
+        group: 'süßigkeiten',
+      ),
+    ];
+
+    final suggestions = buildSuggestions(
+      query: 'Brot',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: products,
+      now: DateTime(2026, 10, 9),
+    );
+
+    expect(suggestions.map((product) => product.id), ['wheat-bread']);
+  });
 }

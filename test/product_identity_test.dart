@@ -530,4 +530,16 @@ void main() {
     );
     expect(compatibleProductIdentity(passata, chopped), isFalse);
   });
+
+  test('compound bread labels resolve to bread without snack false positives', () {
+    final wheatBread = identifyProduct('Weizenmischbrot je 1-kg-Stück');
+    expect(wheatBread.familyKey, 'brot');
+    expect(wheatBread.productType, 'misch');
+    expect(identifyProduct('Bauernbaguette Je 300 g').familyKey, 'brot');
+    expect(
+      identifyProduct('K-WINTER EDITION Marzipanbrot').familyKey,
+      isNot('brot'),
+    );
+    expect(identifyProduct('Bayerische Brotzeit').familyKey, isNot('brot'));
+  });
 }
