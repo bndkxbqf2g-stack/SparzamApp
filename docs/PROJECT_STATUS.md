@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: `ea8dfac` (nach dem Merge der Marktansicht-Preisdatenerfassung).
-- Für PR #153 waren PR-CI, Main-CI `37017836279` und Release `37017836256` mit 567 Tests, Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: `4d12d9c` (nach dem Merge der Datenlücken-Relevanz für offene Preisnachweise).
+- Für PR #161 waren PR-CI `37906553696` und `37906563186` mit Analyse, Tests und Web-Build erfolgreich; der Main- und Release-Lauf nach dem Merge wird nach diesem Status-Update geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -15,6 +15,19 @@
 - Die Marktansicht zeigt fehlende, vergleichbare Preise weiterhin als Datenlücke und bietet jetzt direkt den Button „Preis ergänzen“.
 - Der bestehende Preis-Editor wird dafür aus der Einkaufsliste über Angebotsdetails und Marktansicht weitergereicht. So kann ein fehlender Marktpreis genau an der Stelle ergänzt werden, an der die Lücke auffällt; die gespeicherte Quelle bleibt ein eigener Marktpreis und wird sofort für Liste und Route verwendet.
 - PR #159 (`ea8dfac`) ergänzt die Widget-Regression für den direkten Bedienfluss. PR-CI `37904049421`, Main-CI `37904457340` und Release `37904457343` waren mit 575 Tests, Analyse, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
+
+## Update 09.10.2026 – Datenlücken nach bekanntem Bedarf priorisieren
+- Offene Preisnachweise erhalten jetzt einen deterministischen Datenlücken-Score,
+  der nur bereits bekannte Signale verwendet: Anteil fehlender Märkte,
+  gewünschte Menge, bestätigte Kaufhäufigkeit und den exakten historischen
+  Medianpreis, sofern vorhanden.
+- Fehlt eine historische Basis, wird neutral mit dem Faktor eins gerechnet.
+  Der Score ist ausschließlich ein Priorisierungsindex für die Reihenfolge
+  gleichrangiger Lücken; er erzeugt keinen Marktpreis und verändert weder
+  Angebotsgültigkeit noch Routenpreise.
+- PR #161 (`4d12d9c`) ergänzt Fachregressionen für die Score-Berechnung und
+  ihre neutrale Behandlung ohne Historie. Die beiden PR-CI-Läufe
+  `37906553696` und `37906563186` waren erfolgreich.
 
 ## Aktuell funktionsfähig
 - Einkaufsliste mit mehreren Listen, Mengen, Notizen, Kategorien und lokalem Zustand.
