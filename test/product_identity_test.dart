@@ -572,4 +572,27 @@ void main() {
       isNot('joghurt'),
     );
   });
+
+  test('compound butter labels stay separate from ordinary butter', () {
+    expect(
+      identifyProduct('AMMERLÄNDER Butterkäse').familyKey,
+      'kaese',
+    );
+    expect(
+      identifyProduct('AMMERLÄNDER Butterkäse').variant,
+      'butterkaese',
+    );
+    expect(
+      identifyProduct('K-BIO Bio-Buttergemüse').familyKey,
+      'gemuese',
+    );
+    expect(
+      identifyProduct('K-BIO Bio-Buttergemüse').productType,
+      'buttergemuese',
+    );
+    expect(
+      identifyProduct('Landliebe Butter oder Die Streichzarte').familyKey,
+      'butter',
+    );
+  });
 }
