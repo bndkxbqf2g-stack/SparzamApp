@@ -102,7 +102,7 @@ ProductIdentity identifyProduct(String value) {
   // not surface condensed milk, milk bars, chocolate or cheese first. The
   // later family rules still resolve the concrete product (for example
   // `Milch-Schokolade` as chocolate).
-  if (_hasAny(text, const ['milch', 'h milch', 'vollmilch']) &&
+  if (_hasMilkFamilyToken(text) &&
       !_isMilkIngredientCompound(text) &&
       !_hasAny(text, const [
         'kaese',
@@ -1024,6 +1024,15 @@ bool _hasWord(String text, String word) {
 
 bool _hasAny(String text, List<String> words) =>
     words.any((word) => _hasWord(text, word));
+
+// Retailer labels often join a descriptive word to "Milch", for example
+// "Alpenmilch". Treat a whole token ending in "milch" as the milk family,
+// while keeping ingredient compounds out through _isMilkIngredientCompound.
+// This preserves the conservative word-boundary matching for unrelated
+// products and avoids adding one alias per retailer label.
+bool _hasMilkFamilyToken(String text) =>
+    _hasAny(text, const ['milch', 'h milch', 'vollmilch']) ||
+    RegExp(r'(?<![a-z0-9])[a-z]+milch(?![a-z0-9])').hasMatch(text);
 
 bool _isMilkIngredientCompound(String text) => _hasAny(text, const [
   'kondensmilch',
