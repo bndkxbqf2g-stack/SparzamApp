@@ -210,6 +210,43 @@ void main() {
     expect(hint?.isOffer, isTrue);
   });
 
+  test('generic sausage search finds a compound sausage prospect offer', () {
+    const prospectSausage = Product(
+      id: 'prospect|nothwang grobe bratwurst je 100 g',
+      name: 'NOTHWANG Grobe Bratwurst je 100 g',
+      unit: '100 g',
+      group: 'prospekt',
+    );
+    final offer = Offer(
+      id: 'aldi-bratwurst',
+      productId: prospectSausage.id,
+      storeName: 'ALDI Süd',
+      originalPrice: 2.49,
+      offerPrice: 1.99,
+      validUntil: DateTime(2026, 10, 2),
+      source: 'retailerWebsite',
+      proofRef: 'https://example.test/aldi/bratwurst',
+    );
+    final results = buildSuggestions(
+      query: 'Wurst',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: const [prospectSausage],
+      offers: [offer],
+      now: now,
+    );
+
+    expect(results.map((product) => product.id), [prospectSausage.id]);
+    final hint = shoppingSuggestionPriceForProduct(
+      results.single,
+      offers: [offer],
+      now: now,
+    );
+    expect(hint?.price, 1.99);
+    expect(hint?.isOffer, isTrue);
+  });
+
   test('generic milk search also filters learned ingredient products', () {
     final results = buildSuggestions(
       query: 'Milch',

@@ -681,19 +681,7 @@ ProductIdentity identifyProduct(String value) {
   ])) {
     return ProductIdentity(familyKey: 'kaese', variant: _cheeseVariant(text));
   }
-  if (_hasAny(text, const [
-    'wurst',
-    'salami',
-    'lyoner',
-    'schinkenwurst',
-    'fleischwurst',
-    'mortadella',
-    'cervelat',
-    'wiener',
-    'gelbwurst',
-    'kochhinterschink',
-    'schinken',
-  ])) {
+  if (_hasSausageFamilyToken(text)) {
     return ProductIdentity(familyKey: 'wurst', variant: _sausageVariant(text));
   }
   if (_hasAny(text, const ['fischstäbchen', 'fischstaebchen'])) {
@@ -1033,6 +1021,28 @@ bool _hasAny(String text, List<String> words) =>
 bool _hasMilkFamilyToken(String text) =>
     _hasAny(text, const ['milch', 'h milch', 'vollmilch']) ||
     RegExp(r'(?<![a-z0-9])[a-z]+milch(?![a-z0-9])').hasMatch(text);
+
+// Retailer labels also join sausage families into compounds such as
+// "Bratwurst", "Zwiebelmettwurst" and "Leberwurst". Recognize those whole
+// tokens without turning a substring inside an unrelated word into a family
+// match.
+bool _hasSausageFamilyToken(String text) =>
+    _hasAny(text, const [
+      'wurst',
+      'salami',
+      'lyoner',
+      'schinkenwurst',
+      'fleischwurst',
+      'mortadella',
+      'cervelat',
+      'wiener',
+      'gelbwurst',
+      'kochhinterschink',
+      'schinken',
+    ]) ||
+    RegExp(
+      r'(?<![a-z0-9])(?:[a-z]+wurst|[a-z]+schinken|wurst[a-z]+|schinken[a-z]+)(?![a-z0-9])',
+    ).hasMatch(text);
 
 bool _isMilkIngredientCompound(String text) => _hasAny(text, const [
   'kondensmilch',
