@@ -581,8 +581,56 @@ void main() {
     );
   });
 
+  test('current fresh and pantry prospect labels resolve by food family', () {
+    expect(identifyProduct('Mandarinen je 750-g-Netz').familyKey, 'mandarinen');
+    expect(identifyProduct('ZESPRI Kiwi Sungold Jumbo').familyKey, 'kiwi');
+    expect(identifyProduct('Peruan. Avocado lose').familyKey, 'avocado');
+    expect(identifyProduct('Chin. Pomelo gelb').familyKey, 'pomelo');
+    expect(identifyProduct('Span. Sharon/Kaki').familyKey, 'kaki');
+    expect(
+      identifyProduct('Peruan. Kulturheidelbeeren').familyKey,
+      'beeren',
+    );
+    expect(identifyProduct('Dtsch. Möhren je 1 kg').familyKey, 'moehren');
+    expect(identifyProduct('NATURGUT Bio-Gurke').familyKey, 'gurken');
+    expect(identifyProduct('Dtsch. Kürbis lose').familyKey, 'kuerbis');
+    expect(identifyProduct('Dtsch. Zierkürbis bemalt').familyKey, isNull);
+    expect(identifyProduct('FISH FROM EVIA BAY Dorade').familyKey, 'fisch');
+    expect(identifyProduct('K-CLASSIC ASIA Garnelen').familyKey, 'fisch');
+    expect(identifyProduct('RAMA Cremefine haltbar').familyKey, 'creme');
+    expect(identifyProduct('DR. OETKER Tiramisu').familyKey, 'dessert');
+    expect(identifyProduct('BARILLA Pesto Genovese').productType, 'pesto');
+    expect(identifyProduct('FOOD FOR FUTURE Hummus').productType, 'hummus');
+    expect(identifyProduct('Booster Energy Drink').familyKey, 'energydrink');
+    expect(identifyProduct('Mon Cheri').familyKey, 'suessigkeit');
+    expect(identifyProduct('LUCKY DOG Premium Huhn').familyKey, 'tiernahrung');
+  });
+
+  test('compound prospect labels keep food families searchable', () {
+    expect(identifyProduct('Norw. Lachsfilet').familyKey, 'fisch');
+    expect(identifyProduct('Seelachsfilet').familyKey, 'fisch');
+    expect(identifyProduct('Rotbarschstücke').familyKey, 'fisch');
+    expect(identifyProduct('ST. MANG Limburger').familyKey, 'kaese');
+    expect(identifyProduct('GIOIELLA Burrata').familyKey, 'kaese');
+    expect(identifyProduct('KIRI Portionen').familyKey, 'kaese');
+    expect(
+      identifyProduct('K-BIO Bio-Sultaninen').familyKey,
+      'trockenfrucht',
+    );
+    expect(identifyProduct('K-CLASSIC Haselnusskerne').familyKey, 'nuesse');
+    expect(identifyProduct('K-CLASSIC Mandeln, gemahlen').familyKey, 'nuesse');
+    expect(identifyProduct('COPPENRATH Meistertorte').familyKey, 'backware');
+    expect(identifyProduct('K-CLASSIC Sauce').familyKey, 'sauce');
+    expect(identifyProduct('Gösser Naturradler').familyKey, 'bier');
+    expect(
+      identifyProduct('Jack Daniel’s Alkoholisches Mixgetränk').familyKey,
+      'spirituosen',
+    );
+  });
+
   test('milk ingredient compounds stay out of the plain milk family', () {
     expect(identifyProduct('K-CLASSIC Kondensmilch XXL').familyKey, isNull);
+    expect(identifyProduct('Milchschokolade').familyKey, 'schokolade');
     expect(identifyProduct('K-CLASSIC Milch-Riegel').familyKey, 'snack');
     expect(
       identifyProduct('LINDENHOF Faire Milch Gouda jung').familyKey,
