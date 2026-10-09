@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: `f6884e4` (nach dem Merge der getrennten Suche für zusammengesetzte Butter-Prospektlabels).
-- Für PR #182 waren die PR-CI-Läufe `37979914225` und `37979930037`, Main-CI `37980376909` und Release `37980376915` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: `465155d` (nach dem Merge der getrennten Suche für Buttermilch- und Pflanzenmilch-Prospektlabels).
+- Für PR #184 waren die PR-CI-Läufe `37982283850` und `37982298335`, Main-CI `37982752368` und Release `37982752555` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -99,6 +99,18 @@
 - PR #172 (`9001ffe`) ergänzt Identitäts- und Einkaufssuchtests. Die PR-CI-Läufe
   `37965347328` und `37965359717`, Main-CI `37965821978` sowie Release
   `37965821968` waren erfolgreich.
+
+## Update 09.10.2026 – Spezialmilch bleibt von normaler Milch getrennt
+- Prospektlabels wie „Buttermilch-Drink“ und „Kokosmilch“ werden jetzt als
+  spezielle Milchgetränke erkannt. Dadurch erscheinen ihre Preise nicht bei
+  einer einfachen Suche nach normaler Milch.
+- Buttermilch sowie Kokos-, Soja-, Hafer- und Mandelmilch behalten jeweils
+  einen eigenen Produkttyp. Eine gezielte Suche kann sie weiterhin finden,
+  ohne die Preisidentität für normale Kuhmilch zu verwässern.
+- PR #184 (`465155d`) ergänzt Identitäts- und Einkaufssuchtests. Die PR-CI-Läufe
+  `37982283850` und `37982298335`, Main-CI `37982752368` sowie der nach einem
+  externen Maven-Downloadfehler erfolgreich wiederholte Release-Lauf
+  `37982752555` waren erfolgreich.
 
 ## Update 09.10.2026 – Zusammengesetzte Wurst-Prospektlabels werden gefunden
 - Prospektlabels wie „Grobe Bratwurst“, „Zwiebelmettwurst“ und „Leberwurst“
