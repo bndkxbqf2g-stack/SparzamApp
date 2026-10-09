@@ -46,8 +46,9 @@ void main() {
     expect(quotes.first.savings, 0.49);
     expect(quotes.first.savingsLabel, 'Ersparnis 0,49 €');
     expect(quotes.first.sourceLabel, 'Angebot, effektiv bis 30.09.2026');
-    expect(quotes.last.sourceLabel, 'Bonpreis vom 14.07.2026');
+    expect(quotes.last.sourceLabel, 'Historischer Bonpreis vom 14.07.2026');
     expect(quotes.last.unitPrice, 1.05);
+    expect(quotes.last.isHistorical, isTrue);
   });
 
   test('offer evidence keeps source and proof state visible', () {
@@ -248,6 +249,23 @@ void main() {
     expect(matrix[1].quote?.kind, ShoppingQuoteKind.receipt);
     expect(matrix[2].quote, isNull);
   });
+
+  test(
+    'stale receipt remains visible as history, not current market coverage',
+    () {
+      final matrix = shoppingPriceMatrix(
+        item,
+        prices: [receipt],
+        offers: const [],
+        enabledStores: const ['Beispielmarkt'],
+        now: DateTime(2026, 9, 24),
+      );
+
+      expect(matrix.single.quote?.displayPrefix, 'Historischer Bonpreis');
+      expect(matrix.single.hasCurrentQuote, isFalse);
+      expect(matrix.single.hasHistoricalQuote, isTrue);
+    },
+  );
 
   test('without store filter the matrix covers the six configured markets', () {
     final matrix = shoppingPriceMatrix(
