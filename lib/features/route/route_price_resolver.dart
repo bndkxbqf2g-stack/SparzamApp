@@ -79,7 +79,10 @@ class RoutePriceResolver {
     final offerTotal = effective * paidUnits;
     final regularTotal = regular * item.quantity;
 
-    if (offerTotal >= regularTotal && offer.originalPriceVerified) {
+    // A current market observation is still the comparison basis when the
+    // offer's regular price is unverified. Never route to an active offer
+    // that would cost more than the price we can actually substantiate.
+    if (offerTotal >= regularTotal) {
       return RoutePriceQuote(
         unitPrice: regular,
         total: regularTotal,
