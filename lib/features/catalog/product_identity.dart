@@ -526,15 +526,7 @@ ProductIdentity identifyProduct(String value) {
       productType: 'brotaufstrich',
     );
   }
-  if (_hasAny(text, const [
-    'brot',
-    'weissbrot',
-    'kastenweissbrot',
-    'landbrot',
-    'vollkornbrot',
-    'roggenbrot',
-    'mischbrot',
-  ])) {
+  if (_hasBreadFamilyToken(text)) {
     return ProductIdentity(familyKey: 'brot', productType: _breadType(text));
   }
   if (_hasAny(text, const ['marmelade', 'konfituere', 'fruchtaufstrich'])) {
@@ -864,11 +856,11 @@ String? _teaType(String text) {
 }
 
 String? _breadType(String text) {
-  if (_hasAny(text, const ['weissbrot', 'kastenweissbrot'])) return 'weiss';
-  if (_hasAny(text, const ['landbrot'])) return 'land';
-  if (_hasAny(text, const ['vollkornbrot'])) return 'vollkorn';
-  if (_hasAny(text, const ['roggenbrot'])) return 'roggen';
-  if (_hasAny(text, const ['mischbrot'])) return 'misch';
+  if (_hasBreadCompound(text, 'weissbrot')) return 'weiss';
+  if (_hasBreadCompound(text, 'landbrot')) return 'land';
+  if (_hasBreadCompound(text, 'vollkornbrot')) return 'vollkorn';
+  if (_hasBreadCompound(text, 'roggenbrot')) return 'roggen';
+  if (_hasBreadCompound(text, 'mischbrot')) return 'misch';
   return null;
 }
 
@@ -1012,6 +1004,29 @@ bool _hasWord(String text, String word) {
 
 bool _hasAny(String text, List<String> words) =>
     words.any((word) => _hasWord(text, word));
+
+// Retailer labels join descriptive words to bread families, for example
+// "Weizenmischbrot" or "Bauernbaguette". Keep obvious non-bread compounds
+// such as Marzipanbrot and Brotzeit out before accepting those whole tokens.
+bool _hasBreadFamilyToken(String text) {
+  if (_hasAny(text, const ['brotzeit', 'marzipanbrot'])) return false;
+  return _hasAny(text, const [
+        'brot',
+        'weissbrot',
+        'kastenweissbrot',
+        'landbrot',
+        'vollkornbrot',
+        'roggenbrot',
+        'mischbrot',
+      ]) ||
+      RegExp(r'(?<![a-z0-9])[a-z]+(?:brot|baguette)(?![a-z0-9])')
+          .hasMatch(text);
+}
+
+bool _hasBreadCompound(String text, String suffix) =>
+    _hasWord(text, suffix) ||
+    RegExp(r'(?<![a-z0-9])[a-z]+' + RegExp.escape(suffix) + r'(?![a-z0-9])')
+        .hasMatch(text);
 
 // Retailer labels often join a descriptive word to "Milch", for example
 // "Alpenmilch". Treat a whole token ending in "milch" as the milk family,
