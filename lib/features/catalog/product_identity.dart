@@ -415,7 +415,7 @@ ProductIdentity identifyProduct(String value) {
   if (_hasAny(text, const ['kohlrabi'])) {
     return const ProductIdentity(familyKey: 'kohlrabi');
   }
-  if (_hasAny(text, const ['eisbergsalat', 'salat'])) {
+  if (_hasSaladFamilyToken(text)) {
     return ProductIdentity(
       familyKey: 'salat',
       productType: _hasWord(text, 'eisbergsalat') ? 'eisberg' : null,
@@ -1004,6 +1004,30 @@ bool _hasWord(String text, String word) {
 
 bool _hasAny(String text, List<String> words) =>
     words.any((word) => _hasWord(text, word));
+
+// Current prospect labels join salad families into compounds such as
+// "Feldsalat", "Romanasalat" and "Salatherzen". Prepared salads remain
+// separate so a generic fresh-salad search cannot reuse their prices.
+bool _hasSaladFamilyToken(String text) {
+  if (_hasAny(text, const [
+    'feinkostsalat',
+    'fleischsalat',
+    'kartoffelsalat',
+    'nudelsalat',
+    'eiersalat',
+  ])) {
+    return false;
+  }
+  return _hasAny(text, const [
+        'salat',
+        'eisbergsalat',
+        'feldsalat',
+        'romanasalat',
+        'salatherzen',
+      ]) ||
+      RegExp(r'(?<![a-z0-9])(?:feld|romana)[a-z]*salat(?![a-z0-9])')
+          .hasMatch(text);
+}
 
 // Retailer labels join descriptive words to bread families, for example
 // "Weizenmischbrot" or "Bauernbaguette". Keep obvious non-bread compounds

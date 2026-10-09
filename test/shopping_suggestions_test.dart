@@ -1139,4 +1139,32 @@ void main() {
 
     expect(suggestions.map((product) => product.id), ['wheat-bread']);
   });
+
+  test('generic salad search includes current fresh prospect labels', () {
+    final products = <Product>[
+      Product(
+        id: 'field-salad',
+        name: 'Feldsalat* je 150-g-Schale',
+        unit: '150 g',
+        group: 'salat',
+      ),
+      Product(
+        id: 'prepared-salad',
+        name: 'FRANK ROSIN Feinkostsalat',
+        unit: '200 g',
+        group: 'feinkost',
+      ),
+    ];
+
+    final suggestions = buildSuggestions(
+      query: 'Salat',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: products,
+      now: DateTime(2026, 10, 9),
+    );
+
+    expect(suggestions.map((product) => product.id), ['field-salad']);
+  });
 }
