@@ -400,6 +400,18 @@ void main() {
     );
   });
 
+  test('compound sausage labels from prospect feeds remain searchable as sausage', () {
+    final identity = identifyProduct(
+      'NOTHWANG Grobe Bratwurst je 100 g',
+    );
+
+    expect(identity.familyKey, 'wurst');
+    expect(
+      compatibleProductIdentity(identifyProduct('Wurst'), identity),
+      isTrue,
+    );
+  });
+
   test(
     'fresh tomato request is not compatible with preserved tomato products',
     () {
