@@ -1483,4 +1483,46 @@ void main() {
       ['frozen-vegetables'],
     );
   });
+
+  test('fresh and pantry prospect families are searchable', () {
+    final products = <Product>[
+      Product(
+        id: 'dorade',
+        name: 'FISH FROM EVIA BAY Dorade je kg',
+        unit: 'kg',
+        group: 'prospekt',
+      ),
+      Product(
+        id: 'pumpkin',
+        name: 'Dtsch. Kürbis, lose je kg',
+        unit: 'kg',
+        group: 'prospekt',
+      ),
+      Product(
+        id: 'decor-pumpkin',
+        name: 'Dtsch. Zierkürbis bemalt, lose je Stück',
+        unit: 'Stück',
+        group: 'prospekt',
+      ),
+      Product(
+        id: 'hummus',
+        name: 'FOOD FOR FUTURE Hummus* je 200 g',
+        unit: '200 g',
+        group: 'prospekt',
+      ),
+    ];
+
+    List<String> ids(String query) => buildSuggestions(
+          query: query,
+          knownItems: const [],
+          recentPurchases: const [],
+          preferredProductByGroup: const {},
+          catalogProducts: products,
+          now: DateTime(2026, 10, 9),
+        ).map((product) => product.id).toList();
+
+    expect(ids('Fisch'), ['dorade']);
+    expect(ids('Kürbis'), ['pumpkin']);
+    expect(ids('Hummus'), ['hummus']);
+  });
 }
