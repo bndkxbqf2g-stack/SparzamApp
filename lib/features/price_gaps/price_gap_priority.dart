@@ -22,6 +22,27 @@ class PriceGapPriority {
   int get knownMarketCount =>
       (marketCount - missingMarketCount).clamp(0, marketCount).toInt();
 
+  /// A deterministic prioritization index for unresolved price evidence.
+  ///
+  /// This is deliberately not an amount of money and never becomes a route
+  /// price. It combines only signals that are already known for this list
+  /// position: the share of markets without evidence, requested quantity,
+  /// confirmed purchase frequency and an exact historical median when one is
+  /// available. A neutral factor of one keeps positions without history
+  /// comparable without inventing a price.
+  double get dataGapScore {
+    if (missingMarketCount <= 0) return 0;
+    final coverage = marketCount <= 0
+        ? 1.0
+        : missingMarketCount / marketCount;
+    final quantity = item.quantity > 0 ? item.quantity.toDouble() : 1.0;
+    final purchaseFrequency = purchaseCount > 0
+        ? purchaseCount.toDouble()
+        : 1.0;
+    final historicalBasis = historicalPriceLevel ?? 1.0;
+    return coverage * quantity * purchaseFrequency * historicalBasis;
+  }
+
   String get marketLabel {
     if (marketCount <= 0) return 'keine aktivierten Märkte';
     if (marketCount == 1) return '1 Markt ohne Preis';
@@ -98,6 +119,8 @@ List<PriceGapPriority> prioritizePriceGaps(
       );
       if (historical != 0) return historical;
     }
+    final gapScore = b.dataGapScore.compareTo(a.dataGapScore);
+    if (gapScore != 0) return gapScore;
     final quantity = b.item.quantity.compareTo(a.item.quantity);
     if (quantity != 0) return quantity;
     final names = a.item.product.name.toLowerCase().compareTo(

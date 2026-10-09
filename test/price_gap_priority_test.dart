@@ -127,4 +127,30 @@ void main() {
     expect(gaps.first.historicalPriceLevel, 8.50);
     expect(gaps.first.detailLabel, contains('Historie-Median 8,50 €'));
   });
+
+  test('berechnet die Datenlückenrelevanz nur aus bekannten Signalen', () {
+    final item = ListItem(product: staple, quantity: 2);
+    final gaps = prioritizePriceGaps(
+      [item],
+      marketCount: 4,
+      missingMarketCountFor: (_) => 3,
+      purchaseCountFor: (_) => 2,
+      historicalPriceLevelFor: (_) => 4.50,
+    );
+
+    // 3/4 uncovered markets × 2 requested units × 2 purchases × 4.50 €
+    // historical basis. The result is an index, never a route price.
+    expect(gaps.single.dataGapScore, closeTo(13.5, 0.000001));
+  });
+
+  test('fehlende Historie erhält eine neutrale Score-Basis', () {
+    final gaps = prioritizePriceGaps(
+      [ListItem(product: staple, quantity: 2)],
+      marketCount: 2,
+      purchaseCountFor: (_) => 3,
+    );
+
+    expect(gaps.single.historicalPriceLevel, isNull);
+    expect(gaps.single.dataGapScore, 6);
+  });
 }
