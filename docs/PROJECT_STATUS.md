@@ -6,7 +6,7 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: `1da02a7` (nach dem Merge der prüfbaren, vorbefüllten Bon-Aliase).
+- Letzter geprüfter Main-Stand: `ea919c5` (nach dem Merge der korrigierten Milch-Suche).
 - Für PR #153 waren PR-CI, Main-CI `37017836279` und Release `37017836256` mit 567 Tests, Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
@@ -56,6 +56,19 @@
 - PR #155 (`1da02a7`) ergänzt Fach- und Auswahlregressionen. PR-CI
   `37792946917` und `37792978661`, Main-CI `37793492647` mit 572 Tests sowie
   Release `37793492726` mit Web-/Pages- und Android-Artefakt waren erfolgreich.
+
+## Update 09.10.2026 – Milch-Suche trennt Snacks
+- Die veröffentlichte Suche hat `MILCH-SCHNITTE` bei der allgemeinen Eingabe
+  „Milch“ als Treffer geführt. Die zentrale Produktidentität ordnet
+  Milchschnitten jetzt der Snackfamilie zu, bevor die allgemeine Milchregel
+  greift.
+- Dadurch können Angebotspreise von Snacks weder die Milch-Empfehlung noch
+  die Preisrangfolge für normale Milch beeinflussen. Die bestehende Suche nach
+  konkreten Milchvarianten bleibt unverändert.
+- PR #157 (`ea919c5`) ergänzt Identitäts- und Einkaufslistenregressionen.
+  PR-CI `37859022514` und `37859038946`, Main-CI `37860539455` mit 574 Tests
+  sowie Release `37860539475` mit Web-/Pages- und Android-Artefakt waren
+  erfolgreich.
 
 ## Update 02.10.2026 – Lokales Backup für den Alltag
 - Das Profil bietet jetzt „Lokales Backup exportieren“ und „Lokales Backup
