@@ -173,6 +173,43 @@ void main() {
     },
   );
 
+  test('generic milk search finds a compound milk prospect offer', () {
+    const prospectMilk = Product(
+      id: 'prospect|berchtesgadener land haltbare berg alpenmilch je 1 l packg',
+      name: 'BERCHTESGADENER LAND Haltbare Berg- & Alpenmilch je 1-l-Packg.',
+      unit: '1 l',
+      group: 'prospekt',
+    );
+    final offer = Offer(
+      id: 'aldi-alpenmilch',
+      productId: prospectMilk.id,
+      storeName: 'ALDI Süd',
+      originalPrice: 1.49,
+      offerPrice: 0.95,
+      validUntil: DateTime(2026, 10, 2),
+      source: 'retailerWebsite',
+      proofRef: 'https://example.test/aldi/alpenmilch',
+    );
+    final results = buildSuggestions(
+      query: 'Milch',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: const [prospectMilk],
+      offers: [offer],
+      now: now,
+    );
+
+    expect(results.map((product) => product.id), [prospectMilk.id]);
+    final hint = shoppingSuggestionPriceForProduct(
+      results.single,
+      offers: [offer],
+      now: now,
+    );
+    expect(hint?.price, 0.95);
+    expect(hint?.isOffer, isTrue);
+  });
+
   test('generic milk search also filters learned ingredient products', () {
     final results = buildSuggestions(
       query: 'Milch',

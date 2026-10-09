@@ -388,6 +388,18 @@ void main() {
     );
   });
 
+  test('compound milk labels from prospect feeds remain searchable as milk', () {
+    final identity = identifyProduct(
+      'BERCHTESGADENER LAND Haltbare Berg- & Alpenmilch je 1-l-Packg.',
+    );
+
+    expect(identity.familyKey, 'milch');
+    expect(
+      compatibleProductIdentity(identifyProduct('Milch'), identity),
+      isTrue,
+    );
+  });
+
   test(
     'fresh tomato request is not compatible with preserved tomato products',
     () {
