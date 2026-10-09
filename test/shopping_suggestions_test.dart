@@ -1213,7 +1213,7 @@ void main() {
 
     expect(
       suggestions.map((product) => product.id),
-      ['almighurt', 'fruit-crunch', 'obstgarten'],
+      ['obstgarten', 'almighurt', 'fruit-crunch'],
     );
   });
 }
