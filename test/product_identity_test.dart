@@ -397,6 +397,42 @@ void main() {
     },
   );
 
+  test('ready-to-drink tea, tea tableware and non-food EIS stay separate', () {
+    final teaDrink = identifyProduct('ARIZONA Teegetränk 1,5 l');
+    final teaGlasses = identifyProduct(
+      'Tee-Gläser doppelwandig je 2 St.-Packg.',
+    );
+    final calendar = identifyProduct(
+      'EIS Erotischer Adventskalender DELUXE',
+    );
+
+    expect(teaDrink.familyKey, 'tee');
+    expect(teaDrink.productType, 'teegetraenk');
+    expect(teaGlasses.familyKey, 'haushalt');
+    expect(teaGlasses.productType, 'tee_geschirr');
+    expect(calendar.familyKey, 'haushalt');
+    expect(calendar.productType, 'adventskalender');
+    expect(
+      compatibleProductIdentity(identifyProduct('Tee'), teaDrink),
+      isFalse,
+    );
+    expect(
+      compatibleProductIdentity(identifyProduct('Tee'), teaGlasses),
+      isFalse,
+    );
+    expect(
+      compatibleProductIdentity(identifyProduct('Eis'), calendar),
+      isFalse,
+    );
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Teegetränk'),
+        teaDrink,
+      ),
+      isTrue,
+    );
+  });
+
   test('milk ingredient compounds stay out of the plain milk family', () {
     expect(identifyProduct('K-CLASSIC Kondensmilch XXL').familyKey, isNull);
     expect(identifyProduct('K-CLASSIC Milch-Riegel').familyKey, 'snack');

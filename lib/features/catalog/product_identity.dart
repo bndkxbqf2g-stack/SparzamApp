@@ -178,6 +178,24 @@ ProductIdentity identifyProduct(String value) {
   if (_hasAny(text, const ['pudding', 'pud', 'dessert', 'delacreme'])) {
     return const ProductIdentity(familyKey: 'dessert');
   }
+  // Prospects sometimes put non-food tableware next to tea offers. A tea
+  // glass must not become a hot-tea price candidate just because the label
+  // contains the standalone word "Tee".
+  if (_isTeaTablewareLabel(text)) {
+    return const ProductIdentity(
+      familyKey: 'haushalt',
+      productType: 'tee_geschirr',
+    );
+  }
+  // "EIS" is also used as a short non-food label. Resolve the known
+  // advent-calendar wording before the generic ice-cream rule so a household
+  // item cannot inherit a frozen-dessert price.
+  if (_isNonFoodIceLabel(text)) {
+    return const ProductIdentity(
+      familyKey: 'haushalt',
+      productType: 'adventskalender',
+    );
+  }
   if (_hasAny(text, const ['ice cream', 'eis', 'pirulo', 'bounty ice'])) {
     return const ProductIdentity(familyKey: 'eis', productType: 'eis');
   }
@@ -843,7 +861,8 @@ bool compatibleProductIdentity(
   // household tea suggestions in the shopping list.
   if (request.familyKey == 'tee' &&
       request.productType == null &&
-      candidate.productType == 'eistee') {
+      (candidate.productType == 'eistee' ||
+          candidate.productType == 'teegetraenk')) {
     return false;
   }
   if (request.productType != null &&
@@ -925,6 +944,9 @@ String? _juiceType(String text) {
 
 String? _teaType(String text) {
   if (_hasAny(text, const ['eistee'])) return 'eistee';
+  if (_hasAny(text, const ['teegetraenk', 'tee getraenk'])) {
+    return 'teegetraenk';
+  }
   if (_hasAny(text, const ['kamillentee', 'kamillen tee'])) return 'kamille';
   if (_hasAny(text, const ['pfefferminztee', 'pfefferminz tee'])) {
     return 'pfefferminze';
@@ -934,6 +956,22 @@ String? _teaType(String text) {
   if (_hasAny(text, const ['gruenentee', 'gruen tee'])) return 'gruen';
   return null;
 }
+
+bool _isTeaTablewareLabel(String text) =>
+    _hasAny(text, const [
+      'tee glas',
+      'tee glaeser',
+      'teeglas',
+      'teeglaeser',
+      'tee tasse',
+      'tee tassen',
+      'teetasse',
+      'teetassen',
+    ]);
+
+bool _isNonFoodIceLabel(String text) =>
+    _hasWord(text, 'eis') &&
+    _hasAny(text, const ['adventskalender', 'erotisch', 'erotischer', 'adult']);
 
 String? _breadType(String text) {
   if (_hasBreadCompound(text, 'weissbrot')) return 'weiss';
