@@ -174,6 +174,24 @@ void main() {
     );
   });
 
+  test('infant formula stays separate from ordinary milk', () {
+    final formula = identifyProduct('APTAMIL Folgemilch 2 oder 3 je 800 g');
+
+    expect(formula.familyKey, 'babynahrung');
+    expect(formula.productType, 'folgemilch');
+    expect(
+      compatibleProductIdentity(identifyProduct('Milch'), formula),
+      isFalse,
+    );
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Folgemilch'),
+        formula,
+      ),
+      isTrue,
+    );
+  });
+
   test(
     'coffee compounds keep appliances and pastries out of coffee search',
     () {
