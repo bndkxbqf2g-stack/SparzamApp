@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: `a015314` (nach dem Merge der Suche für zusammengesetzte Wurst-Prospektlabels).
-- Für PR #174 waren die PR-CI-Läufe `37967975722` und `37967996937`, Main-CI `37968440727` und Release `37968440900` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: `1a7ab0d` (nach dem Merge der Suche für zusammengesetzte Brot-Prospektlabels).
+- Für PR #176 waren die PR-CI-Läufe `37971039385` und `37971054217`, Main-CI `37971501454` und Release `37971501681` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -111,6 +111,18 @@
 - PR #174 (`a015314`) ergänzt Identitäts- und Einkaufssuchtests. Die PR-CI-Läufe
   `37967975722` und `37967996937`, Main-CI `37968440727` sowie Release
   `37968440900` waren mit Analyse, Tests, Web-/Pages-Build, Deployment und
+  Android-APK erfolgreich.
+
+## Update 09.10.2026 – Zusammengesetzte Brot-Prospektlabels werden gefunden
+- Prospektlabels wie „Weizenmischbrot“ und „Bauernbaguette“ werden jetzt
+  generisch als Brot erkannt. Dadurch erscheinen aktuelle, belegte Angebote
+  auch bei einer einfachen Suche nach „Brot“ in der Einkaufsliste.
+- Die Erkennung bleibt konservativ: „Marzipanbrot“, „Brotzeit“ und
+  Brotaufstriche werden nicht als normales Brot eingeordnet; bekannte
+  Brotvarianten wie Mischbrot behalten ihren Typ.
+- PR #176 (`1a7ab0d`) ergänzt Identitäts- und Einkaufssuchtests. Die PR-CI-Läufe
+  `37971039385` und `37971054217`, Main-CI `37971501454` sowie Release
+  `37971501681` waren mit Analyse, Tests, Web-/Pages-Build, Deployment und
   Android-APK erfolgreich.
 
 ## Zuletzt umgesetzt
