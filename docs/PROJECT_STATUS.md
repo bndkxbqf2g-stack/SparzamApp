@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: `d941771` (nach dem Merge der Zeitvalidierung für externe Preisbeobachtungen).
-- Für PR #166 waren PR-CI `37920677029` und `37920692175`, Main-CI `37921104437` und Release `37921104249` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: `a904184` (nach dem Merge der historischen Bonpreis-Kennzeichnung).
+- Für PR #168 waren PR-CI `37958814205` und `37958826961`, Main-CI `37959324782` und Release `37959324909` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -66,6 +66,17 @@
   `37920677029` und `37920692175`, Main-CI `37921104437` sowie Release
   `37921104249` waren mit Analyse, Tests, Web-/Pages-Build, Deployment und
   Android-APK erfolgreich.
+
+## Update 09.10.2026 – Alte Bonpreise bleiben sichtbar, aber historisch
+- Ältere Kassenbonpreise bleiben als Preisverlauf und Orientierung in der
+  Einkaufsliste sichtbar, werden aber eindeutig als „Historischer Bonpreis“
+  bezeichnet.
+- Die Marktübersicht zählt nur frische Bonpreise als aktuelle Preisdeckung.
+  Historische Bonpreise werden nicht still als aktuelle Marktpreise verwendet;
+  aktuelle Angebote und frische Belege behalten Vorrang.
+- PR #168 (`a904184`) ergänzt die Kennzeichnung und Regressionen. PR-CI
+  `37958814205` und `37958826961`, Main-CI `37959324782` sowie Release
+  `37959324909` waren erfolgreich.
 
 ## Zuletzt umgesetzt
 - REWE wurde als Händlerintegration entfernt. Die Händlerauswahl umfasst damit
