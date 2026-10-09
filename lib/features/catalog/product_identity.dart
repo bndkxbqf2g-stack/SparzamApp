@@ -97,6 +97,26 @@ ProductIdentity identifyProduct(String value) {
   if (_hasAny(text, const ['muellermilch', 'milchgetraenk', 'milchdrink'])) {
     return const ProductIdentity(familyKey: 'milchgetraenk');
   }
+  // Buttermilk and plant-based milk labels contain a compound ending in
+  // "milch", but they are not ordinary cow's milk. Keep them in the drink
+  // family so a generic milk search cannot reuse their prices.
+  if (_hasAny(text, const [
+    'buttermilch',
+    'butter milch',
+    'kokosmilch',
+    'kokos milch',
+    'sojamilch',
+    'soja milch',
+    'hafermilch',
+    'hafer milch',
+    'mandelmilch',
+    'mandel milch',
+  ])) {
+    return ProductIdentity(
+      familyKey: 'milchgetraenk',
+      productType: _specialMilkDrinkType(text),
+    );
+  }
   // "Milch" also appears as an ingredient in unrelated products. Keep
   // those products out of the milk price family so a generic milk search does
   // not surface condensed milk, milk bars, chocolate or cheese first. The
@@ -914,6 +934,17 @@ String? _meatType(String text) {
 
 String? _milkType(String text) =>
     _hasAny(text, const ['laktosefrei', 'laktosefreie']) ? 'laktosefrei' : null;
+
+String? _specialMilkDrinkType(String text) {
+  if (_hasAny(text, const ['buttermilch', 'butter milch'])) {
+    return 'buttermilch';
+  }
+  if (_hasAny(text, const ['kokosmilch', 'kokos milch'])) return 'kokos';
+  if (_hasAny(text, const ['sojamilch', 'soja milch'])) return 'soja';
+  if (_hasAny(text, const ['hafermilch', 'hafer milch'])) return 'hafer';
+  if (_hasAny(text, const ['mandelmilch', 'mandel milch'])) return 'mandel';
+  return null;
+}
 
 String? _creamType(String text) {
   if (_hasAny(text, const ['kochcreme', 'creme zum kochen', 'kochen'])) {

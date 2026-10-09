@@ -156,6 +156,24 @@ void main() {
     );
   });
 
+  test('buttermilk and plant milk stay separate from ordinary milk', () {
+    final buttermilk = identifyProduct('MILRAM Buttermilch-Drink 750 g');
+    final coconut = identifyProduct('K-CLASSIC ASIA Kokosmilch 400 ml');
+
+    expect(buttermilk.familyKey, 'milchgetraenk');
+    expect(buttermilk.productType, 'buttermilch');
+    expect(coconut.familyKey, 'milchgetraenk');
+    expect(coconut.productType, 'kokos');
+    expect(
+      compatibleProductIdentity(identifyProduct('Milch'), buttermilk),
+      isFalse,
+    );
+    expect(
+      compatibleProductIdentity(identifyProduct('Milch'), coconut),
+      isFalse,
+    );
+  });
+
   test(
     'coffee compounds keep appliances and pastries out of coffee search',
     () {

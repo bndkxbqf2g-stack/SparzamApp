@@ -173,6 +173,39 @@ void main() {
     },
   );
 
+  test('generic milk search ignores buttermilk and plant milk drinks', () {
+    const prospectProducts = [
+      Product(
+        id: 'buttermilk',
+        name: 'MILRAM Buttermilch-Drink oder Kefir pur je 750-g-Fl.',
+        unit: '750 g',
+        group: 'prospekt',
+      ),
+      Product(
+        id: 'coconut-milk',
+        name: 'K-CLASSIC ASIA Kokosmilch fettreduziert je 400-ml-Dose',
+        unit: '400 ml',
+        group: 'prospekt',
+      ),
+      Product(
+        id: 'fresh-milk',
+        name: 'BÄRENMARKE Haltbare Milch je 1 l',
+        unit: '1 l',
+        group: 'prospekt',
+      ),
+    ];
+
+    final results = buildSuggestions(
+      query: 'Milch',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: prospectProducts,
+    );
+
+    expect(results.map((product) => product.id), ['fresh-milk']);
+  });
+
   test('generic milk search finds a compound milk prospect offer', () {
     const prospectMilk = Product(
       id: 'prospect|berchtesgadener land haltbare berg alpenmilch je 1 l packg',
