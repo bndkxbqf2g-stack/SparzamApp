@@ -206,6 +206,33 @@ void main() {
     expect(results.map((product) => product.id), ['fresh-milk']);
   });
 
+  test('generic milk search ignores infant formula', () {
+    const prospectProducts = [
+      Product(
+        id: 'formula',
+        name: 'APTAMIL Folgemilch 2 oder 3 je 800-g-Packg.',
+        unit: '800 g',
+        group: 'prospekt',
+      ),
+      Product(
+        id: 'fresh-milk',
+        name: 'BÄRENMARKE Haltbare Milch je 1 l',
+        unit: '1 l',
+        group: 'prospekt',
+      ),
+    ];
+
+    final results = buildSuggestions(
+      query: 'Milch',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: prospectProducts,
+    );
+
+    expect(results.map((product) => product.id), ['fresh-milk']);
+  });
+
   test('generic milk search finds a compound milk prospect offer', () {
     const prospectMilk = Product(
       id: 'prospect|berchtesgadener land haltbare berg alpenmilch je 1 l packg',

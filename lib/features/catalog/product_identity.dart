@@ -94,6 +94,26 @@ ProductIdentity identifyProduct(String value) {
       productType: 'milchschnitte',
     );
   }
+  // Infant-formula labels contain a compound ending in "milch", but they
+  // are not ordinary milk for a household shopping list. Keep them in a
+  // separate baby-food family before the special drink and milk rules.
+  if (_hasAny(text, const [
+    'folgemilch',
+    'folge milch',
+    'anfangsmilch',
+    'anfangs milch',
+    'saeuglingsmilch',
+    'saeuglings milch',
+    'babymilch',
+    'baby milch',
+    'kindermilch',
+    'kinder milch',
+  ])) {
+    return ProductIdentity(
+      familyKey: 'babynahrung',
+      productType: _babyMilkType(text),
+    );
+  }
   if (_hasAny(text, const ['muellermilch', 'milchgetraenk', 'milchdrink'])) {
     return const ProductIdentity(familyKey: 'milchgetraenk');
   }
@@ -934,6 +954,18 @@ String? _meatType(String text) {
 
 String? _milkType(String text) =>
     _hasAny(text, const ['laktosefrei', 'laktosefreie']) ? 'laktosefrei' : null;
+
+String? _babyMilkType(String text) {
+  if (_hasAny(text, const ['folgemilch', 'folge milch'])) return 'folgemilch';
+  if (_hasAny(text, const ['anfangsmilch', 'anfangs milch'])) {
+    return 'anfangsmilch';
+  }
+  if (_hasAny(text, const ['saeuglingsmilch', 'saeuglings milch'])) {
+    return 'saeuglingsmilch';
+  }
+  if (_hasAny(text, const ['kindermilch', 'kinder milch'])) return 'kindermilch';
+  return 'babymilch';
+}
 
 String? _specialMilkDrinkType(String text) {
   if (_hasAny(text, const ['buttermilch', 'butter milch'])) {
