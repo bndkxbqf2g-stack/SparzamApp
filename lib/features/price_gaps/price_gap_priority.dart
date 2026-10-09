@@ -67,11 +67,11 @@ class PriceGapPriority {
 /// route price from history.
 ///
 /// The sort keys are intentionally explicit: first the number of markets
-/// without evidence, then the starter-catalog relevance, then the known
-/// purchase frequency, then a known historical price level, then list
-/// quantity, followed by product name and id. This keeps the result
+/// without evidence, then the starter-catalog relevance, then the combined
+/// data-gap relevance, followed by its individual signals for readable
+/// tie-breaking, and finally product name and id. This keeps the result
 /// reproducible when the same observations are assembled in a different
-/// order.
+/// order while allowing a high-impact gap to outrank a merely frequent one.
 List<PriceGapPriority> prioritizePriceGaps(
   Iterable<ListItem> items, {
   required int marketCount,
@@ -109,6 +109,8 @@ List<PriceGapPriority> prioritizePriceGaps(
       a.item.product.isStaple ? 1 : 0,
     );
     if (staple != 0) return staple;
+    final gapScore = b.dataGapScore.compareTo(a.dataGapScore);
+    if (gapScore != 0) return gapScore;
     final purchases = b.purchaseCount.compareTo(a.purchaseCount);
     if (purchases != 0) return purchases;
     if (a.historicalPriceLevel != null || b.historicalPriceLevel != null) {
@@ -119,8 +121,6 @@ List<PriceGapPriority> prioritizePriceGaps(
       );
       if (historical != 0) return historical;
     }
-    final gapScore = b.dataGapScore.compareTo(a.dataGapScore);
-    if (gapScore != 0) return gapScore;
     final quantity = b.item.quantity.compareTo(a.item.quantity);
     if (quantity != 0) return quantity;
     final names = a.item.product.name.toLowerCase().compareTo(
