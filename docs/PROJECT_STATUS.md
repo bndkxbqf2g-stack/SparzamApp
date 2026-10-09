@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: `30a7a8d` (nach dem Merge der Suche für zusammengesetzte frische Salat-Prospektlabels).
-- Für PR #178 waren die PR-CI-Läufe `37973902382` und `37973915491`, Main-CI `37974386063` und Release `37974386012` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: `47d3614` (nach dem Merge der Suche für zusammengesetzte Joghurt-Prospektlabels).
+- Für PR #180 waren die PR-CI-Läufe `37977196606` und `37977202950`, Main-CI `37977679983` und Release `37977679931` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -135,6 +135,17 @@
 - PR #178 (`30a7a8d`) ergänzt Identitäts- und Einkaufssuchtests. Die PR-CI-Läufe
   `37973902382` und `37973915491`, Main-CI `37974386063` sowie Release
   `37974386012` waren mit Analyse, Tests, Web-/Pages-Build, Deployment und
+  Android-APK erfolgreich.
+
+## Update 09.10.2026 – Zusammengesetzte Joghurt-Prospektlabels werden gefunden
+- Prospektlabels wie „Almighurt“, „Obstgarten“ und „Frucht & Knusper“ werden
+  jetzt als Joghurtfamilie erkannt. Dadurch erscheinen aktuelle, belegte
+  Angebote auch bei einer einfachen Suche nach „Joghurt“ in der Einkaufsliste.
+- Joghurt als Zutat in Frischkäsezubereitungen, Dressings, Dips und Saucen
+  bleibt getrennt und liefert keinen stillen Joghurtpreis.
+- PR #180 (`47d3614`) ergänzt Identitäts- und Einkaufssuchtests. Die PR-CI-Läufe
+  `37977196606` und `37977202950`, Main-CI `37977679983` sowie Release
+  `37977679931` waren mit Analyse, Tests, Web-/Pages-Build, Deployment und
   Android-APK erfolgreich.
 
 ## Zuletzt umgesetzt
