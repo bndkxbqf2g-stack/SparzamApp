@@ -6,11 +6,28 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `29d8aed` (nach dem Merge der erweiterten aktuellen Prospekt-Lebensmittelsuche); der aktuelle Dokumentationsstand ist `8ee0de5`.
+- Letzter geprüfter Code-Stand auf main: `a23acc2` (nach dem Merge der Sechs-Märkte-Prospektmatrix); der aktuelle Dokumentationsstand ist dieser Status-PR.
 - Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
 - Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 10.10.2026 – Aktueller Sechs-Märkte-Prospektfeed als End-to-End-Matrix
+- Der versionierte Feed `assets/prospects/current.json` wird jetzt als
+  Regression für alle sechs konfigurierten Märkte geprüft: Lidl, ALDI Süd,
+  EDEKA, Kaufland, PENNY und Netto bleiben im Prospekt- und Angebotsbestand
+  sichtbar.
+- Je Markt läuft mindestens eine aktuelle, nachgewiesene Feedzeile durch die
+  Preislernstrecke. Unbekannte Labels bleiben dabei bewusst historische
+  Evidenz mit Identitäts-Confidence 0; ein offerbasiertes Produkt kann trotzdem
+  sichtbar und route-tauglich vorgeschlagen werden. Eine exakte Identität wird
+  nur bei passendem Katalognamen und belegter Packungsbasis übernommen.
+- Abgelaufene Zeilen bleiben für die Historie erhalten, werden aber aus den
+  aktuellen Angeboten ausgeschlossen. Es werden keine Produktidentitäten oder
+  Preise aus fehlenden Angaben ergänzt.
+- PR #202 (`faf4fbf`, Merge `a23acc2`) ergänzt diese Regression. Die beiden
+  PR-CI-Läufe `38005765741` und `38005775386` waren mit Analyse, 610 Tests und
+  Web-Build erfolgreich.
 
 ## Update 10.10.2026 – Aktuelle Prospekt-Lebensmittel werden generisch suchbar
 - Die zentrale Produktidentität erkennt weitere aktuelle Lebensmittelangebote
