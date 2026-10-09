@@ -453,6 +453,12 @@ ProductIdentity identifyProduct(String value) {
   if (_hasAny(text, const ['butter'])) {
     return const ProductIdentity(familyKey: 'butter');
   }
+  if (_isChocolateRiceLabel(text)) {
+    return const ProductIdentity(
+      familyKey: 'schokolade',
+      productType: 'reis_snack',
+    );
+  }
   if (_hasAny(text, const [
     'reis',
     'basmatireis',
@@ -726,6 +732,12 @@ ProductIdentity identifyProduct(String value) {
   if (_hasAny(text, const ['sandwichtoast', 'toast'])) {
     return const ProductIdentity(familyKey: 'toast');
   }
+  if (_isChickenCheeseSnackLabel(text)) {
+    return const ProductIdentity(
+      familyKey: 'snack',
+      productType: 'kaese_ecken',
+    );
+  }
   // Cheese can be only an ingredient in a sausage or snack. Those products
   // retain their own identity so a generic cheese request cannot route them
   // as cheese.
@@ -778,6 +790,18 @@ ProductIdentity identifyProduct(String value) {
     'schmelzk',
   ])) {
     return ProductIdentity(familyKey: 'kaese', variant: _cheeseVariant(text));
+  }
+  if (_hasAny(text, const ['piccolinis'])) {
+    return const ProductIdentity(familyKey: 'pizza', productType: 'pizza');
+  }
+  if (_hasAny(text, const ['schinkenkrustenbraten', 'eisbein'])) {
+    return const ProductIdentity(familyKey: 'fleisch', productType: 'braten');
+  }
+  if (_hasAny(text, const ['schnitzel'])) {
+    return const ProductIdentity(
+      familyKey: 'fleisch',
+      productType: 'schnitzel',
+    );
   }
   if (_hasSausageFamilyToken(text)) {
     return ProductIdentity(familyKey: 'wurst', variant: _sausageVariant(text));
@@ -1026,6 +1050,13 @@ bool _isSavoryCreamCompound(String text) =>
         ]) ||
         RegExp(r'(?<![a-z0-9])(?:dill|antipasti)creme(?![a-z0-9])')
             .hasMatch(text));
+
+bool _isChocolateRiceLabel(String text) =>
+    _hasAny(text, const ['schoko reis', 'schokoreis', 'reis tafel', 'reistafel']);
+
+bool _isChickenCheeseSnackLabel(String text) =>
+    _hasAny(text, const ['kaese ecken', 'kaeseecken']) &&
+    _hasAny(text, const ['haehnchen', 'huehnchen', 'chicken']);
 
 String? _breadType(String text) {
   if (_hasBreadCompound(text, 'weissbrot')) return 'weiss';

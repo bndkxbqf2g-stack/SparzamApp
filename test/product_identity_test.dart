@@ -477,6 +477,44 @@ void main() {
     );
   });
 
+  test('meat, cheese and chocolate compounds keep their staple families', () {
+    final chickenCheese = identifyProduct('Hähnchen-Käse-Ecken XXL');
+    final chocolateRice = identifyProduct('WAWI Schoko-Reis Tafel');
+    final roast = identifyProduct('K-PURLAND Schinkenkrustenbraten vom Schwein');
+    final porkLeg = identifyProduct('TULIP Schinken Eisbein');
+    final schnitzel = identifyProduct('Schweine-Schnitzel Wiener Art');
+    final piccolinis = identifyProduct('WAGNER Piccolinis Salami');
+
+    expect(chickenCheese.familyKey, 'snack');
+    expect(chickenCheese.productType, 'kaese_ecken');
+    expect(chocolateRice.familyKey, 'schokolade');
+    expect(chocolateRice.productType, 'reis_snack');
+    expect(roast.familyKey, 'fleisch');
+    expect(roast.productType, 'braten');
+    expect(porkLeg.familyKey, 'fleisch');
+    expect(porkLeg.productType, 'braten');
+    expect(schnitzel.familyKey, 'fleisch');
+    expect(schnitzel.productType, 'schnitzel');
+    expect(piccolinis.familyKey, 'pizza');
+    expect(piccolinis.productType, 'pizza');
+    expect(
+      compatibleProductIdentity(identifyProduct('Käse'), chickenCheese),
+      isFalse,
+    );
+    expect(
+      compatibleProductIdentity(identifyProduct('Reis'), chocolateRice),
+      isFalse,
+    );
+    expect(
+      compatibleProductIdentity(identifyProduct('Wurst'), roast),
+      isFalse,
+    );
+    expect(
+      compatibleProductIdentity(identifyProduct('Pizza'), piccolinis),
+      isTrue,
+    );
+  });
+
   test('milk ingredient compounds stay out of the plain milk family', () {
     expect(identifyProduct('K-CLASSIC Kondensmilch XXL').familyKey, isNull);
     expect(identifyProduct('K-CLASSIC Milch-Riegel').familyKey, 'snack');

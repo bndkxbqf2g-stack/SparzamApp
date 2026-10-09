@@ -550,6 +550,54 @@ void main() {
         group: 'haushalt',
       ),
       Product(
+        id: 'cheese',
+        name: 'Käse',
+        unit: '250 g',
+        group: 'kaese',
+      ),
+      Product(
+        id: 'chicken-cheese',
+        name: 'Hähnchen-Käse-Ecken XXL',
+        unit: '700 g',
+        group: 'snacks',
+      ),
+      Product(
+        id: 'rice',
+        name: 'Basmatireis',
+        unit: '1 kg',
+        group: 'vorrat',
+      ),
+      Product(
+        id: 'chocolate-rice',
+        name: 'WAWI Schoko-Reis Tafel',
+        unit: '200 g',
+        group: 'suessigkeit',
+      ),
+      Product(
+        id: 'roast',
+        name: 'K-PURLAND Schinkenkrustenbraten vom Schwein',
+        unit: '1 kg',
+        group: 'fleisch',
+      ),
+      Product(
+        id: 'wurst',
+        name: 'Bratwurst',
+        unit: '400 g',
+        group: 'wurst',
+      ),
+      Product(
+        id: 'pizza',
+        name: 'Pizza Margherita',
+        unit: '400 g',
+        group: 'pizza',
+      ),
+      Product(
+        id: 'piccolinis',
+        name: 'WAGNER Piccolinis Salami',
+        unit: '270 g',
+        group: 'pizza',
+      ),
+      Product(
         id: 'iced-tea',
         name: 'Freeway Eistee',
         unit: '1,5 l',
@@ -672,6 +720,19 @@ void main() {
 
     final yoghurt = ids('Joghurt');
     expect(yoghurt, ['skyr']);
+
+    final cheese = ids('Käse');
+    expect(cheese, ['cheese']);
+
+    final rice = ids('Reis');
+    expect(rice, ['rice']);
+
+    final sausage = ids('Wurst');
+    expect(sausage, contains('wurst'));
+    expect(sausage, isNot(contains('roast')));
+
+    final pizza = ids('Pizza');
+    expect(pizza, containsAll(<String>['pizza', 'piccolinis']));
 
     final meat = ids('Fleisch');
     expect(meat, containsAll(<String>['mince', 'steak']));
