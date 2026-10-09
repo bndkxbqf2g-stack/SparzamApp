@@ -6,11 +6,26 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `74c24f2` (nach dem Merge der zusammengesetzten Prospekt-Lebensmittel-Erkennung); der aktuelle Dokumentationsstand ist `e6471da`.
-- Für PR #196 waren die erfolgreichen PR-CI-Läufe `37999315281` und `37999328616`; die nachgelagerten Main-/Release-Läufe `37999696480` und `37999696531` waren ebenfalls mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
-- Der anschließende Dokumentations-Merge aus PR #197 wurde mit Main-CI `38000379069` und Release `38000379061` erneut erfolgreich geprüft.
+- Letzter geprüfter Code-Stand auf main: `29d8aed` (nach dem Merge der erweiterten aktuellen Prospekt-Lebensmittelsuche); der aktuelle Dokumentationsstand vor diesem Update ist `b1b40f2`.
+- Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe werden nach dem Dokumentations-Merge ergänzt.
+- Die vorherigen Code- und Dokumentations-Merges bleiben in den folgenden Updates und den zugehörigen CI-Nachweisen nachvollziehbar.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 10.10.2026 – Aktuelle Prospekt-Lebensmittel werden generisch suchbar
+- Die zentrale Produktidentität erkennt weitere aktuelle Lebensmittelangebote
+  auf Familienebene: frisches Obst und Gemüse, zusammengesetzte Fisch- und
+  Fleischlabels, zusätzliche Käsevarianten, Desserts und Backwaren.
+- Auch Vorrat und Frühstück werden gefunden, darunter Saucen, Suppen,
+  asiatische Nudeln, Müsli, Haferflocken, Backzutaten, Nüsse und
+  Trockenfrüchte. Getränke wie Bier, Wein, Spirituosen, Energy-Drinks und
+  Ingwer-Shots erhalten passende Familien- bzw. Typidentitäten.
+- Dekorative Kürbisse, Feinkostsalate und andere Fremdprodukte bleiben von
+  den frischen Lebensmittelidentitäten getrennt. Dadurch kann eine Suche nach
+  „Kürbis“, „Salat“ oder „Käse“ keine fachfremden Preise übernehmen.
+- PR #199 (`0063112`, Merge `29d8aed`) ergänzt Identitäts- und
+  Einkaufssuchtests. Die PR-CI-Läufe `38003290934` und `38003299640` waren mit
+  Analyse, 608 Tests und Web-Build erfolgreich.
 
 ## Update 10.10.2026 – Prospekt-Mehrfachpackungen behalten ihre Gesamtmenge
 - Unbekannte, aber geprüfte Prospektartikel übernehmen jetzt Mehrfachpackungen
