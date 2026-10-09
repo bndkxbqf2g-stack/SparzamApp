@@ -538,6 +538,18 @@ void main() {
         group: 'haushalt',
       ),
       Product(
+        id: 'coffee',
+        name: 'Melitta Filterkaffee',
+        unit: '500 g',
+        group: 'kaffee',
+      ),
+      Product(
+        id: 'toy-coffee',
+        name: 'TOYLINO Holz-Gebäck-Set, Kaffee und Kuchen',
+        unit: '1 Set',
+        group: 'haushalt',
+      ),
+      Product(
         id: 'iced-tea',
         name: 'Freeway Eistee',
         unit: '1,5 l',
@@ -550,10 +562,28 @@ void main() {
         group: 'tiefkuehl',
       ),
       Product(
+        id: 'protein-ice',
+        name: 'FROZEN Ice Cream Protein Bar',
+        unit: '3 Stück',
+        group: 'snacks',
+      ),
+      Product(
         id: 'calendar',
         name: 'EIS Erotischer Adventskalender DELUXE',
         unit: '1 Stück',
         group: 'haushalt',
+      ),
+      Product(
+        id: 'antipasti-cream',
+        name: 'Antipasti-Creme',
+        unit: '100 g',
+        group: 'feinkost',
+      ),
+      Product(
+        id: 'skyr',
+        name: 'EHRMANN High Protein Skyr',
+        unit: '450 g',
+        group: 'milch',
       ),
       Product(
         id: 'pet-food',
@@ -636,6 +666,12 @@ void main() {
 
     final ice = ids('Eis');
     expect(ice, ['ice-cream']);
+
+    final coffee = ids('Kaffee');
+    expect(coffee, ['coffee']);
+
+    final yoghurt = ids('Joghurt');
+    expect(yoghurt, ['skyr']);
 
     final meat = ids('Fleisch');
     expect(meat, containsAll(<String>['mince', 'steak']));

@@ -196,6 +196,12 @@ ProductIdentity identifyProduct(String value) {
       productType: 'adventskalender',
     );
   }
+  if (_isProteinIceSnackLabel(text)) {
+    return const ProductIdentity(
+      familyKey: 'snack',
+      productType: 'protein_snack',
+    );
+  }
   if (_hasAny(text, const ['ice cream', 'eis', 'pirulo', 'bounty ice'])) {
     return const ProductIdentity(familyKey: 'eis', productType: 'eis');
   }
@@ -212,6 +218,13 @@ ProductIdentity identifyProduct(String value) {
         'kalb',
         'gefluegel',
         'haehnchen',
+        'hundenahrung',
+        'hundefutter',
+        'hundetrockenfutter',
+        'hunde trockenfutter',
+        'katzenfutter',
+        'tierfutter',
+        'tiernahrung',
       ])) {
     return const ProductIdentity(familyKey: 'protein');
   }
@@ -228,6 +241,15 @@ ProductIdentity identifyProduct(String value) {
   }
   if (_hasAny(text, const ['nutella', 'nuss nougat', 'nussnougat'])) {
     return const ProductIdentity(familyKey: 'suessigkeit');
+  }
+  if (_isCheeseCreamLabel(text)) {
+    return const ProductIdentity(familyKey: 'kaese', variant: 'creme');
+  }
+  if (_isSavoryCreamCompound(text)) {
+    return const ProductIdentity(
+      familyKey: 'feinkost',
+      productType: 'creme',
+    );
   }
   if (_hasAny(text, const [
     'creme',
@@ -331,6 +353,8 @@ ProductIdentity identifyProduct(String value) {
   if (_hasAny(text, const [
     'hundenahrung',
     'hundefutter',
+    'hundetrockenfutter',
+    'hunde trockenfutter',
     'katzenfutter',
     'tierfutter',
     'tiernahrung',
@@ -637,6 +661,12 @@ ProductIdentity identifyProduct(String value) {
   ])) {
     return ProductIdentity(familyKey: 'nudeln', productType: _pastaType(text));
   }
+  if (_isToyCoffeeLabel(text)) {
+    return const ProductIdentity(
+      familyKey: 'haushalt',
+      productType: 'spielzeug',
+    );
+  }
   // Coffee also appears as an ingredient or as part of a non-coffee product
   // name. Keep those products out of a generic coffee search while still
   // recognizing capsules and pads as coffee variants.
@@ -831,6 +861,7 @@ bool _hasYoghurtFamilyToken(String text) {
   return text.contains('joghurt') ||
       text.contains('jogurt') ||
       _hasWord(text, 'jogh') ||
+      _hasWord(text, 'skyr') ||
       RegExp(r'\b[a-z]{3,}ghurt\b').hasMatch(text) ||
       _hasAny(text, const [
         'obstgarten',
@@ -972,6 +1003,29 @@ bool _isTeaTablewareLabel(String text) =>
 bool _isNonFoodIceLabel(String text) =>
     _hasWord(text, 'eis') &&
     _hasAny(text, const ['adventskalender', 'erotisch', 'erotischer', 'adult']);
+
+bool _isProteinIceSnackLabel(String text) =>
+    _hasAny(text, const ['ice cream', 'eis']) &&
+    _hasAny(text, const ['protein bar', 'energy balls']);
+
+bool _isToyCoffeeLabel(String text) =>
+    _hasWord(text, 'holz') && _hasWord(text, 'kaffee');
+
+bool _isCheeseCreamLabel(String text) =>
+    _hasAny(text, const ['kaese creme', 'kaesecreme']);
+
+bool _isSavoryCreamCompound(String text) =>
+    (text.contains('creme') || _hasWord(text, 'creme')) &&
+    (_hasAny(text, const [
+          'antipasti',
+          'dillcreme',
+          'heringshappen',
+          'hering',
+          'fisch',
+          'feinkost',
+        ]) ||
+        RegExp(r'(?<![a-z0-9])(?:dill|antipasti)creme(?![a-z0-9])')
+            .hasMatch(text));
 
 String? _breadType(String text) {
   if (_hasBreadCompound(text, 'weissbrot')) return 'weiss';
