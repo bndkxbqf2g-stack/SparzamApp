@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: `1a7ab0d` (nach dem Merge der Suche für zusammengesetzte Brot-Prospektlabels).
-- Für PR #176 waren die PR-CI-Läufe `37971039385` und `37971054217`, Main-CI `37971501454` und Release `37971501681` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: `30a7a8d` (nach dem Merge der Suche für zusammengesetzte frische Salat-Prospektlabels).
+- Für PR #178 waren die PR-CI-Läufe `37973902382` und `37973915491`, Main-CI `37974386063` und Release `37974386012` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -123,6 +123,18 @@
 - PR #176 (`1a7ab0d`) ergänzt Identitäts- und Einkaufssuchtests. Die PR-CI-Läufe
   `37971039385` und `37971054217`, Main-CI `37971501454` sowie Release
   `37971501681` waren mit Analyse, Tests, Web-/Pages-Build, Deployment und
+  Android-APK erfolgreich.
+
+## Update 09.10.2026 – Zusammengesetzte frische Salat-Prospektlabels werden gefunden
+- Prospektlabels wie „Feldsalat“, „Romanasalat“ und „Salatherzen“ werden jetzt
+  generisch als frische Salatfamilie erkannt. Dadurch erscheinen aktuelle,
+  belegte Angebote auch bei einer einfachen Suche nach „Salat“ in der
+  Einkaufsliste.
+- Zubereitete Salate wie Feinkost-, Fleisch-, Kartoffel- und Nudelsalat sowie
+  Salatgurken bleiben getrennt und liefern keine stillen Salatpreise.
+- PR #178 (`30a7a8d`) ergänzt Identitäts- und Einkaufssuchtests. Die PR-CI-Läufe
+  `37973902382` und `37973915491`, Main-CI `37974386063` sowie Release
+  `37974386012` waren mit Analyse, Tests, Web-/Pages-Build, Deployment und
   Android-APK erfolgreich.
 
 ## Zuletzt umgesetzt
