@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: `b0a99dc` (nach dem Merge der Trennung von Fleisch-, Käse- und Schoko-Reis-Prospektlabels).
-- Für PR #191 waren die erfolgreichen PR-CI-Läufe `37992927870` und `37992934178`, Main-CI `37993296482` und Release `37993296407` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: `c49251c` (nach dem Merge des aktualisierten Projektstatus; Code-Stand `b0a99dc`).
+- Für PR #191 waren die erfolgreichen PR-CI-Läufe `37992927870` und `37992934178`; nach dem anschließenden Dokumentations-Merge waren Main-CI `37994441577` und Release `37994441507` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
