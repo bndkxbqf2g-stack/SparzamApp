@@ -126,6 +126,8 @@ List<ShoppingQuote> shoppingQuotes(
   for (final price in prices) {
     if (price.productId != item.product.id ||
         price.source == MarketPriceSource.openPrices ||
+        (price.source == MarketPriceSource.receipt &&
+            _isFutureObservation(price.updatedAt, today)) ||
         !price.price.isFinite ||
         price.price <= 0 ||
         (enabledStores.isNotEmpty &&
@@ -213,6 +215,16 @@ List<ShoppingQuote> shoppingQuotes(
     return b.observedAt?.compareTo(a.observedAt ?? today) ?? 0;
   });
   return candidates;
+}
+
+bool _isFutureObservation(DateTime observedAt, DateTime now) {
+  final observed = DateTime(
+    observedAt.year,
+    observedAt.month,
+    observedAt.day,
+  );
+  final today = DateTime(now.year, now.month, now.day);
+  return observed.isAfter(today);
 }
 
 /// Resolves one best visible quote per enabled market while retaining markets

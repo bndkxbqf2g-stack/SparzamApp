@@ -210,6 +210,26 @@ void main() {
     );
   });
 
+  test('future receipt observations are hidden from current shopping quotes', () {
+    final futureReceipt = MarketPrice(
+      productId: milk.id,
+      storeName: 'Lidl',
+      price: 0.79,
+      updatedAt: DateTime(2026, 9, 25),
+      source: MarketPriceSource.receipt,
+    );
+
+    expect(
+      shoppingQuotes(
+        item,
+        prices: [futureReceipt],
+        offers: const [],
+        now: DateTime(2026, 9, 24),
+      ),
+      isEmpty,
+    );
+  });
+
   test('price matrix keeps missing enabled markets visible', () {
     final matrix = shoppingPriceMatrix(
       item,
