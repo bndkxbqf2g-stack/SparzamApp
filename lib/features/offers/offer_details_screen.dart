@@ -8,6 +8,7 @@ import '../../models/offer.dart';
 import '../../models/price_point.dart';
 import '../../models/product.dart';
 import '../store/store_screen.dart';
+import '../price_gaps/price_gap_priority.dart';
 import 'offer_card.dart';
 
 class OfferDetailsScreen extends StatelessWidget {
@@ -20,6 +21,7 @@ class OfferDetailsScreen extends StatelessWidget {
     required this.mobility,
     required this.catalogProducts,
     required this.marketPrices,
+    this.onResolvePriceGap,
   });
 
   final Offer offer;
@@ -29,6 +31,7 @@ class OfferDetailsScreen extends StatelessWidget {
   final MobilitySettings mobility;
   final List<Product> catalogProducts;
   final List<MarketPrice> marketPrices;
+  final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +59,7 @@ class OfferDetailsScreen extends StatelessWidget {
                       offers: offers,
                       mobility: mobility,
                       marketPrices: marketPrices,
+                      onResolvePriceGap: onResolvePriceGap,
                     ),
                   ),
                 ),

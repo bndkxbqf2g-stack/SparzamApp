@@ -132,6 +132,7 @@ List<Widget> buildShellPages({
     },
     onCreateProduct: onSaveProduct,
     onReceiptObservationsChanged: onReceiptObservationsChanged,
+    onResolvePriceGap: onResolvePriceGap,
     replenishmentSuggestions: replenishmentSuggestions,
   ),
   OffersScreen(

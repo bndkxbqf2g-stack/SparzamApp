@@ -21,6 +21,7 @@ class StoreScreen extends StatefulWidget {
     required this.offers,
     required this.mobility,
     required this.marketPrices,
+    this.onResolvePriceGap,
   });
 
   final Store store;
@@ -28,6 +29,7 @@ class StoreScreen extends StatefulWidget {
   final List<Offer> offers;
   final MobilitySettings mobility;
   final List<MarketPrice> marketPrices;
+  final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
 
   @override
   State<StoreScreen> createState() => _StoreScreenState();
@@ -227,6 +229,7 @@ class _StoreScreenState extends State<StoreScreen> {
               description:
                   'Kosten und Ersparnis gelten nur für den belegten Teil '
                   'deiner Liste.',
+              onResolveGap: widget.onResolvePriceGap,
             ),
           ],
           const SizedBox(height: 16),

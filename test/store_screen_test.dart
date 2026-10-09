@@ -4,6 +4,7 @@ import 'package:shared_preferences_platform_interface/in_memory_shared_preferenc
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:sparzamapp/data/stores.dart';
 import 'package:sparzamapp/features/store/store_screen.dart';
+import 'package:sparzamapp/features/price_gaps/price_gap_priority.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/mobility_settings.dart';
@@ -69,5 +70,39 @@ void main() {
     expect(find.textContaining('Menge 1 · 1 Markt ohne Preis'), findsOneWidget);
     expect(find.text('Dieser Markt lohnt sich durch die Angebote'), findsNothing);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Marktansicht öffnet die Preiseingabe für eine Datenlücke',
+      (tester) async {
+    const milk = Product(
+      id: 'milch_35',
+      name: 'Vollmilch',
+      unit: '1 l',
+      group: 'milch',
+    );
+    final lidl = stores.firstWhere((store) => store.name == 'Lidl');
+    PriceGapPriority? selected;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: StoreScreen(
+          store: lidl,
+          items: [ListItem(product: milk)],
+          offers: const [],
+          mobility: const MobilitySettings(),
+          marketPrices: const [],
+          onResolvePriceGap: (gap) async => selected = gap,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Preis ergänzen'), findsOneWidget);
+    await tester.drag(find.byType(ListView), const Offset(0, -320));
+    await tester.pump();
+    await tester.tap(find.text('Preis ergänzen'));
+    await tester.pump();
+
+    expect(selected?.item.product.id, milk.id);
   });
 }
