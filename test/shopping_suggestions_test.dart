@@ -1434,4 +1434,53 @@ void main() {
 
     expect(suggestions.map((product) => product.id), ['butter']);
   });
+
+  test('generic current prospect searches use compound food identities', () {
+    final products = <Product>[
+      Product(
+        id: 'steinofen-pizza',
+        name: 'Gustavo Gusto Steinofenpizza je 480 g',
+        unit: '480 g',
+        group: 'prospekt',
+      ),
+      Product(
+        id: 'pizza-cheese',
+        name: 'KERRYGOLD Pizzakäse je 150 g',
+        unit: '150 g',
+        group: 'prospekt',
+      ),
+      Product(
+        id: 'frozen-vegetables',
+        name: 'FROSTA Gemüse-Pfanne* je 480 g',
+        unit: '480 g',
+        group: 'prospekt',
+      ),
+    ];
+
+    final pizzaSuggestions = buildSuggestions(
+      query: 'Pizza',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: products,
+      now: DateTime(2026, 10, 9),
+    );
+    final vegetableSuggestions = buildSuggestions(
+      query: 'Gemüse',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: products,
+      now: DateTime(2026, 10, 9),
+    );
+
+    expect(
+      pizzaSuggestions.map((product) => product.id),
+      ['steinofen-pizza'],
+    );
+    expect(
+      vegetableSuggestions.map((product) => product.id),
+      ['frozen-vegetables'],
+    );
+  });
 }

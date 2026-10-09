@@ -515,6 +515,72 @@ void main() {
     );
   });
 
+  test('current food prospect compounds retain searchable families', () {
+    final meatLoaf = identifyProduct(
+      'K-WERTSCHÄTZE Delikatess-Fleischkäse aus eigener Herstellung je 100 g',
+    );
+    final chickenSalami = identifyProduct(
+      'STOCKMEYER Hähnchensalami je 100 g',
+    );
+    final wings = identifyProduct(
+      'K-PURLAND Hähnchenflügel XXL je 1-kg-Großpackg.',
+    );
+    final pudding = identifyProduct('K-CLASSIC Sahnepudding je 500-g-Becher');
+    final whippedCream = identifyProduct(
+      'K-CLASSIC Sprühsahne je 250-ml-Dose',
+    );
+    final sheepCheese = identifyProduct(
+      'SALAKIS Schafskäse oder Feta je 150 g',
+    );
+    final grillCheese = identifyProduct(
+      'GAZI Grill- und Pfannenkäse je 2 x 100 g',
+    );
+    final gratedCheese = identifyProduct('NATURGUT Bio Reibekäse* je 150 g');
+    final pizzaCheese = identifyProduct('KERRYGOLD Pizzakäse je 150 g');
+    final vegetables = identifyProduct('FROSTA Gemüse-Pfanne* je 480 g');
+    final pizza = identifyProduct('Gustavo Gusto Steinofenpizza je 480 g');
+    final quark = identifyProduct(
+      'MILRAM Frühlingsquark oder Zaziki* je 379 g',
+    );
+    final sugar = identifyProduct('SÜDZUCKER Feiner Rübenzucker je 1 kg');
+    final chocolate = identifyProduct(
+      'K-WINTER EDITION Schokoladenkränze je 200 g',
+    );
+    final water = identifyProduct('NATURGUTBio Kokoswasser* je 1 l');
+    final ice = identifyProduct('LANGNESE Magnum Eisbecher* je 440 ml');
+
+    expect(meatLoaf.familyKey, 'wurst');
+    expect(meatLoaf.variant, 'fleischkaese');
+    expect(chickenSalami.familyKey, 'wurst');
+    expect(chickenSalami.variant, 'salami');
+    expect(wings.familyKey, 'fleisch');
+    expect(pudding.familyKey, 'dessert');
+    expect(whippedCream.familyKey, 'creme');
+    expect(sheepCheese.familyKey, 'kaese');
+    expect(grillCheese.familyKey, 'kaese');
+    expect(gratedCheese.familyKey, 'kaese');
+    expect(pizzaCheese.familyKey, 'kaese');
+    expect(vegetables.familyKey, 'gemuese');
+    expect(pizza.familyKey, 'pizza');
+    expect(quark.familyKey, 'quark');
+    expect(sugar.familyKey, 'zucker');
+    expect(chocolate.familyKey, 'schokolade');
+    expect(water.familyKey, 'wasser');
+    expect(ice.familyKey, 'eis');
+
+    expect(
+      compatibleProductIdentity(identifyProduct('Pizza'), pizzaCheese),
+      isFalse,
+    );
+    expect(
+      compatibleProductIdentity(
+        identifyProduct('Butter'),
+        identifyProduct('SKIPPY Erdnussbutter je 340 g'),
+      ),
+      isFalse,
+    );
+  });
+
   test('milk ingredient compounds stay out of the plain milk family', () {
     expect(identifyProduct('K-CLASSIC Kondensmilch XXL').familyKey, isNull);
     expect(identifyProduct('K-CLASSIC Milch-Riegel').familyKey, 'snack');

@@ -72,7 +72,7 @@ ProductIdentity identifyProduct(String value) {
       productType: 'knabbermaeuse',
     );
   }
-  if (_hasWord(text, 'pizza')) {
+  if (_hasWord(text, 'pizza') || _hasAny(text, const ['steinofenpizza'])) {
     return const ProductIdentity(familyKey: 'pizza', productType: 'pizza');
   }
   if (_hasWord(text, 'schmand')) {
@@ -175,8 +175,11 @@ ProductIdentity identifyProduct(String value) {
       variant: _yoghurtVariant(text),
     );
   }
-  if (_hasAny(text, const ['pudding', 'pud', 'dessert', 'delacreme'])) {
+  if (_hasDessertFamilyToken(text)) {
     return const ProductIdentity(familyKey: 'dessert');
+  }
+  if (_hasQuarkFamilyToken(text)) {
+    return const ProductIdentity(familyKey: 'quark');
   }
   // Prospects sometimes put non-food tableware next to tea offers. A tea
   // glass must not become a hot-tea price candidate just because the label
@@ -202,7 +205,13 @@ ProductIdentity identifyProduct(String value) {
       productType: 'protein_snack',
     );
   }
-  if (_hasAny(text, const ['ice cream', 'eis', 'pirulo', 'bounty ice'])) {
+  if (_hasAny(text, const [
+    'ice cream',
+    'eis',
+    'eisbecher',
+    'pirulo',
+    'bounty ice',
+  ])) {
     return const ProductIdentity(familyKey: 'eis', productType: 'eis');
   }
   if (_hasAny(text, const [
@@ -251,13 +260,7 @@ ProductIdentity identifyProduct(String value) {
       productType: 'creme',
     );
   }
-  if (_hasAny(text, const [
-    'creme',
-    'sahne',
-    'schlagsahne',
-    'schlag sahne',
-    'kochcreme',
-  ])) {
+  if (_hasCreamFamilyToken(text)) {
     return ProductIdentity(familyKey: 'creme', productType: _creamType(text));
   }
   if (_hasAny(text, const [
@@ -289,14 +292,7 @@ ProductIdentity identifyProduct(String value) {
       productType: 'haushalt',
     );
   }
-  if (_hasAny(text, const [
-    'wasser',
-    'mineralwasser',
-    'tafelwasser',
-    'quellwasser',
-    'stillwasser',
-    'wasser medium',
-  ])) {
+  if (_hasWaterFamilyToken(text)) {
     return ProductIdentity(
       familyKey: 'wasser',
       productType:
@@ -450,6 +446,18 @@ ProductIdentity identifyProduct(String value) {
       productType: 'buttergemuese',
     );
   }
+  if (_hasAny(text, const ['erdnussbutter', 'erdnuss butter'])) {
+    return const ProductIdentity(
+      familyKey: 'aufstrich',
+      productType: 'erdnussbutter',
+    );
+  }
+  if (_hasAny(text, const ['butterschmalz'])) {
+    return const ProductIdentity(
+      familyKey: 'butter',
+      variant: 'butterschmalz',
+    );
+  }
   if (_hasAny(text, const ['butter'])) {
     return const ProductIdentity(familyKey: 'butter');
   }
@@ -487,7 +495,7 @@ ProductIdentity identifyProduct(String value) {
   ])) {
     return ProductIdentity(familyKey: 'oel', productType: _oilType(text));
   }
-  if (_hasAny(text, const ['zucker', 'puderzucker', 'haushaltszucker'])) {
+  if (_hasSugarFamilyToken(text)) {
     return ProductIdentity(familyKey: 'zucker', productType: _sugarType(text));
   }
   if (_hasAny(text, const [
@@ -548,6 +556,9 @@ ProductIdentity identifyProduct(String value) {
       familyKey: 'gemuese',
       productType: 'kaisergemuese',
     );
+  }
+  if (_hasVegetableFamilyToken(text)) {
+    return const ProductIdentity(familyKey: 'gemuese');
   }
   // Tomato products must be classified before fresh tomatoes. Matching the
   // token "tomate" alone must never turn tomato paste/sauce into fresh produce.
@@ -738,6 +749,12 @@ ProductIdentity identifyProduct(String value) {
       productType: 'kaese_ecken',
     );
   }
+  if (_isCheesecakeSnackLabel(text)) {
+    return const ProductIdentity(
+      familyKey: 'snack',
+      productType: 'kaesekuchen',
+    );
+  }
   // Cheese can be only an ingredient in a sausage or snack. Those products
   // retain their own identity so a generic cheese request cannot route them
   // as cheese.
@@ -748,47 +765,21 @@ ProductIdentity identifyProduct(String value) {
     'kaesesalami',
     'leberkaese',
     'leber kaese',
+    'fleischkaese',
+    'fleisch kaese',
   ])) {
     return ProductIdentity(
       familyKey: 'wurst',
       variant: _hasAny(text, const ['leberkaese', 'leber kaese'])
           ? 'leberkaese'
+          : _hasAny(text, const ['fleischkaese', 'fleisch kaese'])
+          ? 'fleischkaese'
           : _hasAny(text, const ['kaese salami', 'kaesesalami'])
           ? 'salami'
           : 'wiener',
     );
   }
-  if (_hasAny(text, const [
-    'käse',
-    'kaese',
-    'gouda',
-    'gou',
-    'edamer',
-    'emmentaler',
-    'bergkäse',
-    'bergkaese',
-    'butterkäse',
-    'butterkaese',
-    'tilsiter',
-    'camembert',
-    'hartkaese',
-    'hart kaese',
-    'schnittkaese',
-    'schnitt kaese',
-    'weichkaese',
-    'weich kaese',
-    'schafkaese',
-    'schaf kaese',
-    'ziegenkaese',
-    'ziegen kaese',
-    'kaesescheiben',
-    'kaese scheiben',
-    'frischkaese',
-    'frischkaesezubereitung',
-    'frischk',
-    'schmelzkaese',
-    'schmelzk',
-  ])) {
+  if (_hasCheeseFamilyToken(text)) {
     return ProductIdentity(familyKey: 'kaese', variant: _cheeseVariant(text));
   }
   if (_hasAny(text, const ['piccolinis'])) {
@@ -824,17 +815,7 @@ ProductIdentity identifyProduct(String value) {
   if (_hasAny(text, const ['schlemmerbraten', 'braten'])) {
     return const ProductIdentity(familyKey: 'fleisch', productType: 'braten');
   }
-  if (_hasAny(text, const [
-    'fleisch',
-    'rindfleisch',
-    'schweinefleisch',
-    'kalbfleisch',
-    'rind',
-    'schwein',
-    'kalb',
-    'gefluegel',
-    'haehnchen',
-  ])) {
+  if (_hasMeatFamilyToken(text)) {
     return ProductIdentity(familyKey: 'fleisch', meatType: _meatType(text));
   }
   if (_hasAny(text, const ['nudeltopf', 'linseneintopf', 'eintopf'])) {
@@ -851,7 +832,7 @@ ProductIdentity identifyProduct(String value) {
       productType: 'muesliriegel',
     );
   }
-  if (_hasAny(text, const ['schokolade'])) {
+  if (_hasChocolateFamilyToken(text)) {
     return const ProductIdentity(familyKey: 'schokolade');
   }
   if (_hasAny(text, const ['haribo', 'baella', 'balla', 'suessigkeit'])) {
@@ -1058,6 +1039,10 @@ bool _isChickenCheeseSnackLabel(String text) =>
     _hasAny(text, const ['kaese ecken', 'kaeseecken']) &&
     _hasAny(text, const ['haehnchen', 'huehnchen', 'chicken']);
 
+bool _isCheesecakeSnackLabel(String text) =>
+    _hasAny(text, const ['kaesekuchen', 'kaese kuchen', 'cheesecake']) &&
+    _hasAny(text, const ['snack', 'riegel', 'dessert']);
+
 String? _breadType(String text) {
   if (_hasBreadCompound(text, 'weissbrot')) return 'weiss';
   if (_hasBreadCompound(text, 'landbrot')) return 'land';
@@ -1231,6 +1216,101 @@ bool _hasWord(String text, String word) {
 bool _hasAny(String text, List<String> words) =>
     words.any((word) => _hasWord(text, word));
 
+bool _hasDessertFamilyToken(String text) =>
+    _hasAny(text, const ['pudding', 'pud', 'dessert', 'delacreme']) ||
+    RegExp(r'(?<![a-z0-9])[a-z]+pudding(?![a-z0-9])').hasMatch(text);
+
+bool _hasCreamFamilyToken(String text) =>
+    _hasAny(text, const [
+      'creme',
+      'sahne',
+      'schlagsahne',
+      'schlag sahne',
+      'kochcreme',
+    ]) ||
+    RegExp(r'(?<![a-z0-9])[a-z]+sahne(?![a-z0-9])').hasMatch(text);
+
+bool _hasQuarkFamilyToken(String text) =>
+    _hasWord(text, 'quark') ||
+    RegExp(r'(?<![a-z0-9])[a-z]+quark(?![a-z0-9])').hasMatch(text);
+
+bool _hasWaterFamilyToken(String text) =>
+    _hasAny(text, const [
+      'wasser',
+      'mineralwasser',
+      'tafelwasser',
+      'quellwasser',
+      'stillwasser',
+      'wasser medium',
+    ]) ||
+    RegExp(r'(?<![a-z0-9])[a-z]+wasser(?![a-z0-9])').hasMatch(text);
+
+bool _hasVegetableFamilyToken(String text) =>
+    _hasAny(text, const ['gemuese', 'gemüse']) ||
+    RegExp(r'(?<![a-z0-9])[a-z]+gemuese(?![a-z0-9])').hasMatch(text);
+
+bool _hasCheeseFamilyToken(String text) =>
+    _hasAny(text, const [
+      'käse',
+      'kaese',
+      'gouda',
+      'gou',
+      'edamer',
+      'emmentaler',
+      'bergkäse',
+      'bergkaese',
+      'butterkäse',
+      'butterkaese',
+      'tilsiter',
+      'camembert',
+      'hartkaese',
+      'hart kaese',
+      'schnittkaese',
+      'schnitt kaese',
+      'weichkaese',
+      'weich kaese',
+      'schafkaese',
+      'schafskaese',
+      'schaf kaese',
+      'ziegenkaese',
+      'ziegen kaese',
+      'kaesescheiben',
+      'kaese scheiben',
+      'frischkaese',
+      'frischkaesezubereitung',
+      'frischk',
+      'schmelzkaese',
+      'schmelzk',
+      'grillkaese',
+      'pfannenkaese',
+      'pizzakaese',
+      'reibekaese',
+    ]) ||
+    RegExp(r'(?<![a-z0-9])[a-z]+kaese[a-z]*(?![a-z0-9])').hasMatch(text);
+
+bool _hasMeatFamilyToken(String text) =>
+    _hasAny(text, const [
+      'fleisch',
+      'rindfleisch',
+      'schweinefleisch',
+      'kalbfleisch',
+      'rind',
+      'schwein',
+      'kalb',
+      'gefluegel',
+      'haehnchen',
+    ]) ||
+    RegExp(r'(?<![a-z0-9])haehnchen[a-z]+(?![a-z0-9])').hasMatch(text) ||
+    RegExp(r'(?<![a-z0-9])[a-z]+fleisch[a-z]*(?![a-z0-9])').hasMatch(text);
+
+bool _hasSugarFamilyToken(String text) =>
+    _hasAny(text, const ['zucker', 'puderzucker', 'haushaltszucker']) ||
+    RegExp(r'(?<![a-z0-9])[a-z]+zucker(?![a-z0-9])').hasMatch(text);
+
+bool _hasChocolateFamilyToken(String text) =>
+    _hasAny(text, const ['schokolade']) ||
+    RegExp(r'(?<![a-z0-9])schokolad[a-z]*(?![a-z0-9])').hasMatch(text);
+
 // Current prospect labels join salad families into compounds such as
 // "Feldsalat", "Romanasalat" and "Salatherzen". Prepared salads remain
 // separate so a generic fresh-salad search cannot reuse their prices.
@@ -1306,7 +1386,7 @@ bool _hasSausageFamilyToken(String text) =>
       'schinken',
     ]) ||
     RegExp(
-      r'(?<![a-z0-9])(?:[a-z]+wurst|[a-z]+schinken|wurst[a-z]+|schinken[a-z]+)(?![a-z0-9])',
+      r'(?<![a-z0-9])(?:[a-z]+wurst|[a-z]+schinken|wurst[a-z]+|schinken[a-z]+|[a-z]+(?:salami|lyoner)|salami[a-z]+|lyoner[a-z]+)(?![a-z0-9])',
     ).hasMatch(text);
 
 bool _isMilkIngredientCompound(String text) => _hasAny(text, const [
@@ -1345,6 +1425,7 @@ String? _cheeseVariant(String text) {
     'weichkaese',
     'weich kaese',
     'schafkaese',
+    'schafskaese',
     'schaf kaese',
     'ziegenkaese',
     'ziegen kaese',
@@ -1354,6 +1435,10 @@ String? _cheeseVariant(String text) {
     'frischk',
     'schmelzkaese',
     'schmelzk',
+    'grillkaese',
+    'pfannenkaese',
+    'pizzakaese',
+    'reibekaese',
   ]) {
     if (_hasWord(text, term)) {
       return switch (term) {
@@ -1362,6 +1447,7 @@ String? _cheeseVariant(String text) {
         'schnitt kaese' => 'schnittkaese',
         'weich kaese' => 'weichkaese',
         'schaf kaese' => 'schafkaese',
+        'schafskaese' => 'schafkaese',
         'ziegen kaese' => 'ziegenkaese',
         'kaese scheiben' => 'kaesescheiben',
         'frischk' => 'frischkaese',
@@ -1392,7 +1478,15 @@ String? _sausageVariant(String text) {
     'kochhinterschink',
     'schinken',
   ]) {
-    if (_hasWord(text, term)) return term;
+    if (_hasWord(text, term) ||
+        (term == 'salami' &&
+            RegExp(r'(?<![a-z0-9])[a-z]+salami(?![a-z0-9])')
+                .hasMatch(text)) ||
+        (term == 'lyoner' &&
+            RegExp(r'(?<![a-z0-9])[a-z]+lyoner(?![a-z0-9])')
+                .hasMatch(text))) {
+      return term;
+    }
   }
   return null;
 }
