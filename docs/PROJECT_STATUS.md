@@ -6,8 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: `a904184` (nach dem Merge der historischen Bonpreis-Kennzeichnung).
-- Für PR #168 waren PR-CI `37958814205` und `37958826961`, Main-CI `37959324782` und Release `37959324909` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
+- Letzter geprüfter Main-Stand: `c108275` (nach dem Merge der günstigeren Marktpreis-Auswahl gegenüber unbestätigten Angeboten).
+- Für PR #170 waren die korrigierten PR-CI-Läufe `37962180211` und `37962186250`, Main-CI `37962650886` und Release `37962650885` mit Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
@@ -77,6 +77,18 @@
 - PR #168 (`a904184`) ergänzt die Kennzeichnung und Regressionen. PR-CI
   `37958814205` und `37958826961`, Main-CI `37959324782` sowie Release
   `37959324909` waren erfolgreich.
+
+## Update 09.10.2026 – Günstiger belegter Marktpreis schlägt unbestätigtes Angebot
+- Die Routenplanung verwendet ein aktives Angebot nur dann als günstigere Position,
+  wenn es gegenüber einem vorhandenen Markt- oder Katalogpreis tatsächlich nicht
+  teurer ist. Ein nicht verifizierter Normalpreis im Angebot darf damit keinen
+  belegten Bon- oder Marktpreis verdrängen.
+- Reine Angebotsdaten ohne vorhandenen Normalpreis bleiben weiterhin routbar; die
+  App erfindet dafür keinen Vergleichspreis und zeigt auch keine unbelegte
+  Ersparnis an.
+- PR #170 (`c108275`) ergänzt die Regression für beide Fälle. Die korrigierten
+  PR-CI-Läufe `37962180211` und `37962186250`, Main-CI `37962650886` sowie Release
+  `37962650885` waren erfolgreich.
 
 ## Zuletzt umgesetzt
 - REWE wurde als Händlerintegration entfernt. Die Händlerauswahl umfasst damit
