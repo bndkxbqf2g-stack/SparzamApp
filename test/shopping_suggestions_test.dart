@@ -1216,4 +1216,38 @@ void main() {
       ['obstgarten', 'almighurt', 'fruit-crunch'],
     );
   });
+
+  test('generic butter search excludes cheese and vegetable compounds', () {
+    final products = <Product>[
+      Product(
+        id: 'butter',
+        name: 'Landliebe Butter oder Die Streichzarte',
+        unit: '250 g',
+        group: 'prospekt',
+      ),
+      Product(
+        id: 'butter-cheese',
+        name: 'AMMERLÄNDER Butterkäse',
+        unit: '100 g',
+        group: 'prospekt',
+      ),
+      Product(
+        id: 'butter-vegetables',
+        name: 'K-BIO Bio-Buttergemüse',
+        unit: '300 g',
+        group: 'prospekt',
+      ),
+    ];
+
+    final suggestions = buildSuggestions(
+      query: 'Butter',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: products,
+      now: DateTime(2026, 10, 9),
+    );
+
+    expect(suggestions.map((product) => product.id), ['butter']);
+  });
 }

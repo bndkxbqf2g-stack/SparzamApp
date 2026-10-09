@@ -353,6 +353,21 @@ ProductIdentity identifyProduct(String value) {
       productType: _hasWord(text, 'wedges') ? 'wedges' : null,
     );
   }
+  // "Butter" also appears in compound labels for cheese and vegetables.
+  // Resolve those products before the generic butter rule so their offers
+  // cannot be reused as a spread or cooking-butter price.
+  if (_hasAny(text, const ['butterkaese', 'butter kaese'])) {
+    return const ProductIdentity(
+      familyKey: 'kaese',
+      variant: 'butterkaese',
+    );
+  }
+  if (_hasAny(text, const ['buttergemuese', 'butter gemuese'])) {
+    return const ProductIdentity(
+      familyKey: 'gemuese',
+      productType: 'buttergemuese',
+    );
+  }
   if (_hasAny(text, const ['butter'])) {
     return const ProductIdentity(familyKey: 'butter');
   }
