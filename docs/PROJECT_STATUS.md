@@ -6,10 +6,15 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Main-Stand: `ea919c5` (nach dem Merge der korrigierten Milch-Suche).
+- Letzter geprüfter Main-Stand: `ea8dfac` (nach dem Merge der Marktansicht-Preisdatenerfassung).
 - Für PR #153 waren PR-CI, Main-CI `37017836279` und Release `37017836256` mit 567 Tests, Analyse, Web-Build, Pages-Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 09.10.2026 – Preis-Datenlücken direkt in der Marktansicht bearbeiten
+- Die Marktansicht zeigt fehlende, vergleichbare Preise weiterhin als Datenlücke und bietet jetzt direkt den Button „Preis ergänzen“.
+- Der bestehende Preis-Editor wird dafür aus der Einkaufsliste über Angebotsdetails und Marktansicht weitergereicht. So kann ein fehlender Marktpreis genau an der Stelle ergänzt werden, an der die Lücke auffällt; die gespeicherte Quelle bleibt ein eigener Marktpreis und wird sofort für Liste und Route verwendet.
+- PR #159 (`ea8dfac`) ergänzt die Widget-Regression für den direkten Bedienfluss. PR-CI `37904049421`, Main-CI `37904457340` und Release `37904457343` waren mit 575 Tests, Analyse, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
 
 ## Aktuell funktionsfähig
 - Einkaufsliste mit mehreren Listen, Mengen, Notizen, Kategorien und lokalem Zustand.
