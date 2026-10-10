@@ -507,6 +507,7 @@ class _AppShellState extends State<AppShell> {
         enabledStores: mobility.enabledStoreNames,
       ),
       enabledStores: mobility.enabledStoreNames,
+      openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
     );
     if (!mounted || selected == null || selected.isEmpty) return;
     final index = shoppingList.indexWhere(
