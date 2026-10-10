@@ -6,11 +6,27 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `94047ce` (Produktsuche und Routenplanung verwenden jetzt dieselbe qualitätsgewichtete Preisreihenfolge); der aktuelle Dokumentationsstand ist dieser Status-PR.
+- Letzter geprüfter Code-Stand auf main: `5066e5c` (Preis-Matrix und hervorgehobenes Preis-Badge verwenden jetzt dieselbe qualitätsgewichtete Preisreihenfolge wie Produktsuche und Route); der aktuelle Dokumentationsstand ist dieser Status-PR.
 - Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
 - Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 10.10.2026 – Preis-Matrix und Preis-Badge folgen der gemeinsamen Qualitätsauswahl
+- Die Produkt×Markt-Matrix wählt aktuelle Bon-, eigenen und Open-Prices jetzt
+  mit derselben Quellen- und Unsicherheitsbewertung wie Produktsuche und Route.
+  Ein historischer Bonpreis kann dadurch keinen aktuellen Preisbeleg mehr
+  verdrängen, auch wenn er nominal günstiger ist.
+- Aktuelle Beobachtungen werden vor historischen Bonpreisen angezeigt. Aktive
+  Angebote bleiben vorrangig; sichtbarer Betrag, Quelle, Händler und Datum
+  bleiben unverändert nachvollziehbar.
+- Das hervorgehobene Preis-Badge übernimmt dieselbe Matrixentscheidung und
+  zeigt nicht mehr unabhängig davon den zuletzt gesehenen Bonpreis.
+- PR #223 (`c6b2bc5`, Merge `5066e5c`) ergänzt Regressionen für Matrixauswahl
+  und sichtbare UI-Auswahl. Die PR-CI-Läufe `38021129351` und `38021137839`,
+  Main-CI `38021373268` sowie Release `38021373215` waren mit Analyse,
+  vollständigen Tests, Web-/Pages-Build, Deployment und Android-APK
+  erfolgreich.
 
 ## Update 10.10.2026 – Produktsuche und Route bewerten aktuelle Preise einheitlich
 - Die Produktsuche verwendet für aktuelle Bon- und Open-Prices jetzt dieselbe
