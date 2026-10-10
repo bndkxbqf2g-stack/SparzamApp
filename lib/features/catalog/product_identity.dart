@@ -419,6 +419,12 @@ ProductIdentity identifyProduct(String value) {
       productType: 'kartoffel',
     );
   }
+  // Chocolate products can use `Ei` as a shape or flavour (for example
+  // "Kinder Maxi Ei"). Resolve these before the generic egg family so a
+  // household search for eggs cannot recommend confectionery.
+  if (_isEggConfectioneryLabel(text)) {
+    return const ProductIdentity(familyKey: 'suessigkeit');
+  }
   if (_hasAny(text, const [
     'eier',
     'ei',
@@ -1924,6 +1930,26 @@ bool _isMilkIngredientCompound(String text) =>
       'gebaeck',
       'biscuit',
     ]);
+
+bool _isEggConfectioneryLabel(String text) =>
+    _hasAny(text, const [
+      'kinder maxi ei',
+      'ueberraschungsei',
+      'ueberraschung ei',
+      'schokoei',
+      'schoko ei',
+      'osterei',
+      'marzipanei',
+    ]) ||
+    (_hasWord(text, 'ei') &&
+        _hasAny(text, const [
+          'kinder',
+          'schokolade',
+          'schoko',
+          'bonbon',
+          'praline',
+          'marzipan',
+        ]));
 
 double? _percent(String text) {
   final match = RegExp(r'(\d+(?:[,.]\d+)?)\s*%').firstMatch(text);

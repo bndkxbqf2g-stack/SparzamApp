@@ -13,6 +13,13 @@
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
+## Update 10.10.2026 – Eier-Suche blendet Schokoladeneier aus
+- Die allgemeine Suche nach „Eier“ behandelt Schokoladenprodukte wie „Kinder
+  Maxi Ei“ nicht mehr als Haushalts-Eier. Die Bezeichnung wird vor der
+  generischen Eierfamilie als Süßware erkannt.
+- Produktidentität und Einkaufsvorschläge sind mit einer positiven und einer
+  negativen Regression abgesichert; Preise und Angebotsdaten bleiben unverändert.
+
 ## Update 10.10.2026 – Milchsuche blendet Keks- und Süßwarenangebote aus
 - Die allgemeine Suche nach „Milch“ ordnet Produktlabels mit einer
   Milch-Geschmacksangabe nach einer Keks-, Waffel- oder Kuchenbezeichnung nicht

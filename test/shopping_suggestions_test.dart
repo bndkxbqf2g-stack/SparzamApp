@@ -424,6 +424,30 @@ void main() {
     expect(results.map((product) => product.id), [regular.id]);
   });
 
+  test('generic egg search filters chocolate egg offers', () {
+    const confectionery = Product(
+      id: 'chocolate-egg',
+      name: 'Kinder Maxi Ei 100 g',
+      unit: '100 g',
+      group: 'suessigkeit',
+    );
+    const eggs = Product(
+      id: 'eggs',
+      name: 'Eier aus Bodenhaltung',
+      unit: '10 Stück',
+      group: 'eier',
+    );
+    final results = buildSuggestions(
+      query: 'Eier',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: [confectionery, eggs],
+    );
+
+    expect(results.map((product) => product.id), [eggs.id]);
+  });
+
   test('generic coffee search excludes pastry and machine offers', () {
     final results = buildSuggestions(
       query: 'Kaffee',
