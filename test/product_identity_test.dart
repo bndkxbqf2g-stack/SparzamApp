@@ -178,6 +178,16 @@ void main() {
     );
   });
 
+  test('chocolate egg labels stay separate from household eggs', () {
+    final confectionery = identifyProduct('Kinder Maxi Ei 100 g');
+
+    expect(confectionery.familyKey, 'suessigkeit');
+    expect(
+      compatibleProductIdentity(identifyProduct('Eier'), confectionery),
+      isFalse,
+    );
+  });
+
   test('buttermilk and plant milk stay separate from ordinary milk', () {
     final buttermilk = identifyProduct('MILRAM Buttermilch-Drink 750 g');
     final coconut = identifyProduct('K-CLASSIC ASIA Kokosmilch 400 ml');
