@@ -6,11 +6,26 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `d4509d2` (die konfigurierte Open-Prices-Altersgrenze gilt jetzt durchgängig bis in Routen- und Marktübersichten); der aktuelle Dokumentationsstand ist dieser Status-PR.
+- Letzter geprüfter Code-Stand auf main: `94047ce` (Produktsuche und Routenplanung verwenden jetzt dieselbe qualitätsgewichtete Preisreihenfolge); der aktuelle Dokumentationsstand ist dieser Status-PR.
 - Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
 - Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 10.10.2026 – Produktsuche und Route bewerten aktuelle Preise einheitlich
+- Die Produktsuche verwendet für aktuelle Bon- und Open-Prices jetzt dieselbe
+  Unsicherheitsbewertung wie die Routenplanung. Ein nominal günstiger,
+  rabattierter Bonpreis kann dadurch nicht allein wegen seines niedrigeren
+  Betrags eine sicherere aktuelle Preisbeobachtung verdrängen.
+- Aktive Angebote bleiben vorrangig. Die Qualitätsbewertung verändert nur die
+  Reihenfolge; der angezeigte beobachtete Preis, Quelle und Händler bleiben
+  unverändert nachvollziehbar. Historische Preis-Hinweise werden weiterhin
+  getrennt von aktuellen Planungswerten behandelt.
+- PR #221 (`d91e80f`, Merge `94047ce`) ergänzt Regressionen für den direkten
+  Preis-Hinweis und die Reihenfolge der Produktsuche. Die PR-CI-Läufe
+  `38019658401` und `38019665970`, Main-CI `38019920523` sowie Release
+  `38019920514` waren mit Analyse, vollständigen Tests, Web-/Pages-Build,
+  Deployment und Android-APK erfolgreich.
 
 ## Update 10.10.2026 – Konfigurierte Open-Prices-Frist erreicht Route und Marktübersicht
 - Die eingestellte maximale Gültigkeitsdauer für Open Prices wird jetzt durch
