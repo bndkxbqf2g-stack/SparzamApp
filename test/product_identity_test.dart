@@ -19,6 +19,18 @@ void main() {
     );
   });
 
+  test('separator-free KH milk abbreviation opens H-milk choices', () {
+    final identity = identifyProduct('KH-Milch');
+
+    expect(identity.familyKey, 'milch');
+    expect(identity.variant, 'h');
+    expect(identity.fatPercent, isNull);
+    expect(
+      isOpenMilkChoice(identity, identifyProduct('H-Milch 1,5%')),
+      isTrue,
+    );
+  });
+
   test('specific milk fat does not match another fat', () {
     expect(
       compatibleProductIdentity(

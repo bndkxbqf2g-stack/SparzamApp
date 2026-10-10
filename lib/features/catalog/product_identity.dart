@@ -161,7 +161,12 @@ ProductIdentity identifyProduct(String value) {
       ])) {
     return ProductIdentity(
       familyKey: 'milch',
-      variant: _hasWord(text, 'h milch') ? 'h' : null,
+      // Receipt OCR and retailer exports use both `K.H-Milch` and the
+      // separator-free `KH-Milch` abbreviation for H-milk. Treat both as the
+      // same open H-milk request while keeping fat variants separate.
+      variant: (_hasWord(text, 'h milch') || _hasWord(text, 'kh milch'))
+          ? 'h'
+          : null,
       productType: _milkType(text),
       fatPercent: _percent(text),
     );
