@@ -6,11 +6,28 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `25d6902` (Such-zu-Route-Prüfung mit dem aktuellen Prospektfeed); der aktuelle Dokumentationsstand ist dieser Status-PR.
+- Letzter geprüfter Code-Stand auf main: `ed046c6` (robuste Bon-Deduplizierung bei OCR-/PDF-Layoutänderungen); der aktuelle Dokumentationsstand ist dieser Status-PR.
 - Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
 - Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 10.10.2026 – Bonbeobachtungen bleiben bei OCR-Layoutänderungen idempotent
+- Bonbeobachtungen verwenden jetzt eine stabile Produktzeilen-Ordnung innerhalb
+  des Beleg-Fingerprints. Die physische PDF-/OCR-Zeilennummer bleibt als
+  Nachweis erhalten, erzeugt aber bei eingefügten Layoutzeilen keine neue
+  Beobachtungsidentität.
+- Der lokale Beobachtungsspeicher führt alte `Fingerprint|Zeile`-IDs und neue
+  `Fingerprint|item:n`-IDs über Fingerprint, Zeileninhalt und Auftretensreihenfolge
+  zusammen. Wiederholte gleiche Produkte bleiben als getrennte Zeilen erhalten.
+- Ein erneuter Import löscht keine bereits bestätigte oder automatisch angelegte
+  Produktidentität, wenn die zweite Prüfung die Zeile unmarkiert lässt. Preise,
+  Mengen, Einheit, Händler und Beobachtungsdatum bleiben an der eingelesenen
+  Zeile nachvollziehbar.
+- PR #207 (`a4435bc`, Merge `ed046c6`) ergänzt die Regressionen. Die beiden
+  PR-CI-Läufe `38009599922` und `38009618694` waren mit Analyse, Tests und
+  Web-Build erfolgreich; die nachgelagerten Main-/Release-Läufe sind für
+  `ed046c6` gestartet.
 
 ## Update 10.10.2026 – Suche nach Milch führt in die aktuelle Sparroute
 - Der aktuelle, versionierte Prospektfeed wird jetzt durch den sichtbaren
