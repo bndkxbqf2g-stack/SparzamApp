@@ -7,10 +7,12 @@ import 'package:sparzamapp/services/receipt_observation_store.dart';
 ReceiptObservation observation({
   String? productId,
   bool identityConfirmed = false,
+  String id = 'receipt|1',
+  int rowLine = 1,
 }) => ReceiptObservation(
-  id: 'receipt|1',
+  id: id,
   receiptFingerprint: 'receipt',
-  rowLine: 1,
+  rowLine: rowLine,
   rawLabel: 'Unbekannter Artikel',
   familyKey: 'sonstiges',
   storeName: 'Kaufland',
@@ -53,5 +55,44 @@ void main() {
     final saved = await store.load();
     expect(saved.single.productId, 'catalog_product');
     expect(saved.single.identityConfirmed, isTrue);
+  });
+
+  test(
+    'deduplicates legacy line ids after OCR shifts the source line',
+    () async {
+      final store = ReceiptObservationStore();
+      await store.addMany([observation(id: 'receipt|34', rowLine: 34)]);
+
+      final changed = await store.addMany([
+        observation(id: 'receipt|item:1', rowLine: 8),
+      ]);
+
+      expect(changed, 1);
+      final saved = await store.load();
+      expect(saved, hasLength(1));
+      expect(saved.single.id, 'receipt|item:1');
+      expect(saved.single.rowLine, 8);
+    },
+  );
+
+  test('does not erase a confirmed identity on a duplicate import', () async {
+    final store = ReceiptObservationStore();
+    await store.addMany([
+      observation(
+        id: 'receipt|item:1',
+        productId: 'catalog_milk',
+        identityConfirmed: true,
+      ),
+    ]);
+
+    final changed = await store.addMany([
+      observation(id: 'receipt|item:1', rowLine: 7),
+    ]);
+
+    expect(changed, 1);
+    final saved = await store.load();
+    expect(saved.single.productId, 'catalog_milk');
+    expect(saved.single.identityConfirmed, isTrue);
+    expect(saved.single.rowLine, 7);
   });
 }
