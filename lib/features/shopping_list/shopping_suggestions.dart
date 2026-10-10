@@ -10,6 +10,7 @@ import '../offers/offer_filter.dart';
 import '../offers/prospect_price_statistics.dart';
 import '../catalog/product_identity.dart';
 import '../catalog/product_hierarchy.dart';
+import '../route/market_price_quality.dart';
 import 'receipt_product_price_match.dart';
 import 'shopping_price_quotes.dart';
 import '../../services/quantity_normalizer.dart';
@@ -19,6 +20,7 @@ class ShoppingSuggestionPrice {
     required this.price,
     required this.storeName,
     required this.sourceLabel,
+    this.rankingPrice,
     this.validUntil,
     this.observedAt,
     this.isOffer = false,
@@ -28,10 +30,15 @@ class ShoppingSuggestionPrice {
   final double price;
   final String storeName;
   final String sourceLabel;
+  /// Quality-adjusted comparison value used only for ranking current prices.
+  /// The displayed price remains the observed checkout amount.
+  final double? rankingPrice;
   final DateTime? validUntil;
   final DateTime? observedAt;
   final bool isOffer;
   final bool isHistorical;
+
+  double get comparisonPrice => rankingPrice ?? price;
 
   String get displayLabel =>
       '$sourceLabel $storeName ${price.toStringAsFixed(2).replaceAll('.', ',')} €'
@@ -101,8 +108,8 @@ List<Product> buildSuggestions({
       // Offers/current observations still outrank historical values above.
       // Within the same evidence bucket, keep the cheapest comparable item
       // first so historical receipt medians remain useful for staple searches.
-      final aComparable = _comparisonPrice(a, aPrice.price);
-      final bComparable = _comparisonPrice(b, bPrice.price);
+      final aComparable = _comparisonPriceForSuggestion(a, aPrice);
+      final bComparable = _comparisonPriceForSuggestion(b, bPrice);
       if (aComparable != null && bComparable != null) {
         if (aComparable.dimension == bComparable.dimension) {
           final byUnitPrice = aComparable.price.compareTo(bComparable.price);
@@ -308,6 +315,7 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
         price: effective.finalPrice,
         storeName: offer.storeName,
         sourceLabel: effective.cashback > 0 ? 'Angebot, effektiv' : 'Angebot',
+        rankingPrice: effective.finalPrice,
         validUntil: offer.validUntil,
         isOffer: true,
       ),
@@ -334,6 +342,8 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
           MarketPriceSource.manual => 'Eigener Preis',
           MarketPriceSource.openPrices => 'Open Prices',
         },
+        rankingPrice: price.price *
+            (1 + marketPriceQuality(price, current).uncertaintyRate),
         observedAt: price.updatedAt,
       ),
     );
@@ -395,8 +405,10 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
   }
   quotes.sort((a, b) {
     if (a.isOffer != b.isOffer) return a.isOffer ? -1 : 1;
-    final byPrice = a.price.compareTo(b.price);
+    final byPrice = a.comparisonPrice.compareTo(b.comparisonPrice);
     if (byPrice != 0) return byPrice;
+    final byNominalPrice = a.price.compareTo(b.price);
+    if (byNominalPrice != 0) return byNominalPrice;
     return a.storeName.compareTo(b.storeName);
   });
   return quotes.first;
@@ -443,6 +455,22 @@ int _compareHistoricalHints(
   );
   if (quantity == null || unitPrice == null) return null;
   return (price: unitPrice, dimension: quantity.dimension);
+}
+
+({double price, QuantityDimension dimension})? _comparisonPriceForSuggestion(
+  Product product,
+  ShoppingSuggestionPrice suggestion,
+) {
+  final comparable = _comparisonPrice(product, suggestion.price);
+  if (comparable == null || suggestion.rankingPrice == null) {
+    return comparable;
+  }
+  final factor = suggestion.comparisonPrice / suggestion.price;
+  if (!factor.isFinite || factor <= 0) return comparable;
+  return (
+    price: comparable.price * factor,
+    dimension: comparable.dimension,
+  );
 }
 
 /// Keeps the text fallback conservative once the query has a known product

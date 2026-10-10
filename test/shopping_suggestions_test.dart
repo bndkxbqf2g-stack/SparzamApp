@@ -145,6 +145,67 @@ void main() {
   });
 
   test(
+    'quality-adjusted ranking prefers a safer current price over a cheaper discounted receipt',
+    () {
+      final hint = shoppingSuggestionPriceForProduct(
+        regular,
+        marketPrices: [
+          MarketPrice(
+            productId: regular.id,
+            storeName: 'Lidl',
+            price: 0.50,
+            updatedAt: now,
+            source: MarketPriceSource.receipt,
+            discounted: true,
+          ),
+          MarketPrice(
+            productId: regular.id,
+            storeName: 'ALDI Süd',
+            price: 0.53,
+            updatedAt: now,
+            source: MarketPriceSource.openPrices,
+          ),
+        ],
+        now: now,
+      );
+
+      expect(hint?.storeName, 'ALDI Süd');
+      expect(hint?.price, 0.53);
+      expect(hint?.sourceLabel, 'Open Prices');
+    },
+  );
+
+  test('product search uses the same quality-adjusted ordering as its price hint', () {
+    final results = buildSuggestions(
+      query: 'Milch',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: [regular, lowFat],
+      marketPrices: [
+        MarketPrice(
+          productId: regular.id,
+          storeName: 'Lidl',
+          price: 0.50,
+          updatedAt: now,
+          source: MarketPriceSource.receipt,
+          discounted: true,
+        ),
+        MarketPrice(
+          productId: lowFat.id,
+          storeName: 'ALDI Süd',
+          price: 0.53,
+          updatedAt: now,
+          source: MarketPriceSource.openPrices,
+        ),
+      ],
+      now: now,
+    );
+
+    expect(results.map((product) => product.id), [lowFat.id, regular.id]);
+  });
+
+  test(
     'generic milk search ignores prospect products using milk as an ingredient',
     () {
       const prospectProducts = [
