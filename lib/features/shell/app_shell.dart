@@ -62,6 +62,7 @@ import '../receipt/receipt_observation_migration.dart';
 import '../shopping_list/replenishment_analyzer.dart';
 import '../shopping_list/receipt_family_market_prices.dart';
 import '../shopping_list/shopping_candidate_selector.dart';
+import 'price_gap_resolution.dart';
 import '../receipt/receipt_price_statistics.dart';
 import '../shopping_list/planning_market_prices.dart' as planning_prices;
 import '../shopping_list/shopping_list_updates.dart';
@@ -911,6 +912,48 @@ class _AppShellState extends State<AppShell> {
   }
 
   Future<void> openPriceGapEditor(PriceGapPriority gap) async {
+    if (shouldResolvePriceGapByProductSelection(gap.item.product)) {
+      final selected = await showShoppingCandidateSelector(
+        context: context,
+        request: gap.item.product.name,
+        catalogProducts: catalogProducts,
+        offers: offers,
+        marketPrices: [...activeMarketPrices, ...historicalMarketPrices],
+        receiptPriceStats: buildReceiptPriceStats(
+          receiptObservations,
+          maxAgeDays: 60,
+        ),
+        prospectPriceHistory: prospectPriceHistorySummaries(
+          historicalPriceObservations,
+          enabledStores: mobility.enabledStoreNames,
+        ),
+        enabledStores: mobility.enabledStoreNames,
+        openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
+      );
+      if (!mounted || selected == null || selected.isEmpty) return;
+
+      final next = replacePriceGapItem(
+        items: shoppingList,
+        sourceProductId: gap.item.product.id,
+        selectedProducts: selected,
+      );
+      if (next == null) return;
+      setState(() => shoppingList = next);
+      persistShoppingListWithFeedback();
+      for (final product in selected) {
+        widget.shoppingListStore.saveKnownItem(product);
+        ensureCatalogProduct(product);
+      }
+      widget.diagnosticLogService.record(
+        category: 'Einkaufsliste',
+        message: 'Datenlücke durch Produktauswahl konkretisiert.',
+        details:
+            '${gap.item.product.name}: '
+            '${selected.map((product) => product.name).join(', ')}',
+      );
+      return;
+    }
+
     await Navigator.of(context).push<void>(
       MaterialPageRoute(
         builder: (_) => MarketPriceEditorScreen(

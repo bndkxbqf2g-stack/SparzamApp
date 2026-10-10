@@ -77,7 +77,7 @@ class PriceGapCard extends StatelessWidget {
                                 await onResolveGap!(shown[index]);
                               },
                               icon: const Icon(Icons.edit_outlined),
-                              label: const Text('Preis ergänzen'),
+                              label: const Text('Produkt oder Preis ergänzen'),
                             ),
                           ),
                       ],

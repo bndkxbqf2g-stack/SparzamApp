@@ -716,3 +716,13 @@ Tag werden ausgeschlossen; zukünftige Beobachtungen bleiben ausgeschlossen.
 Damit verwendet die Suche dieselbe lokale, inklusive Frischegrenze wie die
 Bonstatistik und die Preisprojektion, ohne historische Hinweise zu aktuellen
 Routenpreisen hochzustufen.
+
+## D105 – Preis-Datenlücken führen bei bekannten Familien zur Produktauswahl
+Wenn eine Listenposition keine belastbare Marktpreisabdeckung besitzt und ihre
+Bezeichnung einer bekannten Produktfamilie entspricht, öffnet „Produkt oder
+Preis ergänzen“ zuerst die konkrete Kandidatenauswahl. Aktuelle Angebote stehen
+dort vor aktuellen Markt-/Bonpreisen; historische Prospekt- und Bonwerte bleiben
+als Hinweis gekennzeichnet. Erst die explizite Nutzerwahl ersetzt die
+unbestimmte Listenposition durch konkrete Produktidentitäten. Unbekannter
+Freitext bleibt im manuellen Preiseditor, weil eine automatische Erweiterung
+dort eine unbelegte Produktidentität erzeugen würde.

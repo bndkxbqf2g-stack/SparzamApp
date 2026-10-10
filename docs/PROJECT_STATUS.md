@@ -6,12 +6,25 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `3849ba6` (deutscher Kalendertag für
-  Prospekt-Refresh); der aktuelle Feed-Stand ist `ec1227e`.
+- Letzter geprüfter Code-Stand auf main: `19645f5` (OCR-Händlernormalisierung
+  für gelernte Bon-Aliase); der aktuelle Feed-Stand ist `ec1227e`.
 - Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
 - Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 10.10.2026 – Preis-Datenlücken öffnen die konkrete Produktauswahl
+- Eine unbestimmte Listenposition wie „Milch“ führt aus der Routenansicht jetzt
+  direkt in die vorhandene Kandidatenauswahl. Dort werden aktuelle Angebote,
+  bekannte Marktpreise sowie klar gekennzeichnete historische Bon- und
+  Prospektwerte gemeinsam angezeigt.
+- Die Auswahl ersetzt nur die betroffene Listenposition und übernimmt Menge,
+  Notiz und Prüfstatus. Unbekannter Freitext bleibt beim manuellen Preiseintrag,
+  weil dafür keine sichere Produktidentität vorliegt.
+- Die Erkennung und das positionsgenaue Ersetzen sind durch Regressionstests
+  abgesichert. Die lokale Dart-Analyse ist ohne Befund; der gezielte
+  Flutter-Test bleibt wegen der nicht beschreibbaren lokalen Flutter-Engine-
+  Cachedateien CI-seitig zu prüfen.
 
 ## Update 10.10.2026 – Kurze Suchtexte bleiben während der Eingabe ruhig
 - Ein einzelner, noch unvollständiger Buchstabe filtert nicht mehr den gesamten
