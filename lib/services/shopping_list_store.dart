@@ -73,9 +73,7 @@ class ShoppingListStore {
   Future<void> savePreferredProducts(Map<String, String> products) =>
       _preferences.setStringList(
         _preferredProductsStorageKey,
-        products.entries
-            .map((entry) => '\${entry.key}|\${entry.value}')
-            .toList(),
+        products.entries.map((entry) => '${entry.key}|${entry.value}').toList(),
       );
 
   Future<void> removeKnownItem(String id) async {
