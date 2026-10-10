@@ -44,6 +44,14 @@ class ProspectOfferProduct {
   final Offer offer;
 }
 
+/// Keeps source-backed offers attached to their exact prospect product,
+/// including labels that are not in the local catalog yet. The caller may
+/// still require an explicit product selection before adding the item to a
+/// shopping list; no family identity is inferred here.
+List<Offer> offersFromProspectProducts(
+  Iterable<ProspectOfferProduct> entries,
+) => entries.map((entry) => entry.offer).toList(growable: false);
+
 bool _isUsableRecord(OfferImportRecord record, {DateTime? now}) {
   if (record.productLabel.trim().isEmpty ||
       record.storeName.trim().isEmpty ||

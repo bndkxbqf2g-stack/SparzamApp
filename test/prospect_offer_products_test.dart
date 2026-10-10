@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sparzamapp/features/route/route_optimizer.dart';
 import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/features/offers/prospect_offer_products.dart';
+import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/product.dart';
 
 void main() {
@@ -108,6 +110,40 @@ void main() {
       entries.map((entry) => entry.offer.productId),
       everyElement(coffee.id),
     );
+  });
+
+  test('unknown verified prospect offer remains routeable by exact label', () {
+    final entries = prospectOfferProducts(
+      records: [
+        OfferImportRecord(
+          sourceId: 'unknown-milk',
+          productLabel: 'Landmilch 1 l',
+          storeName: 'Lidl',
+          offerPrice: 0.89,
+          validUntil: DateTime(2026, 10, 2),
+          source: 'retailerWebsite',
+          proofRef: 'https://example.test/lidl/milk',
+        ),
+      ],
+      catalogProducts: const <Product>[],
+      now: current,
+    );
+    final product = entries.single.product;
+    final offers = offersFromProspectProducts(entries);
+
+    final plan = RouteOptimizer(
+      [ListItem(product: product)],
+      offers,
+      enabledStoreNames: const ['Lidl'],
+      maxStores: 1,
+      now: current,
+    ).bestSingleStorePlan();
+
+    expect(product.id, startsWith('prospect|'));
+    expect(offers.single.productId, product.id);
+    expect(plan, isNotNull);
+    expect(plan!.unassigned, isEmpty);
+    expect(plan.basket, 0.89);
   });
 
   test(

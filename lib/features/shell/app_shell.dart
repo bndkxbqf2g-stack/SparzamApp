@@ -301,10 +301,11 @@ class _AppShellState extends State<AppShell> {
         records: currentRecords,
         catalogProducts: buildCatalogProducts(customProducts),
       );
-      final resolved = offerBackedProducts
-          .where((entry) => !entry.product.id.startsWith('prospect|'))
-          .map((entry) => entry.offer)
-          .toList(growable: false);
+      // A verified offer with an unknown local catalog identity remains tied
+      // to its exact retailer label. Keeping that offer routeable lets the
+      // user select the concrete prospect item without transferring its
+      // price to a different family or variant.
+      final resolved = offersFromProspectProducts(offerBackedProducts);
 
       final retained = offers
           .where((offer) => !offer.id.startsWith('import|'))
@@ -341,7 +342,7 @@ class _AppShellState extends State<AppShell> {
         message: 'Prospektdatenbank aktualisiert.',
         details:
             '${feed.records.length} Rohangebote · '
-            '${resolved.length} zugeordnet · '
+            '${resolved.length} importiert · '
             '${learnedPrices.length} datierte Preise gelernt',
       );
     } catch (error) {
