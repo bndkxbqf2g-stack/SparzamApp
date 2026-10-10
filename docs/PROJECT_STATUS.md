@@ -6,11 +6,22 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `0f3e423` (fehlende Prospektkategorien ordnen Kaffeeangebote konsistent ein); der aktuelle Dokumentationsstand ist dieser Status-PR.
+- Letzter geprüfter Code-Stand auf main: `8e8e71f` (manuelle Aktualisierung des Prospektfeeds in Angebote und Prospekte); der aktuelle Dokumentationsstand ist dieser Status-PR.
 - Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
 - Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 10.10.2026 – Aktuelle Wochenprospekte lassen sich manuell aktualisieren
+- Angebote und Prospekte haben jetzt einen sichtbaren Aktualisieren-Knopf. Damit
+  kann ein neuer Wochenfeed geladen werden, ohne die App neu zu starten.
+- Während des Abrufs wird der Knopf gesperrt. Parallele Feed-Abrufe und damit
+  doppelte Preislernläufe werden verhindert. Die bestehende Prüfung von
+  Gültigkeit, Cache-Status und Nachweis bleibt unverändert.
+- PR #233 (`90f5130`, Merge `8e8e71f`) ergänzt UI-Regressionen für den ersten
+  Abruf und die Aktualisierung aus dem Prospektbildschirm. Die PR-CI-Läufe
+  `38027482353` und `38027489183` waren mit Analyse, vollständigen Tests und
+  Web-Build erfolgreich.
 
 ## Update 10.10.2026 – Fehlende Prospektkategorien führen Kaffeeangebote in die richtige Gruppe
 - Wenn ein Händler keine Kategorie liefert, ordnet die Angebotsansicht Kaffee,
