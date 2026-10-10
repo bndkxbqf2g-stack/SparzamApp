@@ -46,6 +46,54 @@ void main() {
     expect(prices.single.discounted, isTrue);
   });
 
+  test('family projection uses quality-adjusted evidence instead of newest date', () {
+    const product = Product(
+      id: 'shopping_schmand_quality',
+      name: 'Schmand',
+      unit: 'Stück',
+      group: 'sonstiges',
+    );
+    final prices = receiptFamilyMarketPrices(
+      items: [ListItem(product: product)],
+      observations: [
+        ReceiptObservation(
+          id: 'older-regular',
+          receiptFingerprint: 'older',
+          rowLine: 1,
+          rawLabel: 'Schmand',
+          familyKey: 'schmand',
+          storeName: 'Lidl',
+          observedAt: DateTime(2026, 9, 1),
+          totalPrice: 0.52,
+          quantity: null,
+          quantityUnit: '',
+          unitPrice: null,
+          discounted: false,
+        ),
+        ReceiptObservation(
+          id: 'newer-discount',
+          receiptFingerprint: 'newer',
+          rowLine: 1,
+          rawLabel: 'Schmand',
+          familyKey: 'schmand',
+          storeName: 'Lidl',
+          observedAt: DateTime(2026, 9, 20),
+          totalPrice: 0.50,
+          quantity: null,
+          quantityUnit: '',
+          unitPrice: null,
+          discounted: true,
+        ),
+      ],
+      now: DateTime(2026, 9, 24),
+    );
+
+    expect(prices, hasLength(1));
+    expect(prices.single.price, 0.52);
+    expect(prices.single.discounted, isFalse);
+    expect(prices.single.updatedAt, DateTime(2026, 9, 1));
+  });
+
   test('provisional auto product cannot become a family route price', () {
     const product = Product(
       id: 'shopping_schmand',

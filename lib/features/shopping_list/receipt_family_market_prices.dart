@@ -2,6 +2,7 @@ import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/receipt_observation.dart';
 import '../catalog/product_identity.dart';
+import '../route/market_price_quality.dart';
 import '../../services/quantity_normalizer.dart';
 
 /// Bridges receipt history into the common market-price pipeline.
@@ -48,21 +49,36 @@ List<MarketPrice> receiptFamilyMarketPrices({
       final price = _comparablePrice(item, observation);
       if (price == null || !price.isFinite || price <= 0) continue;
       final key = '${observation.storeName}|${item.product.id}';
+      final marketPrice = MarketPrice(
+        productId: item.product.id,
+        storeName: observation.storeName,
+        price: price,
+        updatedAt: observation.observedAt,
+        source: MarketPriceSource.receipt,
+        discounted: observation.discounted,
+      );
       final previous = result[key];
       if (previous == null ||
-          observation.observedAt.isAfter(previous.updatedAt)) {
-        result[key] = MarketPrice(
-          productId: item.product.id,
-          storeName: observation.storeName,
-          price: price,
-          updatedAt: observation.observedAt,
-          source: MarketPriceSource.receipt,
-          discounted: observation.discounted,
-        );
+          _isBetterFamilyPrice(marketPrice, previous, today)) {
+        result[key] = marketPrice;
       }
     }
   }
   return result.values.toList();
+}
+
+bool _isBetterFamilyPrice(
+  MarketPrice candidate,
+  MarketPrice previous,
+  DateTime now,
+) {
+  final candidateScore = candidate.price *
+      (1 + marketPriceQuality(candidate, now).uncertaintyRate);
+  final previousScore = previous.price *
+      (1 + marketPriceQuality(previous, now).uncertaintyRate);
+  return candidateScore < previousScore ||
+      (candidateScore == previousScore &&
+          candidate.updatedAt.isAfter(previous.updatedAt));
 }
 
 double? _comparablePrice(ListItem item, ReceiptObservation observation) {
