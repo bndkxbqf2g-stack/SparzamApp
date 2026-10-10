@@ -6,7 +6,7 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `8e8e71f` (manuelle Aktualisierung des Prospektfeeds in Angebote und Prospekte); der aktuelle Dokumentationsstand ist dieser Status-PR.
+- Letzter geprüfter Code-Stand auf main: `848c3a6` (Bonkürzel `KH-Milch` wird als offene H-Milch-Auswahl erkannt); der aktuelle Dokumentationsstand ist dieser Status-PR.
 - Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
 - Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
@@ -18,7 +18,20 @@
   kompatiblen normalen Milchvarianten und lässt die Fettstufen als getrennte
   Preisidentitäten bestehen.
 - Produktidentitäts- und Vorschlagstests decken die Schreibweise ohne Punkt und
-  Bindestrich ab. Der Fix ist in PR #235 (`a25127a`) und wartet auf die CI.
+  Bindestrich ab. PR #235 (`a25127a`, Merge `848c3a6`) enthält den Fix. Die
+  nachgelagerte Main-/Release-CI `38028993248` und `38028993254` war vollständig
+  erfolgreich.
+
+## Update 10.10.2026 – Deutscher Kalendertag für Prospekt-Refresh
+- Der automatische Prospekt-Refresh verwendet für Angebotswoche, Ablaufprüfung
+  und gültige Fallbackdaten jetzt den Kalendertag Europe/Berlin. Dadurch kann
+  ein Lauf kurz nach deutscher Mitternacht nicht versehentlich die vorherige
+  Woche auswählen.
+- Der Feed-Zeitstempel bleibt als UTC-Zeit nachvollziehbar; Angebotsdaten und
+  Händlergültigkeit werden nicht verändert. Parserregressionen prüfen die
+  Berliner Tagesbasis und den Samstag als Ende der Händlerwoche.
+- PR #236 (`3ed3853`) hat beide CI-Läufe `38029453039` und `38029469906`
+  erfolgreich durchlaufen und wartet auf die Übernahme in `main`.
 
 ## Update 10.10.2026 – Aktuelle Wochenprospekte lassen sich manuell aktualisieren
 - Angebote und Prospekte haben jetzt einen sichtbaren Aktualisieren-Knopf. Damit
