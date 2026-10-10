@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/receipt_alias.dart';
+import 'store_identity.dart';
 
 class ReceiptAliasStore {
   static const _key = 'receipt_aliases_v1';
@@ -101,7 +102,7 @@ String normalizeReceiptAlias(String value) => value
     .trim();
 
 bool _sameAliasStore(String left, String right) =>
-    left.trim().toLowerCase() == right.trim().toLowerCase();
+    _normalizeAliasStore(left) == _normalizeAliasStore(right);
 
 bool _sameAliasLabel(String left, String right) =>
     _foldReceiptAlias(left) == _foldReceiptAlias(right);
@@ -112,3 +113,6 @@ String _foldReceiptAlias(String value) => value
     .replaceAll('ö', 'oe')
     .replaceAll('ü', 'ue')
     .replaceAll('ß', 'ss');
+
+String _normalizeAliasStore(String value) =>
+    normalizeStoreIdentityText(_foldReceiptAlias(value));
