@@ -112,6 +112,21 @@ void main() {
     );
   });
 
+  test('current evidence is available for a single unbadged suggestion', () {
+    expect(
+      currentShoppingProductId(
+        suggestions: const [lowFat],
+        priceFor: (_) => const ShoppingSuggestionPrice(
+          price: 0.95,
+          storeName: 'ALDI Süd',
+          sourceLabel: 'Angebot',
+          isOffer: true,
+        ),
+      ),
+      lowFat.id,
+    );
+  });
+
   test('generic staple suggestions rank the lowest current offer first', () {
     final results = buildSuggestions(
       query: 'Milch',
