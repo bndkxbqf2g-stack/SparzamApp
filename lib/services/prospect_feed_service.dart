@@ -209,38 +209,40 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
           );
         }
       }
-      if (pages.isNotEmpty) {
-        prospects.add(
-          ProspectIssue(
-            storeName: storeName,
-            title: raw['title'] as String? ?? 'Prospekt',
-            pages: pages,
-            url: raw['url'] as String?,
-            thumbnailUrl: raw['thumbnailUrl'] as String?,
-            branchId: sourceBranchIds[storeName],
-            location: sourceLocations[storeName],
-            address: sourceAddresses[storeName],
-            sourceStatus: sourceStatuses[storeName] ?? 'unknown',
-            recordCount: sourceRecordCounts[storeName] ?? 0,
-            validFrom: DateTime.tryParse(
-              raw['offerStartDate'] as String? ??
-                  raw['startDate'] as String? ??
-                  '',
-            ),
-            validUntil: DateTime.tryParse(
-              raw['offerEndDate'] as String? ?? raw['endDate'] as String? ?? '',
-            ),
+      // Keep metadata-only prospect entries as well. Some retailers publish
+      // dates, branch context and an official link before they provide page
+      // images; dropping those fields makes a current source look unknown.
+      prospects.add(
+        ProspectIssue(
+          storeName: storeName,
+          title: raw['title'] as String? ?? 'Prospekt',
+          pages: pages,
+          url: raw['url'] as String?,
+          thumbnailUrl: raw['thumbnailUrl'] as String?,
+          branchId: sourceBranchIds[storeName],
+          location: sourceLocations[storeName],
+          address: sourceAddresses[storeName],
+          sourceStatus: sourceStatuses[storeName] ?? 'unknown',
+          recordCount: sourceRecordCounts[storeName] ?? 0,
+          validFrom: DateTime.tryParse(
+            raw['offerStartDate'] as String? ??
+                raw['startDate'] as String? ??
+                '',
           ),
-        );
-      }
+          validUntil: DateTime.tryParse(
+            raw['offerEndDate'] as String? ?? raw['endDate'] as String? ?? '',
+          ),
+        ),
+      );
     }
   }
   // Jeder konfigurierte Markt bleibt in der Prospektansicht sichtbar.
-  // Einige Händler liefern aktuell nur strukturierte Angebote, aber noch keine
-  // Bildseiten. Für diese Märkte zeigt die App eine informative Platzhalterkarte.
-  final storesWithPages = prospects.map((issue) => issue.storeName).toSet();
+  // Einige Händler liefern aktuell nur strukturierte Angebote oder Metadaten,
+  // aber noch keine Bildseiten. Für diese Märkte zeigt die App eine
+  // informative Platzhalterkarte.
+  final storesWithProspects = prospects.map((issue) => issue.storeName).toSet();
   for (final storeName in availableStores) {
-    if (!storesWithPages.contains(storeName)) {
+    if (!storesWithProspects.contains(storeName)) {
       prospects.add(
         ProspectIssue(
           storeName: storeName,

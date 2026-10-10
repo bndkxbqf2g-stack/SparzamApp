@@ -232,6 +232,38 @@ void main() {
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
   });
 
+  testWidgets('keeps a current metadata-only prospect visible', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: [
+            ProspectIssue(
+              storeName: 'EDEKA',
+              title: 'EDEKA Wochenangebote',
+              pages: const [],
+              url: 'https://example.test/edeka-prospekt',
+              location: 'Zellingen',
+              sourceStatus: 'ok',
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+            ),
+          ],
+          now: DateTime(2026, 9, 30),
+        ),
+      ),
+    );
+
+    expect(find.text('EDEKA'), findsOneWidget);
+    expect(
+      find.text('Keine aktuell gültigen Angebotsdaten geladen.'),
+      findsOneWidget,
+    );
+    await tester.tap(find.text('EDEKA'));
+    await tester.pumpAndSettle();
+    expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
+  });
+
   testWidgets('shows current issue and current prices instead of old pages', (
     tester,
   ) async {
