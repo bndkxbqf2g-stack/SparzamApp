@@ -2,6 +2,8 @@ import pathlib
 import sys
 import unittest
 from datetime import date
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
@@ -11,6 +13,10 @@ from tool import bring_prospects as bring
 
 
 class BringProspectTest(unittest.TestCase):
+    def test_default_reference_day_uses_berlin_calendar(self):
+        expected = datetime.now(ZoneInfo("Europe/Berlin")).date()
+        self.assertEqual(bring.local_today(), expected)
+
     def test_share_links_are_specific_brochure_references(self):
         cases = {
             "Netto": "218538",

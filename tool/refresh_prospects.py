@@ -22,6 +22,7 @@ except ModuleNotFoundError:
 
 OUTPUT = Path("assets/prospects/current.json")
 UA = "SparzamApp/1.0 (+https://github.com/bndkxbqf2g-stack/SparzamApp)"
+LOCAL_TIMEZONE = ZoneInfo("Europe/Berlin")
 SOURCES = (
     ("aldi_sued", "ALDI Süd", "https://www.aldi-sued.de/", "aldi_api"),
     ("edeka_zellingen", "EDEKA", "https://www.edeka.de/maerkte/023738/", "edeka_api"),
@@ -155,8 +156,19 @@ def parse_date(value):
     except ValueError:
         return None
 
-def current_week():
-    today = date.today()
+
+def local_today():
+    """Return the business date for the German retailer feed.
+
+    GitHub Actions runs in UTC, while all configured branches and leaflet
+    windows are German. Using the Berlin calendar day prevents a refresh just
+    after local midnight from selecting the previous week's fallback window.
+    """
+    return datetime.now(LOCAL_TIMEZONE).date()
+
+
+def current_week(today=None):
+    today = today or local_today()
     monday = today - timedelta(days=today.weekday())
     return monday, monday + timedelta(days=5)
 
@@ -331,7 +343,7 @@ def parse_aldi_api_page(json_text, promotion_day):
 
 
 def fetch_aldi_api_offers():
-    today = date.today()
+    today = local_today()
     start = today - timedelta(days=today.weekday())
     end = start + timedelta(days=12)
     all_offers = []
@@ -630,7 +642,7 @@ def _kaufland_available_ids(json_text):
     if not isinstance(payload, list):
         raise ValueError("Kaufland Verfügbarkeitsdaten: ungültige Antwort")
     result = set()
-    today = date.today()
+    today = local_today()
     horizon = today + timedelta(days=14)
     for item in payload:
         if not isinstance(item, dict):
@@ -677,7 +689,7 @@ def parse_kaufland_api(html_text, base_url, available_ids=None, today=None):
     if not isinstance(cycles, list):
         raise ValueError("Kaufland Angebotsdaten: cycles ist keine Liste")
 
-    reference_day = today or date.today()
+    reference_day = today or local_today()
     horizon = reference_day + timedelta(days=14)
     offers = []
     seen_offer_ids = set()
@@ -997,7 +1009,7 @@ def fetch_lidl_store_offers():
         + "/offers"
     )
     offers, _ = parse_lidl_store_offers(fetch(offers_url))
-    today = date.today().isoformat()
+    today = local_today().isoformat()
     offers = [
         item for item in offers
         if item.get("validUntil", "") >= today
@@ -1153,7 +1165,7 @@ def fetch_lidl_api_prospects():
             + (": " + clean(str(last_error)) if last_error else "")
         )
 
-    today = date.today().isoformat()
+    today = local_today().isoformat()
     relevant = []
     for item in prospects:
         end = clean(str(item.get("offerEndDate") or ""))
@@ -1741,7 +1753,7 @@ def parse_rewe(html_text, base_url):
         flags=re.I,
     )
     if validity:
-        year = date.today().year
+        year = local_today().year
         start = datetime.strptime(validity.group(1) + str(year), "%d.%m.%Y").date()
         end = datetime.strptime(validity.group(2) + str(year), "%d.%m.%Y").date()
         valid_from, valid_until = start, end
@@ -1832,7 +1844,7 @@ def dedupe(offers):
 
 def current_prospect_offers(offers, today=None):
     """Keep only the dominant currently valid leaflet period per retailer."""
-    reference = today or date.today()
+    reference = today or local_today()
     active = []
     for item in offers:
         try:
@@ -1876,7 +1888,7 @@ def load_previous():
         return {"sources": [], "offers": []}
 
 def active_previous(previous, store):
-    today = date.today().isoformat()
+    today = local_today().isoformat()
     active = [
         item for item in previous.get("offers", [])
         if item.get("storeName") == store and item.get("validUntil", "") >= today

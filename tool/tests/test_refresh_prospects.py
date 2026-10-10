@@ -1,6 +1,8 @@
 import importlib.util
 import pathlib
 import unittest
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 MODULE = pathlib.Path(__file__).resolve().parents[1] / "refresh_prospects.py"
 spec = importlib.util.spec_from_file_location("refresh_prospects", MODULE)
@@ -8,6 +10,16 @@ refresh = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(refresh)
 
 class ProspectParserTest(unittest.TestCase):
+    def test_default_refresh_day_uses_berlin_calendar(self):
+        expected = datetime.now(ZoneInfo("Europe/Berlin")).date()
+        self.assertEqual(refresh.local_today(), expected)
+
+    def test_current_week_ends_on_the_german_retailer_saturday(self):
+        self.assertEqual(
+            refresh.current_week(refresh.date(2026, 10, 10)),
+            (refresh.date(2026, 10, 5), refresh.date(2026, 10, 10)),
+        )
+
     def test_every_configured_source_keeps_its_target_branch_metadata(self):
         source_ids = {source[0] for source in refresh.SOURCES}
         self.assertEqual(source_ids, set(refresh.SOURCE_BRANCH_METADATA))
