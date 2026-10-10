@@ -6,11 +6,23 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `a52e323` (Open-Prices-Preise werden in Einkaufsliste, Produktsuche und Routenplanung einheitlich berücksichtigt); der aktuelle Dokumentationsstand ist dieser Status-PR.
+- Letzter geprüfter Code-Stand auf main: `dd0f967` (die konfigurierte Open-Prices-Altersgrenze gilt auch bei der Kandidatenauswahl); der aktuelle Dokumentationsstand ist dieser Status-PR.
 - Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
 - Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 10.10.2026 – Kandidatenauswahl übernimmt die Open-Prices-Altersgrenze
+- Wenn ein bestehender Listeneintrag auf konkrete Produktvarianten geprüft
+  wird, verwendet die Kandidatenauswahl jetzt dieselbe konfigurierte
+  Open-Prices-Altersgrenze wie Suche, Preis-Matrix und Route.
+- Dadurch können veraltete Open-Prices-Beobachtungen nicht mehr über den
+  unveränderten Standardwert von 60 Tagen in diesen Auswahlfluss gelangen.
+- PR #217 (`1153416`, Merge `dd0f967`) ergänzt die Regression für eine
+  abweichend konfigurierte Altersgrenze. Die beiden PR-CI-Läufe
+  `38016502530` und `38016510045`, Main-CI `38016758983` sowie Release
+  `38016758994` waren mit Analyse, Tests, Web-/Pages-Build, Deployment und
+  Android-APK erfolgreich.
 
 ## Update 10.10.2026 – Open Prices bleiben in Einkaufsliste und Produktsuche sichtbar
 - Aktivierte, frische Open-Prices-Beobachtungen werden jetzt in der
