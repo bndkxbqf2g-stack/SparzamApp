@@ -6,12 +6,23 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `19645f5` (OCR-Händlernormalisierung
-  für gelernte Bon-Aliase); der aktuelle Feed-Stand ist `ec1227e`.
+- Letzter geprüfter Code-Stand auf main: `3871b84` (Produktauswahl aus
+  Routen-Datenlücken); der aktuelle Feed-Stand ist `ec1227e`.
 - Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
 - Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 10.10.2026 – Bekannte Suchfamilien öffnen die Produktauswahl
+- Beim freien Fallback einer bekannten Anfrage wie „Milch“ öffnet die
+  Einkaufsliste jetzt direkt die konkrete Variantenauswahl mit belegten Preisen.
+  Dadurch wird eine bekannte Familienanfrage nicht versehentlich als
+  unbepreister Eigenartikel gespeichert.
+- Unbekannter Freitext bleibt unverändert als eigener Listenartikel möglich.
+  Produktauswahl, Angebotssichtbarkeit und Preisquellen bleiben getrennt.
+- Die Widget-Regressionen prüfen beide Wege. Die lokale Dart-Analyse ist ohne
+  Befund; der lokale Flutter-Test bleibt wegen der nicht beschreibbaren
+  Flutter-Engine-Cachedateien CI-seitig zu prüfen.
 
 ## Update 10.10.2026 – Preis-Datenlücken öffnen die konkrete Produktauswahl
 - Eine unbestimmte Listenposition wie „Milch“ führt aus der Routenansicht jetzt

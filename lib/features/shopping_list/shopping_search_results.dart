@@ -14,6 +14,7 @@ class ShoppingSearchResults extends StatelessWidget {
     required this.recentPurchases,
     this.recommendedProductId,
     this.priceHintFor,
+    this.onChooseKnownProduct,
     required this.onAdd,
     required this.onAddCustom,
   });
@@ -25,6 +26,9 @@ class ShoppingSearchResults extends StatelessWidget {
   final List<RecentPurchase> recentPurchases;
   final String? recommendedProductId;
   final String? Function(Product product)? priceHintFor;
+  /// Opens a concrete variant chooser for a known family request such as
+  /// "Milch". Unknown free text keeps using [onAddCustom].
+  final VoidCallback? onChooseKnownProduct;
   final ValueChanged<Product> onAdd;
   final VoidCallback onAddCustom;
 
@@ -61,19 +65,23 @@ class ShoppingSearchResults extends StatelessWidget {
                 _productTile(product, related: true),
             ],
             ListTile(
-              onTap: onAddCustom,
+              onTap: onChooseKnownProduct ?? onAddCustom,
               leading: const CircleAvatar(
                 radius: 18,
                 child: Icon(Icons.playlist_add),
               ),
               title: Text(
-                suggestions.isEmpty
-                    ? '„$query“ hinzufügen'
-                    : '„$query“ zur Liste hinzufügen',
+                onChooseKnownProduct == null
+                    ? suggestions.isEmpty
+                        ? '„$query“ hinzufügen'
+                        : '„$query“ zur Liste hinzufügen'
+                    : '„$query“ konkret auswählen',
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
-              subtitle: const Text(
-                'Noch kein bekanntes Produkt – wird trotzdem gespeichert.',
+              subtitle: Text(
+                onChooseKnownProduct == null
+                    ? 'Noch kein bekanntes Produkt – wird trotzdem gespeichert.'
+                    : 'Varianten und belegte Preise auswählen.',
               ),
               trailing: const Icon(Icons.chevron_right),
             ),

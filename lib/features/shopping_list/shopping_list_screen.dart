@@ -35,6 +35,7 @@ import 'shopping_list_status.dart';
 import 'aisle_order_dialog.dart';
 import 'shopping_candidate_selector.dart';
 import '../price_gaps/price_gap_priority.dart';
+import '../catalog/product_identity.dart';
 
 class ShoppingListScreen extends StatefulWidget {
   const ShoppingListScreen({
@@ -330,6 +331,31 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     _focusShoppingInput();
   }
 
+  Future<void> chooseTypedProductFamily() async {
+    final request = controller.text.trim();
+    if (request.isEmpty || !identifyProduct(request).isKnown) return;
+
+    final selected = await showShoppingCandidateSelector(
+      context: context,
+      request: request,
+      catalogProducts: [...widget.catalogProducts, ...receiptCandidates],
+      offers: widget.offers,
+      marketPrices: widget.marketPrices,
+      receiptPriceStats: receiptPriceStats,
+      prospectPriceHistory: widget.prospectPriceHistory,
+      enabledStores: widget.mobility.enabledStoreNames,
+      openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
+    );
+    if (!mounted || selected == null || selected.isEmpty) return;
+
+    for (final product in selected) {
+      widget.onAdd(product);
+    }
+    controller.clear();
+    setState(() {});
+    _focusShoppingInput();
+  }
+
   Future<void> editItemDetails(ListItem item) async {
     final noteController = TextEditingController(text: item.note);
     final note = await showDialog<String>(
@@ -527,6 +553,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   recentPurchases: widget.recentPurchases,
                   recommendedProductId: recommendedSuggestionId,
                   priceHintFor: priceHintFor,
+                  onChooseKnownProduct:
+                      identifyProduct(controller.text.trim()).isKnown
+                      ? chooseTypedProductFamily
+                      : null,
                   onAdd: add,
                   onAddCustom: addCustomProduct,
                 )
