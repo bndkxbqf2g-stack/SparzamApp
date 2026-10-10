@@ -21,6 +21,7 @@ class RouteOptimizer {
     this.travelMinutesPerKm = 60 / 45,
     List<String>? enabledStoreNames,
     List<MarketPrice> marketPrices = const <MarketPrice>[],
+    this.openPricesMaxAgeDays = 60,
     this.roadMatrix,
     DateTime? now,
   }) : roadDistances = roadDistances ?? const <String, double>{},
@@ -30,6 +31,7 @@ class RouteOptimizer {
          offers,
          marketPrices: marketPrices,
          now: now,
+         openPricesMaxAgeDays: openPricesMaxAgeDays,
        );
 
   final List<ListItem> items;
@@ -49,6 +51,7 @@ class RouteOptimizer {
   /// Travel-time conversion for the selected mobility mode.
   final double travelMinutesPerKm;
   final Set<String> enabledStoreNames;
+  final int openPricesMaxAgeDays;
 
   bool isStoreEnabled(Store store) =>
       enabledStoreNames.isEmpty || enabledStoreNames.contains(store.name);

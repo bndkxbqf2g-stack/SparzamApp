@@ -32,6 +32,7 @@ class RouteScreen extends StatefulWidget {
     required this.offers,
     required this.mobility,
     required this.marketPrices,
+    this.openPricesMaxAgeDays = 60,
     this.recentPurchases = const <RecentPurchase>[],
     this.historicalPriceObservations = const <PriceObservation>[],
     this.onRoadDistancesChanged,
@@ -43,6 +44,7 @@ class RouteScreen extends StatefulWidget {
   final List<Offer> offers;
   final MobilitySettings mobility;
   final List<MarketPrice> marketPrices;
+  final int openPricesMaxAgeDays;
   final List<RecentPurchase> recentPurchases;
   final List<PriceObservation> historicalPriceObservations;
   final ValueChanged<Map<String, double>>? onRoadDistancesChanged;
@@ -147,6 +149,7 @@ class _RouteScreenState extends State<RouteScreen> {
       travelMinutesPerKm: 60 / widget.mobility.mode.averageSpeedKmh,
       enabledStoreNames: widget.mobility.enabledStoreNames,
       marketPrices: widget.marketPrices,
+      openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
       roadMatrix: widget.mobility.mode == MobilityMode.car ? roadMatrix : null,
     );
     final best = optimizer.bestPlan();

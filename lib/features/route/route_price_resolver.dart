@@ -39,13 +39,16 @@ class RoutePriceResolver {
     this.offers, {
     this.now,
     List<MarketPrice> marketPrices = const <MarketPrice>[],
+    this.openPricesMaxAgeDays = 60,
   }) : marketPrices = preferredMarketPricesByKey(
          marketPrices,
          now ?? DateTime.now(),
+         openPricesMaxAgeDays: openPricesMaxAgeDays,
        );
 
   final List<Offer> offers;
   final DateTime? now;
+  final int openPricesMaxAgeDays;
   final Map<String, MarketPrice> marketPrices;
 
   RoutePriceQuote? quote(Store store, ListItem item) {

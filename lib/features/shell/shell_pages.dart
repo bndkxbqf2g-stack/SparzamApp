@@ -170,6 +170,7 @@ List<Widget> buildShellPages({
       offers: offers,
       mobility: mobility,
       marketPrices: marketPrices,
+      openPricesMaxAgeDays: openPricesMaxAgeDays,
       recentPurchases: recentPurchases,
       historicalPriceObservations: historicalPriceObservations,
       onRoadDistancesChanged: onRoadDistancesChanged,

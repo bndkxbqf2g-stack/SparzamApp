@@ -404,6 +404,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           mobility: widget.mobility,
           catalogProducts: widget.catalogProducts,
           marketPrices: widget.marketPrices,
+          openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
           onResolvePriceGap: widget.onResolvePriceGap,
         ),
       ),

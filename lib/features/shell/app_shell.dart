@@ -271,6 +271,7 @@ class _AppShellState extends State<AppShell> {
       planning_prices.planningMarketPrices(
         exactPrices: [...activeMarketPrices, ...historicalMarketPrices],
         familyPrices: receiptFamilyPrices,
+        openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
       );
 
   Future<void> _loadPriceObservations() async {
@@ -619,6 +620,7 @@ class _AppShellState extends State<AppShell> {
     offers: offers,
     mobility: mobility,
     marketPrices: planningMarketPrices,
+    openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
     roadDistances: roadDistances,
     roadMatrix: roadMatrix,
   );
@@ -978,6 +980,7 @@ class _AppShellState extends State<AppShell> {
             travelMinutesPerKm: 60 / mobility.mode.averageSpeedKmh,
             enabledStoreNames: mobility.enabledStoreNames,
             marketPrices: planningMarketPrices,
+            openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
             roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
           ).bestPlan();
     Navigator.of(context).push(
@@ -1210,6 +1213,7 @@ class _AppShellState extends State<AppShell> {
                 offers: offers,
                 mobility: mobility,
                 marketPrices: planningMarketPrices,
+                openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
                 recentPurchases: recentPurchases,
                 historicalPriceObservations: historicalPriceObservations,
                 onResolvePriceGap: (gap) async {

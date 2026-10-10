@@ -3,15 +3,20 @@ import 'market_price_quality.dart';
 
 /// Selects one route-usable price per store/product key using the same
 /// quality-adjusted score everywhere the planning projection needs to collapse
-/// exact history. Receipt freshness is enforced before ranking.
+/// exact history. Source-specific freshness, including the configured
+/// Open Prices age, is enforced before ranking.
 Map<String, MarketPrice> preferredMarketPricesByKey(
   Iterable<MarketPrice> input,
-  DateTime now,
-) {
+  DateTime now, {
+  int openPricesMaxAgeDays = 60,
+}) {
   final selected = <String, MarketPrice>{};
   for (final price in input) {
     if (!price.price.isFinite || price.price <= 0) continue;
-    if (!price.isUsable(now: now, openPricesMaxAgeDays: 36500)) {
+    if (!price.isUsable(
+      now: now,
+      openPricesMaxAgeDays: openPricesMaxAgeDays,
+    )) {
       continue;
     }
 
