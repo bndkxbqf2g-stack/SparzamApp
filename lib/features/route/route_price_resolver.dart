@@ -4,6 +4,7 @@ import '../../models/offer.dart';
 import '../../models/store.dart';
 import '../../models/product.dart';
 import '../offers/effective_price.dart';
+import '../offers/offer_filter.dart';
 import '../shopping_list/shopping_intent.dart';
 import 'market_price_selection.dart';
 
@@ -113,6 +114,7 @@ class RoutePriceResolver {
       (offer) =>
           offer.productId == product.id &&
           offer.storeName == store.name &&
+          !isSampleOffer(offer) &&
           (offer.validFrom == null ||
               !DateTime(today.year, today.month, today.day).isBefore(
                 DateTime(

@@ -1,4 +1,3 @@
-import '../../data/offers.dart';
 import '../../data/stores.dart';
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
@@ -8,14 +7,6 @@ import '../offers/effective_price.dart';
 import '../offers/offer_filter.dart';
 import '../offers/prospect_price_statistics.dart';
 import '../route/market_price_quality.dart';
-
-bool isSampleOffer(Offer offer) => sampleOffers.any(
-  (sample) =>
-      sample.id == offer.id &&
-      sample.productId == offer.productId &&
-      sample.storeName == offer.storeName &&
-      sample.offerPrice == offer.offerPrice,
-);
 
 enum ShoppingQuoteKind { receipt, ownPrice, openPrices, offer, prospectHistory }
 

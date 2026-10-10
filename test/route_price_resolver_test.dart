@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sparzamapp/data/offers.dart';
 import 'package:sparzamapp/features/route/route_price_resolver.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/offer.dart';
@@ -37,6 +38,29 @@ void main() {
     final quote = resolver.quote(store, ListItem(product: product, quantity: 2));
     expect(quote!.total, 2.7);
     expect(quote.usesOffer, isTrue);
+  });
+
+  test('reserved demo offers never enter route pricing', () {
+    final demo = sampleOffers.first;
+    final demoStore = Store(
+      name: demo.storeName,
+      location: 'Ort',
+      distanceKm: 1,
+      prices: const <String, double>{},
+    );
+    final demoProduct = Product(
+      id: demo.productId,
+      name: 'Butter',
+      unit: '250 g',
+      group: 'fett',
+    );
+
+    final quote = RoutePriceResolver(
+      [demo],
+      now: DateTime(2026, 9, 24),
+    ).quote(demoStore, ListItem(product: demoProduct));
+
+    expect(quote, isNull);
   });
 
   test('does not let an unverified offer override a cheaper market price', () {
