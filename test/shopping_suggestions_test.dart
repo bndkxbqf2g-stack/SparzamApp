@@ -93,7 +93,7 @@ void main() {
   test('Enter accepts an exact single catalog identity without a price', () {
     expect(
       shoppingProductForSubmit(
-        query: 'Milch 3,5 %',
+        query: 'Vollmilch 3,5 %',
         suggestions: const [regular],
         recommendedProductId: null,
       ),
