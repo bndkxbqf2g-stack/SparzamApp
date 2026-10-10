@@ -61,4 +61,36 @@ void main() {
       rawLabel: 'K.H-Milch',
     ), isNull);
   });
+
+  test('OCR umlaut and ae spellings share the same learned alias', () async {
+    final store = ReceiptAliasStore();
+    await store.confirm(
+      storeName: 'Lidl',
+      rawLabel: 'Hähnchenbrust',
+      productId: 'chicken-breast',
+      now: DateTime(2026, 9, 24),
+    );
+    await store.confirm(
+      storeName: 'Lidl',
+      rawLabel: 'HAEHNCHENBRUST',
+      productId: 'chicken-breast',
+      now: DateTime(2026, 9, 25),
+    );
+
+    expect(
+      await store.learnedProductId(
+        storeName: 'Lidl',
+        rawLabel: 'Hähnchenbrust',
+      ),
+      'chicken-breast',
+    );
+    expect(
+      await store.learnedProductId(
+        storeName: 'Lidl',
+        rawLabel: 'HAEHNCHENBRUST',
+      ),
+      'chicken-breast',
+    );
+    expect((await store.load()), hasLength(1));
+  });
 }

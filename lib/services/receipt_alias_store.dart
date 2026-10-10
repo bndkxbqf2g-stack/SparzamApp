@@ -34,12 +34,19 @@ class ReceiptAliasStore {
     final normalized = normalizeReceiptAlias(rawLabel);
     if (normalized.isEmpty) return;
     final current = await load();
-    final key = '${storeName.toLowerCase()}|$normalized';
     final byKey = <String, ReceiptAlias>{
       for (final item in current) item.key: item,
     };
-    final previous = byKey[key];
-    byKey[key] = ReceiptAlias(
+    ReceiptAlias? previous;
+    for (final item in current) {
+      if (_sameAliasStore(item.storeName, storeName) &&
+          _sameAliasLabel(item.normalizedLabel, normalized)) {
+        previous = item;
+        break;
+      }
+    }
+    if (previous != null) byKey.remove(previous.key);
+    final next = ReceiptAlias(
       storeName: storeName,
       normalizedLabel: normalized,
       productId: productId,
@@ -48,6 +55,7 @@ class ReceiptAliasStore {
           : 1,
       updatedAt: now,
     );
+    byKey[next.key] = next;
     await _preferences.setStringList(
       _key,
       byKey.values.map((item) => jsonEncode(item.toJson())).toList(),
@@ -69,9 +77,11 @@ class ReceiptAliasStore {
     required String rawLabel,
     int minConfirmations = 2,
   }) async {
-    final key = '${storeName.toLowerCase()}|${normalizeReceiptAlias(rawLabel)}';
+    final normalized = normalizeReceiptAlias(rawLabel);
     for (final item in await load()) {
-      if (item.key == key && item.confirmations >= minConfirmations) {
+      if (_sameAliasStore(item.storeName, storeName) &&
+          _sameAliasLabel(item.normalizedLabel, normalized) &&
+          item.confirmations >= minConfirmations) {
         return item;
       }
     }
@@ -89,3 +99,16 @@ String normalizeReceiptAlias(String value) => value
     .replaceAll(RegExp(r'[._-]+'), ' ')
     .replaceAll(RegExp(r'\s+'), ' ')
     .trim();
+
+bool _sameAliasStore(String left, String right) =>
+    left.trim().toLowerCase() == right.trim().toLowerCase();
+
+bool _sameAliasLabel(String left, String right) =>
+    _foldReceiptAlias(left) == _foldReceiptAlias(right);
+
+String _foldReceiptAlias(String value) => value
+    .toLowerCase()
+    .replaceAll('ä', 'ae')
+    .replaceAll('ö', 'oe')
+    .replaceAll('ü', 'ue')
+    .replaceAll('ß', 'ss');
