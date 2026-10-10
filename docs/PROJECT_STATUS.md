@@ -12,6 +12,14 @@
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
+## Update 10.10.2026 – Bonkürzel `KH-Milch` wird als H-Milch geöffnet
+- Kassenbonzeilen mit `KH-Milch` werden jetzt genauso wie `K.H-Milch` als
+  unvollständige H-Milch-Angabe erkannt. Die Einkaufsliste öffnet dafür die
+  kompatiblen normalen Milchvarianten und lässt die Fettstufen als getrennte
+  Preisidentitäten bestehen.
+- Produktidentitäts- und Vorschlagstests decken die Schreibweise ohne Punkt und
+  Bindestrich ab. Der Fix ist in PR #235 (`a25127a`) und wartet auf die CI.
+
 ## Update 10.10.2026 – Aktuelle Wochenprospekte lassen sich manuell aktualisieren
 - Angebote und Prospekte haben jetzt einen sichtbaren Aktualisieren-Knopf. Damit
   kann ein neuer Wochenfeed geladen werden, ohne die App neu zu starten.
