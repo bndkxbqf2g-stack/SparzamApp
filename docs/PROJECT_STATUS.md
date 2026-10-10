@@ -6,7 +6,8 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `848c3a6` (Bonkürzel `KH-Milch` wird als offene H-Milch-Auswahl erkannt); der aktuelle Dokumentationsstand ist dieser Status-PR.
+- Letzter geprüfter Code-Stand auf main: `3849ba6` (deutscher Kalendertag für
+  Prospekt-Refresh); der aktuelle Feed-Stand ist `ec1227e`.
 - Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
 - Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
@@ -30,8 +31,12 @@
 - Der Feed-Zeitstempel bleibt als UTC-Zeit nachvollziehbar; Angebotsdaten und
   Händlergültigkeit werden nicht verändert. Parserregressionen prüfen die
   Berliner Tagesbasis und den Samstag als Ende der Händlerwoche.
-- PR #236 (`3ed3853`) hat beide CI-Läufe `38029453039` und `38029469906`
-  erfolgreich durchlaufen und wartet auf die Übernahme in `main`.
+- PR #236 (`3ed3853`, Merge `3849ba6`) hat beide CI-Läufe `38029453039` und
+  `38029469906` erfolgreich durchlaufen. Die nachgelagerte Flutter-CI
+  `38029961007`, der Prospekt-Refresh `38029961330` und der Release-Lauf
+  `38030097081` waren ebenfalls erfolgreich.
+- Der erneuerte Feed `ec1227e` enthält 702 gültige Angebote aus allen sechs
+  Märkten; der Zeitstempel lautet `2026-10-10T06:11:48Z`.
 
 ## Update 10.10.2026 – Aktuelle Wochenprospekte lassen sich manuell aktualisieren
 - Angebote und Prospekte haben jetzt einen sichtbaren Aktualisieren-Knopf. Damit
