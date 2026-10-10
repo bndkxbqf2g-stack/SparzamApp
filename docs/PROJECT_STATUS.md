@@ -6,11 +6,24 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `fc8fd61` (bevorzugte Produktvarianten werden dauerhaft gespeichert); der aktuelle Dokumentationsstand ist dieser Status-PR.
+- Letzter geprüfter Code-Stand auf main: `cdb9202` (nachgewiesene Prospektangebote bleiben bis zur Route erhalten); der aktuelle Dokumentationsstand ist dieser Status-PR.
 - Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
 - Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 10.10.2026 – Nachgewiesene unbekannte Prospektartikel bleiben routbar
+- Aktuelle, nachgewiesene Prospektlabels ohne lokale Katalogidentität werden
+  jetzt mit ihrem exakten Label und dem zugehörigen Angebotsnachweis bis in die
+  Routenplanung übernommen. Dadurch kann ein konkret ausgewählter Artikel aus
+  dem Prospekt direkt als Angebotspreis geplant werden.
+- Es wird dabei keine Produktfamilie erraten und kein Preis auf eine andere
+  Variante übertragen. Die Auswahl des konkreten Prospektartikels bleibt im
+  Einkaufslistenfluss sichtbar und reversibel.
+- PR #211 (`5d94bbf`, Merge `cdb9202`) ergänzt den Regressionstest vom
+  unbekannten Prospektlabel bis zur Einmarkt-Route. Die beiden PR-CI-Läufe
+  `38012318605` und `38012328432` waren erfolgreich; Main-CI und Release für
+  `cdb9202` werden nach dem Status-Merge geprüft.
 
 ## Update 10.10.2026 – Bevorzugte Produktvarianten bleiben nach dem Speichern erhalten
 - Die Speicherung bevorzugter Produktvarianten schreibt jetzt die tatsächlichen
