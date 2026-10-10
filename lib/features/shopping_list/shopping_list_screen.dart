@@ -61,6 +61,7 @@ class ShoppingListScreen extends StatefulWidget {
     required this.mobility,
     required this.catalogProducts,
     required this.marketPrices,
+    this.openPricesMaxAgeDays = 60,
     this.priceObservations = const <MarketPrice>[],
     this.historicalPriceObservations = const <PriceObservation>[],
     this.prospectPriceHistory = const {},
@@ -93,6 +94,7 @@ class ShoppingListScreen extends StatefulWidget {
   final MobilitySettings mobility;
   final List<Product> catalogProducts;
   final List<MarketPrice> marketPrices;
+  final int openPricesMaxAgeDays;
   final List<MarketPrice> priceObservations;
   final List<PriceObservation> historicalPriceObservations;
   final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
@@ -174,6 +176,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     receiptPriceStats: receiptPriceStats,
     prospectPriceHistory: widget.prospectPriceHistory,
     enabledStores: widget.mobility.enabledStoreNames,
+    openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
   );
 
   ShoppingSuggestionPrice? suggestionPriceFor(Product product) =>
@@ -183,7 +186,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         marketPrices: widget.marketPrices,
         receiptPriceStats: receiptPriceStats,
         prospectPriceHistory: widget.prospectPriceHistory,
-        enabledStores: widget.mobility.enabledStoreNames,
+    enabledStores: widget.mobility.enabledStoreNames,
+    openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
       );
 
   String? priceHintFor(Product product) =>
@@ -286,7 +290,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       marketPrices: widget.marketPrices,
       receiptPriceStats: receiptPriceStats,
       prospectPriceHistory: widget.prospectPriceHistory,
-      enabledStores: widget.mobility.enabledStoreNames,
+    enabledStores: widget.mobility.enabledStoreNames,
+    openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
     );
     if (!mounted || selected == null || selected.isEmpty) return;
 
@@ -550,6 +555,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     offers: widget.offers,
                     enabledStoreNames: widget.mobility.enabledStoreNames,
                     marketPrices: widget.marketPrices,
+                    openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
                     priceObservations: widget.priceObservations,
                     historicalPriceObservations:
                         widget.historicalPriceObservations,

@@ -125,6 +125,25 @@ void main() {
     );
   });
 
+  test('Open Prices can provide a current suggestion with its source label', () {
+    final hint = shoppingSuggestionPriceForProduct(
+      regular,
+      marketPrices: [
+        MarketPrice(
+          productId: regular.id,
+          storeName: 'Lidl',
+          price: 0.89,
+          updatedAt: DateTime(2026, 9, 29),
+          source: MarketPriceSource.openPrices,
+        ),
+      ],
+      now: now,
+    );
+
+    expect(hint?.sourceLabel, 'Open Prices');
+    expect(hint?.displayLabel, contains('Open Prices Lidl 0,89 €'));
+  });
+
   test(
     'generic milk search ignores prospect products using milk as an ingredient',
     () {

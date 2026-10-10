@@ -54,6 +54,7 @@ List<Product> buildSuggestions({
   Iterable<ReceiptPriceStat> receiptPriceStats = const <ReceiptPriceStat>[],
   Map<String, ProspectPriceHistorySummary> prospectPriceHistory = const {},
   Iterable<String> enabledStores = const <String>[],
+  int openPricesMaxAgeDays = 60,
   DateTime? now,
 }) {
   final normalized = query.trim().toLowerCase();
@@ -82,6 +83,7 @@ List<Product> buildSuggestions({
         receiptPriceStats: receiptPriceStats,
         prospectPriceHistory: prospectPriceHistory,
         enabledStores: enabledStores,
+        openPricesMaxAgeDays: openPricesMaxAgeDays,
         now: now,
       ),
   };
@@ -283,6 +285,7 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
   Iterable<String> enabledStores = const <String>[],
   DateTime? now,
   int historyDays = 60,
+  int openPricesMaxAgeDays = 60,
 }) {
   final current = now ?? DateTime.now();
   final enabled = enabledStores.toSet();
@@ -313,20 +316,24 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
 
   for (final price in marketPrices) {
     if (price.productId != product.id ||
-        price.source == MarketPriceSource.openPrices ||
         (enabled.isNotEmpty && !enabled.contains(price.storeName)) ||
         !price.price.isFinite ||
         price.price <= 0 ||
-        !price.isUsable(now: current, openPricesMaxAgeDays: historyDays)) {
+        !price.isUsable(
+          now: current,
+          openPricesMaxAgeDays: openPricesMaxAgeDays,
+        )) {
       continue;
     }
     quotes.add(
       ShoppingSuggestionPrice(
         price: price.price,
         storeName: price.storeName,
-        sourceLabel: price.source == MarketPriceSource.receipt
-            ? 'Bonpreis'
-            : 'Eigener Preis',
+        sourceLabel: switch (price.source) {
+          MarketPriceSource.receipt => 'Bonpreis',
+          MarketPriceSource.manual => 'Eigener Preis',
+          MarketPriceSource.openPrices => 'Open Prices',
+        },
         observedAt: price.updatedAt,
       ),
     );

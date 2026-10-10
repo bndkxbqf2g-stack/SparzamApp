@@ -76,6 +76,7 @@ List<ShoppingCandidate> buildShoppingCandidates({
   Iterable<String> enabledStores = const <String>[],
   DateTime? now,
   int historyDays = 60,
+  int openPricesMaxAgeDays = 60,
 }) {
   final identity = identifyProduct(request);
   if (!identity.isKnown) return const <ShoppingCandidate>[];
@@ -123,7 +124,10 @@ List<ShoppingCandidate> buildShoppingCandidates({
     for (final price in marketPrices) {
       if (price.productId != product.id ||
           !_storeEnabled(price.storeName, enabledStores) ||
-          !price.isUsable(now: current, openPricesMaxAgeDays: historyDays)) {
+          !price.isUsable(
+            now: current,
+            openPricesMaxAgeDays: openPricesMaxAgeDays,
+          )) {
         continue;
       }
       quotes.add(ShoppingCandidateQuote(

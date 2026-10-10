@@ -133,7 +133,7 @@ void main() {
     expect(quote.savingsLabel, isNull);
   });
 
-  test('demo offers, Open Prices and unlike products are not used', () {
+  test('demo offers and unlike products are not used, Open Prices stay visible', () {
     final quotes = shoppingQuotes(
       item,
       prices: [
@@ -155,7 +155,29 @@ void main() {
       offers: sampleOffers,
       now: DateTime(2026, 9, 24),
     );
-    expect(quotes, isEmpty);
+    expect(quotes, hasLength(1));
+    expect(quotes.single.kind, ShoppingQuoteKind.openPrices);
+    expect(quotes.single.displayPrefix, 'Open Prices');
+  });
+
+  test('stale Open Prices data stays out of current shopping quotes', () {
+    final stale = MarketPrice(
+      productId: milk.id,
+      storeName: 'Lidl',
+      price: 0.81,
+      updatedAt: DateTime(2026, 1, 1),
+      source: MarketPriceSource.openPrices,
+    );
+
+    expect(
+      shoppingQuotes(
+        item,
+        prices: [stale],
+        offers: const [],
+        now: DateTime(2026, 9, 24),
+      ),
+      isEmpty,
+    );
   });
 
   test('store preference and offer expiry are respected', () {

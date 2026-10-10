@@ -20,6 +20,7 @@ class ShoppingGroupCard extends StatelessWidget {
     required this.offers,
     required this.enabledStoreNames,
     required this.marketPrices,
+    this.openPricesMaxAgeDays = 60,
     required this.priceObservations,
     this.historicalPriceObservations = const <PriceObservation>[],
     required this.prospectPriceHistory,
@@ -38,6 +39,7 @@ class ShoppingGroupCard extends StatelessWidget {
   final List<Offer> offers;
   final List<String> enabledStoreNames;
   final List<MarketPrice> marketPrices;
+  final int openPricesMaxAgeDays;
   final List<MarketPrice> priceObservations;
   final List<PriceObservation> historicalPriceObservations;
   final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
@@ -77,6 +79,7 @@ class ShoppingGroupCard extends StatelessWidget {
                       item: item,
                       offers: offers,
                       marketPrices: marketPrices,
+                      openPricesMaxAgeDays: openPricesMaxAgeDays,
                       priceObservations: priceObservations,
                       historicalPriceObservations: historicalPriceObservations,
                       prospectPriceHistory: prospectPriceHistory,
@@ -106,6 +109,7 @@ class ShoppingGroupCard extends StatelessWidget {
                   offers: offers,
                   enabledStoreNames: enabledStoreNames,
                   marketPrices: marketPrices,
+                  openPricesMaxAgeDays: openPricesMaxAgeDays,
                   priceObservations: priceObservations,
                   historicalPriceObservations: historicalPriceObservations,
                   prospectPriceHistory: prospectPriceHistory,
@@ -132,6 +136,7 @@ class _ShoppingItemCard extends StatelessWidget {
     required this.checked,
     required this.offers,
     required this.marketPrices,
+    this.openPricesMaxAgeDays = 60,
     required this.priceObservations,
     this.historicalPriceObservations = const <PriceObservation>[],
     required this.prospectPriceHistory,
@@ -148,6 +153,7 @@ class _ShoppingItemCard extends StatelessWidget {
   final bool checked;
   final List<Offer> offers;
   final List<MarketPrice> marketPrices;
+  final int openPricesMaxAgeDays;
   final List<MarketPrice> priceObservations;
   final List<PriceObservation> historicalPriceObservations;
   final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
@@ -206,6 +212,7 @@ class _ShoppingItemCard extends StatelessWidget {
               item: item,
               prices: marketPrices,
               offers: offers,
+              openPricesMaxAgeDays: openPricesMaxAgeDays,
               prospectPriceHistory: prospectPriceHistory,
               historicalPriceObservations: historicalPriceObservations,
               enabledStores: enabledStoreNames,
@@ -246,6 +253,7 @@ class _ShoppingItemTile extends StatelessWidget {
     required this.offers,
     required this.enabledStoreNames,
     required this.marketPrices,
+    this.openPricesMaxAgeDays = 60,
     required this.priceObservations,
     this.historicalPriceObservations = const <PriceObservation>[],
     required this.prospectPriceHistory,
@@ -262,6 +270,7 @@ class _ShoppingItemTile extends StatelessWidget {
   final List<Offer> offers;
   final List<String> enabledStoreNames;
   final List<MarketPrice> marketPrices;
+  final int openPricesMaxAgeDays;
   final List<MarketPrice> priceObservations;
   final List<PriceObservation> historicalPriceObservations;
   final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
@@ -322,8 +331,9 @@ class _ShoppingItemTile extends StatelessWidget {
           ),
           ShoppingPriceBadge(
             item: item,
-            prices: marketPrices,
-            offers: offers,
+          prices: marketPrices,
+          offers: offers,
+          openPricesMaxAgeDays: openPricesMaxAgeDays,
             prospectPriceHistory: prospectPriceHistory,
             historicalPriceObservations: historicalPriceObservations,
             enabledStores: enabledStoreNames,
