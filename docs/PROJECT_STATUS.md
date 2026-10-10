@@ -6,11 +6,22 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `cb63c13` (Prospekt-Metadaten ohne Bildseiten behalten Gültigkeit, Filialbezug und Link); der aktuelle Dokumentationsstand ist dieser Status-PR.
+- Letzter geprüfter Code-Stand auf main: `0f3e423` (fehlende Prospektkategorien ordnen Kaffeeangebote konsistent ein); der aktuelle Dokumentationsstand ist dieser Status-PR.
 - Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
 - Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 10.10.2026 – Fehlende Prospektkategorien führen Kaffeeangebote in die richtige Gruppe
+- Wenn ein Händler keine Kategorie liefert, ordnet die Angebotsansicht Kaffee,
+  Espresso, Tee und Snacks jetzt unter „Kaffee & Snacks“ ein. Die Heuristik
+  greift nur bei fehlender Quellkategorie; Händlerkategorien bleiben unverändert.
+- Dadurch sind Standardartikel wie Kaffee auch bei unvollständigen Feed-Metadaten
+  in der erwarteten Gruppe auffindbar, ohne Preis- oder Produktidentitäten aus
+  der Darstellung abzuleiten.
+- PR #231 (`ee0e4e0`, Merge `0f3e423`) ergänzt einen Widget-Regressionstest. Die
+  PR-CI-Läufe `38026506929` und `38026513572` waren mit Analyse, vollständigen
+  Tests und Web-Build erfolgreich.
 
 ## Update 10.10.2026 – Prospekt-Metadaten bleiben auch ohne Bildseiten nutzbar
 - Der Prospektfeed bewahrt jetzt auch Einträge ohne Bildseiten. Gültigkeitszeitraum,
