@@ -168,6 +168,16 @@ void main() {
     );
   });
 
+  test('biscuit flavour labels stay separate from ordinary milk', () {
+    final biscuit = identifyProduct("LEIBNIZ Keks'n Cream 190 g, Milch");
+
+    expect(biscuit.familyKey, 'suessigkeit');
+    expect(
+      compatibleProductIdentity(identifyProduct('Milch'), biscuit),
+      isFalse,
+    );
+  });
+
   test('buttermilk and plant milk stay separate from ordinary milk', () {
     final buttermilk = identifyProduct('MILRAM Buttermilch-Drink 750 g');
     final coconut = identifyProduct('K-CLASSIC ASIA Kokosmilch 400 ml');

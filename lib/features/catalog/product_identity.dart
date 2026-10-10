@@ -1900,17 +1900,30 @@ bool _hasSausageFamilyToken(String text) =>
       r'(?<![a-z0-9])(?:[a-z]+wurst|[a-z]+schinken|wurst[a-z]+|schinken[a-z]+|[a-z]+(?:salami|lyoner)|salami[a-z]+|lyoner[a-z]+)(?![a-z0-9])',
     ).hasMatch(text);
 
-bool _isMilkIngredientCompound(String text) => _hasAny(text, const [
-  'kondensmilch',
-  'milchreis',
-  'milchschokolade',
-  'milch schokolade',
-  'milchschokoladen',
-  'milch schokoladen',
-  'milch schoko',
-  'milchriegel',
-  'milch riegel',
-]);
+bool _isMilkIngredientCompound(String text) =>
+    _hasAny(text, const [
+      'kondensmilch',
+      'milchreis',
+      'milchschokolade',
+      'milch schokolade',
+      'milchschokoladen',
+      'milch schokoladen',
+      'milch schoko',
+      'milchriegel',
+      'milch riegel',
+      // Retailer labels can put a flavour such as "Milch" after a biscuit
+      // name (for example, "Keks'n Cream ... Milch"). These are sweets, not
+      // ordinary milk, even though the label contains a standalone token.
+      'keks',
+      'cookie',
+      'cookies',
+      'waffel',
+      'cracker',
+      'kuchen',
+      'torte',
+      'gebaeck',
+      'biscuit',
+    ]);
 
 double? _percent(String text) {
   final match = RegExp(r'(\d+(?:[,.]\d+)?)\s*%').firstMatch(text);
