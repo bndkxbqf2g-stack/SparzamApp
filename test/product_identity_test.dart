@@ -26,7 +26,7 @@ void main() {
     expect(identity.variant, 'h');
     expect(identity.fatPercent, isNull);
     expect(
-      isOpenMilkChoice(identity, identifyProduct('H-Milch 1,5%')),
+      isOpenMilkChoice(identity, identifyProduct('Milch 1,5%')),
       isTrue,
     );
   });
