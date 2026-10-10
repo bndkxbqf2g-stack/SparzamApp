@@ -6,11 +6,24 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `cdb9202` (nachgewiesene Prospektangebote bleiben bis zur Route erhalten); der aktuelle Dokumentationsstand ist dieser Status-PR.
+- Letzter geprüfter Code-Stand auf main: `9ec6e20` (zukünftige Marktpreise werden aus Einkaufsliste und Routenplanung ausgeschlossen); der aktuelle Dokumentationsstand ist dieser Status-PR.
 - Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
 - Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 10.10.2026 – Zukünftige Marktpreise bleiben aus Liste und Route
+- Marktpreise mit einem Datum nach dem aktuellen Tag werden jetzt unabhängig von
+  ihrer Quelle als nicht beobachtet behandelt. Das verhindert, dass ein
+  fehlerhaft datierter manueller Preis vor seinem Datum als aktueller
+  Einkaufslisten- oder Routenpreis erscheint.
+- Manuelle Preise bleiben für vergangene und heutige Erfassungsdaten weiterhin
+  unbegrenzt nutzbar. Bonpreise und externe Preisbeobachtungen behalten ihre
+  bestehende Alterslogik; historische Belege werden weiter getrennt angezeigt.
+- PR #213 (`9f1ae61`, Merge `9ec6e20`) ergänzt Regressionen für Preisquelle,
+  Preis-Matrix und Route. Die beiden PR-CI-Läufe `38013380077` und
+  `38013383505`, Main-CI `38013669883` sowie Release `38013669844` waren mit
+  Analyse, Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
 
 ## Update 10.10.2026 – Nachgewiesene unbekannte Prospektartikel bleiben routbar
 - Aktuelle, nachgewiesene Prospektlabels ohne lokale Katalogidentität werden
