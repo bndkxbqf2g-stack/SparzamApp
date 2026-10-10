@@ -379,4 +379,61 @@ void main() {
     expect(matrix.single.quote?.kind, ShoppingQuoteKind.ownPrice);
     expect(matrix.single.quote?.unitPrice, 1.09);
   });
+
+  test('current Open Prices beat a newer but stale receipt in the matrix', () {
+    final matrix = shoppingPriceMatrix(
+      item,
+      prices: [
+        MarketPrice(
+          productId: milk.id,
+          storeName: 'ALDI Süd',
+          price: 0.53,
+          updatedAt: DateTime(2026, 7, 30),
+          source: MarketPriceSource.openPrices,
+        ),
+        MarketPrice(
+          productId: milk.id,
+          storeName: 'ALDI Süd',
+          price: 0.50,
+          updatedAt: DateTime(2026, 8, 20),
+          source: MarketPriceSource.receipt,
+        ),
+      ],
+      offers: const [],
+      enabledStores: const ['ALDI Süd'],
+      now: DateTime(2026, 9, 24),
+    );
+
+    expect(matrix.single.quote?.kind, ShoppingQuoteKind.openPrices);
+    expect(matrix.single.quote?.isHistorical, isFalse);
+  });
+
+  test('matrix uses the quality-adjusted current price within a market', () {
+    final matrix = shoppingPriceMatrix(
+      item,
+      prices: [
+        MarketPrice(
+          productId: milk.id,
+          storeName: 'ALDI Süd',
+          price: 0.50,
+          updatedAt: DateTime(2026, 9, 24),
+          source: MarketPriceSource.receipt,
+          discounted: true,
+        ),
+        MarketPrice(
+          productId: milk.id,
+          storeName: 'ALDI Süd',
+          price: 0.53,
+          updatedAt: DateTime(2026, 9, 24),
+          source: MarketPriceSource.openPrices,
+        ),
+      ],
+      offers: const [],
+      enabledStores: const ['ALDI Süd'],
+      now: DateTime(2026, 9, 24),
+    );
+
+    expect(matrix.single.quote?.kind, ShoppingQuoteKind.openPrices);
+    expect(matrix.single.quote?.unitPrice, 0.53);
+  });
 }

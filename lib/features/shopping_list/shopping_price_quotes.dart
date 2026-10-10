@@ -7,6 +7,7 @@ import '../../models/price_observation.dart';
 import '../offers/effective_price.dart';
 import '../offers/offer_filter.dart';
 import '../offers/prospect_price_statistics.dart';
+import '../route/market_price_quality.dart';
 
 bool isSampleOffer(Offer offer) => sampleOffers.any(
   (sample) =>
@@ -25,6 +26,7 @@ class ShoppingQuote {
     required this.kind,
     this.observedAt,
     this.offer,
+    this.comparisonPrice,
     this.historical = false,
   });
 
@@ -33,7 +35,12 @@ class ShoppingQuote {
   final ShoppingQuoteKind kind;
   final DateTime? observedAt;
   final Offer? offer;
+  /// Quality-adjusted value used only to choose the visible quote in a market.
+  /// The displayed amount remains the observed checkout or offer amount.
+  final double? comparisonPrice;
   final bool historical;
+
+  double get rankingPrice => comparisonPrice ?? unitPrice;
 
   String get sourceLabel => switch (kind) {
     ShoppingQuoteKind.receipt =>
@@ -156,6 +163,8 @@ List<ShoppingQuote> shoppingQuotes(
             ? ShoppingQuoteKind.openPrices
             : ShoppingQuoteKind.ownPrice,
         observedAt: price.updatedAt,
+        comparisonPrice: price.price *
+            (1 + marketPriceQuality(price, today).uncertaintyRate),
         historical: price.source == MarketPriceSource.receipt &&
             !price.isUsable(now: today, openPricesMaxAgeDays: 36500),
       ),
@@ -184,6 +193,7 @@ List<ShoppingQuote> shoppingQuotes(
         unitPrice: effective.finalPrice,
         kind: ShoppingQuoteKind.offer,
         offer: offer,
+        comparisonPrice: effective.finalPrice,
       ),
     );
   }
@@ -305,23 +315,31 @@ List<ShoppingPriceMatrixEntry> shoppingPriceMatrix(
 int _compareMatrixQuotes(ShoppingQuote a, ShoppingQuote b) {
   final sourceOrder = _quoteSourceOrder(a).compareTo(_quoteSourceOrder(b));
   if (sourceOrder != 0) return sourceOrder;
-  if (a.kind == ShoppingQuoteKind.offer) {
-    final byPrice = a.unitPrice.compareTo(b.unitPrice);
-    if (byPrice != 0) return byPrice;
-  } else {
-    final aDate = a.observedAt;
-    final bDate = b.observedAt;
-    if (aDate != null || bDate != null) {
-      if (aDate == null) return 1;
-      if (bDate == null) return -1;
-      final byDate = bDate.compareTo(aDate);
-      if (byDate != 0) return byDate;
-    }
-    final byPrice = a.unitPrice.compareTo(b.unitPrice);
-    if (byPrice != 0) return byPrice;
+  if (a.isHistorical != b.isHistorical) {
+    return a.isHistorical ? 1 : -1;
   }
+  if (a.kind == ShoppingQuoteKind.offer || !a.isHistorical) {
+    final byQualityAdjustedPrice = a.rankingPrice.compareTo(b.rankingPrice);
+    if (byQualityAdjustedPrice != 0) return byQualityAdjustedPrice;
+  }
+  final aDate = a.observedAt;
+  final bDate = b.observedAt;
+  if (aDate != null || bDate != null) {
+    if (aDate == null) return 1;
+    if (bDate == null) return -1;
+    final byDate = bDate.compareTo(aDate);
+    if (byDate != 0) return byDate;
+  }
+  final byPrice = a.unitPrice.compareTo(b.unitPrice);
+  if (byPrice != 0) return byPrice;
   return a.sourceLabel.compareTo(b.sourceLabel);
 }
+
+/// Orders visible quotes with the same evidence and quality rules used by the
+/// product × market matrix. Callers can use this for a single highlighted
+/// quote without falling back to a source-specific shortcut.
+int compareShoppingQuotes(ShoppingQuote a, ShoppingQuote b) =>
+    _compareMatrixQuotes(a, b);
 
 int _quoteSourceOrder(ShoppingQuote quote) => switch (quote.kind) {
   ShoppingQuoteKind.offer => 0,

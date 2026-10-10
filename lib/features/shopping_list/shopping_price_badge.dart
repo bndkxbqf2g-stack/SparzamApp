@@ -53,21 +53,12 @@ class ShoppingPriceBadge extends StatelessWidget {
     final historicalMarkets = matrix
         .where((entry) => entry.hasHistoricalQuote)
         .length;
-    final offersToday = quotes
-        .where((q) => q.kind == ShoppingQuoteKind.offer)
-        .toList();
-    offersToday.sort((a, b) => a.unitPrice.compareTo(b.unitPrice));
-    final receiptQuotes = quotes
-        .where((q) => q.kind == ShoppingQuoteKind.receipt)
-        .toList();
-    receiptQuotes.sort((a, b) => b.observedAt!.compareTo(a.observedAt!));
-    final highlighted = offersToday.isNotEmpty
-        ? offersToday.first
-        : receiptQuotes.isNotEmpty
-        ? receiptQuotes.first
-        : quotes.isNotEmpty
-        ? quotes.first
-        : null;
+    final matrixQuotes = matrix
+        .map((entry) => entry.quote)
+        .whereType<ShoppingQuote>()
+        .toList()
+      ..sort(compareShoppingQuotes);
+    final highlighted = matrixQuotes.isEmpty ? null : matrixQuotes.first;
     return InkWell(
       onTap: matrix.isEmpty ? null : () => _showQuotes(context, matrix),
       borderRadius: BorderRadius.circular(12),
