@@ -72,6 +72,46 @@ void main() {
     );
   });
 
+  test('Enter does not silently choose a generic historical suggestion', () {
+    const historicalProduct = Product(
+      id: 'historical-milk',
+      name: 'Milch 3,5 %',
+      unit: '1 l',
+      group: 'milch',
+    );
+
+    expect(
+      shoppingProductForSubmit(
+        query: 'Milch',
+        suggestions: const [historicalProduct],
+        recommendedProductId: null,
+      ),
+      isNull,
+    );
+  });
+
+  test('Enter accepts an exact single catalog identity without a price', () {
+    expect(
+      shoppingProductForSubmit(
+        query: 'Vollmilch 3,5 %',
+        suggestions: const [regular],
+        recommendedProductId: null,
+      ),
+      regular,
+    );
+  });
+
+  test('Enter accepts the current evidenced recommendation', () {
+    expect(
+      shoppingProductForSubmit(
+        query: 'Milch',
+        suggestions: const [regular, lowFat],
+        recommendedProductId: lowFat.id,
+      ),
+      lowFat,
+    );
+  });
+
   test('generic staple suggestions rank the lowest current offer first', () {
     final results = buildSuggestions(
       query: 'Milch',
