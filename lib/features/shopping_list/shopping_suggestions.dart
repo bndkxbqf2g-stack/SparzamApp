@@ -12,7 +12,6 @@ import '../catalog/product_identity.dart';
 import '../catalog/product_hierarchy.dart';
 import '../route/market_price_quality.dart';
 import 'receipt_product_price_match.dart';
-import 'shopping_price_quotes.dart';
 import '../../services/quantity_normalizer.dart';
 
 class ShoppingSuggestionPrice {

@@ -14,12 +14,12 @@ import '../../models/receipt_price_stat.dart';
 import '../../services/receipt_observation_store.dart';
 import '../../services/shopping_list_store.dart';
 import '../offers/offer_details_screen.dart';
+import '../offers/offer_filter.dart';
 import '../offers/prospect_price_statistics.dart';
 import '../receipt/receipt_import_dialog.dart';
 import '../receipt/receipt_import.dart';
 import '../receipt/receipt_price_statistics.dart';
 import 'shopping_group_card.dart';
-import 'shopping_price_quotes.dart';
 import 'shopping_grouping.dart';
 import 'replenishment_card.dart';
 
