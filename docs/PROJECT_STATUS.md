@@ -6,11 +6,23 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `554339f` (Bonpreis-Familienprojektionen verwenden dieselbe Qualitätsauswahl wie die Routenplanung); der aktuelle Dokumentationsstand ist dieser Status-PR.
+- Letzter geprüfter Code-Stand auf main: `cb63c13` (Prospekt-Metadaten ohne Bildseiten behalten Gültigkeit, Filialbezug und Link); der aktuelle Dokumentationsstand ist dieser Status-PR.
 - Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
 - Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 10.10.2026 – Prospekt-Metadaten bleiben auch ohne Bildseiten nutzbar
+- Der Prospektfeed bewahrt jetzt auch Einträge ohne Bildseiten. Gültigkeitszeitraum,
+  Filialbezug, Standort, Titel und offizieller Link bleiben damit sichtbar, statt
+  als unbekannte oder nicht geladene Quelle zu erscheinen.
+- Ein gültiger Metadaten-Prospekt wird in der Prospektansicht als aktueller Stand
+  behandelt. Die App zeigt weiterhin transparent, dass keine strukturierten
+  Angebotsdaten oder Bildseiten vorliegen; Preise und Produktidentitäten werden
+  nicht aus den Metadaten erfunden.
+- PR #229 (`b12f8ac`, Merge `cb63c13`) ergänzt Parser- und UI-Regressionen. Die
+  beiden PR-CI-Läufe `38025561255` und `38025569445` waren mit Analyse,
+  vollständigen Tests und Web-Build erfolgreich.
 
 ## Update 10.10.2026 – Bonpreis-Familien übernehmen die gemeinsame Qualitätsauswahl
 - Die aus Kassenbonbeobachtungen abgeleitete Produktfamilien-Projektion wählt
