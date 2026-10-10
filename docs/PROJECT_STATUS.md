@@ -6,11 +6,23 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `a23acc2` (nach dem Merge der Sechs-Märkte-Prospektmatrix); der aktuelle Dokumentationsstand ist `1971b64`.
+- Letzter geprüfter Code-Stand auf main: `25d6902` (Such-zu-Route-Prüfung mit dem aktuellen Prospektfeed); der aktuelle Dokumentationsstand ist dieser Status-PR.
 - Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
 - Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 10.10.2026 – Suche nach Milch führt in die aktuelle Sparroute
+- Der aktuelle, versionierte Prospektfeed wird jetzt durch den sichtbaren
+  Alltagsfluss geprüft: Die Suche nach „Milch“ findet eine aktuelle
+  offerbasierte Produktvariante mit Händlernachweis und Preis.
+- Die ausgewählte Variante bleibt dieselbe Produktidentität in der
+  Routenplanung. Eine Einmarkt-Route kann den Angebotsartikel mit seinem
+  aktuellen Preis belegen; fehlende oder unsichere Identitäten werden dabei
+  nicht still auf einen anderen Katalogartikel übertragen.
+- PR #205 (`64659fa`, Merge `25d6902`) ergänzt die End-to-End-Regression. Die
+  beiden PR-CI-Läufe `38008127689` und `38008136671` waren mit Analyse,
+  611 Tests und Web-Build erfolgreich.
 
 ## Update 10.10.2026 – Aktueller Sechs-Märkte-Prospektfeed als End-to-End-Matrix
 - Der versionierte Feed `assets/prospects/current.json` wird jetzt als
