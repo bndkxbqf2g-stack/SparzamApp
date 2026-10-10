@@ -490,8 +490,13 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   final name = controller.text.trim();
                   if (name.isEmpty) return;
 
-                  if (suggestions.isNotEmpty) {
-                    add(suggestions.first);
+                  final selected = shoppingProductForSubmit(
+                    query: name,
+                    suggestions: suggestions,
+                    recommendedProductId: recommendedSuggestionId,
+                  );
+                  if (selected != null) {
+                    add(selected);
                   } else {
                     addCustomProduct();
                   }

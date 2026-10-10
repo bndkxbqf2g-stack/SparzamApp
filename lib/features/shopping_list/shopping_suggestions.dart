@@ -208,6 +208,35 @@ String? recommendedShoppingProductId({
   return null;
 }
 
+/// Resolves the product that may be accepted by pressing Enter in the
+/// shopping search field.
+///
+/// A historical price hint is useful context, but it is not enough evidence
+/// to silently choose one product from a generic request such as "Milch".
+/// Current evidence may choose the already-ranked recommendation. An exact
+/// single match remains safe to accept even without a price, because the
+/// user named that catalog identity explicitly.
+Product? shoppingProductForSubmit({
+  required String query,
+  required List<Product> suggestions,
+  required String? recommendedProductId,
+}) {
+  if (suggestions.isEmpty) return null;
+
+  if (recommendedProductId != null) {
+    for (final product in suggestions) {
+      if (product.id == recommendedProductId) return product;
+    }
+  }
+
+  if (suggestions.length == 1 &&
+      _matchesExactSearchLabel(suggestions.single, query)) {
+    return suggestions.single;
+  }
+
+  return null;
+}
+
 bool _matchesProductQuery(
   Product product,
   String query,
