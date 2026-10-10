@@ -13,6 +13,14 @@
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
+## Update 10.10.2026 – Kurze Suchtexte bleiben während der Eingabe ruhig
+- Ein einzelner, noch unvollständiger Buchstabe filtert nicht mehr den gesamten
+  Katalog nach zufälligen Teilstring-Treffern. Dadurch erscheinen beim Start
+  der Eingabe keine fachfremden Angebote wie Bier oder Mixer.
+- Bekannte Produktidentitäten wie „Ei“ bleiben direkt suchbar; unbekannter
+  Freitext wartet nur bis zum zweiten Zeichen. Produktidentität, Preisquellen
+  und die Reihenfolge vollständiger Suchtreffer bleiben unverändert.
+
 ## Update 10.10.2026 – Eier-Suche blendet Schokoladeneier aus
 - Die allgemeine Suche nach „Eier“ behandelt Schokoladenprodukte wie „Kinder
   Maxi Ei“ nicht mehr als Haushalts-Eier. Die Bezeichnung wird vor der

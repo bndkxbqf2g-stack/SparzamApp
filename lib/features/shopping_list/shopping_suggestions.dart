@@ -67,6 +67,14 @@ List<Product> buildSuggestions({
   if (normalized.isEmpty) return const <Product>[];
 
   final queryIdentity = identifyProduct(query);
+  // A one-character query is still being typed. Matching it against the
+  // complete catalog would surface unrelated offers that merely contain the
+  // same letter (for example, a beer or mixer while entering "Joghurt").
+  // Known identities such as "Ei" remain searchable immediately; unknown
+  // free text waits for one more character before ranking products.
+  if (!queryIdentity.isKnown && normalized.length < 2) {
+    return const <Product>[];
+  }
   final learnedMatches = knownItems
       .map((item) => item.toProduct())
       .where((product) => _matchesProductQuery(product, query, queryIdentity));

@@ -125,6 +125,25 @@ void main() {
     );
   });
 
+  test('does not show unrelated catalog matches for a one-character query', () {
+    final results = buildSuggestions(
+      query: 'J',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: const [
+        Product(
+          id: 'beer',
+          name: 'Original Pils',
+          unit: '0,5 l',
+          group: 'bier',
+        ),
+      ],
+    );
+
+    expect(results, isEmpty);
+  });
+
   test('Open Prices can provide a current suggestion with its source label', () {
     final hint = shoppingSuggestionPriceForProduct(
       regular,
