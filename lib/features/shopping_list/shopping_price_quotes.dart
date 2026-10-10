@@ -131,8 +131,7 @@ List<ShoppingQuote> shoppingQuotes(
   for (final price in prices) {
     if (price.productId != item.product.id ||
         price.source == MarketPriceSource.openPrices ||
-        (price.source == MarketPriceSource.receipt &&
-            _isFutureObservation(price.updatedAt, today)) ||
+        _isFutureObservation(price.updatedAt, today) ||
         !price.price.isFinite ||
         price.price <= 0 ||
         (enabledStores.isNotEmpty &&

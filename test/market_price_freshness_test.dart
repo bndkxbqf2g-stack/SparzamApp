@@ -158,4 +158,18 @@ void main() {
     );
   });
 
+  test('future manual prices are not usable before their date', () {
+    final futureManual = MarketPrice(
+      productId: 'butter',
+      storeName: 'Lidl',
+      price: 1.99,
+      updatedAt: DateTime(2026, 9, 23),
+    );
+
+    expect(
+      futureManual.isUsable(now: now, openPricesMaxAgeDays: 60),
+      isFalse,
+    );
+  });
+
 }

@@ -29,17 +29,17 @@ class MarketPrice {
     required DateTime now,
     required int openPricesMaxAgeDays,
   }) {
-    if (source == MarketPriceSource.manual) return true;
     final today = DateTime(now.year, now.month, now.day);
     final observed = DateTime(
       updatedAt.year,
       updatedAt.month,
       updatedAt.day,
     );
-    // External observations describe a completed purchase or a published
-    // market snapshot. A future timestamp is invalid evidence and must not
-    // become a current route or search price.
+    // A future timestamp is invalid evidence for every source. Manual prices
+    // are allowed to stay usable indefinitely, but they still cannot describe
+    // a price that has not been observed yet.
     if (observed.isAfter(today)) return false;
+    if (source == MarketPriceSource.manual) return true;
     // Provisional safety window until receipt price stability is measured.
     final maxAgeDays = source == MarketPriceSource.receipt
         ? 30 : openPricesMaxAgeDays;

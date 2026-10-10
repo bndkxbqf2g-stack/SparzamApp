@@ -231,6 +231,25 @@ void main() {
     );
   });
 
+  test('future manual prices are hidden from current shopping quotes', () {
+    final futureManual = MarketPrice(
+      productId: milk.id,
+      storeName: 'Lidl',
+      price: 0.79,
+      updatedAt: DateTime(2026, 9, 25),
+    );
+
+    expect(
+      shoppingQuotes(
+        item,
+        prices: [futureManual],
+        offers: const [],
+        now: DateTime(2026, 9, 24),
+      ),
+      isEmpty,
+    );
+  });
+
   test('price matrix keeps missing enabled markets visible', () {
     final matrix = shoppingPriceMatrix(
       item,
