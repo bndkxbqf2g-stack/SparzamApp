@@ -131,7 +131,6 @@ ProspectIssue _visibleIssue(
   final current = entries
       .where(
         (issue) =>
-            issue.pages.isNotEmpty &&
             issue.validFrom != null &&
             issue.validUntil != null &&
             isOfferDateRangeActive(

@@ -149,4 +149,39 @@ void main() {
     expect(result.records.single.imageUrl, 'https://cdn.example/schmand.png');
     expect(result.records.single.proofRef, contains('offersbrochure:218970'));
   });
+
+  test('keeps prospect validity and link when page images are missing', () {
+    final result = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-10-01T04:15:00Z",
+  "sources": [
+    {
+      "storeName": "EDEKA",
+      "status": "ok",
+      "branchId": "023738",
+      "location": "Zellingen",
+      "prospects": [
+        {
+          "title": "EDEKA Wochenangebote",
+          "offerStartDate": "2026-09-28",
+          "offerEndDate": "2026-10-03",
+          "url": "https://example.test/edeka-prospekt"
+        }
+      ]
+    }
+  ],
+  "offers": []
+}
+''');
+
+    final edeka = result.prospects.singleWhere(
+      (item) => item.storeName == 'EDEKA',
+    );
+    expect(edeka.pages, isEmpty);
+    expect(edeka.validFrom, DateTime(2026, 9, 28));
+    expect(edeka.validUntil, DateTime(2026, 10, 3));
+    expect(edeka.url, 'https://example.test/edeka-prospekt');
+    expect(edeka.branchId, '023738');
+    expect(edeka.location, 'Zellingen');
+  });
 }
