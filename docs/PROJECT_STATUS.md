@@ -6,11 +6,21 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `ed046c6` (robuste Bon-Deduplizierung bei OCR-/PDF-Layoutänderungen); der aktuelle Dokumentationsstand ist dieser Status-PR.
+- Letzter geprüfter Code-Stand auf main: `fc8fd61` (bevorzugte Produktvarianten werden dauerhaft gespeichert); der aktuelle Dokumentationsstand ist dieser Status-PR.
 - Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
 - Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 10.10.2026 – Bevorzugte Produktvarianten bleiben nach dem Speichern erhalten
+- Die Speicherung bevorzugter Produktvarianten schreibt jetzt die tatsächlichen
+  Gruppen- und Produkt-IDs. Dadurch bleiben gelernte Auswahlentscheidungen auch
+  nach dem erneuten Laden und beim Wiederherstellen eines Backups erhalten.
+- Eine Regression prüft mehrere Zuordnungen gleichzeitig und verhindert, dass
+  die Platzhalterdarstellung versehentlich wieder eingeführt wird.
+- PR #209 (`51a29ac`, Merge `fc8fd61`) ist mit den beiden erfolgreichen
+  PR-CI-Läufen `38010928894` und `38010938613` in `main` gelandet; die
+  nachgelagerten Main-/Release-Läufe für `fc8fd61` werden noch geprüft.
 
 ## Update 10.10.2026 – Bonbeobachtungen bleiben bei OCR-Layoutänderungen idempotent
 - Bonbeobachtungen verwenden jetzt eine stabile Produktzeilen-Ordnung innerhalb
