@@ -474,46 +474,7 @@ int _prospectCategoryOrder(String category) =>
     _prospectCategoryRanks[category] ?? 50;
 
 String _prospectCategory(String label) {
-  final value = label.toLowerCase();
-  if (RegExp(r'gemüse|salat|tomat|gurk|kartoff|obst|apfel|banane|traube')
-      .hasMatch(value)) {
-    return 'Obst & Gemüse';
-  }
-  if (RegExp(r'milch|joghurt|käse|schmand|sahne|quark|butter')
-      .hasMatch(value)) {
-    return 'Milchprodukte';
-  }
-  if (RegExp(r'hack|fleisch|wurst|schinken|fisch|lachs|hähnchen')
-      .hasMatch(value)) {
-    return 'Fleisch & Fisch';
-  }
-  if (RegExp(r'brot|bröt|toast|backwaren|croissant').hasMatch(value)) {
-    return 'Backwaren';
-  }
-  if (RegExp(r'getränk|wasser|saft|cola|bier|wein|kaffee|tee')
-      .hasMatch(value)) {
-    return 'Getränke';
-  }
-  if (RegExp(r'tiefkühl|tk |pizza|eis ').hasMatch(value)) {
-    return 'Tiefkühl';
-  }
-  if (RegExp(r'reis|nudel|mehl|zucker|dose|konserve|sauce|öl|gewürz')
-      .hasMatch(value)) {
-    return 'Vorrat & Konserven';
-  }
-  if (RegExp(r'seife|shampoo|zahnpasta|deo|waschmittel|reiniger')
-      .hasMatch(value)) {
-    return 'Drogerie';
-  }
-  if (RegExp(r'küche|haushalt|müll|papier|lampe|werkzeug|akku|bastel|raum-weiß')
-      .hasMatch(value)) {
-    return 'Haushalt';
-  }
-  if (RegExp(r'non-food|bekleidung|schuh|spielzeug|dekoration')
-      .hasMatch(value)) {
-    return 'Non-Food';
-  }
-  return 'Weitere Angebote';
+  return fallbackProspectCategory(label);
 }
 
 String _prospectCategoryForRecord(OfferImportRecord record) {

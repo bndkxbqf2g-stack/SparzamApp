@@ -13,6 +13,18 @@
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
+## Update 10.10.2026 – Einheitliche Prospektkategorien bei fehlenden Quellkategorien
+- Die Angebots- und Prospektansicht verwenden jetzt dieselbe
+  presentation-only Fallback-Kategorisierung, wenn ein Händler keine Kategorie
+  liefert. Kaffee und Espresso erscheinen dadurch in beiden Ansichten unter
+  „Kaffee & Snacks“ statt je nach Screen unterschiedlich.
+- Händlerkategorien, Produktidentitäten, Preise und Routen bleiben unverändert;
+  die Fallback-Kategorie dient ausschließlich der sichtbaren Gruppierung.
+- Regressionen prüfen die gemeinsame Zuordnung für Kaffee, Getränke, Vorrat und
+  unbekannte Artikel. Die lokale Dart-Analyse der betroffenen Dateien ist ohne
+  Befund; der gezielte Flutter-Test bleibt wegen der nicht beschreibbaren lokalen
+  Flutter-Engine-Cachedateien CI-seitig zu prüfen.
+
 ## Update 10.10.2026 – Bonkürzel `KH-Milch` wird als H-Milch geöffnet
 - Kassenbonzeilen mit `KH-Milch` werden jetzt genauso wie `K.H-Milch` als
   unvollständige H-Milch-Angabe erkannt. Die Einkaufsliste öffnet dafür die

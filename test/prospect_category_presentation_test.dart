@@ -29,4 +29,11 @@ void main() {
     expect(presentProspectCategory(null), isEmpty);
     expect(presentProspectCategory('  '), isEmpty);
   });
+
+  test('missing source categories use the same presentation fallback', () {
+    expect(fallbackProspectCategory('Espresso Bohnen'), 'Kaffee & Snacks');
+    expect(fallbackProspectCategory('Mineralwasser'), 'Getränke');
+    expect(fallbackProspectCategory('Nudeln'), 'Vorrat & Konserven');
+    expect(fallbackProspectCategory('Unbekannter Artikel'), 'Weitere Angebote');
+  });
 }
