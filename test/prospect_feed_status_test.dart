@@ -34,6 +34,26 @@ void main() {
     );
   });
 
+  testWidgets('offers a manual refresh before and after the first feed load', (
+    tester,
+  ) async {
+    var refreshes = 0;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectFeedStatusCard(
+          onRefresh: () async => refreshes++,
+        ),
+      ),
+    );
+
+    expect(find.text('Prospektstand noch nicht geladen'), findsOneWidget);
+    final refresh = find.byTooltip('Prospekte aktualisieren');
+    expect(refresh, findsOneWidget);
+    await tester.tap(refresh);
+    await tester.pumpAndSettle();
+    expect(refreshes, 1);
+  });
+
   test('reports prospect evidence without inferring missing fields', () {
     final coverage = calculateProspectCoverage(
       issues: [

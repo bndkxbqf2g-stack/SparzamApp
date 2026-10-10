@@ -11,35 +11,57 @@ class ProspectFeedStatusCard extends StatelessWidget {
     super.key,
     this.generatedAt,
     this.fromCache = false,
+    this.onRefresh,
+    this.refreshing = false,
   });
 
   final DateTime? generatedAt;
   final bool fromCache;
+  final Future<void> Function()? onRefresh;
+  final bool refreshing;
 
   @override
   Widget build(BuildContext context) {
-    if (generatedAt == null && !fromCache) return const SizedBox.shrink();
+    if (generatedAt == null && !fromCache && onRefresh == null) {
+      return const SizedBox.shrink();
+    }
     final timestamp = formatProspectFeedTimestamp(generatedAt);
     final theme = Theme.of(context);
+    final title = fromCache
+        ? 'Letzter geprüfter Prospektstand'
+        : generatedAt == null
+        ? 'Prospektstand noch nicht geladen'
+        : 'Aktueller Prospektstand';
+    final subtitle = fromCache
+        ? 'Stand $timestamp. Der Live-Abruf war nicht verfügbar; '
+              'Gültigkeiten werden weiterhin geprüft, abgelaufene Angebote '
+              'bleiben ausgeblendet.'
+        : generatedAt == null
+        ? 'Lade die aktuellen Prospekte, um neue Angebote und Preisbeobachtungen '
+              'zu übernehmen.'
+        : 'Stand $timestamp. Es werden nur aktuell gültige Angebote '
+              'angezeigt.';
     return Card(
       color: fromCache ? theme.colorScheme.surfaceContainerHighest : null,
       child: ListTile(
         leading: Icon(
           fromCache ? Icons.cloud_off_outlined : Icons.verified_outlined,
         ),
-        title: Text(
-          fromCache
-              ? 'Letzter geprüfter Prospektstand'
-              : 'Aktueller Prospektstand',
-        ),
-        subtitle: Text(
-          fromCache
-              ? 'Stand $timestamp. Der Live-Abruf war nicht verfügbar; '
-                    'Gültigkeiten werden weiterhin geprüft, abgelaufene Angebote '
-                    'bleiben ausgeblendet.'
-              : 'Stand $timestamp. Es werden nur aktuell gültige Angebote '
-                    'angezeigt.',
-        ),
+        title: Text(title),
+        subtitle: Text(subtitle),
+        trailing: onRefresh == null
+            ? null
+            : refreshing
+            ? const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : IconButton(
+                tooltip: 'Prospekte aktualisieren',
+                onPressed: () => onRefresh!(),
+                icon: const Icon(Icons.refresh),
+              ),
       ),
     );
   }

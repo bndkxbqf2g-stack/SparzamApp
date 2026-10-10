@@ -151,6 +151,7 @@ class _AppShellState extends State<AppShell> {
   bool prospectFeedFromCache = false;
   DateTime? prospectFeedGeneratedAt;
   List<Product> prospectProducts = const <Product>[];
+  bool _prospectFeedRefreshing = false;
   final priceObservationStore = PriceObservationStore();
   final receiptAliasStore = ReceiptAliasStore();
   late PriceDataSettings priceDataSettings;
@@ -281,6 +282,9 @@ class _AppShellState extends State<AppShell> {
   }
 
   Future<void> _loadProspectOffers() async {
+    if (_prospectFeedRefreshing) return;
+    _prospectFeedRefreshing = true;
+    if (mounted) setState(() {});
     try {
       final feed = await ProspectImportModule().execute(
         startAddress: mobility.startAddress,
@@ -352,6 +356,9 @@ class _AppShellState extends State<AppShell> {
         message: 'Automatischer Prospektabruf fehlgeschlagen.',
         details: error.toString(),
       );
+    } finally {
+      _prospectFeedRefreshing = false;
+      if (mounted) setState(() {});
     }
   }
 
@@ -1265,6 +1272,8 @@ class _AppShellState extends State<AppShell> {
       prospectIssues: prospectIssues,
       prospectFeedFromCache: prospectFeedFromCache,
       prospectFeedGeneratedAt: prospectFeedGeneratedAt,
+      onRefreshProspects: _loadProspectOffers,
+      prospectsRefreshing: _prospectFeedRefreshing,
       priceHistory: priceHistory,
       mobility: mobility,
       catalogProducts: catalogProducts,

@@ -20,6 +20,8 @@ class ProspectsScreen extends StatelessWidget {
     this.now,
     this.fromCache = false,
     this.generatedAt,
+    this.onRefreshProspects,
+    this.prospectsRefreshing = false,
   });
 
   final List<OfferImportRecord> records;
@@ -29,6 +31,8 @@ class ProspectsScreen extends StatelessWidget {
   final DateTime? now;
   final bool fromCache;
   final DateTime? generatedAt;
+  final Future<void> Function()? onRefreshProspects;
+  final bool prospectsRefreshing;
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +75,12 @@ class ProspectsScreen extends StatelessWidget {
         const Center(
           child: Text('Aktuelle Prospekte. Produkte antippen und vormerken.'),
         ),
-        ProspectFeedStatusCard(generatedAt: generatedAt, fromCache: fromCache),
+        ProspectFeedStatusCard(
+          generatedAt: generatedAt,
+          fromCache: fromCache,
+          onRefresh: onRefreshProspects,
+          refreshing: prospectsRefreshing,
+        ),
         const SizedBox(height: 20),
         if (visibleProspects.isEmpty)
           const Card(
