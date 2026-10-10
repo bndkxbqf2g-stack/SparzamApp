@@ -6,11 +6,26 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `cbb78c9` (reservierte Legacy-Demoangebote können nicht mehr als echte Routenpreise verwendet werden); der aktuelle Dokumentationsstand ist dieser Status-PR.
+- Letzter geprüfter Code-Stand auf main: `554339f` (Bonpreis-Familienprojektionen verwenden dieselbe Qualitätsauswahl wie die Routenplanung); der aktuelle Dokumentationsstand ist dieser Status-PR.
 - Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
 - Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 10.10.2026 – Bonpreis-Familien übernehmen die gemeinsame Qualitätsauswahl
+- Die aus Kassenbonbeobachtungen abgeleitete Produktfamilien-Projektion wählt
+  je Händler und Produkt jetzt mit derselben Qualitätsbewertung wie die
+  Routenplanung. Ein neuerer, aber als Rabattpreis erkannter Bon ersetzt damit
+  nicht mehr automatisch eine ältere, belastbarere Normalpreisbeobachtung.
+- Händler, Quelle, Beobachtungsdatum, Rabattstatus und der beobachtete Betrag
+  bleiben unverändert nachvollziehbar. Die Änderung beeinflusst nur die
+  Auswahl des gemeinsamen aktuellen Familienpreises; historische
+  Beobachtungen bleiben getrennt erhalten.
+- PR #227 (`45afcde`, Merge `554339f`) ergänzt eine Regression für älteren
+  Normalpreis gegen neueren Rabattpreis. Die PR-CI-Läufe `38024008103` und
+  `38024019028`, Main-CI `38024260076` sowie Release `38024260061` waren mit
+  Analyse, vollständigen Tests, Web-/Pages-Build, Deployment und Android-APK
+  erfolgreich.
 
 ## Update 10.10.2026 – Demoangebote bleiben auch aus der Route ausgeschlossen
 - Die Erkennung reservierter Legacy-Demoangebote liegt jetzt im gemeinsamen
