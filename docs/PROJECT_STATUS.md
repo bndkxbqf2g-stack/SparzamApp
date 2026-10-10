@@ -6,11 +6,26 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `5066e5c` (Preis-Matrix und hervorgehobenes Preis-Badge verwenden jetzt dieselbe qualitätsgewichtete Preisreihenfolge wie Produktsuche und Route); der aktuelle Dokumentationsstand ist dieser Status-PR.
+- Letzter geprüfter Code-Stand auf main: `cbb78c9` (reservierte Legacy-Demoangebote können nicht mehr als echte Routenpreise verwendet werden); der aktuelle Dokumentationsstand ist dieser Status-PR.
 - Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
 - Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 10.10.2026 – Demoangebote bleiben auch aus der Route ausgeschlossen
+- Die Erkennung reservierter Legacy-Demoangebote liegt jetzt im gemeinsamen
+  Angebotsfilter. Der Route-Resolver verwirft dieselben Beispiele wie
+  Einkaufssuche und Kandidatenauswahl, bevor ein Angebot als Routenpreis
+  betrachtet wird.
+- Nutzerangebote mit gleicher Produkt- und Händlerangabe bleiben erhalten;
+  ausgeschlossen werden nur die bekannten Demo-Identitäten mit passendem
+  reserviertem Preis. Eine Regression prüft den direkten Resolver-Aufruf ohne
+  Umweg über die UI.
+- PR #225 (`1283d63` + Import-Fix `2d700f6`, Merge `cbb78c9`) wurde nach einem
+  zunächst fehlgeschlagenen Import-Check korrigiert. Die erfolgreichen
+  Nachlauf-PR-CI-Läufe `38022650394` und `38022653045`, Main-CI
+  `38022883281` sowie Release `38022883322` liefen mit Analyse, vollständigen
+  Tests, Web-/Pages-Build, Deployment und Android-APK erfolgreich.
 
 ## Update 10.10.2026 – Preis-Matrix und Preis-Badge folgen der gemeinsamen Qualitätsauswahl
 - Die Produkt×Markt-Matrix wählt aktuelle Bon-, eigenen und Open-Prices jetzt
