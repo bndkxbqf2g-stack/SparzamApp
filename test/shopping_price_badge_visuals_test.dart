@@ -152,6 +152,49 @@ void main() {
     expect(find.text('0,95 €'), findsNWidgets(2));
   });
 
+  testWidgets('Preisfenster hebt den qualitätsstärkeren aktuellen Preis hervor', (
+    tester,
+  ) async {
+    const product = Product(
+      id: 'quality-milk',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'milch',
+    );
+    final observedAt = DateTime.now();
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ShoppingPriceBadge(
+            item: ListItem(product: product),
+            prices: [
+              MarketPrice(
+                productId: product.id,
+                storeName: 'ALDI Süd',
+                price: 0.50,
+                updatedAt: observedAt,
+                source: MarketPriceSource.receipt,
+                discounted: true,
+              ),
+              MarketPrice(
+                productId: product.id,
+                storeName: 'ALDI Süd',
+                price: 0.53,
+                updatedAt: observedAt,
+                source: MarketPriceSource.openPrices,
+              ),
+            ],
+            offers: const <Offer>[],
+            enabledStores: const <String>['ALDI Süd'],
+          ),
+        ),
+      ),
+    );
+
+    expect(find.textContaining('Open Prices ALDI Süd: 0,53 €'), findsOneWidget);
+  });
+
   testWidgets('Preisfenster zeigt den exakten gelernten Preisverlauf', (
     tester,
   ) async {
