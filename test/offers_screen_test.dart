@@ -226,4 +226,33 @@ void main() {
     expect(find.text('Obst & Gemüse'), findsOneWidget);
     expect(find.text('02_Obst__Gemuese__Pflanzen'), findsNothing);
   });
+
+  testWidgets('classifies uncategorized coffee offers as coffee and snacks', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: OffersScreen(
+          catalogProducts: const <Product>[],
+          prospectRecords: [
+            OfferImportRecord(
+              sourceId: 'source-coffee',
+              productLabel: 'Espresso ganze Bohnen 1 kg',
+              storeName: 'EDEKA',
+              offerPrice: 8.99,
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+              proofRef: 'https://example.test/source-coffee',
+            ),
+          ],
+          now: DateTime(2026, 9, 30),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('EDEKA'));
+    await tester.pumpAndSettle();
+    expect(find.text('Kaffee & Snacks'), findsOneWidget);
+    expect(find.text('Getränke'), findsNothing);
+  });
 }
