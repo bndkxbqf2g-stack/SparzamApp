@@ -109,6 +109,27 @@ void main() {
     expect(find.textContaining('abgelaufene Angebote'), findsOneWidget);
   });
 
+  testWidgets('refreshes the prospect feed from the prospects screen', (
+    tester,
+  ) async {
+    var refreshes = 0;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: const [],
+          onRefreshProspects: () async => refreshes++,
+        ),
+      ),
+    );
+
+    final refresh = find.byTooltip('Prospekte aktualisieren');
+    expect(refresh, findsOneWidget);
+    await tester.tap(refresh);
+    await tester.pumpAndSettle();
+    expect(refreshes, 1);
+  });
+
   testWidgets('kennzeichnet gültige Angebote aus einem Händler-Fallback', (
     tester,
   ) async {

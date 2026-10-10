@@ -26,6 +26,8 @@ class OffersScreen extends StatefulWidget {
     this.now,
     this.generatedAt,
     this.fromCache = false,
+    this.onRefreshProspects,
+    this.prospectsRefreshing = false,
   });
 
   // Kept for the shell/route data contract. The Angebote tab deliberately
@@ -42,6 +44,8 @@ class OffersScreen extends StatefulWidget {
   final DateTime? now;
   final DateTime? generatedAt;
   final bool fromCache;
+  final Future<void> Function()? onRefreshProspects;
+  final bool prospectsRefreshing;
 
   @override
   State<OffersScreen> createState() => _OffersScreenState();
@@ -98,6 +102,8 @@ class _OffersScreenState extends State<OffersScreen> {
           ProspectFeedStatusCard(
             generatedAt: widget.generatedAt,
             fromCache: widget.fromCache,
+            onRefresh: widget.onRefreshProspects,
+            refreshing: widget.prospectsRefreshing,
           ),
           const SizedBox(height: 12),
           Text(
