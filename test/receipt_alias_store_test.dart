@@ -93,4 +93,36 @@ void main() {
     );
     expect((await store.load()), hasLength(1));
   });
+
+  test('OCR market spellings share the same learned alias', () async {
+    final store = ReceiptAliasStore();
+    await store.confirm(
+      storeName: 'ALDI Süd',
+      rawLabel: 'Butter',
+      productId: 'butter-250',
+      now: DateTime(2026, 9, 24),
+    );
+    await store.confirm(
+      storeName: 'ALDI SUED',
+      rawLabel: 'Butter',
+      productId: 'butter-250',
+      now: DateTime(2026, 9, 25),
+    );
+
+    expect(
+      await store.learnedProductId(
+        storeName: 'ALDI Süd',
+        rawLabel: 'Butter',
+      ),
+      'butter-250',
+    );
+    expect(
+      await store.learnedProductId(
+        storeName: 'ALDI SUED',
+        rawLabel: 'Butter',
+      ),
+      'butter-250',
+    );
+    expect((await store.load()), hasLength(1));
+  });
 }
