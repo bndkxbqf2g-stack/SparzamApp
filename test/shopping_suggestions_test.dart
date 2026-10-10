@@ -406,6 +406,24 @@ void main() {
     expect(results.map((product) => product.id), [regular.id]);
   });
 
+  test('generic milk search filters biscuit flavour offers', () {
+    const biscuit = Product(
+      id: 'milk-biscuit',
+      name: "LEIBNIZ Keks'n Cream 190 g, Milch",
+      unit: '190 g',
+      group: 'suessigkeit',
+    );
+    final results = buildSuggestions(
+      query: 'Milch',
+      knownItems: const [],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: [regular, biscuit],
+    );
+
+    expect(results.map((product) => product.id), [regular.id]);
+  });
+
   test('generic coffee search excludes pastry and machine offers', () {
     final results = buildSuggestions(
       query: 'Kaffee',

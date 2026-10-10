@@ -13,6 +13,15 @@
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
+## Update 10.10.2026 – Milchsuche blendet Keks- und Süßwarenangebote aus
+- Die allgemeine Suche nach „Milch“ ordnet Produktlabels mit einer
+  Milch-Geschmacksangabe nach einer Keks-, Waffel- oder Kuchenbezeichnung nicht
+  mehr der normalen Milchpreisfamilie zu. Dadurch erscheint zum Beispiel
+  „LEIBNIZ Keks'n Cream … Milch“ nicht mehr als Milchvorschlag.
+- Die Korrektur bleibt generisch an Produktwortfamilien gebunden und erfindet
+  keine Variante oder Preisidentität. Produktidentitäts- und
+  Einkaufsvorschlagstests schützen die negative Zuordnung.
+
 ## Update 10.10.2026 – Einheitliche Prospektkategorien bei fehlenden Quellkategorien
 - Die Angebots- und Prospektansicht verwenden jetzt dieselbe
   presentation-only Fallback-Kategorisierung, wenn ein Händler keine Kategorie
