@@ -6,12 +6,25 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `3871b84` (Produktauswahl aus
-  Routen-Datenlücken); der aktuelle Feed-Stand ist `ec1227e`.
-- Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
-- Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
+- Letzter geprüfter Code-Stand auf main: `4a9800e` (Bon-Aliase auf
+  konfigurierte Marktidentitäten normalisiert); der aktuelle Feed-Stand ist
+  `ec1227e`.
+- PR #248 wurde mit den CI-Läufen `38039823586` und `38039837524` geprüft und
+  in main gemergt. Main-CI `38040080993` sowie Release `38040080990` waren mit
+  Analyse, Tests, Web-/Pages-Deployment und Android-APK erfolgreich.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 10.10.2026 – Main- und Release-Abnahme nach PR #248
+- Der veröffentlichte Stand `4a9800e` wurde im Web geladen; Einkaufsliste,
+  aktuelle Angebote, Produktdatenlücken und die Aktion „Sparroute prüfen“ sind
+  sichtbar.
+- Die vollständige lokale Dart-Analyse von `lib` und `test` ist ohne Befund.
+  Der lokale Flutter-Wrapper bleibt wegen des nicht beschreibbaren globalen
+  Engine-Caches eingeschränkt; die vollständige Flutter-Analyse, Test- und
+  Web-/Android-Prüfung ist durch die grünen GitHub-Läufe belegt.
+- PR #248 vereinheitlicht die Marktidentität gelernter Bon-Aliase, ohne
+  unbekannte Händlerlabels automatisch zuzuordnen.
 
 ## Update 10.10.2026 – Bon-Aliase verwenden die konfigurierte Marktidentität
 - Gültige Bon-Aliase werden beim Speichern und Nachschlagen auf die
@@ -881,10 +894,13 @@ Eine intelligente und alltagstaugliche Preisdatenbank aufbauen:
   weiterhin historische Nachweise und bestätigte Angebote verwenden kann.
 
 ## Noch offen / nächste sinnvolle Arbeitspakete
-- Lernendes Produktmatching und Alias-/Zuordnungswissen entwerfen und modular implementieren.
+- Lernendes Produktmatching, Alias-/Zuordnungswissen und Review-Signale weiter
+  ausbauen; bestätigte und unsichere Identitäten bleiben getrennt.
 - Preisbeobachtungen stärker von Produktstammdaten trennen.
 - Confidence-/Review-Logik für unsichere Zuordnungen ausbauen.
 - Wiederkehrende Käufe für schnellere, zuverlässigere Zuordnung nutzen.
+- Native Geräteabnahme für Kamera, lokale Bild-OCR, Neustart und Offlinebetrieb
+  durchführen.
 - Regalvideo-Erfassung separat evaluieren. Aktuell daraus noch KEINE Code- oder Datenänderungen ableiten.
 
 ## Update 02.10.2026 – Persönlichen Zeitaufwand in die Routenwahl einbeziehen
