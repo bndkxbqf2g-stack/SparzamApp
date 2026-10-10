@@ -21,6 +21,7 @@ class StoreScreen extends StatefulWidget {
     required this.offers,
     required this.mobility,
     required this.marketPrices,
+    this.openPricesMaxAgeDays = 60,
     this.onResolvePriceGap,
   });
 
@@ -29,6 +30,7 @@ class StoreScreen extends StatefulWidget {
   final List<Offer> offers;
   final MobilitySettings mobility;
   final List<MarketPrice> marketPrices;
+  final int openPricesMaxAgeDays;
   final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
 
   @override
@@ -85,6 +87,7 @@ class _StoreScreenState extends State<StoreScreen> {
       widget.items,
       widget.offers,
       marketPrices: widget.marketPrices,
+      openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
     );
     final priceGaps = prioritizePriceGaps(
       summary.unpricedItems,
@@ -97,6 +100,7 @@ class _StoreScreenState extends State<StoreScreen> {
       roadDistances: roadDistances,
       euroPerKm: widget.mobility.effectiveEuroPerKm,
       marketPrices: widget.marketPrices,
+      openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
     );
     final roadDistance = roadDistances[widget.store.name];
     final shownDistance = roadDistance ?? widget.store.distanceKm;

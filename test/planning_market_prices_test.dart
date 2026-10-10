@@ -79,4 +79,23 @@ void main() {
     expect(quote!.total, 0.79);
   });
 
+  test('planning applies the configured Open Prices age', () {
+    final prices = planningMarketPrices(
+      exactPrices: [
+        MarketPrice(
+          productId: 'schmand',
+          storeName: 'Lidl',
+          price: 0.89,
+          updatedAt: DateTime(2026, 9, 20),
+          source: MarketPriceSource.openPrices,
+        ),
+      ],
+      familyPrices: const [],
+      now: DateTime(2026, 9, 24),
+      openPricesMaxAgeDays: 3,
+    );
+
+    expect(prices, isEmpty);
+  });
+
 }

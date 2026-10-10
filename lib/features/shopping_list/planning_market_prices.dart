@@ -9,9 +9,20 @@ List<MarketPrice> planningMarketPrices({
   required Iterable<MarketPrice> exactPrices,
   required Iterable<MarketPrice> familyPrices,
   DateTime? now,
+  int openPricesMaxAgeDays = 60,
 }) {
   final today = now ?? DateTime.now();
-  final selected = preferredMarketPricesByKey(familyPrices, today);
-  selected.addAll(preferredMarketPricesByKey(exactPrices, today));
+  final selected = preferredMarketPricesByKey(
+    familyPrices,
+    today,
+    openPricesMaxAgeDays: openPricesMaxAgeDays,
+  );
+  selected.addAll(
+    preferredMarketPricesByKey(
+      exactPrices,
+      today,
+      openPricesMaxAgeDays: openPricesMaxAgeDays,
+    ),
+  );
   return selected.values.toList(growable: false);
 }

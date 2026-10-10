@@ -11,6 +11,7 @@ class ShellRouting {
     required this.offers,
     required this.mobility,
     required this.marketPrices,
+    this.openPricesMaxAgeDays = 60,
     required this.roadDistances,
     required this.roadMatrix,
   });
@@ -19,6 +20,7 @@ class ShellRouting {
   final List<Offer> offers;
   final MobilitySettings mobility;
   final List<MarketPrice> marketPrices;
+  final int openPricesMaxAgeDays;
   final Map<String, double> roadDistances;
   final RoadRouteMatrix? roadMatrix;
 
@@ -38,6 +40,7 @@ class ShellRouting {
           travelMinutesPerKm: 60 / mobility.mode.averageSpeedKmh,
           enabledStoreNames: mobility.enabledStoreNames,
           marketPrices: marketPrices,
+          openPricesMaxAgeDays: openPricesMaxAgeDays,
           roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
         );
 }

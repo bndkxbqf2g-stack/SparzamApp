@@ -48,11 +48,13 @@ StoreShoppingSummary buildStoreShoppingSummary(
   List<Offer> offers, {
   DateTime? now,
   List<MarketPrice> marketPrices = const <MarketPrice>[],
+  int openPricesMaxAgeDays = 60,
 }) {
   final resolver = RoutePriceResolver(
     offers,
     now: now,
     marketPrices: marketPrices,
+    openPricesMaxAgeDays: openPricesMaxAgeDays,
   );
   final lines = <StoreShoppingLine>[];
   final unpricedItems = <ListItem>[];

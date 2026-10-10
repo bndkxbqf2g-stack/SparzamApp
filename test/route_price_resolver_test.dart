@@ -249,6 +249,31 @@ void main() {
     expect(quote, isNull);
   });
 
+  test('configured Open Prices age is enforced when prices enter the resolver', () {
+    const noCatalogPrice = Store(
+      name: 'Markt',
+      location: 'Ort',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    final quote = RoutePriceResolver(
+      const [],
+      now: DateTime(2026, 9, 24),
+      openPricesMaxAgeDays: 3,
+      marketPrices: [
+        MarketPrice(
+          productId: 'test',
+          storeName: 'Markt',
+          price: 0.79,
+          updatedAt: DateTime(2026, 9, 20),
+          source: MarketPriceSource.openPrices,
+        ),
+      ],
+    ).quote(noCatalogPrice, ListItem(product: product));
+
+    expect(quote, isNull);
+  });
+
   test('future manual price is not routable before its observation date', () {
     const noCatalogPrice = Store(
       name: 'Markt',
