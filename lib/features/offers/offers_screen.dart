@@ -457,8 +457,10 @@ String _offerCategory(OfferImportRecord record) {
   if (RegExp(r'brot|bröt|toast|backwaren|croissant').hasMatch(value)) {
     return 'Backwaren';
   }
-  if (RegExp(r'getränk|wasser|saft|cola|bier|wein|kaffee|tee')
-      .hasMatch(value)) {
+  if (RegExp(r'kaffee|espresso|tee|snack|chips|knabber').hasMatch(value)) {
+    return 'Kaffee & Snacks';
+  }
+  if (RegExp(r'getränk|wasser|saft|cola|bier|wein').hasMatch(value)) {
     return 'Getränke';
   }
   if (RegExp(r'tiefkühl|tk |pizza|eis ').hasMatch(value)) return 'Tiefkühl';
