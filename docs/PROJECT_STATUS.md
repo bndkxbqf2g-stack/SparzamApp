@@ -6,11 +6,28 @@
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
-- Letzter geprüfter Code-Stand auf main: `dd0f967` (die konfigurierte Open-Prices-Altersgrenze gilt auch bei der Kandidatenauswahl); der aktuelle Dokumentationsstand ist dieser Status-PR.
+- Letzter geprüfter Code-Stand auf main: `d4509d2` (die konfigurierte Open-Prices-Altersgrenze gilt jetzt durchgängig bis in Routen- und Marktübersichten); der aktuelle Dokumentationsstand ist dieser Status-PR.
 - Für PR #199 waren die erfolgreichen PR-CI-Läufe `38003290934` und `38003299640`; die nachgelagerten Main-/Release-Läufe `38004009649` und `38004009647` waren ebenfalls erfolgreich.
 - Der Dokumentations-Merge aus PR #200 wurde mit denselben Main-/Release-Läufen erneut erfolgreich geprüft.
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
+
+## Update 10.10.2026 – Konfigurierte Open-Prices-Frist erreicht Route und Marktübersicht
+- Die eingestellte maximale Gültigkeitsdauer für Open Prices wird jetzt durch
+  die gemeinsame Preis-Auswahl, die Planungsprojektion, den Route-Resolver,
+  die Routenoptimierung und die Marktübersicht gereicht. Damit bleibt die
+  Einstellung auch dann wirksam, wenn ein Aufrufer eine ungefilterte
+  Beobachtungsliste übergibt.
+- Veraltete Open-Prices-Beobachtungen werden nicht als Marktpreis,
+  Angebotsvergleich oder Ersparnisgrundlage verwendet. Manuelle Preise,
+  Bonpreise, Quellen und Beobachtungsdaten behalten ihre bisher getrennten
+  Frische- und Vertrauensregeln.
+- PR #219 (`65e10ee`, Merge `d4509d2`) ergänzt Regressionen für Resolver und
+  Planungsprojektion sowie die Weitergabe bis in Route, Budget, Marktansicht
+  und Angebotsdetails. Die PR-CI-Läufe `38018075829` und `38018068741`,
+  Main-CI `38018335346` sowie Release `38018335352` waren mit Analyse,
+  vollständigen Tests, Web-/Pages-Build, Deployment und Android-APK
+  erfolgreich.
 
 ## Update 10.10.2026 – Kandidatenauswahl übernimmt die Open-Prices-Altersgrenze
 - Wenn ein bestehender Listeneintrag auf konkrete Produktvarianten geprüft
