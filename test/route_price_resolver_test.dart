@@ -249,6 +249,26 @@ void main() {
     expect(quote, isNull);
   });
 
+  test('future manual price is not routable before its observation date', () {
+    const noCatalogPrice = Store(
+      name: 'Markt',
+      location: 'Ort',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    final quote = RoutePriceResolver(const [], marketPrices: [
+      MarketPrice(
+        productId: 'test',
+        storeName: 'Markt',
+        price: 0.79,
+        updatedAt: DateTime(2026, 9, 25),
+      ),
+    ], now: DateTime(2026, 9, 24))
+        .quote(noCatalogPrice, ListItem(product: product));
+
+    expect(quote, isNull);
+  });
+
   test('stale receipt leaves an unknown store unresolved', () {
     const missingStore = Store(
       name: 'Unbekannt',
