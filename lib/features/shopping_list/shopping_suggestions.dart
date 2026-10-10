@@ -201,6 +201,20 @@ String? recommendedShoppingProductId({
   required bool hasAlternatives,
 }) {
   if (!hasAlternatives) return null;
+  return currentShoppingProductId(
+    suggestions: suggestions,
+    priceFor: priceFor,
+  );
+}
+
+/// Returns the first suggestion backed by current evidence, independent of
+/// whether the UI has enough alternatives to show a recommendation badge.
+/// This is used by the Enter path, where one current product is still safe to
+/// accept even though there is no choice to label.
+String? currentShoppingProductId({
+  required Iterable<Product> suggestions,
+  required ShoppingSuggestionPrice? Function(Product product) priceFor,
+}) {
   for (final product in suggestions) {
     final price = priceFor(product);
     if (price != null && !price.isHistorical) return product.id;

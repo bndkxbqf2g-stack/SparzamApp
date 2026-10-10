@@ -202,6 +202,11 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     );
   }
 
+  String? get submitSuggestionId => currentShoppingProductId(
+        suggestions: suggestions,
+        priceFor: suggestionPriceFor,
+      );
+
   List<Product> get relatedInterpretations =>
       buildRelatedProductInterpretations(
         query: controller.text,
@@ -493,7 +498,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   final selected = shoppingProductForSubmit(
                     query: name,
                     suggestions: suggestions,
-                    recommendedProductId: recommendedSuggestionId,
+                    recommendedProductId: submitSuggestionId,
                   );
                   if (selected != null) {
                     add(selected);
