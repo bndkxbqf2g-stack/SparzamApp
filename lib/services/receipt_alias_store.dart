@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../data/stores.dart';
 import '../models/receipt_alias.dart';
 import 'store_identity.dart';
 
@@ -34,6 +35,7 @@ class ReceiptAliasStore {
   }) async {
     final normalized = normalizeReceiptAlias(rawLabel);
     if (normalized.isEmpty) return;
+    final canonicalStore = canonicalReceiptAliasStoreName(storeName);
     final current = await load();
     final byKey = <String, ReceiptAlias>{
       for (final item in current) item.key: item,
@@ -48,7 +50,7 @@ class ReceiptAliasStore {
     }
     if (previous != null) byKey.remove(previous.key);
     final next = ReceiptAlias(
-      storeName: storeName,
+      storeName: canonicalStore,
       normalizedLabel: normalized,
       productId: productId,
       confirmations: previous?.productId == productId
@@ -101,8 +103,17 @@ String normalizeReceiptAlias(String value) => value
     .replaceAll(RegExp(r'\s+'), ' ')
     .trim();
 
+/// Keeps learned receipt aliases on the configured market identity.
+///
+/// Receipt OCR may include a town or use a spelling such as `ALDI SUED`.
+/// Unknown labels remain untouched so an alias can still be reviewed instead
+/// of being assigned to an unrelated market.
+String canonicalReceiptAliasStoreName(String value) =>
+    canonicalStoreName(value, stores) ?? value.trim();
+
 bool _sameAliasStore(String left, String right) =>
-    _normalizeAliasStore(left) == _normalizeAliasStore(right);
+    _normalizeAliasStore(canonicalReceiptAliasStoreName(left)) ==
+        _normalizeAliasStore(canonicalReceiptAliasStoreName(right));
 
 bool _sameAliasLabel(String left, String right) =>
     _foldReceiptAlias(left) == _foldReceiptAlias(right);
