@@ -16,6 +16,7 @@ class ShoppingPriceBadge extends StatelessWidget {
     required this.prices,
     required this.offers,
     required this.enabledStores,
+    this.openPricesMaxAgeDays = 60,
     this.historicalPriceObservations = const <PriceObservation>[],
     this.prospectPriceHistory = const {},
     this.onOpenOffer,
@@ -25,6 +26,7 @@ class ShoppingPriceBadge extends StatelessWidget {
   final List<MarketPrice> prices;
   final List<Offer> offers;
   final List<String> enabledStores;
+  final int openPricesMaxAgeDays;
   final List<PriceObservation> historicalPriceObservations;
   final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
   final ValueChanged<Offer>? onOpenOffer;
@@ -37,6 +39,7 @@ class ShoppingPriceBadge extends StatelessWidget {
       offers: offers,
       prospectPriceHistory: prospectPriceHistory,
       enabledStores: enabledStores,
+      openPricesMaxAgeDays: openPricesMaxAgeDays,
     );
     final matrix = shoppingPriceMatrix(
       item,
@@ -44,6 +47,7 @@ class ShoppingPriceBadge extends StatelessWidget {
       offers: offers,
       prospectPriceHistory: prospectPriceHistory,
       enabledStores: enabledStores,
+      openPricesMaxAgeDays: openPricesMaxAgeDays,
     );
     final pricedMarkets = matrix.where((entry) => entry.hasCurrentQuote).length;
     final historicalMarkets = matrix

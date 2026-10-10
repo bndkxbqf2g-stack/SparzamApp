@@ -16,6 +16,7 @@ Future<List<Product>?> showShoppingCandidateSelector({
   required List<ReceiptPriceStat> receiptPriceStats,
   Map<String, ProspectPriceHistorySummary> prospectPriceHistory = const {},
   required List<String> enabledStores,
+  int openPricesMaxAgeDays = 60,
 }) {
   final candidates = buildShoppingCandidates(
     request: request,
@@ -25,6 +26,7 @@ Future<List<Product>?> showShoppingCandidateSelector({
     receiptPriceStats: receiptPriceStats,
     prospectPriceHistory: prospectPriceHistory,
     enabledStores: enabledStores,
+    openPricesMaxAgeDays: openPricesMaxAgeDays,
   );
   return showModalBottomSheet<List<Product>>(
     context: context,

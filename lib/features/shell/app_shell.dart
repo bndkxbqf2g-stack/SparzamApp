@@ -1264,6 +1264,7 @@ class _AppShellState extends State<AppShell> {
       mobility: mobility,
       catalogProducts: catalogProducts,
       marketPrices: planningMarketPrices,
+      openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
       priceObservations: [...planningMarketPrices],
       historicalPriceObservations: historicalPriceObservations,
       prospectPriceHistory: prospectPriceHistorySummaries(

@@ -43,6 +43,28 @@ void main() {
         containsAll(<String>['gouda', 'edamer', 'bergkaese']));
   });
 
+  test('Open Prices remain visible as current candidate evidence', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda],
+      offers: const [],
+      marketPrices: [
+        MarketPrice(
+          productId: gouda.id,
+          storeName: 'Lidl',
+          price: 1.49,
+          updatedAt: DateTime(2026, 9, 26),
+          source: MarketPriceSource.openPrices,
+        ),
+      ],
+      receiptPriceStats: const [],
+      now: now,
+    );
+
+    expect(candidates.single.quotes.single.label, 'Open Prices');
+    expect(candidates.single.quotes.single.isHistorical, isFalse);
+  });
+
   test('concrete variant never includes a sibling variant', () {
     final candidates = buildShoppingCandidates(
       request: 'Bergkäse',

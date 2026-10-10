@@ -16,7 +16,7 @@ bool isSampleOffer(Offer offer) => sampleOffers.any(
       sample.offerPrice == offer.offerPrice,
 );
 
-enum ShoppingQuoteKind { receipt, ownPrice, offer, prospectHistory }
+enum ShoppingQuoteKind { receipt, ownPrice, openPrices, offer, prospectHistory }
 
 class ShoppingQuote {
   const ShoppingQuote({
@@ -39,6 +39,8 @@ class ShoppingQuote {
     ShoppingQuoteKind.receipt =>
       '${isHistorical ? 'Historischer ' : ''}Bonpreis vom ${_date(observedAt!)}',
     ShoppingQuoteKind.ownPrice => 'Eigener Preis vom ${_date(observedAt!)}',
+    ShoppingQuoteKind.openPrices =>
+      'Open-Prices-Preis vom ${_date(observedAt!)}',
     ShoppingQuoteKind.offer =>
       'Angebot${(offer!.hasCoupon || offer!.hasCashback) ? ', effektiv' : ''} '
           'bis ${_date(offer!.validUntil)}',
@@ -57,6 +59,7 @@ class ShoppingQuote {
     ShoppingQuoteKind.receipt =>
       isHistorical ? 'Historischer Bonpreis' : 'Bonpreis',
     ShoppingQuoteKind.ownPrice => 'Eigener Preis',
+    ShoppingQuoteKind.openPrices => 'Open Prices',
     ShoppingQuoteKind.offer =>
       'Angebot${(offer!.hasCoupon || offer!.hasCashback) ? ', effektiv' : ''}',
     ShoppingQuoteKind.prospectHistory => 'Prospekt-Median',
@@ -123,6 +126,7 @@ List<ShoppingQuote> shoppingQuotes(
   required List<Offer> offers,
   Map<String, ProspectPriceHistorySummary> prospectPriceHistory = const {},
   List<String> enabledStores = const [],
+  int openPricesMaxAgeDays = 60,
   DateTime? now,
 }) {
   final today = now ?? DateTime.now();
@@ -130,8 +134,12 @@ List<ShoppingQuote> shoppingQuotes(
 
   for (final price in prices) {
     if (price.productId != item.product.id ||
-        price.source == MarketPriceSource.openPrices ||
         _isFutureObservation(price.updatedAt, today) ||
+        (price.source == MarketPriceSource.openPrices &&
+            !price.isUsable(
+              now: today,
+              openPricesMaxAgeDays: openPricesMaxAgeDays,
+            )) ||
         !price.price.isFinite ||
         price.price <= 0 ||
         (enabledStores.isNotEmpty &&
@@ -144,6 +152,8 @@ List<ShoppingQuote> shoppingQuotes(
         unitPrice: price.price,
         kind: price.source == MarketPriceSource.receipt
             ? ShoppingQuoteKind.receipt
+            : price.source == MarketPriceSource.openPrices
+            ? ShoppingQuoteKind.openPrices
             : ShoppingQuoteKind.ownPrice,
         observedAt: price.updatedAt,
         historical: price.source == MarketPriceSource.receipt &&
@@ -244,6 +254,7 @@ List<ShoppingPriceMatrixEntry> shoppingPriceMatrix(
   required List<Offer> offers,
   Map<String, ProspectPriceHistorySummary> prospectPriceHistory = const {},
   List<String> enabledStores = const [],
+  int openPricesMaxAgeDays = 60,
   DateTime? now,
 }) {
   final quotes = shoppingQuotes(
@@ -252,6 +263,7 @@ List<ShoppingPriceMatrixEntry> shoppingPriceMatrix(
     offers: offers,
     prospectPriceHistory: prospectPriceHistory,
     enabledStores: enabledStores,
+    openPricesMaxAgeDays: openPricesMaxAgeDays,
     now: now,
   );
   final configuredNames = enabledStores.isEmpty
@@ -313,7 +325,9 @@ int _compareMatrixQuotes(ShoppingQuote a, ShoppingQuote b) {
 
 int _quoteSourceOrder(ShoppingQuote quote) => switch (quote.kind) {
   ShoppingQuoteKind.offer => 0,
-  ShoppingQuoteKind.receipt || ShoppingQuoteKind.ownPrice => 1,
+  ShoppingQuoteKind.receipt ||
+  ShoppingQuoteKind.ownPrice ||
+  ShoppingQuoteKind.openPrices => 1,
   ShoppingQuoteKind.prospectHistory => 2,
 };
 
