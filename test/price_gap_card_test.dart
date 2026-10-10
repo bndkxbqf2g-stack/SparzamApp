@@ -34,8 +34,8 @@ void main() {
       ),
     );
 
-    expect(find.text('Preis ergänzen'), findsOneWidget);
-    await tester.tap(find.text('Preis ergänzen'));
+    expect(find.text('Produkt oder Preis ergänzen'), findsOneWidget);
+    await tester.tap(find.text('Produkt oder Preis ergänzen'));
     await tester.pump();
 
     expect(selected?.item.product.id, 'milk');

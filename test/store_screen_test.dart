@@ -97,10 +97,10 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Preis ergänzen'), findsOneWidget);
+    expect(find.text('Produkt oder Preis ergänzen'), findsOneWidget);
     await tester.drag(find.byType(ListView), const Offset(0, -320));
     await tester.pump();
-    await tester.tap(find.text('Preis ergänzen'));
+    await tester.tap(find.text('Produkt oder Preis ergänzen'));
     await tester.pump();
 
     expect(selected?.item.product.id, milk.id);
