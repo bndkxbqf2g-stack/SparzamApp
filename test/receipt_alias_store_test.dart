@@ -125,4 +125,36 @@ void main() {
     );
     expect((await store.load()), hasLength(1));
   });
+
+  test('receipt branch labels share the configured market identity', () async {
+    final store = ReceiptAliasStore();
+    await store.confirm(
+      storeName: 'Lidl · Zellingen',
+      rawLabel: 'Vollmilch',
+      productId: 'milk-15',
+      now: DateTime(2026, 9, 24),
+    );
+    await store.confirm(
+      storeName: 'Lidl',
+      rawLabel: 'Vollmilch',
+      productId: 'milk-15',
+      now: DateTime(2026, 9, 25),
+    );
+
+    expect(
+      (await store.load()).single.storeName,
+      'Lidl',
+    );
+    expect(
+      await store.learnedProductId(
+        storeName: 'Lidl · Zellingen',
+        rawLabel: 'Vollmilch',
+      ),
+      'milk-15',
+    );
+  });
+
+  test('unknown receipt market labels remain reviewable', () {
+    expect(canonicalReceiptAliasStoreName('Mein Hofladen'), 'Mein Hofladen');
+  });
 }

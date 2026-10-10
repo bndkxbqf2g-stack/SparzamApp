@@ -13,6 +13,14 @@
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
+## Update 10.10.2026 – Bon-Aliase verwenden die konfigurierte Marktidentität
+- Gültige Bon-Aliase werden beim Speichern und Nachschlagen auf die
+  konfigurierte Marktidentität normalisiert. OCR-Varianten wie „ALDI SUED“
+  sowie Händlertexte mit Ortszusatz teilen dadurch dieselbe Lernhistorie.
+- Unbekannte Händlerbezeichnungen bleiben unverändert und werden nicht
+  automatisch einem Markt zugeordnet. Die Regression deckt Bestätigung,
+  erneutes Lernen und die Abwärtskompatibilität unbekannter Händler ab.
+
 ## Update 10.10.2026 – Bekannte Suchfamilien öffnen die Produktauswahl
 - Beim freien Fallback einer bekannten Anfrage wie „Milch“ öffnet die
   Einkaufsliste jetzt direkt die konkrete Variantenauswahl mit belegten Preisen.

@@ -734,3 +734,11 @@ Angebote und belegte Preise bleiben dadurch vor der Listenübernahme sichtbar;
 eine Familienanfrage wird nicht stillschweigend als unbepreister Eigenartikel
 gespeichert. Nur unbekannter Freitext darf direkt als eigener Artikel angelegt
 werden.
+
+## D107 – Bon-Aliase werden auf konfigurierte Marktidentitäten normalisiert
+Bon-OCR darf einen Markt mit abweichender Schreibweise oder Ortszusatz
+liefern. Beim Lernen und Nachschlagen wird deshalb zuerst die konfigurierte
+Marktidentität verwendet, sofern sie eindeutig erkannt wird; bestehende
+unbekannte Händlerlabels bleiben unverändert. So verbindet die Lernhistorie
+„ALDI SUED“ mit „ALDI Süd“ und „Lidl · Zellingen“ mit „Lidl“, ohne Preise
+einem beliebigen Händler per Teilstring zuzuordnen.
