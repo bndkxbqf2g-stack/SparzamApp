@@ -726,3 +726,11 @@ als Hinweis gekennzeichnet. Erst die explizite Nutzerwahl ersetzt die
 unbestimmte Listenposition durch konkrete Produktidentitäten. Unbekannter
 Freitext bleibt im manuellen Preiseditor, weil eine automatische Erweiterung
 dort eine unbelegte Produktidentität erzeugen würde.
+
+## D106 – Bekannte Suchfamilien wählen nicht über den freien Fallback
+Wenn die Einkaufssuche eine bekannte Produktfamilie erkennt, führt auch die
+zusätzliche Fallback-Kachel in die konkrete Kandidatenauswahl. Aktuelle
+Angebote und belegte Preise bleiben dadurch vor der Listenübernahme sichtbar;
+eine Familienanfrage wird nicht stillschweigend als unbepreister Eigenartikel
+gespeichert. Nur unbekannter Freitext darf direkt als eigener Artikel angelegt
+werden.

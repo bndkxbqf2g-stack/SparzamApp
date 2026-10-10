@@ -65,6 +65,60 @@ void main() {
     expect(find.text('Milch 1,5 % · Empfehlung'), findsOneWidget);
   });
 
+  testWidgets('known family fallback opens concrete product selection', (
+    tester,
+  ) async {
+    var chooserOpened = false;
+    var customAdded = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ShoppingSearchResults(
+            query: 'Milch',
+            suggestions: const [product],
+            relatedInterpretations: const [],
+            preferredProductByGroup: const {},
+            recentPurchases: const [],
+            onChooseKnownProduct: () => chooserOpened = true,
+            onAdd: (_) {},
+            onAddCustom: () => customAdded = true,
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('„Milch“ konkret auswählen'), findsOneWidget);
+    expect(find.text('Varianten und belegte Preise auswählen.'), findsOneWidget);
+    await tester.tap(find.text('„Milch“ konkret auswählen'));
+
+    expect(chooserOpened, isTrue);
+    expect(customAdded, isFalse);
+  });
+
+  testWidgets('unknown free text remains a custom list item', (tester) async {
+    var customAdded = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ShoppingSearchResults(
+            query: 'Sonderwunsch',
+            suggestions: const [],
+            relatedInterpretations: const [],
+            preferredProductByGroup: const {},
+            recentPurchases: const [],
+            onAdd: (_) {},
+            onAddCustom: () => customAdded = true,
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('„Sonderwunsch“ hinzufügen'), findsOneWidget);
+    await tester.tap(find.text('„Sonderwunsch“ hinzufügen'));
+
+    expect(customAdded, isTrue);
+  });
+
   testWidgets('shopping search labels learned leaflet prices as historical', (
     tester,
   ) async {
