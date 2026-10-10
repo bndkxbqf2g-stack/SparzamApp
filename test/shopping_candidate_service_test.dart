@@ -65,6 +65,28 @@ void main() {
     expect(candidates.single.quotes.single.isHistorical, isFalse);
   });
 
+  test('candidate selection respects the configured Open Prices age', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda],
+      offers: const [],
+      marketPrices: [
+        MarketPrice(
+          productId: gouda.id,
+          storeName: 'Lidl',
+          price: 1.49,
+          updatedAt: DateTime(2026, 9, 20),
+          source: MarketPriceSource.openPrices,
+        ),
+      ],
+      receiptPriceStats: const [],
+      now: now,
+      openPricesMaxAgeDays: 3,
+    );
+
+    expect(candidates.single.quotes, isEmpty);
+  });
+
   test('concrete variant never includes a sibling variant', () {
     final candidates = buildShoppingCandidates(
       request: 'Bergkäse',
