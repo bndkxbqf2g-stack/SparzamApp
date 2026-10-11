@@ -48,6 +48,11 @@ void main() {
     expect(find.text('Angebote'), findsOneWidget);
     expect(find.text('Deine Favoriten'), findsOneWidget);
     expect(find.text('Weitere Prospekte'), findsOneWidget);
+    await tester.drag(
+      find.byKey(const ValueKey('prospect-bring-scroll')),
+      const Offset(0, -480),
+    );
+    await tester.pumpAndSettle();
     expect(find.text('Alle Prospekte'), findsOneWidget);
     expect(find.byKey(const ValueKey('prospect-grid')), findsOneWidget);
     expect(find.byKey(const ValueKey('prospect-location-pill')), findsOneWidget);
