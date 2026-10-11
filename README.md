@@ -103,6 +103,9 @@ Bonimporte, eigene Preise oder andere belegte Quellen routenfähig.
 - Marktübergreifende Treffer zeigen zusätzlich den im Prospektfeed gelieferten
   Filialort, damit gleiche Händler und unterschiedliche Standorte nicht
   verwechselt werden.
+- Wenn der Feed eine Adresse pro Filialdatensatz liefert, bleibt sie am
+  Prospektangebot und an der Artikelkarte sichtbar und wird beim Umwandeln in
+  ein gespeichertes Angebot mitgeführt.
 - Händlerchips erlauben die direkte Auswahl eines Marktes; sie filtern dieselben
   aktuellen, nachgewiesenen Artikelkarten wie die Volltext- und Kategorieauswahl.
 - Der zuletzt erfolgreich validierte öffentliche Feed bleibt lokal als Cache verfügbar, wenn der nächste Abruf vorübergehend scheitert. Auch Cache-Daten werden vor Anzeige und Routenplanung nach ihrer Angebotsgültigkeit gefiltert und als Cache-Ergebnis kenntlich gemacht.
