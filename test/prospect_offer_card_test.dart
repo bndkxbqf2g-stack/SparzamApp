@@ -18,6 +18,7 @@ void main() {
       validUntil: DateTime(2026, 10, 2),
       source: 'leaflet',
       proofRef: 'https://example.test/lidl/oat-1',
+      location: 'Zellingen',
     );
 
     await tester.pumpWidget(
@@ -39,6 +40,7 @@ void main() {
 
     expect(find.text('0,99 €'), findsOneWidget);
     expect(find.text('Lidl'), findsOneWidget);
+    expect(find.text('Zellingen'), findsOneWidget);
     expect(find.text('Gültig bis 02.10.2026'), findsOneWidget);
     expect(find.text('-23 %'), findsOneWidget);
 

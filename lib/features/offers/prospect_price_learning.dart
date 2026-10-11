@@ -43,7 +43,7 @@ List<PriceObservation> prospectPriceObservations({
         record.sourceId.trim().isEmpty ||
         record.storeName.trim().isEmpty ||
         record.productLabel.trim().isEmpty ||
-        record.proofRef?.trim().isNotEmpty != true ||
+        !hasTrustedOfferProofReference(record.proofRef) ||
         !record.offerPrice.isFinite ||
         record.offerPrice <= 0 ||
         (record.originalPrice != null &&
@@ -93,6 +93,8 @@ List<PriceObservation> prospectPriceObservations({
         kind: PriceObservationKind.offer,
         validFrom: record.validFrom,
         validUntil: record.validUntil,
+        locationId: record.branchId,
+        region: record.location,
         proofRef: record.proofRef,
         discounted: true,
         identityConfidence: confidence,
@@ -123,6 +125,8 @@ List<PriceObservation> prospectPriceObservations({
           kind: PriceObservationKind.regular,
           validFrom: record.validFrom,
           validUntil: record.validUntil,
+          locationId: record.branchId,
+          region: record.location,
           proofRef: record.proofRef,
           identityConfidence: confidence,
         ),
@@ -138,3 +142,4 @@ PriceObservationSource? _source(String source) => switch (source) {
   'retailerWebsite' => PriceObservationSource.retailerWebsite,
   _ => null,
 };
+

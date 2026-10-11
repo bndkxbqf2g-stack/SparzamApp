@@ -192,5 +192,9 @@ Offer? _offerForProduct(
     source: record.source,
     proofRef: record.proofRef,
     imageUrl: record.imageUrl,
+    locationId: record.branchId,
+    region: record.location,
+    address: record.address,
   );
 }
+
