@@ -43,7 +43,7 @@ List<PriceObservation> prospectPriceObservations({
         record.sourceId.trim().isEmpty ||
         record.storeName.trim().isEmpty ||
         record.productLabel.trim().isEmpty ||
-        record.proofRef?.trim().isNotEmpty != true ||
+        !hasTrustedOfferProofReference(record.proofRef) ||
         !record.offerPrice.isFinite ||
         record.offerPrice <= 0 ||
         (record.originalPrice != null &&
@@ -138,3 +138,4 @@ PriceObservationSource? _source(String source) => switch (source) {
   'retailerWebsite' => PriceObservationSource.retailerWebsite,
   _ => null,
 };
+
