@@ -11,6 +11,7 @@ import '../offers/offer_filter.dart';
 import 'prospect_offer_card.dart';
 import 'prospect_feed_status.dart';
 import 'prospect_page_offer_dialog.dart';
+import '../../services/prospect_favorites_store.dart';
 
 class ProspectsScreen extends StatefulWidget {
   const ProspectsScreen({
@@ -25,6 +26,7 @@ class ProspectsScreen extends StatefulWidget {
     this.onRefreshProspects,
     this.prospectsRefreshing = false,
     this.onSaveOffer,
+    this.favoriteStore,
   });
 
   final List<OfferImportRecord> records;
@@ -37,6 +39,7 @@ class ProspectsScreen extends StatefulWidget {
   final Future<void> Function()? onRefreshProspects;
   final bool prospectsRefreshing;
   final Future<List<Offer>> Function(Offer offer)? onSaveOffer;
+  final ProspectFavoritesStore? favoriteStore;
 
   @override
   State<ProspectsScreen> createState() => _ProspectsScreenState();
@@ -48,10 +51,57 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
   String? selectedCategory;
   String? selectedStore;
   var _filtersExpanded = true;
+  final _bringScrollController = ScrollController();
+  final _moreProspectsKey = GlobalKey();
+  Set<String>? _favoriteStores;
+  late final ProspectFavoritesStore _favoriteStore;
+
+  @override
+  void initState() {
+    super.initState();
+    _favoriteStore = widget.favoriteStore ?? ProspectFavoritesStore();
+    _loadFavoriteStores();
+  }
+
+  Future<void> _loadFavoriteStores() async {
+    final loaded = await _favoriteStore.load();
+    if (!mounted) return;
+    setState(() => _favoriteStores = loaded);
+  }
+
+  Future<void> _toggleFavorite(String storeName) async {
+    final previous = _favoriteStores;
+    final next = {...(_favoriteStores ?? const <String>{})};
+    if (!next.add(storeName)) next.remove(storeName);
+    setState(() => _favoriteStores = next);
+    try {
+      await _favoriteStore.save(next);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _favoriteStores = previous);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Favorit konnte nicht gespeichert werden.')),
+      );
+    }
+  }
+
+  bool _isFavorite(ProspectIssue issue) =>
+      (_favoriteStores ?? const <String>{}).contains(issue.storeName);
+
+  void _scrollToMoreProspects() {
+    final target = _moreProspectsKey.currentContext;
+    if (target == null) return;
+    Scrollable.ensureVisible(
+      target,
+      duration: const Duration(milliseconds: 350),
+      curve: Curves.easeOut,
+    );
+  }
 
   @override
   void dispose() {
     searchController.dispose();
+    _bringScrollController.dispose();
     super.dispose();
   }
 
@@ -96,12 +146,18 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
     final hasSelection = query.trim().isNotEmpty ||
         activeCategory != null ||
         activeStore != null;
+    final favoriteProspects = _favoriteStores == null
+        ? visibleProspects.take(2).toList(growable: false)
+        : visibleProspects
+              .where((issue) => _favoriteStores!.contains(issue.storeName))
+              .toList(growable: false);
 
     return Theme(
       data: _bringTheme(context),
       child: ColoredBox(
         color: _bringBackground,
         child: ListView(
+          controller: _bringScrollController,
           key: const ValueKey('prospect-bring-scroll'),
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
           children: [
@@ -190,33 +246,40 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
               _BringSectionTitle(
                 title: 'Deine Favoriten',
                 actionLabel: 'Mehr ›',
+                onAction: _scrollToMoreProspects,
               ),
               const SizedBox(height: 10),
-              SizedBox(
-                height: 340,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: visibleProspects.length > 2 ? 2 : visibleProspects.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(width: 12),
-                  itemBuilder: (context, index) {
-                    final issue = visibleProspects[index];
-                    return _ProspectCard(
-                      issue: issue,
-                      compact: false,
-                      showLocation: true,
-                      showSummary: true,
-                      onTap: () => _openProspect(
-                        context,
-                        issue,
-                        currentRecords,
-                      ),
-                    );
-                  },
+              if (_favoriteStores != null && favoriteProspects.isEmpty)
+                const _EmptyFavoritesCard()
+              else
+                SizedBox(
+                  height: 340,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: favoriteProspects.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(width: 12),
+                    itemBuilder: (context, index) {
+                      final issue = favoriteProspects[index];
+                      return _ProspectCard(
+                        issue: issue,
+                        compact: false,
+                        showLocation: true,
+                        showSummary: true,
+                        isFavorite: _isFavorite(issue),
+                        onToggleFavorite: () => _toggleFavorite(issue.storeName),
+                        onTap: () => _openProspect(
+                          context,
+                          issue,
+                          currentRecords,
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ),
               const SizedBox(height: 24),
               _BringSectionTitle(
+                key: _moreProspectsKey,
                 title: 'Weitere Prospekte',
                 showFilter: true,
                 onFilter: () => setState(
@@ -253,6 +316,8 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                             compact: true,
                             showLocation: false,
                             showSummary: true,
+                            isFavorite: _isFavorite(issue),
+                            onToggleFavorite: () => _toggleFavorite(issue.storeName),
                             onTap: () => _openProspect(
                               context,
                               issue,
@@ -573,6 +638,8 @@ class _ProspectCard extends StatelessWidget {
   const _ProspectCard({
     required this.issue,
     required this.onTap,
+    required this.isFavorite,
+    required this.onToggleFavorite,
     this.compact = false,
     this.showLocation = true,
     this.showSummary = true,
@@ -580,6 +647,8 @@ class _ProspectCard extends StatelessWidget {
 
   final ProspectIssue issue;
   final VoidCallback onTap;
+  final bool isFavorite;
+  final VoidCallback onToggleFavorite;
   final bool compact;
   final bool showLocation;
   final bool showSummary;
@@ -675,20 +744,22 @@ class _ProspectCard extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 6),
-                          const Icon(
-                            Icons.favorite_border,
-                            color: Color(0xFFE96A73),
-                            size: 22,
+                          _ProspectFavoriteButton(
+                            storeName: issue.storeName,
+                            isFavorite: isFavorite,
+                            onPressed: onToggleFavorite,
+                            compact: false,
                           ),
                         ],
                       )
                     else
-                      const Align(
+                      Align(
                         alignment: Alignment.centerRight,
-                        child: Icon(
-                          Icons.favorite_border,
-                          color: Color(0xFFE96A73),
-                          size: 20,
+                        child: _ProspectFavoriteButton(
+                          storeName: issue.storeName,
+                          isFavorite: isFavorite,
+                          onPressed: onToggleFavorite,
+                          compact: true,
                         ),
                       ),
                     if (showLocation &&
@@ -728,6 +799,61 @@ class _ProspectCard extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProspectFavoriteButton extends StatelessWidget {
+  const _ProspectFavoriteButton({
+    required this.storeName,
+    required this.isFavorite,
+    required this.onPressed,
+    required this.compact,
+  });
+
+  final String storeName;
+  final bool isFavorite;
+  final VoidCallback onPressed;
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    final action = isFavorite
+        ? '$storeName aus Favoriten entfernen'
+        : '$storeName zu Favoriten hinzufügen';
+    return IconButton(
+      key: ValueKey('prospect-favorite-$storeName'),
+      tooltip: action,
+      onPressed: onPressed,
+      padding: EdgeInsets.zero,
+      constraints: BoxConstraints.tightFor(
+        width: compact ? 32 : 36,
+        height: compact ? 32 : 36,
+      ),
+      splashRadius: compact ? 17 : 19,
+      color: const Color(0xFFE96A73),
+      icon: Icon(
+        isFavorite ? Icons.favorite : Icons.favorite_border,
+        size: compact ? 20 : 22,
+      ),
+    );
+  }
+}
+
+class _EmptyFavoritesCard extends StatelessWidget {
+  const _EmptyFavoritesCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: _bringSurface,
+      child: const Padding(
+        padding: EdgeInsets.all(18),
+        child: Text(
+          'Noch keine Favoriten. Tippe auf das Herz, um einen Markt zu speichern.',
+          style: TextStyle(color: _bringMuted, height: 1.35),
         ),
       ),
     );
@@ -901,14 +1027,17 @@ class _BringHeader extends StatelessWidget {
 
 class _BringSectionTitle extends StatelessWidget {
   const _BringSectionTitle({
+    super.key,
     required this.title,
     this.actionLabel,
+    this.onAction,
     this.showFilter = false,
     this.onFilter,
   });
 
   final String title;
   final String? actionLabel;
+  final VoidCallback? onAction;
   final bool showFilter;
   final VoidCallback? onFilter;
 
@@ -928,12 +1057,21 @@ class _BringSectionTitle extends StatelessWidget {
           ),
         ),
         if (actionLabel != null)
-          Text(
-            actionLabel!,
-            style: const TextStyle(
-              color: _bringMuted,
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
+          TextButton(
+            onPressed: onAction,
+            style: TextButton.styleFrom(
+              foregroundColor: _bringMuted,
+              padding: EdgeInsets.zero,
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: Text(
+              actionLabel!,
+              style: const TextStyle(
+                color: _bringMuted,
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         if (showFilter)
