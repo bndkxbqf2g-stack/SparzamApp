@@ -628,20 +628,8 @@ void main() {
     expect(find.text('Aktueller Kaffee'), findsOneWidget);
     expect(find.text('Alter Kaffee'), findsNothing);
   });
-}
 
-Future<void> _scrollProspects(
-  WidgetTester tester, {
-  double distance = 320,
-}) async {
-  final scrollable = find.byWidgetPredicate(
-    (widget) =>
-        widget is Scrollable && widget.axisDirection == AxisDirection.down,
-  );
-  await tester.drag(scrollable.first, Offset(0, -distance));
-  await tester.pumpAndSettle();
-
-  testWidgets('shows the record location in prospect search results', (
+    testWidgets('shows the record location in prospect search results', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -684,6 +672,17 @@ Future<void> _scrollProspects(
     expect(find.text('Filialstadt'), findsOneWidget);
     expect(find.text('Quellstadt'), findsNothing);
   });
+}
 
+Future<void> _scrollProspects(
+  WidgetTester tester, {
+  double distance = 320,
+}) async {
+  final scrollable = find.byWidgetPredicate(
+    (widget) =>
+        widget is Scrollable && widget.axisDirection == AxisDirection.down,
+  );
+  await tester.drag(scrollable.first, Offset(0, -distance));
+  await tester.pumpAndSettle();
 }
 
