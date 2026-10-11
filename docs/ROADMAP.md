@@ -361,3 +361,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   oder Händlerähnlichkeiten erfunden.
 - [x] Widgetregression deckt den sichtbaren Ort im Trefferpfad ab.
 
+## Update 11.10.2026 – Prospektartikel nach Händler auswählen
+- [x] Die Prospektansicht bietet Händlerchips für die direkte Marktfilterung.
+- [x] Die Filterung nutzt nur aktuell gültige Datensätze und den bestehenden
+  Nachweis-/Identitätsvertrag; sie erzeugt keinen Preis oder Marktbezug.
+- [x] Widgetregression prüft die Auswahl eines Händlers gegenüber einem zweiten
+  Markt.
+
