@@ -634,10 +634,7 @@ class _ProspectViewer extends StatelessWidget {
   Future<void> _addPageOffer(BuildContext context, ProspectPage page) async {
     final saveOffer = onSaveOffer;
     final addProduct = onAddProduct;
-    final addProductAndWait = onAddProductAndWait;
-    if (saveOffer == null || (addProduct == null && addProductAndWait == null)) {
-      return;
-    }
+    if (saveOffer == null || addProduct == null) return;
     final draft = await showProspectPageOfferDialog(
       context,
       initialValidUntil: issue.validUntil,
@@ -707,11 +704,7 @@ class _ProspectViewer extends StatelessWidget {
       }
       return;
     }
-    if (addProductAndWait != null) {
-      await addProductAndWait(entry.product);
-    } else {
-      addProduct!(entry.product);
-    }
+    addProduct(entry.product);
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('${entry.product.name} hinzugefügt')),
@@ -825,9 +818,7 @@ class _ProspectViewer extends StatelessWidget {
                           Text('Seite ${page.number}'),
                           const SizedBox(height: 6),
                           OutlinedButton.icon(
-                            onPressed: onSaveOffer == null ||
-                                    (onAddProduct == null &&
-                                        onAddProductAndWait == null)
+                            onPressed: onSaveOffer == null || onAddProduct == null
                                 ? null
                                 : () => _addPageOffer(context, page),
                             icon: const Icon(Icons.add_shopping_cart_outlined),
