@@ -3,6 +3,14 @@
 > Diese Datei ist der Einstiegspunkt für jeden neuen Chat und jeden Work-Lauf.
 > Vor Änderungen immer zuerst PROJECT_STATUS.md, ARCHITECTURE.md, ROADMAP.md und DECISIONS.md lesen und danach den aktuellen GitHub-Stand prüfen.
 
+## Update 11.10.2026 – Prospektgültigkeit bleibt bei fehlerhaften Feedwerten sicher
+- Der Feedparser verwirft Angebote mit syntaktisch ungültigem Startdatum,
+  widersprüchlichem Angebotszeitraum oder fehlerhaftem ausgewiesenem Normalpreis.
+- Ein kaputtes optionales Startdatum wird nicht mehr als fehlendes Datum
+  interpretiert und kann dadurch kein scheinbar aktuelles Angebot erzeugen.
+- Regressionen prüfen, dass valide Nachbarangebote erhalten bleiben und keine
+  ungesicherten Datensätze in die aktuelle Angebots- oder Preisprojektion gelangen.
+
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
