@@ -285,8 +285,8 @@ void main() {
 
       final savedItems = await stores.shoppingList.load();
       final savedOffers = await stores.offers.load();
-      expect(savedItems, hasLength(1));
       expect(savedOffers, hasLength(1));
+      expect(savedItems, hasLength(1));
       expect(savedOffers.single.source, 'leaflet');
       expect(savedItems.single.product.name, 'Käsesticks 300 g');
       expect(
