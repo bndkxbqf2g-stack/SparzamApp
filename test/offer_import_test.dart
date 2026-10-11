@@ -38,6 +38,8 @@ void main() {
         validUntil: DateTime(2026, 9, 26),
         source: 'leaflet',
         proofRef: 'leaflet:lidl:2026-09-25:p1',
+        branchId: 'L-42',
+        location: 'Zellingen',
       ),
       catalog,
     );
@@ -49,6 +51,8 @@ void main() {
     expect(result.offer!.offerPrice, 0.99);
     expect(result.offer!.validFrom, DateTime(2026, 9, 25));
     expect(result.offer!.proofRef, 'leaflet:lidl:2026-09-25:p1');
+    expect(result.offer!.locationId, 'L-42');
+    expect(result.offer!.region, 'Zellingen');
   });
 
   test('offer without stated regular price stays usable without inventing one', () {
@@ -158,3 +162,4 @@ void main() {
     expect(result.reason, 'invalid_price');
   });
 }
+
