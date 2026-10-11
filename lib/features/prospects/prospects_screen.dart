@@ -20,7 +20,6 @@ class ProspectsScreen extends StatefulWidget {
     this.prospects = const [],
     this.catalogProducts = const [],
     this.onAddProduct,
-    this.onAddProductAndWait,
     this.now,
     this.fromCache = false,
     this.generatedAt,
@@ -33,7 +32,6 @@ class ProspectsScreen extends StatefulWidget {
   final List<ProspectIssue> prospects;
   final List<Product> catalogProducts;
   final ValueChanged<Product>? onAddProduct;
-  final Future<void> Function(Product)? onAddProductAndWait;
   final DateTime? now;
   final bool fromCache;
   final DateTime? generatedAt;
@@ -618,7 +616,6 @@ class _ProspectViewer extends StatelessWidget {
     required this.records,
     required this.catalogProducts,
     this.onAddProduct,
-    this.onAddProductAndWait,
     this.now,
     this.onSaveOffer,
   });
@@ -627,7 +624,6 @@ class _ProspectViewer extends StatelessWidget {
   final List<OfferImportRecord> records;
   final List<Product> catalogProducts;
   final ValueChanged<Product>? onAddProduct;
-  final Future<void> Function(Product)? onAddProductAndWait;
   final DateTime? now;
   final Future<List<Offer>> Function(Offer offer)? onSaveOffer;
 
