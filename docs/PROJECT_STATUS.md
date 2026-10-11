@@ -1,5 +1,14 @@
 # SparzamApp – Projektstatus
 
+## Update 11.10.2026 – Bildseiten mit geprüfter manueller Übernahme
+- Bildbasierte Prospektseiten bieten jetzt eine ausdrückliche manuelle
+  Übernahme mit Bezeichnung, Angebots-/Normalpreis und Gültigkeitsende.
+- Der Seitenlink, das Bild, die Filiale und der Ort bleiben am gespeicherten
+  Angebot und an der Preisbeobachtung erhalten; der Nutzer bestätigt die
+  Angaben vor dem Speichern.
+- Automatische OCR bleibt davon getrennt und erzeugt weiterhin keine
+  ungeprüften Routenpreise.
+
 > Diese Datei ist der Einstiegspunkt für jeden neuen Chat und jeden Work-Lauf.
 > Vor Änderungen immer zuerst PROJECT_STATUS.md, ARCHITECTURE.md, ROADMAP.md und DECISIONS.md lesen und danach den aktuellen GitHub-Stand prüfen.
 
