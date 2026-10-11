@@ -664,8 +664,27 @@ class _ProspectViewer extends StatelessWidget {
       return;
     }
     final entry = entries.single;
+    // This is a user-reviewed page claim. Give it a stable non-import ID so
+    // the next automatic feed refresh cannot delete it as a transient feed
+    // projection.
+    final reviewedOffer = Offer(
+      id:
+          'manual-page|${issue.storeName}|${page.number}|${DateTime.now().microsecondsSinceEpoch}',
+      productId: entry.offer.productId,
+      storeName: entry.offer.storeName,
+      originalPrice: entry.offer.originalPrice,
+      originalPriceVerified: entry.offer.originalPriceVerified,
+      offerPrice: entry.offer.offerPrice,
+      validFrom: entry.offer.validFrom,
+      validUntil: entry.offer.validUntil,
+      source: entry.offer.source,
+      proofRef: entry.offer.proofRef,
+      imageUrl: entry.offer.imageUrl,
+      locationId: entry.offer.locationId,
+      region: entry.offer.region,
+    );
     try {
-      await saveOffer(entry.offer);
+      await saveOffer(reviewedOffer);
     } catch (_) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
