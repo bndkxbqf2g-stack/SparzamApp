@@ -18,7 +18,10 @@ void main() {
       MaterialApp(
         home: Column(
           children: [
-            ProspectFeedStatusCard(generatedAt: DateTime(2026, 10, 1, 12, 2)),
+            ProspectFeedStatusCard(
+              generatedAt: DateTime(2026, 10, 1, 12, 2),
+              now: DateTime(2026, 10, 1, 12, 3),
+            ),
             ProspectFeedStatusCard(fromCache: true),
           ],
         ),
@@ -186,4 +189,45 @@ void main() {
     expect(find.textContaining('0/1 Nachweise'), findsOneWidget);
     expect(find.text('aktuell'), findsOneWidget);
   });
+
+  test('uses a deterministic age threshold for the feed status', () {
+    final generatedAt = DateTime(2026, 10, 1, 12, 2);
+    expect(
+      isProspectFeedStale(
+        generatedAt,
+        now: DateTime(2026, 10, 3, 12, 2),
+      ),
+      isFalse,
+    );
+    expect(
+      isProspectFeedStale(
+        generatedAt,
+        now: DateTime(2026, 10, 3, 12, 3),
+      ),
+      isTrue,
+    );
+    expect(
+      isProspectFeedStale(
+        generatedAt,
+        now: DateTime(2026, 9, 30),
+      ),
+      isFalse,
+    );
+  });
+
+  testWidgets('explains when the live prospect feed is stale', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectFeedStatusCard(
+          generatedAt: DateTime(2026, 10, 1, 12, 2),
+          now: DateTime(2026, 10, 3, 12, 3),
+        ),
+      ),
+    );
+
+    expect(find.text('Prospektstand veraltet'), findsOneWidget);
+    expect(find.textContaining('älter als 48 Stunden'), findsOneWidget);
+    expect(find.text('Aktueller Prospektstand'), findsNothing);
+  });
+
 }

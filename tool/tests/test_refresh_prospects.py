@@ -767,5 +767,48 @@ ab Montag, 28.09.26
         offers, _ = refresh.parse_kaufland(html, "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html")
         self.assertEqual(offers, [])
 
+
+    def test_record_context_fills_missing_fields_without_overwriting_provider_values(self):
+        offers = [
+            {"productLabel": "Milch", "storeName": "EDEKA"},
+            {
+                "productLabel": "Butter",
+                "storeName": "EDEKA",
+                "branchId": "provider-branch",
+                "location": "Provider City",
+            },
+        ]
+        prospects = [
+            {"title": "EDEKA Wochenangebote"},
+            {
+                "title": "Provider page",
+                "branchId": "page-branch",
+                "location": "Page City",
+            },
+        ]
+
+        enriched_offers = refresh._attach_source_branch_metadata(
+            offers,
+            "edeka_zellingen",
+        )
+        enriched_prospects = refresh._attach_source_branch_metadata(
+            prospects,
+            "edeka_zellingen",
+        )
+
+        self.assertEqual(enriched_offers[0]["branchId"], "023738")
+        self.assertEqual(enriched_offers[0]["location"], "Zellingen")
+        self.assertEqual(
+            enriched_offers[0]["address"],
+            "Würzburger Str. 100, 97225 Zellingen, Germany",
+        )
+        self.assertEqual(enriched_offers[1]["branchId"], "provider-branch")
+        self.assertEqual(enriched_offers[1]["location"], "Provider City")
+        self.assertEqual(enriched_prospects[0]["branchId"], "023738")
+        self.assertEqual(enriched_prospects[0]["location"], "Zellingen")
+        self.assertEqual(enriched_prospects[1]["branchId"], "page-branch")
+        self.assertEqual(enriched_prospects[1]["location"], "Page City")
+        self.assertEqual(offers[0], {"productLabel": "Milch", "storeName": "EDEKA"})
+
 if __name__ == "__main__":
     unittest.main()
