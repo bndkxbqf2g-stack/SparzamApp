@@ -3,6 +3,13 @@
 > Diese Datei ist der Einstiegspunkt für jeden neuen Chat und jeden Work-Lauf.
 > Vor Änderungen immer zuerst PROJECT_STATUS.md, ARCHITECTURE.md, ROADMAP.md und DECISIONS.md lesen und danach den aktuellen GitHub-Stand prüfen.
 
+## Update 11.10.2026 – Offizielle Prospektlinks bleiben HTTP(S)-gebunden
+- Der Prospektreader öffnet den offiziellen Händlerlink nur noch, wenn der
+  Feed einen gültigen HTTP- oder HTTPS-Link mit Host liefert.
+- Ungültige oder fremde URI-Schemes bleiben sichtbar als Prospektmetadaten,
+  erzeugen aber keine externe Aktion. Eine Widgetregression sichert diesen
+  Review-Fall ab.
+
 ## Update 11.10.2026 – Prospektartikel direkt nach Händler filtern
 - Die Prospektansicht bietet neben Volltext und Kategorie jetzt eine direkte
   Marktauswahl. Händlerchips filtern die aktuell gültigen Artikel über dieselbe
