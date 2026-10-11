@@ -93,6 +93,26 @@ void main() {
     expect(summaries, isEmpty);
   });
 
+  test('unsafe prospect proof cannot set a historical median', () {
+    final summaries = prospectPriceHistorySummaries([
+      PriceObservation(
+        id: 'unsafe-proof',
+        productId: 'coffee-500',
+        storeName: 'Netto',
+        price: 5,
+        quantity: 500,
+        unit: 'g',
+        observedAt: DateTime(2026, 9, 20),
+        source: PriceObservationSource.leaflet,
+        kind: PriceObservationKind.offer,
+        validUntil: DateTime(2026, 9, 27),
+        proofRef: 'javascript:alert(1)',
+      ),
+    ], now: DateTime(2026, 9, 30));
+
+    expect(summaries, isEmpty);
+  });
+
   test('large prospect history can be summarized by product', () {
     final observations = [
       for (var i = 0; i < 1600; i++)
@@ -111,3 +131,4 @@ void main() {
     expect(summaries['item-0']!.observationCount, 8);
   });
 }
+
