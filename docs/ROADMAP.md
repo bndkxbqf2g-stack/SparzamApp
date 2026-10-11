@@ -380,4 +380,5 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Fehlende Nachweise bleiben als sichtbare Datenlücke bestehen und werden
   weder durch einen Händlerlink noch durch eine Preis- oder Identitätsannahme
   ersetzt.
-
+- [x] Ungültige URI-Schemes oder URLs ohne Host werden nicht als belastbarer
+  Originalnachweis gezählt.
