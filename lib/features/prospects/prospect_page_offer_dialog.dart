@@ -111,7 +111,7 @@ class _ProspectPageOfferDialogState extends State<_ProspectPageOfferDialog> {
     Navigator.of(context).pop(
       ProspectPageOfferDraft(
         productLabel: _labelController.text.trim(),
-        offerPrice: offerPrice,
+        offerPrice: offerPrice!,
         originalPrice: originalPrice,
         validUntil: validUntil,
       ),
@@ -217,6 +217,8 @@ class _ProspectPageOfferDialogState extends State<_ProspectPageOfferDialog> {
           ),
         ],
       );
+
+}
 
 String _formatDate(DateTime date) =>
     '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}';
