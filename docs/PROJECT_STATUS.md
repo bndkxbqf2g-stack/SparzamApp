@@ -1,5 +1,12 @@
 # SparzamApp – Projektstatus
 
+## Update 11.10.2026 – Filialadresse bleibt am Prospektangebot
+- Der Feed-Parser übernimmt die Adresse aus dem jeweiligen Angebotsdatensatz
+  und fällt deterministisch auf die nachweisbare Quellenadresse zurück.
+- Artikelkarten zeigen Ort und Adresse; die umgewandelten Angebote und lokalen
+  Backups speichern diese Felder gemeinsam mit Händler, Nachweis und Gültigkeit.
+- Produktidentität, Preisvergleich und Gültigkeitsprüfung bleiben unverändert.
+
 ## Update 11.10.2026 – Datensatz-Filialort in der Prospektansicht
 - Angebots- und Prospektsuche zeigen jetzt den Ort aus dem jeweiligen Feed-Datensatz, wenn dieser vorhanden ist.
 - Der Händler-/Issue-Ort und die konfigurierte Filiale bleiben nachvollziehbare Fallbacks; mehrere Datensatzorte werden gemeinsam sichtbar.
