@@ -56,7 +56,7 @@ void main() {
     );
 
     expect(find.text('Prospekte'), findsOneWidget);
-    expect(find.text('Alle Märkte'), findsOneWidget);
+    expect(find.text('Alle Märkte').first, findsOneWidget);
     expect(find.text('Zellingen'), findsOneWidget);
     expect(find.text('1 Angebote geladen'), findsOneWidget);
     expect(
@@ -353,7 +353,7 @@ void main() {
     );
 
     await _scrollProspects(tester);
-    await tester.tap(find.text('PENNY'));
+    await tester.tap(find.text('PENNY').last);
     await tester.pumpAndSettle();
     expect(
       find.text(
@@ -392,7 +392,7 @@ void main() {
     );
 
     await _scrollProspects(tester);
-    await tester.tap(find.textContaining('Lidl'));
+    await tester.tap(find.textContaining('Lidl').last);
     await tester.pumpAndSettle();
 
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
@@ -432,7 +432,7 @@ void main() {
     );
 
     await _scrollProspects(tester);
-    await tester.tap(find.textContaining('Lidl'));
+    await tester.tap(find.textContaining('Lidl').last);
     await tester.pumpAndSettle();
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
   });
@@ -459,13 +459,13 @@ void main() {
       ),
     );
 
-    expect(find.text('EDEKA'), findsOneWidget);
+    expect(find.text('EDEKA').first, findsOneWidget);
     expect(
       find.text('Keine aktuell gültigen Angebotsdaten geladen.'),
       findsOneWidget,
     );
     await _scrollProspects(tester);
-    await tester.tap(find.text('EDEKA'));
+    await tester.tap(find.text('EDEKA').last);
     await tester.pumpAndSettle();
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
   });
@@ -528,7 +528,7 @@ void main() {
 
     expect(find.text('1 Angebote geladen'), findsOneWidget);
     await _scrollProspects(tester);
-    await tester.tap(find.text('Lidl'));
+    await tester.tap(find.text('Lidl').last);
     await tester.pumpAndSettle();
     expect(find.text('Seite 1'), findsOneWidget);
     expect(find.text('Seite 99'), findsNothing);
