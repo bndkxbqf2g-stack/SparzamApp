@@ -2,6 +2,7 @@ import '../../models/offer.dart';
 import '../../models/product.dart';
 import '../catalog/product_identity.dart';
 import 'offer_filter.dart';
+import '../../services/prospect_branch_resolver.dart';
 
 class OfferImportRecord {
   const OfferImportRecord({
@@ -16,6 +17,9 @@ class OfferImportRecord {
     this.proofRef,
     this.imageUrl,
     this.category,
+    this.branchId,
+    this.location,
+    this.address,
   });
 
   final String sourceId;
@@ -33,6 +37,35 @@ class OfferImportRecord {
   /// The UI may fall back to its conservative label classifier when absent;
   /// this field is never inferred into product identity or price evidence.
   final String? category;
+
+  /// Source-provided branch context. These fields are provenance only; they
+  /// never make two differently labelled products the same identity.
+  final String? branchId;
+  final String? location;
+
+  /// Source-provided branch address kept with the exact offer record.
+  final String? address;
+}
+
+String prospectRecordLocationLabel(
+  String storeName,
+  Iterable<OfferImportRecord> records, {
+  String? fallbackLocation,
+}) {
+  final locations = <String>[];
+  for (final record in records) {
+    final location = record.location?.trim();
+    if (location == null ||
+        location.isEmpty ||
+        locations.contains(location)) {
+      continue;
+    }
+    locations.add(location);
+  }
+  if (locations.isNotEmpty) return locations.join(' · ');
+  final fallback = fallbackLocation?.trim();
+  if (fallback != null && fallback.isNotEmpty) return fallback;
+  return configuredProspectBranch(storeName)?.location ?? 'Filiale';
 }
 
 /// Returns only records belonging to a prospect that is valid today.
@@ -153,6 +186,9 @@ OfferImportResolution resolveOfferImport(
     source: record.source,
     proofRef: record.proofRef,
     imageUrl: record.imageUrl,
+    locationId: record.branchId,
+    region: record.location,
+    address: record.address,
   );
   return OfferImportResolution(record: record, product: product, offer: offer);
 }
@@ -164,3 +200,4 @@ bool _validPrices(OfferImportRecord record) {
       (regular == null ||
           (regular.isFinite && regular > 0 && record.offerPrice <= regular));
 }
+

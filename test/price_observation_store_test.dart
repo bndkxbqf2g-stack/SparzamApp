@@ -366,6 +366,8 @@ void main() {
       validUntil: DateTime(2026, 9, 26),
       source: 'leaflet',
       proofRef: 'leaflet:lidl:2026-09-25:p1',
+      locationId: 'L-42',
+      region: 'Zellingen',
     );
     final regular = regularObservationFromOffer(
       offer,
@@ -380,10 +382,14 @@ void main() {
     expect(regular.kind, PriceObservationKind.regular);
     expect(regular.source, PriceObservationSource.leaflet);
     expect(regular.proofRef, offer.proofRef);
+    expect(regular.locationId, 'L-42');
+    expect(regular.region, 'Zellingen');
     expect(regular.validUntil, DateTime(2026, 9, 26));
     expect(discounted.price, 1.99);
     expect(discounted.kind, PriceObservationKind.offer);
     expect(discounted.validFrom, DateTime(2026, 9, 25));
+    expect(discounted.locationId, 'L-42');
+    expect(discounted.region, 'Zellingen');
     expect(discounted.source, PriceObservationSource.leaflet);
   });
 

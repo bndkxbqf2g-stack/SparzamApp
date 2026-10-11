@@ -241,6 +241,20 @@ class _OfferSummary extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(fontSize: 12, color: Colors.black54),
         ),
+        if (record.location?.trim().isNotEmpty == true)
+          Text(
+            record.location!,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 12, color: Colors.black54),
+          ),
+        if (record.address?.trim().isNotEmpty == true)
+          Text(
+            record.address!,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 12, color: Colors.black54),
+          ),
         if (unit != null && unit.isNotEmpty && unit != 'Packung')
           Text(
             unit,

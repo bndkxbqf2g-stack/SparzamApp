@@ -62,6 +62,7 @@ void main() {
         validUntil: DateTime(2026, 10, 5),
         source: 'retailerWebsite',
         proofRef: 'https://example.test/milk',
+        address: 'Hauptstraße 1, 97225 Zellingen',
       ),
     ],
     marketPrices: [
@@ -148,6 +149,7 @@ void main() {
     expect(decoded.shoppingList.single.product.id, milk.id);
     expect(decoded.namedLists.single.name, 'Woche');
     expect(decoded.offers.single.proofRef, 'https://example.test/milk');
+    expect(decoded.offers.single.address, 'Hauptstraße 1, 97225 Zellingen');
     expect(decoded.marketPrices.single.source, MarketPriceSource.receipt);
     expect(decoded.priceHistory.single.source, PricePointSource.receipt);
     expect(decoded.receiptObservations.single.identityConfirmed, isTrue);
