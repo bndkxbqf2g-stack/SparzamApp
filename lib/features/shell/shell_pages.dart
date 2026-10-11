@@ -162,6 +162,7 @@ List<Widget> buildShellPages({
     prospectsRefreshing: prospectsRefreshing,
     catalogProducts: catalogProducts,
     onAddProduct: onAddProduct,
+    onSaveOffer: onSaveOffer,
   ),
   PricesHubScreen(
     onOpenCatalog: onOpenCatalog,
@@ -214,3 +215,4 @@ List<Widget> buildShellPages({
     ),
   ),
 ];
+
