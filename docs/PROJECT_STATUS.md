@@ -1,5 +1,10 @@
 # SparzamApp – Projektstatus
 
+## Update 11.10.2026 – Filialkontext bleibt an jedem Feed-Datensatz
+- Der Prospekt-Refresh schreibt den konfigurierten Filialschlüssel, Ort und Adresse jetzt zusätzlich an jedes erzeugte Angebot und jede Prospektseite.
+- Bereits vorhandener Anbieter-Kontext gewinnt; fehlende Felder fallen deterministisch auf die konfigurierte Filiale zurück.
+- Die Daten bleiben damit bis zur UI-Übernahme nachvollziehbar, ohne fehlende Filialen oder Preise zu ergänzen.
+
 ## Update 11.10.2026 – Veraltete Prospektfeeds sichtbar
 - Die Prospekt- und Angebotsansicht kennzeichnet einen Live-Feed älter als 48 Stunden als veraltet und bietet weiterhin die direkte Aktualisierung an.
 - Gültigkeitsprüfung und Quellenregeln bleiben unverändert: Die Warnung macht die Datenlage sichtbar, verlängert kein Angebot und erzeugt keinen Preis.
