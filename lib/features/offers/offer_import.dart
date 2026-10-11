@@ -188,6 +188,7 @@ OfferImportResolution resolveOfferImport(
     imageUrl: record.imageUrl,
     locationId: record.branchId,
     region: record.location,
+    address: record.address,
   );
   return OfferImportResolution(record: record, product: product, offer: offer);
 }
