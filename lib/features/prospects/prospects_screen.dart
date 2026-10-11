@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../design/sparzam_theme.dart';
+import '../../models/offer.dart';
 import '../offers/offer_import.dart';
 import '../offers/prospect_offer_products.dart';
 import 'prospect_category_presentation.dart';
@@ -10,6 +11,7 @@ import '../../services/prospect_feed_service.dart';
 import '../offers/offer_filter.dart';
 import 'prospect_offer_card.dart';
 import 'prospect_feed_status.dart';
+import 'prospect_page_offer_dialog.dart';
 
 class ProspectsScreen extends StatefulWidget {
   const ProspectsScreen({
@@ -23,6 +25,7 @@ class ProspectsScreen extends StatefulWidget {
     this.generatedAt,
     this.onRefreshProspects,
     this.prospectsRefreshing = false,
+    this.onSaveOffer,
   });
 
   final List<OfferImportRecord> records;
@@ -34,6 +37,7 @@ class ProspectsScreen extends StatefulWidget {
   final DateTime? generatedAt;
   final Future<void> Function()? onRefreshProspects;
   final bool prospectsRefreshing;
+  final Future<List<Offer>> Function(Offer offer)? onSaveOffer;
 
   @override
   State<ProspectsScreen> createState() => _ProspectsScreenState();
@@ -204,6 +208,8 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                         records: currentRecords,
                         catalogProducts: widget.catalogProducts,
                         onAddProduct: widget.onAddProduct,
+                        now: widget.now,
+                        onSaveOffer: widget.onSaveOffer,
                       ),
                     ),
                   ),
@@ -605,12 +611,75 @@ class _ProspectViewer extends StatelessWidget {
     required this.records,
     required this.catalogProducts,
     this.onAddProduct,
+    this.now,
+    this.onSaveOffer,
   });
 
   final ProspectIssue issue;
   final List<OfferImportRecord> records;
   final List<Product> catalogProducts;
   final ValueChanged<Product>? onAddProduct;
+  final DateTime? now;
+  final Future<List<Offer>> Function(Offer offer)? onSaveOffer;
+
+  Future<void> _addPageOffer(BuildContext context, ProspectPage page) async {
+    final saveOffer = onSaveOffer;
+    final addProduct = onAddProduct;
+    if (saveOffer == null || addProduct == null) return;
+    final draft = await showProspectPageOfferDialog(
+      context,
+      initialValidUntil: issue.validUntil,
+    );
+    if (draft == null || !context.mounted) return;
+
+    final record = OfferImportRecord(
+      sourceId:
+          'manual-page|${issue.storeName}|${page.number}|${DateTime.now().microsecondsSinceEpoch}',
+      productLabel: draft.productLabel,
+      storeName: issue.storeName,
+      originalPrice: draft.originalPrice,
+      offerPrice: draft.offerPrice,
+      validFrom: issue.validFrom,
+      validUntil: draft.validUntil,
+      source: 'leaflet',
+      proofRef: page.zoomUrl ?? page.imageUrl,
+      imageUrl: page.imageUrl,
+      branchId: issue.branchId,
+      location: issue.location,
+    );
+    final entries = prospectOfferProducts(
+      records: [record],
+      catalogProducts: catalogProducts,
+      now: now ?? DateTime.now(),
+    );
+    if (entries.length != 1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Artikel konnte mit diesen Angaben nicht als aktuelles Angebot '
+            'gespeichert werden.',
+          ),
+        ),
+      );
+      return;
+    }
+    final entry = entries.single;
+    try {
+      await saveOffer(entry.offer);
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Angebot konnte nicht gespeichert werden.')),
+        );
+      }
+      return;
+    }
+    if (!context.mounted) return;
+    addProduct(entry.product);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('${entry.product.name} hinzugefügt')),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -713,7 +782,20 @@ class _ProspectViewer extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8),
-                      child: Text('Seite ${page.number}'),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text('Seite ${page.number}'),
+                          const SizedBox(height: 6),
+                          OutlinedButton.icon(
+                            onPressed: onSaveOffer == null || onAddProduct == null
+                                ? null
+                                : () => _addPageOffer(context, page),
+                            icon: const Icon(Icons.add_shopping_cart_outlined),
+                            label: const Text('Artikel von Seite hinzufügen'),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
