@@ -105,6 +105,11 @@ void main() {
   testWidgets(
     'Prospektartikel lässt sich im AppShell suchen, hinzufügen und nach Neustart sehen',
     (tester) async {
+      tester.view.physicalSize = const Size(800, 1000);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
       final now = DateTime.now();
       final record = OfferImportRecord(
         sourceId: 'netto-coffee-shell',
@@ -153,17 +158,6 @@ void main() {
       expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
 
       final addButton = find.byIcon(Icons.add_shopping_cart_outlined);
-      final verticalScroll = find.byWidgetPredicate(
-        (widget) =>
-            widget is Scrollable &&
-            widget.axisDirection == AxisDirection.down,
-      );
-      expect(verticalScroll, findsOneWidget);
-      await tester.scrollUntilVisible(
-        addButton,
-        300.0,
-        scrollable: verticalScroll,
-      );
       await tester.tap(addButton);
       await tester.pumpAndSettle();
 
