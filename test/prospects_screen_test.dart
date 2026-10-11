@@ -189,6 +189,49 @@ void main() {
     expect(find.text('Frische Vollmilch 1 l'), findsNothing);
   });
 
+  testWidgets('shows the source branch on cross-market article results', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: [
+            OfferImportRecord(
+              sourceId: 'lidl-coffee',
+              productLabel: 'Jacobs Kaffee Crema 500 g',
+              storeName: 'Lidl',
+              offerPrice: 4.99,
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+              proofRef: 'https://example.test/lidl/coffee',
+            ),
+          ],
+          prospects: const [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: [],
+              location: 'Zellingen',
+            ),
+          ],
+          now: DateTime(2026, 9, 30),
+        ),
+      ),
+    );
+
+    final search = find.byWidgetPredicate(
+      (widget) =>
+          widget is TextField &&
+          widget.decoration?.hintText == 'Prospekte und Artikel durchsuchen',
+    );
+    await tester.enterText(search, 'Kaffee');
+    await tester.pump();
+
+    expect(find.text('Lidl'), findsWidgets);
+    expect(find.text('Zellingen'), findsOneWidget);
+    expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
+  });
+
   testWidgets('labels a cached prospect feed clearly', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
