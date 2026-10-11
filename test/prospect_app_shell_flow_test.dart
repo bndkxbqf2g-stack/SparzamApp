@@ -291,7 +291,6 @@ void main() {
         reason:
             savedOffers.toString(),
       );
-      expect(savedOffers, hasLength(1));
       expect(savedItems, hasLength(1));
       expect(savedOffers.single.source, 'leaflet');
       expect(savedItems.single.product.name, 'Käsesticks 300 g');
