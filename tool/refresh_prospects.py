@@ -73,6 +73,28 @@ SOURCE_BRANCH_METADATA = {
 def source_branch_metadata(source_id):
     return dict(SOURCE_BRANCH_METADATA.get(source_id, {}))
 
+def _attach_source_branch_metadata(items, source_id):
+    """Copy configured branch context onto each feed record when missing.
+
+    Source-level metadata remains the fallback. A provider-specific record
+    value wins so feeds with multiple branches or locations stay precise.
+    """
+    metadata = source_branch_metadata(source_id)
+    enriched = []
+    for item in items or []:
+        if not isinstance(item, dict):
+            continue
+        record = dict(item)
+        for key in ("branchId", "location", "address"):
+            existing = record.get(key)
+            if isinstance(existing, str) and existing.strip():
+                continue
+            value = metadata.get(key)
+            if isinstance(value, str) and value.strip():
+                record[key] = value
+        enriched.append(record)
+    return enriched
+
 class VisibleTextParser(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
@@ -2014,6 +2036,11 @@ def main(selected_source_ids=None):
                     ]
                 source_mode += "+bring_brochure"
 
+            # Keep branch provenance at record level as well as on the source
+            # node. Provider-specific values remain authoritative.
+            offers = _attach_source_branch_metadata(offers, source_id)
+            prospects = _attach_source_branch_metadata(prospects, source_id)
+
             metadata_only = parser_name in ("lidl", "lidl_api") and not offers
             if not offers and not metadata_only:
                 lower_body = body.lower()
@@ -2030,8 +2057,15 @@ def main(selected_source_ids=None):
         except Exception as error:
             bring_data = bring_by_store.get(store)
             if bring_data:
-                bring_offers = dedupe(bring_data.get("offers", []))
+                bring_offers = _attach_source_branch_metadata(
+                    dedupe(bring_data.get("offers", [])),
+                    source_id,
+                )
                 bring_prospect = bring_data.get("prospect")
+                bring_prospects = _attach_source_branch_metadata(
+                    [bring_prospect] if isinstance(bring_prospect, dict) else [],
+                    source_id,
+                )
                 all_offers.extend(bring_offers)
                 sources.append({
                     "id": source_id,
@@ -2040,7 +2074,7 @@ def main(selected_source_ids=None):
                     "status": "ok" if bring_offers else "metadata_only",
                     "recordCount": len(bring_offers),
                     "mode": "bring_brochure_fallback",
-                    "prospects": [bring_prospect] if isinstance(bring_prospect, dict) else [],
+                    "prospects": bring_prospects,
                     "retailerError": clean(str(error))[:240],
                     **source_branch_metadata(source_id),
                 })

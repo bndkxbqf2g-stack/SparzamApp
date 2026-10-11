@@ -1,7 +1,133 @@
-# SparzamApp – Projektstatus
+# SparzamApp
+
+## Update 11.10.2026 – Prospektartikel bis AppShell und Route durchgetestet
+- Ein AppShell-Integrationstest prüft jetzt den sichtbaren Prospekte-Tab,
+  die Suche, die Add-to-List-Aktion, die gespeicherte Angebotsprovenienz und
+  den echten Neustartpfad bis zur Einkaufsroute.
+- Der Startpfad bewahrt bei der Migration aus der alten Einzel-Listenablage
+  vorhandene Artikel, wenn die benannte Liste vorübergehend leer gelesen wird.
+- Die synthetische Regression erfindet keine Preise oder Belege; CI bestätigt
+  Analyse, Flutter-Tests und den Web-Release-Build.
+
+## Update 11.10.2026 – Filialadresse bleibt auch in der Importnormalisierung erhalten
+- Der allgemeine `resolveOfferImport`-Pfad übernimmt die Quelladresse jetzt
+  genauso wie die direkte Prospektproduktauflösung.
+- Damit bleiben Filial-ID, Ort und Adresse über beide geprüften
+  Angebotsimportwege gemeinsam nachvollziehbar; Preise, Identität und
+  Gültigkeitsprüfung ändern sich nicht.
+
+ – Projektstatus
+
+## Update 11.10.2026 – Filialadresse bleibt am Prospektangebot
+- Der Feed-Parser übernimmt die Adresse aus dem jeweiligen Angebotsdatensatz
+  und fällt deterministisch auf die nachweisbare Quellenadresse zurück.
+- Artikelkarten zeigen Ort und Adresse; die umgewandelten Angebote und lokalen
+  Backups speichern diese Felder gemeinsam mit Händler, Nachweis und Gültigkeit.
+- Produktidentität, Preisvergleich und Gültigkeitsprüfung bleiben unverändert.
+
+## Update 11.10.2026 – Datensatz-Filialort in der Prospektansicht
+- Angebots- und Prospektsuche zeigen jetzt den Ort aus dem jeweiligen Feed-Datensatz, wenn dieser vorhanden ist.
+- Der Händler-/Issue-Ort und die konfigurierte Filiale bleiben nachvollziehbare Fallbacks; mehrere Datensatzorte werden gemeinsam sichtbar.
+- Produktidentität, Preis, Nachweis und Gültigkeit bleiben unverändert.
+
+## Update 11.10.2026 – Filialkontext bleibt an jedem Feed-Datensatz
+- Der Prospekt-Refresh schreibt den konfigurierten Filialschlüssel, Ort und Adresse jetzt zusätzlich an jedes erzeugte Angebot und jede Prospektseite.
+- Bereits vorhandener Anbieter-Kontext gewinnt; fehlende Felder fallen deterministisch auf die konfigurierte Filiale zurück.
+- Die Daten bleiben damit bis zur UI-Übernahme nachvollziehbar, ohne fehlende Filialen oder Preise zu ergänzen.
+
+## Update 11.10.2026 – Veraltete Prospektfeeds sichtbar
+- Die Prospekt- und Angebotsansicht kennzeichnet einen Live-Feed älter als 48 Stunden als veraltet und bietet weiterhin die direkte Aktualisierung an.
+- Gültigkeitsprüfung und Quellenregeln bleiben unverändert: Die Warnung macht die Datenlage sichtbar, verlängert kein Angebot und erzeugt keinen Preis.
+- Der Schwellenwert ist über einen deterministischen Zeitparameter testbar, damit Feed-Frische und Cache-Hinweise im UI nachvollziehbar bleiben.
+
+## Update 11.10.2026 – Bildseiten mit geprüfter manueller Übernahme
+- Bildbasierte Prospektseiten bieten jetzt eine ausdrückliche manuelle
+  Übernahme mit Bezeichnung, Angebots-/Normalpreis und Gültigkeitsende.
+- Der Seitenlink, das Bild, die Filiale und der Ort bleiben am gespeicherten
+  Angebot und an der Preisbeobachtung erhalten; der Nutzer bestätigt die
+  Angaben vor dem Speichern.
+- Automatische OCR bleibt davon getrennt und erzeugt weiterhin keine
+  ungeprüften Routenpreise.
 
 > Diese Datei ist der Einstiegspunkt für jeden neuen Chat und jeden Work-Lauf.
 > Vor Änderungen immer zuerst PROJECT_STATUS.md, ARCHITECTURE.md, ROADMAP.md und DECISIONS.md lesen und danach den aktuellen GitHub-Stand prüfen.
+
+## Update 11.10.2026 – Fehlende Angebotsnachweise in der Abdeckung sichtbar
+- Die Prospektabdeckung weist je Markt jetzt aus, wie viele strukturierte
+  Angebotsdatensätze einen vorhandenen Originalnachweis tragen.
+- Fehlende Nachweise bleiben als Datenlücke sichtbar; es wird kein Link,
+  Preis oder Identitätsbezug ergänzt.
+- Fach- und Widgetregressionen decken vollständige und fehlende Nachweise ab.
+
+## Update 11.10.2026 – Offizielle Prospektlinks bleiben HTTP(S)-gebunden
+- Der Prospektreader öffnet den offiziellen Händlerlink nur noch, wenn der
+  Feed einen gültigen HTTP- oder HTTPS-Link mit Host liefert.
+- Ungültige oder fremde URI-Schemes bleiben sichtbar als Prospektmetadaten,
+  erzeugen aber keine externe Aktion. Eine Widgetregression sichert diesen
+  Review-Fall ab.
+
+## Update 11.10.2026 – Prospektartikel direkt nach Händler filtern
+- Die Prospektansicht bietet neben Volltext und Kategorie jetzt eine direkte
+  Marktauswahl. Händlerchips filtern die aktuell gültigen Artikel über dieselbe
+  sichere Nachweis- und Identitätsauflösung.
+- Eine leere Auswahl zeigt weiterhin alle Märkte; ein gefilterter Treffer bleibt
+  mit Ort, Bild, Gültigkeit, Originalnachweis und Add-to-List-Aktion verbunden.
+- Eine Widget-Regression prüft die Auswahl eines Händlers über zwei Märkte.
+
+## Update 11.10.2026 – Filialort in Prospekt-Treffern sichtbar
+- Marktübergreifende Such- und Kategorienergebnisse zeigen unter dem Händler
+  zusätzlich den vorhandenen Filialort aus dem Prospektfeed.
+- Fehlt die Quellangabe, wird kein Ort ergänzt oder aus Textähnlichkeit
+  abgeleitet. Artikelidentität, Preis, Gültigkeit und Add-to-List-Regeln bleiben
+  unverändert.
+- Eine Widget-Regression prüft den Filialort im Trefferpfad.
+
+## Update 11.10.2026 – Originalnachweis an Prospektartikelkarten
+- Nachgewiesene Prospektartikel zeigen in kompakter und großer Darstellung
+  einen direkten Link zum vorhandenen HTTP(S)-Originalnachweis.
+- Ohne gültigen Nachweis wird kein Link angezeigt; der bestehende Add-to-List-
+  Schutz für fehlende oder mehrdeutige Identitäten bleibt unverändert.
+- Eine Widget-Regression prüft sichtbare Nachweise für belegte Karten und deren
+  Abwesenheit bei unbelegten Artikeln.
+
+## Update 11.10.2026 – Prospektartikel nach Quellenkategorie filtern
+- Die Prospektansicht bietet neben der Volltextsuche schnelle Kategorienchips
+  für die aktuell gültigen Händlerartikel. Die Auswahl filtert marktübergreifend
+  und führt direkt zu den bestehenden Artikelkarten.
+- Kategorien stammen ausschließlich aus dem Händlerfeed oder der sichtbaren
+  Darstellungsklassifikation. Sie verändern weder Produktidentität noch Preis,
+  Gültigkeit oder Routenstatus.
+- Eine Widget-Regression prüft, dass die Kategorieauswahl nur passende Artikel
+  zeigt; Nachweis-, Ambiguitäts- und Add-to-List-Regeln bleiben unverändert.
+
+## Update 11.10.2026 – Prospektartikel marktübergreifend auffindbar
+- Die Prospektansicht bietet jetzt eine Suche über alle aktuell gültigen
+  Händlerangebote. Artikel lassen sich aus dem Suchergebnis direkt mit ihrem
+  bestehenden Nachweis, Bild und Gültigkeitszeitraum zur Einkaufsliste
+  hinzufügen.
+- Die Suche verwendet nur sichtbare Quellfelder wie Händler, Produktlabel und
+  Kategorie. Sie verändert keine Produktidentität und erzeugt keine Preise;
+  nicht nachweisbare oder mehrdeutige Artikel bleiben entsprechend den
+  bestehenden Review-Regeln nicht auswählbar.
+- Die Marktansicht mit Prospektseiten und Filialdaten bleibt unverändert
+  erreichbar. Eine Widget-Regression prüft die Suche über zwei Märkte und den
+  Add-to-List-Flow.
+
+## Update 11.10.2026 – Prospektgültigkeit bleibt bei fehlerhaften Feedwerten sicher
+- Der Feedparser verwirft Angebote mit syntaktisch ungültigem Startdatum,
+  widersprüchlichem Angebotszeitraum oder fehlerhaftem ausgewiesenem Normalpreis.
+- Ein kaputtes optionales Startdatum wird nicht mehr als fehlendes Datum
+  interpretiert und kann dadurch kein scheinbar aktuelles Angebot erzeugen.
+- Regressionen prüfen, dass valide Nachbarangebote erhalten bleiben und keine
+  ungesicherten Datensätze in die aktuelle Angebots- oder Preisprojektion gelangen.
+
+## Update 11.10.2026 – Widersprüchliche Bon-Aliase bleiben im Review
+- Wenn ältere oder zusammengeführte Aliasdaten denselben Bontext mehreren
+  Produkten mit ausreichender Bestätigungszahl zuordnen, wird kein Eintrag mehr
+  stillschweigend bevorzugt.
+- Der Bontext bleibt auswählbar und prüfbar; erst eine eindeutige Lernhistorie
+  darf eine automatische Zuordnung und spätere Preisbeobachtung auslösen.
+- Eine Regression schützt den mehrdeutigen Legacy-Fall.
 
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
@@ -1956,3 +2082,4 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - PR #143 (`f7d3fc2`) ergänzt die Regression für frische und nicht aktualisierte
   Märkte. Die PR-CI bestand mit 558 Tests; Main-CI und Release-Artefakte sind
   nach dem Merge einschließlich Pages-Deployment und Android-APK grün.
+

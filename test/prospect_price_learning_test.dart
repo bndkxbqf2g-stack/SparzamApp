@@ -188,7 +188,7 @@ void main() {
     expect(marketPricesFromObservations(evidence, now: observedAt), isEmpty);
   });
 
-  test('missing proof and invalid prices are never learned', () {
+  test('missing or untrusted proof and invalid prices are never learned', () {
     final evidence = prospectPriceObservations(
       records: [
         OfferImportRecord(
@@ -209,6 +209,15 @@ void main() {
           source: 'retailerWebsite',
           proofRef: 'https://example.test/netto/invalid',
         ),
+        OfferImportRecord(
+          sourceId: 'unsafe-proof',
+          productLabel: coffee.name,
+          storeName: 'Netto',
+          offerPrice: 5,
+          validUntil: DateTime(2026, 10, 3),
+          source: 'retailerWebsite',
+          proofRef: 'javascript:alert(1)',
+        ),
       ],
       catalogProducts: const [coffee],
       observedAt: observedAt,
@@ -216,3 +225,4 @@ void main() {
     expect(evidence, isEmpty);
   });
 }
+

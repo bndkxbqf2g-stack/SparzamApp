@@ -100,6 +100,7 @@ void main() {
         validFrom: DateTime(2026, 9, 28),
         validUntil: DateTime(2026, 10, 3),
         proofRef: 'https://example.test/lidl-special-750g',
+        location: 'Teststadt',
       );
 
       await tester.pumpWidget(
@@ -115,13 +116,14 @@ void main() {
 
       await tester.tap(find.text('Lidl'));
       await tester.pumpAndSettle();
-      expect(find.text('Zellingen · 1 Angebote'), findsOneWidget);
+      expect(find.text('Teststadt · 1 Angebote'), findsOneWidget);
       await tester.tap(find.text('Weitere Angebote'));
       await tester.pumpAndSettle();
 
       expect(find.text('Sonderartikel 750g'), findsOneWidget);
       final addButton = find.byTooltip('Zur Einkaufsliste');
       expect(addButton, findsOneWidget);
+      expect(find.byTooltip('Prospektnachweis öffnen'), findsOneWidget);
       await tester.tap(addButton);
 
       expect(added, isNotNull);
@@ -164,6 +166,7 @@ void main() {
       Icons.add_shopping_cart_outlined,
     );
     expect(addButton, findsOneWidget);
+    expect(find.byTooltip('Prospektnachweis öffnen'), findsNothing);
     expect(tester.widget<IconButton>(addButton).onPressed, isNull);
   });
 
@@ -256,3 +259,4 @@ void main() {
     expect(find.text('Getränke'), findsNothing);
   });
 }
+

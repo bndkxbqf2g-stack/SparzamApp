@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/prospects/prospects_screen.dart';
 import 'package:sparzamapp/features/offers/offer_import.dart';
+import 'package:sparzamapp/models/product.dart';
+import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/services/prospect_feed_service.dart';
 
 void main() {
@@ -55,7 +57,7 @@ void main() {
     );
 
     expect(find.text('Prospekte'), findsOneWidget);
-    expect(find.text('Alle Märkte'), findsOneWidget);
+    expect(find.text('Alle Märkte').first, findsOneWidget);
     expect(find.text('Zellingen'), findsOneWidget);
     expect(find.text('1 Angebote geladen'), findsOneWidget);
     expect(
@@ -67,7 +69,8 @@ void main() {
       findsNothing,
     );
 
-    await tester.tap(find.textContaining('ALDI Süd'));
+    await _scrollProspects(tester);
+    await tester.tap(find.textContaining('ALDI Süd').last);
     await tester.pumpAndSettle();
 
     expect(find.text('ALDI Süd'), findsWidgets);
@@ -86,6 +89,185 @@ void main() {
     await tester.tap(find.text('Zur Einkaufsliste'));
     await tester.pump();
     expect(added, isTrue);
+  });
+
+  testWidgets('searches current prospect articles across markets', (
+    tester,
+  ) async {
+    Product? added;
+    final records = [
+      OfferImportRecord(
+        sourceId: 'lidl-coffee',
+        productLabel: 'Jacobs Kaffee Crema 500 g',
+        storeName: 'Lidl',
+        offerPrice: 4.99,
+        validFrom: DateTime(2026, 9, 28),
+        validUntil: DateTime(2026, 10, 3),
+        proofRef: 'https://example.test/lidl/coffee',
+      ),
+      OfferImportRecord(
+        sourceId: 'edeka-milk',
+        productLabel: 'Frische Vollmilch 1 l',
+        storeName: 'EDEKA',
+        offerPrice: 0.99,
+        validFrom: DateTime(2026, 9, 28),
+        validUntil: DateTime(2026, 10, 3),
+        proofRef: 'https://example.test/edeka/milk',
+      ),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: records,
+          now: DateTime(2026, 9, 30),
+          catalogProducts: const <Product>[],
+          onAddProduct: (product) => added = product,
+        ),
+      ),
+    );
+
+    final search = find.byWidgetPredicate(
+      (widget) =>
+          widget is TextField &&
+          widget.decoration?.hintText == 'Prospekte und Artikel durchsuchen',
+    );
+    await tester.enterText(search, 'Kaffee');
+    await tester.pump();
+
+    expect(find.text('1 passende Prospektartikel'), findsOneWidget);
+    expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
+    expect(find.text('Frische Vollmilch 1 l'), findsNothing);
+
+    await _scrollProspects(tester, distance: 450);
+    await tester.tap(find.byIcon(Icons.add_shopping_cart_outlined));
+    expect(added, isNotNull);
+    expect(added!.name, 'Jacobs Kaffee Crema 500 g');
+    expect(added!.id, startsWith('prospect|'));
+  });
+
+  testWidgets('filters current prospect articles by source category', (
+    tester,
+  ) async {
+    final records = [
+      OfferImportRecord(
+        sourceId: 'lidl-coffee',
+        productLabel: 'Jacobs Kaffee Crema 500 g',
+        storeName: 'Lidl',
+        offerPrice: 4.99,
+        validFrom: DateTime(2026, 9, 28),
+        validUntil: DateTime(2026, 10, 3),
+        proofRef: 'https://example.test/lidl/coffee',
+        category: 'Kaffee & Snacks',
+      ),
+      OfferImportRecord(
+        sourceId: 'edeka-milk',
+        productLabel: 'Frische Vollmilch 1 l',
+        storeName: 'EDEKA',
+        offerPrice: 0.99,
+        validFrom: DateTime(2026, 9, 28),
+        validUntil: DateTime(2026, 10, 3),
+        proofRef: 'https://example.test/edeka/milk',
+        category: 'Milchprodukte',
+      ),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: records,
+          now: DateTime(2026, 9, 30),
+          catalogProducts: const <Product>[]
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Kaffee & Snacks'));
+    await tester.pump();
+
+    expect(find.text('1 passende Prospektartikel'), findsOneWidget);
+    expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
+    expect(find.text('Frische Vollmilch 1 l'), findsNothing);
+  });
+
+  testWidgets('shows the source branch on cross-market article results', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: [
+            OfferImportRecord(
+              sourceId: 'lidl-coffee',
+              productLabel: 'Jacobs Kaffee Crema 500 g',
+              storeName: 'Lidl',
+              offerPrice: 4.99,
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+              proofRef: 'https://example.test/lidl/coffee',
+            ),
+          ],
+          prospects: const [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: [],
+              location: 'Zellingen',
+            ),
+          ],
+          now: DateTime(2026, 9, 30),
+        ),
+      ),
+    );
+
+    final search = find.byWidgetPredicate(
+      (widget) =>
+          widget is TextField &&
+          widget.decoration?.hintText == 'Prospekte und Artikel durchsuchen',
+    );
+    await tester.enterText(search, 'Kaffee');
+    await tester.pump();
+
+    expect(find.text('Lidl'), findsWidgets);
+    expect(find.text('Zellingen'), findsOneWidget);
+    expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
+  });
+
+  testWidgets('filters current prospect articles by market', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: [
+            OfferImportRecord(
+              sourceId: 'lidl-coffee',
+              productLabel: 'Jacobs Kaffee Crema 500 g',
+              storeName: 'Lidl',
+              offerPrice: 4.99,
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+              proofRef: 'https://example.test/lidl/coffee',
+            ),
+            OfferImportRecord(
+              sourceId: 'edeka-milk',
+              productLabel: 'Frische Vollmilch 1 l',
+              storeName: 'EDEKA',
+              offerPrice: 0.99,
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+              proofRef: 'https://example.test/edeka/milk',
+            ),
+          ],
+          now: DateTime(2026, 9, 30),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Lidl'));
+    await tester.pump();
+
+    expect(find.text('1 passende Prospektartikel'), findsOneWidget);
+    expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
+    expect(find.text('Frische Vollmilch 1 l'), findsNothing);
   });
 
   testWidgets('labels a cached prospect feed clearly', (tester) async {
@@ -171,7 +353,8 @@ void main() {
       findsOneWidget,
     );
 
-    await tester.tap(find.text('PENNY'));
+    await _scrollProspects(tester);
+    await tester.tap(find.text('PENNY').last);
     await tester.pumpAndSettle();
     expect(
       find.text(
@@ -209,7 +392,8 @@ void main() {
       ),
     );
 
-    await tester.tap(find.textContaining('Lidl'));
+    await _scrollProspects(tester);
+    await tester.tap(find.textContaining('Lidl').last);
     await tester.pumpAndSettle();
 
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
@@ -248,7 +432,8 @@ void main() {
       findsOneWidget,
     );
 
-    await tester.tap(find.textContaining('Lidl'));
+    await _scrollProspects(tester);
+    await tester.tap(find.textContaining('Lidl').last);
     await tester.pumpAndSettle();
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
   });
@@ -275,14 +460,109 @@ void main() {
       ),
     );
 
-    expect(find.text('EDEKA'), findsOneWidget);
+    expect(find.text('EDEKA').first, findsOneWidget);
     expect(
       find.text('Keine aktuell gültigen Angebotsdaten geladen.'),
       findsOneWidget,
     );
-    await tester.tap(find.text('EDEKA'));
+    await _scrollProspects(tester);
+    await tester.tap(find.text('EDEKA').last);
     await tester.pumpAndSettle();
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
+  });
+
+  testWidgets('adds a manually reviewed article from a prospect page', (
+    tester,
+  ) async {
+    Offer? saved;
+    Product? added;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: [
+                ProspectPage(
+                  number: 4,
+                  imageUrl: 'https://example.test/lidl/page-4.png',
+                ),
+              ],
+              branchId: 'L-42',
+              location: 'Zellingen',
+              address: 'Hauptstraße 1, 97225 Zellingen',
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 12, 31),
+              sourceStatus: 'ok',
+            ),
+          ],
+          now: DateTime(2026, 9, 30),
+          onAddProduct: (product) => added = product,
+          onSaveOffer: (offer) async {
+            saved = offer;
+            return [offer];
+          },
+        ),
+      ),
+    );
+
+    await _scrollProspects(tester);
+    await tester.tap(find.text('Lidl').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Artikel von Seite hinzufügen'));
+    await tester.pumpAndSettle();
+
+    final fields = find.byType(TextFormField);
+    await tester.enterText(fields.at(0), 'Kaffee Crema 500 g');
+    await tester.enterText(fields.at(1), '4,99');
+    await tester.enterText(fields.at(2), '5,99');
+    await tester.tap(find.widgetWithText(FilledButton, 'Artikel hinzufügen'));
+    await tester.pumpAndSettle();
+
+    expect(saved, isNotNull);
+    expect(saved!.id, startsWith('manual-page|'));
+    expect(saved!.productId, startsWith('prospect|'));
+    expect(saved!.offerPrice, 4.99);
+    expect(saved!.originalPrice, 5.99);
+    expect(saved!.proofRef, 'https://example.test/lidl/page-4.png');
+    expect(saved!.locationId, 'L-42');
+    expect(saved!.region, 'Zellingen');
+    expect(saved!.address, 'Hauptstraße 1, 97225 Zellingen');
+    expect(added?.name, 'Kaffee Crema 500 g');
+  });
+
+  testWidgets('hides an invalid official prospect link', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: const [],
+              url: 'javascript:alert(1)',
+              sourceStatus: 'no_current_offers',
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+            ),
+          ],
+          now: DateTime(2026, 9, 30),
+        ),
+      ),
+    );
+
+    await _scrollProspects(tester);
+    await tester.tap(find.text('Lidl').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Offiziellen Prospekt öffnen'), findsNothing);
+    expect(
+      find.text('Keine aktuell gültigen Angebotsdaten geladen.'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('shows current issue and current prices instead of old pages', (
@@ -342,11 +622,71 @@ void main() {
     );
 
     expect(find.text('1 Angebote geladen'), findsOneWidget);
-    await tester.tap(find.text('Lidl'));
+    await _scrollProspects(tester);
+    await tester.tap(find.text('Lidl').last);
     await tester.pumpAndSettle();
     expect(find.text('Seite 1'), findsOneWidget);
     expect(find.text('Seite 99'), findsNothing);
     expect(find.text('Aktueller Kaffee'), findsOneWidget);
     expect(find.text('Alter Kaffee'), findsNothing);
   });
+
+    testWidgets('shows the record location in prospect search results', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: [
+            OfferImportRecord(
+              sourceId: 'record-location',
+              productLabel: 'Kaffee Crema 500 g',
+              storeName: 'Lidl',
+              offerPrice: 4.99,
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+              proofRef: 'https://example.test/record-location',
+              location: 'Filialstadt',
+              address: 'Filialstraße 1, 97291 Filialstadt',
+            ),
+          ],
+          prospects: const [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: [],
+              location: 'Quellstadt',
+            ),
+          ],
+          now: DateTime(2026, 9, 30),
+          catalogProducts: const <Product>[],
+        ),
+      ),
+    );
+
+    final search = find.byWidgetPredicate(
+      (widget) =>
+          widget is TextField &&
+          widget.decoration?.hintText == 'Prospekte und Artikel durchsuchen',
+    );
+    await tester.enterText(search, 'Kaffee');
+    await tester.pump();
+
+    expect(find.text('Filialstadt'), findsOneWidget);
+    expect(find.text('Filialstraße 1, 97291 Filialstadt'), findsOneWidget);
+    expect(find.text('Quellstadt'), findsNothing);
+  });
 }
+
+Future<void> _scrollProspects(
+  WidgetTester tester, {
+  double distance = 320,
+}) async {
+  final scrollable = find.byWidgetPredicate(
+    (widget) =>
+        widget is Scrollable && widget.axisDirection == AxisDirection.down,
+  );
+  await tester.drag(scrollable.first, Offset(0, -distance));
+  await tester.pumpAndSettle();
+}
+
