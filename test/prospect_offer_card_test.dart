@@ -48,4 +48,27 @@ void main() {
     expect(added, isTrue);
     expect(find.text('Hinzugefügt'), findsOneWidget);
   });
+
+  testWidgets('hides hostless proof action', (tester) async {
+    final record = OfferImportRecord(
+      sourceId: 'hostless-proof',
+      productLabel: 'Eigenmarke Haferdrink 1 l',
+      storeName: 'Lidl',
+      offerPrice: 0.99,
+      validUntil: DateTime(2026, 10, 2),
+      source: 'leaflet',
+      proofRef: 'https://',
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ProspectOfferCard(record: record),
+        ),
+      ),
+    );
+
+    expect(find.text('Prospektnachweis öffnen'), findsNothing);
+  });
 }
+
