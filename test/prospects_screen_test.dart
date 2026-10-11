@@ -125,10 +125,12 @@ void main() {
       ),
     );
 
-    await tester.enterText(
-      find.byHintText('Prospekte und Artikel durchsuchen'),
-      'Kaffee',
+    final search = find.byWidgetPredicate(
+      (widget) =>
+          widget is TextField &&
+          widget.decoration?.hintText == 'Prospekte und Artikel durchsuchen',
     );
+    await tester.enterText(search, 'Kaffee');
     await tester.pump();
 
     expect(find.text('1 passende Prospektartikel'), findsOneWidget);
