@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -1033,13 +1034,24 @@ class _AppShellState extends State<AppShell> {
       final stored = await widget.offerStore.load();
       next = await widget.offerStore.upsert(offer, stored);
     });
-    final observedAt = DateTime.now();
-    await priceObservationStore.append(
-      observationsFromOffer(offer, observedAt: observedAt),
-    );
     if (mounted) setState(() => offers = next);
-    await _loadPriceObservations();
+    unawaited(_recordOfferHistory(offer));
     return next;
+  }
+
+  Future<void> _recordOfferHistory(Offer offer) async {
+    try {
+      await priceObservationStore.append(
+        observationsFromOffer(offer, observedAt: DateTime.now()),
+      );
+      await _loadPriceObservations();
+    } catch (error) {
+      widget.diagnosticLogService.record(
+        category: 'Angebote',
+        message: 'Preisbeobachtung konnte nicht gespeichert werden.',
+        details: error.toString(),
+      );
+    }
   }
 
   Future<List<Offer>> deleteOffer(Offer offer) async {
