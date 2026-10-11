@@ -20,6 +20,7 @@ class ProspectsScreen extends StatefulWidget {
     this.prospects = const [],
     this.catalogProducts = const [],
     this.onAddProduct,
+    this.onAddProductAndWait,
     this.now,
     this.fromCache = false,
     this.generatedAt,
@@ -32,6 +33,7 @@ class ProspectsScreen extends StatefulWidget {
   final List<ProspectIssue> prospects;
   final List<Product> catalogProducts;
   final ValueChanged<Product>? onAddProduct;
+  final Future<void> Function(Product)? onAddProductAndWait;
   final DateTime? now;
   final bool fromCache;
   final DateTime? generatedAt;
@@ -209,6 +211,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                         records: currentRecords,
                         catalogProducts: widget.catalogProducts,
                         onAddProduct: widget.onAddProduct,
+                        onAddProductAndWait: widget.onAddProductAndWait,
                         now: widget.now,
                         onSaveOffer: widget.onSaveOffer,
                       ),
@@ -615,6 +618,7 @@ class _ProspectViewer extends StatelessWidget {
     required this.records,
     required this.catalogProducts,
     this.onAddProduct,
+    this.onAddProductAndWait,
     this.now,
     this.onSaveOffer,
   });
@@ -623,13 +627,17 @@ class _ProspectViewer extends StatelessWidget {
   final List<OfferImportRecord> records;
   final List<Product> catalogProducts;
   final ValueChanged<Product>? onAddProduct;
+  final Future<void> Function(Product)? onAddProductAndWait;
   final DateTime? now;
   final Future<List<Offer>> Function(Offer offer)? onSaveOffer;
 
   Future<void> _addPageOffer(BuildContext context, ProspectPage page) async {
     final saveOffer = onSaveOffer;
     final addProduct = onAddProduct;
-    if (saveOffer == null || addProduct == null) return;
+    final addProductAndWait = onAddProductAndWait;
+    if (saveOffer == null || (addProduct == null && addProductAndWait == null)) {
+      return;
+    }
     final draft = await showProspectPageOfferDialog(
       context,
       initialValidUntil: issue.validUntil,
@@ -699,8 +707,13 @@ class _ProspectViewer extends StatelessWidget {
       }
       return;
     }
+    if (addProductAndWait != null) {
+      await addProductAndWait(entry.product);
+    } else {
+      if (!context.mounted) return;
+      addProduct!(entry.product);
+    }
     if (!context.mounted) return;
-    addProduct(entry.product);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('${entry.product.name} hinzugefügt')),
     );
@@ -813,7 +826,9 @@ class _ProspectViewer extends StatelessWidget {
                           Text('Seite ${page.number}'),
                           const SizedBox(height: 6),
                           OutlinedButton.icon(
-                            onPressed: onSaveOffer == null || onAddProduct == null
+                            onPressed: onSaveOffer == null ||
+                                    (onAddProduct == null &&
+                                        onAddProductAndWait == null)
                                 ? null
                                 : () => _addPageOffer(context, page),
                             icon: const Icon(Icons.add_shopping_cart_outlined),
