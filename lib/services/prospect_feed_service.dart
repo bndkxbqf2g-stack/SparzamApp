@@ -89,6 +89,12 @@ String? officialProspectUrl(String storeName, [String? fallback]) {
   }
 }
 
+String? _optionalNonEmptyString(Object? value) {
+  if (value is! String) return null;
+  final trimmed = value.trim();
+  return trimmed.isEmpty ? null : trimmed;
+}
+
 class ProspectFeedService {
   ProspectFeedService({http.Client? client, ProspectFeedCache? cache})
     : _client = client ?? http.Client(),
@@ -219,9 +225,15 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
           pages: pages,
           url: raw['url'] as String?,
           thumbnailUrl: raw['thumbnailUrl'] as String?,
-          branchId: sourceBranchIds[storeName],
-          location: sourceLocations[storeName],
-          address: sourceAddresses[storeName],
+          branchId:
+              _optionalNonEmptyString(raw['branchId']) ??
+              sourceBranchIds[storeName],
+          location:
+              _optionalNonEmptyString(raw['location']) ??
+              sourceLocations[storeName],
+          address:
+              _optionalNonEmptyString(raw['address']) ??
+              sourceAddresses[storeName],
           sourceStatus: sourceStatuses[storeName] ?? 'unknown',
           recordCount: sourceRecordCounts[storeName] ?? 0,
           validFrom: DateTime.tryParse(
@@ -296,6 +308,15 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         proofRef: value['proofRef'] as String?,
         imageUrl: value['imageUrl'] as String?,
         category: value['category'] as String?,
+        branchId:
+            _optionalNonEmptyString(value['branchId']) ??
+            sourceBranchIds[storeName],
+        location:
+            _optionalNonEmptyString(value['location']) ??
+            sourceLocations[storeName],
+        address:
+            _optionalNonEmptyString(value['address']) ??
+            sourceAddresses[storeName],
       ),
     );
   }

@@ -45,6 +45,8 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
   reaktivieren.
 - [ ] Prospektfeed weiter auf vollständige Artikelbilder, Kategorien,
   Filialbezug und belastbare Gültigkeit ausbauen.
+- [x] Bildseiten ermöglichen eine geprüfte manuelle Artikelübernahme mit
+  Seitenlink, Preis, Gültigkeitsende und bestehender Filialprovenienz.
 
 ## Phase D – Alltagstaugliche Datenerfassung
 - Kassenbons möglichst automatisch.

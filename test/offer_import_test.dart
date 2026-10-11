@@ -38,6 +38,9 @@ void main() {
         validUntil: DateTime(2026, 9, 26),
         source: 'leaflet',
         proofRef: 'leaflet:lidl:2026-09-25:p1',
+        branchId: 'L-42',
+        location: 'Zellingen',
+        address: 'Hauptstraße 1, 97225 Zellingen',
       ),
       catalog,
     );
@@ -49,6 +52,9 @@ void main() {
     expect(result.offer!.offerPrice, 0.99);
     expect(result.offer!.validFrom, DateTime(2026, 9, 25));
     expect(result.offer!.proofRef, 'leaflet:lidl:2026-09-25:p1');
+    expect(result.offer!.locationId, 'L-42');
+    expect(result.offer!.region, 'Zellingen');
+    expect(result.offer!.address, 'Hauptstraße 1, 97225 Zellingen');
   });
 
   test('offer without stated regular price stays usable without inventing one', () {
@@ -81,6 +87,25 @@ void main() {
         offerPrice: 0.69,
         validUntil: DateTime(2026, 9, 26),
         source: 'leaflet',
+      ),
+      catalog,
+    );
+
+    expect(result.isResolved, isFalse);
+    expect(result.reason, 'missing_proof');
+  });
+
+  test('unsafe external proof stays untrusted', () {
+    final result = resolveOfferImport(
+      OfferImportRecord(
+        sourceId: 'page-with-unsafe-proof',
+        productLabel: 'Schmand',
+        storeName: 'Lidl',
+        originalPrice: 0.89,
+        offerPrice: 0.69,
+        validUntil: DateTime(2026, 9, 26),
+        source: 'leaflet',
+        proofRef: 'javascript:alert(1)',
       ),
       catalog,
     );
@@ -139,3 +164,4 @@ void main() {
     expect(result.reason, 'invalid_price');
   });
 }
+
