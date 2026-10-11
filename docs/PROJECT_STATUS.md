@@ -3,6 +3,14 @@
 > Diese Datei ist der Einstiegspunkt für jeden neuen Chat und jeden Work-Lauf.
 > Vor Änderungen immer zuerst PROJECT_STATUS.md, ARCHITECTURE.md, ROADMAP.md und DECISIONS.md lesen und danach den aktuellen GitHub-Stand prüfen.
 
+## Update 11.10.2026 – Prospektartikel direkt nach Händler filtern
+- Die Prospektansicht bietet neben Volltext und Kategorie jetzt eine direkte
+  Marktauswahl. Händlerchips filtern die aktuell gültigen Artikel über dieselbe
+  sichere Nachweis- und Identitätsauflösung.
+- Eine leere Auswahl zeigt weiterhin alle Märkte; ein gefilterter Treffer bleibt
+  mit Ort, Bild, Gültigkeit, Originalnachweis und Add-to-List-Aktion verbunden.
+- Eine Widget-Regression prüft die Auswahl eines Händlers über zwei Märkte.
+
 ## Update 11.10.2026 – Filialort in Prospekt-Treffern sichtbar
 - Marktübergreifende Such- und Kategorienergebnisse zeigen unter dem Händler
   zusätzlich den vorhandenen Filialort aus dem Prospektfeed.
