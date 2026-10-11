@@ -534,6 +534,11 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
+  Future<void> addProductAndWait(Product product) async {
+    addProduct(product);
+    await _shoppingListSaves.pending;
+  }
+
   Future<void> selectShoppingFamily(ListItem item) async {
     final selected = await showShoppingCandidateSelector(
       context: context,
@@ -1343,6 +1348,7 @@ class _AppShellState extends State<AppShell> {
       onSelectShoppingList: selectShoppingList,
       onCreateShoppingList: createShoppingList,
       onAddProduct: addProduct,
+      onAddProductAndWait: addProductAndWait,
       onChangeQuantity: changeQuantity,
       onSelectFamily: selectShoppingFamily,
       onUpdateItemNote: updateItemNote,
