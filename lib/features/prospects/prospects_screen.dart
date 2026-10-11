@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../design/sparzam_theme.dart';
 import '../../models/offer.dart';
 import '../offers/offer_import.dart';
 import '../offers/prospect_offer_products.dart';
@@ -197,7 +196,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                 height: 300,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
-                  itemCount: visibleProspects.length.clamp(1, 2),
+                  itemCount: visibleProspects.length > 2 ? 2 : visibleProspects.length,
                   separatorBuilder: (context, index) =>
                       const SizedBox(width: 12),
                   itemBuilder: (context, index) {
