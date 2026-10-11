@@ -3,6 +3,35 @@
 > Diese Datei ist der Einstiegspunkt für jeden neuen Chat und jeden Work-Lauf.
 > Vor Änderungen immer zuerst PROJECT_STATUS.md, ARCHITECTURE.md, ROADMAP.md und DECISIONS.md lesen und danach den aktuellen GitHub-Stand prüfen.
 
+## Update 11.10.2026 – Prospektartikel marktübergreifend auffindbar
+- Die Prospektansicht bietet jetzt eine Suche über alle aktuell gültigen
+  Händlerangebote. Artikel lassen sich aus dem Suchergebnis direkt mit ihrem
+  bestehenden Nachweis, Bild und Gültigkeitszeitraum zur Einkaufsliste
+  hinzufügen.
+- Die Suche verwendet nur sichtbare Quellfelder wie Händler, Produktlabel und
+  Kategorie. Sie verändert keine Produktidentität und erzeugt keine Preise;
+  nicht nachweisbare oder mehrdeutige Artikel bleiben entsprechend den
+  bestehenden Review-Regeln nicht auswählbar.
+- Die Marktansicht mit Prospektseiten und Filialdaten bleibt unverändert
+  erreichbar. Eine Widget-Regression prüft die Suche über zwei Märkte und den
+  Add-to-List-Flow.
+
+## Update 11.10.2026 – Prospektgültigkeit bleibt bei fehlerhaften Feedwerten sicher
+- Der Feedparser verwirft Angebote mit syntaktisch ungültigem Startdatum,
+  widersprüchlichem Angebotszeitraum oder fehlerhaftem ausgewiesenem Normalpreis.
+- Ein kaputtes optionales Startdatum wird nicht mehr als fehlendes Datum
+  interpretiert und kann dadurch kein scheinbar aktuelles Angebot erzeugen.
+- Regressionen prüfen, dass valide Nachbarangebote erhalten bleiben und keine
+  ungesicherten Datensätze in die aktuelle Angebots- oder Preisprojektion gelangen.
+
+## Update 11.10.2026 – Widersprüchliche Bon-Aliase bleiben im Review
+- Wenn ältere oder zusammengeführte Aliasdaten denselben Bontext mehreren
+  Produkten mit ausreichender Bestätigungszahl zuordnen, wird kein Eintrag mehr
+  stillschweigend bevorzugt.
+- Der Bontext bleibt auswählbar und prüfbar; erst eine eindeutige Lernhistorie
+  darf eine automatische Zuordnung und spätere Preisbeobachtung auslösen.
+- Eine Regression schützt den mehrdeutigen Legacy-Fall.
+
 ## Stand
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
@@ -1956,3 +1985,4 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - PR #143 (`f7d3fc2`) ergänzt die Regression für frische und nicht aktualisierte
   Märkte. Die PR-CI bestand mit 558 Tests; Main-CI und Release-Artefakte sind
   nach dem Merge einschließlich Pages-Deployment und Android-APK grün.
+
