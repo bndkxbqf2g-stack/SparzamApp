@@ -535,32 +535,6 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
-  Future<void> addProductAndWait(Product product) async {
-    addProduct(product);
-    await _shoppingListSaves.pending;
-
-    // A page claim is saved after an async offer review. If the initial list
-    // migration completed between the state update and the queued write,
-    // repair the concrete product in both list representations before the
-    // page flow reports success.
-    final persisted = await widget.shoppingListStore.load();
-    if (persisted.any((item) => item.product.id == product.id)) return;
-    final repaired = addShoppingProduct(persisted, product);
-    final repairedLists = namedShoppingLists
-        .map(
-          (list) => list.id == activeShoppingListId
-              ? NamedShoppingList(
-                  id: list.id,
-                  name: list.name,
-                  items: _copyItems(repaired),
-                )
-              : list,
-        )
-        .toList(growable: false);
-    await widget.shoppingListStore.save(repaired);
-    await widget.shoppingListStore.saveNamedLists(repairedLists);
-  }
-
   Future<void> selectShoppingFamily(ListItem item) async {
     final selected = await showShoppingCandidateSelector(
       context: context,
