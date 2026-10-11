@@ -347,3 +347,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   Produktidentität und sichere Add-to-List-Auflösung werden nicht verändert.
 - [x] Widgetregression prüft die Auswahl einer Kategorie über mehrere Märkte.
 
+## Update 11.10.2026 – Originalnachweis an jeder belegten Artikelkarte
+- [x] Belegte kompakte und große Prospektkarten öffnen ihren vorhandenen
+  HTTP(S)-Originalnachweis direkt aus der Artikelansicht.
+- [x] Fehlende oder ungültige Nachweise erzeugen keinen Link und bleiben nach
+  den bestehenden Identitätsregeln nicht auswählbar.
+- [x] Widgetregression prüft die sichtbare Nachweisaktion und den Review-Fall.
+
