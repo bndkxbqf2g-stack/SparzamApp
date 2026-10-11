@@ -251,6 +251,10 @@ void main() {
 
       await tester.pumpWidget(_app(stores, module));
       await tester.pumpAndSettle();
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 250)),
+      );
+      await tester.pumpAndSettle();
 
       await tester.tap(find.text('Prospekte'));
       await tester.pumpAndSettle();
