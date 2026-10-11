@@ -481,6 +481,7 @@ void main() {
               title: 'Aktionsprospekt',
               pages: const [],
               url: 'javascript:alert(1)',
+              sourceStatus: 'no_current_offers',
               validFrom: DateTime(2026, 9, 28),
               validUntil: DateTime(2026, 10, 3),
             ),
