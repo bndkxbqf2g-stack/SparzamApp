@@ -153,7 +153,11 @@ void main() {
       expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
 
       final addButton = find.byIcon(Icons.add_shopping_cart_outlined);
-      await tester.scrollUntilVisible(addButton, 300.0);
+      await tester.scrollUntilVisible(
+        addButton,
+        300.0,
+        scrollable: find.byType(Scrollable).last,
+      );
       await tester.tap(addButton);
       await tester.pumpAndSettle();
 
