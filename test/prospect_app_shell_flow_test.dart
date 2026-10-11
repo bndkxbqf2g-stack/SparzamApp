@@ -306,6 +306,12 @@ void main() {
       final savedOffers = await stores.offers.load();
       final diagnostics = await stores.diagnostics.load();
       expect(
+        savedOffers,
+        hasLength(1),
+        reason:
+            'offers=${savedOffers.map((offer) => offer.source + ":" + offer.productId).toList()}',
+      );
+      expect(
         stores.shoppingList.knownProducts,
         contains('Käsesticks 300 g'),
         reason: 'known=\${stores.shoppingList.knownProducts}',
