@@ -12,7 +12,7 @@ void main() {
         home: Scaffold(
           body: ProspectsScreen(
             records: const [],
-            prospects: const [
+            prospects: [
               ProspectIssue(
                 storeName: 'Lidl',
                 title: 'Aktionsprospekt',
