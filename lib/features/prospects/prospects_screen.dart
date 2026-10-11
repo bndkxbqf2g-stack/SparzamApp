@@ -658,7 +658,7 @@ class _ProspectCard extends StatelessWidget {
     final previewUrl = issue.pages.isNotEmpty
         ? issue.pages.first.imageUrl.trim()
         : issue.thumbnailUrl?.trim();
-    final imageHeight = compact ? 168.0 : 185.0;
+    final imageHeight = compact ? 168.0 : 181.0;
     final validity = _prospectValidityLabel(issue);
     final cover = previewUrl == null || previewUrl.isEmpty
         ? _bringCoverPlaceholder()
