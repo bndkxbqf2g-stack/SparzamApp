@@ -140,9 +140,14 @@ void main() {
     await tester.scrollUntilVisible(
       find.text('Jacobs Kaffee Crema 500 g'),
       300,
-      scrollable: find.byType(Scrollable).first,
+      scrollable: find
+          .byWidgetPredicate(
+            (widget) =>
+                widget is ListView && widget.scrollDirection == Axis.vertical,
+          )
+          .first,
     );
-    await tester.tap(find.byTooltip('Zur Einkaufsliste'));
+    await tester.tap(find.byIcon(Icons.add_shopping_cart_outlined));
     expect(added, isNotNull);
     expect(added!.name, 'Jacobs Kaffee Crema 500 g');
     expect(added!.id, startsWith('prospect|'));
@@ -234,7 +239,12 @@ void main() {
     await tester.scrollUntilVisible(
       find.text('PENNY'),
       200,
-      scrollable: find.byType(Scrollable).first,
+      scrollable: find
+          .byWidgetPredicate(
+            (widget) =>
+                widget is ListView && widget.scrollDirection == Axis.vertical,
+          )
+          .first,
     );
     await tester.tap(find.text('PENNY'));
     await tester.pumpAndSettle();
@@ -277,7 +287,12 @@ void main() {
     await tester.scrollUntilVisible(
       find.textContaining('Lidl'),
       200,
-      scrollable: find.byType(Scrollable).first,
+      scrollable: find
+          .byWidgetPredicate(
+            (widget) =>
+                widget is ListView && widget.scrollDirection == Axis.vertical,
+          )
+          .first,
     );
     await tester.tap(find.textContaining('Lidl'));
     await tester.pumpAndSettle();
@@ -321,7 +336,12 @@ void main() {
     await tester.scrollUntilVisible(
       find.textContaining('Lidl'),
       200,
-      scrollable: find.byType(Scrollable).first,
+      scrollable: find
+          .byWidgetPredicate(
+            (widget) =>
+                widget is ListView && widget.scrollDirection == Axis.vertical,
+          )
+          .first,
     );
     await tester.tap(find.textContaining('Lidl'));
     await tester.pumpAndSettle();
@@ -358,7 +378,12 @@ void main() {
     await tester.scrollUntilVisible(
       find.text('EDEKA'),
       200,
-      scrollable: find.byType(Scrollable).first,
+      scrollable: find
+          .byWidgetPredicate(
+            (widget) =>
+                widget is ListView && widget.scrollDirection == Axis.vertical,
+          )
+          .first,
     );
     await tester.tap(find.text('EDEKA'));
     await tester.pumpAndSettle();
@@ -425,7 +450,12 @@ void main() {
     await tester.scrollUntilVisible(
       find.text('Lidl'),
       200,
-      scrollable: find.byType(Scrollable).first,
+      scrollable: find
+          .byWidgetPredicate(
+            (widget) =>
+                widget is ListView && widget.scrollDirection == Axis.vertical,
+          )
+          .first,
     );
     await tester.tap(find.text('Lidl'));
     await tester.pumpAndSettle();
