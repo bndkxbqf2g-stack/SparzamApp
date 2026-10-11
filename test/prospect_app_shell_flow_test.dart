@@ -283,6 +283,8 @@ void main() {
 
       final savedItems = await stores.shoppingList.load();
       final savedOffers = await stores.offers.load();
+      print('page-flow persisted items=${savedItems.length} offers=${savedOffers.length}');
+      expect(savedItems, hasLength(1));
       expect(savedOffers, hasLength(1));
       expect(savedOffers.single.source, 'leaflet');
       expect(savedItems, hasLength(1));
