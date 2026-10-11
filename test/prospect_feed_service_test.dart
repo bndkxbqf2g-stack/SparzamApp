@@ -174,6 +174,21 @@ void main() {
   ],
   "offers": []
 
+
+}
+''');
+
+    final edeka = result.prospects.singleWhere(
+      (item) => item.storeName == 'EDEKA',
+    );
+    expect(edeka.pages, isEmpty);
+    expect(edeka.validFrom, DateTime(2026, 9, 28));
+    expect(edeka.validUntil, DateTime(2026, 10, 3));
+    expect(edeka.url, 'https://example.test/edeka-prospekt');
+    expect(edeka.branchId, '023738');
+    expect(edeka.location, 'Zellingen');
+  });
+
   test('prefers record-level branch context when a feed has multiple locations', () {
     final result = parseProspectFeed(r'''
 {
@@ -222,18 +237,4 @@ void main() {
     expect(result.records.single.location, 'offer-city');
   });
 
-
-}
-''');
-
-    final edeka = result.prospects.singleWhere(
-      (item) => item.storeName == 'EDEKA',
-    );
-    expect(edeka.pages, isEmpty);
-    expect(edeka.validFrom, DateTime(2026, 9, 28));
-    expect(edeka.validUntil, DateTime(2026, 10, 3));
-    expect(edeka.url, 'https://example.test/edeka-prospekt');
-    expect(edeka.branchId, '023738');
-    expect(edeka.location, 'Zellingen');
-  });
 }
