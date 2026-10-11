@@ -1,4 +1,13 @@
-# SparzamApp – Projektstatus
+# SparzamApp
+
+## Update 11.10.2026 – Filialadresse bleibt auch in der Importnormalisierung erhalten
+- Der allgemeine `resolveOfferImport`-Pfad übernimmt die Quelladresse jetzt
+  genauso wie die direkte Prospektproduktauflösung.
+- Damit bleiben Filial-ID, Ort und Adresse über beide geprüften
+  Angebotsimportwege gemeinsam nachvollziehbar; Preise, Identität und
+  Gültigkeitsprüfung ändern sich nicht.
+
+ – Projektstatus
 
 ## Update 11.10.2026 – Filialadresse bleibt am Prospektangebot
 - Der Feed-Parser übernimmt die Adresse aus dem jeweiligen Angebotsdatensatz
