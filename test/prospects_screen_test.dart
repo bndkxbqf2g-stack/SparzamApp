@@ -78,8 +78,8 @@ void main() {
 
     await tester.drag(find.byType(Scrollable).last, const Offset(0, -420));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('2,39 €'));
-    await tester.tap(find.text('2,39 €'));
+    await tester.ensureVisible(find.text('Zur Einkaufsliste'));
+    await tester.tap(find.text('Zur Einkaufsliste'));
     await tester.pump();
     expect(added, isTrue);
   });

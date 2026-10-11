@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../design/sparzam_theme.dart';
 import '../../models/offer.dart';
 import '../../models/price_point.dart';
 import '../../models/product.dart';
 import 'offer_import.dart';
+import '../prospects/prospect_offer_card.dart';
+import 'prospect_offer_products.dart';
 
 class OffersScreen extends StatefulWidget {
   const OffersScreen({
@@ -53,10 +54,7 @@ class _OffersScreenState extends State<OffersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Angebote'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Angebote'), centerTitle: true),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
         children: [
@@ -86,13 +84,20 @@ class _OffersScreenState extends State<OffersScreen> {
             ),
           ),
           const SizedBox(height: 18),
-          Text('Aktuelles Prospekt',
-              style: Theme.of(context).textTheme.titleLarge),
+          Text(
+            'Aktuelles Prospekt',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           const SizedBox(height: 6),
-          const Text('Es werden ausschließlich aktuell gültige Prospektangebote angezeigt.'),
+          const Text(
+            'Es werden ausschließlich aktuell gültige Prospektangebote angezeigt.',
+          ),
           const SizedBox(height: 14),
           _ProspectOffers(
-            records: currentProspectRecords(widget.prospectRecords, now: widget.now),
+            records: currentProspectRecords(
+              widget.prospectRecords,
+              now: widget.now,
+            ),
             query: query,
             catalogProducts: widget.catalogProducts,
             onAddToShoppingList: widget.onAddToShoppingList,
@@ -129,7 +134,8 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     final normalizedQuery = widget.query.trim().toLowerCase();
     final byStore = <String, List<OfferImportRecord>>{};
     for (final record in widget.records) {
-      final searchable = '${record.storeName} ${record.productLabel}'.toLowerCase();
+      final searchable = '${record.storeName} ${record.productLabel}'
+          .toLowerCase();
       if (normalizedQuery.isNotEmpty && !searchable.contains(normalizedQuery)) {
         continue;
       }
@@ -146,8 +152,10 @@ class _ProspectOffersState extends State<_ProspectOffers> {
           ExpansionTile(
             key: PageStorageKey('prospect-store-${entry.key}'),
             initiallyExpanded: false,
-            title: Text(entry.key,
-                style: const TextStyle(fontWeight: FontWeight.w800)),
+            title: Text(
+              entry.key,
+              style: const TextStyle(fontWeight: FontWeight.w800),
+            ),
             subtitle: Text('${entry.value.length} Angebote'),
             onExpansionChanged: (expanded) => setState(() {
               if (expanded) {
@@ -161,7 +169,8 @@ class _ProspectOffersState extends State<_ProspectOffers> {
                     for (final category in _grouped(entry.value).entries)
                       ExpansionTile(
                         key: PageStorageKey(
-                            'prospect-category-${entry.key}-${category.key}'),
+                          'prospect-category-${entry.key}-${category.key}',
+                        ),
                         title: Text(category.key),
                         subtitle: Text('${category.value.length} Artikel'),
                         onExpansionChanged: (expanded) => setState(() {
@@ -172,15 +181,36 @@ class _ProspectOffersState extends State<_ProspectOffers> {
                             expandedCategories.remove(key);
                           }
                         }),
-                        children: expandedCategories
-                                .contains('${entry.key}|${category.key}')
+                        children:
+                            expandedCategories.contains(
+                              '${entry.key}|${category.key}',
+                            )
                             ? [
                                 for (final record in category.value)
-                                  _ProspectOfferCard(
+                                  ProspectOfferCard(
+                                    key: ValueKey(
+                                      'prospect-offer-${record.sourceId}',
+                                    ),
                                     record: record,
-                                    catalogProducts: widget.catalogProducts,
-                                    onAddToShoppingList:
-                                        widget.onAddToShoppingList,
+                                    product: addableProductForProspectOffer(
+                                      record,
+                                      widget.catalogProducts,
+                                    ),
+                                    compact: true,
+                                    onAdd: widget.onAddToShoppingList == null
+                                        ? null
+                                        : () {
+                                            final product =
+                                                addableProductForProspectOffer(
+                                                  record,
+                                                  widget.catalogProducts,
+                                                );
+                                            if (product != null) {
+                                              widget.onAddToShoppingList!(
+                                                product,
+                                              );
+                                            }
+                                          },
                                   ),
                               ]
                             : const [],
@@ -193,67 +223,12 @@ class _ProspectOffersState extends State<_ProspectOffers> {
   }
 }
 
-class _ProspectOfferCard extends StatelessWidget {
-  const _ProspectOfferCard({
-    required this.record,
-    required this.catalogProducts,
-    this.onAddToShoppingList,
-  });
-
-  final OfferImportRecord record;
-  final List<Product> catalogProducts;
-  final ValueChanged<Product>? onAddToShoppingList;
-
-  @override
-  Widget build(BuildContext context) {
-    final product = resolveOfferImport(record, catalogProducts).product;
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Row(
-        children: [
-          SizedBox(
-            width: 88,
-            height: 88,
-            child: record.imageUrl?.isNotEmpty == true
-                ? Image.network(record.imageUrl!, fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) =>
-                        Icon(_categoryIcon(_offerCategory(record.productLabel))))
-                : Icon(_categoryIcon(_offerCategory(record.productLabel))),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(record.productLabel,
-                      maxLines: 2, overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontWeight: FontWeight.w700)),
-                  Text('${record.offerPrice.toStringAsFixed(2).replaceAll('.', ',')} €',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: SparzamTheme.deepGreen,
-                            fontWeight: FontWeight.w800,
-                          )),
-                ],
-              ),
-            ),
-          ),
-          if (onAddToShoppingList != null)
-            IconButton(
-              tooltip: 'Zur Einkaufsliste',
-              onPressed: product == null ? null : () => onAddToShoppingList!(product),
-              icon: const Icon(Icons.add_shopping_cart_outlined),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
 Map<String, List<OfferImportRecord>> _grouped(List<OfferImportRecord> records) {
   final grouped = <String, List<OfferImportRecord>>{};
   for (final record in records) {
-    grouped.putIfAbsent(_offerCategory(record.productLabel), () => []).add(record);
+    grouped
+        .putIfAbsent(_offerCategory(record.productLabel), () => [])
+        .add(record);
   }
   final entries = grouped.entries.toList()
     ..sort((a, b) => _categoryRank(a.key).compareTo(_categoryRank(b.key)));
@@ -262,20 +237,47 @@ Map<String, List<OfferImportRecord>> _grouped(List<OfferImportRecord> records) {
 
 String _offerCategory(String label) {
   final value = label.toLowerCase();
-  if (RegExp(r'gemüse|salat|tomat|gurk|kartoff|obst|apfel|banane|traube').hasMatch(value)) return 'Obst & Gemüse';
-  if (RegExp(r'milch|joghurt|käse|schmand|sahne|quark|butter').hasMatch(value)) return 'Milchprodukte';
-  if (RegExp(r'hack|fleisch|wurst|schinken|fisch|lachs|hähnchen').hasMatch(value)) return 'Fleisch & Fisch';
-  if (RegExp(r'brot|bröt|toast|backwaren|croissant').hasMatch(value)) return 'Backwaren';
-  if (RegExp(r'getränk|wasser|saft|cola|bier|wein|kaffee|tee').hasMatch(value)) return 'Getränke';
+  if (RegExp(r'gemüse|salat|tomat|gurk|kartoff|obst|apfel|banane|traube')
+      .hasMatch(value)) {
+    return 'Obst & Gemüse';
+  }
+  if (RegExp(r'milch|joghurt|käse|schmand|sahne|quark|butter')
+      .hasMatch(value)) {
+    return 'Milchprodukte';
+  }
+  if (RegExp(r'hack|fleisch|wurst|schinken|fisch|lachs|hähnchen')
+      .hasMatch(value)) {
+    return 'Fleisch & Fisch';
+  }
+  if (RegExp(r'brot|bröt|toast|backwaren|croissant').hasMatch(value)) {
+    return 'Backwaren';
+  }
+  if (RegExp(r'getränk|wasser|saft|cola|bier|wein|kaffee|tee')
+      .hasMatch(value)) {
+    return 'Getränke';
+  }
   if (RegExp(r'tiefkühl|tk |pizza|eis ').hasMatch(value)) return 'Tiefkühl';
-  if (RegExp(r'reis|nudel|mehl|zucker|dose|konserve|sauce|öl|gewürz').hasMatch(value)) return 'Vorrat & Konserven';
-  if (RegExp(r'seife|shampoo|zahnpasta|deo|waschmittel|reiniger').hasMatch(value)) return 'Drogerie';
-  if (RegExp(r'küche|haushalt|müll|papier|lampe|werkzeug|akku|bastel|raum-weiß').hasMatch(value)) return 'Haushalt';
-  if (RegExp(r'non-food|bekleidung|schuh|spielzeug|dekoration').hasMatch(value)) return 'Non-Food';
+  if (RegExp(r'reis|nudel|mehl|zucker|dose|konserve|sauce|öl|gewürz')
+      .hasMatch(value)) {
+    return 'Vorrat & Konserven';
+  }
+  if (RegExp(r'seife|shampoo|zahnpasta|deo|waschmittel|reiniger')
+      .hasMatch(value)) {
+    return 'Drogerie';
+  }
+  if (RegExp(r'küche|haushalt|müll|papier|lampe|werkzeug|akku|bastel|raum-weiß')
+      .hasMatch(value)) {
+    return 'Haushalt';
+  }
+  if (RegExp(r'non-food|bekleidung|schuh|spielzeug|dekoration')
+      .hasMatch(value)) {
+    return 'Non-Food';
+  }
   return 'Weitere Angebote';
 }
 
-int _categoryRank(String category) => const {
+int _categoryRank(String category) =>
+    const {
       'Obst & Gemüse': 0,
       'Milchprodukte': 1,
       'Fleisch & Fisch': 2,
@@ -287,15 +289,5 @@ int _categoryRank(String category) => const {
       'Drogerie': 21,
       'Non-Food': 30,
       'Weitere Angebote': 40,
-    }[category] ?? 50;
-
-IconData _categoryIcon(String category) => switch (category) {
-      'Obst & Gemüse' => Icons.eco_outlined,
-      'Milchprodukte' => Icons.egg_alt_outlined,
-      'Fleisch & Fisch' => Icons.set_meal_outlined,
-      'Backwaren' => Icons.bakery_dining_outlined,
-      'Getränke' => Icons.local_drink_outlined,
-      'Tiefkühl' => Icons.ac_unit,
-      'Haushalt' || 'Drogerie' => Icons.cleaning_services_outlined,
-      _ => Icons.shopping_bag_outlined,
-    };
+    }[category] ??
+    50;

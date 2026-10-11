@@ -34,6 +34,44 @@ void main() {
     expect(entries.single.offer.proofRef, contains('netto/coffee'));
   });
 
+  test(
+    'verified unknown offer is addable from a prospect without remapping it',
+    () {
+      final product = addableProductForProspectOffer(
+        OfferImportRecord(
+          sourceId: 'unknown-1',
+          productLabel: 'Eigenmarke Haferdrink 1 l',
+          storeName: 'Lidl',
+          offerPrice: 0.99,
+          validUntil: DateTime(2026, 10, 2),
+          source: 'leaflet',
+          proofRef: 'https://example.test/lidl/unknown-1',
+        ),
+        const <Product>[],
+      );
+
+      expect(product, isNotNull);
+      expect(product!.name, 'Eigenmarke Haferdrink 1 l');
+      expect(product.id, startsWith('prospect|'));
+    },
+  );
+
+  test('unproven offer cannot be transferred to the shopping list', () {
+    final product = addableProductForProspectOffer(
+      OfferImportRecord(
+        sourceId: 'unproven-1',
+        productLabel: 'Haferdrink 1 l',
+        storeName: 'Lidl',
+        offerPrice: 0.99,
+        validUntil: DateTime(2026, 10, 2),
+        source: 'leaflet',
+      ),
+      const <Product>[],
+    );
+
+    expect(product, isNull);
+  });
+
   test('matching exact catalog identity is reused across stores', () {
     const coffee = Product(
       id: 'coffee-jacobs-500',

@@ -37,6 +37,35 @@ Product productForProspectOffer(
       _offerBackedProduct(record);
 }
 
+/// Returns the exact catalog identity or a safe, exact-label fallback for a
+/// verified current prospect offer. Ambiguous, invalid, or unproven records
+/// stay unavailable instead of being added under the wrong product.
+Product? addableProductForProspectOffer(
+  OfferImportRecord record,
+  Iterable<Product> catalogProducts,
+) {
+  if (!_hasVerifiedOfferEvidence(record)) return null;
+  final resolution = resolveOfferImport(record, catalogProducts);
+  if (resolution.product != null) return resolution.product;
+  if (resolution.reason != 'unknown_identity') return null;
+  return productForProspectOffer(record, catalogProducts);
+}
+
+bool _hasVerifiedOfferEvidence(OfferImportRecord record) {
+  final original = record.originalPrice;
+  return record.productLabel.trim().isNotEmpty &&
+      record.storeName.trim().isNotEmpty &&
+      record.offerPrice.isFinite &&
+      record.offerPrice > 0 &&
+      (original == null ||
+          (original.isFinite &&
+              original > 0 &&
+              record.offerPrice <= original)) &&
+      (record.validFrom == null ||
+          !record.validUntil.isBefore(record.validFrom!)) &&
+      (record.source == 'manual' || record.proofRef?.trim().isNotEmpty == true);
+}
+
 class ProspectOfferProduct {
   const ProspectOfferProduct(this.product, this.offer);
 

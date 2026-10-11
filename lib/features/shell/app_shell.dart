@@ -289,8 +289,11 @@ class _AppShellState extends State<AppShell> {
         records: currentRecords,
         catalogProducts: buildCatalogProducts(customProducts),
       );
+      // Keep exact-label fallback products as offer identities as well. A
+      // user may intentionally add an article directly from the prospect;
+      // its verified leaflet price must then remain available to the route
+      // optimizer instead of silently falling back to an estimate.
       final resolved = offerBackedProducts
-          .where((entry) => !entry.product.id.startsWith('prospect|'))
           .map((entry) => entry.offer)
           .toList(growable: false);
 

@@ -7,6 +7,7 @@ import '../offers/prospect_offer_products.dart';
 import '../../models/product.dart';
 import '../../services/prospect_feed_service.dart';
 import '../offers/offer_filter.dart';
+import 'prospect_offer_card.dart';
 
 class ProspectsScreen extends StatelessWidget {
   const ProspectsScreen({
@@ -295,6 +296,19 @@ class _ProspectViewer extends StatelessWidget {
                 label: const Text('Offiziellen Prospekt öffnen'),
               ),
             ),
+          Text(issue.title, style: Theme.of(context).textTheme.titleLarge),
+          if (issue.validFrom != null && issue.validUntil != null)
+            Text(
+              '${_prospectDate(issue.validFrom!)} – ${_prospectDate(issue.validUntil!)}',
+              style: const TextStyle(color: Colors.black54),
+            ),
+          if (issue.pages.isNotEmpty) ...[
+            const SizedBox(height: 14),
+            Text(
+              'Prospektseiten (${issue.pages.length})',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ],
           if (issue.pages.isEmpty)
             Card(
               child: Padding(
@@ -375,20 +389,17 @@ class _ProspectViewer extends StatelessWidget {
                           width: width,
                           child: Builder(
                             builder: (context) {
-                              final result = resolveOfferImport(
+                              final product = addableProductForProspectOffer(
                                 record,
                                 catalogProducts,
                               );
-                              final product =
-                                  result.product ??
-                                  productForProspectOffer(
-                                    record,
-                                    catalogProducts,
-                                  );
-                              return _ProspectProductCard(
+                              return ProspectOfferCard(
+                                key: ValueKey(
+                                  'prospect-offer-${record.sourceId}',
+                                ),
                                 record: record,
-                                category: category,
-                                onTap: onAddProduct == null
+                                product: product,
+                                onAdd: onAddProduct == null || product == null
                                     ? null
                                     : () => onAddProduct!(product),
                               );
@@ -467,133 +478,5 @@ String _prospectCategory(String label) {
   return 'Weitere Angebote';
 }
 
-class _ProspectProductCard extends StatelessWidget {
-  const _ProspectProductCard({
-    required this.record,
-    required this.category,
-    required this.onTap,
-  });
-
-  final OfferImportRecord record;
-  final String category;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final oldPrice = record.originalPrice;
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 130,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: record.imageUrl != null
-                        ? Image.network(
-                            record.imageUrl!,
-                            webHtmlElementStrategy:
-                                WebHtmlElementStrategy.prefer,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Center(
-                                  child: Icon(
-                                    _categoryIcon(category),
-                                    size: 42,
-                                  ),
-                                ),
-                          )
-                        : Center(
-                            child: Icon(_categoryIcon(category), size: 42),
-                          ),
-                  ),
-                  Positioned(
-                    right: 8,
-                    bottom: 8,
-                    child: CircleAvatar(
-                      radius: 23,
-                      backgroundColor: Colors.green.shade400,
-                      child: const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                        size: 30,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${record.offerPrice.toStringAsFixed(2).replaceAll('.', ',')} €',
-                    style: const TextStyle(
-                      color: Color(0xffdf5963),
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  Text(
-                    record.storeName,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontWeight: FontWeight.w700),
-                  ),
-                  Text(
-                    record.productLabel,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  Text(
-                    'Angebot bis ${_prospectDate(record.validUntil)}',
-                    style: const TextStyle(fontSize: 12, color: Colors.black54),
-                  ),
-                  if (oldPrice != null)
-                    Text(
-                      '${oldPrice.toStringAsFixed(2).replaceAll('.', ',')} €',
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        decoration: TextDecoration.lineThrough,
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 String _prospectDate(DateTime value) =>
     '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.${value.year}';
-
-IconData _categoryIcon(String category) {
-  switch (category) {
-    case 'Obst & Gemüse':
-      return Icons.eco_outlined;
-    case 'Milchprodukte':
-      return Icons.local_drink_outlined;
-    case 'Fleisch & Fisch':
-      return Icons.restaurant_outlined;
-    case 'Getränke':
-      return Icons.local_bar_outlined;
-    case 'Haushalt':
-      return Icons.home_outlined;
-    case 'Drogerie':
-      return Icons.clean_hands_outlined;
-    case 'Non-Food':
-      return Icons.shopping_bag_outlined;
-    default:
-      return Icons.local_offer_outlined;
-  }
-}
