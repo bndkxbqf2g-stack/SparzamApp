@@ -270,11 +270,19 @@ void main() {
         find.widgetWithText(FilledButton, 'Artikel hinzufügen'),
       );
       await tester.pumpAndSettle();
+      await tester.runAsync(() async {
+        for (var attempt = 0; attempt < 40; attempt++) {
+          if ((await stores.offers.load()).isNotEmpty) return;
+          await Future<void>.delayed(const Duration(milliseconds: 25));
+        }
+      });
 
       final savedItems = await stores.shoppingList.load();
       final savedOffers = await stores.offers.load();
-      expect(savedItems.single.product.name, 'Käsesticks 300 g');
+      expect(savedOffers, hasLength(1));
       expect(savedOffers.single.source, 'leaflet');
+      expect(savedItems, hasLength(1));
+      expect(savedItems.single.product.name, 'Käsesticks 300 g');
       expect(
         savedOffers.single.proofRef,
         'https://example.test/netto/page-1-large.png',
