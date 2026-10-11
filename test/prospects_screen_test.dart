@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/prospects/prospects_screen.dart';
 import 'package:sparzamapp/features/offers/offer_import.dart';
+import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/services/prospect_feed_service.dart';
 
 void main() {
@@ -86,6 +87,58 @@ void main() {
     await tester.tap(find.text('Zur Einkaufsliste'));
     await tester.pump();
     expect(added, isTrue);
+  });
+
+  testWidgets('searches current prospect articles across markets', (
+    tester,
+  ) async {
+    Product? added;
+    final records = [
+      OfferImportRecord(
+        sourceId: 'lidl-coffee',
+        productLabel: 'Jacobs Kaffee Crema 500 g',
+        storeName: 'Lidl',
+        offerPrice: 4.99,
+        validFrom: DateTime(2026, 9, 28),
+        validUntil: DateTime(2026, 10, 3),
+        proofRef: 'https://example.test/lidl/coffee',
+      ),
+      OfferImportRecord(
+        sourceId: 'edeka-milk',
+        productLabel: 'Frische Vollmilch 1 l',
+        storeName: 'EDEKA',
+        offerPrice: 0.99,
+        validFrom: DateTime(2026, 9, 28),
+        validUntil: DateTime(2026, 10, 3),
+        proofRef: 'https://example.test/edeka/milk',
+      ),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: records,
+          now: DateTime(2026, 9, 30),
+          catalogProducts: const <Product>[],
+          onAddProduct: (product) => added = product,
+        ),
+      ),
+    );
+
+    await tester.enterText(
+      find.byHintText('Prospekte und Artikel durchsuchen'),
+      'Kaffee',
+    );
+    await tester.pump();
+
+    expect(find.text('1 passende Prospektartikel'), findsOneWidget);
+    expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
+    expect(find.text('Frische Vollmilch 1 l'), findsNothing);
+
+    await tester.tap(find.byTooltip('Zur Einkaufsliste'));
+    expect(added, isNotNull);
+    expect(added!.name, 'Jacobs Kaffee Crema 500 g');
+    expect(added!.id, startsWith('prospect|'));
   });
 
   testWidgets('labels a cached prospect feed clearly', (tester) async {
@@ -350,3 +403,4 @@ void main() {
     expect(find.text('Alter Kaffee'), findsNothing);
   });
 }
+
