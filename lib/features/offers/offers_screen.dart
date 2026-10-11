@@ -192,7 +192,7 @@ class _ProspectOffersState extends State<_ProspectOffers> {
               style: const TextStyle(fontWeight: FontWeight.w800),
             ),
             subtitle: Text(
-              '${configuredProspectBranch(entry.key)?.location ?? 'Filiale'} · '
+              '${prospectRecordLocationLabel(entry.key, entry.value)} · '
               '${entry.value.length} Angebote',
             ),
             onExpansionChanged: (expanded) => setState(() {
