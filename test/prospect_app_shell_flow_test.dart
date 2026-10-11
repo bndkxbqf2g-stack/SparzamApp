@@ -38,6 +38,16 @@ class _FakeProspectImportModule extends ProspectImportModule {
   Future<ProspectFeedLoadResult> execute({String? startAddress}) async => result;
 }
 
+class _TracingShoppingListStore extends ShoppingListStore {
+  final savedSnapshots = <List<ListItem>>[];
+
+  @override
+  Future<void> save(List<ListItem> items) {
+    savedSnapshots.add(List<ListItem>.from(items));
+    return super.save(items);
+  }
+}
+
 class _Stores {
   final budget = BudgetStore();
   final offers = OfferStore();
@@ -48,7 +58,7 @@ class _Stores {
   final priceHistory = PriceHistoryStore();
   final recentPurchases = RecentPurchaseStore();
   final purchases = PurchaseStore();
-  final shoppingList = ShoppingListStore();
+  final shoppingList = _TracingShoppingListStore();
   final diagnostics = DiagnosticLogService();
 }
 
@@ -287,6 +297,14 @@ void main() {
       final savedItems = await stores.shoppingList.load();
       final savedOffers = await stores.offers.load();
       final diagnostics = await stores.diagnostics.load();
+      expect(
+        stores.shoppingList.savedSnapshots.any(
+          (snapshot) => snapshot.any(
+            (item) => item.product.name == 'Käsesticks 300 g',
+          ),
+        ),
+        isTrue,
+      );
       expect(
         diagnostics.any(
           (entry) =>
