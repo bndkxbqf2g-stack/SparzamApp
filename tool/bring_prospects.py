@@ -18,10 +18,11 @@ import os
 import re
 import time
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
 from typing import Any
 from urllib.parse import parse_qs, quote, unquote, urlencode, urlparse
 from urllib.request import Request, urlopen
+from zoneinfo import ZoneInfo
 
 BRING_BASE_URL = "https://production.bringapi.app"
 BRING_PROVIDER_ID = "bring-de"
@@ -35,6 +36,12 @@ DEFAULT_LATITUDE = 49.91009
 DEFAULT_LONGITUDE = 9.81492
 
 SUPPORTED_STORES = ("Lidl", "ALDI Süd", "EDEKA", "Kaufland", "PENNY", "Netto")
+LOCAL_TIMEZONE = ZoneInfo("Europe/Berlin")
+
+
+def local_today() -> date:
+    """Return the business date used by the German brochure adapter."""
+    return datetime.now(LOCAL_TIMEZONE).date()
 
 
 def _clean(value: Any) -> str:
@@ -327,7 +334,7 @@ def transform_bring_brochure(
     )
     if valid_from is None or valid_until is None:
         return None
-    reference_day = today or date.today()
+    reference_day = today or local_today()
     if reference_day < valid_from or reference_day > valid_until:
         return None
 
@@ -445,7 +452,7 @@ def fetch_current_bring_prospects(
 
     payload = _record(_fetch_json(_list_url(zip_code, latitude, longitude), config))
     raw_offers = _array(payload.get("offers"))
-    reference_day = today or date.today()
+    reference_day = today or local_today()
     candidates: dict[str, list[dict[str, Any]]] = {}
 
     for offer_value in raw_offers:

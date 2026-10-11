@@ -132,4 +132,44 @@ void main() {
         'historischer Bonpreis');
   });
 
+  test('future external observations are not usable before their date', () {
+    final futureReceipt = MarketPrice(
+      productId: 'bread',
+      storeName: 'Netto',
+      price: 1.19,
+      updatedAt: DateTime(2026, 9, 23),
+      source: MarketPriceSource.receipt,
+    );
+    final futureOpenPrice = MarketPrice(
+      productId: 'milk',
+      storeName: 'Lidl',
+      price: 0.89,
+      updatedAt: DateTime(2026, 9, 23),
+      source: MarketPriceSource.openPrices,
+    );
+
+    expect(
+      futureReceipt.isUsable(now: now, openPricesMaxAgeDays: 60),
+      isFalse,
+    );
+    expect(
+      futureOpenPrice.isUsable(now: now, openPricesMaxAgeDays: 60),
+      isFalse,
+    );
+  });
+
+  test('future manual prices are not usable before their date', () {
+    final futureManual = MarketPrice(
+      productId: 'butter',
+      storeName: 'Lidl',
+      price: 1.99,
+      updatedAt: DateTime(2026, 9, 23),
+    );
+
+    expect(
+      futureManual.isUsable(now: now, openPricesMaxAgeDays: 60),
+      isFalse,
+    );
+  });
+
 }

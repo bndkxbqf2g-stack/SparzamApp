@@ -42,6 +42,83 @@ void main() {
     expect(added, product);
   });
 
+  testWidgets('shopping search labels the current price recommendation', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ShoppingSearchResults(
+            query: 'Milch',
+            suggestions: const [product],
+            relatedInterpretations: const [],
+            preferredProductByGroup: const {},
+            recentPurchases: const [],
+            recommendedProductId: product.id,
+            onAdd: (_) {},
+            onAddCustom: () {},
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Milch 1,5 % · Empfehlung'), findsOneWidget);
+  });
+
+  testWidgets('known family fallback opens concrete product selection', (
+    tester,
+  ) async {
+    var chooserOpened = false;
+    var customAdded = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ShoppingSearchResults(
+            query: 'Milch',
+            suggestions: const [product],
+            relatedInterpretations: const [],
+            preferredProductByGroup: const {},
+            recentPurchases: const [],
+            onChooseKnownProduct: () => chooserOpened = true,
+            onAdd: (_) {},
+            onAddCustom: () => customAdded = true,
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('„Milch“ konkret auswählen'), findsOneWidget);
+    expect(find.text('Varianten und belegte Preise auswählen.'), findsOneWidget);
+    await tester.tap(find.text('„Milch“ konkret auswählen'));
+
+    expect(chooserOpened, isTrue);
+    expect(customAdded, isFalse);
+  });
+
+  testWidgets('unknown free text remains a custom list item', (tester) async {
+    var customAdded = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ShoppingSearchResults(
+            query: 'Sonderwunsch',
+            suggestions: const [],
+            relatedInterpretations: const [],
+            preferredProductByGroup: const {},
+            recentPurchases: const [],
+            onAdd: (_) {},
+            onAddCustom: () => customAdded = true,
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('„Sonderwunsch“ hinzufügen'), findsOneWidget);
+    await tester.tap(find.text('„Sonderwunsch“ hinzufügen'));
+
+    expect(customAdded, isTrue);
+  });
+
   testWidgets('shopping search labels learned leaflet prices as historical', (
     tester,
   ) async {
@@ -120,5 +197,36 @@ void main() {
     expect(tester.takeException(), isNull);
     await tester.tap(find.text('H-Milch'));
     expect(added, recalled);
+  });
+
+  testWidgets('automatic receipt product is visibly marked for review', (
+    tester,
+  ) async {
+    const provisional = Product(
+      id: 'receipt_auto_specialitaet',
+      name: 'Spezialität unbekannt',
+      unit: 'Stück',
+      group: 'sonstiges',
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ShoppingSearchResults(
+            query: 'Spezialität',
+            suggestions: const [provisional],
+            relatedInterpretations: const [],
+            preferredProductByGroup: const {},
+            recentPurchases: const [],
+            onAdd: (_) {},
+            onAddCustom: () {},
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      find.textContaining('Früher gekauft · Sorte und Packung prüfen'),
+      findsOneWidget,
+    );
   });
 }

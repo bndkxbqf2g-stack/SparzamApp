@@ -9,6 +9,7 @@ class ReceiptPriceStat {
     required this.medianPrice,
     required this.comparable,
     required this.priceBasis,
+    this.identityConfirmed = true,
   });
 
   final String familyKey;
@@ -20,4 +21,9 @@ class ReceiptPriceStat {
   final double medianPrice;
   final bool comparable;
   final String priceBasis;
+
+  /// True only when a concrete product assignment behind this statistic was
+  /// explicitly confirmed. Family-only observations remain usable for a
+  /// generic family request.
+  final bool identityConfirmed;
 }

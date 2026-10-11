@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sparzamapp/features/route/route_optimizer.dart';
 import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/features/offers/prospect_offer_products.dart';
+import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/product.dart';
 
 void main() {
@@ -72,6 +74,51 @@ void main() {
     expect(product, isNull);
   });
 
+  test('preserves multipack quantity for price comparability', () {
+    final entries = prospectOfferProducts(
+      records: [
+        OfferImportRecord(
+          sourceId: 'snack-multipack',
+          productLabel: 'Riegel je 3 x 50-g-Packg.',
+          storeName: 'Lidl',
+          offerPrice: 2.49,
+          validUntil: DateTime(2026, 10, 2),
+          source: 'retailerWebsite',
+          proofRef: 'https://example.test/lidl/snack',
+        ),
+      ],
+      catalogProducts: const <Product>[],
+      now: current,
+    );
+
+    expect(entries, hasLength(1));
+    expect(entries.single.product.unit, '3 x 50 g');
+    expect(entries.single.product.packageAmount, 150);
+    expect(entries.single.product.packageUnit, 'g');
+  });
+
+  test('preserves multipack volume from retailer labels', () {
+    final entries = prospectOfferProducts(
+      records: [
+        OfferImportRecord(
+          sourceId: 'water-case',
+          productLabel: 'Mineralwasser je 6 x 1,5-l-Fl.',
+          storeName: 'Netto',
+          offerPrice: 3.99,
+          validUntil: DateTime(2026, 10, 2),
+          source: 'retailerWebsite',
+          proofRef: 'https://example.test/netto/water',
+        ),
+      ],
+      catalogProducts: const <Product>[],
+      now: current,
+    );
+
+    expect(entries.single.product.unit, '6 x 1,5 l');
+    expect(entries.single.product.packageAmount, 9);
+    expect(entries.single.product.packageUnit, 'l');
+  });
+
   test('matching exact catalog identity is reused across stores', () {
     const coffee = Product(
       id: 'coffee-jacobs-500',
@@ -101,6 +148,40 @@ void main() {
       entries.map((entry) => entry.offer.productId),
       everyElement(coffee.id),
     );
+  });
+
+  test('unknown verified prospect offer remains routeable by exact label', () {
+    final entries = prospectOfferProducts(
+      records: [
+        OfferImportRecord(
+          sourceId: 'unknown-milk',
+          productLabel: 'Landmilch 1 l',
+          storeName: 'Lidl',
+          offerPrice: 0.89,
+          validUntil: DateTime(2026, 10, 2),
+          source: 'retailerWebsite',
+          proofRef: 'https://example.test/lidl/milk',
+        ),
+      ],
+      catalogProducts: const <Product>[],
+      now: current,
+    );
+    final product = entries.single.product;
+    final offers = offersFromProspectProducts(entries);
+
+    final plan = RouteOptimizer(
+      [ListItem(product: product)],
+      offers,
+      enabledStoreNames: const ['Lidl'],
+      maxStores: 1,
+      now: current,
+    ).bestSingleStorePlan();
+
+    expect(product.id, startsWith('prospect|'));
+    expect(offers.single.productId, product.id);
+    expect(plan, isNotNull);
+    expect(plan!.unassigned, isEmpty);
+    expect(plan.basket, 0.89);
   });
 
   test(

@@ -214,6 +214,13 @@ const products = <Product>[
     aliases: ['joghurt', 'fruchtjoghurt'],
   ),
   Product(
+    id: 'joghurt_ecke',
+    name: 'Joghurt mit der Ecke',
+    unit: 'Packung',
+    group: 'joghurt',
+    aliases: ['joghurt mit der ecke', 'ecke'],
+  ),
+  Product(
     id: 'wurst_salami',
     name: 'Salami',
     unit: '200 g',
@@ -307,6 +314,13 @@ const products = <Product>[
     group: 'obst_gemuese',
     aliases: ['kartoffel'],
     isStaple: true,
+  ),
+  Product(
+    id: 'kloesse_kartoffel',
+    name: 'Kartoffelklöße',
+    unit: '750 g',
+    group: 'vorrat',
+    aliases: ['Kloß', 'Klöße', 'Kartoffelklöße'],
   ),
   Product(
     id: 'aepfel',
@@ -454,11 +468,25 @@ const products = <Product>[
     aliases: ['pizza'],
   ),
   Product(
+    id: 'pizza_donut_schinken',
+    name: 'Pizza-Donut Schinken',
+    unit: 'Packung',
+    group: 'backwaren',
+    aliases: ['Pizza-Donut Schin.'],
+  ),
+  Product(
     id: 'chips',
     name: 'Kartoffelchips',
     unit: '150 g',
     group: 'vorrat',
     aliases: ['chips', 'kartoffelchips'],
+  ),
+  Product(
+    id: 'knabbermaeuse_salz',
+    name: 'Knabbermäuse Salz',
+    unit: 'Packung',
+    group: 'vorrat',
+    aliases: ['KLC.Kn.Mäuse Salz', 'Knabbermäuse'],
   ),
   Product(
     id: 'schmand',

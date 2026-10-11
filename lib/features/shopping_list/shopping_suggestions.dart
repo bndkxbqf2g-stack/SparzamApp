@@ -10,8 +10,8 @@ import '../offers/offer_filter.dart';
 import '../offers/prospect_price_statistics.dart';
 import '../catalog/product_identity.dart';
 import '../catalog/product_hierarchy.dart';
+import '../route/market_price_quality.dart';
 import 'receipt_product_price_match.dart';
-import 'shopping_price_quotes.dart';
 import '../../services/quantity_normalizer.dart';
 
 class ShoppingSuggestionPrice {
@@ -19,6 +19,7 @@ class ShoppingSuggestionPrice {
     required this.price,
     required this.storeName,
     required this.sourceLabel,
+    this.rankingPrice,
     this.validUntil,
     this.observedAt,
     this.isOffer = false,
@@ -28,10 +29,15 @@ class ShoppingSuggestionPrice {
   final double price;
   final String storeName;
   final String sourceLabel;
+  /// Quality-adjusted comparison value used only for ranking current prices.
+  /// The displayed price remains the observed checkout amount.
+  final double? rankingPrice;
   final DateTime? validUntil;
   final DateTime? observedAt;
   final bool isOffer;
   final bool isHistorical;
+
+  double get comparisonPrice => rankingPrice ?? price;
 
   String get displayLabel =>
       '$sourceLabel $storeName ${price.toStringAsFixed(2).replaceAll('.', ',')} €'
@@ -54,12 +60,21 @@ List<Product> buildSuggestions({
   Iterable<ReceiptPriceStat> receiptPriceStats = const <ReceiptPriceStat>[],
   Map<String, ProspectPriceHistorySummary> prospectPriceHistory = const {},
   Iterable<String> enabledStores = const <String>[],
+  int openPricesMaxAgeDays = 60,
   DateTime? now,
 }) {
   final normalized = query.trim().toLowerCase();
   if (normalized.isEmpty) return const <Product>[];
 
   final queryIdentity = identifyProduct(query);
+  // A one-character query is still being typed. Matching it against the
+  // complete catalog would surface unrelated offers that merely contain the
+  // same letter (for example, a beer or mixer while entering "Joghurt").
+  // Known identities such as "Ei" remain searchable immediately; unknown
+  // free text waits for one more character before ranking products.
+  if (!queryIdentity.isKnown && normalized.length < 2) {
+    return const <Product>[];
+  }
   final learnedMatches = knownItems
       .map((item) => item.toProduct())
       .where((product) => _matchesProductQuery(product, query, queryIdentity));
@@ -82,6 +97,7 @@ List<Product> buildSuggestions({
         receiptPriceStats: receiptPriceStats,
         prospectPriceHistory: prospectPriceHistory,
         enabledStores: enabledStores,
+        openPricesMaxAgeDays: openPricesMaxAgeDays,
         now: now,
       ),
   };
@@ -99,14 +115,26 @@ List<Product> buildSuggestions({
       // Offers/current observations still outrank historical values above.
       // Within the same evidence bucket, keep the cheapest comparable item
       // first so historical receipt medians remain useful for staple searches.
-      final aComparable = _comparisonPrice(a, aPrice.price);
-      final bComparable = _comparisonPrice(b, bPrice.price);
-      if (aComparable != null &&
-          bComparable != null &&
-          aComparable.dimension == bComparable.dimension) {
-        final byUnitPrice = aComparable.price.compareTo(bComparable.price);
-        if (byUnitPrice != 0) return byUnitPrice;
-      } else if (_normalizedUnitLabel(a.unit) == _normalizedUnitLabel(b.unit)) {
+      final aComparable = _comparisonPriceForSuggestion(a, aPrice);
+      final bComparable = _comparisonPriceForSuggestion(b, bPrice);
+      if (aComparable != null && bComparable != null) {
+        if (aComparable.dimension == bComparable.dimension) {
+          final byUnitPrice = aComparable.price.compareTo(bComparable.price);
+          if (byUnitPrice != 0) return byUnitPrice;
+        }
+      } else if (aComparable == null && bComparable != null) {
+        // A package without a reliable quantity must not outrank a product
+        // whose price can be compared on the same request. Keep that item
+        // visible, but make the missing package basis explicit through its
+        // unchanged unit label instead of pretending that its raw package
+        // price is a unit price.
+        return 1;
+      } else if (aComparable != null && bComparable == null) {
+        return -1;
+      } else {
+        // Both prices are package-only observations. A raw price is still a
+        // useful deterministic fallback within that evidence bucket, while
+        // the UI continues to show the original package labels.
         final byPackagePrice = aPrice.price.compareTo(bPrice.price);
         if (byPackagePrice != 0) return byPackagePrice;
       }
@@ -163,6 +191,66 @@ List<Product> buildSuggestions({
   return matches;
 }
 
+/// Chooses the first currently evidenced suggestion for a query with real
+/// alternatives. The list is already ranked by offer/current-price evidence,
+/// so this helper exposes that decision without promoting a historical hint
+/// into a silent product choice.
+String? recommendedShoppingProductId({
+  required Iterable<Product> suggestions,
+  required ShoppingSuggestionPrice? Function(Product product) priceFor,
+  required bool hasAlternatives,
+}) {
+  if (!hasAlternatives) return null;
+  return currentShoppingProductId(
+    suggestions: suggestions,
+    priceFor: priceFor,
+  );
+}
+
+/// Returns the first suggestion backed by current evidence, independent of
+/// whether the UI has enough alternatives to show a recommendation badge.
+/// This is used by the Enter path, where one current product is still safe to
+/// accept even though there is no choice to label.
+String? currentShoppingProductId({
+  required Iterable<Product> suggestions,
+  required ShoppingSuggestionPrice? Function(Product product) priceFor,
+}) {
+  for (final product in suggestions) {
+    final price = priceFor(product);
+    if (price != null && !price.isHistorical) return product.id;
+  }
+  return null;
+}
+
+/// Resolves the product that may be accepted by pressing Enter in the
+/// shopping search field.
+///
+/// A historical price hint is useful context, but it is not enough evidence
+/// to silently choose one product from a generic request such as "Milch".
+/// Current evidence may choose the already-ranked recommendation. An exact
+/// single match remains safe to accept even without a price, because the
+/// user named that catalog identity explicitly.
+Product? shoppingProductForSubmit({
+  required String query,
+  required List<Product> suggestions,
+  required String? recommendedProductId,
+}) {
+  if (suggestions.isEmpty) return null;
+
+  if (recommendedProductId != null) {
+    for (final product in suggestions) {
+      if (product.id == recommendedProductId) return product;
+    }
+  }
+
+  if (suggestions.length == 1 &&
+      _matchesExactSearchLabel(suggestions.single, query)) {
+    return suggestions.single;
+  }
+
+  return null;
+}
+
 bool _matchesProductQuery(
   Product product,
   String query,
@@ -182,23 +270,27 @@ bool _matchesProductQuery(
     ...product.aliases,
   ].map(identifyProduct).where((identity) => identity.isKnown).toList();
   if (identities.isNotEmpty) {
-    return identities.any(
-      (candidate) =>
-          compatibleProductIdentity(queryIdentity, candidate) ||
-          _openMilkChoice(queryIdentity, candidate),
-    );
+    final nameIdentity = identities.first;
+    return compatibleProductIdentity(queryIdentity, nameIdentity) ||
+        _openMilkChoice(queryIdentity, nameIdentity) ||
+        identities
+            .skip(1)
+            .any(
+              (candidate) =>
+                  compatibleProductIdentity(queryIdentity, candidate),
+            );
   }
   return textMatch;
 }
 
 int _identitySpecificity(ProductIdentity identity) => [
-      identity.variant,
-      identity.productType,
-      identity.fatPercent,
-      identity.color,
-      identity.shape,
-      identity.meatType,
-    ].where((value) => value != null).length;
+  identity.variant,
+  identity.productType,
+  identity.fatPercent,
+  identity.color,
+  identity.shape,
+  identity.meatType,
+].where((value) => value != null).length;
 
 bool _matchesExactSearchLabel(Product product, String query) {
   final normalized = normalizeIdentityText(query);
@@ -233,16 +325,11 @@ int _queryLabelScore(Product product, String query) {
   return score;
 }
 
-// Search may offer a fat-level choice for an unspecified H-milk receipt label.
-// This only retrieves separate products; it never transfers their prices or
-// confirms that the receipt's unknown fat level matches either choice.
+// Search may offer ordinary milk choices for an unspecified H-milk receipt
+// label. This only retrieves separate products; it never transfers their
+// prices or confirms which variant the receipt contained.
 bool _openMilkChoice(ProductIdentity query, ProductIdentity candidate) =>
-    query.familyKey == 'milch' &&
-    query.variant == 'h' &&
-    query.fatPercent == null &&
-    candidate.familyKey == 'milch' &&
-    candidate.fatPercent != null &&
-    candidate.variant == null;
+    isOpenMilkChoice(query, candidate);
 
 /// Returns the lowest usable exact price or comparable recent receipt median
 /// for one product. This is search ranking evidence, not a price guarantee.
@@ -255,6 +342,7 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
   Iterable<String> enabledStores = const <String>[],
   DateTime? now,
   int historyDays = 60,
+  int openPricesMaxAgeDays = 60,
 }) {
   final current = now ?? DateTime.now();
   final enabled = enabledStores.toSet();
@@ -277,6 +365,7 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
         price: effective.finalPrice,
         storeName: offer.storeName,
         sourceLabel: effective.cashback > 0 ? 'Angebot, effektiv' : 'Angebot',
+        rankingPrice: effective.finalPrice,
         validUntil: offer.validUntil,
         isOffer: true,
       ),
@@ -285,20 +374,26 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
 
   for (final price in marketPrices) {
     if (price.productId != product.id ||
-        price.source == MarketPriceSource.openPrices ||
         (enabled.isNotEmpty && !enabled.contains(price.storeName)) ||
         !price.price.isFinite ||
         price.price <= 0 ||
-        !price.isUsable(now: current, openPricesMaxAgeDays: historyDays)) {
+        !price.isUsable(
+          now: current,
+          openPricesMaxAgeDays: openPricesMaxAgeDays,
+        )) {
       continue;
     }
     quotes.add(
       ShoppingSuggestionPrice(
         price: price.price,
         storeName: price.storeName,
-        sourceLabel: price.source == MarketPriceSource.receipt
-            ? 'Bonpreis'
-            : 'Eigener Preis',
+        sourceLabel: switch (price.source) {
+          MarketPriceSource.receipt => 'Bonpreis',
+          MarketPriceSource.manual => 'Eigener Preis',
+          MarketPriceSource.openPrices => 'Open Prices',
+        },
+        rankingPrice: price.price *
+            (1 + marketPriceQuality(price, current).uncertaintyRate),
         observedAt: price.updatedAt,
       ),
     );
@@ -318,7 +413,8 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
       : receiptStatsForProduct(product, receiptPriceStats);
   for (final stat in matchingReceiptStats) {
     if (!stat.comparable ||
-        !stat.latestAt.isAfter(cutoff) ||
+        stat.latestAt.isBefore(cutoff) ||
+        stat.latestAt.isAfter(current) ||
         (enabled.isNotEmpty && !enabled.contains(stat.storeName)) ||
         existingReceiptStores.contains(stat.storeName)) {
       continue;
@@ -359,8 +455,10 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
   }
   quotes.sort((a, b) {
     if (a.isOffer != b.isOffer) return a.isOffer ? -1 : 1;
-    final byPrice = a.price.compareTo(b.price);
+    final byPrice = a.comparisonPrice.compareTo(b.comparisonPrice);
     if (byPrice != 0) return byPrice;
+    final byNominalPrice = a.price.compareTo(b.price);
+    if (byNominalPrice != 0) return byNominalPrice;
     return a.storeName.compareTo(b.storeName);
   });
   return quotes.first;
@@ -409,12 +507,21 @@ int _compareHistoricalHints(
   return (price: unitPrice, dimension: quantity.dimension);
 }
 
-String _normalizedUnitLabel(String value) => value
-    .toLowerCase()
-    .replaceAll('stück', 'stk')
-    .replaceAll('stueck', 'stk')
-    .replaceAll(RegExp(r'\s+'), ' ')
-    .trim();
+({double price, QuantityDimension dimension})? _comparisonPriceForSuggestion(
+  Product product,
+  ShoppingSuggestionPrice suggestion,
+) {
+  final comparable = _comparisonPrice(product, suggestion.price);
+  if (comparable == null || suggestion.rankingPrice == null) {
+    return comparable;
+  }
+  final factor = suggestion.comparisonPrice / suggestion.price;
+  if (!factor.isFinite || factor <= 0) return comparable;
+  return (
+    price: comparable.price * factor,
+    dimension: comparable.dimension,
+  );
+}
 
 /// Keeps the text fallback conservative once the query has a known product
 /// identity. An unknown candidate is only safe when its complete label is the
@@ -431,6 +538,7 @@ List<Product> buildRelatedProductInterpretations({
   required String query,
   required List<Product> primarySuggestions,
   List<Product> catalogProducts = products,
+  ShoppingSuggestionPrice? Function(Product product)? priceFor,
 }) {
   final request = identifyProduct(query);
   if (!request.isKnown) return const <Product>[];
@@ -456,7 +564,28 @@ List<Product> buildRelatedProductInterpretations({
     }
   }
 
-  matches.sort((a, b) => a.name.compareTo(b.name));
+  final prices = <String, ShoppingSuggestionPrice?>{
+    for (final product in matches) product.id: priceFor?.call(product),
+  };
+  matches.sort((a, b) {
+    final aPrice = prices[a.id];
+    final bPrice = prices[b.id];
+    if (aPrice != null || bPrice != null) {
+      if (aPrice == null) return 1;
+      if (bPrice == null) return -1;
+      if (aPrice.isHistorical != bPrice.isHistorical) {
+        return aPrice.isHistorical ? 1 : -1;
+      }
+      if (aPrice.isOffer != bPrice.isOffer) {
+        return aPrice.isOffer ? -1 : 1;
+      }
+      final byPrice = aPrice.price.compareTo(bPrice.price);
+      if (byPrice != 0) return byPrice;
+      final byStore = aPrice.storeName.compareTo(bPrice.storeName);
+      if (byStore != 0) return byStore;
+    }
+    return a.name.compareTo(b.name);
+  });
   return matches;
 }
 

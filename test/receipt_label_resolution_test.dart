@@ -30,15 +30,32 @@ void main() {
       expect(firstSuggestion('K.Wiener').id, 'wurst_wiener');
       expect(firstSuggestion('K.Gelbwurst').id, 'wurst_gelbwurst');
       expect(firstSuggestion('K.Kochhinterschink').id, 'wurst_kochschinken');
-      expect(firstSuggestion('KLC.Kn.Mäuse Salz').id, 'chips');
+      expect(firstSuggestion('KLC.Kn.Mäuse Salz').id, 'knabbermaeuse_salz');
       expect(firstSuggestion('KLCToilettenpapier').id, 'toilettenpapier');
+      expect(firstSuggestion('K.Klo Frän.Art750g').id, 'kloesse_kartoffel');
+      expect(firstSuggestion('Mü.Jogh.m.d.Ecke').id, 'joghurt_ecke');
     },
   );
+
+  test('does not confuse fränkische potato dumplings with toilet paper', () {
+    final dumplings = identifyProduct('K.Klo Frän.Art750g');
+    expect(dumplings.familyKey, 'kloesse');
+    expect(dumplings.productType, 'kartoffel');
+    expect(identifyProduct('KLCToilettenpapier').familyKey, 'toilettenpapier');
+  });
+
+  test('keeps Joghurt mit der Ecke separate from generic yoghurt variants', () {
+    final identity = identifyProduct('Mü.Jogh.m.d.Ecke');
+    expect(identity.familyKey, 'joghurt');
+    expect(identity.variant, 'ecke');
+    expect(identifyProduct('Fruchtjoghurt').variant, 'frucht');
+  });
 
   test('receipt families remain distinct while variants are searchable', () {
     expect(identifyProduct('KLC.Geh. Tomaten').familyKey, 'tomatenkonserve');
     expect(firstSuggestion('KLC.Geh. Tomaten').id, 'tomaten_dose');
     expect(firstSuggestion('K.Passata Rus.Bas.').id, 'tomaten_passata');
+    expect(firstSuggestion('Pizza-Donut Schin.').id, 'pizza_donut_schinken');
     expect(firstSuggestion('Melissa Kritharaki').id, 'nudeln_kritharaki');
     expect(firstSuggestion('KLC.Penne Rigate').id, 'nudeln_penne');
     expect(firstSuggestion('K.Medit. Wedges').id, 'kartoffel_wedges');

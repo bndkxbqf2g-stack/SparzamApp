@@ -29,7 +29,7 @@ List<Product> receiptSearchProducts(
             (entry) =>
                 !entry.identityConfirmed &&
                 entry.rawLabel.trim().isNotEmpty &&
-                entry.observedAt.isAfter(cutoff) &&
+                !entry.observedAt.isBefore(cutoff) &&
                 !entry.observedAt.isAfter(today),
           )
           .toList()

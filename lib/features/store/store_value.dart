@@ -35,6 +35,7 @@ StoreValue evaluateStoreValue(
   Map<String, double>? roadDistances,
   double euroPerKm = 0.22,
   List<MarketPrice> marketPrices = const <MarketPrice>[],
+  int openPricesMaxAgeDays = 60,
 }) {
   final summary = buildStoreShoppingSummary(
     store,
@@ -42,6 +43,7 @@ StoreValue evaluateStoreValue(
     offers,
     now: now,
     marketPrices: marketPrices,
+    openPricesMaxAgeDays: openPricesMaxAgeDays,
   );
   final optimizer = RouteOptimizer(
     items,
@@ -49,6 +51,8 @@ StoreValue evaluateStoreValue(
     roadDistances: roadDistances,
     euroPerKm: euroPerKm,
     marketPrices: marketPrices,
+    openPricesMaxAgeDays: openPricesMaxAgeDays,
+    now: now,
   );
   final travel = optimizer.travelCost([store]);
   final net = summary.savings - travel;

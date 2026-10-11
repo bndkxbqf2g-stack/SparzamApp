@@ -8,6 +8,7 @@ import '../offers/effective_price.dart';
 import '../offers/offer_filter.dart';
 import '../offers/prospect_price_statistics.dart';
 import 'receipt_product_price_match.dart';
+import 'shopping_price_quotes.dart';
 
 class ShoppingCandidateQuote {
   const ShoppingCandidateQuote({
@@ -19,6 +20,8 @@ class ShoppingCandidateQuote {
     this.imageUrl,
     this.isOffer = false,
     this.isHistorical = false,
+    this.evidenceLabel,
+    this.savings,
   });
 
   final String storeName;
@@ -29,6 +32,8 @@ class ShoppingCandidateQuote {
   final String? imageUrl;
   final bool isOffer;
   final bool isHistorical;
+  final String? evidenceLabel;
+  final double? savings;
 }
 
 class ShoppingCandidate {
@@ -71,6 +76,7 @@ List<ShoppingCandidate> buildShoppingCandidates({
   Iterable<String> enabledStores = const <String>[],
   DateTime? now,
   int historyDays = 60,
+  int openPricesMaxAgeDays = 60,
 }) {
   final identity = identifyProduct(request);
   if (!identity.isKnown) return const <ShoppingCandidate>[];
@@ -81,9 +87,13 @@ List<ShoppingCandidate> buildShoppingCandidates({
     final identities = [product.name, ...product.aliases]
         .map(identifyProduct)
         .where((candidate) => candidate.isKnown);
-    return identities.any((candidate) =>
-        compatibleProductIdentity(identity, candidate) ||
-        _openMilkChoice(identity, candidate));
+    if (identities.isEmpty) return false;
+    final nameIdentity = identities.first;
+    return compatibleProductIdentity(identity, nameIdentity) ||
+        _openMilkChoice(identity, nameIdentity) ||
+        identities
+            .skip(1)
+            .any((candidate) => compatibleProductIdentity(identity, candidate));
   });
 
   final result = <ShoppingCandidate>[];
@@ -92,6 +102,7 @@ List<ShoppingCandidate> buildShoppingCandidates({
     for (final offer in offers) {
       if (offer.productId != product.id ||
           !_storeEnabled(offer.storeName, enabledStores) ||
+          isSampleOffer(offer) ||
           !isOfferDateRangeActive(
             validFrom: offer.validFrom,
             validUntil: offer.validUntil,
@@ -106,12 +117,17 @@ List<ShoppingCandidate> buildShoppingCandidates({
           label: effective.cashback > 0 ? 'Angebot, effektiv' : 'Angebot',
           validUntil: offer.validUntil,
           imageUrl: offer.imageUrl,
-          isOffer: true));
+          isOffer: true,
+          evidenceLabel: offerEvidenceLabel(offer),
+          savings: _verifiedOfferSavings(offer, effective.finalPrice)));
     }
     for (final price in marketPrices) {
       if (price.productId != product.id ||
           !_storeEnabled(price.storeName, enabledStores) ||
-          !price.isUsable(now: current, openPricesMaxAgeDays: historyDays)) {
+          !price.isUsable(
+            now: current,
+            openPricesMaxAgeDays: openPricesMaxAgeDays,
+          )) {
         continue;
       }
       quotes.add(ShoppingCandidateQuote(
@@ -126,14 +142,16 @@ List<ShoppingCandidate> buildShoppingCandidates({
             : receiptStatsForProduct(product, receiptPriceStats))
         .where(
       (stat) =>
+          stat.identityConfirmed &&
           stat.comparable &&
           stat.storeName.isNotEmpty &&
-          stat.latestAt.isAfter(cutoff) &&
+          !stat.latestAt.isBefore(cutoff) &&
+          !stat.latestAt.isAfter(current) &&
           _storeEnabled(stat.storeName, enabledStores),
     );
     for (final stat in productStats) {
       if (quotes.any((quote) =>
-          quote.storeName == stat.storeName && quote.label == 'Angebot')) {
+          quote.storeName == stat.storeName && quote.isOffer)) {
         continue;
       }
       quotes.add(ShoppingCandidateQuote(
@@ -188,14 +206,22 @@ List<ShoppingCandidate> buildShoppingCandidates({
 bool _storeEnabled(String store, Iterable<String> enabledStores) =>
     enabledStores.isEmpty || enabledStores.contains(store);
 
-// Receipt labels such as "K.H-Milch" identify the H-milk family but do not
-// print the fat percentage. Keep both catalog variants selectable until the
-// user chooses one; this mirrors the regular shopping search and never
-// transfers a variant's price to the other one.
+double? _verifiedOfferSavings(Offer offer, double effectivePrice) {
+  if (!offer.originalPriceVerified ||
+      !offer.originalPrice.isFinite ||
+      offer.originalPrice <= effectivePrice) {
+    return null;
+  }
+  final savings = double.parse(
+    (offer.originalPrice - effectivePrice).toStringAsFixed(2),
+  );
+  return savings > 0 ? savings : null;
+}
+
+// Receipt labels such as "K.H-Milch" identify the milk family but do not
+// state whether the shopper bought fresh milk or a fat-level H-milk variant.
+// Keep each catalog identity selectable until the user chooses one; this
+// mirrors the regular shopping search and never transfers a price between
+// products.
 bool _openMilkChoice(ProductIdentity request, ProductIdentity candidate) =>
-    request.familyKey == 'milch' &&
-    request.variant == 'h' &&
-    request.fatPercent == null &&
-    candidate.familyKey == 'milch' &&
-    candidate.fatPercent != null &&
-    candidate.variant == null;
+    isOpenMilkChoice(request, candidate);

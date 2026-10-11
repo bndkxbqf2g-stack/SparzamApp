@@ -16,12 +16,16 @@ List<ReceiptPriceStat> receiptStatsForProduct(
   // stop at exact product IDs, otherwise older receipt rows that were assigned
   // to provisional/sibling catalog IDs disappear from the family history.
   if (generic) {
-    return stats.where((stat) => stat.familyKey == family).toList();
+    return stats
+        .where((stat) => stat.familyKey == family && stat.identityConfirmed)
+        .toList();
   }
 
   // Specific variants may only use their exact assigned history. Falling back
   // to a broad family here would let e.g. mixed mince satisfy beef mince.
-  return stats.where((stat) => stat.productId == product.id).toList();
+  return stats
+      .where((stat) => stat.productId == product.id && stat.identityConfirmed)
+      .toList();
 }
 
 ReceiptPriceStat? preferredReceiptStatForProduct(

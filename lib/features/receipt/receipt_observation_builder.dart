@@ -20,27 +20,33 @@ List<ReceiptObservation> buildReceiptObservations({
       .map((row) => row.linkedItemLine)
       .whereType<int>()
       .toSet();
-  final storeName = canonicalStoreName(draft.retailer, stores) ?? draft.retailer!;
+  final storeName =
+      canonicalStoreName(draft.retailer, stores) ?? draft.retailer!;
+  var itemOrdinal = 0;
 
-  return draft.rows
-      .where((row) => row.kind == ReceiptRowKind.item)
-      .map((row) => ReceiptObservation(
-            id: '${draft.fingerprint}|${row.line}',
-            receiptFingerprint: draft.fingerprint,
-            rowLine: row.line,
-            rawLabel: row.label,
-            familyKey: inferReceiptFamily(row.label),
-            storeName: storeName,
-            observedAt: draft.receiptDate!,
-            totalPrice: row.cents / 100,
-            quantity: row.quantity,
-            quantityUnit: row.quantityUnit,
-            unitPrice: row.unitCents == null ? null : row.unitCents! / 100,
-            discounted: discountedLines.contains(row.line),
-            productId: matched[row.line],
-            identityConfirmed: confirmedProductLines.contains(row.line),
-          ))
-      .toList();
+  return draft.rows.where((row) => row.kind == ReceiptRowKind.item).map((row) {
+    itemOrdinal++;
+    return ReceiptObservation(
+      // The source line is evidence, not identity: OCR/PDF extraction can
+      // insert or remove layout lines while the priced ledger stays the
+      // same. The ordinal keeps repeated identical items distinct without
+      // creating a new observation for that harmless layout change.
+      id: '${draft.fingerprint}|item:$itemOrdinal',
+      receiptFingerprint: draft.fingerprint,
+      rowLine: row.line,
+      rawLabel: row.label,
+      familyKey: inferReceiptFamily(row.label),
+      storeName: storeName,
+      observedAt: draft.receiptDate!,
+      totalPrice: row.cents / 100,
+      quantity: row.quantity,
+      quantityUnit: row.quantityUnit,
+      unitPrice: row.unitCents == null ? null : row.unitCents! / 100,
+      discounted: discountedLines.contains(row.line),
+      productId: matched[row.line],
+      identityConfirmed: confirmedProductLines.contains(row.line),
+    );
+  }).toList();
 }
 
 /// Family inference is a projection of the general identity resolver.

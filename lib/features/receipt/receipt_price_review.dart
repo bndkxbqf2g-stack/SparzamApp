@@ -29,9 +29,14 @@ ReceiptPriceReview reviewReceiptPrices(
   ReceiptDraft draft,
   List<Product> products,
 ) {
-  final items = draft.rows.where((row) => row.kind == ReceiptRowKind.item).toList();
+  final items = draft.rows
+      .where((row) => row.kind == ReceiptRowKind.item)
+      .toList();
   if (!draft.balances || draft.retailer == null || draft.receiptDate == null) {
-    return ReceiptPriceReview(suggestions: const [], unmatchedItems: items.length);
+    return ReceiptPriceReview(
+      suggestions: const [],
+      unmatchedItems: items.length,
+    );
   }
   final discounted = draft.rows
       .where((row) => row.kind == ReceiptRowKind.discount)
@@ -41,28 +46,35 @@ ReceiptPriceReview reviewReceiptPrices(
   final unresolved = draft.unresolvedLines.toSet();
   final candidates = <ReceiptPriceSuggestion>[];
   for (final row in items) {
-    if (discounted.contains(row.line) || unresolved.contains(row.line)) continue;
+    if (discounted.contains(row.line) || unresolved.contains(row.line)) {
+      continue;
+    }
     final product = _matchProduct(row, products);
-    if (product == null) continue;
+    if (product == null) {
+      continue;
+    }
     final unitCents = row.quantity == null ? row.cents : row.unitCents;
-    if (unitCents == null || unitCents <= 0 ||
+    if (unitCents == null ||
+        unitCents <= 0 ||
         (row.quantity != null &&
             (row.quantity! * unitCents).round() != row.cents) ||
         (row.quantity == null &&
             RegExp(r'\b\d+[,.]\d+\s*kg\b').hasMatch(row.label))) {
       continue;
     }
-    candidates.add(ReceiptPriceSuggestion(
-      product: product,
-      row: row,
-      price: MarketPrice(
-        productId: product.id,
-        storeName: draft.retailer!,
-        price: unitCents / 100,
-        updatedAt: draft.receiptDate!,
-        source: MarketPriceSource.receipt,
+    candidates.add(
+      ReceiptPriceSuggestion(
+        product: product,
+        row: row,
+        price: MarketPrice(
+          productId: product.id,
+          storeName: draft.retailer!,
+          price: unitCents / 100,
+          updatedAt: draft.receiptDate!,
+          source: MarketPriceSource.receipt,
+        ),
       ),
-    ));
+    );
   }
 
   final byProduct = <String, List<ReceiptPriceSuggestion>>{};
@@ -71,7 +83,8 @@ ReceiptPriceReview reviewReceiptPrices(
   }
   final unique = <ReceiptPriceSuggestion>[];
   for (final entries in byProduct.values) {
-    if (entries.map((e) => e.row.label.toLowerCase().trim()).toSet().length == 1 &&
+    if (entries.map((e) => e.row.label.toLowerCase().trim()).toSet().length ==
+            1 &&
         entries.map((e) => e.price.price).toSet().length == 1) {
       unique.add(entries.first);
     }
@@ -83,13 +96,36 @@ ReceiptPriceReview reviewReceiptPrices(
 }
 
 Product? _matchProduct(ReceiptRow row, List<Product> products) {
+  final normalizedLabel = normalizeIdentityText(row.label);
+  final exactMatches = products
+      .where(
+        (product) => [
+          product.name,
+          ...product.aliases,
+        ].any((label) => normalizeIdentityText(label) == normalizedLabel),
+      )
+      .toList();
+  // A unique learned alias is stronger evidence than a family-level match
+  // against sibling variants. Conflicting aliases stay unresolved.
+  if (exactMatches.length == 1) {
+    return exactMatches.single;
+  }
+  if (exactMatches.length > 1) {
+    return null;
+  }
+
   final identity = identifyProduct(row.label);
+  if (!identity.isKnown) {
+    return null;
+  }
   final matches = products.where((product) {
-    final candidate = identifyProduct(product.name);
-    final exact = normalizeIdentityText(product.name) ==
-        normalizeIdentityText(row.label);
-    return exact ||
-        (identity.isKnown && compatibleProductIdentity(candidate, identity));
+    final identities = [
+      product.name,
+      ...product.aliases,
+    ].map(identifyProduct).where((candidate) => candidate.isKnown);
+    return identities.any(
+      (candidate) => compatibleProductIdentity(candidate, identity),
+    );
   }).toList();
   return matches.length == 1 ? matches.single : null;
 }

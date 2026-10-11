@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sparzamapp/data/offers.dart';
 import 'package:sparzamapp/features/route/route_price_resolver.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/offer.dart';
@@ -37,6 +38,61 @@ void main() {
     final quote = resolver.quote(store, ListItem(product: product, quantity: 2));
     expect(quote!.total, 2.7);
     expect(quote.usesOffer, isTrue);
+  });
+
+  test('reserved demo offers never enter route pricing', () {
+    final demo = sampleOffers.first;
+    final demoStore = Store(
+      name: demo.storeName,
+      location: 'Ort',
+      distanceKm: 1,
+      prices: const <String, double>{},
+    );
+    final demoProduct = Product(
+      id: demo.productId,
+      name: 'Butter',
+      unit: '250 g',
+      group: 'fett',
+    );
+
+    final quote = RoutePriceResolver(
+      [demo],
+      now: DateTime(2026, 9, 24),
+    ).quote(demoStore, ListItem(product: demoProduct));
+
+    expect(quote, isNull);
+  });
+
+  test('does not let an unverified offer override a cheaper market price', () {
+    final offer = Offer(
+      id: 'unverified-expensive-offer',
+      productId: 'test',
+      storeName: 'Markt',
+      originalPrice: 99,
+      originalPriceVerified: false,
+      offerPrice: 1.25,
+      validUntil: DateTime(2026, 9, 30),
+    );
+    final resolver = RoutePriceResolver(
+      [offer],
+      now: DateTime(2026, 9, 22),
+      marketPrices: [
+        MarketPrice(
+          productId: 'test',
+          storeName: 'Markt',
+          price: 0.99,
+          updatedAt: DateTime(2026, 9, 21),
+          source: MarketPriceSource.receipt,
+        ),
+      ],
+    );
+
+    final quote = resolver.quote(store, ListItem(product: product));
+
+    expect(quote, isNotNull);
+    expect(quote!.total, 0.99);
+    expect(quote.usesOffer, isFalse);
+    expect(quote.observation?.source, MarketPriceSource.receipt);
   });
 
   test('does not activate an offer before validFrom', () {
@@ -79,7 +135,28 @@ void main() {
     expect(quote!.total, 3.0);
   });
 
-  test('estimates a missing price and marks it as estimated', () {
+  test('ignores an invalid zero-pay multi-buy rule', () {
+    final offer = Offer(
+      id: 'invalid-zero-pay',
+      productId: 'test',
+      storeName: 'Markt',
+      originalPrice: 2,
+      offerPrice: 1.5,
+      validUntil: DateTime(2026, 9, 30),
+      buyQuantity: 3,
+      payQuantity: 0,
+    );
+    final quote = RoutePriceResolver(
+      [offer],
+      now: DateTime(2026, 9, 22),
+    ).quote(store, ListItem(product: product, quantity: 3));
+
+    expect(offer.hasMultiBuy, isFalse);
+    expect(quote!.total, 4.5);
+    expect(quote.usesOffer, isTrue);
+  });
+
+  test('leaves a missing price unresolved instead of inventing a category price', () {
     const missing = Product(
       id: 'unknown-milk',
       name: 'Milch',
@@ -97,9 +174,7 @@ void main() {
       ListItem(product: missing),
     );
 
-    expect(quote, isNotNull);
-    expect(quote!.unitPrice, 1.29);
-    expect(quote.isEstimated, isTrue);
+    expect(quote, isNull);
   });
 
   test('does not route an unresolved generic custom shopping request', () {
@@ -117,7 +192,7 @@ void main() {
     expect(quote, isNull);
   });
 
-  test('uses the median of observed prices for an unknown store', () {
+  test('does not assign another market median to an unknown store', () {
     const missingStore = Store(
       name: 'Unbekannt',
       location: 'Ort',
@@ -154,8 +229,7 @@ void main() {
       ],
     ).quote(missingStore, ListItem(product: product));
 
-    expect(quote!.unitPrice, 1.4);
-    expect(quote.isEstimated, isTrue);
+    expect(quote, isNull);
   });
 
   test('fresh receipt can beat a dearer manual price regardless of order', () {
@@ -196,11 +270,55 @@ void main() {
     ], now: DateTime(2026, 9, 24))
         .quote(noCatalogPrice, ListItem(product: product));
 
-    expect(quote!.isEstimated, isTrue);
-    expect(quote.observation, isNull);
+    expect(quote, isNull);
   });
 
-  test('stale receipt is excluded from unknown-store median estimate', () {
+  test('configured Open Prices age is enforced when prices enter the resolver', () {
+    const noCatalogPrice = Store(
+      name: 'Markt',
+      location: 'Ort',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    final quote = RoutePriceResolver(
+      const [],
+      now: DateTime(2026, 9, 24),
+      openPricesMaxAgeDays: 3,
+      marketPrices: [
+        MarketPrice(
+          productId: 'test',
+          storeName: 'Markt',
+          price: 0.79,
+          updatedAt: DateTime(2026, 9, 20),
+          source: MarketPriceSource.openPrices,
+        ),
+      ],
+    ).quote(noCatalogPrice, ListItem(product: product));
+
+    expect(quote, isNull);
+  });
+
+  test('future manual price is not routable before its observation date', () {
+    const noCatalogPrice = Store(
+      name: 'Markt',
+      location: 'Ort',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    final quote = RoutePriceResolver(const [], marketPrices: [
+      MarketPrice(
+        productId: 'test',
+        storeName: 'Markt',
+        price: 0.79,
+        updatedAt: DateTime(2026, 9, 25),
+      ),
+    ], now: DateTime(2026, 9, 24))
+        .quote(noCatalogPrice, ListItem(product: product));
+
+    expect(quote, isNull);
+  });
+
+  test('stale receipt leaves an unknown store unresolved', () {
     const missingStore = Store(
       name: 'Unbekannt',
       location: 'Ort',
@@ -218,9 +336,7 @@ void main() {
     ], now: DateTime(2026, 9, 24))
         .quote(missingStore, ListItem(product: product));
 
-    expect(quote!.unitPrice, 2.49);
-    expect(quote.isEstimated, isTrue);
-    expect(quote.observation, isNull);
+    expect(quote, isNull);
   });
 
   test('old discounted receipt cannot beat a fresh confirmed price', () {

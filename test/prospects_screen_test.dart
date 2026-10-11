@@ -14,6 +14,9 @@ void main() {
         title: 'Aktionsprospekt',
         pages: [],
         url: 'https://example.test/aldi-prospekt',
+        branchId: 'B384',
+        location: 'Zellingen',
+        address: 'Würzburger Str. 74, 97225 Zellingen, Germany',
         recordCount: 322,
       ),
       ProspectIssue(storeName: 'EDEKA', title: 'Aktionsprospekt', pages: []),
@@ -53,6 +56,7 @@ void main() {
 
     expect(find.text('Prospekte'), findsOneWidget);
     expect(find.text('Alle Märkte'), findsOneWidget);
+    expect(find.text('Zellingen'), findsOneWidget);
     expect(find.text('1 Angebote geladen'), findsOneWidget);
     expect(
       find.text('Aktuelle Prospekte. Produkte antippen und vormerken.'),
@@ -105,6 +109,79 @@ void main() {
     expect(find.textContaining('abgelaufene Angebote'), findsOneWidget);
   });
 
+  testWidgets('refreshes the prospect feed from the prospects screen', (
+    tester,
+  ) async {
+    var refreshes = 0;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: const [],
+          onRefreshProspects: () async => refreshes++,
+        ),
+      ),
+    );
+
+    final refresh = find.byTooltip('Prospekte aktualisieren');
+    expect(refresh, findsOneWidget);
+    await tester.tap(refresh);
+    await tester.pumpAndSettle();
+    expect(refreshes, 1);
+  });
+
+  testWidgets('kennzeichnet gültige Angebote aus einem Händler-Fallback', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: [
+            OfferImportRecord(
+              sourceId: 'penny-fallback',
+              productLabel: 'MILPRIMA Schmand 200 g',
+              storeName: 'PENNY',
+              offerPrice: 0.69,
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+              proofRef: 'https://example.test/penny-fallback',
+            ),
+          ],
+          prospects: const [
+            ProspectIssue(
+              storeName: 'PENNY',
+              title: 'Aktionsprospekt',
+              pages: [],
+              location: 'Zellingen',
+              sourceStatus: 'error',
+              recordCount: 232,
+              url: 'https://www.penny.de/angebote',
+            ),
+          ],
+          now: DateTime(2026, 10, 1),
+        ),
+      ),
+    );
+
+    expect(
+      find.text(
+        '1 Angebote aus dem letzten geprüften Prospektstand. '
+        'Automatische Aktualisierung aktuell nicht verfügbar.',
+      ),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('PENNY'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text(
+        'Der letzte geprüfte Prospektstand wird verwendet; die automatische '
+        'Aktualisierung ist aktuell nicht verfügbar.',
+      ),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('keeps official opening action for a browsable prospect', (
     tester,
   ) async {
@@ -135,6 +212,76 @@ void main() {
     await tester.tap(find.textContaining('Lidl'));
     await tester.pumpAndSettle();
 
+    expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
+  });
+
+  testWidgets('marks a current prospect without structured offers clearly', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: const [
+                ProspectPage(
+                  number: 1,
+                  imageUrl: 'https://example.test/page.png',
+                ),
+              ],
+              url: 'https://example.test/official-prospect',
+              sourceStatus: 'ok',
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+            ),
+          ],
+          now: DateTime(2026, 9, 30),
+        ),
+      ),
+    );
+
+    expect(
+      find.text('Keine aktuell gültigen Angebotsdaten geladen.'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.textContaining('Lidl'));
+    await tester.pumpAndSettle();
+    expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
+  });
+
+  testWidgets('keeps a current metadata-only prospect visible', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: [
+            ProspectIssue(
+              storeName: 'EDEKA',
+              title: 'EDEKA Wochenangebote',
+              pages: const [],
+              url: 'https://example.test/edeka-prospekt',
+              location: 'Zellingen',
+              sourceStatus: 'ok',
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+            ),
+          ],
+          now: DateTime(2026, 9, 30),
+        ),
+      ),
+    );
+
+    expect(find.text('EDEKA'), findsOneWidget);
+    expect(
+      find.text('Keine aktuell gültigen Angebotsdaten geladen.'),
+      findsOneWidget,
+    );
+    await tester.tap(find.text('EDEKA'));
+    await tester.pumpAndSettle();
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
   });
 

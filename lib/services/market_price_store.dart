@@ -30,6 +30,8 @@ class MarketPriceStore {
     List<MarketPrice> current,
   ) => upsertMany([price], current);
 
+  Future<void> save(List<MarketPrice> prices) => _save(prices);
+
   Future<List<MarketPrice>> upsertMany(
     Iterable<MarketPrice> prices,
     List<MarketPrice> current,
@@ -65,8 +67,7 @@ class MarketPriceStore {
   ) async {
     final next = current
         .where(
-          (item) =>
-              item.productId != productId || item.storeName != storeName,
+          (item) => item.productId != productId || item.storeName != storeName,
         )
         .toList();
     await _save(next);
@@ -77,15 +78,13 @@ class MarketPriceStore {
     String productId,
     List<MarketPrice> current,
   ) async {
-    final next =
-        current.where((item) => item.productId != productId).toList();
+    final next = current.where((item) => item.productId != productId).toList();
     await _save(next);
     return next;
   }
 
-  Future<void> _save(List<MarketPrice> prices) =>
-      _preferences.setStringList(
-        _key,
-        prices.map((price) => jsonEncode(price.toJson())).toList(),
-      );
+  Future<void> _save(List<MarketPrice> prices) => _preferences.setStringList(
+    _key,
+    prices.map((price) => jsonEncode(price.toJson())).toList(),
+  );
 }

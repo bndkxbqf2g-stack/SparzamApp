@@ -389,3 +389,356 @@ Textfallback ist bei bereits bekannter Identität auf eine vollständige
 Bezeichnung begrenzt. Das gilt gleichermaßen für Prospektprodukte und gelernte
 Einkäufe. Konkrete Suchanfragen bleiben über ihre eigene Bezeichnung auffindbar,
 ohne fremde Preisidentitäten zu übernehmen.
+
+## D067 – Prospekt-Sonderzeichen sind keine Produktbestandteile
+Händlerfeeds markieren Angebote teilweise mit einem Sternchen direkt am
+Produktwort, etwa `Vollmilch*`. Solche redaktionellen Zeichen werden bei der
+internen Identitätsnormalisierung als Worttrenner behandelt. Die unveränderte
+Originalbezeichnung bleibt weiterhin die sichtbare Quelle; nur die Zuordnung
+zur Produktfamilie wird dadurch robust genug für Angebots- und Preisranking.
+
+## D068 – Zutaten und Gerätekontexte bleiben von Grundprodukten getrennt
+Die zentrale Produktidentität behandelt zusammengesetzte Händlerlabels vor der
+Familienzuordnung. Kaffeegebäck und Kaffeegetränke dürfen eine Suche nach
+Kaffee nicht als Kaffeepackung ausgeben; Kaffeemaschinen und ähnliche Geräte
+bleiben ebenfalls außerhalb der Lebensmittelidentität. Kaffeekapseln und
+-pads sind dagegen konkrete Kaffeevarianten. Entsprechend bleiben Käse-Wiener
+und Leberkäse Wurstidentitäten, während Hart-, Schnitt-, Weich-, Schaf- und
+Ziegenkäse als Käsevarianten auffindbar sind. Abkürzungen wie `Holl.` werden
+nur im nachgewiesenen Hollandaise-Kontext als Sauce gelesen, damit „Holl.
+Hartkäse“ nicht aus der Käsesuche fällt. Diese Regeln verhindern falsche
+Preis- und Routenzuordnungen; die sichtbare Originalbezeichnung bleibt
+unverändert.
+
+## D069 – Zusammengesetzte Back-, Saucen- und Snacklabels behalten ihre Familie
+Die Produktidentität löst Donut-/Franzbrötchen-Bezeichnungen vor der generischen
+Brötchenfamilie auf. Pasta- und Nudelsaucen bleiben ebenso außerhalb der
+Nudelfamilie wie Käse- oder Salz-Stängli außerhalb der Speisesalzfamilie.
+Damit erzeugt eine generische Einkaufssuche keine fremden Preisidentitäten oder
+Routenpositionen. Die Händlerbezeichnung, Quelle und der Preis werden nicht
+verändert; die Regel wirkt ausschließlich auf die hierarchische
+Identitätszuordnung und ist durch negative Suchregressionen abgesichert.
+
+## D070 – Grundfamilien werden vor semantisch fremden Zusammensetzungen erkannt
+Die generischen Suchfamilien Brot, Wasser, Saft, Tee und Fleisch dürfen nicht
+durch einen enthaltenen Wortteil auf Aufstriche, Geräte, Wurst, Tiernahrung oder
+andere Nicht-Grundartikel springen. Solche Bezeichnungen erhalten zuerst eine
+eigene hierarchische Identität; Toast und Hackfleisch bleiben als bestehende
+Unterfamilien kompatibel, wenn die Anfrage ausdrücklich generisch ist.
+Schokoladen-Snacks mit „Chips“ werden ebenfalls vor der Kartoffelchipsfamilie
+aufgelöst. Die Regeln ändern weder Händlerlabels noch Preise oder Quellen und
+werden mit aktuellen Feed-Labels sowie synthetischen Negativ- und Positivfällen
+geprüft.
+
+## D071 – Abgekürzte Klöße werden vor Haushaltskürzeln erkannt
+Kaufland kann Kartoffelklöße als `K.Klo Frän.Art750g` drucken. Die zentrale
+Identität löst dieses belegte Kürzel vor der allgemeinen `Klo`-Zuordnung für
+Toilettenpapier auf und führt es in eine eigene Klöße-Familie. Die Regel bleibt
+auf den erkennbaren Kloß-Kontext begrenzt; ein unklarer Händlercode erhält keine
+erfundene Produktidentität und keine Preisübernahme.
+
+## D072 – „Joghurt mit der Ecke“ bleibt eine konkrete Joghurtvariante
+Die Bonabkürzung `Mü.Jogh.m.d.Ecke` enthält eine belastbare Produktart, aber
+keine sichere Packungsgröße. Sie wird deshalb als eigene Joghurtvariante
+`ecke` geführt und mit der neutralen Einheit `Packung` angeboten. Die Variante
+teilt weder Identität noch Preisbasis mit Natur- oder Fruchtjoghurt, bis eine
+konkrete Packung bestätigt ist.
+
+## D073 – Preis-Datenlücken werden ohne Preisannahmen priorisiert
+Route und Marktansicht sortieren ungeklärte Listenpositionen zuerst nach der
+Anzahl aktivierter Märkte ohne belastbaren Preis. Bei gleicher Abdeckung folgen
+Grundbedarfsmarkierung und gewünschte Listenmenge; Produktname und ID bilden
+den stabilen Tiebreaker. Diese Reihenfolge dient nur der Arbeitsplanung für
+fehlende Daten. Sie darf weder geschätzte Preise erzeugen noch historische
+Familienwerte, fremde Varianten oder unbestätigte Belege als Marktpreis
+hochwerten.
+
+## D074 – Routenpreise zeigen ihre Evidenz direkt an
+Jede zugewiesene Routenposition zeigt die verwendete Evidenzklasse: aktives
+Angebot mit Quelle und Gültigkeit, beobachteter Preis mit Quelle und
+Beobachtungsstand oder ein hinterlegter Preis ohne dokumentierten Quellenstand.
+Die Anzeige ist rein erklärend und ändert weder die Routenfähigkeit noch die
+Qualitäts- und Fahrtkostenberechnung. Eine Zusammenfassung der Route zählt nur
+belegte Positionen; fehlende Positionen bleiben in der separaten Datenlückenliste
+und werden nicht als Schätzpreise ausgegeben.
+
+## D075 – Wiederkäufe schärfen die Datenlücken-Priorität
+Die Route darf die bekannte Kaufhäufigkeit einer exakt identischen
+Produkt-ID als zusätzliches, preisfreies Relevanzsignal verwenden. Sie folgt
+weiterhin zuerst der fehlenden Marktdeckung und der Grundbedarfsmarkierung;
+erst danach entscheidet die gespeicherte Kaufhäufigkeit vor der gewünschten
+Listenmenge. Die Historie liefert dabei weder einen Preis noch eine Variante:
+IDs werden nicht über Aliasnamen oder Produktfamilien zusammengeführt. Fehlt
+die Kaufhistorie, bleibt die bisherige deterministische Reihenfolge bestehen.
+
+## D076 – Historisches Preisniveau bleibt ein reines Datenlücken-Signal
+Für eine offene Listenposition darf ein Median aus exakt zugeordneten,
+regulären historischen Preisbeobachtungen die Reihenfolge der Datenlücken
+schärfen. Rabattierte/Angebotsbeobachtungen, Schätzquellen, unsichere
+Identitäten und nicht vergleichbare Packungen werden ausgeschlossen. Das
+Preisniveau wird ausdrücklich als Historie angezeigt und weder als aktueller
+Marktpreis gespeichert noch durch `RoutePriceResolver` für eine Route
+verwendet. Fehlende Historie lässt die Position in der bisherigen
+deterministischen Reihenfolge weiterlaufen.
+
+## D077 – Prospekt-Historie ergänzt fehlende Listenpreise nur sichtbar
+Die Einkaufsliste darf einen historischen Prospekt-Median je Markt als
+Orientierung zeigen, wenn für die exakte Produktidentität kein aktueller
+Preisbeleg vorhanden ist. Ein aktuelles Angebot oder ein aktueller
+Marktpreis verdrängt diesen Hinweis für denselben Markt. Der historische Wert
+trägt seinen Preisstand und die Kennzeichnung „historisch“, zählt nicht zur
+aktuellen Preisabdeckung und wird weder als Angebot noch als `MarketPrice` für
+die Routenplanung verwendet.
+
+## D078 – Produktempfehlungen werden nur aus aktueller Evidenz vorausgewählt
+Bei einer generischen Einkaufsanfrage darf die Variantenwahl die erste
+kompatible Produktvariante mit aktuellem Angebot, Marktpreis oder routenfähigem
+Bonpreis vorauswählen. Historische Prospekt-Mediane bleiben sichtbare
+Orientierung und lösen keine automatische Produktauswahl aus. Die Vorauswahl
+ist eine reversible UI-Empfehlung; erst die ausdrückliche Übernahme ändert die
+Einkaufsliste.
+
+## D079 – Prospekt-Historie bleibt eine erklärende Detailansicht
+Die Einkaufsliste darf gelernte Prospekt-Mediane je Markt in einer optionalen
+Detailansicht zusammenfassen. Diese Ansicht zeigt Medianpreis,
+Beobachtungsanzahl, Angebots- oder Normalpreishistorie und das letzte
+Gültigkeitsende, damit die Herkunft der Orientierung nachvollziehbar bleibt.
+Historische Beobachtungen zählen weiterhin nicht zur aktuellen Preisabdeckung,
+werden nicht als aktuelles Angebot ausgegeben und dürfen nicht als Preisquelle
+für `RoutePriceResolver` oder eine Routenempfehlung dienen.
+
+## D080 – Unbekannte Prospektartikel bleiben exakt und explizit auswählbar
+Ein aktuell gültiger Prospektdatensatz mit belastbarem Nachweis darf aus dem
+Angebotstab zur Einkaufsliste übernommen werden, auch wenn die lokale
+Produktidentität noch keinen Katalogtreffer besitzt. Dafür wird ausschließlich
+das unveränderte Händlerlabel als separates Prospektprodukt verwendet. Es
+werden keine Aliase, Familienvarianten oder fremden Preisidentitäten ergänzt;
+die Übernahme durch den Nutzer ist die ausdrückliche Bestätigung dieses
+Kandidaten. Erst danach kann die bestehende Katalog- und Preislernlogik daran
+weiterarbeiten.
+
+## D081 – Prospekt-Fallbacks benötigen weiterhin belastbare Evidenz
+Der Prospekt-Fallback im Angebotstab greift ausschließlich bei einem
+unbekannten Produktlabel mit nicht leerem `proofRef`. Ungültige Preis- oder
+Gültigkeitsdaten, fehlende Nachweise und mehrdeutige Identitäten bleiben
+gesperrt. So erweitert der Fallback die Produktabdeckung, ohne die
+Nachweisgrenze der Angebots- und Routenpipeline zu umgehen.
+
+## D082 – Prospektpreise behalten den konkreten Filialbezug
+Die sechs offiziellen Prospektquellen schreiben ihre konfigurierte Filial-ID,
+ihren Ort und ihre Adresse in den Feed-Metadatenblock. Die App zeigt diese
+Angaben in der Prospektkarte und im Detail, damit ein Angebot vor der
+Routenentscheidung als Zellingen, Thüngersheim oder Würzburg erkennbar bleibt.
+Die Angaben stammen ausschließlich aus der bestehenden Markt-Konfiguration;
+sie ändern weder den kanonischen Händlernamen noch Preisidentität oder
+Routenpreis. Fehlende Artikelbilder, Kategorien und bild-only OCR bleiben
+separate Datenqualitäts- und Review-Aufgaben.
+
+## D083 – OCR-Korrekturen bleiben auf Geldtokens begrenzt
+Wenn ein OCR-Lauf eine gedruckte Null in einem Geldbetrag als `@` liefert,
+darf der Bon-Parser dieses Zeichen ausschließlich innerhalb des erkannten
+Geldtokens als Null lesen. Produktlabels und Identitätsbestandteile werden
+nicht verändert. Mengen-, Preis- und Bilanzabweichungen bleiben sichtbar und
+blockieren die automatische Bestätigung; eine OCR-Korrektur darf keine
+fehlende Zeile oder einen abweichenden Gesamtbetrag erfinden.
+
+## D084 – Feed-Frische und Cache-Provenienz bleiben sichtbar
+Die Ansichten „Angebote“ und „Prospekte“ zeigen den Zeitstempel des
+Prospektfeeds und kennzeichnen einen Offline-Fallback als letzten geprüften
+Stand. Diese Anzeige beschreibt nur die Datenherkunft. Die Gültigkeit bleibt
+pro Angebotsdatensatz das maßgebliche Gate; `generatedAt` verlängert kein
+Angebot, erhöht keine Preisabdeckung und macht keinen abgelaufenen Preis für
+die Routenplanung verwendbar.
+
+## D085 – Händlerkategorien bleiben Quellenmetadaten
+Wenn ein strukturierter Händleradapter eine Kategorie liefert, wird sie am
+`OfferImportRecord` erhalten und darf die Gruppierung und Suche in den
+Prospektansichten steuern. Fehlt sie, verwendet die UI ihren bestehenden
+konservativen Label-Fallback. Eine Kategorie darf weder eine Produktidentität
+bestätigen noch Preise, Vergleichbarkeit, Angebotsgültigkeit oder
+Routenfähigkeit verändern; nicht gelieferte Kategorien werden nicht erfunden.
+
+## D086 – Kategorieanzeige normalisiert nur die Präsentation
+Technische Händlerwerte dürfen für die Anzeige in gemeinsame, lesbare Gruppen
+übersetzt werden, damit Nummernpräfixe, Unterstriche, Transliterationen und
+bekannte Slugvarianten nicht als uneinheitliche Bedienoberfläche erscheinen.
+Die Rohkategorie bleibt unverändert am Importdatensatz erhalten. Die
+Normalisierung ist weder eine neue Identitätslogik noch eine Preis- oder
+Gültigkeitsannahme; unbekannte Werte werden lediglich sprachlich formatiert,
+und fehlende Quellkategorien bleiben fehlend.
+
+## D087 – Unvollständige Netto-Labels werden nicht zu Produktidentitäten
+Wenn eine geschützte Netto-Quelle nur einen Rabatt, eine Sorten-/Kühlungs-
+beschreibung oder eine reine Herkunftszeile liefert, wird dieser Datensatz
+vor der Feed-Erzeugung verworfen. Ein solcher Text darf weder als unbekannter
+Prospektartikel noch als Preisbeobachtung in die Einkaufsliste gelangen.
+Die Prüfung ist bewusst auf bekannte, eindeutig unvollständige Muster
+begrenzt, damit echte Produktlabels unverändert bleiben. Fehlende Namen,
+Bilder und Preise werden nicht aus Kontext ergänzt; nur ein später belastbarer
+Quellbeleg darf diese Datenlücke schließen.
+
+## D088 – Bestands-Fallbacks dürfen verworfene Netto-Labels nicht reaktivieren
+Wenn der offizielle Netto-Abruf fehlschlägt, darf der letzte gültige Feed als
+vorsichtiger Fallback dienen. Dabei wird dieselbe konservative
+Produktlabel-Prüfung erneut auf die Bestandsdaten angewendet. So werden alte
+Rabatt-, Sorten-, Kühlungs- oder Herkunftsplatzhalter nicht erneut als
+aktuelle Einkaufsoptionen angeboten, während belastbare Produktlabels und
+ihre ursprünglichen Nachweise erhalten bleiben.
+
+## D089 – Fehlende Angebotsquellen bleiben im Angebotsvergleich sichtbar
+Ein Händler ohne aktuell belastbare Angebotsdaten wird im Tab „Angebote“ als
+Quellenstatus angezeigt, sofern der Prospektfeed ihn kennt. Die Statuskarte
+nennt Händler und Filiale sowie die konkrete Ursache (kein aktueller Zeitraum,
+fehlende strukturierte Daten oder Abruffehler), liefert aber keinen Preis und
+keine erfundene Produktidentität. So bleibt der Angebotsvergleich vollständig
+und die Nutzerin kann eine Datenlücke von „kein Angebot gefunden“ unterscheiden.
+
+## D090 – Statuskarten verlinken nur auf die offizielle Händlerquelle
+Wenn ein Angebotsfeed fehlt, darf die Statuskarte die konfigurierte offizielle
+Prospekt-URL öffnen. Der Link dient ausschließlich der manuellen Prüfung der
+Quelle; er erzeugt keinen Preis, keine Produktidentität und keine automatische
+Routenbeobachtung. So bleibt die Nutzerin handlungsfähig, ohne die
+Nachweisgrenze der App zu umgehen.
+
+## D091 – Netto-Readerdaten bleiben offizielle Prospektevidenz
+Wenn die öffentliche Netto-Filialseite für den automatischen Abruf geschützt
+ist, darf der bereits vorgesehene öffentliche Reader-Fallback dessen
+Markdown-Kacheln auswerten. Ein Datensatz wird nur aus einem offiziellen
+`ViewMMPWishlist-AddStoreArticle`-Link mit Produktname, Preis und
+Gültigkeitsende übernommen; der Link bleibt der Nachweis und die Bild- bzw.
+Packungsangabe wird nur übernommen, wenn sie im selben Reader-Block steht.
+Die Gültigkeit des einzelnen Links bleibt maßgeblich. Reine Rabatt-, Sorten-
+oder Herkunftszeilen erzeugen weiterhin keine Produkte. So werden belastbare
+Netto-Angebote wieder sichtbar, ohne einen Preis aus einer Schätzung oder
+einem fremden Feed zu erzeugen.
+
+## D092 – Aktive Fallbackangebote bleiben als Fallback sichtbar
+Wenn ein Händlerabruf fehlschlägt, aber bereits gespeicherte Angebotsdatensätze
+mit gültigem Zeitfenster verbleiben, zeigt die Angebotsansicht einen preisfreien
+Hinweis auf den letzten geprüften Prospektstand. Die Datensätze bleiben durch
+ihre eigene Gültigkeit anzeigbar und routenfähig; der Hinweis erzeugt keinen
+Preis und verlängert kein Angebotsfenster. So bleiben Datenherkunft und
+Aktualisierungsstatus für die Nutzerin unterscheidbar.
+
+## D093 – Fallback-Provenienz gilt in Angebote und Prospekte
+Ein gültiger Bestands-Fallback wird in den beiden Prospekt-Einstiegspunkten
+gleich bezeichnet. Der Angebotstab zeigt den Hinweis direkt bei den
+Marktangeboten; der Prospekte-Tab nennt zusätzlich die Anzahl der gültigen
+Datensätze. Beide Ansichten verwenden weiterhin ausschließlich die eigene
+Gültigkeit und den Originalnachweis eines Datensatzes. Die gemeinsame
+Kennzeichnung ist ein Herkunftshinweis und erzeugt weder Preis noch Identität.
+
+## D094 – Verwandte Interpretationen werden nach aktueller Evidenz sortiert
+Wenn eine unklare Anfrage mehrere ausdrücklich als verwandte Interpretation
+angezeigte Produktvarianten zulässt, stehen aktuelle Angebote und danach
+aktuelle belegte Preise vor historischen Hinweisen und unbelegten Varianten.
+Innerhalb derselben Evidenzstufe wird der günstigste belastbare Preis zuerst
+gezeigt. Die Sortierung ändert weder die Produktidentität noch überträgt sie
+den Preis einer verwandten Variante auf die ursprünglich angefragte Identität.
+
+## D095 – Unklare H-Milch-Kürzel öffnen die normale Milchauswahl
+Ein Bonkürzel wie `K.H-Milch` enthält keine belastbare Fettstufe und darf im
+Einkaufsfluss deshalb neben 1,5-%- und 3,5-%-H-Milch auch eindeutig als normale
+Milch erkannte Produkte zur Auswahl stellen. Jede Produktidentität bleibt
+getrennt; ein Angebot für Frischmilch bestätigt weder die Bonzeile noch eine
+andere Milchvariante. Die aktuelle Angebots- und Preisrangfolge entscheidet,
+welche Auswahl zuerst angezeigt wird, ohne einen Preis zu übertragen.
+
+## D096 – Persönlicher Zeitwert bleibt vom Kassenbetrag getrennt
+Die Routenplanung darf neben Warenkorb, Fahrtkosten und der bestehenden
+Preisunsicherheitsreserve einen optionalen persönlichen Zeitwert berücksichtigen.
+Er wird aus der geschätzten Wegezeit und einem in den Mobilitätseinstellungen
+gespeicherten Euro-Wert pro Stunde berechnet und fließt ausschließlich in den
+`planningScore` ein. `RoutePlan.total`, Budget, Kaufabschluss und gespeicherte
+Kaufkosten bleiben unverändert. Der Standardwert ist `0 €`, damit bestehende
+Nutzerdaten nicht stillschweigend mit einer fremden Zeitbewertung belastet
+werden; Wegezeit bleibt auch dann sichtbar.
+
+## D097 – Preis-Datenlücken führen direkt zur bestehenden Bestätigung
+Eine offene Preis-Datenlücke darf aus der Routenansicht direkt die bestehende
+Marktpreis-Ansicht öffnen. Die Nutzerin bestätigt dort weiterhin jeden
+Marktpreis einzeln als manuellen Preis mit Erfassungsdatum; historische
+Mediane, Angebote und Schätzwerte werden nicht automatisch übernommen. Nach
+der Rückkehr wird die Route mit den gespeicherten Preisen neu berechnet, damit
+die Datenlücke sichtbar und ohne Medienbruch schließbar bleibt.
+
+## D098 – Marktübergreifende Mediane bleiben Hinweise
+Der Routenresolver darf für ein Produkt×Markt-Paar nur einen belegten
+Marktpreis, ein gültiges Angebot oder einen ausdrücklich gepflegten
+Preisbeleg verwenden. Fehlt dieser Beleg, liefert der Resolver keine
+Kategorie-Schätzung und überträgt auch keinen Median eines anderen Marktes auf
+den unbekannten Markt. Historische bzw. marktübergreifende Mediane bleiben in
+der Einkaufssuche und Preis-Datenansicht als gekennzeichnete Orientierung
+erhalten; die Route zeigt die Position als Datenlücke.
+
+## D099 – Ungültige Mehrfachkaufregeln werden nie zu Gratispreisen
+Ein Mehrfachkauf-Angebot ist nur dann routenwirksam, wenn Kauf- und
+Bezahlmenge positiv sind und die Bezahlmenge darunter liegt. Ungültige oder
+alte importierte Werte bleiben als normales Angebot lesbar; sie dürfen weder
+als Mehrfachkauf angezeigt noch die erwarteten Kassenkosten auf null senken.
+
+## D100 – Aktive Angebote verdrängen historische Marktzeilen derselben Auswahl
+Wenn ein aktuelles Angebot für eine konkrete Produkt-/Markt-Kombination
+vorliegt, wird der historische Bon-Median dieses Marktes im Variantenfenster
+nicht zusätzlich als zweite gleichrangige Zeile angezeigt. Das Angebot bleibt
+mit seinem effektiven Coupon-/Cashbackpreis sichtbar; historische Belege
+bleiben in der getrennten Historie erhalten und werden nicht gelöscht.
+
+## D101 – Historische Bonpreise brauchen eine gemeinsame Mengeneinheit
+Eine Bonpreisstatistik gilt nur dann als grundpreisbasiert vergleichbar, wenn
+alle Beobachtungen einen gültigen positiven Einzelpreis besitzen und ihre
+Mengenmetadaten dieselbe Einheitendimension (Masse, Volumen oder Stück)
+belegen. Unterschiedliche Packungsmengen innerhalb derselben Dimension dürfen
+weiter über den Grundpreis zusammengefasst werden. Gemischte Dimensionen,
+ungültige Mengen oder nur teilweise vorhandene Mengenmetadaten fallen auf den
+historischen Packungspreis zurück. Alte Beobachtungen ohne Mengenmetadaten
+bleiben aus Kompatibilitätsgründen lesbar und vergleichbar, sofern ihre
+Einzelpreise gültig sind.
+
+## D102 – Die iOS-Kamerafreigabe erklärt beide lokalen Kamerawege
+Die iOS-Kamera-Berechtigungsbeschreibung nennt sowohl das Scannen von
+Produktbarcodes als auch das lokale Auslesen von Kassenbonfotos. Beide Wege
+verwenden dieselbe Kamera-Freigabe; die Bonbilder werden für die OCR lokal
+verarbeitet und nicht durch die Berechtigungsbeschreibung als Uploadquelle
+ausgegeben.
+
+## D103 – Altersgrenzen werden taggenau über alle Preisprojektionen angewendet
+Die Frischegrenze einer Preisbeobachtung wird anhand des lokalen
+Kalendertages von Erfassung und Prüfzeitpunkt berechnet. Die gemeinsame
+`PriceObservation`-Projektion und das daraus entstehende `MarketPrice`
+verwenden dadurch am Grenztag dieselbe Entscheidung; Uhrzeiten innerhalb
+eines Tages machen einen Beleg weder früher noch später routenfähig.
+
+## D104 – Bon-Suchhinweise verwenden eine inklusive Kalendertagsgrenze
+Bon-Mediane und unbestätigte Bonzeilen dürfen am konfigurierten Altersgrenzentag
+noch als Such- bzw. Auswahlhinweis erscheinen. Erst Beobachtungen vor diesem
+Tag werden ausgeschlossen; zukünftige Beobachtungen bleiben ausgeschlossen.
+Damit verwendet die Suche dieselbe lokale, inklusive Frischegrenze wie die
+Bonstatistik und die Preisprojektion, ohne historische Hinweise zu aktuellen
+Routenpreisen hochzustufen.
+
+## D105 – Preis-Datenlücken führen bei bekannten Familien zur Produktauswahl
+Wenn eine Listenposition keine belastbare Marktpreisabdeckung besitzt und ihre
+Bezeichnung einer bekannten Produktfamilie entspricht, öffnet „Produkt oder
+Preis ergänzen“ zuerst die konkrete Kandidatenauswahl. Aktuelle Angebote stehen
+dort vor aktuellen Markt-/Bonpreisen; historische Prospekt- und Bonwerte bleiben
+als Hinweis gekennzeichnet. Erst die explizite Nutzerwahl ersetzt die
+unbestimmte Listenposition durch konkrete Produktidentitäten. Unbekannter
+Freitext bleibt im manuellen Preiseditor, weil eine automatische Erweiterung
+dort eine unbelegte Produktidentität erzeugen würde.
+
+## D106 – Bekannte Suchfamilien wählen nicht über den freien Fallback
+Wenn die Einkaufssuche eine bekannte Produktfamilie erkennt, führt auch die
+zusätzliche Fallback-Kachel in die konkrete Kandidatenauswahl. Aktuelle
+Angebote und belegte Preise bleiben dadurch vor der Listenübernahme sichtbar;
+eine Familienanfrage wird nicht stillschweigend als unbepreister Eigenartikel
+gespeichert. Nur unbekannter Freitext darf direkt als eigener Artikel angelegt
+werden.
+
+## D107 – Bon-Aliase werden auf konfigurierte Marktidentitäten normalisiert
+Bon-OCR darf einen Markt mit abweichender Schreibweise oder Ortszusatz
+liefern. Beim Lernen und Nachschlagen wird deshalb zuerst die konfigurierte
+Marktidentität verwendet, sofern sie eindeutig erkannt wird; bestehende
+unbekannte Händlerlabels bleiben unverändert. So verbindet die Lernhistorie
+„ALDI SUED“ mit „ALDI Süd“ und „Lidl · Zellingen“ mit „Lidl“, ohne Preise
+einem beliebigen Händler per Teilstring zuzuordnen.

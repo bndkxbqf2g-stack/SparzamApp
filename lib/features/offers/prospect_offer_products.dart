@@ -73,6 +73,14 @@ class ProspectOfferProduct {
   final Offer offer;
 }
 
+/// Keeps source-backed offers attached to their exact prospect product,
+/// including labels that are not in the local catalog yet. The caller may
+/// still require an explicit product selection before adding the item to a
+/// shopping list; no family identity is inferred here.
+List<Offer> offersFromProspectProducts(
+  Iterable<ProspectOfferProduct> entries,
+) => entries.map((entry) => entry.offer).toList(growable: false);
+
 bool _isUsableRecord(OfferImportRecord record, {DateTime? now}) {
   if (record.productLabel.trim().isEmpty ||
       record.storeName.trim().isEmpty ||
@@ -96,10 +104,7 @@ bool _isUsableRecord(OfferImportRecord record, {DateTime? now}) {
 
 Product _offerBackedProduct(OfferImportRecord record) {
   final label = record.productLabel.trim();
-  final package = RegExp(
-    r'\b\d+(?:[,.]\d+)?\s?(?:kg|g|l|ml|stk\.?|stück|x\s*\d+)\b',
-    caseSensitive: false,
-  ).firstMatch(label)?.group(0);
+  final packaging = _prospectPackaging(label);
   final hasEachUnit = RegExp(
     r'\b(?:stück|stk\.?|je stück)\b',
     caseSensitive: false,
@@ -107,11 +112,65 @@ Product _offerBackedProduct(OfferImportRecord record) {
   return Product(
     id: 'prospect|${normalizeIdentityText(label)}',
     name: label,
-    unit: package ?? (hasEachUnit ? 'Stück' : 'Packung'),
+    unit: packaging?.display ?? (hasEachUnit ? 'Stück' : 'Packung'),
     group: 'prospekt',
+    packageAmount: packaging?.amount,
+    packageUnit: packaging?.unit,
     imageUrl: record.imageUrl,
   );
 }
+
+({double amount, String display, String unit})? _prospectPackaging(
+  String label,
+) {
+  final multi = RegExp(
+    r'\b(\d+)\s*[x×]\s*(\d+(?:[,.]\d+)?)\s*-?\s*'
+    r'(kg|g|ml|l|stk\.?|stück|st)\b',
+    caseSensitive: false,
+  ).firstMatch(label);
+  if (multi != null) {
+    final count = int.tryParse(multi.group(1)!);
+    final amountEach = double.tryParse(multi.group(2)!.replaceAll(',', '.'));
+    final unit = _normalizedProspectUnit(multi.group(3)!);
+    if (count != null && amountEach != null && unit != null) {
+      return (
+        amount: count * amountEach,
+        display: '$count x ${_displayNumber(amountEach)} $unit',
+        unit: unit,
+      );
+    }
+  }
+
+  final single = RegExp(
+    r'\b(\d+(?:[,.]\d+)?)\s*-?\s*(kg|g|ml|l|stk\.?|stück|st)\b',
+    caseSensitive: false,
+  ).firstMatch(label);
+  if (single == null) return null;
+  final amount = double.tryParse(single.group(1)!.replaceAll(',', '.'));
+  final unit = _normalizedProspectUnit(single.group(2)!);
+  if (amount == null || unit == null) return null;
+  return (
+    amount: amount,
+    display: '${_displayNumber(amount)} $unit',
+    unit: unit,
+  );
+}
+
+String? _normalizedProspectUnit(String raw) {
+  final normalized = raw.toLowerCase().replaceAll('.', '');
+  return switch (normalized) {
+    'kg' => 'kg',
+    'g' => 'g',
+    'ml' => 'ml',
+    'l' => 'l',
+    'stk' || 'st' || 'stück' => 'Stück',
+    _ => null,
+  };
+}
+
+String _displayNumber(double value) => value == value.roundToDouble()
+    ? value.toInt().toString()
+    : value.toString().replaceAll('.', ',');
 
 Offer? _offerForProduct(
   OfferImportRecord record,

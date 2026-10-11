@@ -64,4 +64,18 @@ void main() {
     );
     expect(await store.loadTileView(), isTrue);
   });
+
+  test('mehrere bevorzugte Produktvarianten bleiben gespeichert', () async {
+    final store = ShoppingListStore();
+
+    await store.savePreferredProducts({
+      'milch': 'milch_1l',
+      'kaese': 'gouda_400g',
+    });
+
+    expect(await store.loadPreferredProducts(), {
+      'milch': 'milch_1l',
+      'kaese': 'gouda_400g',
+    });
+  });
 }

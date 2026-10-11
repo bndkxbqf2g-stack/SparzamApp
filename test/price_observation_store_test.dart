@@ -532,6 +532,33 @@ void main() {
 
     expect(projected, isEmpty);
   });
+
+  test('receipt age uses the same calendar-day cutoff as market prices', () {
+    final onCutoff = marketPricesFromObservations([
+      PriceObservation(
+        id: 'receipt-on-cutoff-day',
+        productId: 'schmand',
+        storeName: 'Lidl',
+        price: 0.69,
+        observedAt: DateTime(2026, 8, 26, 0, 1),
+        source: PriceObservationSource.receipt,
+      ),
+    ], now: DateTime(2026, 9, 25, 23, 0));
+    final beforeCutoff = marketPricesFromObservations([
+      PriceObservation(
+        id: 'receipt-before-cutoff-day',
+        productId: 'schmand',
+        storeName: 'Lidl',
+        price: 0.69,
+        observedAt: DateTime(2026, 8, 25, 23, 59),
+        source: PriceObservationSource.receipt,
+      ),
+    ], now: DateTime(2026, 9, 25, 23, 0));
+
+    expect(onCutoff, hasLength(1));
+    expect(beforeCutoff, isEmpty);
+  });
+
   test('source confidence and age confidence are separate', () {
     final old = MarketPrice(
       productId: 'x',

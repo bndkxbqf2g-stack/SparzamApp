@@ -29,6 +29,16 @@ class MarketPrice {
     required DateTime now,
     required int openPricesMaxAgeDays,
   }) {
+    final today = DateTime(now.year, now.month, now.day);
+    final observed = DateTime(
+      updatedAt.year,
+      updatedAt.month,
+      updatedAt.day,
+    );
+    // A future timestamp is invalid evidence for every source. Manual prices
+    // are allowed to stay usable indefinitely, but they still cannot describe
+    // a price that has not been observed yet.
+    if (observed.isAfter(today)) return false;
     if (source == MarketPriceSource.manual) return true;
     // Provisional safety window until receipt price stability is measured.
     final maxAgeDays = source == MarketPriceSource.receipt
@@ -38,11 +48,6 @@ class MarketPrice {
       now.month,
       now.day,
     ).subtract(Duration(days: maxAgeDays));
-    final observed = DateTime(
-      updatedAt.year,
-      updatedAt.month,
-      updatedAt.day,
-    );
     return !observed.isBefore(cutoff);
   }
 

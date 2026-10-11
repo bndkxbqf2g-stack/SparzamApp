@@ -7,7 +7,13 @@ void main() {
 {
   "generatedAt": "2026-09-25T04:15:00Z",
   "sources": [
-    {"storeName": "ALDI Süd", "status": "ok"},
+    {
+      "storeName": "ALDI Süd",
+      "status": "ok",
+      "branchId": "B384",
+      "location": "Zellingen",
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
+    },
     {"storeName": "Lidl", "status": "metadata_only"}
   ],
   "offers": [
@@ -16,6 +22,7 @@ void main() {
       "productLabel": "Schmand",
       "storeName": "ALDI Süd",
       "offerPrice": 0.69,
+      "category": "Milchprodukte",
       "originalPrice": 0.89,
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
@@ -39,7 +46,14 @@ void main() {
     expect(result.records, hasLength(2));
     expect(result.refreshedStores, ['ALDI Süd']);
     expect(result.records.first.originalPrice, 0.89);
+    expect(result.records.first.category, 'Milchprodukte');
     expect(result.records.last.originalPrice, isNull);
+    final aldi = result.prospects.firstWhere(
+      (item) => item.storeName == 'ALDI Süd',
+    );
+    expect(aldi.branchId, 'B384');
+    expect(aldi.location, 'Zellingen');
+    expect(aldi.address, contains('Würzburger Str. 74'));
   });
 
   test(
@@ -134,5 +148,40 @@ void main() {
     expect(result.records.single.originalPrice, 0.89);
     expect(result.records.single.imageUrl, 'https://cdn.example/schmand.png');
     expect(result.records.single.proofRef, contains('offersbrochure:218970'));
+  });
+
+  test('keeps prospect validity and link when page images are missing', () {
+    final result = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-10-01T04:15:00Z",
+  "sources": [
+    {
+      "storeName": "EDEKA",
+      "status": "ok",
+      "branchId": "023738",
+      "location": "Zellingen",
+      "prospects": [
+        {
+          "title": "EDEKA Wochenangebote",
+          "offerStartDate": "2026-09-28",
+          "offerEndDate": "2026-10-03",
+          "url": "https://example.test/edeka-prospekt"
+        }
+      ]
+    }
+  ],
+  "offers": []
+}
+''');
+
+    final edeka = result.prospects.singleWhere(
+      (item) => item.storeName == 'EDEKA',
+    );
+    expect(edeka.pages, isEmpty);
+    expect(edeka.validFrom, DateTime(2026, 9, 28));
+    expect(edeka.validUntil, DateTime(2026, 10, 3));
+    expect(edeka.url, 'https://example.test/edeka-prospekt');
+    expect(edeka.branchId, '023738');
+    expect(edeka.location, 'Zellingen');
   });
 }

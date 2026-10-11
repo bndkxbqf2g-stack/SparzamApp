@@ -15,8 +15,7 @@ Summe 8,78
 Datum 23.07.26
 ''');
     final review = reviewReceiptPrices(draft, const <Product>[]);
-    final observations =
-        buildReceiptObservations(draft: draft, review: review);
+    final observations = buildReceiptObservations(draft: draft, review: review);
 
     expect(observations, hasLength(2));
     expect(observations.first.familyKey, 'hackfleisch');
@@ -35,8 +34,7 @@ Summe 2,94
 Datum 23.07.26
 ''');
     final review = reviewReceiptPrices(draft, const <Product>[]);
-    final observations =
-        buildReceiptObservations(draft: draft, review: review);
+    final observations = buildReceiptObservations(draft: draft, review: review);
 
     expect(observations, hasLength(1));
     expect(observations.single.familyKey, 'fischstäbchen');
@@ -52,7 +50,9 @@ Summe 4,79
 Datum 23.07.26
 ''');
     final review = reviewReceiptPrices(draft, const <Product>[]);
-    final item = draft.rows.firstWhere((row) => row.kind == ReceiptRowKind.item);
+    final item = draft.rows.firstWhere(
+      (row) => row.kind == ReceiptRowKind.item,
+    );
     final observations = buildReceiptObservations(
       draft: draft,
       review: review,
@@ -74,8 +74,9 @@ Summe 2,49
 Datum 23.07.26
 ''');
     final review = reviewReceiptPrices(draft, const <Product>[]);
-    final item =
-        draft.rows.firstWhere((row) => row.kind == ReceiptRowKind.item);
+    final item = draft.rows.firstWhere(
+      (row) => row.kind == ReceiptRowKind.item,
+    );
     final observations = buildReceiptObservations(
       draft: draft,
       review: review,
@@ -84,5 +85,35 @@ Datum 23.07.26
 
     expect(observations.single.productId, 'receipt_auto_specialitaet');
     expect(observations.single.identityConfirmed, isFalse);
+  });
+
+  test('observation ids survive harmless OCR layout line changes', () {
+    final first = parseReceiptLedger('''
+Kaufland
+Preis EUR
+Milch 1,29 B
+Summe 1,29
+Datum 23.07.26
+''');
+    final shifted = parseReceiptLedger('''
+Kaufland
+Preis EUR
+Beleg: 12345
+Milch 1,29 B
+Summe 1,29
+Datum 23.07.26
+''');
+    final firstObservation = buildReceiptObservations(
+      draft: first,
+      review: reviewReceiptPrices(first, const <Product>[]),
+    ).single;
+    final shiftedObservation = buildReceiptObservations(
+      draft: shifted,
+      review: reviewReceiptPrices(shifted, const <Product>[]),
+    ).single;
+
+    expect(shifted.fingerprint, first.fingerprint);
+    expect(shiftedObservation.id, firstObservation.id);
+    expect(shiftedObservation.rowLine, isNot(firstObservation.rowLine));
   });
 }

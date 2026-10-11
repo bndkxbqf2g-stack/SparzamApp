@@ -27,6 +27,21 @@ void main() {
     expect(result.reason, contains('nicht bestätigte'));
   });
 
+  test('learned alias stays provisional until this receipt is reviewed', () {
+    final result = assessReceiptIdentity(
+      productId: 'milch_15',
+      identityConfirmed: true,
+      learnedAlias: true,
+      familyKey: 'milch',
+    );
+
+    expect(result.state, ReceiptIdentityState.provisional);
+    expect(result.confidence, 0.75);
+    expect(result.exactRouteEligible, isFalse);
+    expect(result.label, 'Gelernter Alias');
+    expect(result.reason, contains('prüfen'));
+  });
+
   test('family-only evidence explains why exact identity is rejected', () {
     final result = assessReceiptIdentity(familyKey: 'hackfleisch');
 

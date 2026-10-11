@@ -12,7 +12,9 @@ class ShoppingSearchResults extends StatelessWidget {
     required this.relatedInterpretations,
     required this.preferredProductByGroup,
     required this.recentPurchases,
+    this.recommendedProductId,
     this.priceHintFor,
+    this.onChooseKnownProduct,
     required this.onAdd,
     required this.onAddCustom,
   });
@@ -22,7 +24,11 @@ class ShoppingSearchResults extends StatelessWidget {
   final List<Product> relatedInterpretations;
   final Map<String, String> preferredProductByGroup;
   final List<RecentPurchase> recentPurchases;
+  final String? recommendedProductId;
   final String? Function(Product product)? priceHintFor;
+  /// Opens a concrete variant chooser for a known family request such as
+  /// "Milch". Unknown free text keeps using [onAddCustom].
+  final VoidCallback? onChooseKnownProduct;
   final ValueChanged<Product> onAdd;
   final VoidCallback onAddCustom;
 
@@ -59,19 +65,23 @@ class ShoppingSearchResults extends StatelessWidget {
                 _productTile(product, related: true),
             ],
             ListTile(
-              onTap: onAddCustom,
+              onTap: onChooseKnownProduct ?? onAddCustom,
               leading: const CircleAvatar(
                 radius: 18,
                 child: Icon(Icons.playlist_add),
               ),
               title: Text(
-                suggestions.isEmpty
-                    ? '„$query“ hinzufügen'
-                    : '„$query“ zur Liste hinzufügen',
+                onChooseKnownProduct == null
+                    ? suggestions.isEmpty
+                        ? '„$query“ hinzufügen'
+                        : '„$query“ zur Liste hinzufügen'
+                    : '„$query“ konkret auswählen',
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
-              subtitle: const Text(
-                'Noch kein bekanntes Produkt – wird trotzdem gespeichert.',
+              subtitle: Text(
+                onChooseKnownProduct == null
+                    ? 'Noch kein bekanntes Produkt – wird trotzdem gespeichert.'
+                    : 'Varianten und belegte Preise auswählen.',
               ),
               trailing: const Icon(Icons.chevron_right),
             ),
@@ -83,11 +93,18 @@ class ShoppingSearchResults extends StatelessWidget {
 
   Widget _productTile(Product product, {bool related = false}) {
     final preferred = preferredProductByGroup[product.group] == product.id;
+    final recommended = !related && recommendedProductId == product.id;
+    final labels = <String>[
+      if (preferred) 'deine Auswahl',
+      if (recommended) 'Empfehlung',
+    ];
     return ListTile(
       onTap: () => onAdd(product),
       leading: _ProductSuggestionImage(product: product, related: related),
       title: Text(
-        preferred ? '${product.name} · deine Auswahl' : product.name,
+        labels.isEmpty
+            ? product.name
+            : '${product.name} · ${labels.join(' · ')}',
         style: const TextStyle(fontWeight: FontWeight.w600),
       ),
       subtitle: Text(_subtitle(product)),
@@ -99,7 +116,8 @@ class ShoppingSearchResults extends StatelessWidget {
     final hierarchy = productHierarchyLabel(product).path;
     final purchase = _recentPurchase(product.id);
     final parts = <String>['$hierarchy · ${product.unit}'];
-    if (product.id.startsWith('receipt_suggestion_')) {
+    if (product.id.startsWith('receipt_suggestion_') ||
+        product.id.startsWith('receipt_auto_')) {
       parts.add('Früher gekauft · Sorte und Packung prüfen');
     }
     if (purchase != null && purchase.averageQuantity.round() > 1) {

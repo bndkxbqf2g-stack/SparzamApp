@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 
 import 'prospect_feed_service.dart';
 import 'prospect_branch_resolver.dart';
+import 'prospect_feed_cache.dart';
 
 /// Orchestrates the complete prospect import boundary.
 ///
@@ -9,8 +10,8 @@ import 'prospect_branch_resolver.dart';
 /// official source adapters. The app consumes one validated, status-aware
 /// result and never treats an unavailable retailer as an empty successful feed.
 class ProspectImportModule {
-  ProspectImportModule({http.Client? client})
-    : _feedService = ProspectFeedService(client: client);
+  ProspectImportModule({http.Client? client, ProspectFeedCache? cache})
+    : _feedService = ProspectFeedService(client: client, cache: cache);
 
   final ProspectFeedService _feedService;
   final ProspectBranchResolver _branchResolver = const ProspectBranchResolver();
@@ -32,6 +33,9 @@ class ProspectImportModule {
                   pages: issue.pages,
                   url: urls[issue.storeName],
                   thumbnailUrl: issue.thumbnailUrl,
+                  branchId: issue.branchId,
+                  location: issue.location,
+                  address: issue.address,
                   sourceStatus: issue.sourceStatus,
                   recordCount: issue.recordCount,
                   validFrom: issue.validFrom,

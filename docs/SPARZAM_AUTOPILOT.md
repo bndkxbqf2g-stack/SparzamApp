@@ -40,6 +40,8 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [x] ältere Receipt-Daten für Historie behalten
 - [x] Paketgrößen normalisieren
 - [x] Vergleichbarkeit für Stück/Gewicht/Volumen systematisch härten
+- [x] Unbelegte Marktpreise als Datenlücke behandeln; keine Kategoriepreise
+  oder fremden Marktmediane in die Route übertragen
 - [ ] Marktpreis-Konfidenz und Preisbasis vereinheitlichen
 - [ ] Quellpriorität vollständig mit Tests absichern
 - [ ] Angebotspreise vs. Normalpreise konsistent behandeln
@@ -52,7 +54,7 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [ ] hierarchischen Produktkatalog aus Oberbegriff → Produktfamilie → Variante aufbauen
 - [ ] Suchbegriff zeigt alle passenden Interpretationen (z. B. Tomate → frisch/Rispe/Party, getrennt von Tomatenmark/-sauce)
 - [ ] für jede Position alle belastbaren Marktpreise aufbauen
-- [ ] fehlende Preise explizit markieren
+- [x] fehlende Preise explizit markieren und direkt zur Preiseingabe führen
 - [x] Produkt×Markt-Matrix als sichtbare Einkaufslisten-/Teststruktur
 - [ ] neuester/Median/Quelle/Alter/Vergleichbarkeit je Preis
 - [ ] Einkaufsliste automatisch mit bekannten Daten aktualisieren
@@ -67,6 +69,7 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [x] realistische Mehrmarkt-End-to-End-Tests
 - [x] gleiche Produktliste gegen 1/2/3 Markt-Kombinationen vergleichen
 - [x] Entfernung, Fahrtkosten und Preisersparnis transparent aufschlüsseln
+- [x] optionalen persönlichen Zeitwert transparent in den Planungswert einbeziehen
 - [x] unvollständige Preisabdeckung sauber in Empfehlung einbeziehen
 - [x] robuste Tie-Breaker und Grenzfälle
 - [x] Routenempfehlung mit klarer Begründung ausgeben
@@ -77,7 +80,7 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [ ] erkannte Produkte automatisch als Beobachtungen aufnehmen
 - [ ] Dubletten-/Receipt-Fingerprint-Härtung
 - [ ] Open Prices als optionale Ergänzung optimieren
-- [ ] manuelle Preisbestätigung vereinfachen
+- [x] manuelle Preisbestätigung aus der Datenlückenkarte vereinfachen
 - [ ] spätere Video-/Regalerfassung nur nach stabiler Foto/OCR-Basis prüfen
 
 ### Phase 6 – UX / Dashboard
@@ -85,7 +88,7 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [ ] empfohlene Route prominent
 - [ ] Gesamtpreis + Fahrtkosten + Ersparnis
 - [x] Preisabdeckung und Unsicherheit verständlich
-- [ ] schneller Einkaufsliste→Route-Flow
+- [x] schneller Einkaufsliste→Route-Flow
 - [x] klare Hinweise, wenn Daten für Empfehlung fehlen
 - [ ] kompakte iPhone-Darstellung
 - [x] Detailansicht pro Produkt/Markt

@@ -7,18 +7,19 @@ import '../../models/named_shopping_list.dart';
 import '../../models/offer.dart';
 import '../../models/product.dart';
 import '../../models/price_point.dart';
+import '../../models/price_observation.dart';
 import '../../models/recent_purchase.dart';
 import '../../models/replenishment_suggestion.dart';
 import '../../models/receipt_price_stat.dart';
 import '../../services/receipt_observation_store.dart';
 import '../../services/shopping_list_store.dart';
 import '../offers/offer_details_screen.dart';
+import '../offers/offer_filter.dart';
 import '../offers/prospect_price_statistics.dart';
 import '../receipt/receipt_import_dialog.dart';
 import '../receipt/receipt_import.dart';
 import '../receipt/receipt_price_statistics.dart';
 import 'shopping_group_card.dart';
-import 'shopping_price_quotes.dart';
 import 'shopping_grouping.dart';
 import 'replenishment_card.dart';
 
@@ -32,6 +33,9 @@ import 'receipt_search_products.dart';
 import 'shopping_search_results.dart';
 import 'shopping_list_status.dart';
 import 'aisle_order_dialog.dart';
+import 'shopping_candidate_selector.dart';
+import '../price_gaps/price_gap_priority.dart';
+import '../catalog/product_identity.dart';
 
 class ShoppingListScreen extends StatefulWidget {
   const ShoppingListScreen({
@@ -52,16 +56,20 @@ class ShoppingListScreen extends StatefulWidget {
     required this.onClearPurchased,
     required this.shoppingListStore,
     required this.onOpenScanner,
+    this.onOpenRoute,
     required this.offers,
     required this.priceHistory,
     required this.mobility,
     required this.catalogProducts,
     required this.marketPrices,
+    this.openPricesMaxAgeDays = 60,
     this.priceObservations = const <MarketPrice>[],
+    this.historicalPriceObservations = const <PriceObservation>[],
     this.prospectPriceHistory = const {},
     this.onSavePrices,
     this.onCreateProduct,
     this.onReceiptObservationsChanged,
+    this.onResolvePriceGap,
     required this.replenishmentSuggestions,
   });
 
@@ -81,16 +89,20 @@ class ShoppingListScreen extends StatefulWidget {
   final void Function(Set<String> productIds) onClearPurchased;
   final ShoppingListStore shoppingListStore;
   final VoidCallback onOpenScanner;
+  final VoidCallback? onOpenRoute;
   final List<Offer> offers;
   final List<PricePoint> priceHistory;
   final MobilitySettings mobility;
   final List<Product> catalogProducts;
   final List<MarketPrice> marketPrices;
+  final int openPricesMaxAgeDays;
   final List<MarketPrice> priceObservations;
+  final List<PriceObservation> historicalPriceObservations;
   final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
   final Future<void> Function(List<MarketPrice>)? onSavePrices;
   final Future<List<Product>> Function(Product product)? onCreateProduct;
   final Future<void> Function()? onReceiptObservationsChanged;
+  final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
   final List<ReplenishmentSuggestion> replenishmentSuggestions;
 
   @override
@@ -165,22 +177,43 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     receiptPriceStats: receiptPriceStats,
     prospectPriceHistory: widget.prospectPriceHistory,
     enabledStores: widget.mobility.enabledStoreNames,
+    openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
   );
 
-  String? priceHintFor(Product product) => shoppingSuggestionPriceForProduct(
-    product,
-    offers: widget.offers,
-    marketPrices: widget.marketPrices,
-    receiptPriceStats: receiptPriceStats,
-    prospectPriceHistory: widget.prospectPriceHistory,
+  ShoppingSuggestionPrice? suggestionPriceFor(Product product) =>
+      shoppingSuggestionPriceForProduct(
+        product,
+        offers: widget.offers,
+        marketPrices: widget.marketPrices,
+        receiptPriceStats: receiptPriceStats,
+        prospectPriceHistory: widget.prospectPriceHistory,
     enabledStores: widget.mobility.enabledStoreNames,
-  )?.displayLabel;
+    openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
+      );
+
+  String? priceHintFor(Product product) =>
+      suggestionPriceFor(product)?.displayLabel;
+
+  String? get recommendedSuggestionId {
+    return recommendedShoppingProductId(
+      suggestions: suggestions,
+      priceFor: suggestionPriceFor,
+      hasAlternatives:
+          suggestions.length > 1 || relatedInterpretations.isNotEmpty,
+    );
+  }
+
+  String? get submitSuggestionId => currentShoppingProductId(
+        suggestions: suggestions,
+        priceFor: suggestionPriceFor,
+      );
 
   List<Product> get relatedInterpretations =>
       buildRelatedProductInterpretations(
         query: controller.text,
         primarySuggestions: suggestions,
         catalogProducts: [...widget.catalogProducts, ...receiptCandidates],
+        priceFor: suggestionPriceFor,
       );
 
   List<Product> get quickProducts => buildQuickProducts(
@@ -254,6 +287,28 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     _focusShoppingInput();
   }
 
+  Future<void> reviewReplenishment(ReplenishmentSuggestion suggestion) async {
+    final selected = await showShoppingCandidateSelector(
+      context: context,
+      request: suggestion.product.name,
+      catalogProducts: [...widget.catalogProducts, ...receiptCandidates],
+      offers: widget.offers,
+      marketPrices: widget.marketPrices,
+      receiptPriceStats: receiptPriceStats,
+      prospectPriceHistory: widget.prospectPriceHistory,
+    enabledStores: widget.mobility.enabledStoreNames,
+    openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
+    );
+    if (!mounted || selected == null || selected.isEmpty) return;
+
+    for (final product in selected) {
+      for (var index = 0; index < suggestion.suggestedQuantity; index++) {
+        widget.onAdd(product);
+      }
+    }
+    _focusShoppingInput();
+  }
+
   void addRecentPurchase(RecentPurchase purchase) {
     for (final product in productsForRecentPurchase(purchase)) {
       widget.onAdd(product);
@@ -271,6 +326,31 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     }
 
     widget.onAdd(customShoppingProduct(name));
+    controller.clear();
+    setState(() {});
+    _focusShoppingInput();
+  }
+
+  Future<void> chooseTypedProductFamily() async {
+    final request = controller.text.trim();
+    if (request.isEmpty || !identifyProduct(request).isKnown) return;
+
+    final selected = await showShoppingCandidateSelector(
+      context: context,
+      request: request,
+      catalogProducts: [...widget.catalogProducts, ...receiptCandidates],
+      offers: widget.offers,
+      marketPrices: widget.marketPrices,
+      receiptPriceStats: receiptPriceStats,
+      prospectPriceHistory: widget.prospectPriceHistory,
+      enabledStores: widget.mobility.enabledStoreNames,
+      openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
+    );
+    if (!mounted || selected == null || selected.isEmpty) return;
+
+    for (final product in selected) {
+      widget.onAdd(product);
+    }
     controller.clear();
     setState(() {});
     _focusShoppingInput();
@@ -355,6 +435,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           mobility: widget.mobility,
           catalogProducts: widget.catalogProducts,
           marketPrices: widget.marketPrices,
+          openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
+          onResolvePriceGap: widget.onResolvePriceGap,
         ),
       ),
     );
@@ -418,6 +500,19 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 },
               ),
               const SizedBox(height: 14),
+              if (widget.items.isNotEmpty && widget.onOpenRoute != null) ...[
+                FilledButton.icon(
+                  onPressed: widget.onOpenRoute,
+                  icon: const Icon(Icons.route_outlined),
+                  label: const Text('Sparroute prüfen'),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  'Angebote, Marktpreise und Fahrtkosten für diese Liste vergleichen.',
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+              ],
               ShoppingInput(
                 controller: controller,
                 focusNode: _inputFocusNode,
@@ -426,8 +521,13 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   final name = controller.text.trim();
                   if (name.isEmpty) return;
 
-                  if (suggestions.isNotEmpty) {
-                    add(suggestions.first);
+                  final selected = shoppingProductForSubmit(
+                    query: name,
+                    suggestions: suggestions,
+                    recommendedProductId: submitSuggestionId,
+                  );
+                  if (selected != null) {
+                    add(selected);
                   } else {
                     addCustomProduct();
                   }
@@ -440,6 +540,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 ReplenishmentCard(
                   suggestions: widget.replenishmentSuggestions,
                   onAdd: addReplenishment,
+                  onReview: reviewReplenishment,
+                  priceHintFor: priceHintFor,
                 ),
               ],
               if (controller.text.trim().isNotEmpty)
@@ -449,7 +551,12 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   relatedInterpretations: relatedInterpretations,
                   preferredProductByGroup: widget.preferredProductByGroup,
                   recentPurchases: widget.recentPurchases,
+                  recommendedProductId: recommendedSuggestionId,
                   priceHintFor: priceHintFor,
+                  onChooseKnownProduct:
+                      identifyProduct(controller.text.trim()).isKnown
+                      ? chooseTypedProductFamily
+                      : null,
                   onAdd: add,
                   onAddCustom: addCustomProduct,
                 )
@@ -489,7 +596,11 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     offers: widget.offers,
                     enabledStoreNames: widget.mobility.enabledStoreNames,
                     marketPrices: widget.marketPrices,
+                    openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
                     priceObservations: widget.priceObservations,
+                    historicalPriceObservations:
+                        widget.historicalPriceObservations,
+                    prospectPriceHistory: widget.prospectPriceHistory,
                     receiptPriceStats: receiptPriceStats,
                     onToggle: toggleChecked,
                     onSelectFamily: widget.onSelectFamily,

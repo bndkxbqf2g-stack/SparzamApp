@@ -2,10 +2,7 @@ import '../../models/mobility_settings.dart';
 import '../../models/route_plan.dart';
 
 class RouteRecommendationInfo {
-  const RouteRecommendationInfo({
-    required this.title,
-    required this.detail,
-  });
+  const RouteRecommendationInfo({required this.title, required this.detail});
 
   final String title;
   final String detail;
@@ -46,7 +43,8 @@ RouteRecommendationInfo buildRouteRecommendationInfo({
         title: 'Mehrere Märkte lohnen sich',
         detail:
             '${recommended.stores.length} Märkte verbessern den Planungswert '
-            'um ${savings.toStringAsFixed(2)} € gegenüber dem besten Einzelmarkt.',
+            'um ${savings.toStringAsFixed(2)} € gegenüber dem besten Einzelmarkt.'
+            '${_timeValueSuffix(mobility)}',
       );
     }
   }
@@ -61,13 +59,27 @@ RouteRecommendationInfo buildRouteRecommendationInfo({
       detail:
           '$extraStores zusätzliche ${extraStores == 1 ? 'Markt' : 'Märkte'} '
           'würden den Planungswert nur um ${possibleSavings.toStringAsFixed(2)} € verbessern. '
-          'Deine Schwelle liegt bei ${threshold.toStringAsFixed(2)} €.',
+          'Deine Schwelle liegt bei ${threshold.toStringAsFixed(2)} €.'
+          '${_timeValueSuffix(mobility)}',
     );
   }
 
-  return const RouteRecommendationInfo(
+  return RouteRecommendationInfo(
     title: 'Ein Markt reicht für diese Liste',
     detail:
-        'Ein zusätzlicher Markt bringt nach Preisen und Fahrtkosten keinen ausreichenden Vorteil.',
+        'Ein zusätzlicher Markt bringt nach ${_planningBasis(mobility)} '
+        'keinen ausreichenden Vorteil.',
   );
 }
+
+String _planningBasis(MobilitySettings mobility) =>
+    mobility.timeValuePerHour > 0
+    ? 'Preisen, Fahrtkosten und Zeitwert'
+    : 'Preisen und Fahrtkosten';
+
+String _timeValueSuffix(MobilitySettings mobility) =>
+    mobility.timeValuePerHour > 0
+    ? ' Der persönliche Zeitwert von '
+          '${mobility.timeValuePerHour.toStringAsFixed(2)} €/Std. ist dabei '
+          'im Planungswert enthalten.'
+    : '';

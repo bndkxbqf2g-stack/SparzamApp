@@ -1,6 +1,8 @@
 import importlib.util
 import pathlib
 import unittest
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 MODULE = pathlib.Path(__file__).resolve().parents[1] / "refresh_prospects.py"
 spec = importlib.util.spec_from_file_location("refresh_prospects", MODULE)
@@ -8,6 +10,25 @@ refresh = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(refresh)
 
 class ProspectParserTest(unittest.TestCase):
+    def test_default_refresh_day_uses_berlin_calendar(self):
+        expected = datetime.now(ZoneInfo("Europe/Berlin")).date()
+        self.assertEqual(refresh.local_today(), expected)
+
+    def test_current_week_ends_on_the_german_retailer_saturday(self):
+        self.assertEqual(
+            refresh.current_week(refresh.date(2026, 10, 10)),
+            (refresh.date(2026, 10, 5), refresh.date(2026, 10, 10)),
+        )
+
+    def test_every_configured_source_keeps_its_target_branch_metadata(self):
+        source_ids = {source[0] for source in refresh.SOURCES}
+        self.assertEqual(source_ids, set(refresh.SOURCE_BRANCH_METADATA))
+        for source_id in source_ids:
+            metadata = refresh.source_branch_metadata(source_id)
+            self.assertTrue(metadata["branchId"])
+            self.assertTrue(metadata["location"])
+            self.assertTrue(metadata["address"])
+
     def test_current_prospect_offers_drop_overlapping_old_periods(self):
         offers = [
             {"storeName": "Kaufland", "validFrom": "2026-09-24", "validUntil": "2026-09-30", "productLabel": str(i), "offerPrice": 1.0}
@@ -15,6 +36,18 @@ class ProspectParserTest(unittest.TestCase):
         ] + [{"storeName": "Kaufland", "validFrom": "2026-08-23", "validUntil": "2026-09-30", "productLabel": "old", "offerPrice": 1.0}]
         result = refresh.current_prospect_offers(offers, refresh.date(2026, 9, 29))
         self.assertEqual(len(result), 3)
+
+    def test_netto_previous_fallback_drops_unactionable_labels(self):
+        valid_until = (refresh.date.today() + refresh.timedelta(days=2)).isoformat()
+        previous = {
+            "offers": [
+                {"storeName": "Netto", "productLabel": "-21%", "validUntil": valid_until},
+                {"storeName": "Netto", "productLabel": "gekühlt", "validUntil": valid_until},
+                {"storeName": "Netto", "productLabel": "Milka Schokolade 100 g", "validUntil": valid_until},
+            ],
+        }
+        result = refresh.active_previous(previous, "Netto")
+        self.assertEqual([item["productLabel"] for item in result], ["Milka Schokolade 100 g"])
 
     def test_netto_parses_official_reader_proxy_text(self):
         offers, _ = refresh.parse_netto(
@@ -77,6 +110,7 @@ class ProspectParserTest(unittest.TestCase):
               "preis": 0.69,
               "originalPrice": "0,89 €",
               "nachlass": "22%",
+              "category": "Milchprodukte",
               "bild_app": "https://offer-images.api.edeka/schmand.jpg"
             }
           ]
@@ -89,6 +123,7 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(len(offers), 1)
         self.assertEqual(offers[0]["productLabel"], "K.Frischer Schmand")
         self.assertEqual(offers[0]["offerPrice"], 0.69)
+        self.assertEqual(offers[0]["category"], "Milchprodukte")
         self.assertEqual(offers[0]["originalPrice"], 0.89)
         self.assertEqual(offers[0]["validFrom"], "2026-09-21")
         self.assertEqual(offers[0]["validUntil"], "2026-09-26")
@@ -184,6 +219,7 @@ class ProspectParserTest(unittest.TestCase):
               "name": "Orangensaft 1 l",
               "brandName": "VALENSINA",
               "urlSlugText": "valensina-orangensaft-1-l",
+              "category": "Getränke",
               "assets": [{"url": "https://img.example/{width}/orangensaft.jpg"}],
               "price": {
                 "amount": 149,
@@ -215,6 +251,7 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(len(offers), 2)
         self.assertEqual(offers[0]["productLabel"], "VALENSINA Orangensaft 1 l")
         self.assertEqual(offers[0]["offerPrice"], 1.49)
+        self.assertEqual(offers[0]["category"], "Getränke")
         self.assertEqual(offers[0]["originalPrice"], 2.49)
         self.assertEqual(
             offers[0]["imageUrl"],
@@ -272,6 +309,7 @@ class ProspectParserTest(unittest.TestCase):
               "offerType": "StoreSpecialPriceDiscount",
               "redemptionChannel": "Store",
               "imageUrl": "https://static-coupons.lidlplus.com/thunfisch.jpg",
+              "category": "Vorrat & Konserven",
               "priceBox": {
                 "strikethrough": true,
                 "largePartNumeric": 3.79,
@@ -295,6 +333,7 @@ class ProspectParserTest(unittest.TestCase):
             "Saupiquet MSC Thunfisch-Salat Je 2x 160 g",
         )
         self.assertEqual(offers[0]["offerPrice"], 3.79)
+        self.assertEqual(offers[0]["category"], "Vorrat & Konserven")
         self.assertEqual(offers[0]["originalPrice"], 3.99)
         self.assertEqual(offers[0]["validFrom"], "2026-09-24")
         self.assertEqual(offers[0]["validUntil"], "2026-09-26")
@@ -428,10 +467,12 @@ class ProspectParserTest(unittest.TestCase):
             "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1",
             refresh.date(2026, 9, 21),
             refresh.date(2026, 9, 26),
+            "Kühlregal",
         )
         self.assertEqual(len(offers), 1)
         self.assertEqual(offers[0]["productLabel"], "MILPRIMA Schmand je 200 g")
         self.assertEqual(offers[0]["offerPrice"], 0.69)
+        self.assertEqual(offers[0]["category"], "Kühlregal")
         self.assertEqual(offers[0]["originalPrice"], 0.79)
         self.assertEqual(offers[0]["imageUrl"], "https://cdn.penny.de/schmand.png")
         self.assertEqual(offers[0]["validFrom"], "2026-09-21")
@@ -494,6 +535,50 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(offers[0]["validFrom"], "2026-09-28")
         self.assertEqual(offers[0]["validUntil"], "2026-10-02")
         self.assertEqual(offers[1]["productLabel"], "Kiwi gold, Neuseeland, Stück")
+        self.assertEqual(offers[1]["offerPrice"], 0.59)
+
+    def test_netto_drops_unactionable_placeholder_labels(self):
+        html = """
+        <div data-slider-headline="gültig von Montag, 28.09.26 - Freitag, 02.10.26">
+          <li aria-label=" Zum Artikel: -21%, Aktion, 1,79 Euro"></li>
+          <li aria-label=" Zum Artikel: gekühlt, versch. Sorten, Aktion, 2,49 Euro"></li>
+          <li aria-label=" Zum Artikel: Marokko/Spanien, Kl. I, Aktion, 1,49 Euro"></li>
+          <li aria-label=" Zum Artikel: Rispentomaten, 1 kg, Aktion, 2,29 Euro"></li>
+        </div>
+        """
+        offers, _ = refresh.parse_netto(
+            html,
+            "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371",
+        )
+        self.assertEqual(len(offers), 1)
+        self.assertEqual(offers[0]["productLabel"], "Rispentomaten, 1 kg")
+
+    def test_netto_reads_public_reader_markdown_tiles(self):
+        markdown = """
+_Minipflaumentomaten_ 500 g Schale
+3.98 / kg
+-28%UVP 2.79 1.99*
+[](https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=46111&Name=Minipflaumentomaten&ValidTo=2026-10-08T22%3A40%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2Ftomaten.webp "Auf den Einkaufszettel")
+
+_Kiwi gold_ Stück
+Aktion
+0.59*
+[](https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=40141&Name=Kiwi+gold&ValidTo=2026-10-08T22%3A40%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2Fkiwi.webp "Auf den Einkaufszettel")
+
+ab Montag, 28.09.26
+"""
+        offers, _ = refresh.parse_netto(
+            markdown,
+            "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371",
+        )
+        self.assertEqual(len(offers), 2)
+        self.assertEqual(offers[0]["productLabel"], "Minipflaumentomaten 500 g")
+        self.assertEqual(offers[0]["offerPrice"], 1.99)
+        self.assertEqual(offers[0]["originalPrice"], 2.79)
+        self.assertEqual(offers[0]["validFrom"], "2026-09-28")
+        self.assertEqual(offers[0]["validUntil"], "2026-10-08")
+        self.assertTrue(offers[0]["imageUrl"].endswith("/tomaten.webp"))
+        self.assertEqual(offers[1]["productLabel"], "Kiwi gold Stück")
         self.assertEqual(offers[1]["offerPrice"], 0.59)
 
     def test_rewe_reads_public_action_price(self):
@@ -577,6 +662,7 @@ class ProspectParserTest(unittest.TestCase):
                         {
                             "categories": [
                                 {
+                                    "name": "Milchprodukte",
                                     "offers": [
                                         {
                                             "offerId": "offer-1",
@@ -620,6 +706,7 @@ class ProspectParserTest(unittest.TestCase):
             "Kerrygold Butter je 250-g-Packung",
         )
         self.assertEqual(offers[0]["offerPrice"], 1.99)
+        self.assertEqual(offers[0]["category"], "Milchprodukte")
         self.assertEqual(offers[0]["originalPrice"], 2.49)
         self.assertEqual(offers[0]["validFrom"], "2026-09-24")
         self.assertEqual(offers[0]["validUntil"], "2026-09-30")

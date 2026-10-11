@@ -5,15 +5,22 @@ import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/mobility_settings.dart';
 import '../../models/offer.dart';
+import '../../models/price_observation.dart';
 import '../../models/road_route_matrix.dart';
 import '../../models/route_plan.dart';
+import '../../models/recent_purchase.dart';
 import '../../services/road_distance_service.dart';
 import '../../services/road_distance_store.dart';
 import '../../services/road_route_matrix_store.dart';
+import '../price_gaps/price_gap_card.dart';
+import '../price_gaps/price_gap_history.dart';
+import '../price_gaps/price_gap_priority.dart';
 import 'route_alternative_card.dart';
 import 'route_recommendation.dart';
 import 'route_recommendation_card.dart';
 import 'route_optimizer.dart';
+import 'route_price_evidence.dart';
+import 'route_price_evidence_card.dart';
 import 'route_store_card.dart';
 import 'route_summary_card.dart';
 import 'travel_estimator.dart';
@@ -25,16 +32,24 @@ class RouteScreen extends StatefulWidget {
     required this.offers,
     required this.mobility,
     required this.marketPrices,
+    this.openPricesMaxAgeDays = 60,
+    this.recentPurchases = const <RecentPurchase>[],
+    this.historicalPriceObservations = const <PriceObservation>[],
     this.onRoadDistancesChanged,
     this.onRoadMatrixChanged,
+    this.onResolvePriceGap,
   });
 
   final List<ListItem> items;
   final List<Offer> offers;
   final MobilitySettings mobility;
   final List<MarketPrice> marketPrices;
+  final int openPricesMaxAgeDays;
+  final List<RecentPurchase> recentPurchases;
+  final List<PriceObservation> historicalPriceObservations;
   final ValueChanged<Map<String, double>>? onRoadDistancesChanged;
   final ValueChanged<RoadRouteMatrix?>? onRoadMatrixChanged;
+  final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
 
   @override
   State<RouteScreen> createState() => _RouteScreenState();
@@ -94,10 +109,7 @@ class _RouteScreenState extends State<RouteScreen> {
 
     if (matrix != null) {
       for (final store in stores) {
-        final distance = matrix.distance(
-          RoadRouteMatrix.origin,
-          store.name,
-        );
+        final distance = matrix.distance(RoadRouteMatrix.origin, store.name);
         if (distance != null && distance > 0) {
           next[store.name] = distance;
         }
@@ -133,17 +145,32 @@ class _RouteScreenState extends State<RouteScreen> {
       euroPerKm: widget.mobility.effectiveEuroPerKm,
       maxStores: widget.mobility.maxStores,
       minExtraStoreSavings: widget.mobility.minExtraStoreSavings,
+      timeValuePerHour: widget.mobility.timeValuePerHour,
+      travelMinutesPerKm: 60 / widget.mobility.mode.averageSpeedKmh,
       enabledStoreNames: widget.mobility.enabledStoreNames,
       marketPrices: widget.marketPrices,
-      roadMatrix:
-          widget.mobility.mode == MobilityMode.car ? roadMatrix : null,
+      openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
+      roadMatrix: widget.mobility.mode == MobilityMode.car ? roadMatrix : null,
     );
     final best = optimizer.bestPlan();
-    if (best == null) return const _MissingPrices();
+    final priceGaps = _buildPriceGaps(
+      optimizer,
+      best?.unassigned ?? widget.items,
+      recentPurchases: widget.recentPurchases,
+      historicalPriceObservations: widget.historicalPriceObservations,
+    );
+    if (best == null) {
+      return _MissingPrices(
+        gaps: priceGaps,
+        onResolvePriceGap: widget.onResolvePriceGap,
+      );
+    }
+    final priceEvidence = summarizeRoutePriceEvidence(best, optimizer.prices);
 
     final single = optimizer.bestSingleStorePlan();
     final savings = single == null
-        ? 0.0 : single.planningScore - best.planningScore;
+        ? 0.0
+        : single.planningScore - best.planningScore;
     final alternatives = optimizer.alternatives();
     final visibleAlternatives = _uniqueAlternatives(alternatives);
     final cheapest = alternatives.first;
@@ -151,8 +178,7 @@ class _RouteScreenState extends State<RouteScreen> {
       best.stores,
       mobility: widget.mobility,
       roadDistances: roadDistances,
-      roadMatrix:
-          widget.mobility.mode == MobilityMode.car ? roadMatrix : null,
+      roadMatrix: widget.mobility.mode == MobilityMode.car ? roadMatrix : null,
     );
     final recommendation = buildRouteRecommendationInfo(
       recommended: best,
@@ -170,9 +196,8 @@ class _RouteScreenState extends State<RouteScreen> {
       children: [
         Text(
           'Einkaufsoptimierung',
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
+          style: Theme.of(context).textTheme.headlineMedium
+              ?.copyWith(fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: 6),
         const Text(
@@ -182,9 +207,7 @@ class _RouteScreenState extends State<RouteScreen> {
         const SizedBox(height: 12),
         Card(
           child: ListTile(
-            leading: Icon(
-              realCount > 0 ? Icons.route : Icons.route_outlined,
-            ),
+            leading: Icon(realCount > 0 ? Icons.route : Icons.route_outlined),
             title: Text(
               realCount > 0
                   ? 'Straßenentfernungen aktiv'
@@ -210,6 +233,22 @@ class _RouteScreenState extends State<RouteScreen> {
         ),
         const SizedBox(height: 18),
         RouteSummaryCard(best: best, extraSavings: savings),
+        if (priceEvidence.hasEvidence) ...[
+          const SizedBox(height: 10),
+          RoutePriceEvidenceCard(summary: priceEvidence),
+        ],
+        if (priceGaps.isNotEmpty) ...[
+          const SizedBox(height: 10),
+          PriceGapCard(
+            gaps: priceGaps,
+            onResolveGap: widget.onResolvePriceGap,
+            description:
+                'Die Reihenfolge nutzt fehlende Marktbelege, Grundbedarf, '
+                'deine bisherigen Käufe, historische Preisniveaus und '
+                'Listenmenge. Historische Werte sind keine aktuellen '
+                'Marktpreise.',
+          ),
+        ],
         const SizedBox(height: 10),
         RouteRecommendationCard(
           info: recommendation,
@@ -231,9 +270,9 @@ class _RouteScreenState extends State<RouteScreen> {
               subtitle: Text(
                 optimizedTravel.usesRoadMatrix
                     ? '${optimizedTravel.distanceKm.toStringAsFixed(1)} km · '
-                        'optimierte Straßenroute'
+                          'optimierte Straßenroute'
                     : '${optimizedTravel.distanceKm.toStringAsFixed(1)} km · '
-                        'Fallback-Distanzen',
+                          'Fallback-Distanzen',
               ),
             ),
           ),
@@ -253,7 +292,17 @@ class _RouteScreenState extends State<RouteScreen> {
         for (final plan in visibleAlternatives.take(5))
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
-            child: RouteAlternativeCard(plan: plan),
+            child: RouteAlternativeCard(
+              plan: plan,
+              travelLabel: estimateRoundTrips(
+                plan.stores,
+                mobility: widget.mobility,
+                roadDistances: roadDistances,
+                roadMatrix: widget.mobility.mode == MobilityMode.car
+                    ? roadMatrix
+                    : null,
+              ).durationLabel,
+            ),
           ),
         const SizedBox(height: 10),
         Card(
@@ -261,14 +310,16 @@ class _RouteScreenState extends State<RouteScreen> {
             padding: const EdgeInsets.all(16),
             child: Text(
               widget.mobility.mode == MobilityMode.car
-                  ? (optimizedTravel.usesRoadMatrix
-                      ? 'Fahrtkosten: optimierte Mehrmarkt-Straßenroute × '
-                          '${widget.mobility.effectiveEuroPerKm.toStringAsFixed(2)} €/km.'
-                      : 'Fahrtkosten: aktuell '
-                          '${widget.mobility.effectiveEuroPerKm.toStringAsFixed(2)} €/km '
-                          'auf Basis der hinterlegten Fallback-Distanzen.')
+                  ? '${optimizedTravel.usesRoadMatrix ? 'Fahrtkosten: optimierte Mehrmarkt-Straßenroute × '
+                                  '${widget.mobility.effectiveEuroPerKm.toStringAsFixed(2)} €/km.' : 'Fahrtkosten: aktuell '
+                                  '${widget.mobility.effectiveEuroPerKm.toStringAsFixed(2)} €/km '
+                                  'auf Basis der hinterlegten Fallback-Distanzen.'}'
+                        '${widget.mobility.timeValuePerHour > 0 ? ' Zeitwert: ${widget.mobility.timeValuePerHour.toStringAsFixed(2)} €/Std. '
+                                  'wird im Planungswert berücksichtigt.' : ' Wegezeit wird angezeigt; ein optionaler Zeitwert kann in Mobilität & Route gesetzt werden.'}'
                   : '${widget.mobility.mode.label}: keine monetären Fahrtkosten. '
-                      'Die Strecke wird weiterhin für die geschätzte Wegezeit verwendet.',
+                        'Die Strecke wird weiterhin für die geschätzte Wegezeit verwendet.'
+                        '${widget.mobility.timeValuePerHour > 0 ? ' Zeitwert: ${widget.mobility.timeValuePerHour.toStringAsFixed(2)} €/Std. '
+                                  'wird im Planungswert berücksichtigt.' : ''}',
             ),
           ),
         ),
@@ -277,14 +328,61 @@ class _RouteScreenState extends State<RouteScreen> {
   }
 }
 
+List<PriceGapPriority> _buildPriceGaps(
+  RouteOptimizer optimizer,
+  Iterable<ListItem> items, {
+  List<RecentPurchase> recentPurchases = const <RecentPurchase>[],
+  List<PriceObservation> historicalPriceObservations =
+      const <PriceObservation>[],
+}) {
+  final gapItems = items.toList(growable: false);
+  final enabledStores = optimizer.availableStores;
+  final marketCount = enabledStores.length;
+  final missingByProduct = <String, int>{};
+  final purchasesByProduct = <String, int>{};
+
+  for (final purchase in recentPurchases) {
+    final count = purchase.purchaseCount < 0 ? 0 : purchase.purchaseCount;
+    final previous = purchasesByProduct[purchase.id] ?? 0;
+    if (count > previous) purchasesByProduct[purchase.id] = count;
+  }
+
+  final historicalMedianByProduct = historicalPriceLevelsByProduct(
+    items: gapItems,
+    observations: historicalPriceObservations,
+  );
+
+  for (final item in gapItems) {
+    missingByProduct[item.product.id] = enabledStores.where((store) {
+      final quote = optimizer.prices.quote(store, item);
+      return quote == null || quote.isEstimated;
+    }).length;
+  }
+
+  return prioritizePriceGaps(
+    gapItems,
+    marketCount: marketCount,
+    missingMarketCountFor: (item) =>
+        missingByProduct[item.product.id] ?? marketCount,
+    purchaseCountFor: (item) => purchasesByProduct[item.product.id] ?? 0,
+    historicalPriceLevelFor: (item) =>
+        historicalMedianByProduct[item.product.id],
+  );
+}
+
 List<RoutePlan> _uniqueAlternatives(List<RoutePlan> plans) {
   final seen = <String>{};
   return plans.where((plan) {
     final stores = plan.stores.map((store) => store.name).toList()..sort();
-    final assignments = plan.assignments.entries
-        .expand((entry) => entry.value.map((item) => '${entry.key.name}:${item.product.id}'))
-        .toList()
-      ..sort();
+    final assignments =
+        plan.assignments.entries
+            .expand(
+              (entry) => entry.value.map(
+                (item) => '${entry.key.name}:${item.product.id}',
+              ),
+            )
+            .toList()
+          ..sort();
     return seen.add('${stores.join('|')}::${assignments.join('|')}');
   }).toList();
 }
@@ -295,11 +393,10 @@ class _Title extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Text(
-        text,
-        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-      );
+    text,
+    style: Theme.of(context).textTheme.titleLarge
+        ?.copyWith(fontWeight: FontWeight.w700),
+  );
 }
 
 class _EmptyRoute extends StatelessWidget {
@@ -307,27 +404,55 @@ class _EmptyRoute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => const Center(
-        child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Text(
-            'Füge zuerst Produkte zu deiner Einkaufsliste hinzu.',
-            textAlign: TextAlign.center,
-          ),
-        ),
-      );
+    child: Padding(
+      padding: EdgeInsets.all(24),
+      child: Text(
+        'Füge zuerst Produkte zu deiner Einkaufsliste hinzu.',
+        textAlign: TextAlign.center,
+      ),
+    ),
+  );
 }
 
 class _MissingPrices extends StatelessWidget {
-  const _MissingPrices();
+  const _MissingPrices({required this.gaps, this.onResolvePriceGap});
+
+  final List<PriceGapPriority> gaps;
+  final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
 
   @override
-  Widget build(BuildContext context) => const Center(
-        child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Text(
-            'Für mindestens einen Artikel ist noch kein Marktpreis hinterlegt.',
-            textAlign: TextAlign.center,
+  Widget build(BuildContext context) => ListView(
+    padding: const EdgeInsets.fromLTRB(20, 24, 20, 28),
+    children: [
+      Text(
+        'Einkaufsoptimierung',
+        style: Theme.of(context).textTheme.headlineMedium
+            ?.copyWith(fontWeight: FontWeight.w800),
+      ),
+      const SizedBox(height: 8),
+      const Text(
+        'Für diese Liste liegt in den aktivierten Märkten noch kein '
+        'belastbarer Preis vor. Ergänze ein aktuelles Angebot, einen '
+        'Bonpreis oder einen eigenen Preis, damit die Route rechnen kann.',
+      ),
+      const SizedBox(height: 14),
+      if (gaps.isNotEmpty)
+        PriceGapCard(
+          gaps: gaps,
+          onResolveGap: onResolvePriceGap,
+          description:
+              'Die Reihenfolge nutzt nur fehlende Marktbelege, '
+              'Grundbedarf, deine bisherigen Käufe, historische '
+              'Preisniveaus und Listenmenge. Historische Werte sind keine '
+              'aktuellen Marktpreise.',
+        )
+      else
+        const Card(
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: Text('Keine aktivierten Märkte ausgewählt.'),
           ),
         ),
-      );
+    ],
+  );
 }

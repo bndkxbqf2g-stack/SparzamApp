@@ -56,14 +56,16 @@ class _ProspectOfferCardState extends State<ProspectOfferCard> {
               ),
             ),
             const SizedBox(width: 4),
-            IconButton.filledTonal(
+            IconButton(
               tooltip: widget.onAdd == null
                   ? 'Artikel noch nicht eindeutig zugeordnet'
                   : added
                   ? 'Noch einmal zur Einkaufsliste'
                   : 'Zur Einkaufsliste',
               onPressed: widget.onAdd == null ? null : _add,
-              icon: Icon(added ? Icons.check : Icons.add_shopping_cart),
+              icon: Icon(
+                added ? Icons.check : Icons.add_shopping_cart_outlined,
+              ),
             ),
           ],
         ),

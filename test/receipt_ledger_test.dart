@@ -23,8 +23,10 @@ Kartenzahlung 2,84
     expect(draft.balances, isTrue);
   });
 
-  test('reconciles Netto prefixed quantity and keeps basket discount separate', () {
-    final draft = parseReceiptLedger('''
+  test(
+    'reconciles Netto prefixed quantity and keeps basket discount separate',
+    () {
+      final draft = parseReceiptLedger('''
 EUR
 2 x 0,85
 Milch 1,5% 1L 1,70 B
@@ -33,9 +35,32 @@ Brot 1,19 B
 SUMME [3] 2,53
 Kartenzahlung EUR 2,53
 ''');
-    expect(draft.rows[0].unitCents, 85);
-    expect(draft.rows[0].quantity, 2);
-    expect(draft.rows[2].linkedItemLine, isNull);
+      expect(draft.rows[0].unitCents, 85);
+      expect(draft.rows[0].quantity, 2);
+      expect(draft.rows[2].linkedItemLine, isNull);
+      expect(draft.balances, isTrue);
+    },
+  );
+
+  test('ignores Kaufland subtotal and keeps basket discount unlinked', () {
+    final draft = parseReceiptLedger('''
+Kaufland
+Preis EUR
+Apfel 2,00 B
+Leergut Getränke -1,00 A
+Zwischensumme 1,00
+--------------Rabattaktion--------------
+K Card XTRA Rabatt -0,10
+Summe 0,90
+Kartenzahlung 0,90
+''');
+
+    expect(draft.rows.map((row) => row.label),
+        isNot(contains('Zwischensumme')));
+    final basketDiscount = draft.rows.last;
+    expect(basketDiscount.kind, ReceiptRowKind.discount);
+    expect(basketDiscount.linkedItemLine, isNull);
+    expect(draft.calculatedCents, 90);
     expect(draft.balances, isTrue);
   });
 
@@ -70,6 +95,25 @@ Summe 3,40
     expect(draft.rows, hasLength(2));
     expect(draft.rows[0].quantity, 2);
     expect(draft.rows[0].unitCents, 85);
+    expect(draft.balances, isTrue);
+  });
+
+  test('normalizes OCR zero confusion inside money tokens', () {
+    final draft = parseReceiptLedger('''
+Kaufland
+Preis EUR
+K.H-Milch 2 * @,95 1,90 B
+K Card XTRA Rabatt -@,20
+KLC Pud.m.Sahne @,39 B
+Summe 2,09
+Kartenzahlung 2,09
+''');
+
+    expect(draft.rows[0].quantity, 2);
+    expect(draft.rows[0].unitCents, 95);
+    expect(draft.rows[1].cents, -20);
+    expect(draft.rows[2].cents, 39);
+    expect(draft.unresolvedLines, isEmpty);
     expect(draft.balances, isTrue);
   });
 
@@ -134,5 +178,4 @@ AUF WIEDERSEHEN BEI EDEKA
     expect(draft.unresolvedLines, isEmpty);
     expect(draft.balances, isTrue);
   });
-
 }

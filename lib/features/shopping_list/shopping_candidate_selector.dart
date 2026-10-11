@@ -16,6 +16,7 @@ Future<List<Product>?> showShoppingCandidateSelector({
   required List<ReceiptPriceStat> receiptPriceStats,
   Map<String, ProspectPriceHistorySummary> prospectPriceHistory = const {},
   required List<String> enabledStores,
+  int openPricesMaxAgeDays = 60,
 }) {
   final candidates = buildShoppingCandidates(
     request: request,
@@ -25,6 +26,7 @@ Future<List<Product>?> showShoppingCandidateSelector({
     receiptPriceStats: receiptPriceStats,
     prospectPriceHistory: prospectPriceHistory,
     enabledStores: enabledStores,
+    openPricesMaxAgeDays: openPricesMaxAgeDays,
   );
   return showModalBottomSheet<List<Product>>(
     context: context,
@@ -49,6 +51,22 @@ class _ShoppingCandidateSheet extends StatefulWidget {
 
 class _ShoppingCandidateSheetState extends State<_ShoppingCandidateSheet> {
   final selected = <String>{};
+  String? recommendedProductId;
+
+  @override
+  void initState() {
+    super.initState();
+    for (final candidate in widget.candidates) {
+      // A current offer or market/receipt quote is strong enough to make a
+      // reversible recommendation. Historical prospect medians remain visible
+      // context, but must not silently become the user's product choice.
+      if (candidate.quotes.any((quote) => !quote.isHistorical)) {
+        recommendedProductId = candidate.product.id;
+        selected.add(candidate.product.id);
+        break;
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +85,15 @@ class _ShoppingCandidateSheetState extends State<_ShoppingCandidateSheet> {
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text('Mehrere konkrete Artikel möglich. Nur ausgewählte Artikel werden später geroutet.'),
             ),
+            if (recommendedProductId != null)
+              const Padding(
+                padding: EdgeInsets.fromLTRB(20, 8, 20, 0),
+                child: Text(
+                  'Die günstigste aktuell belegte Empfehlung ist bereits '
+                  'ausgewählt. Du kannst sie ändern oder weitere Varianten '
+                  'hinzunehmen.',
+                ),
+              ),
             const SizedBox(height: 8),
             Expanded(
               child: widget.candidates.isEmpty
@@ -76,6 +103,8 @@ class _ShoppingCandidateSheetState extends State<_ShoppingCandidateSheet> {
                       itemBuilder: (context, index) {
                         final candidate = widget.candidates[index];
                         final isSelected = selected.contains(candidate.product.id);
+                        final isRecommended =
+                            candidate.product.id == recommendedProductId;
                         return CheckboxListTile(
                           value: isSelected,
                           onChanged: (value) => setState(() {
@@ -89,7 +118,11 @@ class _ShoppingCandidateSheetState extends State<_ShoppingCandidateSheet> {
                             product: candidate.product,
                             fallbackImageUrl: candidate.imageUrl,
                           ),
-                          title: Text(candidate.product.name),
+                          title: Text(
+                            isRecommended
+                                ? '${candidate.product.name} · Empfehlung'
+                                : candidate.product.name,
+                          ),
                           subtitle: Text(_quoteText(candidate)),
                           controlAffinity: ListTileControlAffinity.trailing,
                         );
@@ -129,7 +162,13 @@ String _quoteText(ShoppingCandidate candidate) {
                 ? ' · Stand ${_date(quote.observedAt!)}'
                 : ''
             : ' · bis ${_date(quote.validUntil!)}';
-        return '${quote.storeName}: ${quote.price.toStringAsFixed(2).replaceAll('.', ',')} € (${quote.label}$date)';
+        final labels = <String>[
+          if (quote.evidenceLabel != null) quote.evidenceLabel!,
+          quote.label,
+          if (quote.savings != null)
+            'Ersparnis ${quote.savings!.toStringAsFixed(2).replaceAll('.', ',')} €',
+        ];
+        return '${quote.storeName}: ${quote.price.toStringAsFixed(2).replaceAll('.', ',')} € (${labels.join(' · ')}$date)';
       })
       .join('\n');
 }

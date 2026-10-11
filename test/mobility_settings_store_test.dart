@@ -19,6 +19,7 @@ void main() {
     const settings = MobilitySettings(
       startAddress: 'Teststraße 1, 97070 Würzburg, Germany',
       euroPerKm: 0.35,
+      timeValuePerHour: 12.50,
       mode: MobilityMode.bike,
       maxStores: 2,
       minExtraStoreSavings: 1.25,
@@ -30,6 +31,7 @@ void main() {
 
     expect(loaded.startAddress, settings.startAddress);
     expect(loaded.euroPerKm, settings.euroPerKm);
+    expect(loaded.timeValuePerHour, settings.timeValuePerHour);
     expect(loaded.mode, MobilityMode.bike);
     expect(loaded.maxStores, 2);
     expect(loaded.minExtraStoreSavings, 1.25);
@@ -37,10 +39,14 @@ void main() {
     expect(loaded.effectiveEuroPerKm, 0);
   });
 
-  test('Standardwerte bleiben ohne gespeicherte Einstellungen erhalten', () async {
-    final loaded = await MobilitySettingsStore().load();
+  test(
+    'Standardwerte bleiben ohne gespeicherte Einstellungen erhalten',
+    () async {
+      final loaded = await MobilitySettingsStore().load();
 
-    expect(loaded.startAddress, '97225 Zellingen, Germany');
-    expect(loaded.euroPerKm, 0.22);
-  });
+      expect(loaded.startAddress, '97225 Zellingen, Germany');
+      expect(loaded.euroPerKm, 0.22);
+      expect(loaded.timeValuePerHour, 0);
+    },
+  );
 }

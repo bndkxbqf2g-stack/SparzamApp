@@ -6,6 +6,7 @@ import '../../models/mobility_settings.dart';
 import '../../models/named_shopping_list.dart';
 import '../../models/offer.dart';
 import '../../models/price_point.dart';
+import '../../models/price_observation.dart';
 import '../../models/product.dart';
 import '../../models/purchase_record.dart';
 import '../../models/recent_purchase.dart';
@@ -22,6 +23,7 @@ import 'more_screen.dart';
 import '../offers/offer_import.dart';
 import '../offers/prospect_price_statistics.dart';
 import '../offers/offers_screen.dart';
+import '../price_gaps/price_gap_priority.dart';
 import '../profile/profile_screen.dart';
 import '../receipt/receipt_screen.dart';
 import '../route/route_screen.dart';
@@ -53,11 +55,16 @@ List<Widget> buildShellPages({
   required List<OfferImportRecord> prospectRecords,
   List<ProspectIssue> prospectIssues = const <ProspectIssue>[],
   bool prospectFeedFromCache = false,
+  DateTime? prospectFeedGeneratedAt,
+  Future<void> Function()? onRefreshProspects,
+  bool prospectsRefreshing = false,
   required List<PricePoint> priceHistory,
   required MobilitySettings mobility,
   required List<Product> catalogProducts,
   required List<MarketPrice> marketPrices,
+  int openPricesMaxAgeDays = 60,
   required List<MarketPrice> priceObservations,
+  required List<PriceObservation> historicalPriceObservations,
   Map<String, ProspectPriceHistorySummary> prospectPriceHistory = const {},
   required List<ReplenishmentSuggestion> replenishmentSuggestions,
   required ValueChanged<Map<String, double>> onRoadDistancesChanged,
@@ -73,6 +80,7 @@ List<Widget> buildShellPages({
   required VoidCallback onEditStores,
   required int storeCount,
   required VoidCallback onOpenCatalog,
+  Future<void> Function(PriceGapPriority gap)? onResolvePriceGap,
   required VoidCallback onEditPriceData,
   required String priceDataSummary,
   required Future<List<MarketPrice>> Function(MarketPrice price) onSavePrice,
@@ -81,6 +89,9 @@ List<Widget> buildShellPages({
   required Future<List<Offer>> Function(Offer offer) onSaveOffer,
   required Future<List<Offer>> Function(Offer offer) onDeleteOffer,
   required VoidCallback onOpenDiagnostics,
+  required Future<void> Function() onExportBackup,
+  required Future<void> Function() onImportBackup,
+  required int dataRevision,
 }) => [
   HomeScreen(
     data: dashboard,
@@ -91,6 +102,7 @@ List<Widget> buildShellPages({
     onOpenScanner: onOpenScanner,
   ),
   ShoppingListScreen(
+    key: ValueKey('shopping-list-$dataRevision'),
     items: shoppingList,
     shoppingLists: shoppingLists,
     activeShoppingListId: activeShoppingListId,
@@ -107,12 +119,15 @@ List<Widget> buildShellPages({
     onClearPurchased: onClearPurchased,
     shoppingListStore: shoppingListStore,
     onOpenScanner: onOpenScanner,
+    onOpenRoute: onOpenRoute,
     offers: offers,
     priceHistory: priceHistory,
     mobility: mobility,
     catalogProducts: catalogProducts,
     marketPrices: marketPrices,
+    openPricesMaxAgeDays: openPricesMaxAgeDays,
     priceObservations: priceObservations,
+    historicalPriceObservations: historicalPriceObservations,
     prospectPriceHistory: prospectPriceHistory,
     onSavePrices: (prices) async {
       for (final price in prices) {
@@ -121,11 +136,17 @@ List<Widget> buildShellPages({
     },
     onCreateProduct: onSaveProduct,
     onReceiptObservationsChanged: onReceiptObservationsChanged,
+    onResolvePriceGap: onResolvePriceGap,
     replenishmentSuggestions: replenishmentSuggestions,
   ),
   OffersScreen(
     offers: offers,
     prospectRecords: prospectRecords,
+    prospectIssues: prospectIssues,
+    generatedAt: prospectFeedGeneratedAt,
+    fromCache: prospectFeedFromCache,
+    onRefreshProspects: onRefreshProspects,
+    prospectsRefreshing: prospectsRefreshing,
     priceHistory: priceHistory,
     onSave: onSaveOffer,
     onDelete: onDeleteOffer,
@@ -136,6 +157,9 @@ List<Widget> buildShellPages({
     records: prospectRecords,
     prospects: prospectIssues,
     fromCache: prospectFeedFromCache,
+    generatedAt: prospectFeedGeneratedAt,
+    onRefreshProspects: onRefreshProspects,
+    prospectsRefreshing: prospectsRefreshing,
     catalogProducts: catalogProducts,
     onAddProduct: onAddProduct,
   ),
@@ -152,8 +176,12 @@ List<Widget> buildShellPages({
       offers: offers,
       mobility: mobility,
       marketPrices: marketPrices,
+      openPricesMaxAgeDays: openPricesMaxAgeDays,
+      recentPurchases: recentPurchases,
+      historicalPriceObservations: historicalPriceObservations,
       onRoadDistancesChanged: onRoadDistancesChanged,
       onRoadMatrixChanged: onRoadMatrixChanged,
+      onResolvePriceGap: onResolvePriceGap,
     ),
     receiptPage: ReceiptScreen(
       plan: currentPlan,
@@ -181,6 +209,8 @@ List<Widget> buildShellPages({
       onEditPriceData: onEditPriceData,
       priceDataSummary: priceDataSummary,
       onOpenDiagnostics: onOpenDiagnostics,
+      onExportBackup: onExportBackup,
+      onImportBackup: onImportBackup,
     ),
   ),
 ];

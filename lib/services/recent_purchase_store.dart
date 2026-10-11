@@ -22,6 +22,12 @@ class RecentPurchaseStore {
     return purchases.take(30).toList();
   }
 
+  Future<void> save(List<RecentPurchase> purchases) =>
+      _preferences.setStringList(
+        _storageKey,
+        purchases.take(30).map((item) => item.toJson()).toList(),
+      );
+
   Future<List<RecentPurchase>> add(
     Product product,
     int quantity,

@@ -4,10 +4,12 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../design/sparzam_theme.dart';
 import '../offers/offer_import.dart';
 import '../offers/prospect_offer_products.dart';
+import 'prospect_category_presentation.dart';
 import '../../models/product.dart';
 import '../../services/prospect_feed_service.dart';
 import '../offers/offer_filter.dart';
 import 'prospect_offer_card.dart';
+import 'prospect_feed_status.dart';
 
 class ProspectsScreen extends StatelessWidget {
   const ProspectsScreen({
@@ -18,6 +20,9 @@ class ProspectsScreen extends StatelessWidget {
     this.onAddProduct,
     this.now,
     this.fromCache = false,
+    this.generatedAt,
+    this.onRefreshProspects,
+    this.prospectsRefreshing = false,
   });
 
   final List<OfferImportRecord> records;
@@ -26,6 +31,9 @@ class ProspectsScreen extends StatelessWidget {
   final ValueChanged<Product>? onAddProduct;
   final DateTime? now;
   final bool fromCache;
+  final DateTime? generatedAt;
+  final Future<void> Function()? onRefreshProspects;
+  final bool prospectsRefreshing;
 
   @override
   Widget build(BuildContext context) {
@@ -68,17 +76,12 @@ class ProspectsScreen extends StatelessWidget {
         const Center(
           child: Text('Aktuelle Prospekte. Produkte antippen und vormerken.'),
         ),
-        if (fromCache)
-          Card(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest,
-            child: const ListTile(
-              leading: Icon(Icons.cloud_off_outlined),
-              title: Text('Letzter geprüfter Prospektstand'),
-              subtitle: Text(
-                'Der Live-Abruf war nicht verfügbar. Gültigkeiten werden weiterhin geprüft; abgelaufene Angebote bleiben ausgeblendet.',
-              ),
-            ),
-          ),
+        ProspectFeedStatusCard(
+          generatedAt: generatedAt,
+          fromCache: fromCache,
+          onRefresh: onRefreshProspects,
+          refreshing: prospectsRefreshing,
+        ),
         const SizedBox(height: 20),
         if (visibleProspects.isEmpty)
           const Card(
@@ -118,6 +121,13 @@ class ProspectsScreen extends StatelessWidget {
             ),
           ),
         ],
+        if (visibleProspects.isNotEmpty)
+          ProspectCoverageCard(
+            coverage: calculateProspectCoverage(
+              issues: visibleProspects,
+              records: currentRecords,
+            ),
+          ),
       ],
     );
   }
@@ -131,7 +141,6 @@ ProspectIssue _visibleIssue(
   final current = entries
       .where(
         (issue) =>
-            issue.pages.isNotEmpty &&
             issue.validFrom != null &&
             issue.validUntil != null &&
             isOfferDateRangeActive(
@@ -142,18 +151,25 @@ ProspectIssue _visibleIssue(
       )
       .firstOrNull;
   final selected = current ?? entries.first;
+  final String sourceStatus;
+  if (currentRecordCount == 0 &&
+      (current?.sourceStatus ?? selected.sourceStatus) == 'ok') {
+    sourceStatus = 'no_current_offers';
+  } else if (selected.sourceStatus == 'error' && currentRecordCount > 0) {
+    sourceStatus = 'current_fallback';
+  } else {
+    sourceStatus = selected.sourceStatus;
+  }
   return ProspectIssue(
     storeName: selected.storeName,
     title: current?.title ?? 'Aktionsprospekt',
     pages: current?.pages ?? const <ProspectPage>[],
     url: current?.url ?? officialProspectUrl(selected.storeName, selected.url),
     thumbnailUrl: current?.thumbnailUrl,
-    sourceStatus:
-        current == null &&
-            currentRecordCount == 0 &&
-            selected.sourceStatus == 'ok'
-        ? 'no_current_offers'
-        : selected.sourceStatus,
+    branchId: current?.branchId ?? selected.branchId,
+    location: current?.location ?? selected.location,
+    address: current?.address ?? selected.address,
+    sourceStatus: sourceStatus,
     recordCount: currentRecordCount,
     validFrom: current?.validFrom,
     validUntil: current?.validUntil,
@@ -207,10 +223,15 @@ class _ProspectCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
+                    if (issue.location?.trim().isNotEmpty == true)
+                      Text(
+                        issue.location!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 12),
+                      ),
                     Text(
-                      issue.recordCount > 0
-                          ? '${issue.recordCount} Angebote geladen'
-                          : _sourceStatusLabel(issue),
+                      _prospectCardSummary(issue),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -231,9 +252,22 @@ class _ProspectCard extends StatelessWidget {
   }
 }
 
+String _prospectCardSummary(ProspectIssue issue) {
+  if (issue.sourceStatus == 'current_fallback') {
+    return '${issue.recordCount} Angebote aus dem letzten geprüften '
+        'Prospektstand. Automatische Aktualisierung aktuell nicht verfügbar.';
+  }
+  if (issue.recordCount > 0) return '${issue.recordCount} Angebote geladen';
+  return _sourceStatusLabel(issue);
+}
+
 String _sourceStatusLabel(ProspectIssue issue) {
   if (issue.sourceStatus == 'no_current_offers') {
     return 'Keine aktuell gültigen Angebotsdaten geladen.';
+  }
+  if (issue.sourceStatus == 'current_fallback') {
+    return 'Der letzte geprüfte Prospektstand wird verwendet; die automatische '
+        'Aktualisierung ist aktuell nicht verfügbar.';
   }
   if (issue.sourceStatus == 'error') {
     return 'Automatischer Abruf aktuell nicht verfügbar. '
@@ -270,7 +304,7 @@ class _ProspectViewer extends StatelessWidget {
     final groupedItems = <String, List<OfferImportRecord>>{};
     for (final record in items) {
       groupedItems
-          .putIfAbsent(_prospectCategory(record.productLabel), () => [])
+          .putIfAbsent(_prospectCategoryForRecord(record), () => [])
           .add(record);
     }
     final categories = groupedItems.keys.toList()
@@ -284,6 +318,17 @@ class _ProspectViewer extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(12),
         children: [
+          if (issue.location?.trim().isNotEmpty == true)
+            Card(
+              child: ListTile(
+                dense: true,
+                leading: const Icon(Icons.store_outlined),
+                title: Text(issue.location!),
+                subtitle: issue.address?.trim().isNotEmpty == true
+                    ? Text(issue.address!)
+                    : null,
+              ),
+            ),
           if (issue.url != null)
             Align(
               alignment: Alignment.centerLeft,
@@ -423,12 +468,16 @@ const _prospectCategoryRanks = <String, int>{
   'Milchprodukte': 1,
   'Fleisch & Fisch': 2,
   'Backwaren': 3,
-  'Getränke': 4,
-  'Vorrat & Konserven': 5,
-  'Tiefkühl': 6,
+  'Kaffee & Snacks': 4,
+  'Getränke': 5,
+  'Vorrat & Konserven': 6,
+  'Tiefkühl': 7,
+  'Kühlregal': 8,
   'Haushalt': 20,
   'Drogerie': 21,
+  'Garten & Pflanzen': 22,
   'Non-Food': 30,
+  'Dauerhaft günstiger': 39,
   'Weitere Angebote': 40,
 };
 
@@ -436,46 +485,14 @@ int _prospectCategoryOrder(String category) =>
     _prospectCategoryRanks[category] ?? 50;
 
 String _prospectCategory(String label) {
-  final value = label.toLowerCase();
-  if (RegExp(r'gemüse|salat|tomat|gurk|kartoff|obst|apfel|banane|traube')
-      .hasMatch(value)) {
-    return 'Obst & Gemüse';
-  }
-  if (RegExp(r'milch|joghurt|käse|schmand|sahne|quark|butter')
-      .hasMatch(value)) {
-    return 'Milchprodukte';
-  }
-  if (RegExp(r'hack|fleisch|wurst|schinken|fisch|lachs|hähnchen')
-      .hasMatch(value)) {
-    return 'Fleisch & Fisch';
-  }
-  if (RegExp(r'brot|bröt|toast|backwaren|croissant').hasMatch(value)) {
-    return 'Backwaren';
-  }
-  if (RegExp(r'getränk|wasser|saft|cola|bier|wein|kaffee|tee')
-      .hasMatch(value)) {
-    return 'Getränke';
-  }
-  if (RegExp(r'tiefkühl|tk |pizza|eis ').hasMatch(value)) {
-    return 'Tiefkühl';
-  }
-  if (RegExp(r'reis|nudel|mehl|zucker|dose|konserve|sauce|öl|gewürz')
-      .hasMatch(value)) {
-    return 'Vorrat & Konserven';
-  }
-  if (RegExp(r'seife|shampoo|zahnpasta|deo|waschmittel|reiniger')
-      .hasMatch(value)) {
-    return 'Drogerie';
-  }
-  if (RegExp(r'küche|haushalt|müll|papier|lampe|werkzeug|akku|bastel|raum-weiß')
-      .hasMatch(value)) {
-    return 'Haushalt';
-  }
-  if (RegExp(r'non-food|bekleidung|schuh|spielzeug|dekoration')
-      .hasMatch(value)) {
-    return 'Non-Food';
-  }
-  return 'Weitere Angebote';
+  return fallbackProspectCategory(label);
+}
+
+String _prospectCategoryForRecord(OfferImportRecord record) {
+  final sourceCategory = record.category?.trim();
+  return sourceCategory == null || sourceCategory.isEmpty
+      ? _prospectCategory(record.productLabel)
+      : presentProspectCategory(sourceCategory);
 }
 
 String _prospectDate(DateTime value) =>

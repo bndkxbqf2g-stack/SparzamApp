@@ -23,6 +23,12 @@ void main() {
     expect(branches.every((branch) => branch.branchId.isNotEmpty), isTrue);
   });
 
+  test('finds the configured branch metadata by retailer name', () {
+    expect(configuredProspectBranch('Netto')?.branchId, '4371');
+    expect(configuredProspectBranch('Netto')?.location, 'Thüngersheim');
+    expect(configuredProspectBranch('Unbekannt'), isNull);
+  });
+
   test('keeps existing branches when the postcode is unknown', () {
     const current = [
       ProspectBranch(

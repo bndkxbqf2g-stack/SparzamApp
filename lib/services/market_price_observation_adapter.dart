@@ -132,9 +132,13 @@ bool _sourceAllowed(
     return false;
   }
   if (maxAgeDays == null) return true;
-  return !observation.observedAt.isBefore(
-    now.subtract(Duration(days: maxAgeDays)),
+  final currentDay = DateTime(now.year, now.month, now.day);
+  final observedDay = DateTime(
+    observation.observedAt.year,
+    observation.observedAt.month,
+    observation.observedAt.day,
   );
+  return !observedDay.isBefore(currentDay.subtract(Duration(days: maxAgeDays)));
 }
 
 bool _projectsToLegacyMarketPrice(PriceObservationSource source) =>

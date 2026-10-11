@@ -4,6 +4,7 @@ import 'package:shared_preferences_platform_interface/in_memory_shared_preferenc
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:sparzamapp/data/stores.dart';
 import 'package:sparzamapp/features/store/store_screen.dart';
+import 'package:sparzamapp/features/price_gaps/price_gap_priority.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/mobility_settings.dart';
@@ -58,13 +59,50 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Preisabdeckung unvollständig'), findsNWidgets(2));
+    // The additional priority card pushes the value summary below the initial
+    // viewport; the visible warning is the stable assertion for this screen.
+    expect(find.text('Preisabdeckung unvollständig'), findsOneWidget);
     expect(
       find.textContaining('1 von 2 Artikeln mit aktuellem, vergleichbarem Preis'),
       findsOneWidget,
     );
-    expect(find.textContaining('Ohne Preis: Unbekannter Artikel'), findsOneWidget);
+    expect(find.text('Preis-Datenlücken zuerst klären'), findsOneWidget);
+    expect(find.textContaining('Menge 1 · 1 Markt ohne Preis'), findsOneWidget);
     expect(find.text('Dieser Markt lohnt sich durch die Angebote'), findsNothing);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Marktansicht öffnet die Preiseingabe für eine Datenlücke',
+      (tester) async {
+    const milk = Product(
+      id: 'milch_35',
+      name: 'Vollmilch',
+      unit: '1 l',
+      group: 'milch',
+    );
+    final lidl = stores.firstWhere((store) => store.name == 'Lidl');
+    PriceGapPriority? selected;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: StoreScreen(
+          store: lidl,
+          items: [ListItem(product: milk)],
+          offers: const [],
+          mobility: const MobilitySettings(),
+          marketPrices: const [],
+          onResolvePriceGap: (gap) async => selected = gap,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Produkt oder Preis ergänzen'), findsOneWidget);
+    await tester.drag(find.byType(ListView), const Offset(0, -320));
+    await tester.pump();
+    await tester.tap(find.text('Produkt oder Preis ergänzen'));
+    await tester.pump();
+
+    expect(selected?.item.product.id, milk.id);
   });
 }

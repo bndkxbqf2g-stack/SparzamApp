@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sparzamapp/data/offers.dart';
 import 'package:sparzamapp/features/offers/prospect_price_statistics.dart';
 import 'package:sparzamapp/features/shopping_list/shopping_candidate_service.dart';
 import 'package:sparzamapp/models/market_price.dart';
@@ -42,6 +43,50 @@ void main() {
         containsAll(<String>['gouda', 'edamer', 'bergkaese']));
   });
 
+  test('Open Prices remain visible as current candidate evidence', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda],
+      offers: const [],
+      marketPrices: [
+        MarketPrice(
+          productId: gouda.id,
+          storeName: 'Lidl',
+          price: 1.49,
+          updatedAt: DateTime(2026, 9, 26),
+          source: MarketPriceSource.openPrices,
+        ),
+      ],
+      receiptPriceStats: const [],
+      now: now,
+    );
+
+    expect(candidates.single.quotes.single.label, 'Open Prices');
+    expect(candidates.single.quotes.single.isHistorical, isFalse);
+  });
+
+  test('candidate selection respects the configured Open Prices age', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda],
+      offers: const [],
+      marketPrices: [
+        MarketPrice(
+          productId: gouda.id,
+          storeName: 'Lidl',
+          price: 1.49,
+          updatedAt: DateTime(2026, 9, 20),
+          source: MarketPriceSource.openPrices,
+        ),
+      ],
+      receiptPriceStats: const [],
+      now: now,
+      openPricesMaxAgeDays: 3,
+    );
+
+    expect(candidates.single.quotes, isEmpty);
+  });
+
   test('concrete variant never includes a sibling variant', () {
     final candidates = buildShoppingCandidates(
       request: 'Bergkäse',
@@ -82,6 +127,75 @@ void main() {
       candidates.map((candidate) => candidate.product.id),
       containsAll(<String>['milk15', 'milk35']),
     );
+  });
+
+  test('ambiguous H-milk label also considers ordinary milk offers', () {
+    final candidates = buildShoppingCandidates(
+      request: 'K.H-Milch',
+      catalogProducts: [
+        Product(
+          id: 'fresh-milk',
+          name: 'Frische Vollmilch',
+          unit: '1 l',
+          group: 'milch',
+        ),
+      ],
+      offers: [
+        Offer(
+          id: 'fresh-sale',
+          productId: 'fresh-milk',
+          storeName: 'PENNY',
+          originalPrice: 1.19,
+          offerPrice: 0.99,
+          validUntil: DateTime(2026, 9, 30),
+        ),
+      ],
+      marketPrices: const [],
+      receiptPriceStats: const [],
+      now: now,
+    );
+
+    expect(candidates, hasLength(1));
+    expect(candidates.single.product.id, 'fresh-milk');
+    expect(candidates.single.bestPrice, 0.99);
+  });
+
+  test('milk search excludes milchschnitte snack offers', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Milch',
+      catalogProducts: [
+        Product(
+          id: 'milchschnitte',
+          name: 'MILCH-SCHNITTE Snack',
+          unit: '10 Stück',
+          group: 'snack',
+        ),
+        Product(
+          id: 'ordinary-milk',
+          name: 'Frische Vollmilch',
+          unit: '1 l',
+          group: 'milch',
+        ),
+      ],
+      offers: [
+        Offer(
+          id: 'snack-offer',
+          productId: 'milchschnitte',
+          storeName: 'Kaufland',
+          originalPrice: 2.49,
+          offerPrice: 1.99,
+          validUntil: DateTime(2026, 9, 30),
+        ),
+      ],
+      marketPrices: const [],
+      receiptPriceStats: const [],
+      now: now,
+    );
+
+    expect(candidates.map((candidate) => candidate.product.id),
+        isNot(contains('milchschnitte')));
+    expect(candidates.map((candidate) => candidate.product.id),
+        contains('ordinary-milk'));
   });
 
   test('only active offers and receipt prices from the last 60 days are shown', () {
@@ -139,6 +253,64 @@ void main() {
     expect(quotes.map((quote) => quote.storeName), isNot(contains('Lidl')));
   });
 
+  test('receipt median on the cutoff day remains a candidate quote', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda],
+      offers: const [],
+      marketPrices: const [],
+      receiptPriceStats: [
+        ReceiptPriceStat(
+          familyKey: 'kaese',
+          productId: gouda.id,
+          storeName: 'EDEKA',
+          latestPrice: 1.89,
+          latestAt: DateTime(2026, 7, 29),
+          observationCount: 2,
+          medianPrice: 1.79,
+          comparable: true,
+          priceBasis: '250 g',
+        ),
+      ],
+      now: now,
+    );
+
+    expect(candidates.single.quotes.single.price, 1.79);
+  });
+
+  test('provisional receipt median is not a candidate quote', () {
+    final provisional = Product(
+      id: 'receipt_auto_schmand',
+      name: 'Schmand',
+      unit: 'Stück',
+      group: 'milchprodukte',
+    );
+    final candidates = buildShoppingCandidates(
+      request: 'Schmand',
+      catalogProducts: [provisional],
+      offers: const [],
+      marketPrices: const [],
+      receiptPriceStats: [
+        ReceiptPriceStat(
+          familyKey: 'schmand',
+          productId: provisional.id,
+          storeName: 'Kaufland',
+          latestPrice: 0.79,
+          latestAt: DateTime(2026, 9, 27),
+          observationCount: 1,
+          medianPrice: 0.79,
+          comparable: true,
+          priceBasis: 'Stück',
+          identityConfirmed: false,
+        ),
+      ],
+      now: now,
+    );
+
+    expect(candidates, hasLength(1));
+    expect(candidates.single.quotes, isEmpty);
+  });
+
   test('active offers are ranked before cheaper historical quotes', () {
     final candidates = buildShoppingCandidates(
       request: 'Käse',
@@ -174,6 +346,94 @@ void main() {
     expect(candidates.first.product.id, 'gouda');
     expect(candidates.first.quotes.first.isOffer, isTrue);
     expect(candidates.first.quotes.first.price, 1.35);
+  });
+
+  test('candidate offer exposes provenance and verified savings', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda],
+      offers: [
+        Offer(
+          id: 'proven-offer',
+          productId: gouda.id,
+          storeName: 'ALDI Süd',
+          originalPrice: 2,
+          offerPrice: 1.50,
+          source: 'leaflet',
+          proofRef: 'https://example.test/leaflet',
+          validUntil: DateTime(2026, 9, 30),
+        ),
+      ],
+      marketPrices: const [],
+      receiptPriceStats: const [],
+      now: now,
+    );
+
+    final quote = candidates.single.quotes.single;
+    expect(quote.evidenceLabel, 'Prospekt · Nachweis vorhanden');
+    expect(quote.savings, 0.50);
+  });
+
+  test('unverified candidate normal price has no savings claim', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda],
+      offers: [
+        Offer(
+          id: 'unverified-offer',
+          productId: gouda.id,
+          storeName: 'ALDI Süd',
+          originalPrice: 2,
+          originalPriceVerified: false,
+          offerPrice: 1.50,
+          validUntil: DateTime(2026, 9, 30),
+        ),
+      ],
+      marketPrices: const [],
+      receiptPriceStats: const [],
+      now: now,
+    );
+
+    final quote = candidates.single.quotes.single;
+    expect(quote.evidenceLabel, 'Manuell · Nachweis fehlt');
+    expect(quote.savings, isNull);
+  });
+
+  test('cashback offers hide a duplicate historical quote for that market', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda],
+      offers: [
+        Offer(
+          id: 'cashback-sale',
+          productId: 'gouda',
+          storeName: 'ALDI Süd',
+          originalPrice: 2,
+          offerPrice: 1.50,
+          cashbackAmount: 0.20,
+          validUntil: DateTime(2026, 9, 30),
+        ),
+      ],
+      marketPrices: const [],
+      receiptPriceStats: [
+        ReceiptPriceStat(
+          familyKey: 'kaese',
+          productId: gouda.id,
+          storeName: 'ALDI Süd',
+          latestPrice: 1.29,
+          latestAt: DateTime(2026, 9, 27),
+          observationCount: 2,
+          medianPrice: 1.39,
+          comparable: true,
+          priceBasis: '250 g',
+        ),
+      ],
+      now: now,
+    );
+
+    expect(candidates.single.quotes, hasLength(1));
+    expect(candidates.single.quotes.single.isOffer, isTrue);
+    expect(candidates.single.quotes.single.label, 'Angebot, effektiv');
   });
 
   test('candidate prices use comparable receipt medians, not latest outliers', () {
@@ -282,5 +542,27 @@ void main() {
     expect(candidates.single.quotes, hasLength(1));
     expect(candidates.single.quotes.single.price, 1.99);
     expect(candidates.single.quotes.single.isHistorical, isFalse);
+  });
+
+  test('reserved sample offers never enter the candidate selector', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Butter',
+      catalogProducts: [
+        Product(
+          id: 'butter_block',
+          name: 'Butterblock',
+          unit: '250 g',
+          group: 'butter',
+          aliases: const ['butter'],
+        ),
+      ],
+      offers: sampleOffers,
+      marketPrices: const [],
+      receiptPriceStats: const [],
+      now: DateTime(2026, 9, 20),
+    );
+
+    expect(candidates, hasLength(1));
+    expect(candidates.single.quotes, isEmpty);
   });
 }

@@ -1,4 +1,5 @@
 import '../../data/products.dart';
+import '../../data/offers.dart';
 import '../../models/offer.dart';
 import '../../models/product.dart';
 
@@ -74,6 +75,17 @@ bool isOfferDateRangeActive({
   final endsTodayOrLater = !_day(validUntil).isBefore(today);
   return startsTodayOrEarlier && endsTodayOrLater;
 }
+
+/// Demo offers are seeded only for legacy installations and must never become
+/// route or shopping evidence. Keep this check next to the shared offer
+/// filtering rules so every consumer applies the same identity check.
+bool isSampleOffer(Offer offer) => sampleOffers.any(
+  (sample) =>
+      sample.id == offer.id &&
+      sample.productId == offer.productId &&
+      sample.storeName == offer.storeName &&
+      sample.offerPrice == offer.offerPrice,
+);
 
 DateTime _day(DateTime date) => DateTime(date.year, date.month, date.day);
 

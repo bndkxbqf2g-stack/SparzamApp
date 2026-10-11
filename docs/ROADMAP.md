@@ -13,7 +13,7 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 - Gemeinsame append-only Preisbeobachtungen für bestehende Quellen speichern; aktuelle Marktpreise als Projektion ableiten, ohne Historie zu verlieren.
 - Provider/Adapter schrittweise anschließen: Bon, manuell, Open Prices, Angebote, später geprüfte Händlerdaten und Regalbilder; keine produktbezogene Sonderlogik.
 - Confidence aus Herkunft und Alter getrennt modellieren und fehlende Preise als Unsicherheitsbereich behandeln; knappe Routenentscheidungen kennzeichnen.
-- dataGap-Score für häufige, teure und entscheidungsrelevante Einkaufspositionen; nur gezielt neue Preisbelege anfordern.
+- [x] Datenlücken-Relevanz aus fehlender Marktdeckung, Menge, bestätigter Kaufhäufigkeit und belastbarer Historie für häufige, teure und entscheidungsrelevante Einkaufspositionen priorisieren; die Beleganforderung bleibt UI-gesteuert.
 - Produktidentität von Preisbeobachtungen trennen.
 - Frische Tomatenvarianten im Basiskatalog getrennt von verarbeiteten
   Tomatenprodukten anbieten.
@@ -22,6 +22,15 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 - Wiederkehrende Käufe bevorzugt erkennen.
 - Korrekturen des Nutzers als Lernsignal verwenden.
 - Preisverlauf pro Produkt/Markt.
+
+## Update 09.10.2026 – Datenlücken-Relevanz abgeschlossen
+- Der deterministische Datenlücken-Score ist implementiert und wird vor den
+  einzelnen Tie-Breakern angewendet. Dadurch kann eine Position mit größerer
+  bekannter Auswirkung eine nur häufige, aber kleinere Lücke überholen.
+- Der Score bleibt ein Priorisierungsindex. Er erzeugt keinen Preis, verlängert
+  keine Angebotsgültigkeit und wird nicht als direkte Routenbasis verwendet.
+- PR #163 und der nachgelagerte Main-/Release-Check sind in
+  `docs/PROJECT_STATUS.md` dokumentiert.
 
 ## Phase C – Angebote intelligent einbeziehen
 - Angebote zeitlich begrenzen.
@@ -53,6 +62,10 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 - Für jede Einkaufsposition belastbare Preise je Markt zusammenführen und hinsichtlich Aktualität/Herkunft/Confidence bewerten.
 - Ein-Markt-Strategien und sinnvolle Kombinationen aus mehreren Märkten für den gesamten Warenkorb vergleichen.
 - Markt-/Routenoptimierung unter Berücksichtigung des tatsächlichen Mehrwegs und der daraus entstehenden Fahrtkosten.
+- Persönlichen Zeitwert optional monetarisieren, ohne ihn mit tatsächlichen
+  Kassen- oder Fahrtkosten zu vermischen.
+- Fehlende Preisbelege direkt aus der Routen-Datenlücke zur bestehenden
+  Marktpreis-Eingabe führen, ohne historische Werte zu bestätigen.
 - Routenempfehlung erklärt vollständige Preisabdeckung gegenüber einer unvollständigen Einzelmarkt-Teilroute.
 - Einen zusätzlichen Markt nur wählen, wenn die Ersparnis des gesamten Teilwarenkorbs den zusätzlichen Aufwand wirtschaftlich rechtfertigt.
 - Primäres Ergebnis: konkrete Empfehlung der wirtschaftlichsten Einkaufsstrategie (z. B. nur Lidl, Lidl + Aldi oder nur Kaufland), nicht bloß eine Liste billiger Einzelpreise.
@@ -143,6 +156,39 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   dargestellt. Die Anzeige erzeugt keinen geschätzten Preis und verändert nicht
   die verbindliche Routenzuordnung.
 
+## Update 01.10.2026 – Historische Prospektorientierung je Markt
+- [x] Gelernte Prospekt-Mediane werden in der Einkaufsliste je Markt als
+  historische Orientierung gezeigt, wenn ein aktueller Preisbeleg fehlt.
+- [x] Aktuelle Angebote und aktuelle Marktpreise haben Vorrang; historische
+  Prospektwerte bleiben aus aktueller Preisabdeckung und Routenplanung heraus.
+- [x] Preisstand und historische Kennzeichnung sind im Preisfenster sichtbar
+  und durch Fach-/Widgettests abgesichert.
+
+## Update 01.10.2026 – Prospekt-Historie als Detailansicht
+- [x] Die Einkaufsliste bietet pro Produkt eine optionale Detailansicht der
+  abgeschlossenen Prospektbeobachtungen je Markt.
+- [x] Median, Beobachtungsanzahl, Quellart und letztes Gültigkeitsende bleiben
+  in der Historie nachvollziehbar.
+- [x] Die Detailansicht ist erklärend; historische Werte werden nicht in die
+  aktuelle Preisabdeckung oder Routenplanung übernommen.
+
+## Update 01.10.2026 – Neue Prospektartikel aus dem Angebotstab
+- [x] Aktuelle, nachgewiesene Prospektlabels ohne Katalogidentität können aus
+  dem Angebotstab zur Einkaufsliste übernommen werden.
+- [x] Der Fallback bleibt an das exakte Händlerlabel gebunden und erfindet
+  weder Variante noch Alias; Preis- und Quellenbeleg bleiben am Prospektfluss.
+- [x] Der sichtbare Add-to-List-Flow ist als Widget-Regression abgesichert.
+- [x] Der Fallback bleibt bei fehlendem Nachweis oder mehrdeutiger Identität
+  gesperrt.
+
+## Update 01.10.2026 – Vorauswahl der belegten Spar-Variante
+- [x] Generische Wünsche wählen im Variantenfenster die erste aktuell belegte
+  Spar-Variante vor.
+- [x] Historische Prospektwerte bleiben Hinweise und lösen keine stille
+  Produktwahl aus.
+- [x] Die Empfehlung bleibt manuell änderbar und ist im Übernahme-Flow
+  getestet.
+
 ## Update 01.10.2026 – Deterministische Routen-Gleichstände
 - [x] Gleiche Preisabdeckung und gleiche Planungswerte werden über weniger
   Märkte und danach kanonische Marktnamen stabil aufgelöst.
@@ -179,3 +225,117 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Fehlende Artikel und die vorläufige Ersparnis werden im Abschluss sichtbar
   genannt.
 - [x] Der App-Handler blockiert Teilrouten auch außerhalb der UI.
+
+## Update 01.10.2026 – Sparroute direkt aus der Einkaufsliste
+- [x] Eine gefüllte Einkaufsliste zeigt jetzt direkt die Aktion „Sparroute
+  prüfen“.
+- [x] Der Einstieg führt dieselbe aktuelle Liste in die vorhandene
+  Routenberechnung, damit Angebote, Marktpreise, Datenlücken und Fahrtkosten
+  ohne Umweg gemeinsam bewertet werden.
+- [x] Der sichtbare Klickpfad ist als Widgetregression abgesichert; bei einer
+  leeren Liste oder ohne Route-Callback erscheint die Aktion nicht.
+
+## Update 01.10.2026 – Prospektquellen zeigen den konkreten Markt
+- [x] Alle sechs offiziellen Prospektquellen tragen jetzt die konfigurierte
+  Filial-ID, den Ort und die Adresse im Feed-Metadatenblock.
+- [x] Die Prospektkarten und die Prospektdetailansicht zeigen den Ort, damit
+  ein Angebot eindeutig als Zellingen, Thüngersheim oder Würzburg erkennbar
+  bleibt.
+- [x] Parser- und Widgetregressionen sichern die vollständige Zuordnung der
+  sechs Quellen; Artikelbilder, Kategorien und OCR für bild-only Seiten bleiben
+  weiterhin getrennte offene Ausbaustufen.
+
+## Update 01.10.2026 – OCR-Geldtokens robust gegen Nullverwechslung
+- [x] Der Bon-Parser erkennt die häufige OCR-Verwechslung `@` für `0` in
+  Geldbeträgen und normalisiert sie nur innerhalb des Geldtokens.
+- [x] Negative Rabatte, Stückpreise und Zeilenbeträge bleiben dabei derselben
+  Quellen- und Mengenprüfung unterworfen.
+- [ ] Vollständige Bild-OCR, Produktidentität und Geräteakzeptanz bleiben
+  separate offene Ausbaustufen; ungeklärte Mengen- oder Bilanzabweichungen
+  werden weiterhin zur Nutzerprüfung vorgelegt.
+
+## Update 01.10.2026 – Prospektfeed-Frische sichtbar
+- [x] Angebote und Prospekte zeigen den Zeitstempel des geladenen Feeds.
+- [x] Offline-Fallback wird als letzter geprüfter Stand gekennzeichnet, ohne
+  abgelaufene Angebote wieder gültig zu machen.
+- [ ] Artikelbilder, Kategorien, bild-only OCR und Geräteakzeptanz bleiben
+  separate Ausbaustufen für die vollständige Prospektabdeckung.
+
+## Update 01.10.2026 – Händlerkategorien als Quellenmetadatum
+- [x] Explizite Kategorien strukturierter Händlerantworten werden im Feed
+  erhalten und in Angebote/Prospekte für Gruppierung und Suche verwendet.
+- [x] Fehlt eine Kategorie, bleibt die bestehende sichtbare Fallback-Kategorie
+  aktiv; Identität und Preise werden dadurch nicht verändert.
+- [ ] Vollständige Artikelbilder, Kategorieabdeckung in jedem Live-Feed,
+  bild-only OCR und Geräteakzeptanz bleiben offene Datenqualitätsstufen.
+
+## Update 01.10.2026 – Händlerkategorien lesbar gruppieren
+- [x] Technische Nummern- und Slugwerte der Händlerquellen werden in eine
+  einheitliche UI-Darstellung normalisiert.
+- [x] Die Rohkategorie bleibt als Quellenmetadatum erhalten; die Darstellung
+  greift nicht in Identität, Preis, Gültigkeit oder Route ein.
+- [ ] Fehlende Kategorien in ALDI-, EDEKA- und Netto-Live-Antworten werden erst
+  ergänzt, wenn die Händlerquelle sie belastbar liefert; UI-Klassifikation
+  ersetzt keine Quellenangabe.
+
+## Update 01.10.2026 – Netto-Labels auf verwertbare Produkte begrenzen
+- [x] Offensichtliche Netto-Platzhalter und reine Rabatt-/Herkunftszeilen
+  werden vor der Feed-Erzeugung verworfen.
+- [x] Gültige Produktlabels bleiben in Kachel-, Link- und Text-Fallbacks
+  erhalten; ein Regressionstest deckt die Abgrenzung ab.
+- [ ] Die Netto-Quelle muss weiterhin belastbare Produktdaten und Bilder
+  liefern, bevor die fehlenden aktuellen Angebote wieder ergänzt werden
+  können. Der Adapter erfindet diese Daten nicht.
+- [x] Der Bestands-Fallback entfernt dieselben unvollständigen Labels, wenn
+  die offizielle Netto-Seite vorübergehend nicht auslesbar ist.
+
+## Update 01.10.2026 – Angebotsquellen transparent ausweisen
+- [x] Märkte ohne aktuelle Angebotsdatensätze bleiben im Tab „Angebote“ mit
+  Händler- und Filialstatus sichtbar.
+- [x] Abruffehler, fehlende strukturierte Produktdaten und ein leerer aktueller
+  Angebotszeitraum werden getrennt benannt; kein Status erzeugt einen Preis.
+- [ ] Belastbare Netto-Produktdaten und Bilder bleiben eine Quellaufgabe und
+  werden erst bei nachweisbarer Händlerantwort wieder als Angebote angezeigt.
+- [x] Der Status führt direkt zum offiziellen Händlerprospekt, ohne die
+  fehlende Quelle durch einen Preis zu ersetzen.
+
+## Update 01.10.2026 – Netto-Reader-Fallback
+- [x] Der offizielle öffentliche Reader-Fallback liest Netto-Markdown-Kacheln
+  mit Produktlink, Preis, Packung, Bild und Gültigkeitsende.
+- [x] Die sechs konfigurierten Märkte liefern wieder einen sichtbaren
+  Quellenstatus; Netto-Angebote werden nur mit ihrem offiziellen Nachweis und
+  eigenem Gültigkeitsfenster übernommen.
+- [x] Parserregressionen sichern den Fallback gegen reine Rabatt-/Sorten- und
+  Herkunftsplatzhalter ab.
+
+## Update 01.10.2026 – Aktive Fallbackangebote kenntlich machen
+- [x] Gültige Bestandsangebote eines vorübergehend nicht erreichbaren
+  Händlerfeeds bleiben sichtbar, solange ihr eigenes Angebotsfenster gilt.
+- [x] Der Angebotstab kennzeichnet diesen Stand als letzten geprüften
+  Prospekt und zeigt die fehlende automatische Aktualisierung ohne Preis- oder
+  Identitätserfindung.
+- [ ] Die Händlerquelle muss weiterhin regelmäßig erfolgreich aktualisieren,
+  damit der Hinweis wieder in einen frischen Live-Status übergeht.
+
+## Update 02.10.2026 – Fallback-Provenienz in Angebote und Prospekte
+- [x] Beide Prospektansichten kennzeichnen gültige Bestandsangebote eines
+  fehlgeschlagenen Händlerabrufs als letzten geprüften Prospektstand.
+- [x] Die Prospektkarte zeigt dabei die Anzahl der gültigen Datensätze; die
+  Detailansicht bleibt preisfrei und verweist auf die fehlende Aktualisierung.
+- [x] Karten- und Detailpfad sind als Widgetregression abgesichert.
+
+## Update 02.10.2026 – Sparorientierte Reihenfolge verwandter Varianten
+- [x] Verwandte Interpretationen werden nach aktueller Angebots-/Preisevidenz
+  und danach nach dem belastbaren Preis sortiert.
+- [x] Unbelegte Varianten bleiben sichtbar und als Interpretation getrennt;
+  die Sortierung erweitert keine Preisidentität.
+- [x] Der offene `K.H-Milch`-Fall ist mit einer Preisrangfolge-Regression
+  abgesichert.
+
+## Update 02.10.2026 – Normale Milch aus unklaren Bonkürzeln auswählbar
+- [x] `K.H-Milch` öffnet neben getrennten H-Milch-Fettstufen auch eindeutig
+  normale Milchprodukte für den Preisvergleich.
+- [x] Aktuelle Angebote für normale Milch werden im Such- und Kandidatenpfad
+  zuerst berücksichtigt, ohne Produktidentitäten oder Preise zu verschmelzen.
+- [x] Regressionen sichern beide Auswahlpfade und den bestehenden Schutz vor
+  unbestätigten Varianten ab.

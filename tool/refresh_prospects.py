@@ -8,7 +8,7 @@ import time
 from datetime import date, datetime, timedelta, timezone
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import quote, urljoin
+from urllib.parse import parse_qs, quote, unquote, urljoin, urlsplit
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
@@ -22,6 +22,7 @@ except ModuleNotFoundError:
 
 OUTPUT = Path("assets/prospects/current.json")
 UA = "SparzamApp/1.0 (+https://github.com/bndkxbqf2g-stack/SparzamApp)"
+LOCAL_TIMEZONE = ZoneInfo("Europe/Berlin")
 SOURCES = (
     ("aldi_sued", "ALDI Süd", "https://www.aldi-sued.de/", "aldi_api"),
     ("edeka_zellingen", "EDEKA", "https://www.edeka.de/maerkte/023738/", "edeka_api"),
@@ -30,6 +31,47 @@ SOURCES = (
     ("penny_retzbach", "PENNY", "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1", "penny_api"),
     ("netto_thuengersheim", "Netto", "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371", "netto"),
 )
+
+# These are the configured target branches used by the route and mobility
+# model. Keeping the branch reference on every feed source prevents a price
+# from being presented as a generic retailer price when the user is deciding
+# between a nearby store and a farther branch.
+SOURCE_BRANCH_METADATA = {
+    "aldi_sued": {
+        "branchId": "B384",
+        "location": "Zellingen",
+        "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
+    },
+    "edeka_zellingen": {
+        "branchId": "023738",
+        "location": "Zellingen",
+        "address": "Würzburger Str. 100, 97225 Zellingen, Germany",
+    },
+    "kaufland_grombuehl": {
+        "branchId": "DE5103",
+        "location": "Würzburg · Nürnberger Straße",
+        "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
+    },
+    "lidl_zellingen": {
+        "branchId": "lidl_zellingen",
+        "location": "Zellingen",
+        "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
+    },
+    "penny_retzbach": {
+        "branchId": "230061",
+        "location": "Zellingen",
+        "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
+    },
+    "netto_thuengersheim": {
+        "branchId": "4371",
+        "location": "Thüngersheim",
+        "address": "Am Straßacker 1, 97291 Thüngersheim, Germany",
+    },
+}
+
+
+def source_branch_metadata(source_id):
+    return dict(SOURCE_BRANCH_METADATA.get(source_id, {}))
 
 class VisibleTextParser(HTMLParser):
     def __init__(self):
@@ -114,8 +156,19 @@ def parse_date(value):
     except ValueError:
         return None
 
-def current_week():
-    today = date.today()
+
+def local_today():
+    """Return the business date for the German retailer feed.
+
+    GitHub Actions runs in UTC, while all configured branches and leaflet
+    windows are German. Using the Berlin calendar day prevents a refresh just
+    after local midnight from selecting the previous week's fallback window.
+    """
+    return datetime.now(LOCAL_TIMEZONE).date()
+
+
+def current_week(today=None):
+    today = today or local_today()
     monday = today - timedelta(days=today.weekday())
     return monday, monday + timedelta(days=5)
 
@@ -123,7 +176,49 @@ def stable_id(store, proof, text):
     raw = (store + "|" + proof + "|" + text).encode("utf-8")
     return hashlib.sha256(raw).hexdigest()[:20]
 
-def record(store, label, offer_price, valid_from, valid_until, proof, original=None, image=None):
+def _source_category(raw, *keys):
+    """Return a category explicitly supplied by a retailer payload.
+
+    Categories are provenance only. The app may use them for presentation,
+    but they never participate in product identity or price projection.
+    """
+    if not isinstance(raw, dict):
+        return None
+    candidates = keys or (
+        "category",
+        "categoryName",
+        "category_name",
+        "productCategory",
+        "department",
+        "warengruppe",
+        "sortiment",
+    )
+    for key in candidates:
+        value = raw.get(key)
+        if isinstance(value, dict):
+            value = (
+                value.get("name")
+                or value.get("title")
+                or value.get("label")
+            )
+        if isinstance(value, str):
+            value = clean(value)
+            if value:
+                return value
+    return None
+
+
+def record(
+    store,
+    label,
+    offer_price,
+    valid_from,
+    valid_until,
+    proof,
+    original=None,
+    image=None,
+    category=None,
+):
     result = {
         "sourceId": stable_id(store, proof, label + str(offer_price)),
         "productLabel": clean(label),
@@ -138,6 +233,9 @@ def record(store, label, offer_price, valid_from, valid_until, proof, original=N
         result["originalPrice"] = round(float(original), 2)
     if image:
         result["imageUrl"] = image
+    category = clean(category or "")
+    if category:
+        result["category"] = category
     return result
 
 ALDI_API_URL = "https://api.aldi-sued.de/v3/product-search"
@@ -238,13 +336,14 @@ def parse_aldi_api_page(json_text, promotion_day):
             proof,
             regular,
             image,
+            _source_category(item),
         ))
 
     return dedupe(offers), int(total_count or len(data))
 
 
 def fetch_aldi_api_offers():
-    today = date.today()
+    today = local_today()
     start = today - timedelta(days=today.weekday())
     end = start + timedelta(days=12)
     all_offers = []
@@ -426,6 +525,7 @@ def parse_edeka_api(json_text, base_url):
             proof,
             regular,
             image,
+            _source_category(doc),
         ))
     return dedupe(offers), []
 
@@ -542,7 +642,7 @@ def _kaufland_available_ids(json_text):
     if not isinstance(payload, list):
         raise ValueError("Kaufland Verfügbarkeitsdaten: ungültige Antwort")
     result = set()
-    today = date.today()
+    today = local_today()
     horizon = today + timedelta(days=14)
     for item in payload:
         if not isinstance(item, dict):
@@ -589,7 +689,7 @@ def parse_kaufland_api(html_text, base_url, available_ids=None, today=None):
     if not isinstance(cycles, list):
         raise ValueError("Kaufland Angebotsdaten: cycles ist keine Liste")
 
-    reference_day = today or date.today()
+    reference_day = today or local_today()
     horizon = reference_day + timedelta(days=14)
     offers = []
     seen_offer_ids = set()
@@ -599,6 +699,7 @@ def parse_kaufland_api(html_text, base_url, available_ids=None, today=None):
         for category in cycle.get("categories", []):
             if not isinstance(category, dict):
                 continue
+            category_name = _source_category(category, "name", "title", "label")
             for raw in category.get("offers", []):
                 if not isinstance(raw, dict):
                     continue
@@ -655,6 +756,7 @@ def parse_kaufland_api(html_text, base_url, available_ids=None, today=None):
                     proof,
                     regular,
                     image,
+                    category_name,
                 ))
 
     return dedupe(offers), []
@@ -891,6 +993,7 @@ def parse_lidl_store_offers(json_text, proof_url=LIDL_ZELLINGEN_STORE_PAGE):
             proof,
             _lidl_regular_price(raw, sale),
             image,
+            _source_category(raw),
         ))
 
     return dedupe(offers), []
@@ -906,7 +1009,7 @@ def fetch_lidl_store_offers():
         + "/offers"
     )
     offers, _ = parse_lidl_store_offers(fetch(offers_url))
-    today = date.today().isoformat()
+    today = local_today().isoformat()
     offers = [
         item for item in offers
         if item.get("validUntil", "") >= today
@@ -1062,7 +1165,7 @@ def fetch_lidl_api_prospects():
             + (": " + clean(str(last_error)) if last_error else "")
         )
 
-    today = date.today().isoformat()
+    today = local_today().isoformat()
     relevant = []
     for item in prospects:
         end = clean(str(item.get("offerEndDate") or ""))
@@ -1228,7 +1331,7 @@ def _penny_offer_url(week, category, region):
     )
 
 
-def parse_penny_api(json_text, base_url, valid_from, valid_until):
+def parse_penny_api(json_text, base_url, valid_from, valid_until, category=None):
     payload = json.loads(json_text)
     tiles = payload.get("offerTiles", []) if isinstance(payload, dict) else []
     if not isinstance(tiles, list):
@@ -1276,6 +1379,7 @@ def parse_penny_api(json_text, base_url, valid_from, valid_until):
             proof,
             regular,
             image,
+            category,
         ))
     return dedupe(offers), []
 
@@ -1298,6 +1402,7 @@ def fetch_penny_api_offers(base_url):
                 base_url,
                 valid_from,
                 valid_until,
+                category,
             )
         except Exception:
             continue
@@ -1348,6 +1453,39 @@ def _netto_money(value):
     return money(normalized)
 
 
+def _is_actionable_netto_label(label):
+    """Return whether a Netto label contains a usable product identity.
+
+    The protected Netto fallback sometimes exposes only a discount, origin,
+    or merchandising descriptor. Those strings must not become synthetic
+    products in the shopping search. Keep this guard deliberately narrow so
+    real product labels remain untouched and the missing source data stays
+    visible through the feed's existing provenance.
+    """
+    normalized = clean(label).lower()
+    if not normalized:
+        return False
+    if re.fullmatch(r"-\s*\d{1,2}\s*%", normalized):
+        return False
+    if re.fullmatch(
+        r"[a-zäöüß]+(?:\s*/\s*[a-zäöüß]+)+,\s*kl\.?\s*i\.?",
+        normalized,
+        flags=re.I,
+    ):
+        return False
+    if normalized in {
+        "versch. sorten",
+        "verschiedene sorten",
+        "gekühlt",
+        "tiefgekühlt",
+        "gekühlt, versch. sorten",
+        "tiefgekühlt, versch. sorten",
+        "multipack in sauce",
+    }:
+        return False
+    return True
+
+
 def parse_netto(html_text, base_url):
     page = parsed(html_text)
     whole = "\n".join(page.lines)
@@ -1369,6 +1507,16 @@ def parse_netto(html_text, base_url):
                 valid_from = parsed_value
             else:
                 valid_until = parsed_value
+    else:
+        reader_start = re.search(
+            r"ab\s+\w+[,\s]+(\d{2}\.\d{2}\.\d{2,4})",
+            html_text,
+            flags=re.I,
+        )
+        if reader_start:
+            value = reader_start.group(1)
+            fmt = "%d.%m.%y" if len(value.rsplit(".", 1)[-1]) == 2 else "%d.%m.%Y"
+            valid_from = datetime.strptime(value, fmt).date()
 
     offers = []
     # The Thüngersheim store page renders its current filial offers as
@@ -1412,7 +1560,7 @@ def parse_netto(html_text, base_url):
             flags=re.I,
         )[0]
         label = clean(label)
-        if len(label) < 2 or sale <= 0:
+        if len(label) < 2 or sale <= 0 or not _is_actionable_netto_label(label):
             continue
         regular_match = regular_re.search(aria)
         regular = _netto_money(regular_match.group(1)) if regular_match else None
@@ -1436,7 +1584,7 @@ def parse_netto(html_text, base_url):
         label = clean(match.group(1))
         regular = money(match.group(2))
         sale = _netto_money(match.group(3))
-        if len(label) < 2:
+        if len(label) < 2 or not _is_actionable_netto_label(label):
             continue
         offers.append(record(
             "Netto", label, sale, valid_from, valid_until,
@@ -1445,22 +1593,155 @@ def parse_netto(html_text, base_url):
     # Netto intermittently protects the page with HTTP 403. The Jina reader
     # proxy exposes the same public official page as plain text.
     lines = [clean(line) for line in html_text.splitlines() if clean(line)]
-    for index, line in enumerate(lines):
-        price = re.search(r"(?:UVP|statt)\s+(\d+[,.]\d{2})\s+(\d+[,.]\d{2})", line, flags=re.I)
-        if price is None:
-            continue
-        label = ""
-        for candidate in reversed(lines[max(0, index - 3):index]):
-            if not re.search(r"\d+[,.]?\d*\s*(?:/\s*kg|€)|gültig|angebot", candidate, re.I):
-                label = candidate
-                break
-        if not label:
-            continue
-        offers.append(record(
-            "Netto", label, _netto_money(price.group(2)), valid_from, valid_until,
-            base_url + "#filialangebote", _netto_money(price.group(1)),
-        ))
+    # The Markdown reader has its own product-link adapter below. Do not also
+    # interpret its compact price lines as a second, less precise record.
+    if "ViewMMPWishlist-AddStoreArticle" not in html_text:
+        for index, line in enumerate(lines):
+            price = re.search(r"(?:UVP|statt)\s+(\d+[,.]\d{2})\s+(\d+[,.]\d{2})", line, flags=re.I)
+            if price is None:
+                continue
+            label = ""
+            for candidate in reversed(lines[max(0, index - 3):index]):
+                if not re.search(r"\d+[,.]?\d*\s*(?:/\s*kg|€)|gültig|angebot", candidate, re.I):
+                    label = candidate
+                    break
+            if not label:
+                continue
+            if not _is_actionable_netto_label(label):
+                continue
+            offers.append(record(
+                "Netto", label, _netto_money(price.group(2)), valid_from, valid_until,
+                base_url + "#filialangebote", _netto_money(price.group(1)),
+            ))
+    offers.extend(
+        _parse_netto_markdown_tiles(
+            html_text,
+            base_url,
+            valid_from=valid_from,
+            valid_until=valid_until,
+        )
+    )
     return dedupe(offers), []
+
+
+def _parse_netto_markdown_tiles(
+    markdown_text,
+    base_url,
+    *,
+    valid_from,
+    valid_until,
+):
+    """Parse the public reader's Markdown representation of filial tiles.
+
+    Netto returns HTTP 403 to the scheduled fetcher from time to time. The
+    public reader fallback then exposes the same official page as Markdown.
+    Its product tiles carry an official `ViewMMPWishlist-AddStoreArticle`
+    link with the product name, expiry and image in the query string, while
+    the stated regular/offer price remains in the preceding tile text. Keep
+    this adapter conservative: only a paired stated price or explicit
+    ``Aktion`` price becomes an offer, and the link itself remains the proof.
+    """
+    if "ViewMMPWishlist-AddStoreArticle" not in markdown_text:
+        return []
+
+    lines = markdown_text.splitlines()
+    offers = []
+    link_re = re.compile(
+        r"\]\((https?://[^)\s]*ViewMMPWishlist-AddStoreArticle\?[^)\s]+)"
+        r"(?:\s+\"[^\"]*\")?\)",
+        flags=re.I,
+    )
+    label_re = re.compile(r"(?<!\w)_([^_\n]{2,200})_(?!\w)")
+    quantity_re = re.compile(
+        r"\b\d+\s*x\s*\d+(?:[,.]\d+)?\s*"
+        r"(?:kg|g|ml|l|liter)\b"
+        r"|\b\d+(?:[,.]\d+)?\s*"
+        r"(?:kg|g|ml|l|liter|stück|topf|schale|wl)\b"
+        r"(?:\s*[-–]\s*\d+(?:[,.]\d+)?\s*"
+        r"(?:kg|g|ml|l|liter))?",
+        flags=re.I,
+    )
+
+    for line_index, line in enumerate(lines):
+        link_match = link_re.search(line)
+        if link_match is None:
+            continue
+        href = html.unescape(link_match.group(1))
+        query = parse_qs(urlsplit(href).query)
+        name_values = query.get("Name") or []
+        name = clean(unquote(name_values[0])) if name_values else ""
+
+        label_index = None
+        label = ""
+        for previous_index in range(line_index, max(-1, line_index - 20), -1):
+            candidates = label_re.findall(lines[previous_index])
+            if candidates:
+                label_index = previous_index
+                label = clean(candidates[-1])
+                break
+        if not name:
+            name = label
+        if not name or not _is_actionable_netto_label(name):
+            continue
+
+        start_index = label_index if label_index is not None else max(0, line_index - 8)
+        segment = "\n".join(lines[start_index:line_index + 1])
+        stated = re.search(
+            r"(?:UVP|statt)\s+(\d+[,.]\d{2})\s+"
+            r"(\d+[,.](?:\d{2}|[.–-]))",
+            segment,
+            flags=re.I,
+        )
+        original = None
+        sale = None
+        if stated is not None:
+            original = _netto_money(stated.group(1))
+            sale = _netto_money(stated.group(2))
+        else:
+            action = re.search(
+                r"\bAktion\s+(\d+[,.](?:\d{2}|[.–-]))",
+                segment,
+                flags=re.I,
+            )
+            if action is not None:
+                sale = _netto_money(action.group(1))
+        if sale is None or sale <= 0:
+            continue
+
+        quantity = quantity_re.search(segment)
+        quantity_text = clean(quantity.group(0)) if quantity is not None else ""
+        if not quantity_text and re.search(r"\bStück\b", segment, flags=re.I):
+            quantity_text = "Stück"
+        product_label = name
+        if quantity_text and quantity_text.lower() not in name.lower():
+            product_label = f"{name} {quantity_text}"
+
+        expiry = valid_until
+        valid_to_values = query.get("ValidTo") or []
+        if valid_to_values:
+            raw_expiry = unquote(valid_to_values[0]).split("T", 1)[0]
+            try:
+                expiry = date.fromisoformat(raw_expiry)
+            except ValueError:
+                pass
+        image = None
+        image_values = query.get("Image") or []
+        if image_values:
+            image = unquote(image_values[0])
+
+        offers.append(
+            record(
+                "Netto",
+                product_label,
+                sale,
+                valid_from,
+                expiry,
+                urljoin(base_url, href),
+                original,
+                image,
+            )
+        )
+    return dedupe(offers)
 
 
 def parse_rewe(html_text, base_url):
@@ -1472,7 +1753,7 @@ def parse_rewe(html_text, base_url):
         flags=re.I,
     )
     if validity:
-        year = date.today().year
+        year = local_today().year
         start = datetime.strptime(validity.group(1) + str(year), "%d.%m.%Y").date()
         end = datetime.strptime(validity.group(2) + str(year), "%d.%m.%Y").date()
         valid_from, valid_until = start, end
@@ -1548,6 +1829,7 @@ def parse_rewe_api(json_text, base_url):
                 proof += "#article-" + str(article)
             offers.append(record(
                 "REWE", label, sale, valid_from, valid_until, proof, regular,
+                None, _source_category(category),
             ))
     return dedupe(offers), []
 
@@ -1562,7 +1844,7 @@ def dedupe(offers):
 
 def current_prospect_offers(offers, today=None):
     """Keep only the dominant currently valid leaflet period per retailer."""
-    reference = today or date.today()
+    reference = today or local_today()
     active = []
     for item in offers:
         try:
@@ -1606,8 +1888,17 @@ def load_previous():
         return {"sources": [], "offers": []}
 
 def active_previous(previous, store):
-    today = date.today().isoformat()
-    return [item for item in previous.get("offers", []) if item.get("storeName") == store and item.get("validUntil", "") >= today]
+    today = local_today().isoformat()
+    active = [
+        item for item in previous.get("offers", [])
+        if item.get("storeName") == store and item.get("validUntil", "") >= today
+    ]
+    if store == "Netto":
+        return [
+            item for item in active
+            if _is_actionable_netto_label(item.get("productLabel", ""))
+        ]
+    return active
 
 def main(selected_source_ids=None):
     previous = load_previous()
@@ -1735,7 +2026,7 @@ def main(selected_source_ids=None):
                 diagnostics = "edeka-sample=" + snippet[:220]
                 raise ValueError("keine sicher extrahierbaren Angebote gefunden; " + diagnostics)
             all_offers.extend(offers)
-            sources.append({"id": source_id, "storeName": store, "url": url, "status": "metadata_only" if metadata_only else "ok", "recordCount": len(offers), "mode": source_mode, "prospects": prospects})
+            sources.append({"id": source_id, "storeName": store, "url": url, "status": "metadata_only" if metadata_only else "ok", "recordCount": len(offers), "mode": source_mode, "prospects": prospects, **source_branch_metadata(source_id)})
         except Exception as error:
             bring_data = bring_by_store.get(store)
             if bring_data:
@@ -1751,11 +2042,12 @@ def main(selected_source_ids=None):
                     "mode": "bring_brochure_fallback",
                     "prospects": [bring_prospect] if isinstance(bring_prospect, dict) else [],
                     "retailerError": clean(str(error))[:240],
+                    **source_branch_metadata(source_id),
                 })
                 continue
             kept = active_previous(previous, store)
             all_offers.extend(kept)
-            sources.append({"id": source_id, "storeName": store, "url": url, "status": "error", "recordCount": len(kept), "error": clean(str(error))[:240]})
+            sources.append({"id": source_id, "storeName": store, "url": url, "status": "error", "recordCount": len(kept), "error": clean(str(error))[:240], **source_branch_metadata(source_id)})
     all_offers = current_prospect_offers(all_offers)
     payload = {"schemaVersion": 1, "generatedAt": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"), "sources": sources, "offers": all_offers}
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)

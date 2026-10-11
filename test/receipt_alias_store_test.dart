@@ -32,6 +32,12 @@ void main() {
       storeName: 'Kaufland',
       rawLabel: 'K.H-Milch',
     ), 'milch_15');
+    final learned = await store.learnedAlias(
+      storeName: 'Kaufland',
+      rawLabel: 'K.H-Milch',
+    );
+    expect(learned?.productId, 'milch_15');
+    expect(learned?.confirmations, 2);
   });
 
   test('a conflicting correction resets confidence', () async {
@@ -54,5 +60,101 @@ void main() {
       storeName: 'Kaufland',
       rawLabel: 'K.H-Milch',
     ), isNull);
+  });
+
+  test('OCR umlaut and ae spellings share the same learned alias', () async {
+    final store = ReceiptAliasStore();
+    await store.confirm(
+      storeName: 'Lidl',
+      rawLabel: 'Hähnchenbrust',
+      productId: 'chicken-breast',
+      now: DateTime(2026, 9, 24),
+    );
+    await store.confirm(
+      storeName: 'Lidl',
+      rawLabel: 'HAEHNCHENBRUST',
+      productId: 'chicken-breast',
+      now: DateTime(2026, 9, 25),
+    );
+
+    expect(
+      await store.learnedProductId(
+        storeName: 'Lidl',
+        rawLabel: 'Hähnchenbrust',
+      ),
+      'chicken-breast',
+    );
+    expect(
+      await store.learnedProductId(
+        storeName: 'Lidl',
+        rawLabel: 'HAEHNCHENBRUST',
+      ),
+      'chicken-breast',
+    );
+    expect((await store.load()), hasLength(1));
+  });
+
+  test('OCR market spellings share the same learned alias', () async {
+    final store = ReceiptAliasStore();
+    await store.confirm(
+      storeName: 'ALDI Süd',
+      rawLabel: 'Butter',
+      productId: 'butter-250',
+      now: DateTime(2026, 9, 24),
+    );
+    await store.confirm(
+      storeName: 'ALDI SUED',
+      rawLabel: 'Butter',
+      productId: 'butter-250',
+      now: DateTime(2026, 9, 25),
+    );
+
+    expect(
+      await store.learnedProductId(
+        storeName: 'ALDI Süd',
+        rawLabel: 'Butter',
+      ),
+      'butter-250',
+    );
+    expect(
+      await store.learnedProductId(
+        storeName: 'ALDI SUED',
+        rawLabel: 'Butter',
+      ),
+      'butter-250',
+    );
+    expect((await store.load()), hasLength(1));
+  });
+
+  test('receipt branch labels share the configured market identity', () async {
+    final store = ReceiptAliasStore();
+    await store.confirm(
+      storeName: 'Lidl · Zellingen',
+      rawLabel: 'Vollmilch',
+      productId: 'milk-15',
+      now: DateTime(2026, 9, 24),
+    );
+    await store.confirm(
+      storeName: 'Lidl',
+      rawLabel: 'Vollmilch',
+      productId: 'milk-15',
+      now: DateTime(2026, 9, 25),
+    );
+
+    expect(
+      (await store.load()).single.storeName,
+      'Lidl',
+    );
+    expect(
+      await store.learnedProductId(
+        storeName: 'Lidl · Zellingen',
+        rawLabel: 'Vollmilch',
+      ),
+      'milk-15',
+    );
+  });
+
+  test('unknown receipt market labels remain reviewable', () {
+    expect(canonicalReceiptAliasStoreName('Mein Hofladen'), 'Mein Hofladen');
   });
 }

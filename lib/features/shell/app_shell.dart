@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/budget_plan.dart';
@@ -34,6 +38,8 @@ import '../offers/prospect_price_statistics.dart';
 import '../../services/market_price_observation_adapter.dart';
 import '../../services/recent_purchase_store.dart';
 import '../../services/receipt_observation_store.dart';
+import '../../services/receipt_alias_store.dart';
+import '../../services/app_backup.dart';
 import '../../services/purchase_store.dart';
 import '../../services/road_distance_store.dart';
 import '../../services/road_route_matrix_store.dart';
@@ -47,13 +53,16 @@ import '../profile/mobility_settings_screen.dart';
 import '../profile/price_data_settings_screen.dart';
 import '../profile/store_selection_screen.dart';
 import '../profile/diagnostic_log_screen.dart';
+import '../price_gaps/price_gap_priority.dart';
 import '../route/route_optimizer.dart';
 import '../route/route_screen.dart';
+import '../catalog/market_price_editor_screen.dart';
 import '../scanner/scanner_screen.dart';
 import '../receipt/receipt_observation_migration.dart';
 import '../shopping_list/replenishment_analyzer.dart';
 import '../shopping_list/receipt_family_market_prices.dart';
 import '../shopping_list/shopping_candidate_selector.dart';
+import 'price_gap_resolution.dart';
 import '../receipt/receipt_price_statistics.dart';
 import '../shopping_list/planning_market_prices.dart' as planning_prices;
 import '../shopping_list/shopping_list_updates.dart';
@@ -141,8 +150,11 @@ class _AppShellState extends State<AppShell> {
   List<OfferImportRecord> prospectRecords = const <OfferImportRecord>[];
   List<ProspectIssue> prospectIssues = const <ProspectIssue>[];
   bool prospectFeedFromCache = false;
+  DateTime? prospectFeedGeneratedAt;
   List<Product> prospectProducts = const <Product>[];
+  bool _prospectFeedRefreshing = false;
   final priceObservationStore = PriceObservationStore();
+  final receiptAliasStore = ReceiptAliasStore();
   late PriceDataSettings priceDataSettings;
   late List<PricePoint> priceHistory;
   Map<String, double> roadDistances = <String, double>{};
@@ -150,6 +162,7 @@ class _AppShellState extends State<AppShell> {
   final roadRouteMatrixStore = RoadRouteMatrixStore();
   RoadRouteMatrix? roadMatrix;
   late Map<String, String> preferredProductByGroup;
+  int backupRevision = 0;
   final _shoppingListSaves = SequentialWriteQueue();
   bool _purchaseInProgress = false;
 
@@ -260,6 +273,7 @@ class _AppShellState extends State<AppShell> {
       planning_prices.planningMarketPrices(
         exactPrices: [...activeMarketPrices, ...historicalMarketPrices],
         familyPrices: receiptFamilyPrices,
+        openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
       );
 
   Future<void> _loadPriceObservations() async {
@@ -269,6 +283,9 @@ class _AppShellState extends State<AppShell> {
   }
 
   Future<void> _loadProspectOffers() async {
+    if (_prospectFeedRefreshing) return;
+    _prospectFeedRefreshing = true;
+    if (mounted) setState(() {});
     try {
       final feed = await ProspectImportModule().execute(
         startAddress: mobility.startAddress,
@@ -281,6 +298,7 @@ class _AppShellState extends State<AppShell> {
           prospectRecords = currentProspectRecords(feed.records);
           prospectIssues = feed.prospects;
           prospectFeedFromCache = feed.fromCache;
+          prospectFeedGeneratedAt = feed.generatedAt;
         });
       }
 
@@ -289,13 +307,11 @@ class _AppShellState extends State<AppShell> {
         records: currentRecords,
         catalogProducts: buildCatalogProducts(customProducts),
       );
-      // Keep exact-label fallback products as offer identities as well. A
-      // user may intentionally add an article directly from the prospect;
-      // its verified leaflet price must then remain available to the route
-      // optimizer instead of silently falling back to an estimate.
-      final resolved = offerBackedProducts
-          .map((entry) => entry.offer)
-          .toList(growable: false);
+      // A verified offer with an unknown local catalog identity remains tied
+      // to its exact retailer label. Keeping that offer routeable lets the
+      // user select the concrete prospect item without transferring its
+      // price to a different family or variant.
+      final resolved = offersFromProspectProducts(offerBackedProducts);
 
       final retained = offers
           .where((offer) => !offer.id.startsWith('import|'))
@@ -308,11 +324,11 @@ class _AppShellState extends State<AppShell> {
 
       await widget.offerStore.save(next);
 
-      final observedAt = feed.generatedAt ?? DateTime.now();
-      final learnedPrices = prospectPriceObservations(
+      final learnedPrices = datedProspectPriceObservations(
         records: feed.records,
         catalogProducts: buildCatalogProducts(customProducts),
-        observedAt: observedAt,
+        observedAt: feed.generatedAt,
+        refreshedStores: feed.refreshedStores,
       );
       if (learnedPrices.isNotEmpty) {
         await priceObservationStore.append(learnedPrices);
@@ -332,7 +348,7 @@ class _AppShellState extends State<AppShell> {
         message: 'Prospektdatenbank aktualisiert.',
         details:
             '${feed.records.length} Rohangebote · '
-            '${resolved.length} zugeordnet · '
+            '${resolved.length} importiert · '
             '${learnedPrices.length} datierte Preise gelernt',
       );
     } catch (error) {
@@ -341,6 +357,9 @@ class _AppShellState extends State<AppShell> {
         message: 'Automatischer Prospektabruf fehlgeschlagen.',
         details: error.toString(),
       );
+    } finally {
+      _prospectFeedRefreshing = false;
+      if (mounted) setState(() {});
     }
   }
 
@@ -497,6 +516,7 @@ class _AppShellState extends State<AppShell> {
         enabledStores: mobility.enabledStoreNames,
       ),
       enabledStores: mobility.enabledStoreNames,
+      openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
     );
     if (!mounted || selected == null || selected.isEmpty) return;
     final index = shoppingList.indexWhere(
@@ -608,6 +628,7 @@ class _AppShellState extends State<AppShell> {
     offers: offers,
     mobility: mobility,
     marketPrices: planningMarketPrices,
+    openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
     roadDistances: roadDistances,
     roadMatrix: roadMatrix,
   );
@@ -890,6 +911,62 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
+  Future<void> openPriceGapEditor(PriceGapPriority gap) async {
+    if (shouldResolvePriceGapByProductSelection(gap.item.product)) {
+      final selected = await showShoppingCandidateSelector(
+        context: context,
+        request: gap.item.product.name,
+        catalogProducts: catalogProducts,
+        offers: offers,
+        marketPrices: [...activeMarketPrices, ...historicalMarketPrices],
+        receiptPriceStats: buildReceiptPriceStats(
+          receiptObservations,
+          maxAgeDays: 60,
+        ),
+        prospectPriceHistory: prospectPriceHistorySummaries(
+          historicalPriceObservations,
+          enabledStores: mobility.enabledStoreNames,
+        ),
+        enabledStores: mobility.enabledStoreNames,
+        openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
+      );
+      if (!mounted || selected == null || selected.isEmpty) return;
+
+      final next = replacePriceGapItem(
+        items: shoppingList,
+        sourceProductId: gap.item.product.id,
+        selectedProducts: selected,
+      );
+      if (next == null) return;
+      setState(() => shoppingList = next);
+      persistShoppingListWithFeedback();
+      for (final product in selected) {
+        widget.shoppingListStore.saveKnownItem(product);
+        ensureCatalogProduct(product);
+      }
+      widget.diagnosticLogService.record(
+        category: 'Einkaufsliste',
+        message: 'Datenlücke durch Produktauswahl konkretisiert.',
+        details:
+            '${gap.item.product.name}: '
+            '${selected.map((product) => product.name).join(', ')}',
+      );
+      return;
+    }
+
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute(
+        builder: (_) => MarketPriceEditorScreen(
+          product: gap.item.product,
+          prices: marketPrices,
+          onSave: saveMarketPrice,
+          onDelete: deleteMarketPrice,
+          openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
+        ),
+      ),
+    );
+  }
+
   Future<List<Offer>> saveOffer(Offer offer) async {
     final next = await widget.offerStore.upsert(offer, offers);
     final observedAt = DateTime.now();
@@ -949,8 +1026,11 @@ class _AppShellState extends State<AppShell> {
             euroPerKm: mobility.effectiveEuroPerKm,
             maxStores: mobility.maxStores,
             minExtraStoreSavings: mobility.minExtraStoreSavings,
+            timeValuePerHour: mobility.timeValuePerHour,
+            travelMinutesPerKm: 60 / mobility.mode.averageSpeedKmh,
             enabledStoreNames: mobility.enabledStoreNames,
             marketPrices: planningMarketPrices,
+            openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
             roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
           ).bestPlan();
     Navigator.of(context).push(
@@ -974,6 +1054,203 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
+  Future<AppBackup> _createBackup() async {
+    return AppBackup(
+      createdAt: DateTime.now(),
+      budget: budget,
+      mobility: mobility,
+      priceDataSettings: priceDataSettings,
+      activeShoppingListId: activeShoppingListId,
+      shoppingList: _copyItems(shoppingList),
+      namedLists: namedShoppingLists
+          .map(
+            (list) => NamedShoppingList(
+              id: list.id,
+              name: list.name,
+              items: _copyItems(list.items),
+            ),
+          )
+          .toList(growable: false),
+      offers: [...offers],
+      marketPrices: [...marketPrices],
+      customProducts: [...customProducts],
+      priceHistory: [...priceHistory],
+      recentPurchases: [...recentPurchases],
+      purchaseHistory: [...purchaseHistory],
+      preferredProductByGroup: {...preferredProductByGroup},
+      receiptObservations: [...receiptObservations],
+      priceObservations: await priceObservationStore.load(),
+      receiptAliases: await receiptAliasStore.load(),
+      roadDistances: {...roadDistances},
+      roadMatrix: roadMatrix,
+      knownItems: await widget.shoppingListStore.loadKnownItems(),
+      aisleOrder: await widget.shoppingListStore.loadAisleOrder(),
+      tileView: await widget.shoppingListStore.loadTileView(),
+    );
+  }
+
+  Future<void> exportBackup() async {
+    try {
+      final backup = await _createBackup();
+      final bytes = Uint8List.fromList(utf8.encode(backup.encode()));
+      final path = await FilePicker.platform.saveFile(
+        dialogTitle: 'Sparzam-Backup speichern',
+        fileName: 'sparzam-backup-${_backupDate(backup.createdAt)}.json',
+        type: FileType.custom,
+        allowedExtensions: const ['json'],
+        bytes: bytes,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            path == null
+                ? 'Backup wurde zum Download bereitgestellt.'
+                : 'Backup gespeichert.',
+          ),
+        ),
+      );
+    } catch (error) {
+      widget.diagnosticLogService.record(
+        category: 'Backup',
+        message: 'Backup konnte nicht exportiert werden.',
+        details: error.toString(),
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Backup konnte nicht erstellt werden.')),
+      );
+    }
+  }
+
+  Future<void> importBackup() async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        dialogTitle: 'Sparzam-Backup auswählen',
+        type: FileType.custom,
+        allowedExtensions: const ['json'],
+        withData: true,
+      );
+      final bytes = result?.files.single.bytes;
+      if (bytes == null) return;
+      final backup = AppBackup.decode(utf8.decode(bytes));
+      await _applyBackup(backup);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Backup vom ${_backupDate(backup.createdAt)} wurde importiert.',
+          ),
+        ),
+      );
+    } on FormatException catch (error) {
+      widget.diagnosticLogService.record(
+        category: 'Backup',
+        message: 'Backup ist nicht kompatibel.',
+        details: error.message,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Backup ist ungültig oder nicht kompatibel.'),
+        ),
+      );
+    } catch (error) {
+      widget.diagnosticLogService.record(
+        category: 'Backup',
+        message: 'Backup konnte nicht importiert werden.',
+        details: error.toString(),
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Backup konnte nicht importiert werden.')),
+      );
+    }
+  }
+
+  Future<void> _applyBackup(AppBackup backup) async {
+    final lists = backup.namedLists.isEmpty
+        ? [
+            NamedShoppingList(
+              id: backup.activeShoppingListId,
+              name: 'Einkauf',
+              items: _copyItems(backup.shoppingList),
+            ),
+          ]
+        : backup.namedLists;
+    final activeId = lists.any((list) => list.id == backup.activeShoppingListId)
+        ? backup.activeShoppingListId
+        : lists.first.id;
+
+    await Future.wait([
+      widget.budgetStore.save(backup.budget),
+      widget.mobilityStore.save(backup.mobility),
+      widget.priceDataSettingsStore.save(backup.priceDataSettings),
+      widget.offerStore.save(backup.offers),
+      widget.marketPriceStore.save(backup.marketPrices),
+      widget.productCatalogStore.save(backup.customProducts),
+      widget.priceHistoryStore.save(backup.priceHistory),
+      widget.recentPurchaseStore.save(backup.recentPurchases),
+      widget.purchaseStore.save(backup.purchaseHistory),
+      widget.shoppingListStore.save(backup.shoppingList),
+      widget.shoppingListStore.saveNamedLists(lists),
+      widget.shoppingListStore.saveKnownItems(backup.knownItems),
+      widget.shoppingListStore.savePreferredProducts(
+        backup.preferredProductByGroup,
+      ),
+      widget.shoppingListStore.saveAisleOrder(backup.aisleOrder),
+      widget.shoppingListStore.saveTileView(backup.tileView),
+      ReceiptObservationStore().replaceAll(backup.receiptObservations),
+      priceObservationStore.replaceAll(backup.priceObservations),
+      receiptAliasStore.save(backup.receiptAliases),
+      roadDistanceStore.save(
+        backup.mobility.startAddress,
+        backup.roadDistances,
+      ),
+      if (backup.roadMatrix != null)
+        roadRouteMatrixStore.save(backup.roadMatrix!),
+      if (backup.roadMatrix == null) roadRouteMatrixStore.clear(),
+    ]);
+
+    if (!mounted) return;
+    setState(() {
+      budget = backup.budget;
+      mobility = backup.mobility;
+      priceDataSettings = backup.priceDataSettings;
+      activeShoppingListId = activeId;
+      shoppingList = _copyItems(
+        lists.firstWhere((list) => list.id == activeId).items,
+      );
+      namedShoppingLists = lists
+          .map(
+            (list) => NamedShoppingList(
+              id: list.id,
+              name: list.name,
+              items: _copyItems(list.items),
+            ),
+          )
+          .toList(growable: false);
+      offers = [...backup.offers];
+      marketPrices = [...backup.marketPrices];
+      customProducts = [...backup.customProducts];
+      priceHistory = [...backup.priceHistory];
+      recentPurchases = [...backup.recentPurchases];
+      purchaseHistory = [...backup.purchaseHistory];
+      preferredProductByGroup = {...backup.preferredProductByGroup};
+      receiptObservations = [...backup.receiptObservations];
+      historicalPriceObservations = [...backup.priceObservations];
+      roadDistances = {...backup.roadDistances};
+      roadMatrix = backup.roadMatrix;
+      backupRevision++;
+    });
+  }
+
+  String _backupDate(DateTime value) =>
+      '${value.year}${value.month.toString().padLeft(2, '0')}'
+      '${value.day.toString().padLeft(2, '0')}-'
+      '${value.hour.toString().padLeft(2, '0')}'
+      '${value.minute.toString().padLeft(2, '0')}';
+
   void openRoute() {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
@@ -986,6 +1263,13 @@ class _AppShellState extends State<AppShell> {
                 offers: offers,
                 mobility: mobility,
                 marketPrices: planningMarketPrices,
+                openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
+                recentPurchases: recentPurchases,
+                historicalPriceObservations: historicalPriceObservations,
+                onResolvePriceGap: (gap) async {
+                  await openPriceGapEditor(gap);
+                  if (mounted) refreshRoute(() {});
+                },
                 onRoadDistancesChanged: (value) {
                   setState(() => roadDistances = value);
                   refreshRoute(() {});
@@ -1030,11 +1314,16 @@ class _AppShellState extends State<AppShell> {
       prospectRecords: prospectRecords,
       prospectIssues: prospectIssues,
       prospectFeedFromCache: prospectFeedFromCache,
+      prospectFeedGeneratedAt: prospectFeedGeneratedAt,
+      onRefreshProspects: _loadProspectOffers,
+      prospectsRefreshing: _prospectFeedRefreshing,
       priceHistory: priceHistory,
       mobility: mobility,
       catalogProducts: catalogProducts,
       marketPrices: planningMarketPrices,
+      openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
       priceObservations: [...planningMarketPrices],
+      historicalPriceObservations: historicalPriceObservations,
       prospectPriceHistory: prospectPriceHistorySummaries(
         historicalPriceObservations,
         enabledStores: mobility.enabledStoreNames,
@@ -1054,6 +1343,7 @@ class _AppShellState extends State<AppShell> {
       onEditStores: openStoreSettings,
       storeCount: activeStoreCount(mobility.enabledStoreNames),
       onOpenCatalog: openCatalog,
+      onResolvePriceGap: openPriceGapEditor,
       onEditPriceData: openPriceDataSettings,
       onSavePrice: saveMarketPrice,
       onSaveProduct: saveCatalogProduct,
@@ -1064,6 +1354,9 @@ class _AppShellState extends State<AppShell> {
           ? 'Open Prices · max. ${priceDataSettings.openPricesMaxAgeDays} Tage'
           : 'Nur eigene Preise',
       onOpenDiagnostics: openDiagnostics,
+      onExportBackup: exportBackup,
+      onImportBackup: importBackup,
+      dataRevision: backupRevision,
     );
 
     return Scaffold(
