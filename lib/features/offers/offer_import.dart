@@ -45,8 +45,9 @@ class OfferImportRecord {
 
 String prospectRecordLocationLabel(
   String storeName,
-  Iterable<OfferImportRecord> records,
-) {
+  Iterable<OfferImportRecord> records, {
+  String? fallbackLocation,
+}) {
   final locations = <String>[];
   for (final record in records) {
     final location = record.location?.trim();
@@ -58,6 +59,8 @@ String prospectRecordLocationLabel(
     locations.add(location);
   }
   if (locations.isNotEmpty) return locations.join(' · ');
+  final fallback = fallbackLocation?.trim();
+  if (fallback != null && fallback.isNotEmpty) return fallback;
   return configuredProspectBranch(storeName)?.location ?? 'Filiale';
 }
 
