@@ -645,12 +645,12 @@ class _ProspectViewer extends StatelessWidget {
                     : null,
               ),
             ),
-          if (issue.url != null)
+          if (_officialProspectUri(issue.url) != null)
             Align(
               alignment: Alignment.centerLeft,
               child: OutlinedButton.icon(
                 onPressed: () => launchUrl(
-                  Uri.parse(issue.url!),
+                  _officialProspectUri(issue.url)!,
                   mode: LaunchMode.externalApplication,
                 ),
                 icon: const Icon(Icons.open_in_new),
@@ -813,4 +813,16 @@ String _prospectCategoryForRecord(OfferImportRecord record) {
 
 String _prospectDate(DateTime value) =>
     '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.${value.year}';
+
+Uri? _officialProspectUri(String? value) {
+  final raw = value?.trim();
+  if (raw == null || raw.isEmpty) return null;
+  final uri = Uri.tryParse(raw);
+  if (uri == null ||
+      (uri.scheme != 'http' && uri.scheme != 'https') ||
+      uri.host.isEmpty) {
+    return null;
+  }
+  return uri;
+}
 
