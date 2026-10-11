@@ -193,7 +193,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
               ),
               const SizedBox(height: 10),
               SizedBox(
-                height: 260,
+                height: 300,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: visibleProspects.length > 2 ? 2 : visibleProspects.length,
@@ -589,7 +589,7 @@ class _ProspectCard extends StatelessWidget {
     final previewUrl = issue.pages.isNotEmpty
         ? issue.pages.first.imageUrl.trim()
         : issue.thumbnailUrl?.trim();
-    final imageHeight = compact ? 168.0 : 170.0;
+    final imageHeight = compact ? 168.0 : 185.0;
     final validity = _prospectValidityLabel(issue);
 
     return SizedBox(
