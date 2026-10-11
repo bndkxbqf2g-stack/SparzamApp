@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../design/sparzam_theme.dart';
+import '../../models/offer.dart';
 import '../offers/offer_import.dart';
 import '../offers/prospect_offer_products.dart';
 import 'prospect_category_presentation.dart';
@@ -10,6 +11,7 @@ import '../../services/prospect_feed_service.dart';
 import '../offers/offer_filter.dart';
 import 'prospect_offer_card.dart';
 import 'prospect_feed_status.dart';
+import 'prospect_page_offer_dialog.dart';
 
 class ProspectsScreen extends StatefulWidget {
   const ProspectsScreen({
@@ -23,6 +25,7 @@ class ProspectsScreen extends StatefulWidget {
     this.generatedAt,
     this.onRefreshProspects,
     this.prospectsRefreshing = false,
+    this.onSaveOffer,
   });
 
   final List<OfferImportRecord> records;
@@ -34,6 +37,7 @@ class ProspectsScreen extends StatefulWidget {
   final DateTime? generatedAt;
   final Future<void> Function()? onRefreshProspects;
   final bool prospectsRefreshing;
+  final Future<List<Offer>> Function(Offer offer)? onSaveOffer;
 
   @override
   State<ProspectsScreen> createState() => _ProspectsScreenState();
@@ -42,6 +46,8 @@ class ProspectsScreen extends StatefulWidget {
 class _ProspectsScreenState extends State<ProspectsScreen> {
   final searchController = TextEditingController();
   var query = '';
+  String? selectedCategory;
+  String? selectedStore;
 
   @override
   void dispose() {
@@ -55,7 +61,18 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
       widget.records,
       now: widget.now,
     );
-    final matchingRecords = _matchingProspectRecords(currentRecords, query);
+    final categories = _prospectCategories(currentRecords);
+    final stores = _prospectStores(currentRecords, widget.prospects);
+    final activeCategory = categories.contains(selectedCategory)
+        ? selectedCategory
+        : null;
+    final activeStore = stores.contains(selectedStore) ? selectedStore : null;
+    final matchingRecords = _matchingProspectRecords(
+      currentRecords,
+      query,
+      category: activeCategory,
+      storeName: activeStore,
+    );
     final currentCounts = <String, int>{};
     for (final record in currentRecords) {
       currentCounts.update(
@@ -121,16 +138,43 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
             ),
           ),
         ),
+        if (categories.isNotEmpty) ...[
+          const SizedBox(height: 10),
+          Material(
+            type: MaterialType.transparency,
+            child: _ProspectCategoryChips(
+              categories: categories,
+              selectedCategory: activeCategory,
+              onSelected: (category) =>
+                  setState(() => selectedCategory = category),
+            ),
+          ),
+        ],
+        if (stores.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Material(
+            type: MaterialType.transparency,
+            child: _ProspectStoreChips(
+              stores: stores,
+              selectedStore: activeStore,
+              onSelected: (store) => setState(() => selectedStore = store),
+            ),
+          ),
+        ],
         ProspectFeedStatusCard(
           generatedAt: widget.generatedAt,
+          now: widget.now,
           fromCache: widget.fromCache,
           onRefresh: widget.onRefreshProspects,
           refreshing: widget.prospectsRefreshing,
         ),
         const SizedBox(height: 20),
-        if (query.trim().isNotEmpty)
+        if (query.trim().isNotEmpty ||
+            activeCategory != null ||
+            activeStore != null)
           _ProspectSearchResults(
             records: matchingRecords,
+            prospects: visibleProspects,
             catalogProducts: widget.catalogProducts,
             onAddProduct: widget.onAddProduct,
             query: query,
@@ -165,6 +209,8 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                         records: currentRecords,
                         catalogProducts: widget.catalogProducts,
                         onAddProduct: widget.onAddProduct,
+                        now: widget.now,
+                        onSaveOffer: widget.onSaveOffer,
                       ),
                     ),
                   ),
@@ -188,12 +234,14 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
 class _ProspectSearchResults extends StatelessWidget {
   const _ProspectSearchResults({
     required this.records,
+    required this.prospects,
     required this.catalogProducts,
     required this.onAddProduct,
     required this.query,
   });
 
   final List<OfferImportRecord> records;
+  final List<ProspectIssue> prospects;
   final List<Product> catalogProducts;
   final ValueChanged<Product>? onAddProduct;
   final String query;
@@ -201,11 +249,14 @@ class _ProspectSearchResults extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (records.isEmpty) {
+      final trimmedQuery = query.trim();
       return Card(
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Text(
-            'Keine aktuellen Prospektartikel für „${query.trim()}“ gefunden.',
+            trimmedQuery.isEmpty
+                ? 'Keine aktuellen Prospektartikel für diese Auswahl gefunden.'
+                : 'Keine aktuellen Prospektartikel für „$trimmedQuery“ gefunden.',
             textAlign: TextAlign.center,
           ),
         ),
@@ -215,6 +266,10 @@ class _ProspectSearchResults extends StatelessWidget {
     final byStore = <String, List<OfferImportRecord>>{};
     for (final record in records) {
       byStore.putIfAbsent(record.storeName, () => []).add(record);
+    }
+    final issueByStore = <String, ProspectIssue>{};
+    for (final issue in prospects) {
+      issueByStore.putIfAbsent(issue.storeName, () => issue);
     }
 
     return Column(
@@ -233,9 +288,26 @@ class _ProspectSearchResults extends StatelessWidget {
         for (final entry in byStore.entries) ...[
           Padding(
             padding: const EdgeInsets.only(top: 8, bottom: 6),
-            child: Text(
-              entry.key,
-              style: const TextStyle(fontWeight: FontWeight.w800),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  entry.key,
+                  style: const TextStyle(fontWeight: FontWeight.w800),
+                ),
+                if (entry.value.every(
+                      (record) => record.location?.trim().isEmpty ?? true,
+                    ) &&
+                    issueByStore[entry.key]?.location?.trim().isNotEmpty ==
+                        true)
+                  Text(
+                    issueByStore[entry.key]!.location!.trim(),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.black54,
+                    ),
+                  ),
+              ],
             ),
           ),
           for (final record in entry.value)
@@ -265,23 +337,126 @@ class _ProspectSearchResults extends StatelessWidget {
 
 List<OfferImportRecord> _matchingProspectRecords(
   Iterable<OfferImportRecord> records,
-  String query,
-) {
+  String query, {
+  String? category,
+  String? storeName,
+}) {
   final normalized = query.trim().toLowerCase();
-  if (normalized.isEmpty) return records.toList(growable: false);
   return records
       .where((record) {
-        final category = record.category?.trim() ?? '';
+        if (storeName != null && record.storeName != storeName) {
+          return false;
+        }
+        if (category != null && _prospectCategoryForRecord(record) != category) {
+          return false;
+        }
+        if (normalized.isEmpty) return true;
+        final sourceCategory = record.category?.trim() ?? '';
         final searchable = [
           record.productLabel,
           record.storeName,
-          category,
-          presentProspectCategory(category),
+          sourceCategory,
+          presentProspectCategory(sourceCategory),
           fallbackProspectCategory(record.productLabel),
         ].join(' ').toLowerCase();
         return searchable.contains(normalized);
       })
       .toList(growable: false);
+}
+
+List<String> _prospectCategories(Iterable<OfferImportRecord> records) {
+  final categories = <String>{
+    for (final record in records) _prospectCategoryForRecord(record),
+  };
+  return categories.toList()..sort();
+}
+
+List<String> _prospectStores(
+  Iterable<OfferImportRecord> records,
+  Iterable<ProspectIssue> issues,
+) {
+  final stores = <String>[];
+  for (final name in [
+    ...issues.map((issue) => issue.storeName),
+    ...records.map((record) => record.storeName),
+  ]) {
+    if (name.trim().isNotEmpty && !stores.contains(name)) stores.add(name);
+  }
+  return stores;
+}
+
+class _ProspectCategoryChips extends StatelessWidget {
+  const _ProspectCategoryChips({
+    required this.categories,
+    required this.selectedCategory,
+    required this.onSelected,
+  });
+
+  final List<String> categories;
+  final String? selectedCategory;
+  final ValueChanged<String?> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          ChoiceChip(
+            label: const Text('Alle Kategorien'),
+            selected: selectedCategory == null,
+            onSelected: (_) => onSelected(null),
+          ),
+          const SizedBox(width: 8),
+          for (final category in categories) ...[
+            ChoiceChip(
+              label: Text(category),
+              selected: selectedCategory == category,
+              onSelected: (_) => onSelected(category),
+            ),
+            const SizedBox(width: 8),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ProspectStoreChips extends StatelessWidget {
+  const _ProspectStoreChips({
+    required this.stores,
+    required this.selectedStore,
+    required this.onSelected,
+  });
+
+  final List<String> stores;
+  final String? selectedStore;
+  final ValueChanged<String?> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          ChoiceChip(
+            label: const Text('Alle Märkte'),
+            selected: selectedStore == null,
+            onSelected: (_) => onSelected(null),
+          ),
+          const SizedBox(width: 8),
+          for (final store in stores) ...[
+            ChoiceChip(
+              label: Text(store),
+              selected: selectedStore == store,
+              onSelected: (_) => onSelected(store),
+            ),
+            const SizedBox(width: 8),
+          ],
+        ],
+      ),
+    );
+  }
 }
 
 ProspectIssue _visibleIssue(
@@ -440,12 +615,96 @@ class _ProspectViewer extends StatelessWidget {
     required this.records,
     required this.catalogProducts,
     this.onAddProduct,
+    this.now,
+    this.onSaveOffer,
   });
 
   final ProspectIssue issue;
   final List<OfferImportRecord> records;
   final List<Product> catalogProducts;
   final ValueChanged<Product>? onAddProduct;
+  final DateTime? now;
+  final Future<List<Offer>> Function(Offer offer)? onSaveOffer;
+
+  Future<void> _addPageOffer(BuildContext context, ProspectPage page) async {
+    final saveOffer = onSaveOffer;
+    final addProduct = onAddProduct;
+    if (saveOffer == null || addProduct == null) return;
+    final draft = await showProspectPageOfferDialog(
+      context,
+      initialValidUntil: issue.validUntil,
+    );
+    if (draft == null || !context.mounted) return;
+
+    final record = OfferImportRecord(
+      sourceId:
+          'manual-page|${issue.storeName}|${page.number}|${DateTime.now().microsecondsSinceEpoch}',
+      productLabel: draft.productLabel,
+      storeName: issue.storeName,
+      originalPrice: draft.originalPrice,
+      offerPrice: draft.offerPrice,
+      validFrom: issue.validFrom,
+      validUntil: draft.validUntil,
+      source: 'leaflet',
+      proofRef: page.zoomUrl ?? page.imageUrl,
+      imageUrl: page.imageUrl,
+      branchId: issue.branchId,
+      location: issue.location,
+      address: issue.address,
+    );
+    final entries = prospectOfferProducts(
+      records: [record],
+      catalogProducts: catalogProducts,
+      now: now ?? DateTime.now(),
+    );
+    if (entries.length != 1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Artikel konnte mit diesen Angaben nicht als aktuelles Angebot '
+            'gespeichert werden.',
+          ),
+        ),
+      );
+      return;
+    }
+    final entry = entries.single;
+    // This is a user-reviewed page claim. Give it a stable non-import ID so
+    // the next automatic feed refresh cannot delete it as a transient feed
+    // projection.
+    final reviewedOffer = Offer(
+      id:
+          'manual-page|${issue.storeName}|${page.number}|${DateTime.now().microsecondsSinceEpoch}',
+      productId: entry.offer.productId,
+      storeName: entry.offer.storeName,
+      originalPrice: entry.offer.originalPrice,
+      originalPriceVerified: entry.offer.originalPriceVerified,
+      offerPrice: entry.offer.offerPrice,
+      validFrom: entry.offer.validFrom,
+      validUntil: entry.offer.validUntil,
+      source: entry.offer.source,
+      proofRef: entry.offer.proofRef,
+      imageUrl: entry.offer.imageUrl,
+      locationId: entry.offer.locationId,
+      region: entry.offer.region,
+      address: entry.offer.address,
+    );
+    try {
+      await saveOffer(reviewedOffer);
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Angebot konnte nicht gespeichert werden.')),
+        );
+      }
+      return;
+    }
+    addProduct(entry.product);
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('${entry.product.name} hinzugefügt')),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -480,12 +739,12 @@ class _ProspectViewer extends StatelessWidget {
                     : null,
               ),
             ),
-          if (issue.url != null)
+          if (_officialProspectUri(issue.url) != null)
             Align(
               alignment: Alignment.centerLeft,
               child: OutlinedButton.icon(
                 onPressed: () => launchUrl(
-                  Uri.parse(issue.url!),
+                  _officialProspectUri(issue.url)!,
                   mode: LaunchMode.externalApplication,
                 ),
                 icon: const Icon(Icons.open_in_new),
@@ -548,7 +807,20 @@ class _ProspectViewer extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8),
-                      child: Text('Seite ${page.number}'),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text('Seite ${page.number}'),
+                          const SizedBox(height: 6),
+                          OutlinedButton.icon(
+                            onPressed: onSaveOffer == null || onAddProduct == null
+                                ? null
+                                : () => _addPageOffer(context, page),
+                            icon: const Icon(Icons.add_shopping_cart_outlined),
+                            label: const Text('Artikel von Seite hinzufügen'),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -648,4 +920,16 @@ String _prospectCategoryForRecord(OfferImportRecord record) {
 
 String _prospectDate(DateTime value) =>
     '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.${value.year}';
+
+Uri? _officialProspectUri(String? value) {
+  final raw = value?.trim();
+  if (raw == null || raw.isEmpty) return null;
+  final uri = Uri.tryParse(raw);
+  if (uri == null ||
+      (uri.scheme != 'http' && uri.scheme != 'https') ||
+      uri.host.isEmpty) {
+    return null;
+  }
+  return uri;
+}
 

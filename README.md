@@ -89,10 +89,25 @@ Bonimporte, eigene Preise oder andere belegte Quellen routenfähig.
 - Angebote werden getrennt von Produktidentitäten behandelt: ein Angebot erzeugt grundsätzlich kein neues Produkt.
 - Angebotszeiträume werden berücksichtigt.
 - Die Prospektansicht lädt nur aktuell gültige Angebotsdaten und datierte Prospektseiten. Bei fehlendem Abruf zeigt sie den offiziellen Händlerlink ohne erfundene Preise.
+- Bildbasierte Seiten können nach ausdrücklicher Nutzerprüfung mit Bezeichnung, Preis und Gültigkeitsende zur Einkaufsliste übernommen werden. Seitenlink, Bild und Filialkontext bleiben dabei als Nachweis erhalten; automatische OCR bestätigt keine Preise.
 - Die Prospektansicht kann aktuelle Artikel marktübergreifend nach Händler,
   Produktlabel oder Kategorie durchsuchen. Ein belegter Treffer lässt sich
   direkt zur Einkaufsliste hinzufügen; dabei bleiben Händlernachweis, Bild,
   Angebotszeitraum und die bestehende Identitätsprüfung erhalten.
+- Die Prospektansicht bietet zusätzlich quellentreue Kategorien als schnelle
+  Filter. Die Chips verwenden nur Händlerkategorien oder die sichtbare
+  Fallback-Kategorie und führen in denselben geprüften Add-to-List-Flow.
+- Jede nachgewiesene Artikelkarte bietet den Originalnachweis direkt an. Der
+  Link wird nur für eine gültige HTTP(S)-Quelle angezeigt und verändert keine
+  Preis- oder Produktidentität.
+- Marktübergreifende Treffer zeigen zusätzlich den im Prospektfeed gelieferten
+  Filialort, damit gleiche Händler und unterschiedliche Standorte nicht
+  verwechselt werden.
+- Wenn der Feed eine Adresse pro Filialdatensatz liefert, bleibt sie am
+  Prospektangebot und an der Artikelkarte sichtbar und wird beim Umwandeln in
+  ein gespeichertes Angebot mitgeführt.
+- Händlerchips erlauben die direkte Auswahl eines Marktes; sie filtern dieselben
+  aktuellen, nachgewiesenen Artikelkarten wie die Volltext- und Kategorieauswahl.
 - Der zuletzt erfolgreich validierte öffentliche Feed bleibt lokal als Cache verfügbar, wenn der nächste Abruf vorübergehend scheitert. Auch Cache-Daten werden vor Anzeige und Routenplanung nach ihrer Angebotsgültigkeit gefiltert und als Cache-Ergebnis kenntlich gemacht.
 - Belegte Prospekt-Angebotspreise und ausdrücklich angegebene Normalpreise bleiben mit Markt, Quelle, Nachweis, Packungsgröße und Gültigkeit als Preisbeobachtungen erhalten. Abgelaufene Preise dienen nur der Historie; sie werden nicht als aktuell verfügbarer Routenpreis ausgegeben.
 - Marken-/Text-Matching kann passende Angebote zu Produkten finden.

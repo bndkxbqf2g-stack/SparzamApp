@@ -45,6 +45,8 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
   reaktivieren.
 - [ ] Prospektfeed weiter auf vollständige Artikelbilder, Kategorien,
   Filialbezug und belastbare Gültigkeit ausbauen.
+- [x] Bildseiten ermöglichen eine geprüfte manuelle Artikelübernahme mit
+  Seitenlink, Preis, Gültigkeitsende und bestehender Filialprovenienz.
 
 ## Phase D – Alltagstaugliche Datenerfassung
 - Kassenbons möglichst automatisch.
@@ -339,3 +341,46 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   zuerst berücksichtigt, ohne Produktidentitäten oder Preise zu verschmelzen.
 - [x] Regressionen sichern beide Auswahlpfade und den bestehenden Schutz vor
   unbestätigten Varianten ab.
+
+## Update 11.10.2026 – Prospektkategorien direkt durchsuchbar
+- [x] Aktuelle Prospektartikel können zusätzlich zur Volltextsuche über ihre
+  vorhandene Händler- oder Darstellungskategorie gefiltert werden.
+- [x] Der Kategorienfilter bleibt reine Navigation: Herkunft, Gültigkeit,
+  Produktidentität und sichere Add-to-List-Auflösung werden nicht verändert.
+- [x] Widgetregression prüft die Auswahl einer Kategorie über mehrere Märkte.
+
+## Update 11.10.2026 – Originalnachweis an jeder belegten Artikelkarte
+- [x] Belegte kompakte und große Prospektkarten öffnen ihren vorhandenen
+  HTTP(S)-Originalnachweis direkt aus der Artikelansicht.
+- [x] Fehlende oder ungültige Nachweise erzeugen keinen Link und bleiben nach
+  den bestehenden Identitätsregeln nicht auswählbar.
+- [x] Widgetregression prüft die sichtbare Nachweisaktion und den Review-Fall.
+
+## Update 11.10.2026 – Filialort in Suchtreffern
+- [x] Marktübergreifende Prospektartikel zeigen den vorhandenen Filialort direkt
+  unter dem Händlernamen.
+- [x] Fehlende Filialdaten bleiben leer; es werden keine Standorte aus Labels
+  oder Händlerähnlichkeiten erfunden.
+- [x] Widgetregression deckt den sichtbaren Ort im Trefferpfad ab.
+
+## Update 11.10.2026 – Prospektartikel nach Händler auswählen
+- [x] Die Prospektansicht bietet Händlerchips für die direkte Marktfilterung.
+- [x] Die Filterung nutzt nur aktuell gültige Datensätze und den bestehenden
+  Nachweis-/Identitätsvertrag; sie erzeugt keinen Preis oder Marktbezug.
+- [x] Widgetregression prüft die Auswahl eines Händlers gegenüber einem zweiten
+  Markt.
+
+## Update 11.10.2026 – Offizielle Prospektlinks validieren
+- [x] Der offizielle Händlerlink im Prospektreader wird vor dem Öffnen auf ein
+  gültiges HTTP(S)-Ziel mit Host geprüft.
+- [x] Ungültige URI-Schemes bleiben ohne externe Aktion; Prospektdaten und
+  Angebotsidentität werden dadurch nicht verändert.
+
+## Update 11.10.2026 – Angebotsnachweise in der Abdeckung ausweisen
+- [x] Die Abdeckungskarte zählt pro Markt die strukturierten Angebotsdatensätze
+  mit vorhandenem Originalnachweis.
+- [x] Fehlende Nachweise bleiben als sichtbare Datenlücke bestehen und werden
+  weder durch einen Händlerlink noch durch eine Preis- oder Identitätsannahme
+  ersetzt.
+- [x] Ungültige URI-Schemes oder URLs ohne Host werden nicht als belastbarer
+  Originalnachweis gezählt.
