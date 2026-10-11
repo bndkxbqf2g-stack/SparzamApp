@@ -40,11 +40,18 @@ class _FakeProspectImportModule extends ProspectImportModule {
 
 class _TracingShoppingListStore extends ShoppingListStore {
   final savedSnapshots = <List<ListItem>>[];
+  final knownProducts = <String>[];
 
   @override
   Future<void> save(List<ListItem> items) {
     savedSnapshots.add(List<ListItem>.from(items));
     return super.save(items);
+  }
+
+  @override
+  Future<void> saveKnownItem(Product product) {
+    knownProducts.add(product.name);
+    return super.saveKnownItem(product);
   }
 }
 
@@ -298,12 +305,19 @@ void main() {
       final savedOffers = await stores.offers.load();
       final diagnostics = await stores.diagnostics.load();
       expect(
+        stores.shoppingList.knownProducts,
+        contains('Käsesticks 300 g'),
+        reason: 'known=\${stores.shoppingList.knownProducts}',
+      );
+      expect(
         stores.shoppingList.savedSnapshots.any(
           (snapshot) => snapshot.any(
             (item) => item.product.name == 'Käsesticks 300 g',
           ),
         ),
         isTrue,
+        reason:
+            'snapshots=\${stores.shoppingList.savedSnapshots.map((snapshot) => snapshot.map((item) => item.product.name).join(",")).join("|")}',
       );
       expect(
         diagnostics.any(
