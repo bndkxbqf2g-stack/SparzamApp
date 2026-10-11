@@ -1,5 +1,14 @@
 # SparzamApp
 
+## Update 12.10.2026 – Prospektgültigkeit konservativ validieren
+- [x] Falsch typisierte oder syntaktisch ungültige Angebotsfelder werden
+  verworfen, statt als fehlende Angaben weiterzulaufen.
+- [x] Widersprüchliche Zeiträume und ungültig ausgewiesene Normalpreise
+  gelangen nicht in aktuelle Prospektangebote oder Preisprojektionen.
+- [x] Eine synthetische Regression bewahrt valide Nachbarangebote und prüft
+  die drei verworfenen Evidenzfälle.
+
+
 ## Update 11.10.2026 – Prospektartikel bis AppShell und Route durchgetestet
 - Ein AppShell-Integrationstest prüft jetzt den sichtbaren Prospekte-Tab,
   die Suche, die Add-to-List-Aktion, die gespeicherte Angebotsprovenienz und
