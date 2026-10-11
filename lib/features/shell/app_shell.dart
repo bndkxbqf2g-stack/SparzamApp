@@ -102,6 +102,7 @@ class AppShell extends StatefulWidget {
     required this.initialShoppingList,
     required this.initialPreferredProductByGroup,
     required this.diagnosticLogService,
+    this.prospectImportModule,
   });
 
   final BudgetStore budgetStore;
@@ -126,6 +127,7 @@ class AppShell extends StatefulWidget {
   final List<ListItem> initialShoppingList;
   final Map<String, String> initialPreferredProductByGroup;
   final DiagnosticLogService diagnosticLogService;
+  final ProspectImportModule? prospectImportModule;
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -287,7 +289,7 @@ class _AppShellState extends State<AppShell> {
     _prospectFeedRefreshing = true;
     if (mounted) setState(() {});
     try {
-      final feed = await ProspectImportModule().execute(
+      final feed = await (widget.prospectImportModule ?? ProspectImportModule()).execute(
         startAddress: mobility.startAddress,
       );
       if (mounted) {
