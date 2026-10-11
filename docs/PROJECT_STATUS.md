@@ -3,6 +3,14 @@
 > Diese Datei ist der Einstiegspunkt für jeden neuen Chat und jeden Work-Lauf.
 > Vor Änderungen immer zuerst PROJECT_STATUS.md, ARCHITECTURE.md, ROADMAP.md und DECISIONS.md lesen und danach den aktuellen GitHub-Stand prüfen.
 
+## Update 11.10.2026 – Originalnachweis an Prospektartikelkarten
+- Nachgewiesene Prospektartikel zeigen in kompakter und großer Darstellung
+  einen direkten Link zum vorhandenen HTTP(S)-Originalnachweis.
+- Ohne gültigen Nachweis wird kein Link angezeigt; der bestehende Add-to-List-
+  Schutz für fehlende oder mehrdeutige Identitäten bleibt unverändert.
+- Eine Widget-Regression prüft sichtbare Nachweise für belegte Karten und deren
+  Abwesenheit bei unbelegten Artikeln.
+
 ## Update 11.10.2026 – Prospektartikel nach Quellenkategorie filtern
 - Die Prospektansicht bietet neben der Volltextsuche schnelle Kategorienchips
   für die aktuell gültigen Händlerartikel. Die Auswahl filtert marktübergreifend
