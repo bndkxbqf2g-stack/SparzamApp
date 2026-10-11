@@ -89,6 +89,10 @@ Bonimporte, eigene Preise oder andere belegte Quellen routenfähig.
 - Angebote werden getrennt von Produktidentitäten behandelt: ein Angebot erzeugt grundsätzlich kein neues Produkt.
 - Angebotszeiträume werden berücksichtigt.
 - Die Prospektansicht lädt nur aktuell gültige Angebotsdaten und datierte Prospektseiten. Bei fehlendem Abruf zeigt sie den offiziellen Händlerlink ohne erfundene Preise.
+- Die Prospektansicht kann aktuelle Artikel marktübergreifend nach Händler,
+  Produktlabel oder Kategorie durchsuchen. Ein belegter Treffer lässt sich
+  direkt zur Einkaufsliste hinzufügen; dabei bleiben Händlernachweis, Bild,
+  Angebotszeitraum und die bestehende Identitätsprüfung erhalten.
 - Der zuletzt erfolgreich validierte öffentliche Feed bleibt lokal als Cache verfügbar, wenn der nächste Abruf vorübergehend scheitert. Auch Cache-Daten werden vor Anzeige und Routenplanung nach ihrer Angebotsgültigkeit gefiltert und als Cache-Ergebnis kenntlich gemacht.
 - Belegte Prospekt-Angebotspreise und ausdrücklich angegebene Normalpreise bleiben mit Markt, Quelle, Nachweis, Packungsgröße und Gültigkeit als Preisbeobachtungen erhalten. Abgelaufene Preise dienen nur der Historie; sie werden nicht als aktuell verfügbarer Routenpreis ausgegeben.
 - Marken-/Text-Matching kann passende Angebote zu Produkten finden.
@@ -482,3 +486,4 @@ Die ausführbare manuelle Checkliste liegt in `docs/RELEASE_ACCEPTANCE.md`. Auto
 Historische Bonbeobachtungen werden bei jeder Statistikberechnung erneut anhand ihrer originalen Bonbezeichnung einer Produktfamilie zugeordnet. Verbesserte Erkennungsregeln gelten dadurch automatisch auch für bereits gespeicherte Bons und für alle Produkte.
 
 - Tatsächlich gekaufte rabattierte Bonpositionen bleiben als historische Preisbeobachtungen sichtbar. Der Rabattstatus bleibt erhalten, damit ein rabattierter Kaufpreis nicht mit einem dauerhaften Normalpreis verwechselt werden muss.
+
