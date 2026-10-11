@@ -650,6 +650,7 @@ class _ProspectViewer extends StatelessWidget {
       imageUrl: page.imageUrl,
       branchId: issue.branchId,
       location: issue.location,
+      address: issue.address,
     );
     final entries = prospectOfferProducts(
       records: [record],
@@ -686,6 +687,7 @@ class _ProspectViewer extends StatelessWidget {
       imageUrl: entry.offer.imageUrl,
       locationId: entry.offer.locationId,
       region: entry.offer.region,
+      address: entry.offer.address,
     );
     try {
       await saveOffer(reviewedOffer);
