@@ -719,7 +719,7 @@ String? _prospectValidityLabel(ProspectIssue issue) {
   final from = issue.validFrom;
   final until = issue.validUntil;
   if (from == null || until == null) return null;
-  return _prospectDate(from) + ' – ' + _prospectDate(until);
+  return '${_prospectDate(from)} – ${_prospectDate(until)}';
 }
 
 const _bringBackground = Color(0xFF283A44);
