@@ -204,8 +204,8 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                     return _ProspectCard(
                       issue: issue,
                       compact: false,
-                      showLocation: false,
-                      showSummary: false,
+                      showLocation: true,
+                      showSummary: true,
                       onTap: () => _openProspect(
                         context,
                         issue,
@@ -251,7 +251,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                           child: _ProspectCard(
                             issue: issue,
                             compact: true,
-                            showLocation: true,
+                            showLocation: false,
                             showSummary: true,
                             onTap: () => _openProspect(
                               context,
@@ -589,7 +589,7 @@ class _ProspectCard extends StatelessWidget {
     final previewUrl = issue.pages.isNotEmpty
         ? issue.pages.first.imageUrl.trim()
         : issue.thumbnailUrl?.trim();
-    final imageHeight = compact ? 168.0 : 190.0;
+    final imageHeight = compact ? 168.0 : 170.0;
     final validity = _prospectValidityLabel(issue);
 
     return SizedBox(
