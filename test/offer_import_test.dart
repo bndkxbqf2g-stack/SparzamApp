@@ -40,6 +40,7 @@ void main() {
         proofRef: 'leaflet:lidl:2026-09-25:p1',
         branchId: 'L-42',
         location: 'Zellingen',
+        address: 'Hauptstraße 1, 97225 Zellingen',
       ),
       catalog,
     );
@@ -53,6 +54,7 @@ void main() {
     expect(result.offer!.proofRef, 'leaflet:lidl:2026-09-25:p1');
     expect(result.offer!.locationId, 'L-42');
     expect(result.offer!.region, 'Zellingen');
+    expect(result.offer!.address, 'Hauptstraße 1, 97225 Zellingen');
   });
 
   test('offer without stated regular price stays usable without inventing one', () {
