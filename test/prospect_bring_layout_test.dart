@@ -47,6 +47,8 @@ void main() {
 
     expect(find.text('Angebote'), findsOneWidget);
     expect(find.text('Deine Favoriten'), findsOneWidget);
+    expect(find.byKey(const ValueKey('prospect-location-pill')), findsOneWidget);
+    expect(find.text('97225'), findsOneWidget);
     await tester.drag(
       find.byKey(const ValueKey('prospect-bring-scroll')),
       const Offset(0, -480),
@@ -55,8 +57,6 @@ void main() {
     expect(find.text('Weitere Prospekte'), findsOneWidget);
     expect(find.text('Alle Prospekte'), findsOneWidget);
     expect(find.byKey(const ValueKey('prospect-grid')), findsOneWidget);
-    expect(find.byKey(const ValueKey('prospect-location-pill')), findsOneWidget);
-    expect(find.text('97225'), findsOneWidget);
   });
 
   testWidgets('does not invent a location pill without a source postal code', (
