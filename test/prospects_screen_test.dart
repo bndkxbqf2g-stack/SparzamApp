@@ -640,5 +640,50 @@ Future<void> _scrollProspects(
   );
   await tester.drag(scrollable.first, Offset(0, -distance));
   await tester.pumpAndSettle();
+
+  testWidgets('shows the record location in prospect search results', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: [
+            OfferImportRecord(
+              sourceId: 'record-location',
+              productLabel: 'Kaffee Crema 500 g',
+              storeName: 'Lidl',
+              offerPrice: 4.99,
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+              proofRef: 'https://example.test/record-location',
+              location: 'Filialstadt',
+            ),
+          ],
+          prospects: const [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: [],
+              location: 'Quellstadt',
+            ),
+          ],
+          now: DateTime(2026, 9, 30),
+          catalogProducts: const <Product>[],
+        ),
+      ),
+    );
+
+    final search = find.byWidgetPredicate(
+      (widget) =>
+          widget is TextField &&
+          widget.decoration?.hintText == 'Prospekte und Artikel durchsuchen',
+    );
+    await tester.enterText(search, 'Kaffee');
+    await tester.pump();
+
+    expect(find.text('Filialstadt'), findsOneWidget);
+    expect(find.text('Quellstadt'), findsNothing);
+  });
+
 }
 
