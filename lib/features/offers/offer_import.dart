@@ -19,6 +19,7 @@ class OfferImportRecord {
     this.category,
     this.branchId,
     this.location,
+    this.address,
   });
 
   final String sourceId;
@@ -41,6 +42,9 @@ class OfferImportRecord {
   /// never make two differently labelled products the same identity.
   final String? branchId;
   final String? location;
+
+  /// Source-provided branch address kept with the exact offer record.
+  final String? address;
 }
 
 String prospectRecordLocationLabel(
