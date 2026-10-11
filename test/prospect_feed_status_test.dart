@@ -145,7 +145,9 @@ void main() {
     );
 
     await tester.pumpWidget(
-      MaterialApp(home: ProspectCoverageCard(coverage: coverage)),
+      MaterialApp(
+        home: ListView(children: [ProspectCoverageCard(coverage: coverage)]),
+      ),
     );
 
     expect(find.text('Datenabdeckung der aktuellen Prospekte'), findsOneWidget);
