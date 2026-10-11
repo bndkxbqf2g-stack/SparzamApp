@@ -48,6 +48,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
   var query = '';
   String? selectedCategory;
   String? selectedStore;
+  var _filtersExpanded = true;
 
   @override
   void dispose() {
@@ -93,140 +94,207 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
           now: widget.now,
         ),
     ];
+    final hasSelection = query.trim().isNotEmpty ||
+        activeCategory != null ||
+        activeStore != null;
 
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 18, 16, 96),
-      children: [
-        const Icon(
-          Icons.menu_book_outlined,
-          color: SparzamTheme.deepGreen,
-          size: 28,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Prospekte',
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
-        const Center(
-          child: Text('Aktuelle Prospekte. Produkte antippen und vormerken.'),
-        ),
-        const SizedBox(height: 14),
-        Material(
-          type: MaterialType.transparency,
-          child: TextField(
-            controller: searchController,
-            onChanged: (value) => setState(() => query = value),
-            decoration: InputDecoration(
-              hintText: 'Prospekte und Artikel durchsuchen',
-              prefixIcon: const Icon(Icons.search),
-              suffixIcon: query.trim().isEmpty
-                  ? null
-                  : IconButton(
-                      tooltip: 'Suche löschen',
-                      onPressed: () {
-                        searchController.clear();
-                        setState(() => query = '');
-                      },
-                      icon: const Icon(Icons.close),
-                    ),
-              filled: true,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(18),
-                borderSide: BorderSide.none,
-              ),
-            ),
-          ),
-        ),
-        if (categories.isNotEmpty) ...[
-          const SizedBox(height: 10),
-          Material(
-            type: MaterialType.transparency,
-            child: _ProspectCategoryChips(
-              categories: categories,
-              selectedCategory: activeCategory,
-              onSelected: (category) =>
-                  setState(() => selectedCategory = category),
-            ),
-          ),
-        ],
-        if (stores.isNotEmpty) ...[
-          const SizedBox(height: 8),
-          Material(
-            type: MaterialType.transparency,
-            child: _ProspectStoreChips(
-              stores: stores,
-              selectedStore: activeStore,
-              onSelected: (store) => setState(() => selectedStore = store),
-            ),
-          ),
-        ],
-        ProspectFeedStatusCard(
-          generatedAt: widget.generatedAt,
-          now: widget.now,
-          fromCache: widget.fromCache,
-          onRefresh: widget.onRefreshProspects,
-          refreshing: widget.prospectsRefreshing,
-        ),
-        const SizedBox(height: 20),
-        if (query.trim().isNotEmpty ||
-            activeCategory != null ||
-            activeStore != null)
-          _ProspectSearchResults(
-            records: matchingRecords,
-            prospects: visibleProspects,
-            catalogProducts: widget.catalogProducts,
-            onAddProduct: widget.onAddProduct,
-            query: query,
-          )
-        else if (visibleProspects.isEmpty)
-          const Card(
-            child: Padding(
-              padding: EdgeInsets.all(24),
-              child: Text(
-                'Noch keine Prospekte geladen.',
-                textAlign: TextAlign.center,
-              ),
-            ),
-          )
-        else ...[
-          Text('Alle Märkte', style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 8),
-          SizedBox(
-            height: 230,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: visibleProspects.length,
-              separatorBuilder: (context, index) => const SizedBox(width: 12),
-              itemBuilder: (context, index) {
-                final issue = visibleProspects[index];
-                return _ProspectCard(
-                  issue: issue,
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => _ProspectViewer(
-                        issue: issue,
-                        records: currentRecords,
-                        catalogProducts: widget.catalogProducts,
-                        onAddProduct: widget.onAddProduct,
-                        now: widget.now,
-                        onSaveOffer: widget.onSaveOffer,
-                      ),
-                    ),
+    return Theme(
+      data: _bringTheme(context),
+      child: ColoredBox(
+        color: _bringBackground,
+        child: ListView(
+          key: const ValueKey('prospect-bring-scroll'),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
+          children: [
+            _BringHeader(location: _prospectPostalCode(visibleProspects)),
+            const SizedBox(height: 8),
+            Material(
+              type: MaterialType.transparency,
+              child: TextField(
+                controller: searchController,
+                onChanged: (value) => setState(() => query = value),
+                style: const TextStyle(color: _bringWhite),
+                decoration: InputDecoration(
+                  hintText: 'Prospekte und Artikel durchsuchen',
+                  hintStyle: const TextStyle(color: _bringMuted),
+                  prefixIcon: const Icon(Icons.search, color: _bringMuted),
+                  suffixIcon: query.trim().isEmpty
+                      ? null
+                      : IconButton(
+                          tooltip: 'Suche löschen',
+                          onPressed: () {
+                            searchController.clear();
+                            setState(() => query = '');
+                          },
+                          icon: const Icon(Icons.close, color: _bringMuted),
+                        ),
+                  filled: true,
+                  fillColor: _bringSurface,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none,
                   ),
-                );
-              },
+                ),
+              ),
             ),
-          ),
-        ],
-        if (query.trim().isEmpty && visibleProspects.isNotEmpty)
-          ProspectCoverageCard(
-            coverage: calculateProspectCoverage(
-              issues: visibleProspects,
-              records: currentRecords,
+            if (_filtersExpanded && categories.isNotEmpty) ...[
+              const SizedBox(height: 10),
+              Material(
+                type: MaterialType.transparency,
+                child: _ProspectCategoryChips(
+                  categories: categories,
+                  selectedCategory: activeCategory,
+                  onSelected: (category) =>
+                      setState(() => selectedCategory = category),
+                ),
+              ),
+            ],
+            if (_filtersExpanded && stores.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Material(
+                type: MaterialType.transparency,
+                child: _ProspectStoreChips(
+                  stores: stores,
+                  selectedStore: activeStore,
+                  onSelected: (store) => setState(() => selectedStore = store),
+                ),
+              ),
+            ],
+            ProspectFeedStatusCard(
+              generatedAt: widget.generatedAt,
+              now: widget.now,
+              fromCache: widget.fromCache,
+              onRefresh: widget.onRefreshProspects,
+              refreshing: widget.prospectsRefreshing,
             ),
-          ),
-      ],
+            const SizedBox(height: 18),
+            if (hasSelection)
+              _ProspectSearchResults(
+                records: matchingRecords,
+                prospects: visibleProspects,
+                catalogProducts: widget.catalogProducts,
+                onAddProduct: widget.onAddProduct,
+                query: query,
+              )
+            else if (visibleProspects.isEmpty)
+              const Card(
+                color: _bringSurface,
+                child: Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Text(
+                    'Noch keine Prospekte geladen.',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              )
+            else ...[
+              _BringSectionTitle(
+                title: 'Deine Favoriten',
+                actionLabel: 'Mehr ›',
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 300,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: visibleProspects.length.clamp(1, 2),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(width: 12),
+                  itemBuilder: (context, index) {
+                    final issue = visibleProspects[index];
+                    return _ProspectCard(
+                      issue: issue,
+                      compact: false,
+                      showLocation: false,
+                      showSummary: false,
+                      onTap: () => _openProspect(
+                        context,
+                        issue,
+                        currentRecords,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 24),
+              _BringSectionTitle(
+                title: 'Weitere Prospekte',
+                showFilter: true,
+                onFilter: () => setState(
+                  () => _filtersExpanded = !_filtersExpanded,
+                ),
+              ),
+              const SizedBox(height: 2),
+              const Text(
+                'Alle Prospekte',
+                key: ValueKey('prospect-grid-label'),
+                style: TextStyle(
+                  color: _bringWhite,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 12),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final columns = constraints.maxWidth >= 650 ? 3 : 2;
+                  final gap = 12.0;
+                  final width =
+                      (constraints.maxWidth - (columns - 1) * gap) / columns;
+                  return Wrap(
+                    key: const ValueKey('prospect-grid'),
+                    spacing: gap,
+                    runSpacing: 14,
+                    children: [
+                      for (final issue in visibleProspects)
+                        SizedBox(
+                          width: width,
+                          child: _ProspectCard(
+                            issue: issue,
+                            compact: true,
+                            showLocation: true,
+                            showSummary: true,
+                            onTap: () => _openProspect(
+                              context,
+                              issue,
+                              currentRecords,
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                },
+              ),
+            ],
+            if (query.trim().isEmpty && visibleProspects.isNotEmpty)
+              ProspectCoverageCard(
+                coverage: calculateProspectCoverage(
+                  issues: visibleProspects,
+                  records: currentRecords,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _openProspect(
+    BuildContext context,
+    ProspectIssue issue,
+    List<OfferImportRecord> currentRecords,
+  ) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => _ProspectViewer(
+          issue: issue,
+          records: currentRecords,
+          catalogProducts: widget.catalogProducts,
+          onAddProduct: widget.onAddProduct,
+          now: widget.now,
+          onSaveOffer: widget.onSaveOffer,
+        ),
+      ),
     );
   }
 }
@@ -503,70 +571,117 @@ ProspectIssue _visibleIssue(
 }
 
 class _ProspectCard extends StatelessWidget {
-  const _ProspectCard({required this.issue, required this.onTap});
+  const _ProspectCard({
+    required this.issue,
+    required this.onTap,
+    this.compact = false,
+    this.showLocation = true,
+    this.showSummary = true,
+  });
 
   final ProspectIssue issue;
   final VoidCallback onTap;
+  final bool compact;
+  final bool showLocation;
+  final bool showSummary;
 
   @override
   Widget build(BuildContext context) {
-    final hasPages = issue.pages.isNotEmpty;
+    final previewUrl = issue.pages.isNotEmpty
+        ? issue.pages.first.imageUrl.trim()
+        : issue.thumbnailUrl?.trim();
+    final imageHeight = compact ? 168.0 : 222.0;
+    final validity = _prospectValidityLabel(issue);
+
     return SizedBox(
-      width: 250,
+      width: compact ? double.infinity : 214,
       child: Card(
+        color: _bringSurface,
         clipBehavior: Clip.antiAlias,
+        margin: EdgeInsets.zero,
         child: InkWell(
           onTap: onTap,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
-                child: hasPages
-                    ? Image.network(
-                        issue.pages.first.imageUrl,
+              SizedBox(
+                height: imageHeight,
+                child: previewUrl == null || previewUrl.isEmpty
+                    ? _bringCoverPlaceholder()
+                    : Image.network(
+                        previewUrl,
                         webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
                         fit: BoxFit.cover,
-                        width: double.infinity,
                         errorBuilder: (context, error, stackTrace) =>
-                            const Icon(Icons.menu_book, size: 56),
-                      )
-                    : const Center(
-                        child: Icon(
-                          Icons.local_offer_outlined,
-                          size: 56,
-                          color: SparzamTheme.deepGreen,
-                        ),
+                            _bringCoverPlaceholder(),
                       ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(12),
+              Container(
+                color: Colors.white,
+                padding: EdgeInsets.fromLTRB(
+                  compact ? 10 : 12,
+                  10,
+                  compact ? 10 : 12,
+                  11,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      issue.storeName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            issue.storeName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Color(0xFF27343A),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        const Icon(
+                          Icons.favorite_border,
+                          color: Color(0xFFE96A73),
+                          size: 22,
+                        ),
+                      ],
                     ),
-                    if (issue.location?.trim().isNotEmpty == true)
+                    if (showLocation &&
+                        issue.location?.trim().isNotEmpty == true)
                       Text(
-                        issue.location!,
+                        issue.location!.trim(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontSize: 12),
+                        style: const TextStyle(
+                          color: Color(0xFF6F7C80),
+                          fontSize: 12,
+                        ),
                       ),
-                    Text(
-                      _prospectCardSummary(issue),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: issue.sourceStatus == 'error'
-                            ? Colors.orange.shade900
-                            : Colors.black54,
+                    if (validity != null)
+                      Text(
+                        validity,
+                        style: const TextStyle(
+                          color: Color(0xFF6F7C80),
+                          fontSize: 12,
+                        ),
                       ),
-                    ),
+                    if (showSummary)
+                      Text(
+                        _prospectCardSummary(issue),
+                        maxLines: compact ? 2 : 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: issue.sourceStatus == 'error'
+                              ? Colors.deepOrange.shade700
+                              : const Color(0xFF6F7C80),
+                          fontSize: 11,
+                          height: 1.2,
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -574,6 +689,225 @@ class _ProspectCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+Widget _bringCoverPlaceholder() {
+  return const ColoredBox(
+    color: Color(0xFF435A64),
+    child: Center(
+      child: Icon(
+        Icons.local_offer_outlined,
+        color: _bringAccent,
+        size: 52,
+      ),
+    ),
+  );
+}
+String? _prospectPostalCode(Iterable<ProspectIssue> issues) {
+  final pattern = RegExp(r'\b\d{5}\b');
+  for (final issue in issues) {
+    final address = issue.address?.trim();
+    if (address == null || address.isEmpty) continue;
+    final match = pattern.firstMatch(address);
+    if (match != null) return match.group(0);
+  }
+  return null;
+}
+
+String? _prospectValidityLabel(ProspectIssue issue) {
+  final from = issue.validFrom;
+  final until = issue.validUntil;
+  if (from == null || until == null) return null;
+  return _prospectDate(from) + ' – ' + _prospectDate(until);
+}
+
+const _bringBackground = Color(0xFF283A44);
+const _bringSurface = Color(0xFF344953);
+const _bringAccent = Color(0xFF9DE5D8);
+const _bringMuted = Color(0xFFB7C5C8);
+const _bringWhite = Color(0xFFF7FBFA);
+
+ThemeData _bringTheme(BuildContext context) {
+  final base = Theme.of(context);
+  final scheme = ColorScheme.fromSeed(
+    seedColor: _bringAccent,
+    brightness: Brightness.dark,
+  ).copyWith(
+    primary: _bringAccent,
+    onPrimary: _bringBackground,
+    secondary: _bringAccent,
+    onSecondary: _bringBackground,
+    surface: _bringSurface,
+    onSurface: _bringWhite,
+    surfaceContainerHighest: const Color(0xFF405761),
+    onSurfaceVariant: _bringMuted,
+  );
+  return base.copyWith(
+    brightness: Brightness.dark,
+    colorScheme: scheme,
+    scaffoldBackgroundColor: _bringBackground,
+    textTheme: base.textTheme.apply(
+      bodyColor: _bringWhite,
+      displayColor: _bringWhite,
+    ),
+    cardTheme: const CardThemeData(
+      color: _bringSurface,
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(18)),
+      ),
+    ),
+    inputDecorationTheme: base.inputDecorationTheme.copyWith(
+      filled: true,
+      fillColor: _bringSurface,
+      hintStyle: const TextStyle(color: _bringMuted),
+      prefixIconColor: _bringMuted,
+      suffixIconColor: _bringMuted,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(18)),
+        borderSide: BorderSide.none,
+      ),
+    ),
+  );
+}
+
+class _BringHeader extends StatelessWidget {
+  const _BringHeader({this.location});
+
+  final String? location;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 102,
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Prospekte',
+                key: ValueKey('prospect-kicker'),
+                style: TextStyle(
+                  color: _bringMuted,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.6,
+                ),
+              ),
+              const SizedBox(height: 2),
+              const Text(
+                'Angebote',
+                style: TextStyle(
+                  color: _bringWhite,
+                  fontSize: 26,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'Aktuelle Prospekte. Produkte antippen und vormerken.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: _bringMuted, fontSize: 13),
+              ),
+            ],
+          ),
+          if (location != null)
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Container(
+                key: const ValueKey('prospect-location-pill'),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 11,
+                  vertical: 9,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E2D35),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: const Color(0xFF58727B)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.location_on,
+                      color: _bringWhite,
+                      size: 17,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      location!,
+                      style: const TextStyle(
+                        color: _bringWhite,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BringSectionTitle extends StatelessWidget {
+  const _BringSectionTitle({
+    required this.title,
+    this.actionLabel,
+    this.showFilter = false,
+    this.onFilter,
+  });
+
+  final String title;
+  final String? actionLabel;
+  final bool showFilter;
+  final VoidCallback? onFilter;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Text(
+            title,
+            style: const TextStyle(
+              color: _bringWhite,
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ),
+        if (actionLabel != null)
+          Text(
+            actionLabel!,
+            style: const TextStyle(
+              color: _bringMuted,
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        if (showFilter)
+          IconButton(
+            key: const ValueKey('prospect-filter-button'),
+            tooltip: 'Prospektfilter',
+            onPressed: onFilter,
+            style: IconButton.styleFrom(
+              backgroundColor: const Color(0xFF1E2D35),
+              foregroundColor: _bringWhite,
+              padding: const EdgeInsets.all(10),
+            ),
+            icon: const Icon(Icons.tune, size: 20),
+          ),
+      ],
     );
   }
 }
