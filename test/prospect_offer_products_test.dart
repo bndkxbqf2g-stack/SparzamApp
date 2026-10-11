@@ -74,6 +74,23 @@ void main() {
     expect(product, isNull);
   });
 
+  test('unsafe proof cannot be transferred to the shopping list', () {
+    final product = addableProductForProspectOffer(
+      OfferImportRecord(
+        sourceId: 'unsafe-proof-1',
+        productLabel: 'Haferdrink 1 l',
+        storeName: 'Lidl',
+        offerPrice: 0.99,
+        validUntil: DateTime(2026, 10, 2),
+        source: 'leaflet',
+        proofRef: 'javascript:alert(1)',
+      ),
+      const <Product>[],
+    );
+
+    expect(product, isNull);
+  });
+
   test('preserves multipack quantity for price comparability', () {
     final entries = prospectOfferProducts(
       records: [
