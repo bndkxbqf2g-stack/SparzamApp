@@ -1355,7 +1355,6 @@ class _AppShellState extends State<AppShell> {
       onSelectShoppingList: selectShoppingList,
       onCreateShoppingList: createShoppingList,
       onAddProduct: addProduct,
-      onAddProductAndWait: addProductAndWait,
       onChangeQuantity: changeQuantity,
       onSelectFamily: selectShoppingFamily,
       onUpdateItemNote: updateItemNote,
