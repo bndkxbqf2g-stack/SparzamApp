@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../design/sparzam_theme.dart';
 import '../../models/product.dart';
@@ -40,6 +41,7 @@ class _ProspectOfferCardState extends State<ProspectOfferCard> {
   }
 
   Widget _buildCompact(BuildContext context) {
+    final proofUri = _proofUri(widget.record.proofRef);
     return Card(
       clipBehavior: Clip.antiAlias,
       child: Padding(
@@ -56,6 +58,12 @@ class _ProspectOfferCardState extends State<ProspectOfferCard> {
               ),
             ),
             const SizedBox(width: 4),
+            if (proofUri != null)
+              IconButton(
+                tooltip: 'Prospektnachweis öffnen',
+                onPressed: () => _openProof(proofUri),
+                icon: const Icon(Icons.open_in_new),
+              ),
             IconButton(
               tooltip: widget.onAdd == null
                   ? 'Artikel noch nicht eindeutig zugeordnet'
@@ -74,6 +82,7 @@ class _ProspectOfferCardState extends State<ProspectOfferCard> {
   }
 
   Widget _buildGrid(BuildContext context) {
+    final proofUri = _proofUri(widget.record.proofRef);
     return Card(
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -87,6 +96,15 @@ class _ProspectOfferCardState extends State<ProspectOfferCard> {
               children: [
                 _OfferSummary(record: widget.record, product: widget.product),
                 const SizedBox(height: 10),
+                if (proofUri != null)
+                  SizedBox(
+                    width: double.infinity,
+                    child: TextButton.icon(
+                      onPressed: () => _openProof(proofUri),
+                      icon: const Icon(Icons.open_in_new),
+                      label: const Text('Prospektnachweis öffnen'),
+                    ),
+                  ),
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton.icon(
@@ -102,6 +120,20 @@ class _ProspectOfferCardState extends State<ProspectOfferCard> {
       ),
     );
   }
+
+  Future<void> _openProof(Uri uri) async {
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+}
+
+Uri? _proofUri(String? value) {
+  final raw = value?.trim();
+  if (raw == null || raw.isEmpty) return null;
+  final uri = Uri.tryParse(raw);
+  if (uri == null || (uri.scheme != 'http' && uri.scheme != 'https')) {
+    return null;
+  }
+  return uri;
 }
 
 class _OfferImage extends StatelessWidget {
@@ -254,3 +286,4 @@ String _price(double value) =>
 
 String _date(DateTime value) =>
     '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.${value.year}';
+
