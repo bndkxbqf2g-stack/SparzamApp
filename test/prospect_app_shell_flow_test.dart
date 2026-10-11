@@ -183,6 +183,15 @@ void main() {
 
       await tester.tap(find.text('Prospekte'));
       await tester.pumpAndSettle();
+      final restartSearch = find.byWidgetPredicate(
+        (widget) =>
+            widget is TextField &&
+            widget.decoration?.hintText ==
+                'Prospekte und Artikel durchsuchen',
+      );
+      expect(restartSearch, findsOneWidget);
+      await tester.enterText(restartSearch, 'Kaffee');
+      await tester.pump();
       expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
       await tester.tap(find.text('Liste'));
       await tester.pumpAndSettle();
