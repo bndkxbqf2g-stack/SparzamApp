@@ -137,6 +137,7 @@ void main() {
     expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
     expect(find.text('Frische Vollmilch 1 l'), findsNothing);
 
+    await tester.ensureVisible(find.byTooltip('Zur Einkaufsliste'));
     await tester.tap(find.byTooltip('Zur Einkaufsliste'));
     expect(added, isNotNull);
     expect(added!.name, 'Jacobs Kaffee Crema 500 g');
@@ -226,6 +227,7 @@ void main() {
       findsOneWidget,
     );
 
+    await tester.ensureVisible(find.text('PENNY'));
     await tester.tap(find.text('PENNY'));
     await tester.pumpAndSettle();
     expect(
@@ -264,6 +266,7 @@ void main() {
       ),
     );
 
+    await tester.ensureVisible(find.textContaining('Lidl'));
     await tester.tap(find.textContaining('Lidl'));
     await tester.pumpAndSettle();
 
@@ -303,6 +306,7 @@ void main() {
       findsOneWidget,
     );
 
+    await tester.ensureVisible(find.textContaining('Lidl'));
     await tester.tap(find.textContaining('Lidl'));
     await tester.pumpAndSettle();
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
@@ -335,6 +339,7 @@ void main() {
       find.text('Keine aktuell gültigen Angebotsdaten geladen.'),
       findsOneWidget,
     );
+    await tester.ensureVisible(find.text('EDEKA'));
     await tester.tap(find.text('EDEKA'));
     await tester.pumpAndSettle();
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
@@ -397,6 +402,7 @@ void main() {
     );
 
     expect(find.text('1 Angebote geladen'), findsOneWidget);
+    await tester.ensureVisible(find.text('Lidl'));
     await tester.tap(find.text('Lidl'));
     await tester.pumpAndSettle();
     expect(find.text('Seite 1'), findsOneWidget);
