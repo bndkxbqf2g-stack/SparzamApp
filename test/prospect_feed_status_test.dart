@@ -101,6 +101,14 @@ void main() {
           validUntil: DateTime(2026, 10, 7),
           proofRef: 'javascript:alert(1)',
         ),
+        OfferImportRecord(
+          sourceId: 'kaufland-1',
+          productLabel: 'Kaffee 500 g',
+          storeName: 'Kaufland',
+          offerPrice: 4.99,
+          validUntil: DateTime(2026, 10, 7),
+          proofRef: 'leaflet:kaufland:2026-10-11:p3',
+        ),
       ],
     );
 
@@ -126,6 +134,12 @@ void main() {
     final netto = coverage.firstWhere((entry) => entry.storeName == 'Netto');
     expect(netto.structuredOfferCount, 1);
     expect(netto.offerProofCount, 0);
+
+    final kaufland = coverage.firstWhere(
+      (entry) => entry.storeName == 'Kaufland',
+    );
+    expect(kaufland.structuredOfferCount, 1);
+    expect(kaufland.offerProofCount, 1);
   });
 
   testWidgets('shows per-market prospect coverage details when expanded', (
