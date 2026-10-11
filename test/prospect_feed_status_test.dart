@@ -191,7 +191,7 @@ void main() {
   });
 
   test('uses a deterministic age threshold for the feed status', () {
-    const generatedAt = DateTime(2026, 10, 1, 12, 2);
+    final generatedAt = DateTime(2026, 10, 1, 12, 2);
     expect(
       isProspectFeedStale(
         generatedAt,
