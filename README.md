@@ -102,6 +102,8 @@ Bonimporte, eigene Preise oder andere belegte Quellen routenfähig.
 - Marktübergreifende Treffer zeigen zusätzlich den im Prospektfeed gelieferten
   Filialort, damit gleiche Händler und unterschiedliche Standorte nicht
   verwechselt werden.
+- Händlerchips erlauben die direkte Auswahl eines Marktes; sie filtern dieselben
+  aktuellen, nachgewiesenen Artikelkarten wie die Volltext- und Kategorieauswahl.
 - Der zuletzt erfolgreich validierte öffentliche Feed bleibt lokal als Cache verfügbar, wenn der nächste Abruf vorübergehend scheitert. Auch Cache-Daten werden vor Anzeige und Routenplanung nach ihrer Angebotsgültigkeit gefiltert und als Cache-Ergebnis kenntlich gemacht.
 - Belegte Prospekt-Angebotspreise und ausdrücklich angegebene Normalpreise bleiben mit Markt, Quelle, Nachweis, Packungsgröße und Gültigkeit als Preisbeobachtungen erhalten. Abgelaufene Preise dienen nur der Historie; sie werden nicht als aktuell verfügbarer Routenpreis ausgegeben.
 - Marken-/Text-Matching kann passende Angebote zu Produkten finden.
