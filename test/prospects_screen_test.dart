@@ -68,6 +68,7 @@ void main() {
       findsNothing,
     );
 
+    await _scrollProspects(tester);
     await tester.tap(find.textContaining('ALDI Süd'));
     await tester.pumpAndSettle();
 
@@ -142,6 +143,50 @@ void main() {
     expect(added, isNotNull);
     expect(added!.name, 'Jacobs Kaffee Crema 500 g');
     expect(added!.id, startsWith('prospect|'));
+  });
+
+  testWidgets('filters current prospect articles by source category', (
+    tester,
+  ) async {
+    final records = [
+      OfferImportRecord(
+        sourceId: 'lidl-coffee',
+        productLabel: 'Jacobs Kaffee Crema 500 g',
+        storeName: 'Lidl',
+        offerPrice: 4.99,
+        validFrom: DateTime(2026, 9, 28),
+        validUntil: DateTime(2026, 10, 3),
+        proofRef: 'https://example.test/lidl/coffee',
+        category: 'Kaffee & Snacks',
+      ),
+      OfferImportRecord(
+        sourceId: 'edeka-milk',
+        productLabel: 'Frische Vollmilch 1 l',
+        storeName: 'EDEKA',
+        offerPrice: 0.99,
+        validFrom: DateTime(2026, 9, 28),
+        validUntil: DateTime(2026, 10, 3),
+        proofRef: 'https://example.test/edeka/milk',
+        category: 'Milchprodukte',
+      ),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: records,
+          now: DateTime(2026, 9, 30),
+          catalogProducts: const <Product>[]
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Kaffee & Snacks'));
+    await tester.pump();
+
+    expect(find.text('1 passende Prospektartikel'), findsOneWidget);
+    expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
+    expect(find.text('Frische Vollmilch 1 l'), findsNothing);
   });
 
   testWidgets('labels a cached prospect feed clearly', (tester) async {
