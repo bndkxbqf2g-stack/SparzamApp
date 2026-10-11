@@ -81,14 +81,30 @@ class ReceiptAliasStore {
     int minConfirmations = 2,
   }) async {
     final normalized = normalizeReceiptAlias(rawLabel);
-    for (final item in await load()) {
-      if (_sameAliasStore(item.storeName, storeName) &&
-          _sameAliasLabel(item.normalizedLabel, normalized) &&
-          item.confirmations >= minConfirmations) {
-        return item;
-      }
-    }
-    return null;
+    final matches = (await load())
+        .where(
+          (item) =>
+              _sameAliasStore(item.storeName, storeName) &&
+              _sameAliasLabel(item.normalizedLabel, normalized) &&
+              item.confirmations >= minConfirmations,
+        )
+        .toList(growable: false);
+    if (matches.isEmpty) return null;
+
+    // Conflicting legacy entries must stay in review. Picking the first
+    // serialized value would turn an ambiguous correction into a silent
+    // product identity and could attach later prices to the wrong item.
+    final productIds = matches.map((item) => item.productId).toSet();
+    if (productIds.length != 1) return null;
+
+    final ranked = [...matches]
+      ..sort((a, b) {
+        final confirmations = b.confirmations.compareTo(a.confirmations);
+        return confirmations != 0
+            ? confirmations
+            : b.updatedAt.compareTo(a.updatedAt);
+      });
+    return ranked.first;
   }
 
   Future<void> save(List<ReceiptAlias> aliases) => _preferences.setStringList(
