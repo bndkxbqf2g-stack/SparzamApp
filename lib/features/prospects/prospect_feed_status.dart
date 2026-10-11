@@ -10,12 +10,14 @@ class ProspectFeedStatusCard extends StatelessWidget {
   const ProspectFeedStatusCard({
     super.key,
     this.generatedAt,
+    this.now,
     this.fromCache = false,
     this.onRefresh,
     this.refreshing = false,
   });
 
   final DateTime? generatedAt;
+  final DateTime? now;
   final bool fromCache;
   final Future<void> Function()? onRefresh;
   final bool refreshing;
@@ -26,11 +28,15 @@ class ProspectFeedStatusCard extends StatelessWidget {
       return const SizedBox.shrink();
     }
     final timestamp = formatProspectFeedTimestamp(generatedAt);
+    final stale = !fromCache &&
+        isProspectFeedStale(generatedAt, now: now);
     final theme = Theme.of(context);
     final title = fromCache
         ? 'Letzter geprüfter Prospektstand'
         : generatedAt == null
         ? 'Prospektstand noch nicht geladen'
+        : stale
+        ? 'Prospektstand veraltet'
         : 'Aktueller Prospektstand';
     final subtitle = fromCache
         ? 'Stand $timestamp. Der Live-Abruf war nicht verfügbar; '
@@ -39,13 +45,23 @@ class ProspectFeedStatusCard extends StatelessWidget {
         : generatedAt == null
         ? 'Lade die aktuellen Prospekte, um neue Angebote und Preisbeobachtungen '
               'zu übernehmen.'
+        : stale
+        ? 'Stand $timestamp. Der Feed ist älter als '
+              '${prospectFeedStaleAfter.inHours} Stunden. Aktualisiere ihn, '
+              'bevor du neue Angebote übernimmst.'
         : 'Stand $timestamp. Es werden nur aktuell gültige Angebote '
               'angezeigt.';
     return Card(
-      color: fromCache ? theme.colorScheme.surfaceContainerHighest : null,
+      color: fromCache || stale
+          ? theme.colorScheme.surfaceContainerHighest
+          : null,
       child: ListTile(
         leading: Icon(
-          fromCache ? Icons.cloud_off_outlined : Icons.verified_outlined,
+          fromCache
+              ? Icons.cloud_off_outlined
+              : stale
+              ? Icons.warning_amber_outlined
+              : Icons.verified_outlined,
         ),
         title: Text(title),
         subtitle: Text(subtitle),
@@ -65,6 +81,18 @@ class ProspectFeedStatusCard extends StatelessWidget {
       ),
     );
   }
+}
+
+const prospectFeedStaleAfter = Duration(hours: 48);
+
+bool isProspectFeedStale(
+  DateTime? generatedAt, {
+  DateTime? now,
+  Duration maxAge = prospectFeedStaleAfter,
+}) {
+  if (generatedAt == null) return false;
+  final age = (now ?? DateTime.now()).toUtc().difference(generatedAt.toUtc());
+  return age > maxAge;
 }
 
 String formatProspectFeedTimestamp(DateTime? value) {
@@ -258,29 +286,3 @@ String _coverageDetails(ProspectCoverage coverage) {
   final productImages =
       '${coverage.offerImageCount}/${coverage.structuredOfferCount} Produktbilder';
   final categories =
-      '${coverage.offerCategoryCount}/${coverage.structuredOfferCount} Kategorien';
-  final proofs =
-      '${coverage.offerProofCount}/${coverage.structuredOfferCount} Nachweise';
-  final storeSignals = '${coverage.availableStoreSignals}/4 Filialdaten';
-  return '${coverage.structuredOfferCount} strukturierte Angebote · '
-      '${coverage.pageCount} Bildseiten · $productImages · $categories · '
-      '$proofs · '
-      '$storeSignals';
-}
-
-String _sourceStatusLabel(String status) {
-  switch (status) {
-    case 'ok':
-      return 'aktuell';
-    case 'current_fallback':
-      return 'Fallback';
-    case 'metadata_only':
-      return 'Metadaten';
-    case 'error':
-      return 'Fehler';
-    case 'no_current_offers':
-      return 'keine Angebote';
-    default:
-      return 'unvollständig';
-  }
-}
