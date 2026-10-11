@@ -152,7 +152,9 @@ void main() {
       await tester.pump();
       expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.add_shopping_cart_outlined));
+      final addButton = find.byIcon(Icons.add_shopping_cart_outlined);
+      await tester.ensureVisible(addButton);
+      await tester.tap(addButton);
       await tester.pumpAndSettle();
 
       final savedItems = await stores.shoppingList.load();
