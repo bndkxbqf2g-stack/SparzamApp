@@ -156,7 +156,7 @@ void main() {
       await tester.scrollUntilVisible(
         addButton,
         300.0,
-        scrollable: find.byType(ListView).first,
+        scrollable: find.byType(Scrollable).first,
       );
       await tester.tap(addButton);
       await tester.pumpAndSettle();
