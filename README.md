@@ -93,6 +93,9 @@ Bonimporte, eigene Preise oder andere belegte Quellen routenfähig.
   Produktlabel oder Kategorie durchsuchen. Ein belegter Treffer lässt sich
   direkt zur Einkaufsliste hinzufügen; dabei bleiben Händlernachweis, Bild,
   Angebotszeitraum und die bestehende Identitätsprüfung erhalten.
+- Die Prospektansicht bietet zusätzlich quellentreue Kategorien als schnelle
+  Filter. Die Chips verwenden nur Händlerkategorien oder die sichtbare
+  Fallback-Kategorie und führen in denselben geprüften Add-to-List-Flow.
 - Der zuletzt erfolgreich validierte öffentliche Feed bleibt lokal als Cache verfügbar, wenn der nächste Abruf vorübergehend scheitert. Auch Cache-Daten werden vor Anzeige und Routenplanung nach ihrer Angebotsgültigkeit gefiltert und als Cache-Ergebnis kenntlich gemacht.
 - Belegte Prospekt-Angebotspreise und ausdrücklich angegebene Normalpreise bleiben mit Markt, Quelle, Nachweis, Packungsgröße und Gültigkeit als Preisbeobachtungen erhalten. Abgelaufene Preise dienen nur der Historie; sie werden nicht als aktuell verfügbarer Routenpreis ausgegeben.
 - Marken-/Text-Matching kann passende Angebote zu Produkten finden.
