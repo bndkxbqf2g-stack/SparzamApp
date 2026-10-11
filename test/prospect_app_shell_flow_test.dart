@@ -292,6 +292,7 @@ void main() {
         find.widgetWithText(FilledButton, 'Artikel hinzufügen'),
       );
       await tester.pumpAndSettle();
+      expect(find.text('Angebot konnte nicht gespeichert werden.'), findsNothing);
       await tester.runAsync(() async {
         for (var attempt = 0; attempt < 200; attempt++) {
           final items = await stores.shoppingList.load();
