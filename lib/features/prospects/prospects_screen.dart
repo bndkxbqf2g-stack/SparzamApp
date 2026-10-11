@@ -152,6 +152,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
         if (query.trim().isNotEmpty || activeCategory != null)
           _ProspectSearchResults(
             records: matchingRecords,
+            prospects: visibleProspects,
             catalogProducts: widget.catalogProducts,
             onAddProduct: widget.onAddProduct,
             query: query,
@@ -209,12 +210,14 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
 class _ProspectSearchResults extends StatelessWidget {
   const _ProspectSearchResults({
     required this.records,
+    required this.prospects,
     required this.catalogProducts,
     required this.onAddProduct,
     required this.query,
   });
 
   final List<OfferImportRecord> records;
+  final List<ProspectIssue> prospects;
   final List<Product> catalogProducts;
   final ValueChanged<Product>? onAddProduct;
   final String query;
@@ -237,6 +240,10 @@ class _ProspectSearchResults extends StatelessWidget {
     for (final record in records) {
       byStore.putIfAbsent(record.storeName, () => []).add(record);
     }
+    final issueByStore = <String, ProspectIssue>{};
+    for (final issue in prospects) {
+      issueByStore.putIfAbsent(issue.storeName, () => issue);
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -254,9 +261,23 @@ class _ProspectSearchResults extends StatelessWidget {
         for (final entry in byStore.entries) ...[
           Padding(
             padding: const EdgeInsets.only(top: 8, bottom: 6),
-            child: Text(
-              entry.key,
-              style: const TextStyle(fontWeight: FontWeight.w800),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  entry.key,
+                  style: const TextStyle(fontWeight: FontWeight.w800),
+                ),
+                if (issueByStore[entry.key]?.location?.trim().isNotEmpty ==
+                    true)
+                  Text(
+                    issueByStore[entry.key]!.location!,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.black54,
+                    ),
+                  ),
+              ],
             ),
           ),
           for (final record in entry.value)
