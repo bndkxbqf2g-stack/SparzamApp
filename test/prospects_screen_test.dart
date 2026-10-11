@@ -69,7 +69,7 @@ void main() {
     );
 
     await _scrollProspects(tester);
-    await tester.tap(find.textContaining('ALDI Süd'));
+    await tester.tap(find.textContaining('ALDI Süd').last);
     await tester.pumpAndSettle();
 
     expect(find.text('ALDI Süd'), findsWidgets);
