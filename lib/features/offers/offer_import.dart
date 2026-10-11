@@ -2,6 +2,7 @@ import '../../models/offer.dart';
 import '../../models/product.dart';
 import '../catalog/product_identity.dart';
 import 'offer_filter.dart';
+import '../../services/prospect_branch_resolver.dart';
 
 class OfferImportRecord {
   const OfferImportRecord({
@@ -40,6 +41,24 @@ class OfferImportRecord {
   /// never make two differently labelled products the same identity.
   final String? branchId;
   final String? location;
+}
+
+String prospectRecordLocationLabel(
+  String storeName,
+  Iterable<OfferImportRecord> records,
+) {
+  final locations = <String>[];
+  for (final record in records) {
+    final location = record.location?.trim();
+    if (location == null ||
+        location.isEmpty ||
+        locations.contains(location)) {
+      continue;
+    }
+    locations.add(location);
+  }
+  if (locations.isNotEmpty) return locations.join(' · ');
+  return configuredProspectBranch(storeName)?.location ?? 'Filiale';
 }
 
 /// Returns only records belonging to a prospect that is valid today.
