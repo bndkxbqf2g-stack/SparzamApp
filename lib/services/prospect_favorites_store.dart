@@ -4,8 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 ///
 /// The store names are the canonical names from the validated prospect feed.
 class ProspectFavoritesStore {
-  ProspectFavoritesStore({SharedPreferencesAsync? preferences})
-    : _preferences = preferences;
+  ProspectFavoritesStore({this._preferences});
 
   static const storageKey = 'prospect_favorite_stores_v1';
 
