@@ -53,6 +53,7 @@ List<Widget> buildShellPages({
   required ShoppingListStore shoppingListStore,
   required List<Offer> offers,
   required List<OfferImportRecord> prospectRecords,
+  Future<void> Function(Product)? onAddProductAndWait,
   List<ProspectIssue> prospectIssues = const <ProspectIssue>[],
   bool prospectFeedFromCache = false,
   DateTime? prospectFeedGeneratedAt,
@@ -162,6 +163,7 @@ List<Widget> buildShellPages({
     prospectsRefreshing: prospectsRefreshing,
     catalogProducts: catalogProducts,
     onAddProduct: onAddProduct,
+    onAddProductAndWait: onAddProductAndWait,
     onSaveOffer: onSaveOffer,
   ),
   PricesHubScreen(
