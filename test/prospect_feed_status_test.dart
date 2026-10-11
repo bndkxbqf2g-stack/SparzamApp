@@ -160,4 +160,3 @@ void main() {
     expect(find.text('aktuell'), findsOneWidget);
   });
 }
-
