@@ -1,5 +1,14 @@
 # SparzamApp
 
+## Update 11.10.2026 – Prospektartikel bis AppShell und Route durchgetestet
+- Ein AppShell-Integrationstest prüft jetzt den sichtbaren Prospekte-Tab,
+  die Suche, die Add-to-List-Aktion, die gespeicherte Angebotsprovenienz und
+  den echten Neustartpfad bis zur Einkaufsroute.
+- Der Startpfad bewahrt bei der Migration aus der alten Einzel-Listenablage
+  vorhandene Artikel, wenn die benannte Liste vorübergehend leer gelesen wird.
+- Die synthetische Regression erfindet keine Preise oder Belege; CI bestätigt
+  Analyse, Flutter-Tests und den Web-Release-Build.
+
 ## Update 11.10.2026 – Filialadresse bleibt auch in der Importnormalisierung erhalten
 - Der allgemeine `resolveOfferImport`-Pfad übernimmt die Quelladresse jetzt
   genauso wie die direkte Prospektproduktauflösung.
