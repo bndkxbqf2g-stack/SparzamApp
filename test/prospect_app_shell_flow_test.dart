@@ -162,6 +162,14 @@ void main() {
       final addButton = find.byIcon(Icons.add_shopping_cart_outlined);
       await tester.tap(addButton);
       await tester.pumpAndSettle();
+      await tester.runAsync(() async {
+        for (var attempt = 0; attempt < 20; attempt++) {
+          final items = await stores.shoppingList.load();
+          final offers = await stores.offers.load();
+          if (items.isNotEmpty && offers.isNotEmpty) return;
+          await Future<void>.delayed(const Duration(milliseconds: 25));
+        }
+      });
 
       final savedItems = await stores.shoppingList.load();
       final savedOffers = await stores.offers.load();
@@ -201,6 +209,98 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Einkaufsoptimierung'), findsOneWidget);
       expect(find.textContaining('Netto'), findsWidgets);
+    },
+  );
+
+  testWidgets(
+    'Prospektseite übernimmt einen geprüften Seitenartikel in Liste und Angebot',
+    (tester) async {
+      tester.view.physicalSize = const Size(800, 1200);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final now = DateTime.now();
+      final issue = ProspectIssue(
+        storeName: 'Netto',
+        title: 'Aktionsprospekt',
+        pages: const [
+          ProspectPage(
+            number: 1,
+            imageUrl: 'https://example.test/netto/page-1.png',
+            zoomUrl: 'https://example.test/netto/page-1-large.png',
+          ),
+        ],
+        url: 'https://example.test/netto/flyer',
+        branchId: '4371',
+        location: 'Thüngersheim',
+        address: 'Am Strassacker 1, 97291 Thüngersheim',
+        sourceStatus: 'ok',
+        validFrom: now.subtract(const Duration(days: 1)),
+        validUntil: now.add(const Duration(days: 2)),
+      );
+      final stores = _Stores();
+      final module = _FakeProspectImportModule(
+        ProspectFeedLoadResult(
+          records: const <OfferImportRecord>[],
+          refreshedStores: const ['Netto'],
+          generatedAt: now,
+          prospects: [issue],
+        ),
+      );
+
+      await tester.pumpWidget(_app(stores, module));
+      await tester.pumpAndSettle();
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 250)),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Prospekte'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Netto').last);
+      await tester.pumpAndSettle();
+      expect(find.text('Prospektseiten (1)'), findsOneWidget);
+      expect(find.text('Thüngersheim'), findsOneWidget);
+      await tester.tap(find.text('Artikel von Seite hinzufügen'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Artikel von Prospektseite hinzufügen'), findsOneWidget);
+      final fields = find.byType(TextFormField);
+      await tester.enterText(fields.at(0), 'Käsesticks 300 g');
+      await tester.enterText(fields.at(1), '2,49');
+      await tester.enterText(fields.at(2), '3,99');
+      await tester.tap(
+        find.widgetWithText(FilledButton, 'Artikel hinzufügen'),
+      );
+      await tester.pumpAndSettle();
+      await tester.runAsync(() async {
+        for (var attempt = 0; attempt < 200; attempt++) {
+          final items = await stores.shoppingList.load();
+          final offers = await stores.offers.load();
+          if (items.isNotEmpty && offers.isNotEmpty) return;
+          await Future<void>.delayed(const Duration(milliseconds: 25));
+        }
+      });
+
+      final savedItems = await stores.shoppingList.load();
+      final savedOffers = await stores.offers.load();
+      expect(
+        savedOffers,
+        hasLength(1),
+        reason:
+            savedOffers.toString(),
+      );
+      expect(savedItems, hasLength(1));
+      expect(savedOffers.single.source, 'leaflet');
+      expect(savedItems.single.product.name, 'Käsesticks 300 g');
+      expect(
+        savedOffers.single.proofRef,
+        'https://example.test/netto/page-1-large.png',
+      );
+      expect(savedOffers.single.locationId, '4371');
+      expect(savedOffers.single.region, 'Thüngersheim');
+      expect(savedOffers.single.address, issue.address);
     },
   );
 }

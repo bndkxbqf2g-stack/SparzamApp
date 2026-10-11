@@ -699,8 +699,8 @@ class _ProspectViewer extends StatelessWidget {
       }
       return;
     }
-    if (!context.mounted) return;
     addProduct(entry.product);
+    if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('${entry.product.name} hinzugefügt')),
     );

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -166,6 +167,7 @@ class _AppShellState extends State<AppShell> {
   late Map<String, String> preferredProductByGroup;
   int backupRevision = 0;
   final _shoppingListSaves = SequentialWriteQueue();
+  final _offerSaves = SequentialWriteQueue();
   bool _purchaseInProgress = false;
 
   Product? _catalogProduct(String id) {
@@ -339,13 +341,23 @@ class _AppShellState extends State<AppShell> {
       final retained = offers
           .where((offer) => !offer.id.startsWith('import|'))
           .toList(growable: false);
-      final next = [...retained, ...resolved];
+      late List<Offer> persistedOffers;
+      await _offerSaves.add(() async {
+        // Feed refresh and user-reviewed page claims share one preference key.
+        // Read inside the queue so an in-flight manual save cannot be lost.
+        final stored = await widget.offerStore.load();
+        final retainedById = <String, Offer>{
+          for (final offer in retained) offer.id: offer,
+          for (final offer in stored)
+            if (!offer.id.startsWith('import|')) offer.id: offer,
+        };
+        persistedOffers = [...retainedById.values, ...resolved];
+        await widget.offerStore.save(persistedOffers);
+      });
       final offersById = <String, Offer>{
-        for (final offer in next) offer.id: offer,
+        for (final offer in persistedOffers) offer.id: offer,
         for (final entry in offerBackedProducts) entry.offer.id: entry.offer,
       };
-
-      await widget.offerStore.save(next);
 
       final learnedPrices = datedProspectPriceObservations(
         records: feed.records,
@@ -991,18 +1003,37 @@ class _AppShellState extends State<AppShell> {
   }
 
   Future<List<Offer>> saveOffer(Offer offer) async {
-    final next = await widget.offerStore.upsert(offer, offers);
-    final observedAt = DateTime.now();
-    await priceObservationStore.append(
-      observationsFromOffer(offer, observedAt: observedAt),
-    );
+    late List<Offer> next;
+    await _offerSaves.add(() async {
+      final stored = await widget.offerStore.load();
+      next = await widget.offerStore.upsert(offer, stored);
+    });
     if (mounted) setState(() => offers = next);
-    await _loadPriceObservations();
+    unawaited(_recordOfferHistory(offer));
     return next;
   }
 
+  Future<void> _recordOfferHistory(Offer offer) async {
+    try {
+      await priceObservationStore.append(
+        observationsFromOffer(offer, observedAt: DateTime.now()),
+      );
+      await _loadPriceObservations();
+    } catch (error) {
+      widget.diagnosticLogService.record(
+        category: 'Angebote',
+        message: 'Preisbeobachtung konnte nicht gespeichert werden.',
+        details: error.toString(),
+      );
+    }
+  }
+
   Future<List<Offer>> deleteOffer(Offer offer) async {
-    final next = await widget.offerStore.remove(offer.id, offers);
+    late List<Offer> next;
+    await _offerSaves.add(() async {
+      final stored = await widget.offerStore.load();
+      next = await widget.offerStore.remove(offer.id, stored);
+    });
     if (mounted) setState(() => offers = next);
     return next;
   }
