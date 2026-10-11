@@ -193,7 +193,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
               ),
               const SizedBox(height: 10),
               SizedBox(
-                height: 300,
+                height: 340,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: visibleProspects.length > 2 ? 2 : visibleProspects.length,
@@ -591,6 +591,15 @@ class _ProspectCard extends StatelessWidget {
         : issue.thumbnailUrl?.trim();
     final imageHeight = compact ? 168.0 : 185.0;
     final validity = _prospectValidityLabel(issue);
+    final cover = previewUrl == null || previewUrl.isEmpty
+        ? _bringCoverPlaceholder()
+        : Image.network(
+            previewUrl,
+            webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) =>
+                _bringCoverPlaceholder(),
+          );
 
     return SizedBox(
       width: compact ? double.infinity : 214,
@@ -605,15 +614,38 @@ class _ProspectCard extends StatelessWidget {
             children: [
               SizedBox(
                 height: imageHeight,
-                child: previewUrl == null || previewUrl.isEmpty
-                    ? _bringCoverPlaceholder()
-                    : Image.network(
-                        previewUrl,
-                        webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) =>
-                            _bringCoverPlaceholder(),
-                      ),
+                child: compact
+                    ? Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          cover,
+                          Positioned(
+                            top: 8,
+                            left: 8,
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                child: Text(
+                                  issue.storeName,
+                                  style: const TextStyle(
+                                    color: Color(0xFF27343A),
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : cover,
               ),
               Container(
                 color: Colors.white,
@@ -626,29 +658,39 @@ class _ProspectCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            issue.storeName,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: Color(0xFF27343A),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w800,
+                    if (!compact)
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              issue.storeName,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Color(0xFF27343A),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w800,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 6),
-                        const Icon(
+                          const SizedBox(width: 6),
+                          const Icon(
+                            Icons.favorite_border,
+                            color: Color(0xFFE96A73),
+                            size: 22,
+                          ),
+                        ],
+                      )
+                    else
+                      const Align(
+                        alignment: Alignment.centerRight,
+                        child: Icon(
                           Icons.favorite_border,
                           color: Color(0xFFE96A73),
-                          size: 22,
+                          size: 20,
                         ),
-                      ],
-                    ),
+                      ),
                     if (showLocation &&
                         issue.location?.trim().isNotEmpty == true)
                       Text(
