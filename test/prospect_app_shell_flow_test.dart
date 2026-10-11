@@ -162,6 +162,14 @@ void main() {
       final addButton = find.byIcon(Icons.add_shopping_cart_outlined);
       await tester.tap(addButton);
       await tester.pumpAndSettle();
+      await tester.runAsync(() async {
+        for (var attempt = 0; attempt < 20; attempt++) {
+          final items = await stores.shoppingList.load();
+          final offers = await stores.offers.load();
+          if (items.isNotEmpty && offers.isNotEmpty) return;
+          await Future<void>.delayed(const Duration(milliseconds: 25));
+        }
+      });
 
       final savedItems = await stores.shoppingList.load();
       final savedOffers = await stores.offers.load();
