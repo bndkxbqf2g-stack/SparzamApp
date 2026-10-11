@@ -339,3 +339,11 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   zuerst berücksichtigt, ohne Produktidentitäten oder Preise zu verschmelzen.
 - [x] Regressionen sichern beide Auswahlpfade und den bestehenden Schutz vor
   unbestätigten Varianten ab.
+
+## Update 11.10.2026 – Prospektkategorien direkt durchsuchbar
+- [x] Aktuelle Prospektartikel können zusätzlich zur Volltextsuche über ihre
+  vorhandene Händler- oder Darstellungskategorie gefiltert werden.
+- [x] Der Kategorienfilter bleibt reine Navigation: Herkunft, Gültigkeit,
+  Produktidentität und sichere Add-to-List-Auflösung werden nicht verändert.
+- [x] Widgetregression prüft die Auswahl einer Kategorie über mehrere Märkte.
+
