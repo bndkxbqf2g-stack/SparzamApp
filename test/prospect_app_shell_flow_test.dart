@@ -276,14 +276,15 @@ void main() {
       await tester.pumpAndSettle();
       await tester.runAsync(() async {
         for (var attempt = 0; attempt < 40; attempt++) {
-          if ((await stores.offers.load()).isNotEmpty) return;
+          final items = await stores.shoppingList.load();
+          final offers = await stores.offers.load();
+          if (items.isNotEmpty && offers.isNotEmpty) return;
           await Future<void>.delayed(const Duration(milliseconds: 25));
         }
       });
 
       final savedItems = await stores.shoppingList.load();
       final savedOffers = await stores.offers.load();
-      debugPrint('page-flow persisted items=${savedItems.length} offers=${savedOffers.length}');
       expect(savedItems, hasLength(1));
       expect(savedOffers, hasLength(1));
       expect(savedOffers.single.source, 'leaflet');
