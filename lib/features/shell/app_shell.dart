@@ -231,6 +231,27 @@ class _AppShellState extends State<AppShell> {
       await widget.shoppingListStore.saveNamedLists(namedShoppingLists);
       return;
     }
+
+    // During migration from the legacy single-list key, a write can leave the
+    // named list briefly empty while the legacy snapshot already has items.
+    // Keep that snapshot instead of replacing a visible list with empty data.
+    if (loaded.first.items.isEmpty && shoppingList.isNotEmpty) {
+      final migrated = loaded
+          .map(
+            (list) => list.id == loaded.first.id
+                ? NamedShoppingList(
+                    id: list.id,
+                    name: list.name,
+                    items: _copyItems(shoppingList),
+                  )
+                : list,
+          )
+          .toList(growable: false);
+      namedShoppingLists = migrated;
+      await widget.shoppingListStore.saveNamedLists(migrated);
+      return;
+    }
+
     setState(() {
       namedShoppingLists = loaded;
       activeShoppingListId = loaded.first.id;
