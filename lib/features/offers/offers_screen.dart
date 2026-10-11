@@ -8,7 +8,6 @@ import 'offer_import.dart';
 import '../prospects/prospect_offer_card.dart';
 import 'prospect_offer_products.dart';
 import '../prospects/prospect_category_presentation.dart';
-import '../../services/prospect_branch_resolver.dart';
 import '../../services/prospect_feed_service.dart';
 import '../prospects/prospect_feed_status.dart';
 
