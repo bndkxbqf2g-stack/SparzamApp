@@ -49,6 +49,7 @@ void main() {
     expect(result.records.first.category, 'Milchprodukte');
     expect(result.records.first.branchId, 'B384');
     expect(result.records.first.location, 'Zellingen');
+    expect(result.records.first.address, contains('Würzburger Str. 74'));
     expect(result.records.last.originalPrice, isNull);
     final aldi = result.prospects.firstWhere(
       (item) => item.storeName == 'ALDI Süd',
@@ -221,7 +222,8 @@ void main() {
       "source": "leaflet",
       "proofRef": "https://example.test/edeka-page-1",
       "branchId": "offer-branch",
-      "location": "offer-city"
+      "location": "offer-city",
+      "address": "Offer street 2"
     }
   ]
 }
@@ -235,6 +237,7 @@ void main() {
     expect(issue.address, 'Page street 1');
     expect(result.records.single.branchId, 'offer-branch');
     expect(result.records.single.location, 'offer-city');
+    expect(result.records.single.address, 'Offer street 2');
   });
 
 }

@@ -314,6 +314,9 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         location:
             _optionalNonEmptyString(value['location']) ??
             sourceLocations[storeName],
+        address:
+            _optionalNonEmptyString(value['address']) ??
+            sourceAddresses[storeName],
       ),
     );
   }
