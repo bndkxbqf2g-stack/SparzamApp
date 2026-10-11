@@ -351,4 +351,6 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     prospects: prospects,
     fromCache: fromCache,
   );
-}\n\nString? _stringValue(Object? value) => value is String ? value.trim() : null;\n
+}
+
+String? _stringValue(Object? value) => value is String ? value.trim() : null;
