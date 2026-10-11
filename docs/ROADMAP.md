@@ -368,3 +368,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Widgetregression prüft die Auswahl eines Händlers gegenüber einem zweiten
   Markt.
 
+## Update 11.10.2026 – Offizielle Prospektlinks validieren
+- [x] Der offizielle Händlerlink im Prospektreader wird vor dem Öffnen auf ein
+  gültiges HTTP(S)-Ziel mit Host geprüft.
+- [x] Ungültige URI-Schemes bleiben ohne externe Aktion; Prospektdaten und
+  Angebotsidentität werden dadurch nicht verändert.
+
