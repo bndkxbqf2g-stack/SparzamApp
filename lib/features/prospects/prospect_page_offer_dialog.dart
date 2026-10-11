@@ -42,6 +42,7 @@ class _ProspectPageOfferDialogState extends State<_ProspectPageOfferDialog> {
   late final TextEditingController _originalController;
   DateTime? _validUntil;
   String? _dateError;
+  String? _priceOrderError;
 
   @override
   void initState() {
@@ -93,13 +94,15 @@ class _ProspectPageOfferDialogState extends State<_ProspectPageOfferDialog> {
         ? null
         : _price(_originalController);
     final priceOrderIsValid =
-        offerPrice != null &&
-        offerPrice > 0 &&
-        (originalPrice == null ||
-            (originalPrice > 0 && offerPrice <= originalPrice));
+        offerPrice == null ||
+        originalPrice == null ||
+        (offerPrice > 0 && originalPrice > 0 && offerPrice <= originalPrice);
     if (!valid || validUntil == null || !priceOrderIsValid) {
       setState(() {
         _dateError = validUntil == null ? 'Gültigkeitsende auswählen' : null;
+        _priceOrderError = priceOrderIsValid
+            ? null
+            : 'Normalpreis muss mindestens so hoch wie der Angebotspreis sein';
       });
       return;
     }
@@ -163,10 +166,12 @@ class _ProspectPageOfferDialogState extends State<_ProspectPageOfferDialog> {
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Normalpreis (optional)',
                     suffixText: '€',
+                    errorText: _priceOrderError,
                   ),
+                  onChanged: (_) => setState(() => _priceOrderError = null),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) return null;
                     final price = double.tryParse(
