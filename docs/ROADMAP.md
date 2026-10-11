@@ -354,3 +354,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   den bestehenden Identitätsregeln nicht auswählbar.
 - [x] Widgetregression prüft die sichtbare Nachweisaktion und den Review-Fall.
 
+## Update 11.10.2026 – Filialort in Suchtreffern
+- [x] Marktübergreifende Prospektartikel zeigen den vorhandenen Filialort direkt
+  unter dem Händlernamen.
+- [x] Fehlende Filialdaten bleiben leer; es werden keine Standorte aus Labels
+  oder Händlerähnlichkeiten erfunden.
+- [x] Widgetregression deckt den sichtbaren Ort im Trefferpfad ab.
+
