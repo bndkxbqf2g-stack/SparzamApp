@@ -137,17 +137,7 @@ void main() {
     expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
     expect(find.text('Frische Vollmilch 1 l'), findsNothing);
 
-    await tester.scrollUntilVisible(
-      find.text('Jacobs Kaffee Crema 500 g'),
-      300,
-      scrollable: find
-          .byWidgetPredicate(
-            (widget) =>
-                widget is Scrollable &&
-                widget.axisDirection == AxisDirection.down,
-          )
-          .first,
-    );
+    await _scrollProspects(tester, distance: 450);
     await tester.tap(find.byIcon(Icons.add_shopping_cart_outlined));
     expect(added, isNotNull);
     expect(added!.name, 'Jacobs Kaffee Crema 500 g');
@@ -237,17 +227,7 @@ void main() {
       findsOneWidget,
     );
 
-    await tester.scrollUntilVisible(
-      find.text('PENNY'),
-      200,
-      scrollable: find
-          .byWidgetPredicate(
-            (widget) =>
-                widget is Scrollable &&
-                widget.axisDirection == AxisDirection.down,
-          )
-          .first,
-    );
+    await _scrollProspects(tester);
     await tester.tap(find.text('PENNY'));
     await tester.pumpAndSettle();
     expect(
@@ -286,17 +266,7 @@ void main() {
       ),
     );
 
-    await tester.scrollUntilVisible(
-      find.textContaining('Lidl'),
-      200,
-      scrollable: find
-          .byWidgetPredicate(
-            (widget) =>
-                widget is Scrollable &&
-                widget.axisDirection == AxisDirection.down,
-          )
-          .first,
-    );
+    await _scrollProspects(tester);
     await tester.tap(find.textContaining('Lidl'));
     await tester.pumpAndSettle();
 
@@ -336,17 +306,7 @@ void main() {
       findsOneWidget,
     );
 
-    await tester.scrollUntilVisible(
-      find.textContaining('Lidl'),
-      200,
-      scrollable: find
-          .byWidgetPredicate(
-            (widget) =>
-                widget is Scrollable &&
-                widget.axisDirection == AxisDirection.down,
-          )
-          .first,
-    );
+    await _scrollProspects(tester);
     await tester.tap(find.textContaining('Lidl'));
     await tester.pumpAndSettle();
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
@@ -379,17 +339,7 @@ void main() {
       find.text('Keine aktuell gültigen Angebotsdaten geladen.'),
       findsOneWidget,
     );
-    await tester.scrollUntilVisible(
-      find.text('EDEKA'),
-      200,
-      scrollable: find
-          .byWidgetPredicate(
-            (widget) =>
-                widget is Scrollable &&
-                widget.axisDirection == AxisDirection.down,
-          )
-          .first,
-    );
+    await _scrollProspects(tester);
     await tester.tap(find.text('EDEKA'));
     await tester.pumpAndSettle();
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
@@ -452,17 +402,7 @@ void main() {
     );
 
     expect(find.text('1 Angebote geladen'), findsOneWidget);
-    await tester.scrollUntilVisible(
-      find.text('Lidl'),
-      200,
-      scrollable: find
-          .byWidgetPredicate(
-            (widget) =>
-                widget is Scrollable &&
-                widget.axisDirection == AxisDirection.down,
-          )
-          .first,
-    );
+    await _scrollProspects(tester);
     await tester.tap(find.text('Lidl'));
     await tester.pumpAndSettle();
     expect(find.text('Seite 1'), findsOneWidget);
@@ -470,5 +410,17 @@ void main() {
     expect(find.text('Aktueller Kaffee'), findsOneWidget);
     expect(find.text('Alter Kaffee'), findsNothing);
   });
+}
+
+Future<void> _scrollProspects(
+  WidgetTester tester, {
+  double distance = 320,
+}) async {
+  final scrollable = find.byWidgetPredicate(
+    (widget) =>
+        widget is Scrollable && widget.axisDirection == AxisDirection.down,
+  );
+  await tester.drag(scrollable.first, Offset(0, -distance));
+  await tester.pumpAndSettle();
 }
 
