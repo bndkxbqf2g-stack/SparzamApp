@@ -122,6 +122,7 @@ void main() {
       expect(find.text('Sonderartikel 750g'), findsOneWidget);
       final addButton = find.byTooltip('Zur Einkaufsliste');
       expect(addButton, findsOneWidget);
+      expect(find.byTooltip('Prospektnachweis öffnen'), findsOneWidget);
       await tester.tap(addButton);
 
       expect(added, isNotNull);
@@ -164,6 +165,7 @@ void main() {
       Icons.add_shopping_cart_outlined,
     );
     expect(addButton, findsOneWidget);
+    expect(find.byTooltip('Prospektnachweis öffnen'), findsNothing);
     expect(tester.widget<IconButton>(addButton).onPressed, isNull);
   });
 
@@ -256,3 +258,4 @@ void main() {
     expect(find.text('Getränke'), findsNothing);
   });
 }
+
