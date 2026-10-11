@@ -286,3 +286,29 @@ String _coverageDetails(ProspectCoverage coverage) {
   final productImages =
       '${coverage.offerImageCount}/${coverage.structuredOfferCount} Produktbilder';
   final categories =
+      '${coverage.offerCategoryCount}/${coverage.structuredOfferCount} Kategorien';
+  final proofs =
+      '${coverage.offerProofCount}/${coverage.structuredOfferCount} Nachweise';
+  final storeSignals = '${coverage.availableStoreSignals}/4 Filialdaten';
+  return '${coverage.structuredOfferCount} strukturierte Angebote · '
+      '${coverage.pageCount} Bildseiten · $productImages · $categories · '
+      '$proofs · '
+      '$storeSignals';
+}
+
+String _sourceStatusLabel(String status) {
+  switch (status) {
+    case 'ok':
+      return 'aktuell';
+    case 'current_fallback':
+      return 'Fallback';
+    case 'metadata_only':
+      return 'Metadaten';
+    case 'error':
+      return 'Fehler';
+    case 'no_current_offers':
+      return 'keine Angebote';
+    default:
+      return 'unvollständig';
+  }
+}
