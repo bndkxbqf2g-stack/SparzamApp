@@ -181,6 +181,12 @@ void main() {
       );
       await tester.pumpAndSettle();
 
+      await tester.tap(find.text('Prospekte'));
+      await tester.pumpAndSettle();
+      expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
+      await tester.tap(find.text('Liste'));
+      await tester.pumpAndSettle();
+
       expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
       await tester.tap(find.text('Sparroute prüfen'));
       await tester.pumpAndSettle();
