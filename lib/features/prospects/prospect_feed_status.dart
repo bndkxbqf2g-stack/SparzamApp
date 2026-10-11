@@ -89,6 +89,7 @@ class ProspectCoverage {
     required this.pageCount,
     required this.offerImageCount,
     required this.offerCategoryCount,
+    required this.offerProofCount,
     required this.hasBranch,
     required this.hasLocation,
     required this.hasAddress,
@@ -101,6 +102,7 @@ class ProspectCoverage {
   final int pageCount;
   final int offerImageCount;
   final int offerCategoryCount;
+  final int offerProofCount;
   final bool hasBranch;
   final bool hasLocation;
   final bool hasAddress;
@@ -164,6 +166,9 @@ ProspectCoverage _coverageForStore(
   final offerCategoryCount = records
       .where((record) => record.category?.trim().isNotEmpty == true)
       .length;
+  final offerProofCount = records
+      .where((record) => record.proofRef?.trim().isNotEmpty == true)
+      .length;
   return ProspectCoverage(
     storeName: storeName,
     sourceStatus: issue?.sourceStatus ?? 'unavailable',
@@ -171,6 +176,7 @@ ProspectCoverage _coverageForStore(
     pageCount: issue?.pages.length ?? 0,
     offerImageCount: offerImageCount,
     offerCategoryCount: offerCategoryCount,
+    offerProofCount: offerProofCount,
     hasBranch: issue?.branchId?.trim().isNotEmpty == true,
     hasLocation: issue?.location?.trim().isNotEmpty == true,
     hasAddress: issue?.address?.trim().isNotEmpty == true,
@@ -249,9 +255,12 @@ String _coverageDetails(ProspectCoverage coverage) {
       '${coverage.offerImageCount}/${coverage.structuredOfferCount} Produktbilder';
   final categories =
       '${coverage.offerCategoryCount}/${coverage.structuredOfferCount} Kategorien';
+  final proofs =
+      '${coverage.offerProofCount}/${coverage.structuredOfferCount} Nachweise';
   final storeSignals = '${coverage.availableStoreSignals}/4 Filialdaten';
   return '${coverage.structuredOfferCount} strukturierte Angebote · '
       '${coverage.pageCount} Bildseiten · $productImages · $categories · '
+      '$proofs · '
       '$storeSignals';
 }
 
@@ -271,3 +280,4 @@ String _sourceStatusLabel(String status) {
       return 'unvollständig';
   }
 }
+
