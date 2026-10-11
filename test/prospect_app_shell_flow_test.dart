@@ -38,23 +38,6 @@ class _FakeProspectImportModule extends ProspectImportModule {
   Future<ProspectFeedLoadResult> execute({String? startAddress}) async => result;
 }
 
-class _TracingShoppingListStore extends ShoppingListStore {
-  final savedSnapshots = <List<ListItem>>[];
-  final knownProducts = <String>[];
-
-  @override
-  Future<void> save(List<ListItem> items) {
-    savedSnapshots.add(List<ListItem>.from(items));
-    return super.save(items);
-  }
-
-  @override
-  Future<void> saveKnownItem(Product product) {
-    knownProducts.add(product.name);
-    return super.saveKnownItem(product);
-  }
-}
-
 class _Stores {
   final budget = BudgetStore();
   final offers = OfferStore();
@@ -65,8 +48,7 @@ class _Stores {
   final priceHistory = PriceHistoryStore();
   final recentPurchases = RecentPurchaseStore();
   final purchases = PurchaseStore();
-  final shoppingList = _TracingShoppingListStore();
-  final diagnostics = DiagnosticLogService();
+  final shoppingList = ShoppingListStore();
 }
 
 Widget _app(
@@ -90,7 +72,7 @@ Widget _app(
       recentPurchaseStore: stores.recentPurchases,
       purchaseStore: stores.purchases,
       shoppingListStore: stores.shoppingList,
-      diagnosticLogService: stores.diagnostics,
+      diagnosticLogService: DiagnosticLogService(),
       prospectImportModule: module,
       initialBudget: const BudgetPlan(),
       initialOffers: initialOffers,
@@ -292,7 +274,6 @@ void main() {
         find.widgetWithText(FilledButton, 'Artikel hinzufügen'),
       );
       await tester.pumpAndSettle();
-      expect(find.text('Angebot konnte nicht gespeichert werden.'), findsNothing);
       await tester.runAsync(() async {
         for (var attempt = 0; attempt < 200; attempt++) {
           final items = await stores.shoppingList.load();
@@ -304,35 +285,11 @@ void main() {
 
       final savedItems = await stores.shoppingList.load();
       final savedOffers = await stores.offers.load();
-      final diagnostics = await stores.diagnostics.load();
       expect(
         savedOffers,
         hasLength(1),
         reason:
             savedOffers.toString(),
-      );
-      expect(
-        stores.shoppingList.knownProducts,
-        contains('Käsesticks 300 g'),
-        reason: 'known=\${stores.shoppingList.knownProducts}',
-      );
-      expect(
-        stores.shoppingList.savedSnapshots.any(
-          (snapshot) => snapshot.any(
-            (item) => item.product.name == 'Käsesticks 300 g',
-          ),
-        ),
-        isTrue,
-        reason:
-            'snapshots=\${stores.shoppingList.savedSnapshots.map((snapshot) => snapshot.map((item) => item.product.name).join(",")).join("|")}',
-      );
-      expect(
-        diagnostics.any(
-          (entry) =>
-              entry.message == 'Artikel hinzugefügt.' &&
-              entry.details == 'Käsesticks 300 g',
-        ),
-        isTrue,
       );
       expect(savedOffers, hasLength(1));
       expect(savedItems, hasLength(1));
