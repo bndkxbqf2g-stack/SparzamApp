@@ -21,6 +21,7 @@ void main() {
           validUntil: DateTime(2026, 10, 2),
           source: 'retailerWebsite',
           proofRef: 'https://example.test/netto/coffee',
+          address: 'Am Markt 1, 97291 Thüngersheim',
         ),
       ],
       catalogProducts: const <Product>[],
@@ -34,6 +35,7 @@ void main() {
     expect(entries.single.offer.productId, entries.single.product.id);
     expect(entries.single.offer.originalPriceVerified, isTrue);
     expect(entries.single.offer.proofRef, contains('netto/coffee'));
+    expect(entries.single.offer.address, 'Am Markt 1, 97291 Thüngersheim');
   });
 
   test(
@@ -67,6 +69,23 @@ void main() {
         offerPrice: 0.99,
         validUntil: DateTime(2026, 10, 2),
         source: 'leaflet',
+      ),
+      const <Product>[],
+    );
+
+    expect(product, isNull);
+  });
+
+  test('unsafe proof cannot be transferred to the shopping list', () {
+    final product = addableProductForProspectOffer(
+      OfferImportRecord(
+        sourceId: 'unsafe-proof-1',
+        productLabel: 'Haferdrink 1 l',
+        storeName: 'Lidl',
+        offerPrice: 0.99,
+        validUntil: DateTime(2026, 10, 2),
+        source: 'leaflet',
+        proofRef: 'javascript:alert(1)',
       ),
       const <Product>[],
     );

@@ -10,12 +10,14 @@ class ProspectFeedStatusCard extends StatelessWidget {
   const ProspectFeedStatusCard({
     super.key,
     this.generatedAt,
+    this.now,
     this.fromCache = false,
     this.onRefresh,
     this.refreshing = false,
   });
 
   final DateTime? generatedAt;
+  final DateTime? now;
   final bool fromCache;
   final Future<void> Function()? onRefresh;
   final bool refreshing;
@@ -26,11 +28,15 @@ class ProspectFeedStatusCard extends StatelessWidget {
       return const SizedBox.shrink();
     }
     final timestamp = formatProspectFeedTimestamp(generatedAt);
+    final stale = !fromCache &&
+        isProspectFeedStale(generatedAt, now: now);
     final theme = Theme.of(context);
     final title = fromCache
         ? 'Letzter geprüfter Prospektstand'
         : generatedAt == null
         ? 'Prospektstand noch nicht geladen'
+        : stale
+        ? 'Prospektstand veraltet'
         : 'Aktueller Prospektstand';
     final subtitle = fromCache
         ? 'Stand $timestamp. Der Live-Abruf war nicht verfügbar; '
@@ -39,13 +45,23 @@ class ProspectFeedStatusCard extends StatelessWidget {
         : generatedAt == null
         ? 'Lade die aktuellen Prospekte, um neue Angebote und Preisbeobachtungen '
               'zu übernehmen.'
+        : stale
+        ? 'Stand $timestamp. Der Feed ist älter als '
+              '${prospectFeedStaleAfter.inHours} Stunden. Aktualisiere ihn, '
+              'bevor du neue Angebote übernimmst.'
         : 'Stand $timestamp. Es werden nur aktuell gültige Angebote '
               'angezeigt.';
     return Card(
-      color: fromCache ? theme.colorScheme.surfaceContainerHighest : null,
+      color: fromCache || stale
+          ? theme.colorScheme.surfaceContainerHighest
+          : null,
       child: ListTile(
         leading: Icon(
-          fromCache ? Icons.cloud_off_outlined : Icons.verified_outlined,
+          fromCache
+              ? Icons.cloud_off_outlined
+              : stale
+              ? Icons.warning_amber_outlined
+              : Icons.verified_outlined,
         ),
         title: Text(title),
         subtitle: Text(subtitle),
@@ -65,6 +81,18 @@ class ProspectFeedStatusCard extends StatelessWidget {
       ),
     );
   }
+}
+
+const prospectFeedStaleAfter = Duration(hours: 48);
+
+bool isProspectFeedStale(
+  DateTime? generatedAt, {
+  DateTime? now,
+  Duration maxAge = prospectFeedStaleAfter,
+}) {
+  if (generatedAt == null) return false;
+  final age = (now ?? DateTime.now()).toUtc().difference(generatedAt.toUtc());
+  return age > maxAge;
 }
 
 String formatProspectFeedTimestamp(DateTime? value) {
@@ -89,6 +117,7 @@ class ProspectCoverage {
     required this.pageCount,
     required this.offerImageCount,
     required this.offerCategoryCount,
+    required this.offerProofCount,
     required this.hasBranch,
     required this.hasLocation,
     required this.hasAddress,
@@ -101,6 +130,7 @@ class ProspectCoverage {
   final int pageCount;
   final int offerImageCount;
   final int offerCategoryCount;
+  final int offerProofCount;
   final bool hasBranch;
   final bool hasLocation;
   final bool hasAddress;
@@ -164,6 +194,9 @@ ProspectCoverage _coverageForStore(
   final offerCategoryCount = records
       .where((record) => record.category?.trim().isNotEmpty == true)
       .length;
+  final offerProofCount = records
+      .where((record) => hasTrustedOfferProofReference(record.proofRef))
+      .length;
   return ProspectCoverage(
     storeName: storeName,
     sourceStatus: issue?.sourceStatus ?? 'unavailable',
@@ -171,6 +204,7 @@ ProspectCoverage _coverageForStore(
     pageCount: issue?.pages.length ?? 0,
     offerImageCount: offerImageCount,
     offerCategoryCount: offerCategoryCount,
+    offerProofCount: offerProofCount,
     hasBranch: issue?.branchId?.trim().isNotEmpty == true,
     hasLocation: issue?.location?.trim().isNotEmpty == true,
     hasAddress: issue?.address?.trim().isNotEmpty == true,
@@ -196,6 +230,9 @@ class ProspectCoverageCard extends StatelessWidget {
     final marketsWithValidity = coverage
         .where((entry) => entry.hasValidity)
         .length;
+    final marketsWithProof = coverage
+        .where((entry) => entry.offerProofCount > 0)
+        .length;
 
     return Card(
       child: ExpansionTile(
@@ -204,7 +241,8 @@ class ProspectCoverageCard extends StatelessWidget {
         subtitle: Text(
           '${coverage.length} Märkte · $marketsWithOffers mit strukturierten '
           'Angeboten · $marketsWithPages mit Bildseiten · '
-          '$marketsWithValidity mit Gültigkeitszeitraum',
+          '$marketsWithValidity mit Gültigkeitszeitraum · '
+          '$marketsWithProof mit Originalnachweis',
         ),
         children: [
           for (final entry in coverage)
@@ -249,9 +287,12 @@ String _coverageDetails(ProspectCoverage coverage) {
       '${coverage.offerImageCount}/${coverage.structuredOfferCount} Produktbilder';
   final categories =
       '${coverage.offerCategoryCount}/${coverage.structuredOfferCount} Kategorien';
+  final proofs =
+      '${coverage.offerProofCount}/${coverage.structuredOfferCount} Nachweise';
   final storeSignals = '${coverage.availableStoreSignals}/4 Filialdaten';
   return '${coverage.structuredOfferCount} strukturierte Angebote · '
       '${coverage.pageCount} Bildseiten · $productImages · $categories · '
+      '$proofs · '
       '$storeSignals';
 }
 

@@ -45,6 +45,8 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
   reaktivieren.
 - [ ] Prospektfeed weiter auf vollständige Artikelbilder, Kategorien,
   Filialbezug und belastbare Gültigkeit ausbauen.
+- [x] Bildseiten ermöglichen eine geprüfte manuelle Artikelübernahme mit
+  Seitenlink, Preis, Gültigkeitsende und bestehender Filialprovenienz.
 
 ## Phase D – Alltagstaugliche Datenerfassung
 - Kassenbons möglichst automatisch.
@@ -374,3 +376,11 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Ungültige URI-Schemes bleiben ohne externe Aktion; Prospektdaten und
   Angebotsidentität werden dadurch nicht verändert.
 
+## Update 11.10.2026 – Angebotsnachweise in der Abdeckung ausweisen
+- [x] Die Abdeckungskarte zählt pro Markt die strukturierten Angebotsdatensätze
+  mit vorhandenem Originalnachweis.
+- [x] Fehlende Nachweise bleiben als sichtbare Datenlücke bestehen und werden
+  weder durch einen Händlerlink noch durch eine Preis- oder Identitätsannahme
+  ersetzt.
+- [x] Ungültige URI-Schemes oder URLs ohne Host werden nicht als belastbarer
+  Originalnachweis gezählt.
