@@ -261,22 +261,11 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
 
   for (final value in (json['offers'] as List<dynamic>? ?? const [])) {
     if (value is! Map<String, dynamic>) continue;
-    final sourceId = _stringValue(value['sourceId']);
-    final productLabel = _stringValue(value['productLabel']);
-    final storeName = _stringValue(value['storeName']);
-    final offerPriceValue = value['offerPrice'];
-    final offerPrice = offerPriceValue is num
-        ? offerPriceValue.toDouble()
-        : null;
-    final validUntilValue = value['validUntil'];
-    final validUntilText = _stringValue(validUntilValue);
-    final validUntil = DateTime.tryParse(validUntilText ?? '');
-    final validFromValue = value['validFrom'];
-    final validFromText = _stringValue(validFromValue);
-    final validFrom = DateTime.tryParse(validFromText ?? '');
-    final hasMalformedValidFrom = validFromValue != null &&
-        (validFromText == null ||
-            (validFromText.isNotEmpty && validFrom == null));
+    final sourceId = value['sourceId'] as String?;
+    final productLabel = value['productLabel'] as String?;
+    final storeName = value['storeName'] as String?;
+    final offerPrice = (value['offerPrice'] as num?)?.toDouble();
+    final validUntil = DateTime.tryParse(value['validUntil'] as String? ?? '');
     if (sourceId == null ||
         sourceId.trim().isEmpty ||
         productLabel == null ||
@@ -289,35 +278,24 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         validUntil == null) {
       continue;
     }
-    // A malformed optional start date is not the same as an absent start
-    // date. Treating it as absent could make an unverifiable offer appear
-    // current and routeable. Reversed periods are equally unusable.
-    if (hasMalformedValidFrom ||
-        (validFrom != null && validUntil.isBefore(validFrom))) {
-      continue;
-    }
 
-    final originalPriceValue = value['originalPrice'];
-    final originalPrice = originalPriceValue is num
-        ? originalPriceValue.toDouble()
-        : null;
-    final hasMalformedOriginalPrice = originalPriceValue != null &&
-        (originalPrice == null || !originalPrice.isFinite || originalPrice <= 0);
-    if (hasMalformedOriginalPrice) continue;
+    final originalPrice = (value['originalPrice'] as num?)?.toDouble();
     records.add(
       OfferImportRecord(
         sourceId: sourceId,
         productLabel: productLabel,
         storeName: storeName,
         originalPrice:
-            originalPrice,
+            originalPrice != null && originalPrice.isFinite && originalPrice > 0
+            ? originalPrice
+            : null,
         offerPrice: offerPrice,
-        validFrom: validFrom,
+        validFrom: DateTime.tryParse(value['validFrom'] as String? ?? ''),
         validUntil: validUntil,
-        source: _stringValue(value['source']) ?? 'retailerWebsite',
-        proofRef: _stringValue(value['proofRef']),
-        imageUrl: _stringValue(value['imageUrl']),
-        category: _stringValue(value['category']),
+        source: value['source'] as String? ?? 'retailerWebsite',
+        proofRef: value['proofRef'] as String?,
+        imageUrl: value['imageUrl'] as String?,
+        category: value['category'] as String?,
         branchId: sourceBranchIds[storeName],
         location: sourceLocations[storeName],
       ),
@@ -332,6 +310,3 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     fromCache: fromCache,
   );
 }
-
-String? _stringValue(Object? value) => value is String ? value.trim() : null;
-
