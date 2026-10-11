@@ -42,6 +42,7 @@ class ProspectsScreen extends StatefulWidget {
 class _ProspectsScreenState extends State<ProspectsScreen> {
   final searchController = TextEditingController();
   var query = '';
+  String? selectedCategory;
 
   @override
   void dispose() {
@@ -55,7 +56,15 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
       widget.records,
       now: widget.now,
     );
-    final matchingRecords = _matchingProspectRecords(currentRecords, query);
+    final categories = _prospectCategories(currentRecords);
+    final activeCategory = categories.contains(selectedCategory)
+        ? selectedCategory
+        : null;
+    final matchingRecords = _matchingProspectRecords(
+      currentRecords,
+      query,
+      category: activeCategory,
+    );
     final currentCounts = <String, int>{};
     for (final record in currentRecords) {
       currentCounts.update(
@@ -121,6 +130,15 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
             ),
           ),
         ),
+        if (categories.isNotEmpty) ...[
+          const SizedBox(height: 10),
+          _ProspectCategoryChips(
+            categories: categories,
+            selectedCategory: activeCategory,
+            onSelected: (category) =>
+                setState(() => selectedCategory = category),
+          ),
+        ],
         ProspectFeedStatusCard(
           generatedAt: widget.generatedAt,
           fromCache: widget.fromCache,
@@ -128,7 +146,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
           refreshing: widget.prospectsRefreshing,
         ),
         const SizedBox(height: 20),
-        if (query.trim().isNotEmpty)
+        if (query.trim().isNotEmpty || activeCategory != null)
           _ProspectSearchResults(
             records: matchingRecords,
             catalogProducts: widget.catalogProducts,
@@ -266,22 +284,70 @@ class _ProspectSearchResults extends StatelessWidget {
 List<OfferImportRecord> _matchingProspectRecords(
   Iterable<OfferImportRecord> records,
   String query,
+  {String? category},
 ) {
   final normalized = query.trim().toLowerCase();
-  if (normalized.isEmpty) return records.toList(growable: false);
   return records
       .where((record) {
-        final category = record.category?.trim() ?? '';
+        if (category != null && _prospectCategoryForRecord(record) != category) {
+          return false;
+        }
+        if (normalized.isEmpty) return true;
+        final sourceCategory = record.category?.trim() ?? '';
         final searchable = [
           record.productLabel,
           record.storeName,
-          category,
-          presentProspectCategory(category),
+          sourceCategory,
+          presentProspectCategory(sourceCategory),
           fallbackProspectCategory(record.productLabel),
         ].join(' ').toLowerCase();
         return searchable.contains(normalized);
       })
       .toList(growable: false);
+}
+
+List<String> _prospectCategories(Iterable<OfferImportRecord> records) {
+  final categories = <String>{
+    for (final record in records) _prospectCategoryForRecord(record),
+  };
+  return categories.toList()..sort();
+}
+
+class _ProspectCategoryChips extends StatelessWidget {
+  const _ProspectCategoryChips({
+    required this.categories,
+    required this.selectedCategory,
+    required this.onSelected,
+  });
+
+  final List<String> categories;
+  final String? selectedCategory;
+  final ValueChanged<String?> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          ChoiceChip(
+            label: const Text('Alle Kategorien'),
+            selected: selectedCategory == null,
+            onSelected: (_) => onSelected(null),
+          ),
+          const SizedBox(width: 8),
+          for (final category in categories) ...[
+            ChoiceChip(
+              label: Text(category),
+              selected: selectedCategory == category,
+              onSelected: (_) => onSelected(category),
+            ),
+            const SizedBox(width: 8),
+          ],
+        ],
+      ),
+    );
+  }
 }
 
 ProspectIssue _visibleIssue(
