@@ -63,7 +63,8 @@ bool _hasVerifiedOfferEvidence(OfferImportRecord record) {
               record.offerPrice <= original)) &&
       (record.validFrom == null ||
           !record.validUntil.isBefore(record.validFrom!)) &&
-      (record.source == 'manual' || record.proofRef?.trim().isNotEmpty == true);
+      (record.source == 'manual' ||
+          hasTrustedOfferProofReference(record.proofRef));
 }
 
 class ProspectOfferProduct {
@@ -92,7 +93,7 @@ bool _isUsableRecord(OfferImportRecord record, {DateTime? now}) {
       (record.validFrom != null &&
           record.validUntil.isBefore(record.validFrom!)) ||
       (record.source != 'manual' &&
-          record.proofRef?.trim().isNotEmpty != true)) {
+          !hasTrustedOfferProofReference(record.proofRef))) {
     return false;
   }
   return isOfferDateRangeActive(
@@ -191,5 +192,9 @@ Offer? _offerForProduct(
     source: record.source,
     proofRef: record.proofRef,
     imageUrl: record.imageUrl,
+    locationId: record.branchId,
+    region: record.location,
+    address: record.address,
   );
 }
+
