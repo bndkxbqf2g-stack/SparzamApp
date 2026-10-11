@@ -1,5 +1,6 @@
 import '../../models/price_observation.dart';
 import '../../services/quantity_normalizer.dart';
+import 'offer_import.dart';
 
 class ProspectPriceHistorySummary {
   const ProspectPriceHistorySummary({
@@ -46,7 +47,7 @@ Map<String, ProspectPriceHistorySummary> prospectPriceHistorySummaries(
         entry.quantity == null ||
         entry.unit == null ||
         normalizeQuantity(entry.quantity!, entry.unit!) == null ||
-        entry.proofRef?.trim().isNotEmpty != true ||
+        !hasTrustedOfferProofReference(entry.proofRef) ||
         (enabled.isNotEmpty && !enabled.contains(entry.storeName)) ||
         !_isProspectSource(entry.source) ||
         (entry.kind != PriceObservationKind.offer &&
@@ -128,3 +129,4 @@ bool _isProspectSource(PriceObservationSource source) =>
     source == PriceObservationSource.retailerWebsite;
 
 DateTime _day(DateTime value) => DateTime(value.year, value.month, value.day);
+
