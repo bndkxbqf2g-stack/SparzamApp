@@ -209,7 +209,6 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                         records: currentRecords,
                         catalogProducts: widget.catalogProducts,
                         onAddProduct: widget.onAddProduct,
-                        onAddProductAndWait: widget.onAddProductAndWait,
                         now: widget.now,
                         onSaveOffer: widget.onSaveOffer,
                       ),
