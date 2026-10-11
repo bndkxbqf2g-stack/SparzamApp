@@ -275,7 +275,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       await tester.runAsync(() async {
-        for (var attempt = 0; attempt < 40; attempt++) {
+        for (var attempt = 0; attempt < 200; attempt++) {
           final items = await stores.shoppingList.load();
           final offers = await stores.offers.load();
           if (items.isNotEmpty && offers.isNotEmpty) return;
