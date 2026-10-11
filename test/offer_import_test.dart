@@ -89,6 +89,25 @@ void main() {
     expect(result.reason, 'missing_proof');
   });
 
+  test('unsafe external proof stays untrusted', () {
+    final result = resolveOfferImport(
+      OfferImportRecord(
+        sourceId: 'page-with-unsafe-proof',
+        productLabel: 'Schmand',
+        storeName: 'Lidl',
+        originalPrice: 0.89,
+        offerPrice: 0.69,
+        validUntil: DateTime(2026, 9, 26),
+        source: 'leaflet',
+        proofRef: 'javascript:alert(1)',
+      ),
+      catalog,
+    );
+
+    expect(result.isResolved, isFalse);
+    expect(result.reason, 'missing_proof');
+  });
+
   test('generic leaflet identity stays unresolved when variants are ambiguous', () {
     final result = resolveOfferImport(
       OfferImportRecord(
