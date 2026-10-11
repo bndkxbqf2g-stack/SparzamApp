@@ -3,6 +3,16 @@
 > Diese Datei ist der Einstiegspunkt für jeden neuen Chat und jeden Work-Lauf.
 > Vor Änderungen immer zuerst PROJECT_STATUS.md, ARCHITECTURE.md, ROADMAP.md und DECISIONS.md lesen und danach den aktuellen GitHub-Stand prüfen.
 
+## Update 11.10.2026 – Prospektartikel nach Quellenkategorie filtern
+- Die Prospektansicht bietet neben der Volltextsuche schnelle Kategorienchips
+  für die aktuell gültigen Händlerartikel. Die Auswahl filtert marktübergreifend
+  und führt direkt zu den bestehenden Artikelkarten.
+- Kategorien stammen ausschließlich aus dem Händlerfeed oder der sichtbaren
+  Darstellungsklassifikation. Sie verändern weder Produktidentität noch Preis,
+  Gültigkeit oder Routenstatus.
+- Eine Widget-Regression prüft, dass die Kategorieauswahl nur passende Artikel
+  zeigt; Nachweis-, Ambiguitäts- und Add-to-List-Regeln bleiben unverändert.
+
 ## Update 11.10.2026 – Prospektartikel marktübergreifend auffindbar
 - Die Prospektansicht bietet jetzt eine Suche über alle aktuell gültigen
   Händlerangebote. Artikel lassen sich aus dem Suchergebnis direkt mit ihrem
