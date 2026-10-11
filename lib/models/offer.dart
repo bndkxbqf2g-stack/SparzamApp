@@ -13,6 +13,9 @@ class Offer {
     this.source = 'manual',
     this.proofRef,
     this.imageUrl,
+    this.locationId,
+    this.region,
+    this.address,
     this.buyQuantity,
     this.payQuantity,
     this.coupon = false,
@@ -34,6 +37,9 @@ class Offer {
   final String source;
   final String? proofRef;
   final String? imageUrl;
+  final String? locationId;
+  final String? region;
+  final String? address;
   final int? buyQuantity;
   final int? payQuantity;
   final bool coupon;
@@ -86,6 +92,9 @@ class Offer {
       source: json['source'] as String? ?? 'manual',
       proofRef: json['proofRef'] as String?,
       imageUrl: json['imageUrl'] as String?,
+      locationId: json['locationId'] as String?,
+      region: json['region'] as String?,
+      address: json['address'] as String?,
       buyQuantity: (json['buyQuantity'] as num?)?.toInt(),
       payQuantity: (json['payQuantity'] as num?)?.toInt(),
       coupon: json['coupon'] as bool? ?? false,
@@ -121,6 +130,9 @@ class Offer {
         'source': source,
         'proofRef': proofRef,
         'imageUrl': imageUrl,
+        'locationId': locationId,
+        'region': region,
+        'address': address,
         'buyQuantity': buyQuantity,
         'payQuantity': payQuantity,
         'coupon': coupon,
@@ -131,3 +143,4 @@ class Offer {
         'cashbackAmount': cashbackAmount,
       });
 }
+
