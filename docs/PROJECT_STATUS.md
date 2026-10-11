@@ -3,6 +3,14 @@
 > Diese Datei ist der Einstiegspunkt für jeden neuen Chat und jeden Work-Lauf.
 > Vor Änderungen immer zuerst PROJECT_STATUS.md, ARCHITECTURE.md, ROADMAP.md und DECISIONS.md lesen und danach den aktuellen GitHub-Stand prüfen.
 
+## Update 11.10.2026 – Filialort in Prospekt-Treffern sichtbar
+- Marktübergreifende Such- und Kategorienergebnisse zeigen unter dem Händler
+  zusätzlich den vorhandenen Filialort aus dem Prospektfeed.
+- Fehlt die Quellangabe, wird kein Ort ergänzt oder aus Textähnlichkeit
+  abgeleitet. Artikelidentität, Preis, Gültigkeit und Add-to-List-Regeln bleiben
+  unverändert.
+- Eine Widget-Regression prüft den Filialort im Trefferpfad.
+
 ## Update 11.10.2026 – Originalnachweis an Prospektartikelkarten
 - Nachgewiesene Prospektartikel zeigen in kompakter und großer Darstellung
   einen direkten Link zum vorhandenen HTTP(S)-Originalnachweis.
