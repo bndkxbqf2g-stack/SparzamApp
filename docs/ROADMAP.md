@@ -374,3 +374,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Ungültige URI-Schemes bleiben ohne externe Aktion; Prospektdaten und
   Angebotsidentität werden dadurch nicht verändert.
 
+## Update 11.10.2026 – Angebotsnachweise in der Abdeckung ausweisen
+- [x] Die Abdeckungskarte zählt pro Markt die strukturierten Angebotsdatensätze
+  mit vorhandenem Originalnachweis.
+- [x] Fehlende Nachweise bleiben als sichtbare Datenlücke bestehen und werden
+  weder durch einen Händlerlink noch durch eine Preis- oder Identitätsannahme
+  ersetzt.
+
