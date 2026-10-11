@@ -194,6 +194,7 @@ Offer? _offerForProduct(
     imageUrl: record.imageUrl,
     locationId: record.branchId,
     region: record.location,
+    address: record.address,
   );
 }
 

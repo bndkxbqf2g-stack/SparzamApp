@@ -15,6 +15,7 @@ class Offer {
     this.imageUrl,
     this.locationId,
     this.region,
+    this.address,
     this.buyQuantity,
     this.payQuantity,
     this.coupon = false,
@@ -38,6 +39,7 @@ class Offer {
   final String? imageUrl;
   final String? locationId;
   final String? region;
+  final String? address;
   final int? buyQuantity;
   final int? payQuantity;
   final bool coupon;
@@ -92,6 +94,7 @@ class Offer {
       imageUrl: json['imageUrl'] as String?,
       locationId: json['locationId'] as String?,
       region: json['region'] as String?,
+      address: json['address'] as String?,
       buyQuantity: (json['buyQuantity'] as num?)?.toInt(),
       payQuantity: (json['payQuantity'] as num?)?.toInt(),
       coupon: json['coupon'] as bool? ?? false,
@@ -129,6 +132,7 @@ class Offer {
         'imageUrl': imageUrl,
         'locationId': locationId,
         'region': region,
+        'address': address,
         'buyQuantity': buyQuantity,
         'payQuantity': payQuantity,
         'coupon': coupon,

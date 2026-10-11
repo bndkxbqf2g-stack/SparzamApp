@@ -163,6 +163,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
         ],
         ProspectFeedStatusCard(
           generatedAt: widget.generatedAt,
+          now: widget.now,
           fromCache: widget.fromCache,
           onRefresh: widget.onRefreshProspects,
           refreshing: widget.prospectsRefreshing,
@@ -294,10 +295,13 @@ class _ProspectSearchResults extends StatelessWidget {
                   entry.key,
                   style: const TextStyle(fontWeight: FontWeight.w800),
                 ),
-                if (issueByStore[entry.key]?.location?.trim().isNotEmpty ==
-                    true)
+                if (entry.value.every(
+                      (record) => record.location?.trim().isEmpty ?? true,
+                    ) &&
+                    issueByStore[entry.key]?.location?.trim().isNotEmpty ==
+                        true)
                   Text(
-                    issueByStore[entry.key]!.location!,
+                    issueByStore[entry.key]!.location!.trim(),
                     style: const TextStyle(
                       fontSize: 12,
                       color: Colors.black54,
@@ -646,6 +650,7 @@ class _ProspectViewer extends StatelessWidget {
       imageUrl: page.imageUrl,
       branchId: issue.branchId,
       location: issue.location,
+      address: issue.address,
     );
     final entries = prospectOfferProducts(
       records: [record],
@@ -682,6 +687,7 @@ class _ProspectViewer extends StatelessWidget {
       imageUrl: entry.offer.imageUrl,
       locationId: entry.offer.locationId,
       region: entry.offer.region,
+      address: entry.offer.address,
     );
     try {
       await saveOffer(reviewedOffer);
@@ -693,8 +699,8 @@ class _ProspectViewer extends StatelessWidget {
       }
       return;
     }
-    if (!context.mounted) return;
     addProduct(entry.product);
+    if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('${entry.product.name} hinzugefügt')),
     );
