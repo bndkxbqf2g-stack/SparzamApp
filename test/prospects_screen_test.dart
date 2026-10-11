@@ -645,6 +645,7 @@ void main() {
               validUntil: DateTime(2026, 10, 3),
               proofRef: 'https://example.test/record-location',
               location: 'Filialstadt',
+              address: 'Filialstraße 1, 97291 Filialstadt',
             ),
           ],
           prospects: const [
@@ -670,6 +671,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('Filialstadt'), findsOneWidget);
+    expect(find.text('Filialstraße 1, 97291 Filialstadt'), findsOneWidget);
     expect(find.text('Quellstadt'), findsNothing);
   });
 }
