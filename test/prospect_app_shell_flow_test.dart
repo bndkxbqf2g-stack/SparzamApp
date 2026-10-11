@@ -309,7 +309,7 @@ void main() {
         savedOffers,
         hasLength(1),
         reason:
-            'offers=${savedOffers.map((offer) => offer.source + ":" + offer.productId).toList()}',
+            savedOffers.toString(),
       );
       expect(
         stores.shoppingList.knownProducts,
