@@ -498,3 +498,433 @@ ProspectIssue _visibleIssue(
     validUntil: current?.validUntil,
   );
 }
+
+class _ProspectCard extends StatelessWidget {
+  const _ProspectCard({required this.issue, required this.onTap});
+
+  final ProspectIssue issue;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final hasPages = issue.pages.isNotEmpty;
+    return SizedBox(
+      width: 250,
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: hasPages
+                    ? Image.network(
+                        issue.pages.first.imageUrl,
+                        webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(Icons.menu_book, size: 56),
+                      )
+                    : const Center(
+                        child: Icon(
+                          Icons.local_offer_outlined,
+                          size: 56,
+                          color: SparzamTheme.deepGreen,
+                        ),
+                      ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      issue.storeName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                    if (issue.location?.trim().isNotEmpty == true)
+                      Text(
+                        issue.location!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    Text(
+                      _prospectCardSummary(issue),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: issue.sourceStatus == 'error'
+                            ? Colors.orange.shade900
+                            : Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+String _prospectCardSummary(ProspectIssue issue) {
+  if (issue.sourceStatus == 'current_fallback') {
+    return '${issue.recordCount} Angebote aus dem letzten geprüften '
+        'Prospektstand. Automatische Aktualisierung aktuell nicht verfügbar.';
+  }
+  if (issue.recordCount > 0) return '${issue.recordCount} Angebote geladen';
+  return _sourceStatusLabel(issue);
+}
+
+String _sourceStatusLabel(ProspectIssue issue) {
+  if (issue.sourceStatus == 'no_current_offers') {
+    return 'Keine aktuell gültigen Angebotsdaten geladen.';
+  }
+  if (issue.sourceStatus == 'current_fallback') {
+    return 'Der letzte geprüfte Prospektstand wird verwendet; die automatische '
+        'Aktualisierung ist aktuell nicht verfügbar.';
+  }
+  if (issue.sourceStatus == 'error') {
+    return 'Automatischer Abruf aktuell nicht verfügbar. '
+        'Der offizielle Prospekt bleibt direkt erreichbar.';
+  }
+  if (issue.sourceStatus == 'ok' && issue.recordCount > 0) {
+    return '${issue.recordCount} Angebote automatisch geladen. '
+        'Prospektseiten werden beim Händler geöffnet, wenn keine Bildseiten vorliegen.';
+  }
+  if (issue.sourceStatus == 'metadata_only') {
+    return 'Prospektquelle gefunden; strukturierte Produktdaten fehlen aktuell.';
+  }
+  return 'Offizielle Prospektquelle verfügbar.';
+}
+
+class _ProspectViewer extends StatelessWidget {
+  const _ProspectViewer({
+    required this.issue,
+    required this.records,
+    required this.catalogProducts,
+    this.onAddProduct,
+    this.now,
+    this.onSaveOffer,
+  });
+
+  final ProspectIssue issue;
+  final List<OfferImportRecord> records;
+  final List<Product> catalogProducts;
+  final ValueChanged<Product>? onAddProduct;
+  final DateTime? now;
+  final Future<List<Offer>> Function(Offer offer)? onSaveOffer;
+
+  Future<void> _addPageOffer(BuildContext context, ProspectPage page) async {
+    final saveOffer = onSaveOffer;
+    final addProduct = onAddProduct;
+    if (saveOffer == null || addProduct == null) return;
+    final draft = await showProspectPageOfferDialog(
+      context,
+      initialValidUntil: issue.validUntil,
+    );
+    if (draft == null || !context.mounted) return;
+
+    final record = OfferImportRecord(
+      sourceId:
+          'manual-page|${issue.storeName}|${page.number}|${DateTime.now().microsecondsSinceEpoch}',
+      productLabel: draft.productLabel,
+      storeName: issue.storeName,
+      originalPrice: draft.originalPrice,
+      offerPrice: draft.offerPrice,
+      validFrom: issue.validFrom,
+      validUntil: draft.validUntil,
+      source: 'leaflet',
+      proofRef: page.zoomUrl ?? page.imageUrl,
+      imageUrl: page.imageUrl,
+      branchId: issue.branchId,
+      location: issue.location,
+    );
+    final entries = prospectOfferProducts(
+      records: [record],
+      catalogProducts: catalogProducts,
+      now: now ?? DateTime.now(),
+    );
+    if (entries.length != 1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Artikel konnte mit diesen Angaben nicht als aktuelles Angebot '
+            'gespeichert werden.',
+          ),
+        ),
+      );
+      return;
+    }
+    final entry = entries.single;
+    // This is a user-reviewed page claim. Give it a stable non-import ID so
+    // the next automatic feed refresh cannot delete it as a transient feed
+    // projection.
+    final reviewedOffer = Offer(
+      id:
+          'manual-page|${issue.storeName}|${page.number}|${DateTime.now().microsecondsSinceEpoch}',
+      productId: entry.offer.productId,
+      storeName: entry.offer.storeName,
+      originalPrice: entry.offer.originalPrice,
+      originalPriceVerified: entry.offer.originalPriceVerified,
+      offerPrice: entry.offer.offerPrice,
+      validFrom: entry.offer.validFrom,
+      validUntil: entry.offer.validUntil,
+      source: entry.offer.source,
+      proofRef: entry.offer.proofRef,
+      imageUrl: entry.offer.imageUrl,
+      locationId: entry.offer.locationId,
+      region: entry.offer.region,
+    );
+    try {
+      await saveOffer(reviewedOffer);
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Angebot konnte nicht gespeichert werden.')),
+        );
+      }
+      return;
+    }
+    if (!context.mounted) return;
+    addProduct(entry.product);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('${entry.product.name} hinzugefügt')),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final items = records
+        .where((record) => record.storeName == issue.storeName)
+        .toList(growable: false);
+    final groupedItems = <String, List<OfferImportRecord>>{};
+    for (final record in items) {
+      groupedItems
+          .putIfAbsent(_prospectCategoryForRecord(record), () => [])
+          .add(record);
+    }
+    final categories = groupedItems.keys.toList()
+      ..sort(
+        (a, b) =>
+            _prospectCategoryOrder(a).compareTo(_prospectCategoryOrder(b)),
+      );
+
+    return Scaffold(
+      appBar: AppBar(title: Text(issue.storeName)),
+      body: ListView(
+        padding: const EdgeInsets.all(12),
+        children: [
+          if (issue.location?.trim().isNotEmpty == true)
+            Card(
+              child: ListTile(
+                dense: true,
+                leading: const Icon(Icons.store_outlined),
+                title: Text(issue.location!),
+                subtitle: issue.address?.trim().isNotEmpty == true
+                    ? Text(issue.address!)
+                    : null,
+              ),
+            ),
+          if (_officialProspectUri(issue.url) != null)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: OutlinedButton.icon(
+                onPressed: () => launchUrl(
+                  _officialProspectUri(issue.url)!,
+                  mode: LaunchMode.externalApplication,
+                ),
+                icon: const Icon(Icons.open_in_new),
+                label: const Text('Offiziellen Prospekt öffnen'),
+              ),
+            ),
+          Text(issue.title, style: Theme.of(context).textTheme.titleLarge),
+          if (issue.validFrom != null && issue.validUntil != null)
+            Text(
+              '${_prospectDate(issue.validFrom!)} – ${_prospectDate(issue.validUntil!)}',
+              style: const TextStyle(color: Colors.black54),
+            ),
+          if (issue.pages.isNotEmpty) ...[
+            const SizedBox(height: 14),
+            Text(
+              'Prospektseiten (${issue.pages.length})',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ],
+          if (issue.pages.isEmpty)
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Aktuelle Angebote dieses Marktes. Durchblättern und '
+                      'Produkte antippen, um sie zur Einkaufsliste hinzuzufügen.',
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      _sourceStatusLabel(issue),
+                      style: TextStyle(
+                        color: issue.sourceStatus == 'error'
+                            ? Colors.orange.shade900
+                            : Colors.black54,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            for (final page in issue.pages)
+              Card(
+                clipBehavior: Clip.antiAlias,
+                child: Column(
+                  children: [
+                    Image.network(
+                      page.zoomUrl ?? page.imageUrl,
+                      webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const SizedBox(
+                            height: 180,
+                            child: Icon(Icons.broken_image),
+                          ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text('Seite ${page.number}'),
+                          const SizedBox(height: 6),
+                          OutlinedButton.icon(
+                            onPressed: onSaveOffer == null || onAddProduct == null
+                                ? null
+                                : () => _addPageOffer(context, page),
+                            icon: const Icon(Icons.add_shopping_cart_outlined),
+                            label: const Text('Artikel von Seite hinzufügen'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          if (items.isNotEmpty) ...[
+            const Padding(
+              padding: EdgeInsets.only(top: 12, bottom: 10),
+              child: Text(
+                'Produkte antippen und zur Einkaufsliste hinzufügen',
+                style: TextStyle(fontWeight: FontWeight.w700),
+              ),
+            ),
+            for (final category in categories) ...[
+              Padding(
+                padding: const EdgeInsets.only(top: 12, bottom: 8),
+                child: Text(
+                  category,
+                  key: ValueKey('prospect-category-$category'),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final width = (constraints.maxWidth - 10) / 2;
+                  return Wrap(
+                    spacing: 10,
+                    runSpacing: 12,
+                    children: [
+                      for (final record in groupedItems[category]!)
+                        SizedBox(
+                          width: width,
+                          child: Builder(
+                            builder: (context) {
+                              final product = addableProductForProspectOffer(
+                                record,
+                                catalogProducts,
+                              );
+                              return ProspectOfferCard(
+                                key: ValueKey(
+                                  'prospect-offer-${record.sourceId}',
+                                ),
+                                record: record,
+                                product: product,
+                                onAdd: onAddProduct == null || product == null
+                                    ? null
+                                    : () => onAddProduct!(product),
+                              );
+                            },
+                          ),
+                        ),
+                    ],
+                  );
+                },
+              ),
+            ],
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+const _prospectCategoryRanks = <String, int>{
+  'Obst & Gemüse': 0,
+  'Milchprodukte': 1,
+  'Fleisch & Fisch': 2,
+  'Backwaren': 3,
+  'Kaffee & Snacks': 4,
+  'Getränke': 5,
+  'Vorrat & Konserven': 6,
+  'Tiefkühl': 7,
+  'Kühlregal': 8,
+  'Haushalt': 20,
+  'Drogerie': 21,
+  'Garten & Pflanzen': 22,
+  'Non-Food': 30,
+  'Dauerhaft günstiger': 39,
+  'Weitere Angebote': 40,
+};
+
+int _prospectCategoryOrder(String category) =>
+    _prospectCategoryRanks[category] ?? 50;
+
+String _prospectCategory(String label) {
+  return fallbackProspectCategory(label);
+}
+
+String _prospectCategoryForRecord(OfferImportRecord record) {
+  final sourceCategory = record.category?.trim();
+  return sourceCategory == null || sourceCategory.isEmpty
+      ? _prospectCategory(record.productLabel)
+      : presentProspectCategory(sourceCategory);
+}
+
+String _prospectDate(DateTime value) =>
+    '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.${value.year}';
+
+Uri? _officialProspectUri(String? value) {
+  final raw = value?.trim();
+  if (raw == null || raw.isEmpty) return null;
+  final uri = Uri.tryParse(raw);
+  if (uri == null ||
+      (uri.scheme != 'http' && uri.scheme != 'https') ||
+      uri.host.isEmpty) {
+    return null;
+  }
+  return uri;
+}
+
