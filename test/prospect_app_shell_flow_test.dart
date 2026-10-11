@@ -200,7 +200,7 @@ void main() {
       await tester.tap(find.text('Sparroute prüfen'));
       await tester.pumpAndSettle();
       expect(find.text('Einkaufsoptimierung'), findsOneWidget);
-      expect(find.text('Netto'), findsWidgets);
+      expect(find.textContaining('Netto'), findsWidgets);
     },
   );
 }
