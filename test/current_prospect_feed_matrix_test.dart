@@ -16,7 +16,13 @@ void main() {
   test('versionierter Prospektfeed deckt sechs Märkte durchgängig ab', () {
     final raw = File('assets/prospects/current.json').readAsStringSync();
     final feed = parseProspectFeed(raw);
-    final observedAt = feed.generatedAt;
+    final observedAt = feed.records
+        .map((record) => record.validFrom)
+        .whereType<DateTime>()
+        .reduce(
+          (latest, candidate) =>
+              candidate.isAfter(latest) ? candidate : latest,
+        );
 
     expect(observedAt, isNotNull);
     expect(
