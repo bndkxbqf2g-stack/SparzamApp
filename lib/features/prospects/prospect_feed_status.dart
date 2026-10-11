@@ -167,7 +167,7 @@ ProspectCoverage _coverageForStore(
       .where((record) => record.category?.trim().isNotEmpty == true)
       .length;
   final offerProofCount = records
-      .where((record) => record.proofRef?.trim().isNotEmpty == true)
+      .where((record) => _hasValidProofReference(record.proofRef))
       .length;
   return ProspectCoverage(
     storeName: storeName,
@@ -182,6 +182,15 @@ ProspectCoverage _coverageForStore(
     hasAddress: issue?.address?.trim().isNotEmpty == true,
     hasValidity: issue?.validFrom != null && issue?.validUntil != null,
   );
+}
+
+bool _hasValidProofReference(String? value) {
+  final raw = value?.trim();
+  if (raw == null || raw.isEmpty) return false;
+  final uri = Uri.tryParse(raw);
+  if (uri == null || uri.host.trim().isEmpty) return false;
+  final scheme = uri.scheme.toLowerCase();
+  return scheme == 'http' || scheme == 'https';
 }
 
 /// Makes missing prospect evidence explicit without changing offer selection.
