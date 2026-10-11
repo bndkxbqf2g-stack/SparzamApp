@@ -137,7 +137,11 @@ void main() {
     expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
     expect(find.text('Frische Vollmilch 1 l'), findsNothing);
 
-    await tester.ensureVisible(find.byTooltip('Zur Einkaufsliste'));
+    await tester.scrollUntilVisible(
+      find.text('Jacobs Kaffee Crema 500 g'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.byTooltip('Zur Einkaufsliste'));
     expect(added, isNotNull);
     expect(added!.name, 'Jacobs Kaffee Crema 500 g');
@@ -227,7 +231,11 @@ void main() {
       findsOneWidget,
     );
 
-    await tester.ensureVisible(find.text('PENNY'));
+    await tester.scrollUntilVisible(
+      find.text('PENNY'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('PENNY'));
     await tester.pumpAndSettle();
     expect(
@@ -266,7 +274,11 @@ void main() {
       ),
     );
 
-    await tester.ensureVisible(find.textContaining('Lidl'));
+    await tester.scrollUntilVisible(
+      find.textContaining('Lidl'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.textContaining('Lidl'));
     await tester.pumpAndSettle();
 
@@ -306,7 +318,11 @@ void main() {
       findsOneWidget,
     );
 
-    await tester.ensureVisible(find.textContaining('Lidl'));
+    await tester.scrollUntilVisible(
+      find.textContaining('Lidl'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.textContaining('Lidl'));
     await tester.pumpAndSettle();
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
@@ -339,7 +355,11 @@ void main() {
       find.text('Keine aktuell gültigen Angebotsdaten geladen.'),
       findsOneWidget,
     );
-    await tester.ensureVisible(find.text('EDEKA'));
+    await tester.scrollUntilVisible(
+      find.text('EDEKA'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('EDEKA'));
     await tester.pumpAndSettle();
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
@@ -402,7 +422,11 @@ void main() {
     );
 
     expect(find.text('1 Angebote geladen'), findsOneWidget);
-    await tester.ensureVisible(find.text('Lidl'));
+    await tester.scrollUntilVisible(
+      find.text('Lidl'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('Lidl'));
     await tester.pumpAndSettle();
     expect(find.text('Seite 1'), findsOneWidget);
