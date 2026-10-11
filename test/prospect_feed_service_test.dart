@@ -47,6 +47,8 @@ void main() {
     expect(result.refreshedStores, ['ALDI Süd']);
     expect(result.records.first.originalPrice, 0.89);
     expect(result.records.first.category, 'Milchprodukte');
+    expect(result.records.first.branchId, 'B384');
+    expect(result.records.first.location, 'Zellingen');
     expect(result.records.last.originalPrice, isNull);
     final aldi = result.prospects.firstWhere(
       (item) => item.storeName == 'ALDI Süd',
@@ -184,4 +186,59 @@ void main() {
     expect(edeka.branchId, '023738');
     expect(edeka.location, 'Zellingen');
   });
+
+  test('drops offers with malformed or contradictory validity evidence', () {
+    final result = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-10-01T04:15:00Z",
+  "sources": [{"storeName": "Lidl", "status": "ok"}],
+  "offers": [
+    {
+      "sourceId": "bad-start",
+      "productLabel": "Milch 1,5 %",
+      "storeName": "Lidl",
+      "offerPrice": 0.99,
+      "validFrom": "unbekannt",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://example.test/bad-start"
+    },
+    {
+      "sourceId": "reversed",
+      "productLabel": "Butter",
+      "storeName": "Lidl",
+      "offerPrice": 1.99,
+      "validFrom": "2026-10-05",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://example.test/reversed"
+    },
+    {
+      "sourceId": "bad-regular",
+      "productLabel": "Eier",
+      "storeName": "Lidl",
+      "originalPrice": "nicht bekannt",
+      "offerPrice": 1.99,
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://example.test/bad-regular"
+    },
+    {
+      "sourceId": "valid",
+      "productLabel": "Schmand",
+      "storeName": "Lidl",
+      "offerPrice": 0.69,
+      "validFrom": "2026-10-01",
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://example.test/valid"
+    }
+  ]
 }
+''');
+
+    expect(result.records, hasLength(1));
+    expect(result.records.single.sourceId, 'valid');
+  });
+}
+
