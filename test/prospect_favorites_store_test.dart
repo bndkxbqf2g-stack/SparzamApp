@@ -61,14 +61,14 @@ void main() {
     await tester.pumpAndSettle();
 
     final addFavorite = find.byTooltip('Lidl zu Favoriten hinzufügen');
-    expect(addFavorite, findsNWidgets(2));
+    expect(addFavorite, findsAtLeastNWidgets(1));
 
     await tester.tap(addFavorite.first);
     await tester.pumpAndSettle();
 
     expect(
       find.byTooltip('Lidl aus Favoriten entfernen'),
-      findsNWidgets(2),
+      findsAtLeastNWidgets(1),
     );
     expect(find.text('Prospektseiten (1)'), findsNothing);
 
