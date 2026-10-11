@@ -50,9 +50,11 @@ class _ProspectPageOfferDialogState extends State<_ProspectPageOfferDialog> {
     _labelController = TextEditingController();
     _offerController = TextEditingController();
     _originalController = TextEditingController();
-    _validUntil = widget.initialValidUntil == null
+    final today = DateUtils.dateOnly(DateTime.now());
+    final initial = widget.initialValidUntil == null
         ? null
         : DateUtils.dateOnly(widget.initialValidUntil!);
+    _validUntil = initial == null || initial.isBefore(today) ? null : initial;
   }
 
   @override
