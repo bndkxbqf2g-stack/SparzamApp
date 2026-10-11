@@ -211,6 +211,9 @@ class ProspectCoverageCard extends StatelessWidget {
     final marketsWithValidity = coverage
         .where((entry) => entry.hasValidity)
         .length;
+    final marketsWithProof = coverage
+        .where((entry) => entry.offerProofCount > 0)
+        .length;
 
     return Card(
       child: ExpansionTile(
@@ -219,7 +222,8 @@ class ProspectCoverageCard extends StatelessWidget {
         subtitle: Text(
           '${coverage.length} Märkte · $marketsWithOffers mit strukturierten '
           'Angeboten · $marketsWithPages mit Bildseiten · '
-          '$marketsWithValidity mit Gültigkeitszeitraum',
+          '$marketsWithValidity mit Gültigkeitszeitraum · '
+          '$marketsWithProof mit Originalnachweis',
         ),
         children: [
           for (final entry in coverage)
