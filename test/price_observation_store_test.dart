@@ -331,6 +331,30 @@ void main() {
     );
   });
 
+  test('external offer observations with unsafe proof stay uncertain', () {
+    final offer = Offer(
+      id: 'leaflet-unsafe-proof',
+      productId: 'schmand',
+      storeName: 'Lidl',
+      originalPrice: 0.89,
+      offerPrice: 0.69,
+      validUntil: DateTime(2026, 9, 27),
+      source: 'leaflet',
+      proofRef: 'javascript:alert(1)',
+    );
+    final observations = observationsFromOffer(
+      offer,
+      observedAt: DateTime(2026, 9, 25),
+    ).toList(growable: false);
+
+    expect(observations, hasLength(2));
+    expect(observations.every((entry) => entry.identityConfidence == 0), isTrue);
+    expect(
+      marketPricesFromObservations(observations, now: DateTime(2026, 9, 25)),
+      isEmpty,
+    );
+  });
+
   test('leaflet preserves regular price as separate evidence', () {
     final offer = Offer(
       id: 'leaflet-1',
@@ -575,3 +599,4 @@ void main() {
     expect(quality.confidence, closeTo(0.65, 0.00001));
   });
 }
+
