@@ -163,6 +163,7 @@ void main() {
     );
 
     expect(find.text('Datenabdeckung der aktuellen Prospekte'), findsOneWidget);
+    expect(find.textContaining('0 mit Originalnachweis'), findsOneWidget);
     expect(find.text('ALDI Süd'), findsNothing);
     await tester.tap(find.text('Datenabdeckung der aktuellen Prospekte'));
     await tester.pumpAndSettle();
