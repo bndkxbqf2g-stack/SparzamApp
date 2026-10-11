@@ -280,4 +280,3 @@ String _sourceStatusLabel(String status) {
       return 'unvollständig';
   }
 }
-
