@@ -45,6 +45,8 @@ PriceObservation observationFromOffer(
   kind: PriceObservationKind.offer,
   validFrom: offer.validFrom,
   validUntil: offer.validUntil,
+  locationId: offer.locationId,
+  region: offer.region,
   proofRef: offer.proofRef ?? 'offer:${offer.id}',
   discounted: true,
   identityConfidence: _offerIdentityConfidence(offer),
@@ -63,6 +65,8 @@ PriceObservation regularObservationFromOffer(
   kind: PriceObservationKind.regular,
   validFrom: offer.validFrom,
   validUntil: offer.validUntil,
+  locationId: offer.locationId,
+  region: offer.region,
   proofRef: offer.proofRef ?? 'offer:${offer.id}',
   identityConfidence: offer.originalPriceVerified
       ? _offerIdentityConfidence(offer)
