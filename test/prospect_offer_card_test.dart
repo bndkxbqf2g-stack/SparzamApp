@@ -18,6 +18,7 @@ void main() {
       validUntil: DateTime(2026, 10, 2),
       source: 'leaflet',
       proofRef: 'https://example.test/lidl/oat-1',
+      location: 'Zellingen',
     );
 
     await tester.pumpWidget(
@@ -39,6 +40,7 @@ void main() {
 
     expect(find.text('0,99 €'), findsOneWidget);
     expect(find.text('Lidl'), findsOneWidget);
+    expect(find.text('Zellingen'), findsOneWidget);
     expect(find.text('Gültig bis 02.10.2026'), findsOneWidget);
     expect(find.text('-23 %'), findsOneWidget);
 
@@ -48,4 +50,27 @@ void main() {
     expect(added, isTrue);
     expect(find.text('Hinzugefügt'), findsOneWidget);
   });
+
+  testWidgets('hides hostless proof action', (tester) async {
+    final record = OfferImportRecord(
+      sourceId: 'hostless-proof',
+      productLabel: 'Eigenmarke Haferdrink 1 l',
+      storeName: 'Lidl',
+      offerPrice: 0.99,
+      validUntil: DateTime(2026, 10, 2),
+      source: 'leaflet',
+      proofRef: 'https://',
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ProspectOfferCard(record: record),
+        ),
+      ),
+    );
+
+    expect(find.text('Prospektnachweis öffnen'), findsNothing);
+  });
 }
+
