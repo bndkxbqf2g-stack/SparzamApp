@@ -470,6 +470,37 @@ void main() {
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
   });
 
+  testWidgets('hides an invalid official prospect link', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: const [],
+              url: 'javascript:alert(1)',
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+            ),
+          ],
+          now: DateTime(2026, 9, 30),
+        ),
+      ),
+    );
+
+    await _scrollProspects(tester);
+    await tester.tap(find.text('Lidl').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Offiziellen Prospekt öffnen'), findsNothing);
+    expect(
+      find.text('Keine aktuell gültigen Angebotsdaten geladen.'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('shows current issue and current prices instead of old pages', (
     tester,
   ) async {
