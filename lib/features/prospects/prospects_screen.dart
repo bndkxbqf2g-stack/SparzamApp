@@ -11,7 +11,7 @@ import '../offers/offer_filter.dart';
 import 'prospect_offer_card.dart';
 import 'prospect_feed_status.dart';
 
-class ProspectsScreen extends StatelessWidget {
+class ProspectsScreen extends StatefulWidget {
   const ProspectsScreen({
     super.key,
     required this.records,
@@ -36,8 +36,26 @@ class ProspectsScreen extends StatelessWidget {
   final bool prospectsRefreshing;
 
   @override
+  State<ProspectsScreen> createState() => _ProspectsScreenState();
+}
+
+class _ProspectsScreenState extends State<ProspectsScreen> {
+  final searchController = TextEditingController();
+  var query = '';
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final currentRecords = currentProspectRecords(records, now: now);
+    final currentRecords = currentProspectRecords(
+      widget.records,
+      now: widget.now,
+    );
+    final matchingRecords = _matchingProspectRecords(currentRecords, query);
     final currentCounts = <String, int>{};
     for (final record in currentRecords) {
       currentCounts.update(
@@ -47,7 +65,7 @@ class ProspectsScreen extends StatelessWidget {
       );
     }
     final byStore = <String, List<ProspectIssue>>{};
-    for (final issue in prospects) {
+    for (final issue in widget.prospects) {
       byStore.putIfAbsent(issue.storeName, () => []).add(issue);
     }
     final visibleProspects = <ProspectIssue>[
@@ -55,7 +73,7 @@ class ProspectsScreen extends StatelessWidget {
         _visibleIssue(
           entries,
           currentCounts[entries.first.storeName] ?? 0,
-          now: now,
+          now: widget.now,
         ),
     ];
 
@@ -76,14 +94,45 @@ class ProspectsScreen extends StatelessWidget {
         const Center(
           child: Text('Aktuelle Prospekte. Produkte antippen und vormerken.'),
         ),
+        const SizedBox(height: 14),
+        TextField(
+          controller: searchController,
+          onChanged: (value) => setState(() => query = value),
+          decoration: InputDecoration(
+            hintText: 'Prospekte und Artikel durchsuchen',
+            prefixIcon: const Icon(Icons.search),
+            suffixIcon: query.trim().isEmpty
+                ? null
+                : IconButton(
+                    tooltip: 'Suche löschen',
+                    onPressed: () {
+                      searchController.clear();
+                      setState(() => query = '');
+                    },
+                    icon: const Icon(Icons.close),
+                  ),
+            filled: true,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(18),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
         ProspectFeedStatusCard(
-          generatedAt: generatedAt,
-          fromCache: fromCache,
-          onRefresh: onRefreshProspects,
-          refreshing: prospectsRefreshing,
+          generatedAt: widget.generatedAt,
+          fromCache: widget.fromCache,
+          onRefresh: widget.onRefreshProspects,
+          refreshing: widget.prospectsRefreshing,
         ),
         const SizedBox(height: 20),
-        if (visibleProspects.isEmpty)
+        if (query.trim().isNotEmpty)
+          _ProspectSearchResults(
+            records: matchingRecords,
+            catalogProducts: widget.catalogProducts,
+            onAddProduct: widget.onAddProduct,
+            query: query,
+          )
+        else if (visibleProspects.isEmpty)
           const Card(
             child: Padding(
               padding: EdgeInsets.all(24),
@@ -111,8 +160,8 @@ class ProspectsScreen extends StatelessWidget {
                       builder: (_) => _ProspectViewer(
                         issue: issue,
                         records: currentRecords,
-                        catalogProducts: catalogProducts,
-                        onAddProduct: onAddProduct,
+                        catalogProducts: widget.catalogProducts,
+                        onAddProduct: widget.onAddProduct,
                       ),
                     ),
                   ),
@@ -121,7 +170,7 @@ class ProspectsScreen extends StatelessWidget {
             ),
           ),
         ],
-        if (visibleProspects.isNotEmpty)
+        if (query.trim().isEmpty && visibleProspects.isNotEmpty)
           ProspectCoverageCard(
             coverage: calculateProspectCoverage(
               issues: visibleProspects,
@@ -131,6 +180,105 @@ class ProspectsScreen extends StatelessWidget {
       ],
     );
   }
+}
+
+class _ProspectSearchResults extends StatelessWidget {
+  const _ProspectSearchResults({
+    required this.records,
+    required this.catalogProducts,
+    required this.onAddProduct,
+    required this.query,
+  });
+
+  final List<OfferImportRecord> records;
+  final List<Product> catalogProducts;
+  final ValueChanged<Product>? onAddProduct;
+  final String query;
+
+  @override
+  Widget build(BuildContext context) {
+    if (records.isEmpty) {
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Text(
+            'Keine aktuellen Prospektartikel für „${query.trim()}“ gefunden.',
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
+
+    final byStore = <String, List<OfferImportRecord>>{};
+    for (final record in records) {
+      byStore.putIfAbsent(record.storeName, () => []).add(record);
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          '${records.length} passende Prospektartikel',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'Artikel werden nur mit ihrem vorhandenen Händlernachweis und '
+          'aktuellen Gültigkeitszeitraum angeboten.',
+        ),
+        const SizedBox(height: 12),
+        for (final entry in byStore.entries) ...[
+          Padding(
+            padding: const EdgeInsets.only(top: 8, bottom: 6),
+            child: Text(
+              entry.key,
+              style: const TextStyle(fontWeight: FontWeight.w800),
+            ),
+          ),
+          for (final record in entry.value)
+            ProspectOfferCard(
+              key: ValueKey('prospect-search-offer-${record.sourceId}'),
+              record: record,
+              product: addableProductForProspectOffer(
+                record,
+                catalogProducts,
+              ),
+              compact: true,
+              onAdd: onAddProduct == null
+                  ? null
+                  : () {
+                      final product = addableProductForProspectOffer(
+                        record,
+                        catalogProducts,
+                      );
+                      if (product != null) onAddProduct!(product);
+                    },
+            ),
+        ],
+      ],
+    );
+  }
+}
+
+List<OfferImportRecord> _matchingProspectRecords(
+  Iterable<OfferImportRecord> records,
+  String query,
+) {
+  final normalized = query.trim().toLowerCase();
+  if (normalized.isEmpty) return records.toList(growable: false);
+  return records
+      .where((record) {
+        final category = record.category?.trim() ?? '';
+        final searchable = [
+          record.productLabel,
+          record.storeName,
+          category,
+          presentProspectCategory(category),
+          fallbackProspectCategory(record.productLabel),
+        ].join(' ').toLowerCase();
+        return searchable.contains(normalized);
+      })
+      .toList(growable: false);
 }
 
 ProspectIssue _visibleIssue(
@@ -497,3 +645,4 @@ String _prospectCategoryForRecord(OfferImportRecord record) {
 
 String _prospectDate(DateTime value) =>
     '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.${value.year}';
+
