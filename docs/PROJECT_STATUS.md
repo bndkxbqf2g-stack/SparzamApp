@@ -1,5 +1,10 @@
 # SparzamApp – Projektstatus
 
+## Update 11.10.2026 – Datensatz-Filialort in der Prospektansicht
+- Angebots- und Prospektsuche zeigen jetzt den Ort aus dem jeweiligen Feed-Datensatz, wenn dieser vorhanden ist.
+- Der Händler-/Issue-Ort und die konfigurierte Filiale bleiben nachvollziehbare Fallbacks; mehrere Datensatzorte werden gemeinsam sichtbar.
+- Produktidentität, Preis, Nachweis und Gültigkeit bleiben unverändert.
+
 ## Update 11.10.2026 – Filialkontext bleibt an jedem Feed-Datensatz
 - Der Prospekt-Refresh schreibt den konfigurierten Filialschlüssel, Ort und Adresse jetzt zusätzlich an jedes erzeugte Angebot und jede Prospektseite.
 - Bereits vorhandener Anbieter-Kontext gewinnt; fehlende Felder fallen deterministisch auf die konfigurierte Filiale zurück.
