@@ -93,6 +93,14 @@ void main() {
           validUntil: DateTime(2026, 10, 7),
           category: 'Milchprodukte',
         ),
+        OfferImportRecord(
+          sourceId: 'netto-1',
+          productLabel: 'Saft',
+          storeName: 'Netto',
+          offerPrice: 1.49,
+          validUntil: DateTime(2026, 10, 7),
+          proofRef: 'javascript:alert(1)',
+        ),
       ],
     );
 
@@ -114,6 +122,10 @@ void main() {
     expect(edeka.pageCount, 0);
     expect(edeka.sourceStatus, 'metadata_only');
     expect(edeka.availableStoreSignals, 0);
+
+    final netto = coverage.firstWhere((entry) => entry.storeName == 'Netto');
+    expect(netto.structuredOfferCount, 1);
+    expect(netto.offerProofCount, 0);
   });
 
   testWidgets('shows per-market prospect coverage details when expanded', (
