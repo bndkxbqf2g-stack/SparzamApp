@@ -95,26 +95,29 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
           child: Text('Aktuelle Prospekte. Produkte antippen und vormerken.'),
         ),
         const SizedBox(height: 14),
-        TextField(
-          controller: searchController,
-          onChanged: (value) => setState(() => query = value),
-          decoration: InputDecoration(
-            hintText: 'Prospekte und Artikel durchsuchen',
-            prefixIcon: const Icon(Icons.search),
-            suffixIcon: query.trim().isEmpty
-                ? null
-                : IconButton(
-                    tooltip: 'Suche löschen',
-                    onPressed: () {
-                      searchController.clear();
-                      setState(() => query = '');
-                    },
-                    icon: const Icon(Icons.close),
-                  ),
-            filled: true,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(18),
-              borderSide: BorderSide.none,
+        Material(
+          type: MaterialType.transparency,
+          child: TextField(
+            controller: searchController,
+            onChanged: (value) => setState(() => query = value),
+            decoration: InputDecoration(
+              hintText: 'Prospekte und Artikel durchsuchen',
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: query.trim().isEmpty
+                  ? null
+                  : IconButton(
+                      tooltip: 'Suche löschen',
+                      onPressed: () {
+                        searchController.clear();
+                        setState(() => query = '');
+                      },
+                      icon: const Icon(Icons.close),
+                    ),
+              filled: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide.none,
+              ),
             ),
           ),
         ),
