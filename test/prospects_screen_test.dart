@@ -521,6 +521,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(saved, isNotNull);
+    expect(saved!.id, startsWith('manual-page|'));
     expect(saved!.productId, startsWith('prospect|'));
     expect(saved!.offerPrice, 4.99);
     expect(saved!.originalPrice, 5.99);
