@@ -295,10 +295,18 @@ class _ProspectSearchResults extends StatelessWidget {
                   entry.key,
                   style: const TextStyle(fontWeight: FontWeight.w800),
                 ),
-                if (issueByStore[entry.key]?.location?.trim().isNotEmpty ==
-                    true)
+                if (prospectRecordLocationLabel(
+                      entry.key,
+                      entry.value,
+                      fallbackLocation: issueByStore[entry.key]?.location,
+                    ) !=
+                    'Filiale')
                   Text(
-                    issueByStore[entry.key]!.location!,
+                    prospectRecordLocationLabel(
+                      entry.key,
+                      entry.value,
+                      fallbackLocation: issueByStore[entry.key]?.location,
+                    ),
                     style: const TextStyle(
                       fontSize: 12,
                       color: Colors.black54,
