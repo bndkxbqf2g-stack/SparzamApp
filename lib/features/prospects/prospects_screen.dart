@@ -132,11 +132,14 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
         ),
         if (categories.isNotEmpty) ...[
           const SizedBox(height: 10),
-          _ProspectCategoryChips(
-            categories: categories,
-            selectedCategory: activeCategory,
-            onSelected: (category) =>
-                setState(() => selectedCategory = category),
+          Material(
+            type: MaterialType.transparency,
+            child: _ProspectCategoryChips(
+              categories: categories,
+              selectedCategory: activeCategory,
+              onSelected: (category) =>
+                  setState(() => selectedCategory = category),
+            ),
           ),
         ],
         ProspectFeedStatusCard(
