@@ -492,6 +492,7 @@ void main() {
               ],
               branchId: 'L-42',
               location: 'Zellingen',
+              address: 'Hauptstraße 1, 97225 Zellingen',
               validFrom: DateTime(2026, 9, 28),
               validUntil: DateTime(2026, 12, 31),
               sourceStatus: 'ok',
@@ -528,6 +529,7 @@ void main() {
     expect(saved!.proofRef, 'https://example.test/lidl/page-4.png');
     expect(saved!.locationId, 'L-42');
     expect(saved!.region, 'Zellingen');
+    expect(saved!.address, 'Hauptstraße 1, 97225 Zellingen');
     expect(added?.name, 'Kaffee Crema 500 g');
   });
 
