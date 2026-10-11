@@ -283,9 +283,9 @@ class _ProspectSearchResults extends StatelessWidget {
 
 List<OfferImportRecord> _matchingProspectRecords(
   Iterable<OfferImportRecord> records,
-  String query,
-  {String? category},
-) {
+  String query, {
+  String? category,
+}) {
   final normalized = query.trim().toLowerCase();
   return records
       .where((record) {
