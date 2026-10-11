@@ -710,7 +710,6 @@ class _ProspectViewer extends StatelessWidget {
     if (addProductAndWait != null) {
       await addProductAndWait(entry.product);
     } else {
-      if (!context.mounted) return;
       addProduct!(entry.product);
     }
     if (!context.mounted) return;
