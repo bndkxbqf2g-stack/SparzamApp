@@ -3,6 +3,7 @@ import '../models/price_observation.dart';
 import '../models/receipt_observation.dart';
 import '../models/receipt_identity.dart';
 import '../features/catalog/product_identity.dart';
+import '../features/offers/offer_import.dart';
 
 PriceObservation observationFromReceipt(ReceiptObservation receipt) {
   final identity = assessReceiptIdentity(
@@ -80,7 +81,7 @@ Iterable<PriceObservation> observationsFromOffer(
 
 double _offerIdentityConfidence(Offer offer) {
   if (offer.source == 'manual') return 1;
-  return offer.proofRef?.trim().isNotEmpty == true ? 1 : 0;
+  return hasTrustedOfferProofReference(offer.proofRef) ? 1 : 0;
 }
 
 PriceObservationSource _offerSource(Offer offer) => switch (offer.source) {
@@ -89,3 +90,4 @@ PriceObservationSource _offerSource(Offer offer) => switch (offer.source) {
   'leaflet' => PriceObservationSource.leaflet,
   _ => PriceObservationSource.manual,
 };
+
