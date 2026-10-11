@@ -52,6 +52,25 @@ List<OfferImportRecord> currentProspectRecords(
     )
     .toList(growable: false);
 
+/// Returns whether an external offer carries a source reference that can be
+/// trusted as evidence. HTTP(S) links need a host; the leaflet scheme is an
+/// internal, non-browsable reference used by verified prospect fixtures.
+bool hasTrustedOfferProofReference(String? value) {
+  final raw = value?.trim();
+  if (raw == null || raw.isEmpty) return false;
+  final uri = Uri.tryParse(raw);
+  if (uri == null) return false;
+  final scheme = uri.scheme.toLowerCase();
+  if (scheme == 'http' || scheme == 'https') {
+    return uri.host.trim().isNotEmpty;
+  }
+  if (scheme == 'leaflet') {
+    final separator = raw.indexOf(':');
+    return separator > 0 && raw.substring(separator + 1).trim().isNotEmpty;
+  }
+  return false;
+}
+
 class OfferImportResolution {
   const OfferImportResolution({
     required this.record,
@@ -118,7 +137,7 @@ OfferImportResolution resolveOfferImport(
   }
 
   if (record.source != 'manual' &&
-      record.proofRef?.trim().isNotEmpty != true) {
+      !hasTrustedOfferProofReference(record.proofRef)) {
     return OfferImportResolution(record: record, reason: 'missing_proof');
   }
 
