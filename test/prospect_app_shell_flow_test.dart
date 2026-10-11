@@ -54,12 +54,14 @@ class _Stores {
 Widget _app(
   _Stores stores,
   ProspectImportModule module, {
+  Key? key,
   List<Offer> initialOffers = const <Offer>[],
   List<Product> initialCustomProducts = const <Product>[],
   List<ListItem> initialShoppingList = const <ListItem>[],
 }) {
   return MaterialApp(
     home: AppShell(
+      key: key,
       budgetStore: stores.budget,
       offerStore: stores.offers,
       mobilityStore: stores.mobility,
@@ -171,6 +173,7 @@ void main() {
         _app(
           stores,
           module,
+          key: const ValueKey('simulated-restart'),
           initialOffers: savedOffers,
           initialCustomProducts: await stores.products.load(),
           initialShoppingList: savedItems,
