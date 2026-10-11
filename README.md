@@ -99,6 +99,9 @@ Bonimporte, eigene Preise oder andere belegte Quellen routenfähig.
 - Jede nachgewiesene Artikelkarte bietet den Originalnachweis direkt an. Der
   Link wird nur für eine gültige HTTP(S)-Quelle angezeigt und verändert keine
   Preis- oder Produktidentität.
+- Marktübergreifende Treffer zeigen zusätzlich den im Prospektfeed gelieferten
+  Filialort, damit gleiche Händler und unterschiedliche Standorte nicht
+  verwechselt werden.
 - Der zuletzt erfolgreich validierte öffentliche Feed bleibt lokal als Cache verfügbar, wenn der nächste Abruf vorübergehend scheitert. Auch Cache-Daten werden vor Anzeige und Routenplanung nach ihrer Angebotsgültigkeit gefiltert und als Cache-Ergebnis kenntlich gemacht.
 - Belegte Prospekt-Angebotspreise und ausdrücklich angegebene Normalpreise bleiben mit Markt, Quelle, Nachweis, Packungsgröße und Gültigkeit als Preisbeobachtungen erhalten. Abgelaufene Preise dienen nur der Historie; sie werden nicht als aktuell verfügbarer Routenpreis ausgegeben.
 - Marken-/Text-Matching kann passende Angebote zu Produkten finden.
