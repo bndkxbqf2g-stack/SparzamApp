@@ -240,4 +240,60 @@ void main() {
     expect(result.records.single.address, 'Offer street 2');
   });
 
+  test('rejects malformed or contradictory offer validity evidence', () {
+    final result = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-10-01T04:15:00Z",
+  "sources": [{"storeName": "Lidl", "status": "ok"}],
+  "offers": [
+    {
+      "sourceId": "bad-start",
+      "productLabel": "Milch 1,5 %",
+      "storeName": "Lidl",
+      "offerPrice": 0.99,
+      "validFrom": "unbekannt",
+      "validUntil": "2026-10-03"
+    },
+    {
+      "sourceId": "reversed",
+      "productLabel": "Butter",
+      "storeName": "Lidl",
+      "offerPrice": 1.49,
+      "validFrom": "2026-10-04",
+      "validUntil": "2026-10-03"
+    },
+    {
+      "sourceId": "bad-original",
+      "productLabel": "Kaffee",
+      "storeName": "Lidl",
+      "offerPrice": 4.99,
+      "originalPrice": "unbekannt",
+      "validUntil": "2026-10-03"
+    },
+    {
+      "sourceId": "bad-price-type",
+      "productLabel": "Tee",
+      "storeName": "Lidl",
+      "offerPrice": "0.99",
+      "validUntil": "2026-10-03"
+    },
+    {
+      "sourceId": "valid",
+      "productLabel": "Joghurt",
+      "storeName": "Lidl",
+      "offerPrice": 0.69,
+      "validFrom": "2026-09-28",
+      "validUntil": "2026-10-03",
+      "originalPrice": 0.89
+    }
+  ]
+}
+''');
+
+    expect(result.records, hasLength(1));
+    expect(result.records.single.sourceId, 'valid');
+    expect(result.records.single.validFrom, DateTime(2026, 9, 28));
+    expect(result.records.single.originalPrice, 0.89);
+  });
+
 }
