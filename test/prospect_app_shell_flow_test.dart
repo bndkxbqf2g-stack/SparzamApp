@@ -274,6 +274,7 @@ void main() {
         find.widgetWithText(FilledButton, 'Artikel hinzufügen'),
       );
       await tester.pumpAndSettle();
+      expect(find.text('Käsesticks 300 g hinzugefügt'), findsOneWidget);
       await tester.runAsync(() async {
         for (var attempt = 0; attempt < 40; attempt++) {
           final items = await stores.shoppingList.load();
