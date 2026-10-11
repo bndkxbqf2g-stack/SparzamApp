@@ -13,7 +13,13 @@ class ProspectFavoritesStore {
 
   /// Returns null when the shopper has never configured favorites.
   Future<Set<String>?> load() async {
-    final values = await _preferences.getStringList(storageKey);
+    List<String>? values;
+    try {
+      values = await _preferences.getStringList(storageKey);
+    } catch (_) {
+      // Widget tests and unsupported platforms have no preference channel.
+      return null;
+    }
     if (values == null) return null;
     return values
         .map((value) => value.trim())
