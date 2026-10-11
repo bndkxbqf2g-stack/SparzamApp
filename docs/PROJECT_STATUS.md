@@ -15,6 +15,14 @@
 - App: Flutter-Prototyp für intelligent geplante Lebensmitteleinkäufe.
 - Arbeitsweise: kleine, nachvollziehbare Schritte; modular; nach jedem abgeschlossenen Paket testen, committen, pushen und diese Datei aktualisieren.
 
+## Update 11.10.2026 – Widersprüchliche Bon-Aliase bleiben im Review
+- Wenn ältere oder zusammengeführte Aliasdaten denselben Bontext mehreren
+  Produkten mit ausreichender Bestätigungszahl zuordnen, wird kein Eintrag mehr
+  stillschweigend bevorzugt.
+- Der Bontext bleibt auswählbar und prüfbar; erst eine eindeutige Lernhistorie
+  darf eine automatische Zuordnung und spätere Preisbeobachtung auslösen.
+- Eine Regression schützt den mehrdeutigen Legacy-Fall.
+
 ## Update 10.10.2026 – Main- und Release-Abnahme nach PR #248
 - Der veröffentlichte Stand `4a9800e` wurde im Web geladen; Einkaufsliste,
   aktuelle Angebote, Produktdatenlücken und die Aktion „Sparroute prüfen“ sind
