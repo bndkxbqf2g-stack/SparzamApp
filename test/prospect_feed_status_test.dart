@@ -82,6 +82,15 @@ void main() {
           offerPrice: 0.95,
           validUntil: DateTime(2026, 10, 7),
           imageUrl: 'https://example.test/milch',
+          proofRef: 'https://example.test/milch-proof',
+          category: 'Milchprodukte',
+        ),
+        OfferImportRecord(
+          sourceId: 'edeka-1',
+          productLabel: 'Butter',
+          storeName: 'EDEKA',
+          offerPrice: 1.99,
+          validUntil: DateTime(2026, 10, 7),
           category: 'Milchprodukte',
         ),
       ],
@@ -92,6 +101,7 @@ void main() {
     expect(aldi.structuredOfferCount, 1);
     expect(aldi.offerImageCount, 1);
     expect(aldi.offerCategoryCount, 1);
+    expect(aldi.offerProofCount, 1);
     expect(aldi.pageCount, 1);
     expect(aldi.hasBranch, isTrue);
     expect(aldi.hasLocation, isTrue);
@@ -99,7 +109,8 @@ void main() {
     expect(aldi.hasValidity, isTrue);
 
     final edeka = coverage.firstWhere((entry) => entry.storeName == 'EDEKA');
-    expect(edeka.structuredOfferCount, 0);
+    expect(edeka.structuredOfferCount, 1);
+    expect(edeka.offerProofCount, 0);
     expect(edeka.pageCount, 0);
     expect(edeka.sourceStatus, 'metadata_only');
     expect(edeka.availableStoreSignals, 0);
@@ -143,6 +154,8 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('ALDI Süd'), findsOneWidget);
     expect(find.textContaining('1 strukturierte Angebote'), findsOneWidget);
+    expect(find.textContaining('0/1 Nachweise'), findsOneWidget);
     expect(find.text('aktuell'), findsOneWidget);
   });
 }
+
