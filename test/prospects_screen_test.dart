@@ -493,7 +493,7 @@ void main() {
               branchId: 'L-42',
               location: 'Zellingen',
               validFrom: DateTime(2026, 9, 28),
-              validUntil: DateTime(2026, 10, 3),
+              validUntil: DateTime(2026, 12, 31),
               sourceStatus: 'ok',
             ),
           ],
