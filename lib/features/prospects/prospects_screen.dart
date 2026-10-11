@@ -43,6 +43,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
   final searchController = TextEditingController();
   var query = '';
   String? selectedCategory;
+  String? selectedStore;
 
   @override
   void dispose() {
@@ -57,13 +58,16 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
       now: widget.now,
     );
     final categories = _prospectCategories(currentRecords);
+    final stores = _prospectStores(currentRecords, widget.prospects);
     final activeCategory = categories.contains(selectedCategory)
         ? selectedCategory
         : null;
+    final activeStore = stores.contains(selectedStore) ? selectedStore : null;
     final matchingRecords = _matchingProspectRecords(
       currentRecords,
       query,
       category: activeCategory,
+      storeName: activeStore,
     );
     final currentCounts = <String, int>{};
     for (final record in currentRecords) {
@@ -142,6 +146,17 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
             ),
           ),
         ],
+        if (stores.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Material(
+            type: MaterialType.transparency,
+            child: _ProspectStoreChips(
+              stores: stores,
+              selectedStore: activeStore,
+              onSelected: (store) => setState(() => selectedStore = store),
+            ),
+          ),
+        ],
         ProspectFeedStatusCard(
           generatedAt: widget.generatedAt,
           fromCache: widget.fromCache,
@@ -149,7 +164,9 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
           refreshing: widget.prospectsRefreshing,
         ),
         const SizedBox(height: 20),
-        if (query.trim().isNotEmpty || activeCategory != null)
+        if (query.trim().isNotEmpty ||
+            activeCategory != null ||
+            activeStore != null)
           _ProspectSearchResults(
             records: matchingRecords,
             prospects: visibleProspects,
@@ -225,11 +242,14 @@ class _ProspectSearchResults extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (records.isEmpty) {
+      final trimmedQuery = query.trim();
       return Card(
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Text(
-            'Keine aktuellen Prospektartikel für „${query.trim()}“ gefunden.',
+            trimmedQuery.isEmpty
+                ? 'Keine aktuellen Prospektartikel für diese Auswahl gefunden.'
+                : 'Keine aktuellen Prospektartikel für „$trimmedQuery“ gefunden.',
             textAlign: TextAlign.center,
           ),
         ),
@@ -309,10 +329,14 @@ List<OfferImportRecord> _matchingProspectRecords(
   Iterable<OfferImportRecord> records,
   String query, {
   String? category,
+  String? storeName,
 }) {
   final normalized = query.trim().toLowerCase();
   return records
       .where((record) {
+        if (storeName != null && record.storeName != storeName) {
+          return false;
+        }
         if (category != null && _prospectCategoryForRecord(record) != category) {
           return false;
         }
@@ -335,6 +359,20 @@ List<String> _prospectCategories(Iterable<OfferImportRecord> records) {
     for (final record in records) _prospectCategoryForRecord(record),
   };
   return categories.toList()..sort();
+}
+
+List<String> _prospectStores(
+  Iterable<OfferImportRecord> records,
+  Iterable<ProspectIssue> issues,
+) {
+  final stores = <String>[];
+  for (final name in [
+    ...issues.map((issue) => issue.storeName),
+    ...records.map((record) => record.storeName),
+  ]) {
+    if (name.trim().isNotEmpty && !stores.contains(name)) stores.add(name);
+  }
+  return stores;
 }
 
 class _ProspectCategoryChips extends StatelessWidget {
@@ -365,6 +403,43 @@ class _ProspectCategoryChips extends StatelessWidget {
               label: Text(category),
               selected: selectedCategory == category,
               onSelected: (_) => onSelected(category),
+            ),
+            const SizedBox(width: 8),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ProspectStoreChips extends StatelessWidget {
+  const _ProspectStoreChips({
+    required this.stores,
+    required this.selectedStore,
+    required this.onSelected,
+  });
+
+  final List<String> stores;
+  final String? selectedStore;
+  final ValueChanged<String?> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          ChoiceChip(
+            label: const Text('Alle Märkte'),
+            selected: selectedStore == null,
+            onSelected: (_) => onSelected(null),
+          ),
+          const SizedBox(width: 8),
+          for (final store in stores) ...[
+            ChoiceChip(
+              label: Text(store),
+              selected: selectedStore == store,
+              onSelected: (_) => onSelected(store),
             ),
             const SizedBox(width: 8),
           ],
