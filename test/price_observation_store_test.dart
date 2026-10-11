@@ -331,6 +331,30 @@ void main() {
     );
   });
 
+  test('external offer observations with unsafe proof stay uncertain', () {
+    final offer = Offer(
+      id: 'leaflet-unsafe-proof',
+      productId: 'schmand',
+      storeName: 'Lidl',
+      originalPrice: 0.89,
+      offerPrice: 0.69,
+      validUntil: DateTime(2026, 9, 27),
+      source: 'leaflet',
+      proofRef: 'javascript:alert(1)',
+    );
+    final observations = observationsFromOffer(
+      offer,
+      observedAt: DateTime(2026, 9, 25),
+    ).toList(growable: false);
+
+    expect(observations, hasLength(2));
+    expect(observations.every((entry) => entry.identityConfidence == 0), isTrue);
+    expect(
+      marketPricesFromObservations(observations, now: DateTime(2026, 9, 25)),
+      isEmpty,
+    );
+  });
+
   test('leaflet preserves regular price as separate evidence', () {
     final offer = Offer(
       id: 'leaflet-1',
@@ -342,6 +366,8 @@ void main() {
       validUntil: DateTime(2026, 9, 26),
       source: 'leaflet',
       proofRef: 'leaflet:lidl:2026-09-25:p1',
+      locationId: 'L-42',
+      region: 'Zellingen',
     );
     final regular = regularObservationFromOffer(
       offer,
@@ -356,10 +382,14 @@ void main() {
     expect(regular.kind, PriceObservationKind.regular);
     expect(regular.source, PriceObservationSource.leaflet);
     expect(regular.proofRef, offer.proofRef);
+    expect(regular.locationId, 'L-42');
+    expect(regular.region, 'Zellingen');
     expect(regular.validUntil, DateTime(2026, 9, 26));
     expect(discounted.price, 1.99);
     expect(discounted.kind, PriceObservationKind.offer);
     expect(discounted.validFrom, DateTime(2026, 9, 25));
+    expect(discounted.locationId, 'L-42');
+    expect(discounted.region, 'Zellingen');
     expect(discounted.source, PriceObservationSource.leaflet);
   });
 
@@ -575,3 +605,4 @@ void main() {
     expect(quality.confidence, closeTo(0.65, 0.00001));
   });
 }
+
