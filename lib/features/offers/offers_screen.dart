@@ -319,3 +319,101 @@ class _ProspectOffersState extends State<_ProspectOffers> {
 
 class _OfferSourceNotice extends StatelessWidget {
   const _OfferSourceNotice({required this.issue});
+
+  final ProspectIssue issue;
+
+  @override
+  Widget build(BuildContext context) {
+    final message = switch (issue.sourceStatus) {
+      'no_current_offers' => 'Keine aktuell gültigen Angebotsdaten geladen.',
+      'metadata_only' =>
+        'Prospektquelle gefunden; Produktdaten fehlen aktuell.',
+      'current_fallback' =>
+        'Der letzte geprüfte Prospektstand wird verwendet; die automatische '
+            'Aktualisierung ist aktuell nicht verfügbar.',
+      'error' =>
+        'Automatischer Abruf aktuell nicht verfügbar. '
+            'Der offizielle Prospekt bleibt direkt erreichbar.',
+      _ => 'Für diesen Markt sind aktuell keine Angebotsdaten verfügbar.',
+    };
+    final location = issue.location?.trim();
+    return Card(
+      color: Colors.orange.shade50,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.info_outline, color: Colors.orange.shade900),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    location == null || location.isEmpty
+                        ? issue.storeName
+                        : '${issue.storeName} $location',
+                    style: const TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(message),
+                  if (issue.url?.trim().isNotEmpty == true)
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton.icon(
+                        onPressed: () => launchUrl(
+                          Uri.parse(issue.url!),
+                          mode: LaunchMode.externalApplication,
+                        ),
+                        icon: const Icon(Icons.open_in_new, size: 18),
+                        label: const Text('Offiziellen Prospekt öffnen'),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Map<String, List<OfferImportRecord>> _grouped(List<OfferImportRecord> records) {
+  final grouped = <String, List<OfferImportRecord>>{};
+  for (final record in records) {
+    grouped.putIfAbsent(_offerCategory(record), () => []).add(record);
+  }
+  final entries = grouped.entries.toList()
+    ..sort((a, b) => _categoryRank(a.key).compareTo(_categoryRank(b.key)));
+  return {for (final entry in entries) entry.key: entry.value};
+}
+
+String _offerCategory(OfferImportRecord record) {
+  final sourceCategory = record.category?.trim();
+  if (sourceCategory != null && sourceCategory.isNotEmpty) {
+    return presentProspectCategory(sourceCategory);
+  }
+  return fallbackProspectCategory(record.productLabel);
+}
+
+int _categoryRank(String category) =>
+    const {
+      'Obst & Gemüse': 0,
+      'Milchprodukte': 1,
+      'Fleisch & Fisch': 2,
+      'Backwaren': 3,
+      'Kaffee & Snacks': 4,
+      'Getränke': 5,
+      'Vorrat & Konserven': 6,
+      'Tiefkühl': 7,
+      'Kühlregal': 8,
+      'Haushalt': 20,
+      'Drogerie': 21,
+      'Garten & Pflanzen': 22,
+      'Non-Food': 30,
+      'Dauerhaft günstiger': 39,
+      'Weitere Angebote': 40,
+    }[category] ??
+    50;
