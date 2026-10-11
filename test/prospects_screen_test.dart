@@ -143,7 +143,8 @@ void main() {
       scrollable: find
           .byWidgetPredicate(
             (widget) =>
-                widget is ListView && widget.scrollDirection == Axis.vertical,
+                widget is Scrollable &&
+                widget.axisDirection == AxisDirection.down,
           )
           .first,
     );
@@ -242,7 +243,8 @@ void main() {
       scrollable: find
           .byWidgetPredicate(
             (widget) =>
-                widget is ListView && widget.scrollDirection == Axis.vertical,
+                widget is Scrollable &&
+                widget.axisDirection == AxisDirection.down,
           )
           .first,
     );
@@ -290,7 +292,8 @@ void main() {
       scrollable: find
           .byWidgetPredicate(
             (widget) =>
-                widget is ListView && widget.scrollDirection == Axis.vertical,
+                widget is Scrollable &&
+                widget.axisDirection == AxisDirection.down,
           )
           .first,
     );
@@ -339,7 +342,8 @@ void main() {
       scrollable: find
           .byWidgetPredicate(
             (widget) =>
-                widget is ListView && widget.scrollDirection == Axis.vertical,
+                widget is Scrollable &&
+                widget.axisDirection == AxisDirection.down,
           )
           .first,
     );
@@ -381,7 +385,8 @@ void main() {
       scrollable: find
           .byWidgetPredicate(
             (widget) =>
-                widget is ListView && widget.scrollDirection == Axis.vertical,
+                widget is Scrollable &&
+                widget.axisDirection == AxisDirection.down,
           )
           .first,
     );
@@ -453,7 +458,8 @@ void main() {
       scrollable: find
           .byWidgetPredicate(
             (widget) =>
-                widget is ListView && widget.scrollDirection == Axis.vertical,
+                widget is Scrollable &&
+                widget.axisDirection == AxisDirection.down,
           )
           .first,
     );
