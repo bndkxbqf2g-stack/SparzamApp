@@ -49,6 +49,7 @@ class _Stores {
   final recentPurchases = RecentPurchaseStore();
   final purchases = PurchaseStore();
   final shoppingList = ShoppingListStore();
+  final diagnostics = DiagnosticLogService();
 }
 
 Widget _app(
@@ -72,7 +73,7 @@ Widget _app(
       recentPurchaseStore: stores.recentPurchases,
       purchaseStore: stores.purchases,
       shoppingListStore: stores.shoppingList,
-      diagnosticLogService: DiagnosticLogService(),
+      diagnosticLogService: stores.diagnostics,
       prospectImportModule: module,
       initialBudget: const BudgetPlan(),
       initialOffers: initialOffers,
@@ -285,6 +286,15 @@ void main() {
 
       final savedItems = await stores.shoppingList.load();
       final savedOffers = await stores.offers.load();
+      final diagnostics = await stores.diagnostics.load();
+      expect(
+        diagnostics.any(
+          (entry) =>
+              entry.message == 'Artikel hinzugefügt.' &&
+              entry.details == 'Käsesticks 300 g',
+        ),
+        isTrue,
+      );
       expect(savedOffers, hasLength(1));
       expect(savedItems, hasLength(1));
       expect(savedOffers.single.source, 'leaflet');
