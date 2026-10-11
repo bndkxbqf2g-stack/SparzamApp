@@ -16,6 +16,8 @@ class OfferImportRecord {
     this.proofRef,
     this.imageUrl,
     this.category,
+    this.branchId,
+    this.location,
   });
 
   final String sourceId;
@@ -33,6 +35,11 @@ class OfferImportRecord {
   /// The UI may fall back to its conservative label classifier when absent;
   /// this field is never inferred into product identity or price evidence.
   final String? category;
+
+  /// Source-provided branch context. These fields are provenance only; they
+  /// never make two differently labelled products the same identity.
+  final String? branchId;
+  final String? location;
 }
 
 /// Returns only records belonging to a prospect that is valid today.
@@ -153,6 +160,8 @@ OfferImportResolution resolveOfferImport(
     source: record.source,
     proofRef: record.proofRef,
     imageUrl: record.imageUrl,
+    locationId: record.branchId,
+    region: record.location,
   );
   return OfferImportResolution(record: record, product: product, offer: offer);
 }
@@ -164,3 +173,4 @@ bool _validPrices(OfferImportRecord record) {
       (regular == null ||
           (regular.isFinite && regular > 0 && record.offerPrice <= regular));
 }
+
