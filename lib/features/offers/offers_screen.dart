@@ -8,7 +8,6 @@ import 'offer_import.dart';
 import '../prospects/prospect_offer_card.dart';
 import 'prospect_offer_products.dart';
 import '../prospects/prospect_category_presentation.dart';
-import '../../services/prospect_branch_resolver.dart';
 import '../../services/prospect_feed_service.dart';
 import '../prospects/prospect_feed_status.dart';
 
@@ -192,7 +191,7 @@ class _ProspectOffersState extends State<_ProspectOffers> {
               style: const TextStyle(fontWeight: FontWeight.w800),
             ),
             subtitle: Text(
-              '${configuredProspectBranch(entry.key)?.location ?? 'Filiale'} · '
+              '${prospectRecordLocationLabel(entry.key, entry.value)} · '
               '${entry.value.length} Angebote',
             ),
             onExpansionChanged: (expanded) => setState(() {

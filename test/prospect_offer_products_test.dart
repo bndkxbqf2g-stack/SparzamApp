@@ -21,6 +21,7 @@ void main() {
           validUntil: DateTime(2026, 10, 2),
           source: 'retailerWebsite',
           proofRef: 'https://example.test/netto/coffee',
+          address: 'Am Markt 1, 97291 Thüngersheim',
         ),
       ],
       catalogProducts: const <Product>[],
@@ -34,6 +35,7 @@ void main() {
     expect(entries.single.offer.productId, entries.single.product.id);
     expect(entries.single.offer.originalPriceVerified, isTrue);
     expect(entries.single.offer.proofRef, contains('netto/coffee'));
+    expect(entries.single.offer.address, 'Am Markt 1, 97291 Thüngersheim');
   });
 
   test(

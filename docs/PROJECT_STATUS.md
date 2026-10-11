@@ -1,4 +1,34 @@
-# SparzamApp – Projektstatus
+# SparzamApp
+
+## Update 11.10.2026 – Prospektartikel bis AppShell und Route durchgetestet
+- Ein AppShell-Integrationstest prüft jetzt den sichtbaren Prospekte-Tab,
+  die Suche, die Add-to-List-Aktion, die gespeicherte Angebotsprovenienz und
+  den echten Neustartpfad bis zur Einkaufsroute.
+- Der Startpfad bewahrt bei der Migration aus der alten Einzel-Listenablage
+  vorhandene Artikel, wenn die benannte Liste vorübergehend leer gelesen wird.
+- Die synthetische Regression erfindet keine Preise oder Belege; CI bestätigt
+  Analyse, Flutter-Tests und den Web-Release-Build.
+
+## Update 11.10.2026 – Filialadresse bleibt auch in der Importnormalisierung erhalten
+- Der allgemeine `resolveOfferImport`-Pfad übernimmt die Quelladresse jetzt
+  genauso wie die direkte Prospektproduktauflösung.
+- Damit bleiben Filial-ID, Ort und Adresse über beide geprüften
+  Angebotsimportwege gemeinsam nachvollziehbar; Preise, Identität und
+  Gültigkeitsprüfung ändern sich nicht.
+
+ – Projektstatus
+
+## Update 11.10.2026 – Filialadresse bleibt am Prospektangebot
+- Der Feed-Parser übernimmt die Adresse aus dem jeweiligen Angebotsdatensatz
+  und fällt deterministisch auf die nachweisbare Quellenadresse zurück.
+- Artikelkarten zeigen Ort und Adresse; die umgewandelten Angebote und lokalen
+  Backups speichern diese Felder gemeinsam mit Händler, Nachweis und Gültigkeit.
+- Produktidentität, Preisvergleich und Gültigkeitsprüfung bleiben unverändert.
+
+## Update 11.10.2026 – Datensatz-Filialort in der Prospektansicht
+- Angebots- und Prospektsuche zeigen jetzt den Ort aus dem jeweiligen Feed-Datensatz, wenn dieser vorhanden ist.
+- Der Händler-/Issue-Ort und die konfigurierte Filiale bleiben nachvollziehbare Fallbacks; mehrere Datensatzorte werden gemeinsam sichtbar.
+- Produktidentität, Preis, Nachweis und Gültigkeit bleiben unverändert.
 
 ## Update 11.10.2026 – Filialkontext bleibt an jedem Feed-Datensatz
 - Der Prospekt-Refresh schreibt den konfigurierten Filialschlüssel, Ort und Adresse jetzt zusätzlich an jedes erzeugte Angebot und jede Prospektseite.
