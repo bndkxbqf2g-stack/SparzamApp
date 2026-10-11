@@ -89,6 +89,7 @@ Bonimporte, eigene Preise oder andere belegte Quellen routenfähig.
 - Angebote werden getrennt von Produktidentitäten behandelt: ein Angebot erzeugt grundsätzlich kein neues Produkt.
 - Angebotszeiträume werden berücksichtigt.
 - Die Prospektansicht lädt nur aktuell gültige Angebotsdaten und datierte Prospektseiten. Bei fehlendem Abruf zeigt sie den offiziellen Händlerlink ohne erfundene Preise.
+- Bildbasierte Seiten können nach ausdrücklicher Nutzerprüfung mit Bezeichnung, Preis und Gültigkeitsende zur Einkaufsliste übernommen werden. Seitenlink, Bild und Filialkontext bleiben dabei als Nachweis erhalten; automatische OCR bestätigt keine Preise.
 - Die Prospektansicht kann aktuelle Artikel marktübergreifend nach Händler,
   Produktlabel oder Kategorie durchsuchen. Ein belegter Treffer lässt sich
   direkt zur Einkaufsliste hinzufügen; dabei bleiben Händlernachweis, Bild,
