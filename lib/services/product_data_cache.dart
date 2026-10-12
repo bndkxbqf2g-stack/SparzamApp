@@ -16,17 +16,19 @@ abstract interface class ProductDataCache {
 class SharedPreferencesProductDataCache implements ProductDataCache {
   SharedPreferencesProductDataCache({
     SharedPreferencesAsync? preferences,
-  }) : _preferences = preferences ?? SharedPreferencesAsync();
+  }) : _preferences = preferences;
 
   static const keyPrefix = 'product_data_cache_v1|';
-  final SharedPreferencesAsync _preferences;
+  final SharedPreferencesAsync? _preferences;
+  late final SharedPreferencesAsync _lazyPreferences =
+      _preferences ?? SharedPreferencesAsync();
 
   @override
   Future<Product?> load(String ean) async {
     final code = ean.trim();
     if (code.isEmpty) return null;
     try {
-      final raw = await _preferences.getString(_key(code));
+      final raw = await _lazyPreferences.getString(_key(code));
       if (raw == null || raw.trim().isEmpty) return null;
       final product = Product.fromJson(
         jsonDecode(raw) as Map<String, dynamic>,
@@ -42,7 +44,7 @@ class SharedPreferencesProductDataCache implements ProductDataCache {
     final code = product.ean?.trim();
     if (code == null || code.isEmpty) return;
     try {
-      await _preferences.setString(
+      await _lazyPreferences.setString(
         _key(code),
         jsonEncode(product.toJson()),
       );
