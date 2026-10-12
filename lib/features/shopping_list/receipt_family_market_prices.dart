@@ -1,6 +1,7 @@
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/receipt_observation.dart';
+import '../../models/price_observation.dart';
 import '../catalog/product_identity.dart';
 import '../route/market_price_quality.dart';
 import '../../services/quantity_normalizer.dart';
@@ -56,6 +57,21 @@ List<MarketPrice> receiptFamilyMarketPrices({
         updatedAt: observation.observedAt,
         source: MarketPriceSource.receipt,
         discounted: observation.discounted,
+        kind: observation.discounted
+            ? PriceObservationKind.offer
+            : PriceObservationKind.regular,
+        proofRef:
+            'receipt:${observation.receiptFingerprint}|line:${observation.rowLine}',
+        quantity: item.product.packageAmount,
+        unit: item.product.packageUnit,
+        unitPrice: item.product.packageAmount == null ||
+                item.product.packageUnit == null
+            ? null
+            : normalizedUnitPrice(
+                price: price,
+                amount: item.product.packageAmount,
+                unit: item.product.packageUnit,
+              ),
       );
       final previous = result[key];
       if (previous == null ||
