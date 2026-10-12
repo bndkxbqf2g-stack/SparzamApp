@@ -9,9 +9,7 @@ abstract interface class OpenPricesCache {
 }
 
 class SharedPreferencesOpenPricesCache implements OpenPricesCache {
-  SharedPreferencesOpenPricesCache({
-    SharedPreferencesAsync? preferences,
-  }) : _preferences = preferences;
+  SharedPreferencesOpenPricesCache({this._preferences});
 
   static const keyPrefix = 'open_prices_response_v1|';
   final SharedPreferencesAsync? _preferences;
