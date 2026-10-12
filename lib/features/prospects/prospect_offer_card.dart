@@ -164,8 +164,6 @@ class _OfferImage extends StatelessWidget {
         ? fallback
         : Image.network(
             imageUrl,
-            cacheWidth: expanded ? 720 : 360,
-            cacheHeight: expanded ? 520 : 360,
             filterQuality: FilterQuality.low,
             webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
             fit: BoxFit.cover,
