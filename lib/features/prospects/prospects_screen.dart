@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -156,187 +157,208 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
       data: _bringTheme(context),
       child: ColoredBox(
         color: _bringBackground,
-        child: ListView(
+        child: CustomScrollView(
           controller: _bringScrollController,
           key: const ValueKey('prospect-bring-scroll'),
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
-          children: [
-            _BringHeader(location: _prospectPostalCode(visibleProspects)),
-            const SizedBox(height: 8),
-            Material(
-              type: MaterialType.transparency,
-              child: TextField(
-                controller: searchController,
-                onChanged: (value) => setState(() => query = value),
-                style: const TextStyle(color: _bringWhite),
-                decoration: InputDecoration(
-                  hintText: 'Prospekte und Artikel durchsuchen',
-                  hintStyle: const TextStyle(color: _bringMuted),
-                  prefixIcon: const Icon(Icons.search, color: _bringMuted),
-                  suffixIcon: query.trim().isEmpty
-                      ? null
-                      : IconButton(
-                          tooltip: 'Suche löschen',
-                          onPressed: () {
-                            searchController.clear();
-                            setState(() => query = '');
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  _BringHeader(location: _prospectPostalCode(visibleProspects)),
+                  const SizedBox(height: 8),
+                  Material(
+                    type: MaterialType.transparency,
+                    child: TextField(
+                      controller: searchController,
+                      onChanged: (value) => setState(() => query = value),
+                      style: const TextStyle(color: _bringWhite),
+                      decoration: InputDecoration(
+                        hintText: 'Prospekte und Artikel durchsuchen',
+                        hintStyle: const TextStyle(color: _bringMuted),
+                        prefixIcon: const Icon(Icons.search, color: _bringMuted),
+                        suffixIcon: query.trim().isEmpty
+                            ? null
+                            : IconButton(
+                                tooltip: 'Suche löschen',
+                                onPressed: () {
+                                  searchController.clear();
+                                  setState(() => query = '');
+                                },
+                                icon: const Icon(Icons.close, color: _bringMuted),
+                              ),
+                        filled: true,
+                        fillColor: _bringSurface,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(18),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (_filtersExpanded && categories.isNotEmpty) ...[
+                    const SizedBox(height: 10),
+                    Material(
+                      type: MaterialType.transparency,
+                      child: _ProspectCategoryChips(
+                        categories: categories,
+                        selectedCategory: activeCategory,
+                        onSelected: (category) =>
+                            setState(() => selectedCategory = category),
+                      ),
+                    ),
+                  ],
+                  if (_filtersExpanded && stores.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Material(
+                      type: MaterialType.transparency,
+                      child: _ProspectStoreChips(
+                        stores: stores,
+                        selectedStore: activeStore,
+                        onSelected: (store) =>
+                            setState(() => selectedStore = store),
+                      ),
+                    ),
+                  ],
+                  ProspectFeedStatusCard(
+                    generatedAt: widget.generatedAt,
+                    now: widget.now,
+                    fromCache: widget.fromCache,
+                    onRefresh: widget.onRefreshProspects,
+                    refreshing: widget.prospectsRefreshing,
+                  ),
+                  const SizedBox(height: 18),
+                  if (hasSelection)
+                    _ProspectSearchResults(
+                      records: matchingRecords,
+                      prospects: visibleProspects,
+                      catalogProducts: widget.catalogProducts,
+                      onAddProduct: widget.onAddProduct,
+                      query: query,
+                    ),
+                  if (!hasSelection && visibleProspects.isEmpty)
+                    const Card(
+                      color: _bringSurface,
+                      child: Padding(
+                        padding: EdgeInsets.all(24),
+                        child: Text(
+                          'Noch keine Prospekte geladen.',
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  if (!hasSelection && visibleProspects.isNotEmpty) ...[
+                    _BringSectionTitle(
+                      title: 'Deine Favoriten',
+                      actionLabel: 'Mehr ›',
+                      onAction: _scrollToMoreProspects,
+                    ),
+                    const SizedBox(height: 10),
+                    if (_favoriteStores != null && favoriteProspects.isEmpty)
+                      const _EmptyFavoritesCard()
+                    else
+                      SizedBox(
+                        height: 340,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: favoriteProspects.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(width: 12),
+                          itemBuilder: (context, index) {
+                            final issue = favoriteProspects[index];
+                            return _ProspectCard(
+                              issue: issue,
+                              compact: false,
+                              showLocation: true,
+                              showSummary: true,
+                              isFavorite: _isFavorite(issue),
+                              onToggleFavorite: () =>
+                                  _toggleFavorite(issue.storeName),
+                              onTap: () => _openProspect(
+                                context,
+                                issue,
+                                currentRecords,
+                              ),
+                            );
                           },
-                          icon: const Icon(Icons.close, color: _bringMuted),
                         ),
-                  filled: true,
-                  fillColor: _bringSurface,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(18),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
+                      ),
+                    const SizedBox(height: 24),
+                    _BringSectionTitle(
+                      key: _moreProspectsKey,
+                      title: 'Weitere Prospekte',
+                      showFilter: true,
+                      onFilter: () => setState(
+                        () => _filtersExpanded = !_filtersExpanded,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    const Text(
+                      'Alle Prospekte',
+                      key: ValueKey('prospect-grid-label'),
+                      style: TextStyle(
+                        color: _bringWhite,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                ]),
               ),
             ),
-            if (_filtersExpanded && categories.isNotEmpty) ...[
-              const SizedBox(height: 10),
-              Material(
-                type: MaterialType.transparency,
-                child: _ProspectCategoryChips(
-                  categories: categories,
-                  selectedCategory: activeCategory,
-                  onSelected: (category) =>
-                      setState(() => selectedCategory = category),
-                ),
-              ),
-            ],
-            if (_filtersExpanded && stores.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Material(
-                type: MaterialType.transparency,
-                child: _ProspectStoreChips(
-                  stores: stores,
-                  selectedStore: activeStore,
-                  onSelected: (store) => setState(() => selectedStore = store),
-                ),
-              ),
-            ],
-            ProspectFeedStatusCard(
-              generatedAt: widget.generatedAt,
-              now: widget.now,
-              fromCache: widget.fromCache,
-              onRefresh: widget.onRefreshProspects,
-              refreshing: widget.prospectsRefreshing,
-            ),
-            const SizedBox(height: 18),
-            if (hasSelection)
-              _ProspectSearchResults(
-                records: matchingRecords,
-                prospects: visibleProspects,
-                catalogProducts: widget.catalogProducts,
-                onAddProduct: widget.onAddProduct,
-                query: query,
-              )
-            else if (visibleProspects.isEmpty)
-              const Card(
-                color: _bringSurface,
-                child: Padding(
-                  padding: EdgeInsets.all(24),
-                  child: Text(
-                    'Noch keine Prospekte geladen.',
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              )
-            else ...[
-              _BringSectionTitle(
-                title: 'Deine Favoriten',
-                actionLabel: 'Mehr ›',
-                onAction: _scrollToMoreProspects,
-              ),
-              const SizedBox(height: 10),
-              if (_favoriteStores != null && favoriteProspects.isEmpty)
-                const _EmptyFavoritesCard()
-              else
-                SizedBox(
-                  height: 340,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: favoriteProspects.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(width: 12),
-                    itemBuilder: (context, index) {
-                      final issue = favoriteProspects[index];
-                      return _ProspectCard(
-                        issue: issue,
-                        compact: false,
-                        showLocation: true,
-                        showSummary: true,
-                        isFavorite: _isFavorite(issue),
-                        onToggleFavorite: () => _toggleFavorite(issue.storeName),
-                        onTap: () => _openProspect(
-                          context,
-                          issue,
-                          currentRecords,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              const SizedBox(height: 24),
-              _BringSectionTitle(
-                key: _moreProspectsKey,
-                title: 'Weitere Prospekte',
-                showFilter: true,
-                onFilter: () => setState(
-                  () => _filtersExpanded = !_filtersExpanded,
-                ),
-              ),
-              const SizedBox(height: 2),
-              const Text(
-                'Alle Prospekte',
-                key: ValueKey('prospect-grid-label'),
-                style: TextStyle(
-                  color: _bringWhite,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 12),
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final columns = constraints.maxWidth >= 650 ? 3 : 2;
-                  final gap = 12.0;
-                  final width =
-                      (constraints.maxWidth - (columns - 1) * gap) / columns;
-                  return Wrap(
-                    key: const ValueKey('prospect-grid'),
-                    spacing: gap,
-                    runSpacing: 14,
-                    children: [
-                      for (final issue in visibleProspects)
-                        SizedBox(
-                          width: width,
-                          child: _ProspectCard(
+            if (!hasSelection && visibleProspects.isNotEmpty)
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                sliver: SliverLayoutBuilder(
+                  builder: (context, constraints) {
+                    final columns =
+                        constraints.crossAxisExtent >= 650 ? 3 : 2;
+                    return SliverGrid(
+                      key: const ValueKey('prospect-grid'),
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final issue = visibleProspects[index];
+                          return _ProspectCard(
                             issue: issue,
                             compact: true,
                             showLocation: false,
                             showSummary: true,
                             isFavorite: _isFavorite(issue),
-                            onToggleFavorite: () => _toggleFavorite(issue.storeName),
+                            onToggleFavorite: () =>
+                                _toggleFavorite(issue.storeName),
                             onTap: () => _openProspect(
                               context,
                               issue,
                               currentRecords,
                             ),
-                          ),
-                        ),
-                    ],
-                  );
-                },
-              ),
-            ],
-            if (query.trim().isEmpty && visibleProspects.isNotEmpty)
-              ProspectCoverageCard(
-                coverage: calculateProspectCoverage(
-                  issues: visibleProspects,
-                  records: currentRecords,
+                          );
+                        },
+                        childCount: visibleProspects.length,
+                      ),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: columns,
+                        mainAxisExtent: 300,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 14,
+                      ),
+                    );
+                  },
                 ),
               ),
+            if (query.trim().isEmpty && visibleProspects.isNotEmpty)
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                sliver: SliverToBoxAdapter(
+                  child: ProspectCoverageCard(
+                    coverage: calculateProspectCoverage(
+                      issues: visibleProspects,
+                      records: currentRecords,
+                    ),
+                  ),
+                ),
+              ),
+            const SliverToBoxAdapter(child: SizedBox(height: 28)),
           ],
         ),
       ),
@@ -664,6 +686,8 @@ class _ProspectCard extends StatelessWidget {
         ? _bringCoverPlaceholder()
         : Image.network(
             previewUrl,
+            cacheWidth: kIsWeb ? null : (compact ? 480 : 640),
+            cacheHeight: kIsWeb ? null : (compact ? 400 : 480),
             filterQuality: FilterQuality.low,
             webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
             fit: BoxFit.cover,
@@ -1236,6 +1260,7 @@ class _ProspectViewer extends StatelessWidget {
                 ? const Center(child: Icon(Icons.broken_image_outlined, size: 48))
                 : Image.network(
                     pageUrl,
+                    cacheWidth: kIsWeb ? null : 900,
                     fit: BoxFit.contain,
                     filterQuality: FilterQuality.low,
                     webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
