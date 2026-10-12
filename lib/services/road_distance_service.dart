@@ -56,8 +56,8 @@ class RoadDistanceService implements TravelMatrixProvider {
 
       final routeUri = _osrmUri(
         'route',
-        '\${origin.longitude},\${origin.latitude};'
-        '\${target.longitude},\${target.latitude}',
+        '${origin.longitude},${origin.latitude};'
+        '${target.longitude},${target.latitude}',
         {'overview': 'false'},
       );
       final response = await _client
@@ -126,7 +126,7 @@ class RoadDistanceService implements TravelMatrixProvider {
 
       final coordinateText = coordinates
           .map(
-            (point) => '\${point.longitude},\${point.latitude}',
+            (point) => '${point.longitude},${point.latitude}',
           )
           .join(';');
       final uri = _osrmUri(
@@ -151,7 +151,7 @@ class RoadDistanceService implements TravelMatrixProvider {
           if (from == to) continue;
           final meters = (row[to] as num?)?.toDouble();
           if (meters == null || !meters.isFinite || meters < 0) continue;
-          distances['\${names[from]}|\${names[to]}'] = meters / 1000;
+          distances['${names[from]}|${names[to]}'] = meters / 1000;
         }
       }
 
