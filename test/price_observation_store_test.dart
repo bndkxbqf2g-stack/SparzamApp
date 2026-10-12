@@ -226,6 +226,7 @@ void main() {
       expect(observation.familyKey, 'schmand');
       expect(observation.quantity, 200);
       expect(observation.identityConfidence, 0);
+      expect(observation.kind, PriceObservationKind.regular);
     },
   );
 
