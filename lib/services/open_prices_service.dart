@@ -87,7 +87,7 @@ class OpenPricesSource implements PriceSource {
 
     try {
       return _parse(
-        body!,
+        body,
         product: product,
         stores: stores,
         today: today,
