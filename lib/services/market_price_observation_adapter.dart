@@ -28,9 +28,9 @@ PriceObservation observationFromMarketPrice(MarketPrice price) =>
         MarketPriceSource.receipt => PriceObservationSource.receipt,
         MarketPriceSource.openPrices => PriceObservationSource.openPrices,
       },
-      kind: price.discounted
+      kind: price.kind == PriceObservationKind.unknown && price.discounted
           ? PriceObservationKind.offer
-          : PriceObservationKind.unknown,
+          : price.kind,
       proofRef: price.proofRef ??
           (price.externalId == null
               ? null
@@ -39,7 +39,6 @@ PriceObservation observationFromMarketPrice(MarketPrice price) =>
       unit: price.unit,
       unitPrice: price.unitPrice,
       identityConfidence: price.identityConfidence,
-      kind: price.kind,
       discounted: price.discounted,
     );
 
