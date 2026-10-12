@@ -14,9 +14,7 @@ abstract interface class ProductDataCache {
 
 /// Small-device cache backed by the existing local-only preferences store.
 class SharedPreferencesProductDataCache implements ProductDataCache {
-  SharedPreferencesProductDataCache({
-    SharedPreferencesAsync? preferences,
-  }) : _preferences = preferences;
+  SharedPreferencesProductDataCache({this._preferences});
 
   static const keyPrefix = 'product_data_cache_v1|';
   final SharedPreferencesAsync? _preferences;
