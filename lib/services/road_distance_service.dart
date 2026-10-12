@@ -229,7 +229,7 @@ class RoadDistanceService implements TravelMatrixProvider {
     final normalized = prefix.endsWith('/')
         ? prefix.substring(0, prefix.length - 1)
         : prefix;
-    return '\$normalized/\$suffix';
+    return '$normalized/$suffix';
   }
 
   @override
