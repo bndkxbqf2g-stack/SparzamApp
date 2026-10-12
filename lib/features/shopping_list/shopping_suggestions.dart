@@ -118,6 +118,19 @@ List<Product> buildSuggestions({
       if (aPrice.isHistorical != bPrice.isHistorical) {
         return aPrice.isHistorical ? 1 : -1;
       }
+      // Among equally current non-offer evidence, prefer the concrete item
+      // bought more often. A cheaper active offer still wins through the
+      // price comparison below.
+      if (!aPrice.isHistorical &&
+          !bPrice.isHistorical &&
+          !aPrice.isOffer &&
+          !bPrice.isOffer) {
+        final aPurchases = purchaseCounts[a.id] ?? 0;
+        final bPurchases = purchaseCounts[b.id] ?? 0;
+        if (aPurchases != bPurchases) {
+          return bPurchases.compareTo(aPurchases);
+        }
+      }
       // A prospect offer is evidence for the same product choice, not an
       // unconditional override. It wins when its comparable effective price
       // is lower; an expensive offer must not hide a cheaper current receipt
