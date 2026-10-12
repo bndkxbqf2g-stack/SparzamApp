@@ -49,6 +49,20 @@ privaten Belege, Konten oder Zugangsdaten an diese Quellen übertragen.
   Eine spätere Rückgabe eigener Belege bleibt eine getrennte, ausdrücklich
   freizugebende Funktion.
 
+### OfferSource-Vertrag für Händlerangebote
+
+- `OfferObservation` hält Markt, exakte Filiale, Produktfamilie, Variante,
+  Packungsgröße, Normal-/Angebotspreis, Einheitspreis, Gültigkeit, Quelle und
+  Erfassungszeit getrennt und nullable. Fehlende Preise oder Zeiträume bleiben
+  unbekannt.
+- `OfferSource` mit `LidlOfferSource` und `KauflandOfferSource` ist
+  vorhanden, aber standardmäßig deaktiviert. Die beiden Klassen erzeugen
+  keine Netzwerkabfrage; eine nicht konfigurierte Quelle liefert explizit
+  `available=false`.
+- Die untersuchten inoffiziellen GitHub-Wrapper bleiben damit Vorlage und
+  werden nicht als Händler-API verwendet. Der validierte interne Prospektfeed
+  bleibt die führende Angebotsquelle.
+
 ### OSRM / OpenStreetMap
 
 - Recherche: [Project-OSRM/osrm-backend](https://github.com/Project-OSRM/osrm-backend)
