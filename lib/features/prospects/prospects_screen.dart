@@ -363,6 +363,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
         ),
       ),
     );
+  }
 
   void _openProspect(
     BuildContext context,
