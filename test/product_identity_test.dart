@@ -121,6 +121,42 @@ void main() {
     expect(identity.fatPercent, 3.5);
   });
 
+  test('milk fat parsing accepts decimal dots and OCR-spaced percentages', () {
+    final dotted = identifyProduct('BÄRENMARKE H-Milch 1.5% 1 l');
+    final spaced = identifyProduct('Markenmilch 3 5 % 1 l');
+
+    expect(dotted.familyKey, 'milch');
+    expect(dotted.fatPercent, 1.5);
+    expect(spaced.familyKey, 'milch');
+    expect(spaced.fatPercent, 3.5);
+    expect(
+      compatibleProductIdentity(dotted, identifyProduct('Eigenmarke Milch 1,5%')),
+      isTrue,
+    );
+    expect(
+      compatibleProductIdentity(dotted, identifyProduct('Eigenmarke Milch 3,5%')),
+      isFalse,
+    );
+  });
+
+  test('cheese keeps brand-independent variant and fat identity', () {
+    final branded = identifyProduct('K-CLASSIC Gouda jung 48.0% 250 g');
+    final otherFat = identifyProduct('Marken-Gouda 30% 250 g');
+    final generic = identifyProduct('Käse');
+
+    expect(branded.familyKey, 'kaese');
+    expect(branded.variant, 'gouda');
+    expect(branded.fatPercent, 48);
+    expect(
+      compatibleProductIdentity(branded, otherFat),
+      isFalse,
+    );
+    expect(
+      compatibleProductIdentity(generic, branded),
+      isTrue,
+    );
+  });
+
   test('general food families resolve common receipt forms', () {
     expect(identifyProduct('K-Schmand 24% 200g').familyKey, 'schmand');
     expect(identifyProduct('Bananen Lose MT').familyKey, 'bananen');
