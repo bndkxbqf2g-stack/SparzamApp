@@ -1428,7 +1428,7 @@ class _ProspectViewer extends StatelessWidget {
                   ),
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 240,
-                    mainAxisExtent: 410,
+                    mainAxisExtent: 520,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 12,
                   ),
