@@ -34,7 +34,7 @@ Datum:23.07.26 Zeit: 12:52
     expect(price.storeName, 'Kaufland');
     expect(price.proofRef, 'receipt:${draft.fingerprint}|line:${draft.rows.first.line}');
     expect(price.unit, 'Stück');
-    expect(price.kind.name, 'regular');
+    expect(price.kind.name, 'offer');
   });
 
   test('automatic exact alias does not become a direct market price', () {
