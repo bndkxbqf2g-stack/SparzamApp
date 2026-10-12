@@ -664,7 +664,10 @@ class _ProspectCard extends StatelessWidget {
         ? _bringCoverPlaceholder()
         : Image.network(
             previewUrl,
-            webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
+            cacheWidth: compact ? 480 : 640,
+            cacheHeight: compact ? 400 : 480,
+            filterQuality: FilterQuality.low,
+            webHtmlElementStrategy: WebHtmlElementStrategy.never,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) =>
                 _bringCoverPlaceholder(),
