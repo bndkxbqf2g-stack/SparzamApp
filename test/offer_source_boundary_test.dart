@@ -22,7 +22,7 @@ void main() {
     expect(observation.isCurrentAt(DateTime(2026, 10, 13)), isTrue);
     expect(observation.isCurrentAt(DateTime(2026, 10, 18)), isFalse);
     expect(
-      const OfferObservation(
+      OfferObservation(
         market: 'Lidl',
         productFamily: 'milch',
         source: 'fixture',
@@ -52,7 +52,7 @@ void main() {
   });
 
   test('explicitly enabled but unconfigured adapter remains unknown', () async {
-    const result = await LidlOfferSource(enabled: true).fetchCurrent(
+    final result = await LidlOfferSource(enabled: true).fetchCurrent(
       exactStore: 'fixture-branch',
     );
 
