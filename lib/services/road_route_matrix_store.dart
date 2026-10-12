@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/road_route_matrix.dart';
+import 'travel_matrix_cache.dart';
 
-class RoadRouteMatrixStore {
+class RoadRouteMatrixStore implements TravelMatrixCache {
   static const _key = 'road_route_matrix_v1';
   final SharedPreferencesAsync _preferences = SharedPreferencesAsync();
 
+  @override
   Future<RoadRouteMatrix?> load(
     String originAddress, {
     DateTime? now,
@@ -29,6 +31,7 @@ class RoadRouteMatrixStore {
     }
   }
 
+  @override
   Future<void> save(RoadRouteMatrix matrix) =>
       _preferences.setString(_key, jsonEncode(matrix.toJson()));
 
