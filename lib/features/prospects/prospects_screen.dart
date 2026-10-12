@@ -676,129 +676,130 @@ class _ProspectCard extends StatelessWidget {
         color: _bringSurface,
         clipBehavior: Clip.antiAlias,
         margin: EdgeInsets.zero,
-        child: InkWell(
-          onTap: onTap,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(
-                height: imageHeight,
-                child: compact
-                    ? Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          cover,
-                          Positioned(
-                            top: 8,
-                            left: 8,
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
+        child: Stack(
+          children: [
+            InkWell(
+              onTap: onTap,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(
+                    height: imageHeight,
+                    child: compact
+                        ? Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              cover,
+                              Positioned(
+                                top: 8,
+                                left: 8,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    child: Text(
+                                      issue.storeName,
+                                      style: const TextStyle(
+                                        color: Color(0xFF27343A),
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                  ),
                                 ),
+                              ),
+                            ],
+                          )
+                        : cover,
+                  ),
+                  Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.fromLTRB(
+                      compact ? 10 : 12,
+                      10,
+                      compact ? 10 : 12,
+                      11,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (!compact)
+                          SizedBox(
+                            height: 36,
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 40),
                                 child: Text(
                                   issue.storeName,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                     color: Color(0xFF27343A),
-                                    fontSize: 13,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.w800,
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      )
-                    : cover,
-              ),
-              Container(
-                color: Colors.white,
-                padding: EdgeInsets.fromLTRB(
-                  compact ? 10 : 12,
-                  10,
-                  compact ? 10 : 12,
-                  11,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (!compact)
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              issue.storeName,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: Color(0xFF27343A),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w800,
-                              ),
+                          )
+                        else
+                          const SizedBox(height: 32),
+                        if (showLocation &&
+                            issue.location?.trim().isNotEmpty == true)
+                          Text(
+                            issue.location!.trim(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Color(0xFF6F7C80),
+                              fontSize: 12,
                             ),
                           ),
-                          const SizedBox(width: 6),
-                          _ProspectFavoriteButton(
-                            storeName: issue.storeName,
-                            isFavorite: isFavorite,
-                            onPressed: onToggleFavorite,
-                            compact: false,
+                        if (validity != null)
+                          Text(
+                            validity,
+                            style: const TextStyle(
+                              color: Color(0xFF6F7C80),
+                              fontSize: 12,
+                            ),
                           ),
-                        ],
-                      )
-                    else
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: _ProspectFavoriteButton(
-                          storeName: issue.storeName,
-                          isFavorite: isFavorite,
-                          onPressed: onToggleFavorite,
-                          compact: true,
-                        ),
-                      ),
-                    if (showLocation &&
-                        issue.location?.trim().isNotEmpty == true)
-                      Text(
-                        issue.location!.trim(),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Color(0xFF6F7C80),
-                          fontSize: 12,
-                        ),
-                      ),
-                    if (validity != null)
-                      Text(
-                        validity,
-                        style: const TextStyle(
-                          color: Color(0xFF6F7C80),
-                          fontSize: 12,
-                        ),
-                      ),
-                    if (showSummary)
-                      Text(
-                        _prospectCardSummary(issue),
-                        maxLines: compact ? 2 : 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: issue.sourceStatus == 'error'
-                              ? Colors.deepOrange.shade700
-                              : const Color(0xFF6F7C80),
-                          fontSize: 11,
-                          height: 1.2,
-                        ),
-                      ),
-                  ],
-                ),
+                        if (showSummary)
+                          Text(
+                            _prospectCardSummary(issue),
+                            maxLines: compact ? 2 : 3,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: issue.sourceStatus == 'error'
+                                  ? Colors.deepOrange.shade700
+                                  : const Color(0xFF6F7C80),
+                              fontSize: 11,
+                              height: 1.2,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            Positioned(
+              top: imageHeight + 10,
+              right: compact ? 10 : 12,
+              child: _ProspectFavoriteButton(
+                storeName: issue.storeName,
+                isFavorite: isFavorite,
+                onPressed: onToggleFavorite,
+                compact: compact,
+              ),
+            ),
+          ],
         ),
       ),
     );
