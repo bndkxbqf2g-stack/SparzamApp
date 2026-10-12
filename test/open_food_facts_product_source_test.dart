@@ -50,7 +50,7 @@ void main() {
       cache: cache,
       client: MockClient((_) async {
         requests++;
-        throw const http.ClientException('offline');
+        throw http.ClientException('offline');
       }),
     );
     final cached = await offline.fetchProductByEan('123');
