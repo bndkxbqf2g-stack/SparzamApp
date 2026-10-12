@@ -11,17 +11,19 @@ abstract interface class OpenPricesCache {
 class SharedPreferencesOpenPricesCache implements OpenPricesCache {
   SharedPreferencesOpenPricesCache({
     SharedPreferencesAsync? preferences,
-  }) : _preferences = preferences ?? SharedPreferencesAsync();
+  }) : _preferences = preferences;
 
   static const keyPrefix = 'open_prices_response_v1|';
-  final SharedPreferencesAsync _preferences;
+  final SharedPreferencesAsync? _preferences;
+  late final SharedPreferencesAsync _lazyPreferences =
+      _preferences ?? SharedPreferencesAsync();
 
   @override
   Future<String?> load(String productCode) async {
     final code = productCode.trim();
     if (code.isEmpty) return null;
     try {
-      return await _preferences.getString(_key(code));
+      return await _lazyPreferences.getString(_key(code));
     } catch (_) {
       return null;
     }
@@ -32,7 +34,7 @@ class SharedPreferencesOpenPricesCache implements OpenPricesCache {
     final code = productCode.trim();
     if (code.isEmpty || responseBody.trim().isEmpty) return;
     try {
-      await _preferences.setString(_key(code), responseBody);
+      await _lazyPreferences.setString(_key(code), responseBody);
     } catch (_) {
       // Cache availability must never block a live response.
     }
