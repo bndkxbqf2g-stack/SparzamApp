@@ -59,7 +59,7 @@ ReceiptImportResult parseReceiptLines({
       source: MarketPriceSource.receipt,
       kind: PriceObservationKind.regular,
       proofRef:
-          'receipt- import:${storeName.trim()}|${timestamp.toIso8601String()}|line:${lineIndex + 1}',
+          'receipt-import:${storeName.trim()}|${timestamp.toIso8601String()}|line:${lineIndex + 1}',
     ));
   }
   return ReceiptImportResult(prices: prices, unmatchedLines: unmatched);
