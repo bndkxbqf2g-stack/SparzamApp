@@ -102,6 +102,13 @@ List<Product> buildSuggestions({
       ),
   };
 
+  final purchaseCounts = <String, int>{};
+  for (final purchase in [...knownItems, ...recentPurchases]) {
+    final count = purchase.purchaseCount < 0 ? 0 : purchase.purchaseCount;
+    final previous = purchaseCounts[purchase.id] ?? 0;
+    if (count > previous) purchaseCounts[purchase.id] = count;
+  }
+
   matches.sort((a, b) {
     final aPrice = suggestionPrices[a.id];
     final bPrice = suggestionPrices[b.id];
