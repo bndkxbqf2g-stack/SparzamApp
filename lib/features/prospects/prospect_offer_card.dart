@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -164,6 +165,8 @@ class _OfferImage extends StatelessWidget {
         ? fallback
         : Image.network(
             imageUrl,
+            cacheWidth: kIsWeb ? null : (expanded ? 720 : 360),
+            cacheHeight: kIsWeb ? null : (expanded ? 520 : 360),
             filterQuality: FilterQuality.low,
             webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
             fit: BoxFit.cover,
