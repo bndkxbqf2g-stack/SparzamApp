@@ -1365,7 +1365,6 @@ class _ProspectViewer extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(issue.storeName)),
       body: CustomScrollView(
-        scrollCacheExtent: 720,
         slivers: [
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
