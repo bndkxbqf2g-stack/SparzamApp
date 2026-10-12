@@ -166,12 +166,12 @@ class OpenFoodFactsProductSource implements ProductDataSource {
 
     final normalized = quantity.replaceAll(',', '.').toLowerCase();
     final multi = RegExp(
-      r'([0-9]+)\\s*[x×]\\s*([0-9]+(?:\\.[0-9]+)?)\\s*'
+      r'([0-9]+)\s*[x×]\s*([0-9]+(?:\.[0-9]+)?)\s*'
       r'(kg|g|ml|cl|l|stück|stuck|stk|st)',
     ).firstMatch(normalized);
     final match = multi ??
         RegExp(
-          r'([0-9]+(?:\\.[0-9]+)?)\\s*'
+          r'([0-9]+(?:\.[0-9]+)?)\s*'
           r'(kg|g|ml|cl|l|stück|stuck|stk|st)',
         ).firstMatch(normalized);
     if (match == null) return null;
