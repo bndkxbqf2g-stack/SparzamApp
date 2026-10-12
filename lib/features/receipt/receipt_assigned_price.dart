@@ -1,5 +1,6 @@
 import '../../models/market_price.dart';
 import '../../models/product.dart';
+import '../../models/price_observation.dart';
 import 'receipt_ledger.dart';
 import 'receipt_milk_assignment.dart';
 
