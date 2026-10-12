@@ -130,11 +130,11 @@ void main() {
     expect(spaced.familyKey, 'milch');
     expect(spaced.fatPercent, 3.5);
     expect(
-      compatibleProductIdentity(dotted, identifyProduct('Eigenmarke Milch 1,5%')),
+      compatibleProductIdentity(identifyProduct('Milch 1,5%'), dotted),
       isTrue,
     );
     expect(
-      compatibleProductIdentity(dotted, identifyProduct('Eigenmarke Milch 3,5%')),
+      compatibleProductIdentity(identifyProduct('Milch 1,5%'), identifyProduct('Eigenmarke Milch 3,5%')),
       isFalse,
     );
   });
