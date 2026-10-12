@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -684,6 +685,8 @@ class _ProspectCard extends StatelessWidget {
         ? _bringCoverPlaceholder()
         : Image.network(
             previewUrl,
+            cacheWidth: kIsWeb ? null : (compact ? 480 : 640),
+            cacheHeight: kIsWeb ? null : (compact ? 400 : 480),
             filterQuality: FilterQuality.low,
             webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
             fit: BoxFit.cover,
@@ -1256,6 +1259,7 @@ class _ProspectViewer extends StatelessWidget {
                 ? const Center(child: Icon(Icons.broken_image_outlined, size: 48))
                 : Image.network(
                     pageUrl,
+                    cacheWidth: kIsWeb ? null : 900,
                     fit: BoxFit.contain,
                     filterQuality: FilterQuality.low,
                     webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
