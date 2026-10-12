@@ -1799,4 +1799,69 @@ void main() {
   });
 
 
+  test('prefers the most purchased current product unless a cheaper offer exists', () {
+    final regularPrice = MarketPrice(
+      productId: regular.id,
+      storeName: 'Lidl',
+      price: 1.29,
+      updatedAt: now,
+      source: MarketPriceSource.receipt,
+    );
+    final lowFatPrice = MarketPrice(
+      productId: lowFat.id,
+      storeName: 'Lidl',
+      price: 0.79,
+      updatedAt: now,
+      source: MarketPriceSource.receipt,
+    );
+    final known = <RecentPurchase>[
+      RecentPurchase(
+        id: regular.id,
+        name: regular.name,
+        unit: regular.unit,
+        group: regular.group,
+        purchaseCount: 8,
+      ),
+      RecentPurchase(
+        id: lowFat.id,
+        name: lowFat.name,
+        unit: lowFat.unit,
+        group: lowFat.group,
+        purchaseCount: 1,
+      ),
+    ];
+
+    final historyFirst = buildSuggestions(
+      query: 'Milch',
+      knownItems: known,
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: const [regular, lowFat],
+      marketPrices: [regularPrice, lowFatPrice],
+      now: now,
+    );
+    expect(historyFirst.map((product) => product.id), ['milk-35', 'milk-15']);
+
+    final cheaperOffer = Offer(
+      id: 'cheap-milk-15',
+      productId: lowFat.id,
+      storeName: 'Lidl',
+      originalPrice: 1.29,
+      offerPrice: 0.69,
+      validUntil: DateTime(2026, 10, 2),
+    );
+    final offerFirst = buildSuggestions(
+      query: 'Milch',
+      knownItems: known,
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: const [regular, lowFat],
+      offers: [cheaperOffer],
+      marketPrices: [regularPrice, lowFatPrice],
+      now: now,
+    );
+    expect(offerFirst.map((product) => product.id), ['milk-15', 'milk-35']);
+  });
+
+
 }
