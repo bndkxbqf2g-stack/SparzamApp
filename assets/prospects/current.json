@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-11T23:01:18.045404Z",
+  "generatedAt": "2026-10-12T11:56:58.364070Z",
   "sources": [
     {
       "id": "aldi_sued",
@@ -513,7 +513,7 @@
       "storeName": "PENNY",
       "url": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1",
       "status": "ok",
-      "recordCount": 251,
+      "recordCount": 252,
       "mode": "structured_api",
       "prospects": [],
       "branchId": "230061",
@@ -6935,7 +6935,7 @@
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
       "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-week=current#offer-ART.1225394_KAV.3693412",
-      "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4066627991592_Internet",
+      "imageUrl": "https://media.kaufland.com/images/PPIM/Lago/c45586544_0.jpg",
       "category": "181_NF_Badartikel",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
@@ -13206,6 +13206,22 @@
       "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
+      "sourceId": "5bb50023596a515230a3",
+      "productLabel": "Broccoli je 500-g-Packung",
+      "storeName": "PENNY",
+      "offerPrice": 0.99,
+      "validFrom": "2026-10-12",
+      "validUntil": "2026-10-17",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-5ce8970b-280f-4da9-93d6-4f1f5fe60f75",
+      "originalPrice": 1.59,
+      "imageUrl": "https://cdn.penny.de/dam/jcr:ec1df33c-dd0b-48d6-94c0-334e155cbc4d/40681277.png?impolicy=penny&imwidth=800",
+      "category": "obst-und-gemuese1",
+      "branchId": "230061",
+      "location": "Zellingen",
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
+    },
+    {
       "sourceId": "ad03a9212d8fce8604f2",
       "productLabel": "TASTE OF ASIA Ramen* je 400 g",
       "storeName": "PENNY",
@@ -14176,14 +14192,14 @@
       "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
-      "sourceId": "bee49257fb2382258115",
+      "sourceId": "7873e8740c9b5cf4f254",
       "productLabel": "Haribo Fruchtgummi 160 g - 175 g",
       "storeName": "Netto",
       "offerPrice": 0.66,
       "validFrom": "2026-10-12",
       "validUntil": "2026-10-19",
       "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=443853&Name=Haribo+Fruchtgummi&ValidTo=2026-10-19T01%3A01%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F443853-450x450-Haribo-Goldbaeren-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
+      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=443853&Name=Haribo+Fruchtgummi&ValidTo=2026-10-19T13%3A56%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F443853-450x450-Haribo-Goldbaeren-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
       "originalPrice": 1.19,
       "imageUrl": "https://www.netto-online.de/media_nfs/images/2026-42/443853-450x450-Haribo-Goldbaeren-n.webp",
       "branchId": "4371",
@@ -14191,14 +14207,14 @@
       "address": "Am Straßacker 1, 97291 Thüngersheim, Germany"
     },
     {
-      "sourceId": "841c938b25fe3ea2b296",
+      "sourceId": "16565930b45b1567369d",
       "productLabel": "Trauben hell 500 g",
       "storeName": "Netto",
       "offerPrice": 1.39,
       "validFrom": "2026-10-12",
       "validUntil": "2026-10-19",
       "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=43103&Name=Trauben+hell&ValidTo=2026-10-19T01%3A01%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F43103-450x450-Trauben-hell-neu-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
+      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=43103&Name=Trauben+hell&ValidTo=2026-10-19T13%3A56%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F43103-450x450-Trauben-hell-neu-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
       "originalPrice": 1.69,
       "imageUrl": "https://www.netto-online.de/media_nfs/images/2026-42/43103-450x450-Trauben-hell-neu-n.webp",
       "branchId": "4371",
@@ -14206,14 +14222,14 @@
       "address": "Am Straßacker 1, 97291 Thüngersheim, Germany"
     },
     {
-      "sourceId": "8101deeae6b5864508b5",
+      "sourceId": "edac275b0f6cf000c9a1",
       "productLabel": "Paulaner Cola 20 x 0,5 l",
       "storeName": "Netto",
       "offerPrice": 10.99,
       "validFrom": "2026-10-12",
       "validUntil": "2026-10-19",
       "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=454081&Name=Paulaner+Cola&ValidTo=2026-10-19T01%3A01%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F454081-450x450-Paulaner-Cola_Kiste-Flasche-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
+      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=454081&Name=Paulaner+Cola&ValidTo=2026-10-19T13%3A56%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F454081-450x450-Paulaner-Cola_Kiste-Flasche-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
       "originalPrice": 16.49,
       "imageUrl": "https://www.netto-online.de/media_nfs/images/2026-42/454081-450x450-Paulaner-Cola_Kiste-Flasche-n.webp",
       "branchId": "4371",
@@ -14221,14 +14237,14 @@
       "address": "Am Straßacker 1, 97291 Thüngersheim, Germany"
     },
     {
-      "sourceId": "14c8e5ebd3fa05b750e6",
+      "sourceId": "ab0fb92f64e6a26d776d",
       "productLabel": "Minipflaumen Tomaten 1 kg",
       "storeName": "Netto",
       "offerPrice": 3.49,
       "validFrom": "2026-10-12",
       "validUntil": "2026-10-19",
       "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=46812&Name=Minipflaumen+Tomaten&ValidTo=2026-10-19T01%3A01%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F46812-450x450-Minipflaumen-tomaten-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
+      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=46812&Name=Minipflaumen+Tomaten&ValidTo=2026-10-19T13%3A56%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F46812-450x450-Minipflaumen-tomaten-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
       "originalPrice": 4.38,
       "imageUrl": "https://www.netto-online.de/media_nfs/images/2026-42/46812-450x450-Minipflaumen-tomaten-n.webp",
       "branchId": "4371",
