@@ -1220,6 +1220,64 @@ class _ProspectViewer extends StatelessWidget {
     );
   }
 
+  Widget _buildPageCard(BuildContext context, ProspectPage page) {
+    final pageUrl = page.imageUrl.trim();
+    final zoomUri = _officialProspectUri(page.zoomUrl);
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Column(
+        children: [
+          SizedBox(
+            width: double.infinity,
+            height: 360,
+            child: pageUrl.isEmpty
+                ? const Center(child: Icon(Icons.broken_image_outlined, size: 48))
+                : Image.network(
+                    pageUrl,
+                    cacheWidth: 900,
+                    fit: BoxFit.contain,
+                    filterQuality: FilterQuality.low,
+                    webHtmlElementStrategy: WebHtmlElementStrategy.never,
+                    loadingBuilder: (context, child, progress) =>
+                        progress == null
+                            ? child
+                            : const Center(child: CircularProgressIndicator()),
+                    errorBuilder: (context, error, stackTrace) => const Center(
+                      child: Icon(Icons.broken_image_outlined, size: 48),
+                    ),
+                  ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text('Seite ${page.number}'),
+                if (zoomUri != null)
+                  TextButton.icon(
+                    onPressed: () => launchUrl(
+                      zoomUri,
+                      mode: LaunchMode.externalApplication,
+                    ),
+                    icon: const Icon(Icons.zoom_in),
+                    label: const Text('Großansicht öffnen'),
+                  ),
+                OutlinedButton.icon(
+                  onPressed: onSaveOffer == null || onAddProduct == null
+                      ? null
+                      : () => _addPageOffer(context, page),
+                  icon: const Icon(Icons.add_shopping_cart_outlined),
+                  label: const Text('Artikel von Seite hinzufügen'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final items = records
@@ -1237,163 +1295,146 @@ class _ProspectViewer extends StatelessWidget {
             _prospectCategoryOrder(a).compareTo(_prospectCategoryOrder(b)),
       );
 
+    final header = <Widget>[
+      if (issue.location?.trim().isNotEmpty == true)
+        Card(
+          child: ListTile(
+            dense: true,
+            leading: const Icon(Icons.store_outlined),
+            title: Text(issue.location!),
+            subtitle: issue.address?.trim().isNotEmpty == true
+                ? Text(issue.address!)
+                : null,
+          ),
+        ),
+      if (_officialProspectUri(issue.url) != null)
+        Align(
+          alignment: Alignment.centerLeft,
+          child: OutlinedButton.icon(
+            onPressed: () => launchUrl(
+              _officialProspectUri(issue.url)!,
+              mode: LaunchMode.externalApplication,
+            ),
+            icon: const Icon(Icons.open_in_new),
+            label: const Text('Offiziellen Prospekt öffnen'),
+          ),
+        ),
+      Text(issue.title, style: Theme.of(context).textTheme.titleLarge),
+      if (issue.validFrom != null && issue.validUntil != null)
+        Text(
+          '${_prospectDate(issue.validFrom!)} – ${_prospectDate(issue.validUntil!)}',
+          style: const TextStyle(color: Colors.black54),
+        ),
+      if (issue.pages.isNotEmpty) ...[
+        const SizedBox(height: 14),
+        Text(
+          'Prospektseiten (${issue.pages.length})',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+      ],
+      if (issue.pages.isEmpty)
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Aktuelle Angebote dieses Marktes. Durchblättern und '
+                  'Produkte antippen, um sie zur Einkaufsliste hinzuzufügen.',
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  _sourceStatusLabel(issue),
+                  style: TextStyle(
+                    color: issue.sourceStatus == 'error'
+                        ? Colors.orange.shade900
+                        : Colors.black54,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+    ];
+
     return Scaffold(
       appBar: AppBar(title: Text(issue.storeName)),
-      body: ListView(
-        padding: const EdgeInsets.all(12),
-        children: [
-          if (issue.location?.trim().isNotEmpty == true)
-            Card(
-              child: ListTile(
-                dense: true,
-                leading: const Icon(Icons.store_outlined),
-                title: Text(issue.location!),
-                subtitle: issue.address?.trim().isNotEmpty == true
-                    ? Text(issue.address!)
-                    : null,
+      body: CustomScrollView(
+        cacheExtent: 720,
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate(header),
+            ),
+          ),
+          if (issue.pages.isNotEmpty)
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+              sliver: SliverList.builder(
+                itemCount: issue.pages.length,
+                itemBuilder: (context, index) =>
+                    _buildPageCard(context, issue.pages[index]),
               ),
             ),
-          if (_officialProspectUri(issue.url) != null)
-            Align(
-              alignment: Alignment.centerLeft,
-              child: OutlinedButton.icon(
-                onPressed: () => launchUrl(
-                  _officialProspectUri(issue.url)!,
-                  mode: LaunchMode.externalApplication,
-                ),
-                icon: const Icon(Icons.open_in_new),
-                label: const Text('Offiziellen Prospekt öffnen'),
-              ),
-            ),
-          Text(issue.title, style: Theme.of(context).textTheme.titleLarge),
-          if (issue.validFrom != null && issue.validUntil != null)
-            Text(
-              '${_prospectDate(issue.validFrom!)} – ${_prospectDate(issue.validUntil!)}',
-              style: const TextStyle(color: Colors.black54),
-            ),
-          if (issue.pages.isNotEmpty) ...[
-            const SizedBox(height: 14),
-            Text(
-              'Prospektseiten (${issue.pages.length})',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-          ],
-          if (issue.pages.isEmpty)
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Aktuelle Angebote dieses Marktes. Durchblättern und '
-                      'Produkte antippen, um sie zur Einkaufsliste hinzuzufügen.',
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      _sourceStatusLabel(issue),
-                      style: TextStyle(
-                        color: issue.sourceStatus == 'error'
-                            ? Colors.orange.shade900
-                            : Colors.black54,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          else
-            for (final page in issue.pages)
-              Card(
-                clipBehavior: Clip.antiAlias,
-                child: Column(
-                  children: [
-                    Image.network(
-                      page.zoomUrl ?? page.imageUrl,
-                      webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const SizedBox(
-                            height: 180,
-                            child: Icon(Icons.broken_image),
-                          ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text('Seite ${page.number}'),
-                          const SizedBox(height: 6),
-                          OutlinedButton.icon(
-                            onPressed: onSaveOffer == null || onAddProduct == null
-                                ? null
-                                : () => _addPageOffer(context, page),
-                            icon: const Icon(Icons.add_shopping_cart_outlined),
-                            label: const Text('Artikel von Seite hinzufügen'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
           if (items.isNotEmpty) ...[
-            const Padding(
-              padding: EdgeInsets.only(top: 12, bottom: 10),
-              child: Text(
-                'Produkte antippen und zur Einkaufsliste hinzufügen',
-                style: TextStyle(fontWeight: FontWeight.w700),
+            const SliverPadding(
+              padding: EdgeInsets.fromLTRB(12, 12, 12, 4),
+              sliver: SliverToBoxAdapter(
+                child: Text(
+                  'Produkte antippen und zur Einkaufsliste hinzufügen',
+                  style: TextStyle(fontWeight: FontWeight.w700),
+                ),
               ),
             ),
             for (final category in categories) ...[
-              Padding(
-                padding: const EdgeInsets.only(top: 12, bottom: 8),
-                child: Text(
-                  category,
-                  key: ValueKey('prospect-category-$category'),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 18,
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    category,
+                    key: ValueKey('prospect-category-${category}'),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 18,
+                    ),
                   ),
                 ),
               ),
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final width = (constraints.maxWidth - 10) / 2;
-                  return Wrap(
-                    spacing: 10,
-                    runSpacing: 12,
-                    children: [
-                      for (final record in groupedItems[category]!)
-                        SizedBox(
-                          width: width,
-                          child: Builder(
-                            builder: (context) {
-                              final product = addableProductForProspectOffer(
-                                record,
-                                catalogProducts,
-                              );
-                              return ProspectOfferCard(
-                                key: ValueKey(
-                                  'prospect-offer-${record.sourceId}',
-                                ),
-                                record: record,
-                                product: product,
-                                onAdd: onAddProduct == null || product == null
-                                    ? null
-                                    : () => onAddProduct!(product),
-                              );
-                            },
-                          ),
-                        ),
-                    ],
-                  );
-                },
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                sliver: SliverGrid(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final record = groupedItems[category]![index];
+                      final product = addableProductForProspectOffer(
+                        record,
+                        catalogProducts,
+                      );
+                      return ProspectOfferCard(
+                        key: ValueKey('prospect-offer-${record.sourceId}'),
+                        record: record,
+                        product: product,
+                        onAdd: onAddProduct == null || product == null
+                            ? null
+                            : () => onAddProduct!(product),
+                      );
+                    },
+                    childCount: groupedItems[category]!.length,
+                  ),
+                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 240,
+                    mainAxisExtent: 410,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 12,
+                  ),
+                ),
               ),
             ],
           ],
+          const SliverToBoxAdapter(child: SizedBox(height: 24)),
         ],
       ),
     );
