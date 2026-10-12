@@ -1,6 +1,7 @@
 import '../data/stores.dart';
 import '../models/market_price.dart';
 import '../models/product.dart';
+import 'open_prices_cache.dart';
 import 'open_prices_service.dart';
 import 'open_food_facts_product_discovery.dart';
 
@@ -52,6 +53,7 @@ class OpenPricesSyncService {
     if (customFetcher == null) {
       service = OpenPricesService(
         maxAge: Duration(days: maxAgeDays),
+        cache: SharedPreferencesOpenPricesCache(),
       );
       discovery = OpenFoodFactsProductDiscovery();
     }

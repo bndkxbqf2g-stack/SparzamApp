@@ -11,6 +11,7 @@ class MarketPrice {
     this.source = MarketPriceSource.manual,
     this.externalId,
     this.sourceLocationName,
+    this.sourceLocationId,
     this.discounted = false,
     this.proofRef,
     this.quantity,
@@ -27,6 +28,8 @@ class MarketPrice {
   final MarketPriceSource source;
   final int? externalId;
   final String? sourceLocationName;
+  /// Stable source location/branch ID when the provider exposes one.
+  final String? sourceLocationId;
   final bool discounted;
 
   /// Evidence metadata retained when a price is projected from the central
@@ -111,6 +114,7 @@ class MarketPrice {
         'source': source.name,
         'externalId': externalId,
         'sourceLocationName': sourceLocationName,
+        'sourceLocationId': sourceLocationId,
         'discounted': discounted,
         'proofRef': proofRef,
         'quantity': quantity,
@@ -149,6 +153,7 @@ class MarketPrice {
       source: matches.isEmpty ? MarketPriceSource.manual : matches.first,
       externalId: (json['externalId'] as num?)?.toInt(),
       sourceLocationName: json['sourceLocationName'] as String?,
+      sourceLocationId: json['sourceLocationId'] as String?,
       discounted: json['discounted'] as bool? ?? false,
       proofRef: json['proofRef'] as String?,
       quantity: (json['quantity'] as num?)?.toDouble(),

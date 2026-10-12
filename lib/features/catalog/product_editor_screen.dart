@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../models/product.dart';
-import '../../services/open_food_facts_service.dart';
+import '../../services/open_food_facts_product_source.dart';
+import '../../services/product_data_cache.dart';
 
 class ProductEditorScreen extends StatefulWidget {
   const ProductEditorScreen({super.key, this.product});
@@ -23,7 +24,9 @@ class _ProductEditorScreenState extends State<ProductEditorScreen> {
   late bool favorite;
   late final TextEditingController packageAmount;
   late final TextEditingController packageUnit;
-  final openFoodFacts = OpenFoodFactsService();
+  final openFoodFacts = OpenFoodFactsProductSource(
+    cache: SharedPreferencesProductDataCache(),
+  );
   bool enriching = false;
   String? imageUrl;
 

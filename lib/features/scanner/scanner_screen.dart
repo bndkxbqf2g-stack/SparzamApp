@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../models/product.dart';
-import '../../services/open_food_facts_service.dart';
+import '../../services/open_food_facts_product_source.dart';
+import '../../services/product_data_cache.dart';
 import 'barcode_product_resolver.dart';
 
 class ScannerScreen extends StatefulWidget {
@@ -18,7 +19,9 @@ class _ScannerScreenState extends State<ScannerScreen> {
   String? unknownCode;
   bool completing = false;
   bool lookingUp = false;
-  final openFoodFacts = OpenFoodFactsService();
+  final openFoodFacts = OpenFoodFactsProductSource(
+    cache: SharedPreferencesProductDataCache(),
+  );
 
   Future<void> resolve(String? code, {bool retry = false}) async {
     final normalizedCode = code?.trim();
