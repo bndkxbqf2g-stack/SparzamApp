@@ -78,6 +78,46 @@ void main() {
     expect(saved.single.familyKey, 'tomatenkonserve');
   });
 
+  test('market price evidence survives central observation projection', () {
+    final price = MarketPrice(
+      productId: 'milk-15',
+      storeName: 'Kaufland',
+      price: 1.09,
+      updatedAt: DateTime(2026, 9, 24),
+      source: MarketPriceSource.receipt,
+      discounted: true,
+      proofRef: 'receipt:abc123|line:4',
+      quantity: 1,
+      unit: 'l',
+      unitPrice: 1.09,
+      kind: PriceObservationKind.offer,
+    );
+
+    final restored = MarketPrice.fromJson(price.toJson());
+    expect(restored.proofRef, price.proofRef);
+    expect(restored.quantity, 1);
+    expect(restored.unit, 'l');
+    expect(restored.unitPrice, 1.09);
+    expect(restored.kind, PriceObservationKind.offer);
+
+    final observation = observationFromMarketPrice(price);
+    expect(observation.proofRef, price.proofRef);
+    expect(observation.quantity, 1);
+    expect(observation.unit, 'l');
+    expect(observation.unitPrice, 1.09);
+    expect(observation.kind, PriceObservationKind.offer);
+
+    final projected = marketPricesFromObservations(
+      [observation],
+      now: DateTime(2026, 9, 24),
+    );
+    expect(projected.single.proofRef, price.proofRef);
+    expect(projected.single.quantity, 1);
+    expect(projected.single.unit, 'l');
+    expect(projected.single.unitPrice, 1.09);
+    expect(projected.single.kind, PriceObservationKind.offer);
+  });
+
   test('record keeps branch, amount, offer validity and proof separately', () {
     final original = PriceObservation(
       id: 'shelf-1',
