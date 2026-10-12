@@ -99,7 +99,7 @@ void main() {
     final offline = OpenPricesSource(
       cache: cache,
       client: MockClient((_) async {
-        throw const http.ClientException('offline');
+        throw http.ClientException('offline');
       }),
     );
     final prices = await offline.fetchRecentPrices(
