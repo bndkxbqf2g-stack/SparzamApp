@@ -664,8 +664,6 @@ class _ProspectCard extends StatelessWidget {
         ? _bringCoverPlaceholder()
         : Image.network(
             previewUrl,
-            cacheWidth: compact ? 480 : 640,
-            cacheHeight: compact ? 400 : 480,
             filterQuality: FilterQuality.low,
             webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
             fit: BoxFit.cover,
@@ -1238,7 +1236,6 @@ class _ProspectViewer extends StatelessWidget {
                 ? const Center(child: Icon(Icons.broken_image_outlined, size: 48))
                 : Image.network(
                     pageUrl,
-                    cacheWidth: 900,
                     fit: BoxFit.contain,
                     filterQuality: FilterQuality.low,
                     webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
