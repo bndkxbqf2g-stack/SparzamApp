@@ -1864,4 +1864,33 @@ void main() {
   });
 
 
+  test('uses purchase history when no price evidence is available', () {
+    final suggestions = buildSuggestions(
+      query: 'Milch',
+      knownItems: [
+        RecentPurchase(
+          id: regular.id,
+          name: regular.name,
+          unit: regular.unit,
+          group: regular.group,
+          purchaseCount: 8,
+        ),
+        RecentPurchase(
+          id: lowFat.id,
+          name: lowFat.name,
+          unit: lowFat.unit,
+          group: lowFat.group,
+          purchaseCount: 1,
+        ),
+      ],
+      recentPurchases: const [],
+      preferredProductByGroup: const {},
+      catalogProducts: const [regular, lowFat],
+      now: now,
+    );
+
+    expect(suggestions.map((product) => product.id), ['milk-35', 'milk-15']);
+  });
+
+
 }

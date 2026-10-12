@@ -161,6 +161,16 @@ List<Product> buildSuggestions({
       }
     }
 
+    if (aPrice == null && bPrice == null) {
+      // With no current or historical price evidence, keep the user's own
+      // purchase history as the deterministic product choice.
+      final aPurchases = purchaseCounts[a.id] ?? 0;
+      final bPurchases = purchaseCounts[b.id] ?? 0;
+      if (aPurchases != bPurchases) {
+        return bPurchases.compareTo(aPurchases);
+      }
+    }
+
     // A generic request should keep a generic catalog identity ahead of a
     // more specific sibling when both have no stronger evidence. For example,
     // "Kartoffeln 2,5 kg" must not default to frozen wedges merely because
