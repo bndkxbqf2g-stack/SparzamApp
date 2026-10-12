@@ -23,6 +23,8 @@ void main() {
     expect(result.prices, hasLength(1));
     expect(result.prices.single.productId, 'milk');
     expect(result.prices.single.price, 1.29);
+    expect(result.prices.single.kind.name, 'regular');
+    expect(result.prices.single.proofRef, contains('receipt-import:Lidl|2026-09-23'));
     expect(result.unmatchedLines, contains('Nicht im Katalog;4,00'));
     expect(result.unmatchedLines, contains('kaputte Zeile'));
   });
