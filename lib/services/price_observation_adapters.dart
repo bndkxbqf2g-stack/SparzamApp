@@ -25,7 +25,7 @@ PriceObservation observationFromReceipt(ReceiptObservation receipt) {
     source: PriceObservationSource.receipt,
     kind: receipt.discounted
         ? PriceObservationKind.offer
-        : PriceObservationKind.unknown,
+        : PriceObservationKind.regular,
     proofRef: 'receipt:${receipt.receiptFingerprint}',
     discounted: receipt.discounted,
     identityConfidence: identity.confidence,
