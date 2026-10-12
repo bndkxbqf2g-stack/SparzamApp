@@ -1365,7 +1365,7 @@ class _ProspectViewer extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(issue.storeName)),
       body: CustomScrollView(
-        cacheExtent: 720,
+        scrollCacheExtent: 720,
         slivers: [
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
@@ -1398,7 +1398,7 @@ class _ProspectViewer extends StatelessWidget {
                 sliver: SliverToBoxAdapter(
                   child: Text(
                     category,
-                    key: ValueKey('prospect-category-${category}'),
+                    key: ValueKey('prospect-category-$category'),
                     style: const TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 18,
