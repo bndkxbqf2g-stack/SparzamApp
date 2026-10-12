@@ -667,7 +667,7 @@ class _ProspectCard extends StatelessWidget {
             cacheWidth: compact ? 480 : 640,
             cacheHeight: compact ? 400 : 480,
             filterQuality: FilterQuality.low,
-            webHtmlElementStrategy: WebHtmlElementStrategy.never,
+            webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) =>
                 _bringCoverPlaceholder(),
@@ -1241,7 +1241,7 @@ class _ProspectViewer extends StatelessWidget {
                     cacheWidth: 900,
                     fit: BoxFit.contain,
                     filterQuality: FilterQuality.low,
-                    webHtmlElementStrategy: WebHtmlElementStrategy.never,
+                    webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
                     loadingBuilder: (context, child, progress) =>
                         progress == null
                             ? child
