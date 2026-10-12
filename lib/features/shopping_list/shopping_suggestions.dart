@@ -111,10 +111,11 @@ List<Product> buildSuggestions({
       if (aPrice.isHistorical != bPrice.isHistorical) {
         return aPrice.isHistorical ? 1 : -1;
       }
-      if (aPrice.isOffer != bPrice.isOffer) return aPrice.isOffer ? -1 : 1;
-      // Offers/current observations still outrank historical values above.
-      // Within the same evidence bucket, keep the cheapest comparable item
-      // first so historical receipt medians remain useful for staple searches.
+      // A prospect offer is evidence for the same product choice, not an
+      // unconditional override. It wins when its comparable effective price
+      // is lower; an expensive offer must not hide a cheaper current receipt
+      // or own-price observation. Historical values remain below all current
+      // evidence through the check above.
       final aComparable = _comparisonPriceForSuggestion(a, aPrice);
       final bComparable = _comparisonPriceForSuggestion(b, bPrice);
       if (aComparable != null && bComparable != null) {
@@ -454,11 +455,14 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
     );
   }
   quotes.sort((a, b) {
-    if (a.isOffer != b.isOffer) return a.isOffer ? -1 : 1;
+    // Keep the displayed amount and its quality-adjusted comparison together:
+    // an offer has precedence only when it is actually cheaper on the same
+    // package basis. Source kind remains a deterministic tie-breaker.
     final byPrice = a.comparisonPrice.compareTo(b.comparisonPrice);
     if (byPrice != 0) return byPrice;
     final byNominalPrice = a.price.compareTo(b.price);
     if (byNominalPrice != 0) return byNominalPrice;
+    if (a.isOffer != b.isOffer) return a.isOffer ? -1 : 1;
     return a.storeName.compareTo(b.storeName);
   });
   return quotes.first;
