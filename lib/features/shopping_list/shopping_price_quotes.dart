@@ -226,6 +226,14 @@ List<ShoppingQuote> shoppingQuotes(
   }
 
   candidates.sort((a, b) {
+    if (a.isHistorical != b.isHistorical) {
+      return a.isHistorical ? 1 : -1;
+    }
+    // Compare the actual quality-adjusted amount before source kind. A
+    // prospect offer wins for a market only when it is cheaper; the source
+    // label remains the tie-breaker and stays visible in the UI.
+    final byPrice = a.rankingPrice.compareTo(b.rankingPrice);
+    if (byPrice != 0) return byPrice;
     final sourceOrder = _quoteSourceOrder(a).compareTo(_quoteSourceOrder(b));
     if (sourceOrder != 0) return sourceOrder;
     final storeOrder = a.storeName.compareTo(b.storeName);
@@ -304,15 +312,15 @@ List<ShoppingPriceMatrixEntry> shoppingPriceMatrix(
 }
 
 int _compareMatrixQuotes(ShoppingQuote a, ShoppingQuote b) {
-  final sourceOrder = _quoteSourceOrder(a).compareTo(_quoteSourceOrder(b));
-  if (sourceOrder != 0) return sourceOrder;
   if (a.isHistorical != b.isHistorical) {
     return a.isHistorical ? 1 : -1;
   }
-  if (a.kind == ShoppingQuoteKind.offer || !a.isHistorical) {
+  if (!a.isHistorical && !b.isHistorical) {
     final byQualityAdjustedPrice = a.rankingPrice.compareTo(b.rankingPrice);
     if (byQualityAdjustedPrice != 0) return byQualityAdjustedPrice;
   }
+  final sourceOrder = _quoteSourceOrder(a).compareTo(_quoteSourceOrder(b));
+  if (sourceOrder != 0) return sourceOrder;
   final aDate = a.observedAt;
   final bDate = b.observedAt;
   if (aDate != null || bDate != null) {
