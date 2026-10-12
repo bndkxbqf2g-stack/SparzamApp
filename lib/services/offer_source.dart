@@ -12,10 +12,9 @@ class OfferSourceResult {
     this.errorCode,
   });
 
-  const OfferSourceResult.unavailable(String errorCode)
+  const OfferSourceResult.unavailable(this.errorCode)
       : observations = const <OfferObservation>[],
-        available = false,
-        errorCode = errorCode;
+        available = false;
 
   const OfferSourceResult.empty()
       : observations = const <OfferObservation>[],
