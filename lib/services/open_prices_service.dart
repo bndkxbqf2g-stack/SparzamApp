@@ -72,7 +72,11 @@ class OpenPricesSource implements PriceSource {
         throw http.ClientException('Open Prices HTTP ${response.statusCode}');
       }
       body = response.body;
-      await cache?.save(ean, body);
+      try {
+        await cache?.save(ean, body);
+      } catch (_) {
+        // Cache availability must never block a valid live response.
+      }
     } catch (error, stackTrace) {
       body = await _loadCached(ean);
       if (body == null) {
@@ -127,7 +131,7 @@ class OpenPricesSource implements PriceSource {
 
     for (final raw in items) {
       if (raw is! Map<String, dynamic>) continue;
-      if (raw['product_code']?.toString() != product.ean ||
+      if (raw['product_code']?.toString() != product.ean?.trim() ||
           raw['currency'] != 'EUR' ||
           raw['price_is_discounted'] != false ||
           raw['price_per'] != 'UNIT' ||
