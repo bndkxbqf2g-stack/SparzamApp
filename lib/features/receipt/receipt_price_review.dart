@@ -1,5 +1,6 @@
 import '../../models/market_price.dart';
 import '../../models/product.dart';
+import '../../models/price_observation.dart';
 import '../catalog/product_identity.dart';
 import 'receipt_ledger.dart';
 
@@ -72,6 +73,11 @@ ReceiptPriceReview reviewReceiptPrices(
           price: unitCents / 100,
           updatedAt: draft.receiptDate!,
           source: MarketPriceSource.receipt,
+          kind: PriceObservationKind.regular,
+          proofRef: 'receipt:${draft.fingerprint}|line:${row.line}',
+          quantity: row.quantity?.toDouble(),
+          unit: row.quantityUnit,
+          unitPrice: row.unitCents == null ? null : row.unitCents! / 100,
         ),
       ),
     );
