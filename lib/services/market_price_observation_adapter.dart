@@ -31,9 +31,15 @@ PriceObservation observationFromMarketPrice(MarketPrice price) =>
       kind: price.discounted
           ? PriceObservationKind.offer
           : PriceObservationKind.unknown,
-      proofRef: price.externalId == null
-          ? null
-          : 'open-prices:${price.externalId}',
+      proofRef: price.proofRef ??
+          (price.externalId == null
+              ? null
+              : 'open-prices:${price.externalId}'),
+      quantity: price.quantity,
+      unit: price.unit,
+      unitPrice: price.unitPrice,
+      identityConfidence: price.identityConfidence,
+      kind: price.kind,
       discounted: price.discounted,
     );
 
@@ -78,6 +84,12 @@ List<MarketPrice> marketPricesFromObservations(
           sourceLocationName: entry.region,
           discounted:
               entry.discounted || entry.kind == PriceObservationKind.offer,
+          proofRef: entry.proofRef,
+          quantity: entry.quantity,
+          unit: entry.unit,
+          unitPrice: entry.unitPrice,
+          identityConfidence: entry.identityConfidence,
+          kind: entry.kind,
         ),
       )
       .toList();
