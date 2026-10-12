@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../data/stores.dart';
 import '../../models/market_price.dart';
 import '../../models/product.dart';
+import '../../services/open_prices_cache.dart';
 import '../../services/open_prices_service.dart';
 import 'market_price_import.dart';
 import 'unit_price.dart';
@@ -50,6 +51,7 @@ class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
     prices = [...widget.prices];
     openPrices = OpenPricesService(
       maxAge: Duration(days: widget.openPricesMaxAgeDays),
+      cache: SharedPreferencesOpenPricesCache(),
     );
     controllers = {
       for (final store in stores)
