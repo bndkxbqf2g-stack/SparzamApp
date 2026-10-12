@@ -137,7 +137,11 @@ List<ShoppingCandidate> buildShoppingCandidates({
       ));
     }
     final productStats = (identity.isGeneric
-            ? receiptPriceStats.where((stat) => stat.familyKey == identity.familyKey)
+            ? receiptPriceStats.where(
+                (stat) =>
+                    stat.familyKey == identity.familyKey &&
+                    (stat.productId == null || stat.productId == product.id),
+              )
             : receiptStatsForProduct(product, receiptPriceStats))
         .where(
       (stat) =>
