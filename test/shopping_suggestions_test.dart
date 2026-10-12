@@ -1815,8 +1815,20 @@ void main() {
       source: MarketPriceSource.receipt,
     );
     final known = <RecentPurchase>[
-      RecentPurchase.fromProduct(regular).copyWith(purchaseCount: 8),
-      RecentPurchase.fromProduct(lowFat).copyWith(purchaseCount: 1),
+      RecentPurchase(
+        id: regular.id,
+        name: regular.name,
+        unit: regular.unit,
+        group: regular.group,
+        purchaseCount: 8,
+      ),
+      RecentPurchase(
+        id: lowFat.id,
+        name: lowFat.name,
+        unit: lowFat.unit,
+        group: lowFat.group,
+        purchaseCount: 1,
+      ),
     ];
 
     final historyFirst = buildSuggestions(
