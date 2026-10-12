@@ -44,6 +44,11 @@ void main() {
     expect(prices.single.storeName, 'Kaufland');
     expect(prices.single.price, 0.79);
     expect(prices.single.discounted, isTrue);
+    expect(prices.single.kind.name, 'offer');
+    expect(prices.single.proofRef, 'receipt:receipt|line:34');
+    expect(prices.single.quantity, 1);
+    expect(prices.single.unit, 'Stück');
+    expect(prices.single.unitPrice, 0.79);
   });
 
   test('family projection uses quality-adjusted evidence instead of newest date', () {
