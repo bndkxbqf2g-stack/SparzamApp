@@ -1,5 +1,6 @@
 import '../../models/market_price.dart';
 import '../../models/product.dart';
+import '../../models/price_observation.dart';
 import 'receipt_ledger.dart';
 
 bool isAmbiguousKauflandMilk(ReceiptDraft draft, ReceiptRow row) =>
@@ -39,5 +40,10 @@ MarketPrice? assignedKauflandMilkPrice({
     price: unitCents / 100,
     updatedAt: draft.receiptDate!,
     source: MarketPriceSource.receipt,
+    kind: PriceObservationKind.regular,
+    proofRef: 'receipt:${draft.fingerprint}|line:${row.line}',
+    quantity: row.quantity?.toDouble(),
+    unit: row.quantityUnit,
+    unitPrice: row.unitCents == null ? null : row.unitCents! / 100,
   );
 }

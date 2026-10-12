@@ -30,6 +30,9 @@ Datum 14.07.24
     expect(dearer?.price, 0.93);
     expect(cheaper?.productId, 'milch_15');
     expect(dearer?.productId, 'milch_35');
+    expect(cheaper?.proofRef, contains('receipt:'));
+    expect(cheaper?.unit, 'Stück');
+    expect(cheaper?.kind.name, 'regular');
   });
 
   test('assigned product excludes unrelated discounts', () {

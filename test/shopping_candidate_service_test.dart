@@ -311,7 +311,7 @@ void main() {
     expect(candidates.single.quotes, isEmpty);
   });
 
-  test('active offers are ranked before cheaper historical quotes', () {
+  test('a cheaper current receipt outranks an expensive offer', () {
     final candidates = buildShoppingCandidates(
       request: 'Käse',
       catalogProducts: [gouda, edamer],
@@ -343,9 +343,46 @@ void main() {
       now: now,
     );
 
+    expect(candidates.first.product.id, 'edamer');
+    expect(candidates.first.quotes.first.isOffer, isFalse);
+    expect(candidates.first.quotes.first.price, 0.99);
+  });
+
+  test('a cheaper effective offer outranks a historical receipt', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda, edamer],
+      offers: [
+        Offer(
+          id: 'gouda-sale',
+          productId: 'gouda',
+          storeName: 'ALDI Süd',
+          originalPrice: 2,
+          offerPrice: 0.80,
+          couponPercent: 10,
+          validUntil: DateTime(2026, 9, 30),
+        ),
+      ],
+      marketPrices: const [],
+      receiptPriceStats: [
+        ReceiptPriceStat(
+          familyKey: 'kaese',
+          productId: 'edamer',
+          storeName: 'EDEKA',
+          latestPrice: 0.99,
+          latestAt: DateTime(2026, 9, 27),
+          observationCount: 1,
+          medianPrice: 0.99,
+          comparable: true,
+          priceBasis: '250 g',
+        ),
+      ],
+      now: now,
+    );
+
     expect(candidates.first.product.id, 'gouda');
     expect(candidates.first.quotes.first.isOffer, isTrue);
-    expect(candidates.first.quotes.first.price, 1.35);
+    expect(candidates.first.quotes.first.price, 0.72);
   });
 
   test('candidate offer exposes provenance and verified savings', () {

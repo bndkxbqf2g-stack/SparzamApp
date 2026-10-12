@@ -35,7 +35,7 @@ class ShellPriceCoordinator {
     required List<MarketPrice> prices,
     required List<PricePoint> history,
   }) async {
-    await observationStore.append([observationFromMarketPrice(price)]);
+    await observationStore.upsertById([observationFromMarketPrice(price)]);
     final nextPrices = await marketPriceStore.upsert(price, prices);
     final nextHistory = await priceHistoryStore.upsertObservation(
       priceHistoryPoint(price),

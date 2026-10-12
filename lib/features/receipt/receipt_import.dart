@@ -1,5 +1,6 @@
 import '../../models/market_price.dart';
 import '../../models/product.dart';
+import '../../models/price_observation.dart';
 
 class ReceiptImportResult {
   const ReceiptImportResult({required this.prices, required this.unmatchedLines});
@@ -31,8 +32,9 @@ ReceiptImportResult parseReceiptLines({
   final timestamp = now ?? DateTime.now();
   final prices = <MarketPrice>[];
   final unmatched = <String>[];
-  for (final raw in text.split(RegExp(r'\r?\n'))) {
-    final line = raw.trim();
+  final rawLines = text.split(RegExp(r'\r?\n'));
+  for (var lineIndex = 0; lineIndex < rawLines.length; lineIndex++) {
+    final line = rawLines[lineIndex].trim();
     if (line.isEmpty) continue;
     final parsed = _parseReviewedLine(line);
     if (parsed == null) {
@@ -55,6 +57,9 @@ ReceiptImportResult parseReceiptLines({
       price: price,
       updatedAt: timestamp,
       source: MarketPriceSource.receipt,
+      kind: PriceObservationKind.regular,
+      proofRef:
+          'receipt-import:${storeName.trim()}|${timestamp.toIso8601String()}|line:${lineIndex + 1}',
     ));
   }
   return ReceiptImportResult(prices: prices, unmatchedLines: unmatched);

@@ -783,7 +783,11 @@ ProductIdentity identifyProduct(String value) {
     );
   }
   if (_hasCheeseFamilyToken(text)) {
-    return ProductIdentity(familyKey: 'kaese', variant: _cheeseVariant(text));
+    return ProductIdentity(
+      familyKey: 'kaese',
+      variant: _cheeseVariant(text),
+      fatPercent: _percent(text),
+    );
   }
   if (_hasAny(text, const ['piccolinis'])) {
     return const ProductIdentity(familyKey: 'pizza', productType: 'pizza');
@@ -1649,6 +1653,12 @@ String normalizeIdentityText(String value) {
       .replaceAll('û', 'u')
       .replaceAll('î', 'i')
       .replaceAll('ï', 'i')
+      // Product feeds use both comma and dot decimal separators for fat
+      // contents. Preserve a decimal dot before punctuation normalization.
+      .replaceAllMapped(
+        RegExp(r'(?<=\d)\.(?=\d)'),
+        (_) => ',',
+      )
       .replaceAll(RegExp(r'[._/*-]+'), ' ')
       .replaceAll(RegExp(r'\s+'), ' ')
       .trim();
@@ -1952,6 +1962,12 @@ bool _isEggConfectioneryLabel(String text) =>
         ]));
 
 double? _percent(String text) {
+  // OCR can split a decimal digit pair (`3 5 %`) while retailer feeds
+  // commonly use either comma or dot as the separator.
+  final split = RegExp(r'(\d+)\s+(\d)\s*%').firstMatch(text);
+  if (split != null) {
+    return double.tryParse('${split.group(1)}.${split.group(2)}');
+  }
   final match = RegExp(r'(\d+(?:[,.]\d+)?)\s*%').firstMatch(text);
   return match == null
       ? null

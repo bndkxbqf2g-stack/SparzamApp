@@ -1,3 +1,5 @@
+import 'price_observation.dart';
+
 enum MarketPriceSource { receipt, manual, openPrices }
 
 class MarketPrice {
@@ -10,6 +12,12 @@ class MarketPrice {
     this.externalId,
     this.sourceLocationName,
     this.discounted = false,
+    this.proofRef,
+    this.quantity,
+    this.unit,
+    this.unitPrice,
+    this.identityConfidence = 1,
+    this.kind = PriceObservationKind.unknown,
   });
 
   final String productId;
@@ -21,9 +29,25 @@ class MarketPrice {
   final String? sourceLocationName;
   final bool discounted;
 
+  /// Evidence metadata retained when a price is projected from the central
+  /// observation database. Legacy market prices may leave these fields null.
+  final String? proofRef;
+  final double? quantity;
+  final String? unit;
+  final double? unitPrice;
+  final double identityConfidence;
+  final PriceObservationKind kind;
+
   String get key => '$storeName|$productId';
   bool get isManual =>
       source == MarketPriceSource.manual || source == MarketPriceSource.receipt;
+
+  bool get hasComparableBasis =>
+      (quantity == null ||
+          (quantity!.isFinite && quantity! > 0)) &&
+      (unitPrice == null ||
+          (unitPrice!.isFinite && unitPrice! > 0)) &&
+      (quantity == null || unit?.trim().isNotEmpty == true);
 
   bool isUsable({
     required DateTime now,
@@ -38,7 +62,12 @@ class MarketPrice {
     // A future timestamp is invalid evidence for every source. Manual prices
     // are allowed to stay usable indefinitely, but they still cannot describe
     // a price that has not been observed yet.
-    if (observed.isAfter(today)) return false;
+    if (observed.isAfter(today) ||
+        !identityConfidence.isFinite ||
+        identityConfidence < 1 ||
+        !hasComparableBasis) {
+      return false;
+    }
     if (source == MarketPriceSource.manual) return true;
     // Provisional safety window until receipt price stability is measured.
     final maxAgeDays = source == MarketPriceSource.receipt
@@ -83,6 +112,12 @@ class MarketPrice {
         'externalId': externalId,
         'sourceLocationName': sourceLocationName,
         'discounted': discounted,
+        'proofRef': proofRef,
+        'quantity': quantity,
+        'unit': unit,
+        'unitPrice': unitPrice,
+        'identityConfidence': identityConfidence,
+        'kind': kind.name,
       };
 
   factory MarketPrice.fromJson(Map<String, dynamic> json) {
@@ -97,6 +132,14 @@ class MarketPrice {
     final sourceName = json['source'] as String?;
     final matches =
         MarketPriceSource.values.where((item) => item.name == sourceName);
+    final kindName = json['kind'] as String?;
+    final identityConfidence =
+        (json['identityConfidence'] as num?)?.toDouble() ?? 1;
+    if (!identityConfidence.isFinite ||
+        identityConfidence < 0 ||
+        identityConfidence > 1) {
+      throw const FormatException('Ungültige Preisidentität');
+    }
 
     return MarketPrice(
       productId: productId,
@@ -107,6 +150,14 @@ class MarketPrice {
       externalId: (json['externalId'] as num?)?.toInt(),
       sourceLocationName: json['sourceLocationName'] as String?,
       discounted: json['discounted'] as bool? ?? false,
+      proofRef: json['proofRef'] as String?,
+      quantity: (json['quantity'] as num?)?.toDouble(),
+      unit: json['unit'] as String?,
+      unitPrice: (json['unitPrice'] as num?)?.toDouble(),
+      identityConfidence: identityConfidence,
+      kind: kindName == null
+          ? PriceObservationKind.unknown
+          : PriceObservationKind.values.byName(kindName),
     );
   }
 }

@@ -44,11 +44,10 @@ class ShoppingCandidate {
 
   double? get bestPrice {
     final currentQuotes = quotes.where((quote) => !quote.isHistorical);
-    final rankedQuotes = hasOffer
-        ? quotes.where((quote) => quote.isOffer)
-        : currentQuotes.isNotEmpty
-            ? currentQuotes
-            : quotes;
+    // Offers and observed market prices share one current evidence bucket.
+    // The offer is selected only when its effective price is actually lower;
+    // a higher offer must not hide a cheaper receipt price.
+    final rankedQuotes = currentQuotes.isNotEmpty ? currentQuotes : quotes;
     if (rankedQuotes.isEmpty) return null;
     return rankedQuotes.map((quote) => quote.price).reduce(
           (a, b) => a < b ? a : b,
@@ -138,7 +137,11 @@ List<ShoppingCandidate> buildShoppingCandidates({
       ));
     }
     final productStats = (identity.isGeneric
-            ? receiptPriceStats.where((stat) => stat.familyKey == identity.familyKey)
+            ? receiptPriceStats.where(
+                (stat) =>
+                    stat.familyKey == identity.familyKey &&
+                    (stat.productId == null || stat.productId == product.id),
+              )
             : receiptStatsForProduct(product, receiptPriceStats))
         .where(
       (stat) =>
@@ -150,10 +153,13 @@ List<ShoppingCandidate> buildShoppingCandidates({
           _storeEnabled(stat.storeName, enabledStores),
     );
     for (final stat in productStats) {
-      if (quotes.any((quote) =>
-          quote.storeName == stat.storeName && quote.isOffer)) {
-        continue;
-      }
+      final cheaperOfferAlreadyCoversStore = quotes.any(
+        (quote) =>
+            quote.storeName == stat.storeName &&
+            quote.isOffer &&
+            quote.price <= stat.medianPrice,
+      );
+      if (cheaperOfferAlreadyCoversStore) continue;
       quotes.add(ShoppingCandidateQuote(
         storeName: stat.storeName,
         price: stat.medianPrice,
@@ -186,19 +192,21 @@ List<ShoppingCandidate> buildShoppingCandidates({
       coveredStores.add(summary.storeName);
     }
     quotes.sort((a, b) {
-      if (a.isOffer != b.isOffer) return a.isOffer ? -1 : 1;
       if (a.isHistorical != b.isHistorical) return a.isHistorical ? 1 : -1;
       final price = a.price.compareTo(b.price);
-      return price != 0 ? price : a.storeName.compareTo(b.storeName);
+      if (price != 0) return price;
+      if (a.isOffer != b.isOffer) return a.isOffer ? -1 : 1;
+      return a.storeName.compareTo(b.storeName);
     });
     result.add(ShoppingCandidate(product: product, quotes: quotes));
   }
   result.sort((a, b) {
-    if (a.hasOffer != b.hasOffer) return a.hasOffer ? -1 : 1;
     final aPrice = a.bestPrice ?? double.infinity;
     final bPrice = b.bestPrice ?? double.infinity;
     final priceOrder = aPrice.compareTo(bPrice);
-    return priceOrder == 0 ? a.product.name.compareTo(b.product.name) : priceOrder;
+    if (priceOrder != 0) return priceOrder;
+    if (a.hasOffer != b.hasOffer) return a.hasOffer ? -1 : 1;
+    return a.product.name.compareTo(b.product.name);
   });
   return result;
 }

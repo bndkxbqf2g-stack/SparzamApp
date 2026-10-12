@@ -1,5 +1,6 @@
 import '../../models/market_price.dart';
 import '../../models/product.dart';
+import '../../models/price_observation.dart';
 import 'receipt_ledger.dart';
 import 'receipt_milk_assignment.dart';
 
@@ -36,15 +37,25 @@ MarketPrice? assignedReceiptPrice({
   final cents = row.quantity == null ? row.cents : row.unitCents;
   if (cents == null || cents <= 0) return null;
 
+  final discounted = draft.rows.any(
+    (entry) =>
+        entry.kind == ReceiptRowKind.discount &&
+        entry.linkedItemLine == row.line,
+  );
   return MarketPrice(
     productId: product.id,
     storeName: draft.retailer!,
     price: cents / 100,
     updatedAt: draft.receiptDate!,
     source: MarketPriceSource.receipt,
-    discounted: draft.rows.any((entry) =>
-        entry.kind == ReceiptRowKind.discount &&
-        entry.linkedItemLine == row.line),
+    discounted: discounted,
+    kind: discounted
+        ? PriceObservationKind.offer
+        : PriceObservationKind.regular,
+    proofRef: 'receipt:${draft.fingerprint}|line:${row.line}',
+    quantity: row.quantity?.toDouble(),
+    unit: row.quantityUnit,
+    unitPrice: row.unitCents == null ? null : row.unitCents! / 100,
   );
 }
 

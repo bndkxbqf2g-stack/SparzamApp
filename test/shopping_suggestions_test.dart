@@ -1755,4 +1755,48 @@ void main() {
     expect(ids('Kürbis'), ['pumpkin']);
     expect(ids('Hummus'), ['hummus']);
   });
+  test('same product chooses a cheaper prospect offer over a receipt price', () {
+    final current = MarketPrice(
+      productId: regular.id,
+      storeName: 'Lidl',
+      price: 0.79,
+      updatedAt: now,
+      source: MarketPriceSource.receipt,
+    );
+    final expensiveOffer = Offer(
+      id: 'expensive-same-product',
+      productId: regular.id,
+      storeName: 'Lidl',
+      originalPrice: 1.29,
+      offerPrice: 0.99,
+      validUntil: DateTime(2026, 10, 2),
+    );
+    final expensiveHint = shoppingSuggestionPriceForProduct(
+      regular,
+      marketPrices: [current],
+      offers: [expensiveOffer],
+      now: now,
+    );
+    expect(expensiveHint?.isOffer, isFalse);
+    expect(expensiveHint?.price, 0.79);
+
+    final cheapOffer = Offer(
+      id: 'cheap-same-product',
+      productId: regular.id,
+      storeName: 'Lidl',
+      originalPrice: 1.29,
+      offerPrice: 0.69,
+      validUntil: DateTime(2026, 10, 2),
+    );
+    final cheapHint = shoppingSuggestionPriceForProduct(
+      regular,
+      marketPrices: [current],
+      offers: [cheapOffer],
+      now: now,
+    );
+    expect(cheapHint?.isOffer, isTrue);
+    expect(cheapHint?.price, 0.69);
+  });
+
+
 }

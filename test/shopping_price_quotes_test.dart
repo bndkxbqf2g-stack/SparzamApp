@@ -436,4 +436,51 @@ void main() {
     expect(matrix.single.quote?.kind, ShoppingQuoteKind.openPrices);
     expect(matrix.single.quote?.unitPrice, 0.53);
   });
+  test('matrix chooses a prospect offer only when its effective price is lower', () {
+    final current = MarketPrice(
+      productId: milk.id,
+      storeName: 'Lidl',
+      price: 0.79,
+      updatedAt: DateTime(2026, 9, 24),
+      source: MarketPriceSource.receipt,
+    );
+    final expensiveOffer = Offer(
+      id: 'expensive_offer',
+      productId: milk.id,
+      storeName: 'Lidl',
+      originalPrice: 1.29,
+      offerPrice: 0.99,
+      validUntil: DateTime(2026, 9, 30),
+    );
+    final cheapOffer = Offer(
+      id: 'cheap_offer',
+      productId: milk.id,
+      storeName: 'Lidl',
+      originalPrice: 1.29,
+      offerPrice: 0.69,
+      validUntil: DateTime(2026, 9, 30),
+    );
+
+    final expensiveMatrix = shoppingPriceMatrix(
+      item,
+      prices: [current],
+      offers: [expensiveOffer],
+      enabledStores: const ['Lidl'],
+      now: DateTime(2026, 9, 24),
+    );
+    expect(expensiveMatrix.single.quote?.kind, ShoppingQuoteKind.receipt);
+    expect(expensiveMatrix.single.quote?.unitPrice, 0.79);
+
+    final cheapMatrix = shoppingPriceMatrix(
+      item,
+      prices: [current],
+      offers: [cheapOffer],
+      enabledStores: const ['Lidl'],
+      now: DateTime(2026, 9, 24),
+    );
+    expect(cheapMatrix.single.quote?.kind, ShoppingQuoteKind.offer);
+    expect(cheapMatrix.single.quote?.unitPrice, 0.69);
+  });
+
+
 }
