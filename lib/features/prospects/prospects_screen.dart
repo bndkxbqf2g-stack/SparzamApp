@@ -1233,7 +1233,7 @@ class _ProspectViewer extends StatelessWidget {
         children: [
           SizedBox(
             width: double.infinity,
-            height: 360,
+            height: 240,
             child: pageUrl.isEmpty
                 ? const Center(child: Icon(Icons.broken_image_outlined, size: 48))
                 : Image.network(
