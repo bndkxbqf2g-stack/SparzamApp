@@ -53,14 +53,17 @@ privaten Belege, Konten oder Zugangsdaten an diese Quellen übertragen.
 
 - Recherche: [Project-OSRM/osrm-backend](https://github.com/Project-OSRM/osrm-backend)
   (BSD-2-Clause) und die [Table-API](https://project-osrm.org/docs/v5.24.0/api/#table-service).
-- Der bestehende `RoadDistanceService` bleibt die fachliche
-  Distanz-/Fahrtkosten-Schnittstelle; die Routenoptimierung bleibt in
-  `RouteOptimizer`.
-- Die aktuelle App nutzt die öffentliche OSRM-Demo nur best effort. Die
-  Providergrenze bleibt HTTP-Client-injizierbar und liefert bei Timeout,
-  Fehler oder deaktivierter Quelle `null`; gespeicherte Matrix- und
-  Distanzwerte bleiben der Offline-Fallback. Ein eigener OSRM-Host kann ohne
-  Änderung der Optimierungslogik eingesetzt werden.
+- `TravelMatrixProvider` → `RoadDistanceService` liefert getrennt
+  Entfernungen und Matrizen; `RouteOptimizer` bleibt die fachliche
+  Optimierungsquelle.
+- OSRM-/Nominatim-Basis-URLs, HTTP-Client, Timeouts und die Quelle selbst sind
+  injizierbar bzw. über `enabled` abschaltbar. Timeout, HTTP-Fehler und
+  fehlende Geocodes ergeben `null` oder einen validierten lokalen
+  Matrix-Fallback, niemals einen erfundenen Preis.
+- `TravelMatrixCache` nutzt die bestehende lokale
+  `RoadRouteMatrixStore`-Struktur. Die App kann damit offline weiterplanen;
+  ein eigener OSRM-Host kann ohne Änderung der Optimierungslogik eingesetzt
+  werden.
 - OSRM-Code wird nicht kopiert. Für OpenStreetMap-Daten gelten deren
   Quellen-/ODbL-Hinweise; die Anwendung speichert nur die für die lokale
   Route nötigen Distanzwerte.
