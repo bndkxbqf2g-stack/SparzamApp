@@ -12,6 +12,7 @@ PriceObservation observationFromMarketPrice(MarketPrice price) =>
       id: [
         price.source.name,
         price.externalId?.toString() ?? '',
+        price.sourceLocationId ?? '',
         price.productId,
         price.storeName,
         price.updatedAt.toIso8601String(),
@@ -20,6 +21,7 @@ PriceObservation observationFromMarketPrice(MarketPrice price) =>
       ].join('|'),
       productId: price.productId,
       storeName: price.storeName,
+      locationId: price.sourceLocationId,
       region: price.sourceLocationName,
       price: price.price,
       observedAt: price.updatedAt,
@@ -80,6 +82,7 @@ List<MarketPrice> marketPricesFromObservations(
             _ => MarketPriceSource.manual,
           },
           externalId: _openPricesId(entry.proofRef),
+          sourceLocationId: entry.locationId,
           sourceLocationName: entry.region,
           discounted:
               entry.discounted || entry.kind == PriceObservationKind.offer,
