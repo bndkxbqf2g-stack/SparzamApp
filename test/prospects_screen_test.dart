@@ -1176,6 +1176,32 @@ void main() {
       '0,99',
     );
   });
+
+  testWidgets('verwendet für Coverkarten keinen Plattform-View', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: SizedBox(
+          width: 420,
+          height: 820,
+          child: ProspectsScreen(
+            records: [],
+            prospects: [
+              ProspectIssue(
+                storeName: 'Lidl',
+                title: 'Aktionsprospekt',
+                pages: [],
+                thumbnailUrl: 'https://example.test/lidl-cover.png',
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    final image = tester.widget<Image>(find.byType(Image).first);
+    expect(image.webHtmlElementStrategy, WebHtmlElementStrategy.never);
+  });
 }
 
 Future<void> _scrollProspects(
