@@ -27,6 +27,26 @@ List<PriceObservation> datedProspectPriceObservations({
   );
 }
 
+/// Selects only explicitly stated regular prices for automatic persistence.
+///
+/// The feed's offer price remains the current offer surface and is already
+/// persisted through the offer store. Automatic price history must keep the
+/// crossed-out/regular amount separate and must never turn an offer-only
+/// record into a regular market price.
+List<PriceObservation> datedProspectRegularPriceObservations({
+  required Iterable<OfferImportRecord> records,
+  required Iterable<Product> catalogProducts,
+  DateTime? observedAt,
+  Iterable<String>? refreshedStores,
+}) => datedProspectPriceObservations(
+      records: records,
+      catalogProducts: catalogProducts,
+      observedAt: observedAt,
+      refreshedStores: refreshedStores,
+    )
+    .where((entry) => entry.kind == PriceObservationKind.regular)
+    .toList(growable: false);
+
 /// Turns a verified prospect claim into dated price evidence. An unknown or
 /// package-ambiguous label remains historical evidence, not an exact route
 /// price. Both the temporary offer price and a stated regular price are kept.
