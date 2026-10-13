@@ -57,6 +57,42 @@ class OffersScreen extends StatefulWidget {
 class _OffersScreenState extends State<OffersScreen> {
   final searchController = TextEditingController();
   var query = '';
+  List<OfferImportRecord>? _currentRecordsInput;
+  DateTime? _currentRecordsNow;
+  List<OfferImportRecord>? _currentRecordsCache;
+  List<ProspectIssue>? _currentIssuesInput;
+  DateTime? _currentIssuesNow;
+  List<ProspectIssue>? _currentIssuesCache;
+
+  List<OfferImportRecord> _currentRecords() {
+    if (identical(_currentRecordsInput, widget.prospectRecords) &&
+        _currentRecordsNow == widget.now) {
+      return _currentRecordsCache ?? const <OfferImportRecord>[];
+    }
+    final current = currentProspectRecords(
+      widget.prospectRecords,
+      now: widget.now,
+    );
+    _currentRecordsInput = widget.prospectRecords;
+    _currentRecordsNow = widget.now;
+    _currentRecordsCache = current;
+    return current;
+  }
+
+  List<ProspectIssue> _currentIssues() {
+    if (identical(_currentIssuesInput, widget.prospectIssues) &&
+        _currentIssuesNow == widget.now) {
+      return _currentIssuesCache ?? const <ProspectIssue>[];
+    }
+    final current = _currentProspectIssues(
+      widget.prospectIssues,
+      now: widget.now,
+    );
+    _currentIssuesInput = widget.prospectIssues;
+    _currentIssuesNow = widget.now;
+    _currentIssuesCache = current;
+    return current;
+  }
 
   @override
   void initState() {
@@ -74,10 +110,7 @@ class _OffersScreenState extends State<OffersScreen> {
       MaterialPageRoute(
         builder: (_) => ProspectViewerScreen(
           issue: issue,
-          records: currentProspectRecords(
-            widget.prospectRecords,
-            now: widget.now,
-          ),
+          records: _currentRecords(),
           catalogProducts: widget.catalogProducts,
           onAddProduct: widget.onAddToShoppingList,
           now: widget.now,
@@ -89,10 +122,8 @@ class _OffersScreenState extends State<OffersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currentProspectIssues = _currentProspectIssues(
-      widget.prospectIssues,
-      now: widget.now,
-    );
+    final currentRecords = _currentRecords();
+    final currentProspectIssues = _currentIssues();
 
     return Scaffold(
       appBar: AppBar(title: const Text('Angebote'), centerTitle: true),
@@ -154,10 +185,7 @@ class _OffersScreenState extends State<OffersScreen> {
           ),
           const SizedBox(height: 14),
           _ProspectOffers(
-            records: currentProspectRecords(
-              widget.prospectRecords,
-              now: widget.now,
-            ),
+            records: currentRecords,
             issues: widget.prospectIssues,
             query: query,
             catalogProducts: widget.catalogProducts,
