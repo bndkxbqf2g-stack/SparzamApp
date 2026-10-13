@@ -57,6 +57,7 @@ RoutePriceEvidenceSummary summarizeRoutePriceEvidence(
   var offers = 0;
   var receipts = 0;
   var ownPrices = 0;
+  var prospectPrices = 0;
   var openPrices = 0;
   var undocumented = 0;
   DateTime? oldestObservation;
