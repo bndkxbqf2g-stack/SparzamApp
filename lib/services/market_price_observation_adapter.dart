@@ -150,6 +150,18 @@ bool _projectsToLegacyMarketPrice(PriceObservationSource source) =>
     switch (source) {
       PriceObservationSource.manual ||
       PriceObservationSource.receipt ||
-      PriceObservationSource.openPrices => true,
+      PriceObservationSource.openPrices ||
+      PriceObservationSource.retailer ||
+      PriceObservationSource.retailerWebsite ||
+      PriceObservationSource.leaflet => true,
+      _ => false,
+    };
+
+bool _isProspectOffer(PriceObservation observation) =>
+    observation.kind == PriceObservationKind.offer &&
+    switch (observation.source) {
+      PriceObservationSource.retailer ||
+      PriceObservationSource.retailerWebsite ||
+      PriceObservationSource.leaflet => true,
       _ => false,
     };
