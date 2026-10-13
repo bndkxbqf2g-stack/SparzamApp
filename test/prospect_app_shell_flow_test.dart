@@ -425,7 +425,13 @@ void main() {
         scrollable: find.byType(Scrollable).last,
       );
       expect(pagesHeading, findsOneWidget);
-      expect(find.text('Thüngersheim'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byKey(const ValueKey('prospect-viewer-location')),
+          matching: find.text('Thüngersheim'),
+        ),
+        findsOneWidget,
+      );
       await tester.tap(find.text('Artikel von Seite hinzufügen'));
       await tester.pump(const Duration(milliseconds: 500));
 
