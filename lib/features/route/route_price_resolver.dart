@@ -149,7 +149,7 @@ class RoutePriceResolver {
           effectivePrice(offer).finalPrice * _paidUnits(quantity, offer);
       if (price < bestPrice ||
           (price == bestPrice &&
-              (best == null || _compareOfferTie(offer, best!) < 0))) {
+              (best == null || _compareOfferTie(offer, best) < 0))) {
         best = offer;
         bestPrice = price;
       }
@@ -190,9 +190,9 @@ class RoutePriceResolver {
       if (score < bestScore ||
           (score == bestScore &&
               (best == null ||
-                  price.updatedAt.isAfter(best!.updatedAt) ||
-                  (price.updatedAt.isAtSameMomentAs(best!.updatedAt) &&
-                      compareMarketPriceTieBreakers(price, best!) < 0)))) {
+                  price.updatedAt.isAfter(best.updatedAt) ||
+                  (price.updatedAt.isAtSameMomentAs(best.updatedAt) &&
+                      compareMarketPriceTieBreakers(price, best) < 0)))) {
         best = price;
         bestScore = score;
       }
@@ -250,4 +250,5 @@ int _compareOfferText(String? candidate, String? previous) {
   if (previous == null) return -1;
   return candidate.trim().toLowerCase().compareTo(previous.trim().toLowerCase());
 }
+
 
