@@ -59,7 +59,6 @@ class _InMemoryShoppingListStore extends ShoppingListStore {
 
   @override
   Future<void> save(List<ListItem> next) async {
-    debugPrint('TEST_LIST_SAVE ${next.length}');
     items = List<ListItem>.of(next);
   }
 
@@ -419,7 +418,13 @@ void main() {
       final favoriteRect = tester.getRect(favoriteCard);
       await tester.tapAt(favoriteRect.topLeft + const Offset(36, 36));
       await tester.pump(const Duration(milliseconds: 500));
-      expect(find.text('Prospektseiten (1)'), findsOneWidget);
+      final pagesHeading = find.text('Prospektseiten (1)');
+      await tester.scrollUntilVisible(
+        pagesHeading,
+        240,
+        scrollable: find.byType(Scrollable).last,
+      );
+      expect(pagesHeading, findsOneWidget);
       expect(find.text('Thüngersheim'), findsOneWidget);
       await tester.tap(find.text('Artikel von Seite hinzufügen'));
       await tester.pump(const Duration(milliseconds: 500));
