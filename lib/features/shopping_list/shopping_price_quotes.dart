@@ -70,6 +70,15 @@ class ShoppingQuote {
     return 'Grundpreis ${_money(price)} €/${normalized.baseUnit}';
   }
 
+  /// Describes whether the visible price has an explicit package basis.
+  /// Legacy observations may still be usable for the exact product identity,
+  /// but they must not look fully unit-comparable when that basis is absent.
+  String get comparabilityLabel {
+    if (isHistorical) return 'Vergleichbarkeit: historische Orientierung';
+    if (packageLabel != null) return 'Vergleichbarkeit: Packungsbasis belegt';
+    return 'Vergleichbarkeit: Mengenbasis nicht dokumentiert';
+  }
+
   String get sourceLabel => switch (kind) {
     ShoppingQuoteKind.receipt =>
       '${isHistorical ? 'Historischer ' : ''}Bonpreis vom ${_date(observedAt!)}',

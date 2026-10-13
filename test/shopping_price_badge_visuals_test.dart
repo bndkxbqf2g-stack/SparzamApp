@@ -86,6 +86,10 @@ void main() {
     await tester.tap(find.textContaining('Open Prices Lidl: 2,49 €'));
     await tester.pumpAndSettle();
     expect(find.textContaining('Packung 500 g'), findsOneWidget);
+    expect(
+      find.textContaining('Vergleichbarkeit: Packungsbasis belegt'),
+      findsOneWidget,
+    );
     expect(find.textContaining('Grundpreis 4,98 €/kg'), findsNWidgets(2));
   });
   testWidgets('Preisfenster zeigt Produktbild und Angebotsbild', (
