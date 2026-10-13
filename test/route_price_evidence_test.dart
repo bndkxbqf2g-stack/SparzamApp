@@ -27,16 +27,10 @@ void main() {
   );
 
   test('zeigt Angebotsquelle und vollständige Gültigkeit', () {
-    const product = Product(
-      id: 'milk',
-      name: 'Milch',
-      unit: '1 l',
-      group: 'milch',
-    );
     // The resolver correctly keeps an unproven external offer out of a
     // current route. The evidence label still needs to render that state for
     // a quote that was already selected by an older or manual flow.
-    const quote = RoutePriceQuote(
+    final quote = RoutePriceQuote(
       unitPrice: 0.89,
       total: 0.89,
       regularTotal: 1.29,
