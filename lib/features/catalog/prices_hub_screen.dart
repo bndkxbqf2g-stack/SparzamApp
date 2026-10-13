@@ -174,7 +174,7 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
         const Center(child: Text('Transparenz schafft echte Ersparnis.')),
         const SizedBox(height: 20),
         if (snapshots.isEmpty)
-          _EmptyListCard(screen.onOpenList: screen.onOpenList)
+          _EmptyListCard(onOpenList: screen.onOpenList)
         else
           _ListCoverageCard(
             current: current,
@@ -183,8 +183,8 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
             missing: missing,
             coverage: coverage,
             orientingTotal: orientingTotal,
-            screen.onOpenList: screen.onOpenList,
-            screen.onOpenRoute: screen.onOpenRoute,
+            onOpenList: screen.onOpenList,
+            onOpenRoute: screen.onOpenRoute,
           ),
         if (snapshots.isNotEmpty && current > 0) ...[
           const SizedBox(height: 16),
@@ -221,14 +221,14 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
           ),
           const SizedBox(height: 10),
           _PriceComparisonList(
-            screen.shoppingList: screen.shoppingList,
+            shoppingList: screen.shoppingList,
             prices: screen.marketPrices,
-            screen.offers: screen.offers,
-            screen.enabledStoreNames: screen.enabledStoreNames,
-            screen.openPricesMaxAgeDays: screen.openPricesMaxAgeDays,
-            screen.prospectPriceHistory: screen.prospectPriceHistory,
-            screen.onResolvePriceGap: screen.onResolvePriceGap,
-            screen.now: screen.now,
+            offers: screen.offers,
+            enabledStoreNames: screen.enabledStoreNames,
+            openPricesMaxAgeDays: screen.openPricesMaxAgeDays,
+            prospectPriceHistory: screen.prospectPriceHistory,
+            onResolvePriceGap: screen.onResolvePriceGap,
+            now: screen.now,
           ),
         ],
         if (snapshots.isNotEmpty && missing > 0) ...[
