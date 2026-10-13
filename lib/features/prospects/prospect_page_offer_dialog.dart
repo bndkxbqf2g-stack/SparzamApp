@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'prospect_page_ocr.dart';
 
 class ProspectPageOfferDraft {
   const ProspectPageOfferDraft({
@@ -17,18 +18,24 @@ class ProspectPageOfferDraft {
 Future<ProspectPageOfferDraft?> showProspectPageOfferDialog(
   BuildContext context, {
   DateTime? initialValidUntil,
+  ProspectPageOcrCandidate? initialCandidate,
 }) =>
     showDialog<ProspectPageOfferDraft>(
       context: context,
       builder: (_) => _ProspectPageOfferDialog(
         initialValidUntil: initialValidUntil,
+        initialCandidate: initialCandidate,
       ),
     );
 
 class _ProspectPageOfferDialog extends StatefulWidget {
-  const _ProspectPageOfferDialog({this.initialValidUntil});
+  const _ProspectPageOfferDialog({
+    this.initialValidUntil,
+    this.initialCandidate,
+  });
 
   final DateTime? initialValidUntil;
+  final ProspectPageOcrCandidate? initialCandidate;
 
   @override
   State<_ProspectPageOfferDialog> createState() =>
@@ -47,9 +54,18 @@ class _ProspectPageOfferDialogState extends State<_ProspectPageOfferDialog> {
   @override
   void initState() {
     super.initState();
-    _labelController = TextEditingController();
-    _offerController = TextEditingController();
-    _originalController = TextEditingController();
+    final candidate = widget.initialCandidate;
+    _labelController = TextEditingController(
+      text: candidate?.productLabel ?? '',
+    );
+    _offerController = TextEditingController(
+      text: candidate == null ? '' : _prefillPrice(candidate.offerPrice),
+    );
+    _originalController = TextEditingController(
+      text: candidate?.originalPrice == null
+          ? ''
+          : _prefillPrice(candidate!.originalPrice!),
+    );
     final today = DateUtils.dateOnly(DateTime.now());
     final initial = widget.initialValidUntil == null
         ? null
@@ -129,10 +145,18 @@ class _ProspectPageOfferDialogState extends State<_ProspectPageOfferDialog> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text(
-                  'Bitte die Angaben aus der Seite prüfen. Der Seitenlink '
-                  'wird als Nachweis am Angebot gespeichert.',
-                ),
+                if (widget.initialCandidate == null)
+                  const Text(
+                    'Bitte die Angaben aus der Seite prüfen. Der Seitenlink '
+                    'wird als Nachweis am Angebot gespeichert.',
+                  )
+                else
+                  Text(
+                    'Lokaler OCR-Vorschlag · '
+                    '${prospectPageOcrConfidenceLabel(widget.initialCandidate!.confidence)}. '
+                    'Bitte Bezeichnung und Preise vor dem Speichern prüfen.',
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
                 const SizedBox(height: 14),
                 TextFormField(
                   controller: _labelController,
@@ -220,6 +244,9 @@ class _ProspectPageOfferDialogState extends State<_ProspectPageOfferDialog> {
       );
 
 }
+
+String _prefillPrice(double value) =>
+    value.toStringAsFixed(2).replaceAll('.', ',');
 
 String _formatDate(DateTime date) =>
     '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}';

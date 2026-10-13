@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/prospects/prospects_screen.dart';
+import 'package:sparzamapp/features/prospects/prospect_page_ocr.dart';
 import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/offer.dart';
@@ -949,6 +950,11 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Seite 1'), findsOneWidget);
     expect(find.text('Seite 99'), findsNothing);
+    await tester.scrollUntilVisible(
+      find.text('Aktueller Kaffee'),
+      500,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Aktueller Kaffee'), findsOneWidget);
     expect(find.text('Alter Kaffee'), findsNothing);
   });
@@ -1042,6 +1048,73 @@ void main() {
     expect(find.text('Filialstraße 1, 97291 Filialstadt'), findsOneWidget);
     expect(find.text('Quellstadt'), findsNothing);
   });
+
+  testWidgets('übernimmt einen geprüften OCR-Vorschlag in das Seitenformular', (
+    tester,
+  ) async {
+    final validUntil = DateTime.now().add(const Duration(days: 1));
+    Product? added;
+    Offer? saved;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectViewerScreen(
+          issue: ProspectIssue(
+            storeName: 'Netto',
+            title: 'Aktionsprospekt',
+            pages: const [
+              ProspectPage(
+                number: 1,
+                imageUrl: 'https://example.test/netto/page-1.png',
+              ),
+            ],
+            validFrom: DateTime(2026, 10, 12),
+            validUntil: validUntil,
+          ),
+          records: const [],
+          catalogProducts: const [],
+          onAddProduct: (product) => added = product,
+          onSaveOffer: (offer) async {
+            saved = offer;
+            return [offer];
+          },
+          ocrRunner: (_) async => ProspectPageOcrResult(
+            status: ProspectPageOcrStatus.ready,
+            message: '1 Vorschlag gefunden.',
+            candidates: const [
+              ProspectPageOcrCandidate(
+                productLabel: 'Käsesticks 300 g',
+                offerPrice: 2.49,
+                originalPrice: 3.99,
+                confidence: ProspectPageOcrConfidence.medium,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Seite per OCR prüfen'));
+    await tester.pump();
+    expect(find.textContaining('Lokaler OCR-Vorschlag'), findsOneWidget);
+
+    final fields = find.byType(TextFormField);
+    expect(
+      tester.widget<TextFormField>(fields.at(0)).controller!.text,
+      'Käsesticks 300 g',
+    );
+    expect(
+      tester.widget<TextFormField>(fields.at(1)).controller!.text,
+      '2,49',
+    );
+    await tester.tap(find.widgetWithText(FilledButton, 'Artikel hinzufügen'));
+    await tester.pump();
+
+    expect(saved, isNotNull);
+    expect(saved!.source, 'leaflet');
+    expect(added, isNotNull);
+    expect(added!.name, 'Käsesticks 300 g');
+  });
 }
 
 Future<void> _scrollProspects(
@@ -1054,6 +1127,8 @@ Future<void> _scrollProspects(
   );
   await tester.drag(scrollable.first, Offset(0, -distance));
   await tester.pumpAndSettle();
+
+
 }
 
 
