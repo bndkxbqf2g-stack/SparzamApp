@@ -1,5 +1,14 @@
 # SparzamApp
 
+## Update 13.10.2026 – Open-Prices-Filialkontext gegen widersprüchliche Quelldaten geschützt
+- Liefert Open Prices eine konfigurierte Filial-ID, wird der Datensatz zusätzlich
+  gegen Stadt, Postleitzahl und ein ausdrücklich erkanntes Händlerlabel geprüft.
+- Widersprüchliche Kontextdaten werden verworfen, statt den Preis trotz passender
+  ID dem falschen Markt zuzuordnen. Unbekannte Provider-IDs bleiben beim bereits
+  vorhandenen konservativen Stadt-/Händler-Fallback.
+- Zwei Regressionen decken eine falsche Stadt und einen falschen Händler bei
+  identischer Filial-ID ab; Preisquelle, Cache und Veraltung bleiben unverändert.
+
 ## Update 13.10.2026 – Prospektseiten trotz CDN-CORS sichtbar
 - Verifizierte Prospektseiten verwenden im Viewer weiterhin die begrenzte
   Vorschaugröße 720×480, dürfen bei fehlenden Canvas-CORS-Headern aber auf den
