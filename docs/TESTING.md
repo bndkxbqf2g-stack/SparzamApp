@@ -324,6 +324,7 @@ Die Feed- und Produkt-Discovery-Regressionen prüfen, dass deaktivierte externe
 Quellen keinen Request erzeugen und ausschließlich lokale Daten verwenden.
 
 Der automatische Prospektpreis-Lernpfad wird mit einer anonymen Fixture geprüft: Eine Zeile mit originalPrice erzeugt genau eine reguläre Beobachtung, eine offer-only Zeile erzeugt keine automatische reguläre Beobachtung. Die bestehende prospectPriceObservations-Regression bleibt zusätzlich erhalten, damit Angebots- und Normalpreis als getrennte fachliche Evidenz modelliert bleiben.
+Die Shell-Regression wechselt zwischen Prospekte und Liste und prüft, dass der Suchtext im gemounteten Prospektreiter erhalten bleibt.
 ## Abschlussgate
 
 - `flutter analyze` grün.
