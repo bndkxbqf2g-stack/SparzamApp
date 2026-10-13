@@ -414,7 +414,7 @@ class _RouteScreenState extends State<RouteScreen> {
             child: Text(
               widget.mobility.mode == MobilityMode.car
                   ? '${optimizedTravel.usesRoadMatrix ? 'Fahrtkosten: optimierte Mehrmarkt-Straßenroute × '
-                                  '${widget.mobility.effectiveEuroPerKm.toStringAsFixed(2)} €/km.' : 'Fahrtkosten: aktuell '
+                                  '${widget.mobility.effectiveEuroPerKm.toStringAsFixed(2)} €/km (aus ${widget.mobility.fuelConsumptionLitersPer100Km.toStringAsFixed(1)} l/100 km × ${widget.mobility.fuelPricePerLiter.toStringAsFixed(2)} €/l).' : 'Fahrtkosten: aktuell '
                                   '${widget.mobility.effectiveEuroPerKm.toStringAsFixed(2)} €/km '
                                   'auf Basis der hinterlegten Fallback-Distanzen.'}'
                         '${widget.mobility.timeValuePerHour > 0 ? ' Zeitwert: ${widget.mobility.timeValuePerHour.toStringAsFixed(2)} €/Std. '
