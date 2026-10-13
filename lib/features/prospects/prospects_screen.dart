@@ -328,41 +328,37 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
             if (!hasSelection && visibleProspects.isNotEmpty)
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                sliver: SliverLayoutBuilder(
-                  builder: (context, constraints) {
-                    final columns =
-                        constraints.crossAxisExtent >= 650 ? 3 : 2;
-                    return SliverGrid(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final issue = visibleProspects[index];
-                          return _ProspectCard(
-                            issue: issue,
-                            compact: true,
-                            showLocation: false,
-                            showSummary: true,
-                            isFavorite: _isFavorite(issue),
-                            onToggleFavorite: () =>
-                                _toggleFavorite(issue.storeName),
-                            onTap: () => _openProspect(
-                              context,
-                              issue,
-                              currentRecords,
-                            ),
-                          );
-                        },
-                        childCount: visibleProspects.length,
-                        addAutomaticKeepAlives: false,
-                        addRepaintBoundaries: true,
-                      ),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: columns,
-                        mainAxisExtent: 300,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 14,
-                      ),
-                    );
-                  },
+                sliver: SliverGrid(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final issue = visibleProspects[index];
+                      return _ProspectCard(
+                        issue: issue,
+                        compact: true,
+                        showLocation: false,
+                        showSummary: true,
+                        isFavorite: _isFavorite(issue),
+                        onToggleFavorite: () =>
+                            _toggleFavorite(issue.storeName),
+                        onTap: () => _openProspect(
+                          context,
+                          issue,
+                          currentRecords,
+                        ),
+                      );
+                    },
+                    childCount: visibleProspects.length,
+                    addAutomaticKeepAlives: false,
+                    addRepaintBoundaries: true,
+                  ),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: MediaQuery.sizeOf(context).width >= 650
+                        ? 3
+                        : 2,
+                    mainAxisExtent: 300,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 14,
+                  ),
                 ),
               ),
             if (query.trim().isEmpty && visibleProspects.isNotEmpty)
