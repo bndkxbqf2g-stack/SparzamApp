@@ -174,7 +174,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
               const SliverToBoxAdapter(
                 child: SizedBox(
                   key: ValueKey('prospect-grid'),
-                  height: 0,
+                  height: 1,
                 ),
               ),
             if (hasSelection)
