@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 
 import '../receipt/receipt_ocr.dart';
-import 'prospect_feed_service.dart';
+import '../../services/prospect_feed_service.dart';
 
 /// The OCR result is deliberately separate from [OfferImportRecord]. OCR is a
 /// suggestion only and must pass the existing page-offer review before it can
