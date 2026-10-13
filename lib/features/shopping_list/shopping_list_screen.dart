@@ -632,6 +632,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       ],
     );
   }
+}
+
 class _ProgressiveShoppingGroups extends StatefulWidget {
   const _ProgressiveShoppingGroups({
     required this.entries,
