@@ -109,6 +109,7 @@ void main() {
           sourceId: 'kaufland-1',
           productLabel: 'Kaffee 500 g',
           storeName: 'Kaufland',
+          originalPrice: 7.99,
           offerPrice: 4.99,
           validUntil: DateTime(2026, 10, 7),
           proofRef: 'leaflet:kaufland:2026-10-11:p3',
@@ -146,6 +147,7 @@ void main() {
     );
     expect(kaufland.structuredOfferCount, 1);
     expect(kaufland.offerProofCount, 1);
+    expect(kaufland.regularPriceCount, 1);
   });
 
   test('counts a validated cover fallback as one image page', () {
@@ -219,6 +221,7 @@ void main() {
     expect(find.text('ALDI Süd'), findsOneWidget);
     expect(find.textContaining('1 strukturierte Angebote'), findsOneWidget);
     expect(find.textContaining('0/1 Nachweise'), findsOneWidget);
+    expect(find.textContaining('0/1 Normalpreise'), findsOneWidget);
     expect(find.text('aktuell'), findsOneWidget);
   });
 
