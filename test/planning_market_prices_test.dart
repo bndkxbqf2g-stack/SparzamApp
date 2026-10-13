@@ -4,6 +4,7 @@ import 'package:sparzamapp/features/shopping_list/shopping_price_quotes.dart';
 import 'package:sparzamapp/features/route/route_price_resolver.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
+import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/store.dart';
 
