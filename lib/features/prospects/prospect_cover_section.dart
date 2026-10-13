@@ -319,7 +319,9 @@ class ProspectCoverCard extends StatelessWidget {
                 top: imageHeight + 8,
                 right: compact ? 8 : 10,
                 child: IconButton(
-                  key: ValueKey('offer-cover-favorite-${issue.storeName}'),
+                  key: ValueKey(
+                    'offer-cover-favorite-$scope-${issue.storeName}',
+                  ),
                   tooltip: isFavorite
                       ? '${issue.storeName} aus Favoriten entfernen'
                       : '${issue.storeName} zu Favoriten hinzufügen',
