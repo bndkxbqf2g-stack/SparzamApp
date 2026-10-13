@@ -1516,7 +1516,7 @@ class ProspectViewerScreen extends StatelessWidget {
           child: ListView.separated(
             shrinkWrap: true,
             itemCount: candidates.length,
-            separatorBuilder: (_, __) => const Divider(height: 1),
+            separatorBuilder: (context, index) => const Divider(height: 1),
             itemBuilder: (context, index) {
               final candidate = candidates[index];
               final offer = _ocrCandidatePrice(candidate.offerPrice);
