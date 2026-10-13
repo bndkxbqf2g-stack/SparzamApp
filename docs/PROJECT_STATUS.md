@@ -1,3 +1,10 @@
+## Update 13.10.2026 – Einkaufslisten- und Startplanung sichtbar abgeschlossen
+
+- Die Einkaufsliste zeigt oberhalb der Positionen jetzt die aktuelle Preisabdeckung mit getrennten Zählungen für aktuelle, historische und unbekannte Werte.
+- Der angezeigte Warenkorbwert summiert ausschließlich aktuelle, routenfähige Preisbelege; historische Orientierung und fehlende Preise werden nicht als 0 € eingerechnet.
+- Der Start-Reiter zeigt den bereits berechneten Routenplan mit Händlerreihenfolge, Mobilität, Fahrtzeit, bestätigter Monatserparnis und Budgetprognose. Der Statusblock öffnet direkt die Route.
+- Die Änderungen sind in PR #309 und PR #310 enthalten. Für Merge-SHA 9a7025cf7087b7c454c35820668df34bd335da8d waren Flutter CI 38437423865 und Release artifacts 38437424141 erfolgreich; Web-Deployment und Android-APK wurden erstellt.
+
 # SparzamApp
 
 ## Update 13.10.2026 – Coverkarten im Angebote-Reiter
