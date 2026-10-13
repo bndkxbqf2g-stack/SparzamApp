@@ -444,3 +444,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Der Route-Reiter cached den Optimierungs-Snapshot über stabile Eingabereferenzen und invalidiert bei Daten- oder Tageswechsel.
 - [x] Preisabdeckung, Mindestvorteil, Fahrtkosten und Marktanzahl werden weiterhin ausschließlich vom bestehenden `RouteOptimizer` berechnet.
 - [x] Der Performance-Block ändert keine Preisquelle und führt keine zusätzlichen Netzwerkanfragen ein.
+
+
+## Update 14.10.2026 – Lange Einkaufslisten beschleunigen
+- [x] Warengruppen werden im Einkaufsliste-Reiter seitenweise aufgebaut; zusätzliche Gruppen bleiben über „Weitere Warengruppen laden“ erreichbar.
+- [x] Der bestehende Preis-, Angebots- und Kaufaktionsfluss wird unverändert an jede Gruppe weitergegeben.
+- [x] Die neue Begrenzung ist lokal und reversibel und erzeugt keine zusätzlichen Datenabrufe.

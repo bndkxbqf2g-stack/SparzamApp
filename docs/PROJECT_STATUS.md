@@ -3179,3 +3179,10 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - [x] Eine neue Preis-/Angebotsreferenz, ein neuer Streckenstand oder ein Tageswechsel invalidiert den Snapshot; dadurch bleiben Angebotsgültigkeit und Preisalter korrekt.
 - [x] Die Optimierungsfachlogik bleibt unverändert; nur die wiederholte Konstruktion bei UI-Rebuilds entfällt.
 - [x] Die bestehende Route-Planungs-Cache-Regression bleibt die fachliche Absicherung der stabilen Ergebniswiederverwendung.
+
+
+## Update 14.10.2026 – Einkaufsliste mit vielen Warengruppen schrittweise rendern
+- [x] Der Listen-Reiter baut zunächst acht Warengruppen und lädt weitere Gruppen über eine sichtbare Aktion nach.
+- [x] Gruppenreihenfolge, Artikel, Preisbelege, Angebote und Kaufaktionen bleiben unverändert; nur der Renderumfang des ersten Frames ist begrenzt.
+- [x] Der Offscreen-Scrollcache der langen Liste ist deaktiviert, damit weniger nicht sichtbare Karten vorgebaut werden.
+- [x] Widgetregression prüft das Nachladen der neunten Gruppe.

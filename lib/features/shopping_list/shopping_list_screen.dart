@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
@@ -483,6 +484,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       children: [
         Expanded(
           child: ListView(
+            scrollCacheExtent: ScrollCacheExtent.pixels(0),
             padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
             children: [
               ShoppingListHeader(
@@ -596,11 +598,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   widget.onClearPurchased(purchased);
                 },
               ),
+
               if (widget.items.isEmpty)
                 const EmptyShoppingListCard()
               else
-                for (final entry in orderedGroups(grouped)) ...[
-                  ShoppingGroupCard(
+                _ProgressiveShoppingGroups(
+                  entries: orderedGroups(grouped),
+                  itemBuilder: (entry) => ShoppingGroupCard(
+                    key: ValueKey('shopping-group-${entry.key}'),
                     group: entry.key,
                     items: entry.value,
                     checkedProductIds: checkedProductIds,
@@ -620,10 +625,65 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     tileView: tileView,
                     onOpenOffer: openOffer,
                   ),
-                ],
+                ),
             ],
           ),
         ),
+      ],
+    );
+  }
+}
+
+class _ProgressiveShoppingGroups extends StatefulWidget {
+  const _ProgressiveShoppingGroups({
+    required this.entries,
+    required this.itemBuilder,
+  });
+
+  static const pageSize = 8;
+
+  final List<MapEntry<String, List<ListItem>>> entries;
+  final Widget Function(MapEntry<String, List<ListItem>> entry) itemBuilder;
+
+  @override
+  State<_ProgressiveShoppingGroups> createState() =>
+      _ProgressiveShoppingGroupsState();
+}
+
+class _ProgressiveShoppingGroupsState
+    extends State<_ProgressiveShoppingGroups> {
+  var _visibleCount = _ProgressiveShoppingGroups.pageSize;
+
+  void _showMore() {
+    setState(() {
+      final nextCount =
+          _visibleCount + _ProgressiveShoppingGroups.pageSize;
+      _visibleCount = nextCount > widget.entries.length
+          ? widget.entries.length
+          : nextCount;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final visibleEntries = widget.entries.take(_visibleCount);
+    return Column(
+      children: [
+        for (final entry in visibleEntries)
+          widget.itemBuilder(entry),
+        if (_visibleCount < widget.entries.length)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: OutlinedButton.icon(
+              key: const ValueKey('shopping-groups-load-more'),
+              onPressed: _showMore,
+              icon: const Icon(Icons.expand_more),
+              label: Text(
+                'Weitere ${widget.entries.length - _visibleCount} '
+                'Warengruppen laden',
+              ),
+            ),
+          ),
       ],
     );
   }
