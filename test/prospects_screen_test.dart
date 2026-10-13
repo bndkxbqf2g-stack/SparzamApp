@@ -950,6 +950,11 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Seite 1'), findsOneWidget);
     expect(find.text('Seite 99'), findsNothing);
+    await tester.scrollUntilVisible(
+      find.text('Aktueller Kaffee'),
+      500,
+      scrollable: find.byKey(const ValueKey('prospect-viewer-scroll')),
+    );
     expect(find.text('Aktueller Kaffee'), findsOneWidget);
     expect(find.text('Alter Kaffee'), findsNothing);
   });
