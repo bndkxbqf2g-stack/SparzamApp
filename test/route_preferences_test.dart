@@ -59,6 +59,7 @@ void main() {
     validFrom: DateTime(2026, 9, 25),
     validUntil: DateTime(2026, 9, 26),
     source: 'leaflet',
+    proofRef: 'leaflet://lidl-milk-stop-cost',
   );
 
   RouteOptimizer stopCostOptimizer(
@@ -158,6 +159,7 @@ void main() {
         validFrom: DateTime(2026, 9, 25),
         validUntil: DateTime(2026, 9, 26),
         source: 'leaflet',
+        proofRef: 'leaflet://lidl-milk-special',
       );
 
       final withoutTravel = RouteOptimizer(
@@ -202,6 +204,7 @@ void main() {
           validFrom: DateTime(2026, 9, 25),
           validUntil: DateTime(2026, 9, 26),
           source: 'leaflet',
+          proofRef: 'leaflet://lidl-milk-time-value',
         ),
       ],
       now: DateTime(2026, 9, 25),
@@ -418,3 +421,4 @@ void main() {
     expect(optimizer.alternatives().first.stores.single.name, 'EDEKA');
   });
 }
+
