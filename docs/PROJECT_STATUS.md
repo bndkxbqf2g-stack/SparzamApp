@@ -3172,3 +3172,10 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - [x] Die Auflösung verwendet weiterhin `PriceGapPriority` mit exakter Listenposition und sichtbarer Zahl fehlender Märkte; kein Preis wird geschätzt.
 - [x] Der Shell-Callback nutzt denselben Editorpfad wie Einkaufsliste und Route.
 - [x] Widgetregression prüft Produktidentität und Marktanzahl des übergebenen Datenlückenobjekts.
+
+
+## Update 13.10.2026 – Routenoptimierer bei stabilen UI-Rebuilds wiederverwenden
+- [x] Der Route-Reiter hält den `RouteOptimizer` für unveränderte Listen-, Angebots-, Preis-, Mobilitäts- und Streckenreferenzen wieder.
+- [x] Eine neue Preis-/Angebotsreferenz, ein neuer Streckenstand oder ein Tageswechsel invalidiert den Snapshot; dadurch bleiben Angebotsgültigkeit und Preisalter korrekt.
+- [x] Die Optimierungsfachlogik bleibt unverändert; nur die wiederholte Konstruktion bei UI-Rebuilds entfällt.
+- [x] Die bestehende Route-Planungs-Cache-Regression bleibt die fachliche Absicherung der stabilen Ergebniswiederverwendung.
