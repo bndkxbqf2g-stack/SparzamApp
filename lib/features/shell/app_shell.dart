@@ -179,11 +179,15 @@ class _AppShellState extends State<AppShell> {
   // backup, offer refresh, list save, and price sync from interleaving writes
   // to the same local preference store.
   final _persistenceSaves = SequentialWriteQueue();
+  // Interactive list writes must not wait behind a slow startup migration or
+  // a feed refresh. The list store serializes its own writes, while backup
+  // import remains on the coordinated persistence queue above.
+  final _shoppingListPersistence = SequentialWriteQueue();
   // Receipt reinterpretation is a startup migration over separate receipt
   // and price-observation keys. Keep it off the interactive list/offer queue
   // so a slow local migration cannot delay a user's first add action.
   final _backgroundSaves = SequentialWriteQueue();
-  SequentialWriteQueue get _shoppingListSaves => _persistenceSaves;
+  SequentialWriteQueue get _shoppingListSaves => _shoppingListPersistence;
   SequentialWriteQueue get _offerSaves => _persistenceSaves;
   SequentialWriteQueue get _priceSaves => _persistenceSaves;
   bool _purchaseInProgress = false;
