@@ -21,6 +21,13 @@ enum ProspectPageOcrConfidence {
   low,
 }
 
+String prospectPageOcrConfidenceLabel(ProspectPageOcrConfidence confidence) =>
+    switch (confidence) {
+      ProspectPageOcrConfidence.high => 'HOHE SICHERHEIT',
+      ProspectPageOcrConfidence.medium => 'MITTLERE SICHERHEIT',
+      ProspectPageOcrConfidence.low => 'NIEDRIGE SICHERHEIT',
+    };
+
 class ProspectPageOcrCandidate {
   const ProspectPageOcrCandidate({
     required this.productLabel,
