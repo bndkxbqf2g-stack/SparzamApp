@@ -822,10 +822,7 @@ class _ProspectCard extends StatelessWidget {
         : Image.network(
             previewUrl,
             key: ValueKey(
-              'prospect-cover-image-' +
-                  (compact ? 'grid' : 'favorite') +
-                  '-' +
-                  issue.storeName,
+              'prospect-cover-image-\${compact ? "grid" : "favorite"}-\${issue.storeName}',
             ),
             // Keep the overview cheap: a platform view for every cover makes
             // the horizontal rail and grid jank on Flutter web.
