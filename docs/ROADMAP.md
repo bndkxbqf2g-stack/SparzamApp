@@ -66,6 +66,9 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 - [x] Konkrete Produktzuordnung in Such- und Seitenlisten je sichtbarem
   Angebotsdatensatz memoisiert, damit große Prospekte beim Scrollen keine
   wiederholte Identitätsauflösung ausführen.
+- [x] Feednormalisierung, Kategorien und sichtbare Filialkarten zwischen
+  Suche-/Favoriten-Rebuilds wiederverwenden, solange der Eingabesnapshot gleich
+  bleibt.
 - [x] Bildseiten ermöglichen eine geprüfte manuelle Artikelübernahme mit
   Seitenlink, Preis, Gültigkeitsende und bestehender Filialprovenienz.
 
