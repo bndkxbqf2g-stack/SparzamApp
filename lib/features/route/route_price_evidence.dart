@@ -121,6 +121,7 @@ class RoutePriceEvidenceSummary {
   final int offers;
   final int receipts;
   final int ownPrices;
+  final int prospectPrices;
   final int openPrices;
   final int undocumented;
   final DateTime? oldestObservation;
