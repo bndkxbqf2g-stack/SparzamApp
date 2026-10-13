@@ -144,7 +144,7 @@ void main() {
       );
       expect(input, findsOneWidget);
       await tester.enterText(input, 'Testartikel');
-      tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pump();
 
       gate.complete([
@@ -372,3 +372,4 @@ void main() {
     },
   );
 }
+
