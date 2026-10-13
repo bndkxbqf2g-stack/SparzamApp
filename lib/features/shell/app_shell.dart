@@ -374,20 +374,30 @@ class _AppShellState extends State<AppShell> {
     if (mounted) setState(() {});
 
     try {
-      // Render a validated local snapshot first. The normal request still
-      // follows immediately and replaces it when a newer public feed arrives.
+      // Start the local snapshot and the normal refresh together. A slow
+      // asset/cache read must never delay the first live result.
+      var networkFeedShown = false;
       if (preferCached) {
-        final cached = await prospectImportModule.executeCached(
-          startAddress: mobility.startAddress,
-        );
-        if (_isCurrentDataRevision(revision) && cached != null) {
-          _showProspectFeed(cached);
-        }
+        unawaited(() async {
+          try {
+            final cached = await prospectImportModule.executeCached(
+              startAddress: mobility.startAddress,
+            );
+            if (!networkFeedShown &&
+                _isCurrentDataRevision(revision) &&
+                cached != null) {
+              _showProspectFeed(cached);
+            }
+          } catch (_) {
+            // The normal refresh below remains the source of truth.
+          }
+        }());
       }
 
       final feed = await prospectImportModule.execute(
         startAddress: mobility.startAddress,
       );
+      networkFeedShown = true;
       if (!_isCurrentDataRevision(revision)) return;
       _showProspectFeed(feed);
 
