@@ -63,9 +63,10 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
   mit Zeitraum, Seite und exakter Filiale anzeigen.
 - [ ] Prospektfeed weiter auf vollständige Artikelbilder, Kategorien,
   Filialbezug und belastbare Gültigkeit ausbauen.
-- [x] Konkrete Produktzuordnung in Such- und Seitenlisten je sichtbarem
-  Angebotsdatensatz memoisiert, damit große Prospekte beim Scrollen keine
-  wiederholte Identitätsauflösung ausführen.
+- [x] Konkrete Produktzuordnung in Such-, Seiten- und erweiterten
+  Händler-/Kategoriegruppen je sichtbarem Angebotsdatensatz memoisiert, damit
+  große Prospekte und der Angebote-Reiter keine wiederholte
+  Identitätsauflösung ausführen.
 - [x] Feednormalisierung, Kategorien und sichtbare Filialkarten zwischen
   Suche-/Favoriten-Rebuilds wiederverwenden, solange der Eingabesnapshot gleich
   bleibt.
