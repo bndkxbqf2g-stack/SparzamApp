@@ -23,7 +23,7 @@ jobs:
       - name: Run tests
         # Keep a broken widget test from holding the entire CI job open while
         # still running the complete suite and reporting the test name.
-        run: flutter test --timeout 30s
+        run: timeout --signal=TERM 5m flutter test --timeout 30s --reporter expanded
       - name: Build web
         run: flutter build web --release
 
