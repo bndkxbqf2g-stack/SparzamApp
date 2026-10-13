@@ -1,5 +1,10 @@
 # SparzamApp
 
+## Update 13.10.2026 – Packungs- und Grundpreis in der Einkaufslistenmatrix
+- Aktuelle Marktpreise und Angebote behalten ihre belegte Packungsmenge und Einheit jetzt auch in der Einkaufslisten-Preismatrix.
+- Die Preiszeile zeigt den normalisierten Grundpreis, sofern die Quelle eine gültige Mengenbasis liefert; fehlende Mengen bleiben unbekannt.
+- Die Detailansicht kennzeichnet die Packung zusätzlich. Produktidentität, Angebotsgültigkeit und Routenpreislogik bleiben unverändert.
+- Fach- und Widgetregressionen prüfen 500 g gegen 4,98 €/kg und den Interaktionspfad im Preisfenster.
 ## Update 13.10.2026 – Open-Prices-Dubletten deterministisch auflösen
 - Mehrere gültige Beobachtungen derselben Filiale mit identischem Zeitstempel
   werden über die stabile Open-Prices-ID ausgewählt; die Antwortreihenfolge
