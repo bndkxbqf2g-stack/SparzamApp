@@ -77,7 +77,7 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 ## Phase E – Intelligente Einkaufsplanung
 - Persönliche Wiederkaufrhythmen.
 - Preisniveau und typische Preise lernen.
-- Sparpotenzial je Einkauf.
+- [x] Sparpotenzial je Einkauf aus aktuell belegten Angeboten und dem vollständigen Routenvergleich.
 - Für jede Einkaufsposition belastbare Preise je Markt zusammenführen und hinsichtlich Aktualität/Herkunft/Confidence bewerten.
 - Ein-Markt-Strategien und sinnvolle Kombinationen aus mehreren Märkten für den gesamten Warenkorb vergleichen.
 - Markt-/Routenoptimierung unter Berücksichtigung des tatsächlichen Mehrwegs und der daraus entstehenden Fahrtkosten.
