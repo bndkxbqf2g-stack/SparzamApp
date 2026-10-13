@@ -391,6 +391,10 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
     ProspectIssue issue,
     List<OfferImportRecord> currentRecords,
   ) {
+    debugPrint(
+      'PROSPECT_OPEN ${issue.storeName} pages=${issue.pages.length} '
+      'status=${issue.sourceStatus}',
+    );
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => _ProspectViewer(
@@ -1464,6 +1468,10 @@ class _ProspectViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pages = _viewerPages(issue);
+    debugPrint(
+      'PROSPECT_VIEWER ${issue.storeName} pages=${pages.length} '
+      'issuePages=${issue.pages.length}',
+    );
     final items = records
         .where((record) => record.storeName == issue.storeName)
         .toList(growable: false);
