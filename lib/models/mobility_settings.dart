@@ -18,6 +18,8 @@ class MobilitySettings {
   const MobilitySettings({
     this.startAddress = '97225 Zellingen, Germany',
     this.euroPerKm = 0.22,
+    this.fuelConsumptionLitersPer100Km = 5.0,
+    this.fuelPricePerLiter = 1.70,
     this.timeValuePerHour = 0,
     this.mode = MobilityMode.car,
     this.maxStores = 3,
@@ -27,7 +29,10 @@ class MobilitySettings {
   });
 
   final String startAddress;
+  /// Legacy manual €/km value retained for old saved settings and callers.
   final double euroPerKm;
+  final double fuelConsumptionLitersPer100Km;
+  final double fuelPricePerLiter;
 
   /// Optional personal value of travel time used only for route comparison.
   /// Zero keeps the monetary recommendation unchanged while still displaying
@@ -40,7 +45,9 @@ class MobilitySettings {
   final double additionalStoreCost;
   final List<String> enabledStoreNames;
 
-  double get effectiveEuroPerKm => mode == MobilityMode.car ? euroPerKm : 0.0;
+  double get effectiveEuroPerKm => mode == MobilityMode.car
+      ? fuelConsumptionLitersPer100Km / 100 * fuelPricePerLiter
+      : 0.0;
 
   bool isStoreEnabled(String storeName) =>
       enabledStoreNames.isEmpty || enabledStoreNames.contains(storeName);
@@ -48,6 +55,8 @@ class MobilitySettings {
   MobilitySettings copyWith({
     String? startAddress,
     double? euroPerKm,
+    double? fuelConsumptionLitersPer100Km,
+    double? fuelPricePerLiter,
     double? timeValuePerHour,
     MobilityMode? mode,
     int? maxStores,
@@ -57,6 +66,9 @@ class MobilitySettings {
   }) => MobilitySettings(
     startAddress: startAddress ?? this.startAddress,
     euroPerKm: euroPerKm ?? this.euroPerKm,
+    fuelConsumptionLitersPer100Km:
+        fuelConsumptionLitersPer100Km ?? this.fuelConsumptionLitersPer100Km,
+    fuelPricePerLiter: fuelPricePerLiter ?? this.fuelPricePerLiter,
     timeValuePerHour: timeValuePerHour ?? this.timeValuePerHour,
     mode: mode ?? this.mode,
     maxStores: maxStores ?? this.maxStores,
@@ -68,6 +80,8 @@ class MobilitySettings {
   Map<String, dynamic> toJson() => {
     'startAddress': startAddress,
     'euroPerKm': euroPerKm,
+    'fuelConsumptionLitersPer100Km': fuelConsumptionLitersPer100Km,
+    'fuelPricePerLiter': fuelPricePerLiter,
     'timeValuePerHour': timeValuePerHour,
     'mode': mode.name,
     'maxStores': maxStores,
@@ -85,6 +99,9 @@ class MobilitySettings {
             .toList() ??
         const <String>[];
     final euroPerKm = (json['euroPerKm'] as num?)?.toDouble();
+    final fuelConsumption =
+        (json['fuelConsumptionLitersPer100Km'] as num?)?.toDouble();
+    final fuelPrice = (json['fuelPricePerLiter'] as num?)?.toDouble();
     final timeValuePerHour = (json['timeValuePerHour'] as num?)?.toDouble();
     final minSavings = (json['minExtraStoreSavings'] as num?)?.toDouble();
     final additionalStoreCost =
@@ -101,6 +118,17 @@ class MobilitySettings {
               euroPerKm <= 5
           ? euroPerKm
           : 0.22,
+      fuelConsumptionLitersPer100Km:
+          fuelConsumption != null &&
+                  fuelConsumption.isFinite &&
+                  fuelConsumption > 0 &&
+                  fuelConsumption <= 30
+              ? fuelConsumption
+              : 5.0,
+      fuelPricePerLiter:
+          fuelPrice != null && fuelPrice.isFinite && fuelPrice > 0 && fuelPrice <= 10
+              ? fuelPrice
+              : 1.70,
       timeValuePerHour:
           timeValuePerHour != null &&
               timeValuePerHour.isFinite &&

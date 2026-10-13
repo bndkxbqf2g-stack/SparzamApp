@@ -57,6 +57,39 @@ void main() {
     },
   );
 
+  test('automatic learning keeps only an explicitly stated regular price', () {
+    final evidence = datedProspectRegularPriceObservations(
+      records: [
+        OfferImportRecord(
+          sourceId: 'with-regular',
+          productLabel: 'Kaffee 500 g',
+          storeName: 'Lidl',
+          originalPrice: 6.99,
+          offerPrice: 4.99,
+          validFrom: DateTime(2026, 10, 12),
+          validUntil: DateTime(2026, 10, 17),
+          proofRef: 'https://example.test/lidl/coffee',
+        ),
+        OfferImportRecord(
+          sourceId: 'offer-only',
+          productLabel: 'Milch 1 l',
+          storeName: 'Lidl',
+          offerPrice: 0.99,
+          validFrom: DateTime(2026, 10, 12),
+          validUntil: DateTime(2026, 10, 17),
+          proofRef: 'https://example.test/lidl/milk',
+        ),
+      ],
+      catalogProducts: const [],
+      observedAt: DateTime(2026, 10, 12, 8),
+    );
+
+    expect(evidence, hasLength(1));
+    expect(evidence.single.kind, PriceObservationKind.regular);
+    expect(evidence.single.price, 6.99);
+    expect(evidence.single.discounted, isFalse);
+  });
+
   const coffee = Product(
     id: 'coffee-500',
     name: 'Jacobs Kaffee Crema 500 g',

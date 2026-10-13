@@ -584,6 +584,42 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
 
   int get _importableReceiptCount => importableReceiptCount(receiptDrafts);
 
+  bool _allReceiptSuggestionsSelected() {
+    var selectable = 0;
+    var selected = 0;
+    for (final entry in receiptDrafts) {
+      if (!entry.draft.balances) continue;
+      final review = reviewReceiptPrices(entry.draft, availableProducts);
+      for (final suggestion in review.suggestions) {
+        selectable++;
+        if (selectedReceiptPrices.contains(
+            _priceKey(entry.draft.fingerprint, suggestion.product.id))) {
+          selected++;
+        }
+      }
+    }
+    return selectable > 0 && selectable == selected;
+  }
+
+  void _setAllReceiptSuggestions(bool selected) {
+    setState(() {
+      for (final entry in receiptDrafts) {
+        if (!entry.draft.balances) continue;
+        final review = reviewReceiptPrices(entry.draft, availableProducts);
+        for (final suggestion in review.suggestions) {
+          updateReceiptSuggestionSelection(
+            draft: entry.draft,
+            suggestion: suggestion,
+            checked: selected,
+            selectedPriceKeys: selectedReceiptPrices,
+            assignedProducts: assignedProducts,
+            learnedProductAssignments: learnedProductAssignments,
+          );
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) => AlertDialog(
         title: const Text('Kassenbon übernehmen'),
@@ -643,8 +679,30 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                 Text('$duplicateReceipts doppelte(r) PDF-Beleg(e) übersprungen.'),
               if (receiptDrafts.isNotEmpty) ...[
                 const SizedBox(height: 8),
-                const Text('Erkannte Bonpreise',
-                    style: TextStyle(fontWeight: FontWeight.w700)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Erkannte Bonpreise',
+                        style: TextStyle(fontWeight: FontWeight.w700)),
+                    TextButton.icon(
+                      onPressed: saving || receiptDrafts.isEmpty
+                          ? null
+                          : () => _setAllReceiptSuggestions(
+                                !_allReceiptSuggestionsSelected(),
+                              ),
+                      icon: Icon(
+                        _allReceiptSuggestionsSelected()
+                            ? Icons.deselect
+                            : Icons.select_all,
+                      ),
+                      label: Text(
+                        _allReceiptSuggestionsSelected()
+                            ? 'Alle abwählen'
+                            : 'Alle auswählen',
+                      ),
+                    ),
+                  ],
+                ),
                 for (final entry in _displayReceiptDrafts)
                   Builder(builder: (context) {
                     final draft = entry.draft;

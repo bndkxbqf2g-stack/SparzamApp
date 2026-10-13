@@ -14,7 +14,8 @@ class MobilitySettingsScreen extends StatefulWidget {
 class _MobilitySettingsScreenState extends State<MobilitySettingsScreen> {
   final formKey = GlobalKey<FormState>();
   late final TextEditingController addressController;
-  late final TextEditingController costController;
+  late final TextEditingController fuelConsumptionController;
+  late final TextEditingController fuelPriceController;
   late final TextEditingController savingsController;
   late final TextEditingController additionalStoreCostController;
   late final TextEditingController timeValueController;
@@ -29,8 +30,11 @@ class _MobilitySettingsScreenState extends State<MobilitySettingsScreen> {
     addressController = TextEditingController(
       text: widget.initialSettings.startAddress,
     );
-    costController = TextEditingController(
-      text: widget.initialSettings.euroPerKm.toStringAsFixed(2),
+    fuelConsumptionController = TextEditingController(
+      text: widget.initialSettings.fuelConsumptionLitersPer100Km.toStringAsFixed(1),
+    );
+    fuelPriceController = TextEditingController(
+      text: widget.initialSettings.fuelPricePerLiter.toStringAsFixed(2),
     );
     savingsController = TextEditingController(
       text: widget.initialSettings.minExtraStoreSavings.toStringAsFixed(2),
@@ -46,7 +50,8 @@ class _MobilitySettingsScreenState extends State<MobilitySettingsScreen> {
   @override
   void dispose() {
     addressController.dispose();
-    costController.dispose();
+    fuelConsumptionController.dispose();
+    fuelPriceController.dispose();
     savingsController.dispose();
     additionalStoreCostController.dispose();
     timeValueController.dispose();
@@ -63,7 +68,8 @@ class _MobilitySettingsScreenState extends State<MobilitySettingsScreen> {
       context,
       widget.initialSettings.copyWith(
         startAddress: addressController.text.trim(),
-        euroPerKm: _number(costController.text)!,
+        fuelConsumptionLitersPer100Km: _number(fuelConsumptionController.text)!,
+        fuelPricePerLiter: _number(fuelPriceController.text)!,
         mode: mode,
         maxStores: maxStores,
         minExtraStoreSavings: _number(savingsController.text)!,
@@ -122,24 +128,38 @@ class _MobilitySettingsScreenState extends State<MobilitySettingsScreen> {
           ),
           const SizedBox(height: 16),
           TextFormField(
-            controller: costController,
+            controller: fuelConsumptionController,
             enabled: mode == MobilityMode.car,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: InputDecoration(
-              labelText: 'Fahrtkosten pro km',
-              suffixText: '€/km',
-              prefixIcon: const Icon(Icons.euro_outlined),
-              helperText: mode == MobilityMode.car
-                  ? 'Wird für Hin- und Rückfahrt berechnet.'
-                  : 'Bei Fahrrad und zu Fuß: 0,00 € Fahrtkosten.',
+            decoration: const InputDecoration(
+              labelText: 'Verbrauch',
+              suffixText: 'l/100 km',
+              prefixIcon: Icon(Icons.local_gas_station_outlined),
+              helperText: 'Standard: 5,0 l E10 pro 100 km. Hin- und Rückfahrt werden berechnet.',
             ),
             validator: (value) {
               final number = _number(value ?? '');
-              if (number == null ||
-                  !number.isFinite ||
-                  number < 0 ||
-                  number > 5) {
-                return 'Bitte gültigen Wert zwischen 0 und 5 € eingeben';
+              if (number == null || !number.isFinite || number <= 0 || number > 30) {
+                return 'Bitte einen Verbrauch zwischen 0 und 30 l eingeben';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 12),
+          TextFormField(
+            controller: fuelPriceController,
+            enabled: mode == MobilityMode.car,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            decoration: const InputDecoration(
+              labelText: 'E10-Preis',
+              suffixText: '€/l',
+              prefixIcon: Icon(Icons.euro_outlined),
+              helperText: 'Der aktuelle E10-Preis kann hier jederzeit angepasst werden.',
+            ),
+            validator: (value) {
+              final number = _number(value ?? '');
+              if (number == null || !number.isFinite || number <= 0 || number > 10) {
+                return 'Bitte einen E10-Preis zwischen 0 und 10 € eingeben';
               }
               return null;
             },
