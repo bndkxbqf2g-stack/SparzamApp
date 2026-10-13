@@ -168,7 +168,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
         color: _bringBackground,
         child: CustomScrollView(
           controller: _bringScrollController,
-          cacheExtent: 0,
+          scrollCacheExtent: 0,
           key: const ValueKey('prospect-bring-scroll'),
           slivers: [
             if (hasSelection)
