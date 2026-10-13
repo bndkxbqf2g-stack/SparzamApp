@@ -7,6 +7,19 @@ import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/services/prospect_feed_service.dart';
 
 void main() {
+  testWidgets('begrenzt den äußeren Angebote-Scrollvorlauf', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: OffersScreen(catalogProducts: const <Product>[]),
+      ),
+    );
+
+    final scroll = tester.widget<ListView>(
+      find.byKey(const ValueKey('offers-scroll')),
+    );
+    expect(scroll.cacheExtent, 0);
+  });
+
   testWidgets('zeigt einen nicht verfügbaren Angebotsfeed transparent an', (
     tester,
   ) async {
