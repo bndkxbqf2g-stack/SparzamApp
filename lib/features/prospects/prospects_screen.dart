@@ -12,6 +12,7 @@ import '../offers/offer_filter.dart';
 import 'prospect_offer_card.dart';
 import 'prospect_feed_status.dart';
 import 'prospect_page_offer_dialog.dart';
+import 'prospect_page_ocr.dart';
 import '../../services/prospect_favorites_store.dart';
 
 class ProspectsScreen extends StatefulWidget {
@@ -1399,6 +1400,7 @@ class ProspectViewerScreen extends StatelessWidget {
     this.onAddProduct,
     this.now,
     this.onSaveOffer,
+    this.ocrRunner,
   });
 
   final ProspectIssue issue;
@@ -1407,14 +1409,20 @@ class ProspectViewerScreen extends StatelessWidget {
   final ValueChanged<Product>? onAddProduct;
   final DateTime? now;
   final Future<List<Offer>> Function(Offer offer)? onSaveOffer;
+  final Future<ProspectPageOcrResult> Function(ProspectPage page)? ocrRunner;
 
-  Future<void> _addPageOffer(BuildContext context, ProspectPage page) async {
+  Future<void> _addPageOffer(
+    BuildContext context,
+    ProspectPage page, {
+    ProspectPageOcrCandidate? initialCandidate,
+  }) async {
     final saveOffer = onSaveOffer;
     final addProduct = onAddProduct;
     if (saveOffer == null || addProduct == null) return;
     final draft = await showProspectPageOfferDialog(
       context,
       initialValidUntil: issue.validUntil,
+      initialCandidate: initialCandidate,
     );
     if (draft == null || !context.mounted) return;
 
@@ -1491,6 +1499,43 @@ class ProspectViewerScreen extends StatelessWidget {
     );
   }
 
+  Future<void> _runPageOcr(
+    BuildContext context,
+    ProspectPage page,
+  ) async {
+    if (onSaveOffer == null || onAddProduct == null) return;
+    final messenger = ScaffoldMessenger.of(context);
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        const SnackBar(content: Text('Seite wird lokal geprüft …')),
+      );
+    final runner = ocrRunner ?? (value) => analyzeProspectPage(value);
+    try {
+      final result = await runner(page);
+      if (!context.mounted) return;
+      messenger.hideCurrentSnackBar();
+      if (!result.isReady) {
+        messenger.showSnackBar(SnackBar(content: Text(result.message)));
+        return;
+      }
+      await _addPageOffer(
+        context,
+        page,
+        initialCandidate: result.candidates.first,
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(
+            content: Text('Die lokale Seitenprüfung ist fehlgeschlagen.'),
+          ),
+        );
+    }
+  }
+
   Widget _buildPageCard(BuildContext context, ProspectPage page) {
     final pageUrl = _officialProspectUri(page.imageUrl)?.toString() ?? '';
     final zoomUri = _officialProspectUri(page.zoomUrl);
@@ -1527,6 +1572,13 @@ class ProspectViewerScreen extends StatelessWidget {
                       : () => _addPageOffer(context, page),
                   icon: const Icon(Icons.add_shopping_cart_outlined),
                   label: const Text('Artikel von Seite hinzufügen'),
+                ),
+                OutlinedButton.icon(
+                  onPressed: onSaveOffer == null || onAddProduct == null
+                      ? null
+                      : () => _runPageOcr(context, page),
+                  icon: const Icon(Icons.document_scanner_outlined),
+                  label: const Text('Seite per OCR prüfen'),
                 ),
               ],
             ),
