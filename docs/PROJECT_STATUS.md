@@ -1,3 +1,8 @@
+## Update 14.10.2026 – Automatische Prospektpreise nur aus aktueller Periode
+- [x] Der automatische Lernpfad filtert vor dem Speichern auf den am Aktualisierungstag gültigen Prospektzeitraum.
+- [x] Historische und zukünftige Feedzeilen bleiben für Diagnose/Preisverlauf erhalten, werden aber nicht als aktueller automatischer Preis in die lokale Preisbeobachtung übernommen.
+- [x] Reguläre, belegte Normalpreise behalten weiterhin Filiale, Packungsgröße, Quelle, Nachweis und Erfassungszeit; Angebotszeilen ohne Normalpreis bleiben ausschließlich im aktuellen Angebotspfad.
+
 ## Update 13.10.2026 – Angebote-Cover progressiv laden
 - Das Coverraster im Angebote-Reiter baut zunächst höchstens zwölf Karten auf; weitere gültige Prospekte werden über „Weitere Prospekte laden“ nachgeladen.
 - Dadurch werden große öffentliche Feeds nicht mehr als vollständig shrink-wrappedes Bildraster beim ersten Öffnen erzeugt. Die Coverseiten bleiben vollständig erreichbar und öffnen weiterhin denselben Detailviewer.
