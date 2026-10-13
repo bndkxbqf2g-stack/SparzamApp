@@ -652,6 +652,56 @@ void main() {
     expect(resized.height, 480);
   });
 
+  testWidgets('builds long prospect page lists lazily', (tester) async {
+    final pages = List<ProspectPage>.generate(
+      20,
+      (index) => ProspectPage(
+        number: index + 1,
+        imageUrl: 'https://example.test/lidl-page-${index + 1}.png',
+      ),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: pages,
+              validFrom: DateTime(2026, 10, 12),
+              validUntil: DateTime(2026, 10, 17),
+            ),
+          ],
+          now: DateTime(2026, 10, 13),
+        ),
+      ),
+    );
+
+    await _scrollProspects(tester);
+    await tester.tap(find.text('Lidl').last);
+    await tester.pumpAndSettle();
+
+    final renderedPageImages = tester.allWidgets
+        .whereType<Image>()
+        .where((widget) {
+          final key = widget.key;
+          return key is ValueKey<String> &&
+              key.value.startsWith('prospect-page-image-');
+        })
+        .length;
+    expect(renderedPageImages, lessThan(pages.length));
+
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('prospect-page-image-20')),
+      600,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(
+      find.byKey(const ValueKey('prospect-page-image-20')),
+      findsOneWidget,
+    );
+  });
   testWidgets('adds a manually reviewed article from a prospect page', (
     tester,
   ) async {
