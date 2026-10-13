@@ -432,3 +432,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Preisvergleichskarten im Preise-Reiter werden in kleinen Seiten aufgebaut, damit lange Einkaufslisten nicht beim ersten Öffnen alle Detailkarten rendern.
 - [x] Die bestehende Preisabdeckung bleibt vollständig; nur die sichtbare Vergleichsliste wird schrittweise erweitert.
 - [x] Der Nachladepfad ist widgetgetestet und ändert keine Preis-, Angebots- oder Routenlogik.
+
+
+## Update 13.10.2026 – Fehlende Preisbelege schneller erfassen
+- [x] Der Preise-Reiter führt fehlende Marktpreise je Listenposition direkt in die bestehende Datenlückenauflösung.
+- [x] Produkt-/Preiswahl, Quellenprüfung und Speicherung bleiben im vorhandenen `openPriceGapEditor`-Pfad gebündelt.
+- [x] Die neue Aktion erzeugt keine Ersatzpreise und ändert keine Routenentscheidung ohne bestätigte Evidenz.
