@@ -166,6 +166,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
     return Theme(
       data: _bringTheme(context),
       child: ColoredBox(
+        key: const ValueKey('prospect-grid'),
         color: _bringBackground,
         child: CustomScrollView(
           controller: _bringScrollController,
@@ -326,7 +327,6 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
             ),
             if (!hasSelection && visibleProspects.isNotEmpty)
               SliverPadding(
-                key: const ValueKey('prospect-grid'),
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 sliver: SliverLayoutBuilder(
                   builder: (context, constraints) {
