@@ -55,6 +55,54 @@ void main() {
     expect(openedRoute, [true]);
   });
 
+  testWidgets('öffnet den Marktvergleich je Listenposition', (tester) async {
+    const product = Product(
+      id: 'price-hub-matrix-milk',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'Milch',
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PricesHubScreen(
+            onOpenCatalog: () {},
+            onOpenSettings: () {},
+            summary: 'Eigene Preise',
+            shoppingList: [ListItem(product: product)],
+            marketPrices: [
+              MarketPrice(
+                productId: product.id,
+                storeName: 'Lidl',
+                price: 1.19,
+                updatedAt: DateTime(2026, 10, 13),
+                source: MarketPriceSource.manual,
+              ),
+            ],
+            enabledStoreNames: const ['Lidl', 'ALDI Süd'],
+            now: DateTime(2026, 10, 13),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Marktvergleich deiner Liste'), findsOneWidget);
+    final card = find.byKey(
+      const ValueKey('price-comparison-price-hub-matrix-milk'),
+    );
+    expect(card, findsOneWidget);
+    expect(find.text('1/2 Märkte aktuell'), findsOneWidget);
+
+    await tester.tap(card);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Lidl'), findsOneWidget);
+    expect(find.text('ALDI Süd'), findsOneWidget);
+    expect(find.text('1,19 €'), findsOneWidget);
+    expect(find.text('Kein aktueller, vergleichbarer Preisbeleg'), findsOneWidget);
+  });
+
   testWidgets('Preise kennzeichnet fehlende aktuelle Preise', (tester) async {
     const milk = Product(
       id: 'price-hub-milk-missing',
