@@ -178,9 +178,20 @@ class OpenPricesSource implements PriceSource {
         continue;
       }
 
+      final externalId = _externalId(raw['id']);
       final previous = byStore[store.name];
-      if (previous != null && !observedAt.isAfter(previous.updatedAt)) {
-        continue;
+      if (previous != null) {
+        if (observedAt.isBefore(previous.updatedAt)) continue;
+        if (observedAt.isAtSameMomentAs(previous.updatedAt)) {
+          final previousId = previous.externalId;
+          // Open Prices IDs are stable ingestion identifiers. Use them as a
+          // deterministic tie-breaker when two observations share a timestamp;
+          // never let response order choose the route input.
+          if (externalId == null ||
+              previousId != null && externalId <= previousId) {
+            continue;
+          }
+        }
       }
 
       // Open Prices marks `price_per=UNIT`, so the value describes the
@@ -205,7 +216,7 @@ class OpenPricesSource implements PriceSource {
         price: price,
         updatedAt: observedAt,
         source: MarketPriceSource.openPrices,
-        externalId: (raw['id'] as num?)?.toInt(),
+        externalId: externalId,
         sourceLocationId: _locationId(location),
         sourceLocationName: _locationLabel(location),
         quantity: packageAmount,
@@ -310,6 +321,13 @@ class OpenPricesSource implements PriceSource {
     final text = value?.toString().trim();
     if (text == null || text.isEmpty) return null;
     return RegExp(r'\b\d{5}\b').firstMatch(text)?.group(0);
+  }
+
+  int? _externalId(Object? value) {
+    if (value is num && value.toInt().toDouble() == value.toDouble()) {
+      return value.toInt();
+    }
+    return int.tryParse(value?.toString().trim() ?? '');
   }
 
   String? _locationId(Map<String, dynamic> location) {

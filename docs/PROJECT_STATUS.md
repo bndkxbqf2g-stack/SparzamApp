@@ -1,5 +1,12 @@
 # SparzamApp
 
+## Update 13.10.2026 – Open-Prices-Dubletten deterministisch auflösen
+- Mehrere gültige Beobachtungen derselben Filiale mit identischem Zeitstempel
+  werden über die stabile Open-Prices-ID ausgewählt; die Antwortreihenfolge
+  entscheidet nicht mehr zufällig über den Planungswert.
+- Eine Regression deckt zwei gleich datierte Beobachtungen mit unterschiedlichem
+  Preis ab. Ältere Zeitstempel, Veraltung und Quellenfilter bleiben unverändert.
+
 ## Update 13.10.2026 – Open-Prices-Filialkontext gegen widersprüchliche Quelldaten geschützt
 - Liefert Open Prices eine konfigurierte Filial-ID, wird der Datensatz zusätzlich
   gegen Stadt, Postleitzahl und ein ausdrücklich erkanntes Händlerlabel geprüft.
