@@ -1,3 +1,8 @@
+## Update 13.10.2026 – Shell-Routing pro Build wiederverwenden
+- Dashboard, Einkaufsabschluss und Seitensammlung verwenden je Build denselben Routing-Snapshot mit einem aktuellen und einem regulären Optimizer.
+- Die teure Preis-/Alternativenaufbereitung wird dadurch nicht mehrfach für identische Eingaben gestartet; Preisabdeckung, Filialschlüssel und Tie-Breaker bleiben unverändert.
+- Der Snapshot lebt nur während des Builds und wird bei einer neuen Shell-Eingabe neu erzeugt.
+
 ## Update 13.10.2026 – Angebote-Reiter memoisiert Produktzuordnung
 - Händler- und Kategoriegruppen behalten die konkrete Katalogauflösung je Angebotsdatensatz zwischen Such-/Expand-Rebuilds lokal im Widget.
 - Ein negatives Ergebnis bleibt ebenfalls zwischengespeichert; unbekannte oder nicht belegte Artikel werden dadurch weder automatisch routenfähig noch anders zugeordnet.

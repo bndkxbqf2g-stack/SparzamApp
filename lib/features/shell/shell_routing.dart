@@ -6,7 +6,7 @@ import '../../models/road_route_matrix.dart';
 import '../route/route_optimizer.dart';
 
 class ShellRouting {
-  const ShellRouting({
+  ShellRouting({
     required this.items,
     required this.offers,
     required this.mobility,
@@ -24,8 +24,14 @@ class ShellRouting {
   final Map<String, double> roadDistances;
   final RoadRouteMatrix? roadMatrix;
 
-  RouteOptimizer? get current => _optimizer(offers);
-  RouteOptimizer? get regular => _optimizer(const <Offer>[]);
+  // Dashboard and shell pages ask for the same plans repeatedly during one
+  // build. Keep one optimizer per immutable routing snapshot so those reads
+  // share the expensive quote normalization and alternative search.
+  late final RouteOptimizer? _currentCache = _optimizer(offers);
+  late final RouteOptimizer? _regularCache = _optimizer(const <Offer>[]);
+
+  RouteOptimizer? get current => _currentCache;
+  RouteOptimizer? get regular => _regularCache;
 
   RouteOptimizer? _optimizer(List<Offer> selectedOffers) => items.isEmpty
       ? null

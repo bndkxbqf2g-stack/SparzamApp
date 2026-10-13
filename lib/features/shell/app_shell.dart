@@ -848,16 +848,19 @@ class _AppShellState extends State<AppShell> {
     offerStore: widget.offerStore,
   );
 
-  DashboardData dashboardData() => buildShellDashboard(
+  DashboardData dashboardData([
+    ShellRouting? routeSnapshot,
+    List<ReplenishmentSuggestion>? replenishmentSnapshot,
+  ]) => buildShellDashboard(
     shoppingList: shoppingList,
     offers: offers,
     mobility: mobility,
     roadDistances: roadDistances,
     roadMatrix: roadMatrix,
-    routing: routing,
+    routing: routeSnapshot ?? routing,
     budget: budget,
     purchaseHistory: purchaseHistory,
-    replenishment: replenishmentSuggestions,
+    replenishment: replenishmentSnapshot ?? replenishmentSuggestions,
   );
 
   Future<void> completePurchase() async {
@@ -1653,8 +1656,28 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
+    final catalog = catalogProducts;
+    final plannedPrices = planningMarketPrices;
+    final routeSnapshot = ShellRouting(
+      items: shoppingList,
+      offers: offers,
+      mobility: mobility,
+      marketPrices: plannedPrices,
+      openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
+      roadDistances: roadDistances,
+      roadMatrix: roadMatrix,
+    );
+    final currentRouteOptimizer = routeSnapshot.current;
+    final regularRouteOptimizer = routeSnapshot.regular;
+    final currentPlan = currentRouteOptimizer?.bestPlan();
+    final regularPlan = regularRouteOptimizer?.bestSingleStorePlan();
+    final replenishment = replenishmentSuggestions;
+    final prospectHistory = prospectPriceHistorySummaries(
+      historicalPriceObservations,
+      enabledStores: mobility.enabledStoreNames,
+    );
     final pages = buildShellPages(
-      dashboard: dashboardData(),
+      dashboard: dashboardData(routeSnapshot, replenishment),
       onOpenList: () => setState(() => selectedIndex = 1),
       onOpenRoute: openRoute,
       onOpenOffers: () => setState(() => selectedIndex = 2),
@@ -1684,22 +1707,18 @@ class _AppShellState extends State<AppShell> {
       prospectsRefreshing: _prospectFeedRefreshing,
       priceHistory: priceHistory,
       mobility: mobility,
-      catalogProducts: catalogProducts,
-      marketPrices: planningMarketPrices,
+      catalogProducts: catalog,
+      marketPrices: plannedPrices,
       openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
-      priceObservations: [...planningMarketPrices],
+      priceObservations: plannedPrices,
       historicalPriceObservations: historicalPriceObservations,
-      prospectPriceHistory: prospectPriceHistorySummaries(
-        historicalPriceObservations,
-        enabledStores: mobility.enabledStoreNames,
-      ),
-      replenishmentSuggestions: replenishmentSuggestions,
+      prospectPriceHistory: prospectHistory,
+      replenishmentSuggestions: replenishment,
       onRoadDistancesChanged: (value) => setState(() => roadDistances = value),
       onRoadMatrixChanged: (value) => setState(() => roadMatrix = value),
-      currentPlan: currentOptimizer?.bestPlan(),
-      baselineTotal: regularOptimizer?.bestSingleStorePlan()?.total ?? 0,
-      baselineHasDataGaps:
-          regularOptimizer?.bestSingleStorePlan()?.hasDataGaps ?? false,
+      currentPlan: currentPlan,
+      baselineTotal: regularPlan?.total ?? 0,
+      baselineHasDataGaps: regularPlan?.hasDataGaps ?? false,
       purchaseHistory: purchaseHistory,
       onCompletePurchase: completePurchase,
       onUpdatePurchase: updatePurchase,
