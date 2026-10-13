@@ -1153,6 +1153,9 @@ String? _prospectValidityLabel(ProspectIssue issue) {
   return '${_prospectDate(from)} – ${_prospectDate(until)}';
 }
 
+String _ocrCandidatePrice(double value) =>
+    '${value.toStringAsFixed(2).replaceAll('.', ',')} €';
+
 const _bringBackground = Color(0xFF283A44);
 const _bringSurface = Color(0xFF344953);
 const _bringAccent = Color(0xFF9DE5D8);
@@ -1499,6 +1502,52 @@ class ProspectViewerScreen extends StatelessWidget {
     );
   }
 
+  Future<ProspectPageOcrCandidate?> _selectOcrCandidate(
+    BuildContext context,
+    List<ProspectPageOcrCandidate> candidates,
+  ) async {
+    if (candidates.length == 1) return candidates.single;
+    return showDialog<ProspectPageOcrCandidate>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('OCR-Vorschlag auswählen'),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView.separated(
+            shrinkWrap: true,
+            itemCount: candidates.length,
+            separatorBuilder: (context, index) => const Divider(height: 1),
+            itemBuilder: (context, index) {
+              final candidate = candidates[index];
+              final offer = _ocrCandidatePrice(candidate.offerPrice);
+              final original = candidate.originalPrice == null
+                  ? null
+                  : _ocrCandidatePrice(candidate.originalPrice!);
+              final prices = original == null
+                  ? offer
+                  : '$offer · vorher $original';
+              return ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(candidate.productLabel),
+                subtitle: Text(
+                  '$prices\n${prospectPageOcrConfidenceLabel(candidate.confidence)}',
+                ),
+                isThreeLine: true,
+                onTap: () => Navigator.of(context).pop(candidate),
+              );
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Abbrechen'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _runPageOcr(
     BuildContext context,
     ProspectPage page,
@@ -1519,10 +1568,15 @@ class ProspectViewerScreen extends StatelessWidget {
         messenger.showSnackBar(SnackBar(content: Text(result.message)));
         return;
       }
+      final candidate = await _selectOcrCandidate(
+        context,
+        result.candidates,
+      );
+      if (!context.mounted || candidate == null) return;
       await _addPageOffer(
         context,
         page,
-        initialCandidate: result.candidates.first,
+        initialCandidate: candidate,
       );
     } catch (_) {
       if (!context.mounted) return;
