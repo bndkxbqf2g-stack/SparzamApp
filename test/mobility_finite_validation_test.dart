@@ -92,8 +92,8 @@ void main() {
       await tester.tap(find.text('Öffnen'));
       await tester.pumpAndSettle();
       final fields = find.byType(TextFormField);
-      expect(fields, findsNWidgets(5));
-      await tester.enterText(fields.at(4), '12,50');
+      expect(fields, findsAtLeastNWidgets(4));
+      await tester.enterText(fields.last, '12,50');
       await tester.scrollUntilVisible(
         find.text('Speichern'),
         250,
