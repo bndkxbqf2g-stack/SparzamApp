@@ -218,7 +218,7 @@ void main() {
     expect(find.text('Markt 23'), findsNothing);
 
     await tester.scrollUntilVisible(
-      find.text('Markt 23').first,
+      find.text('Markt 23'),
       450,
       scrollable: find.byType(Scrollable).first,
     );
