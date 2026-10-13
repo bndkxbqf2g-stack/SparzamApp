@@ -112,6 +112,7 @@ class ShoppingQuote {
     ShoppingQuoteKind.receipt =>
       '${isHistorical ? 'Historischer ' : ''}Bonpreis vom ${_date(observedAt!)}',
     ShoppingQuoteKind.ownPrice => 'Eigener Preis vom ${_date(observedAt!)}',
+    ShoppingQuoteKind.prospect => 'Prospektpreis vom ${_date(observedAt!)}',
     ShoppingQuoteKind.openPrices =>
       'Open-Prices-Preis vom ${_date(observedAt!)}',
     ShoppingQuoteKind.offer =>
