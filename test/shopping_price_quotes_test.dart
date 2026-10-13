@@ -755,4 +755,61 @@ void main() {
       'Vergleichbarkeit: Mengenbasis nicht dokumentiert',
     );
   });
+  test('zeigt das Alter der Preisbeobachtung transparent an', () {
+    final quote = shoppingQuotes(
+      item,
+      prices: [
+        MarketPrice(
+          productId: milk.id,
+          storeName: 'Lidl',
+          price: 1.09,
+          updatedAt: DateTime(2026, 9, 22),
+          source: MarketPriceSource.openPrices,
+        ),
+      ],
+      offers: const [],
+      enabledStores: const ['Lidl'],
+      now: DateTime(2026, 9, 24),
+    ).single;
+
+    expect(
+      quote.freshnessLabel(now: DateTime(2026, 9, 24)),
+      'Preisalter: vor 2 Tagen',
+    );
+
+    final historical = ShoppingQuote(
+      storeName: 'Lidl',
+      unitPrice: 0.95,
+      kind: ShoppingQuoteKind.prospectHistory,
+      observedAt: DateTime(2026, 9, 20),
+      historical: true,
+    );
+    expect(
+      historical.freshnessLabel(now: DateTime(2026, 9, 24)),
+      'Preisalter: historisch',
+    );
+
+    final offerQuote = shoppingQuotes(
+      item,
+      prices: const [],
+      offers: [
+        Offer(
+          id: 'captured-offer',
+          productId: milk.id,
+          storeName: 'Lidl',
+          originalPrice: 1.29,
+          offerPrice: 0.89,
+          validUntil: DateTime(2026, 9, 30),
+          capturedAt: DateTime(2026, 9, 23),
+        ),
+      ],
+      enabledStores: const ['Lidl'],
+      now: DateTime(2026, 9, 24),
+    ).single;
+    expect(
+      offerQuote.freshnessLabel(now: DateTime(2026, 9, 24)),
+      'Preisalter: vor 1 Tag',
+    );
+  });
+
 }

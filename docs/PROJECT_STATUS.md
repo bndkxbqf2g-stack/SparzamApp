@@ -1,5 +1,10 @@
 # SparzamApp
 
+## Update 13.10.2026 – Preisalter und Preisverlauf
+- Preisdetails zeigen neben Quelle und Vergleichbarkeit jetzt das Alter der Preisbeobachtung.
+- Erfassungszeitpunkte von Angeboten werden übernommen; fehlt ein Zeitpunkt, bleibt das Alter als unbekannt gekennzeichnet.
+- Historische Bon- und Prospektwerte bleiben als historische Orientierung getrennt.
+
 ## Update 13.10.2026 – Empfohlene Route auf kleinen Ansichten
 - Die Routen-Zusammenfassung zeigt ein sichtbares Kennzeichen „Empfohlene Route“.
 - Bei fehlenden Preisbelegen wird stattdessen „Vorläufige Empfehlung“ angezeigt; dadurch bleibt die Teilroute klar von einem vollständigen Einkaufsplan getrennt.

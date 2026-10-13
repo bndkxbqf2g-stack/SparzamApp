@@ -251,6 +251,7 @@ class ShoppingPriceBadge extends StatelessWidget {
                           if (quote.baseUnitPriceLabel != null)
                             quote.baseUnitPriceLabel!,
                           quote.comparabilityLabel,
+                          quote.freshnessLabel(),
                           if (quote.savingsLabel != null) quote.savingsLabel!,
                         ].join(' · '),
                       ),
