@@ -1043,18 +1043,7 @@ void main() {
     expect(find.text('Filialstraße 1, 97291 Filialstadt'), findsOneWidget);
     expect(find.text('Quellstadt'), findsNothing);
   });
-}
 
-Future<void> _scrollProspects(
-  WidgetTester tester, {
-  double distance = 320,
-}) async {
-  final scrollable = find.byWidgetPredicate(
-    (widget) =>
-        widget is Scrollable && widget.axisDirection == AxisDirection.down,
-  );
-  await tester.drag(scrollable.first, Offset(0, -distance));
-  await tester.pumpAndSettle();
   testWidgets('übernimmt einen geprüften OCR-Vorschlag in das Seitenformular', (
     tester,
   ) async {
@@ -1121,6 +1110,19 @@ Future<void> _scrollProspects(
     expect(added, isNotNull);
     expect(added!.name, 'Käsesticks 300 g');
   });
+}
+
+Future<void> _scrollProspects(
+  WidgetTester tester, {
+  double distance = 320,
+}) async {
+  final scrollable = find.byWidgetPredicate(
+    (widget) =>
+        widget is Scrollable && widget.axisDirection == AxisDirection.down,
+  );
+  await tester.drag(scrollable.first, Offset(0, -distance));
+  await tester.pumpAndSettle();
+
 
 }
 
