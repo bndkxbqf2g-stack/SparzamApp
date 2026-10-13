@@ -133,7 +133,7 @@ class PricesHubScreen extends StatelessWidget {
             child: ListTile(
               leading: Icon(Icons.help_outline, color: Colors.amber.shade900),
               title: Text(
-                '${missing} ${missing == 1 ? 'Position' : 'Positionen'} ohne aktuellen Preis',
+                '$missing ${missing == 1 ? 'Position' : 'Positionen'} ohne aktuellen Preis',
                 style: const TextStyle(fontWeight: FontWeight.w700),
               ),
               subtitle: Text(
