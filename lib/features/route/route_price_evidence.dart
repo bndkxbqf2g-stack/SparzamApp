@@ -93,10 +93,12 @@ RoutePriceEvidenceSummary summarizeRoutePriceEvidence(
   }
 
   return RoutePriceEvidenceSummary(
-    pricedPositions: offers + receipts + ownPrices + openPrices + undocumented,
+    pricedPositions:
+        offers + receipts + ownPrices + prospectPrices + openPrices + undocumented,
     offers: offers,
     receipts: receipts,
     ownPrices: ownPrices,
+    prospectPrices: prospectPrices,
     openPrices: openPrices,
     undocumented: undocumented,
     oldestObservation: oldestObservation,
