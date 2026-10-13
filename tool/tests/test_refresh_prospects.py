@@ -22,6 +22,56 @@ class ProspectParserTest(unittest.TestCase):
         expected = datetime.now(ZoneInfo("Europe/Berlin")).date()
         self.assertEqual(refresh.local_today(), expected)
 
+    def test_previous_active_cover_survives_offer_refresh_without_pages(self):
+        previous = {
+            "sources": [
+                {
+                    "storeName": "Netto",
+                    "prospects": [
+                        {
+                            "id": "netto-current",
+                            "title": "Netto Prospekt",
+                            "offerEndDate": "2026-10-19",
+                            "pageSamples": [{"number": 1, "image": "https://example.test/netto-cover.jpg"}],
+                        }
+                    ],
+                }
+            ]
+        }
+        merged = refresh._merge_previous_prospects(
+            previous,
+            "Netto",
+            [],
+            today=refresh.date(2026, 10, 13),
+        )
+        self.assertEqual(merged[0]["id"], "netto-current")
+        self.assertEqual(merged[0]["pageSamples"][0]["number"], 1)
+
+    def test_previous_expired_cover_is_not_carried_forward(self):
+        previous = {
+            "sources": [
+                {
+                    "storeName": "Netto",
+                    "prospects": [
+                        {
+                            "id": "netto-old",
+                            "offerEndDate": "2026-10-12",
+                            "pageSamples": [{"number": 1, "image": "https://example.test/old.jpg"}],
+                        }
+                    ],
+                }
+            ]
+        }
+        self.assertEqual(
+            refresh._merge_previous_prospects(
+                previous,
+                "Netto",
+                [],
+                today=refresh.date(2026, 10, 13),
+            ),
+            [],
+        )
+
     def test_record_preserves_single_package_and_base_price(self):
         item = refresh.record(
             "Lidl",
