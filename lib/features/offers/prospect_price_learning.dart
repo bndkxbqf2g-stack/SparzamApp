@@ -60,11 +60,11 @@ List<PriceObservation> prospectPriceObservations({
     if (normalizedLabel.isEmpty) continue;
     final identity = identifyProduct(record.productLabel);
     final package = prospectPackage(record.packageSize ?? record.productLabel);
-    final exactProduct = exactProspectProduct(
-      record.productLabel,
-      catalog,
-      packageSize: record.packageSize,
-    );
+    // Use the same conservative identity resolver as offer import. It may
+    // select a unique compatible catalog variant when the source supplies an
+    // explicit package basis (for example KaufDA's separate `500 g` field),
+    // while still rejecting ambiguous families and package mismatches.
+    final exactProduct = resolveOfferImport(record, catalog).product;
     final productId = exactProduct?.id ?? 'prospect|$normalizedLabel';
     final confidence = exactProduct == null ? 0.0 : 1.0;
     final prefix = [
@@ -150,4 +150,5 @@ PriceObservationSource? _source(String source) => switch (source) {
   'retailerWebsite' => PriceObservationSource.retailerWebsite,
   _ => null,
 };
+
 
