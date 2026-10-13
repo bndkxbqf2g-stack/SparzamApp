@@ -46,6 +46,20 @@ class ProspectsScreen extends StatefulWidget {
   State<ProspectsScreen> createState() => _ProspectsScreenState();
 }
 
+class _ProspectDerivedData {
+  const _ProspectDerivedData({
+    required this.currentRecords,
+    required this.categories,
+    required this.stores,
+    required this.visibleProspects,
+  });
+
+  final List<OfferImportRecord> currentRecords;
+  final List<String> categories;
+  final List<String> stores;
+  final List<ProspectIssue> visibleProspects;
+}
+
 class _ProspectsScreenState extends State<ProspectsScreen> {
   final searchController = TextEditingController();
   var query = '';
@@ -56,6 +70,12 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
   final _moreProspectsKey = GlobalKey();
   Set<String>? _favoriteStores;
   late final ProspectFavoritesStore _favoriteStore;
+  // Feed normalization and visible-card selection are independent from the
+  // search query and favorite state. Reuse them while those controls change.
+  List<OfferImportRecord>? _derivedRecordsInput;
+  List<ProspectIssue>? _derivedProspectsInput;
+  DateTime? _derivedNow;
+  _ProspectDerivedData? _derivedData;
 
   @override
   void initState() {
@@ -99,30 +119,18 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    searchController.dispose();
-    _bringScrollController.dispose();
-    super.dispose();
-  }
+  _ProspectDerivedData _prospectViewData() {
+    final cached = _derivedData;
+    if (cached != null &&
+        identical(_derivedRecordsInput, widget.records) &&
+        identical(_derivedProspectsInput, widget.prospects) &&
+        _derivedNow == widget.now) {
+      return cached;
+    }
 
-  @override
-  Widget build(BuildContext context) {
     final currentRecords = currentProspectRecords(
       widget.records,
       now: widget.now,
-    );
-    final categories = _prospectCategories(currentRecords);
-    final stores = _prospectStores(currentRecords, widget.prospects);
-    final activeCategory = categories.contains(selectedCategory)
-        ? selectedCategory
-        : null;
-    final activeStore = stores.contains(selectedStore) ? selectedStore : null;
-    final matchingRecords = _matchingProspectRecords(
-      currentRecords,
-      query,
-      category: activeCategory,
-      storeName: activeStore,
     );
     final currentCounts = <String, int>{};
     final currentRegionalCounts = <String, int>{};
@@ -154,6 +162,43 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
           now: widget.now,
         ),
     ];
+    final next = _ProspectDerivedData(
+      currentRecords: currentRecords,
+      categories: _prospectCategories(currentRecords),
+      stores: _prospectStores(currentRecords, widget.prospects),
+      visibleProspects: visibleProspects,
+    );
+    _derivedRecordsInput = widget.records;
+    _derivedProspectsInput = widget.prospects;
+    _derivedNow = widget.now;
+    _derivedData = next;
+    return next;
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    _bringScrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final derived = _prospectViewData();
+    final currentRecords = derived.currentRecords;
+    final categories = derived.categories;
+    final stores = derived.stores;
+    final activeCategory = categories.contains(selectedCategory)
+        ? selectedCategory
+        : null;
+    final activeStore = stores.contains(selectedStore) ? selectedStore : null;
+    final matchingRecords = _matchingProspectRecords(
+      currentRecords,
+      query,
+      category: activeCategory,
+      storeName: activeStore,
+    );
+    final visibleProspects = derived.visibleProspects;
     final hasSelection = query.trim().isNotEmpty ||
         activeCategory != null ||
         activeStore != null;

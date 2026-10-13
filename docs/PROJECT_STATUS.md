@@ -1,3 +1,8 @@
+## Update 13.10.2026 – Prospekt-Feednormalisierung pro Ansicht memoisiert
+- Die Prospektübersicht cached aktuelle Datensätze, Kategorien, Filialkarten und Gültigkeitsauswahl, solange sich der Feed-Snapshot nicht ändert.
+- Suche, Filter und Favoritenwechsel berechnen dadurch nur noch ihre tatsächlich veränderte Ansicht; Quellen-, Filial- und Gültigkeitsregeln bleiben unverändert.
+- Der Cache ist rein lokal pro Widget und führt keine zusätzliche Datenquelle oder Persistenz ein.
+
 ## Update 13.10.2026 – Prospekt-Produktzuordnung beim Scrollen memoisiert
 - Suchergebnisse und Prospektseiten lösen die konkrete Produktidentität pro Angebotsdatensatz höchstens einmal je sichtbarem Delegaten auf.
 - Positive und negative Identitätsentscheidungen bleiben zwischengespeichert; die bestehende konservative Zuordnungslogik, Filialprovenienz und Übernahmeprüfung ändern sich nicht.
