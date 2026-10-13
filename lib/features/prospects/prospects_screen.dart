@@ -529,7 +529,10 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
       compact: true,
       onAdd: onAddProduct == null || product == null
           ? null
-          : () => onAddProduct!(product),
+          : () {
+              debugPrint('PROSPECT_SEARCH_ADD ${record.sourceId}');
+              onAddProduct!(product);
+            },
     );
   }
 }
