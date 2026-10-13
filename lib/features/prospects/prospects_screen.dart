@@ -1416,26 +1416,7 @@ class _ProspectViewer extends StatelessWidget {
             height: 240,
             child: pageUrl.isEmpty
                 ? const Center(child: Icon(Icons.broken_image_outlined, size: 48))
-                : Image.network(
-                    pageUrl,
-                    key: ValueKey('prospect-page-image-${page.number}'),
-                    // Keep page previews bounded while allowing a browser
-                    // fallback for retailer CDNs without Canvas-CORS headers.
-                    // The previous Canvas-only setting rendered these verified
-                    // cover pages as empty placeholders on Flutter web.
-                    cacheWidth: 720,
-                    cacheHeight: 480,
-                    fit: BoxFit.contain,
-                    filterQuality: FilterQuality.low,
-                    webHtmlElementStrategy: WebHtmlElementStrategy.fallback,
-                    loadingBuilder: (context, child, progress) =>
-                        progress == null
-                            ? child
-                            : const Center(child: CircularProgressIndicator()),
-                    errorBuilder: (context, error, stackTrace) => const Center(
-                      child: Icon(Icons.broken_image_outlined, size: 48),
-                    ),
-                  ),
+                : _ProspectPageImage(url: pageUrl, pageNumber: page.number),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
@@ -1635,6 +1616,66 @@ class _ProspectViewer extends StatelessWidget {
   }
 }
 
+class _ProspectPageImage extends StatefulWidget {
+  const _ProspectPageImage({
+    required this.url,
+    required this.pageNumber,
+  });
+
+  final String url;
+  final int pageNumber;
+
+  @override
+  State<_ProspectPageImage> createState() => _ProspectPageImageState();
+}
+
+class _ProspectPageImageState extends State<_ProspectPageImage> {
+  bool _useHtmlFallback = false;
+
+  @override
+  void didUpdateWidget(covariant _ProspectPageImage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.url != widget.url) {
+      _useHtmlFallback = false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final strategy = _useHtmlFallback
+        ? WebHtmlElementStrategy.fallback
+        : WebHtmlElementStrategy.never;
+    return Image.network(
+      widget.url,
+      key: ValueKey('prospect-page-image-${widget.pageNumber}'),
+      // Keep decoded page previews bounded for the long scroll path.
+      cacheWidth: 720,
+      cacheHeight: 480,
+      fit: BoxFit.contain,
+      filterQuality: FilterQuality.low,
+      // Canvas is the cheap path. A platform-view fallback is created only
+      // after this exact image failed to decode (usually because the retailer
+      // CDN omitted Canvas-CORS headers).
+      webHtmlElementStrategy: strategy,
+      loadingBuilder: (context, child, progress) =>
+          progress == null
+              ? child
+              : const Center(child: CircularProgressIndicator()),
+      errorBuilder: (context, error, stackTrace) {
+        if (!_useHtmlFallback) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted || _useHtmlFallback) return;
+            setState(() => _useHtmlFallback = true);
+          });
+          return const Center(child: CircularProgressIndicator());
+        }
+        return const Center(
+          child: Icon(Icons.broken_image_outlined, size: 48),
+        );
+      },
+    );
+  }
+}
 List<ProspectPage> _viewerPages(ProspectIssue issue) {
   if (issue.pages.isNotEmpty) return issue.pages;
   final thumbnail = issue.thumbnailUrl?.trim();
