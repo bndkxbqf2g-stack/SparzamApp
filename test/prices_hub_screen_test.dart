@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:sparzamapp/features/catalog/prices_hub_screen.dart';
+import 'package:sparzamapp/features/price_gaps/price_gap_priority.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/product.dart';
@@ -185,5 +186,48 @@ void main() {
       find.byKey(const ValueKey('price-comparison-price-hub-progress-12')),
       findsOneWidget,
     );
+  });
+
+  testWidgets('öffnet für fehlende Preise direkt die Auflösung', (tester) async {
+    const product = Product(
+      id: 'price-hub-gap-milk',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'Milch',
+    );
+    final resolved = <PriceGapPriority>[];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PricesHubScreen(
+            onOpenCatalog: () {},
+            onOpenSettings: () {},
+            summary: 'Nur eigene Preise',
+            shoppingList: [ListItem(product: product)],
+            enabledStoreNames: const ['Lidl', 'ALDI Süd'],
+            onResolvePriceGap: (gap) async => resolved.add(gap),
+          ),
+        ),
+      ),
+    );
+
+    final card = find.byKey(
+      const ValueKey('price-comparison-price-hub-gap-milk'),
+    );
+    await tester.tap(card);
+    await tester.pumpAndSettle();
+
+    final action = find.byKey(
+      const ValueKey('resolve-price-gap-price-hub-gap-milk'),
+    );
+    expect(action, findsOneWidget);
+    tester.widget<TextButton>(action).onPressed!.call();
+    await tester.pump();
+
+    expect(resolved, hasLength(1));
+    expect(resolved.single.item.product.id, product.id);
+    expect(resolved.single.missingMarketCount, 2);
+    expect(resolved.single.marketCount, 2);
   });
 }
