@@ -47,6 +47,60 @@ void main() {
     expect(saved.map((item) => item.price), containsAll([0.79, 0.89]));
   });
 
+  test('quota recovery compacts automatic evidence and keeps receipts', () async {
+    final raw = <String>[];
+    var writes = 0;
+    final store = PriceObservationStore(
+      readRaw: () async => raw.isEmpty ? null : List<String>.of(raw),
+      writeRaw: (values) async {
+        writes++;
+        if (writes == 1) {
+          throw StateError(
+            'QuotaExceededError: The quota has been exceeded.',
+          );
+        }
+        raw
+          ..clear()
+          ..addAll(values);
+      },
+    );
+
+    final receipt = PriceObservation(
+      id: 'receipt|kept',
+      productId: 'milk-15',
+      familyKey: 'milch',
+      storeName: 'Lidl',
+      price: 0.95,
+      observedAt: DateTime(2026, 10, 13),
+      source: PriceObservationSource.receipt,
+    );
+    final automatic = [
+      for (var index = 0; index < 4; index++)
+        PriceObservation(
+          id: 'prospect|$index',
+          productId: 'milk-15',
+          familyKey: 'milch',
+          storeName: 'Lidl',
+          price: 0.89 + index / 100,
+          observedAt: DateTime(2026, 10, 10 + index),
+          source: PriceObservationSource.retailerWebsite,
+        ),
+    ];
+
+    final saved = await store.append([receipt, ...automatic]);
+
+    expect(writes, 2);
+    expect(saved.where((entry) => entry.source == PriceObservationSource.receipt),
+        hasLength(1));
+    expect(
+      saved.where(
+        (entry) => entry.source == PriceObservationSource.retailerWebsite,
+      ),
+      hasLength(1),
+    );
+    expect((await store.load()), hasLength(2));
+  });
+
   test('a parallel read waits for a pending price observation write', () async {
     final store = PriceObservationStore();
     final reader = PriceObservationStore();

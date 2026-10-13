@@ -278,3 +278,12 @@ Technische Wahrheit bleibt GitHub. Kleine Änderungen werden inkrementell umgese
   fehlertolerante Projektion. Ein neuer Adress- oder Aktualisierungsvorgang
   invalidiert ältere Antworten; Cache-/Routingfehler verlassen den Ladezustand
   kontrolliert und verändern keine bestehende Fallback-Entfernung.
+
+## Lokale Preisbeobachtung und Browser-Speicher
+Automatisch erzeugte externe Preisbeobachtungen aus Prospekten, Händlerquellen,
+Open Prices und Schätzquellen werden bei der lokalen Persistenz begrenzt: pro
+exakter Produkt-/Markt-/Quell-/Variantenbasis bleiben die neuesten drei
+Beobachtungen erhalten, insgesamt höchstens 2.000 automatische Einträge. Bei
+einem Browser-Quota-Fehler erfolgt ein kleinerer Wiederherstellungsversuch.
+Bon-, manuelle, Bild- und sonstige nutzernahe Belege werden nicht durch diese
+Verdichtung entfernt.

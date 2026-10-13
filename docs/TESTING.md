@@ -335,3 +335,4 @@ Der automatische Prospektpreis-Lernpfad wird mit einer anonymen Fixture geprüft
 - Bei Daten-/Preis-/Routenänderungen die passenden Regressionen benennen; bei UI-Änderungen die geprüften Screens/Viewport dokumentieren.
 - Release-Workflow separat bewerten, falls er durch den Auftrag berührt wird.
 
+- `price_observation_store_test.dart` simuliert ein Browser-`QuotaExceededError`, prüft die Verdichtung automatischer Preisbeobachtungen und stellt sicher, dass Bonbelege erhalten bleiben.

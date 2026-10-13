@@ -3195,3 +3195,10 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - [x] Identität, Filiale, Packungsgröße, Quelle, Nachweis, Erfassungszeit und Angebotszeitraum werden beim regulären Preis unverändert mitgeführt.
 - [x] Bestehende historische Beobachtungen werden additiv bewahrt; der neue Importpfad löscht keine lokalen Daten.
 - [x] Regression prüft regulären Preis, Angebotspreis und offer-only Zeile getrennt.
+
+## Update 14.10.2026 – Browser-Speicher beim Prospektimport geschützt
+- [x] Automatische externe Preisbeobachtungen werden lokal mit einem begrenzten Verlauf pro Produkt-/Markt-/Quellschlüssel gespeichert.
+- [x] Bei einem bereits übergroßen Bestand wird beim nächsten Preisimport zuerst eine normale Verdichtung und bei einem Browser-Quota-Fehler ein kleinerer Wiederherstellungsversuch ausgeführt.
+- [x] Bon-, manuelle und andere nutzernahe Belege bleiben von dieser automatischen Verdichtung ausgeschlossen.
+- [x] Die Prospektanzeige und der Live-/Cache-Fallback bleiben unabhängig von einem lokalen Preis-Historien-Schreibfehler.
+- [x] Eine Regression simuliert `QuotaExceededError` und prüft, dass die neuesten automatischen Daten verdichtet und Bonbelege erhalten bleiben.
