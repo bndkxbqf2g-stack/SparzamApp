@@ -85,7 +85,7 @@ void main() {
 
       expect(cached, isNotNull);
       expect(cached!.fromCache, isTrue);
-      expect(cached.generatedAt, DateTime(2026, 10, 12, 4));
+      expect(cached.generatedAt, DateTime.utc(2026, 10, 12, 4));
       expect(requestCount, 0);
 
       final refreshed = await module.execute(
@@ -93,7 +93,7 @@ void main() {
       );
 
       expect(refreshed.fromCache, isFalse);
-      expect(refreshed.generatedAt, DateTime(2026, 10, 12, 5));
+      expect(refreshed.generatedAt, DateTime.utc(2026, 10, 12, 5));
       expect(requestCount, 1);
       module.close();
     },
