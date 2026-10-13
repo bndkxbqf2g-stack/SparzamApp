@@ -163,6 +163,103 @@ def parsed(html_text):
 def money(value):
     return float(value.replace(",", "."))
 
+
+# Keep package metadata at the source boundary whenever the retailer only
+# exposes it in the product label.  Ranges deliberately stay unresolved:
+# choosing the lower or upper bound would create a false unit-price claim.
+_PACKAGE_HINT_RE = re.compile(
+    r"(?<![\d,])"
+    r"(?:\d+\s*[x×]\s*\d+(?:[,.]\d+)?\s*-?\s*"
+    r"(?:kg|g|mg|l|cl|ml|stück|stk\.?|st)"
+    r"|\d+\s*er\s*[- ]?(?:schale|pack(?:ung)?|becher|dose|flasche)"
+    r"|\d+(?:[,.]\d+)?\s*(?:kg|g|mg|l|cl|ml|stück|stk\.?|st))"
+    r"\b",
+    re.IGNORECASE,
+)
+_PACKAGE_RANGE_RE = re.compile(
+    r"\d+(?:[,.]\d+)?\s*(?:kg|g|mg|l|cl|ml)\s*"
+    r"(?:/|-|–|bis)\s*\d+(?:[,.]\d+)?\s*(?:kg|g|mg|l|cl|ml)?",
+    re.IGNORECASE,
+)
+_PACKAGE_AMBIGUOUS_RE = re.compile(
+    r"(?:\d+(?:[,.]\d+)?\s*/\s*)+\d+(?:[,.]\d+)?\s*"
+    r"(?:kg|g|mg|l|cl|ml|stück|stk\.?|st)\b"
+    r"|\d+(?:[,.]\d+)?\s*(?:kg|g|mg|l|cl|ml|stück|stk\.?|st)\s*"
+    r"=\s*\d+(?:[,.]\d+)?\s*"
+    r"(?:kg|g|mg|l|cl|ml|stück|stk\.?|st)?\b",
+    re.IGNORECASE,
+)
+_PACKAGE_VALUE_RE = re.compile(
+    r"(?P<count>\d+)\s*[x×]\s*(?P<amount>\d+(?:[,.]\d+)?)\s*-?\s*"
+    r"(?P<unit>kg|g|mg|l|cl|ml|stück|stk\.?|st)\b"
+    r"|(?P<er>\d+)\s*er\s*[- ]?(?:schale|pack(?:ung)?|becher|dose|flasche)\b"
+    r"|(?P<single>\d+(?:[,.]\d+)?)\s*(?P<single_unit>kg|g|mg|l|cl|ml|stück|stk\.?|st)\b",
+    re.IGNORECASE,
+)
+
+
+def package_hint(label):
+    """Return explicit package text without guessing over a range."""
+
+    text = clean(label)
+    if (
+        not text
+        or _PACKAGE_RANGE_RE.search(text)
+        or _PACKAGE_AMBIGUOUS_RE.search(text)
+    ):
+        return None
+    match = _PACKAGE_HINT_RE.search(text)
+    return clean(match.group(0)) if match else None
+
+
+def _package_quantity(package):
+    if not package:
+        return None
+    match = _PACKAGE_VALUE_RE.search(package)
+    if match is None:
+        return None
+    if match.group("er"):
+        return float(match.group("er")), "Stk"
+    if match.group("count"):
+        amount = float(match.group("amount").replace(",", "."))
+        count = float(match.group("count"))
+        unit = match.group("unit").lower().replace(".", "")
+        amount *= count
+    else:
+        amount = float(match.group("single").replace(",", "."))
+        unit = match.group("single_unit").lower().replace(".", "")
+    if unit in {"mg"}:
+        return amount / 1_000_000, "kg"
+    if unit in {"g"}:
+        return amount / 1_000, "kg"
+    if unit in {"kg"}:
+        return amount, "kg"
+    if unit in {"ml"}:
+        return amount / 1_000, "l"
+    if unit in {"cl"}:
+        return amount / 100, "l"
+    if unit in {"l"}:
+        return amount, "l"
+    if unit in {"stück", "stk", "st"}:
+        return amount, "Stk"
+    return None
+
+
+def package_metadata(label, offer_price):
+    """Return source evidence and a conservative base price, if possible."""
+
+    package = package_hint(label)
+    quantity = _package_quantity(package)
+    if package is None or quantity is None:
+        return None, None
+    amount, unit = quantity
+    if not offer_price or not isinstance(offer_price, (int, float)):
+        return package, None
+    if amount <= 0 or not float(offer_price) > 0:
+        return package, None
+    base_price = f"{float(offer_price) / amount:.2f}".replace(".", ",")
+    return package, f"{base_price} €/" + unit
+
 def parse_date(value):
     try:
         return datetime.strptime(value, "%d.%m.%Y").date()
@@ -249,6 +346,11 @@ def record(
     category = clean(category or "")
     if category:
         result["category"] = category
+    package_size, base_unit_price = package_metadata(label, offer_price)
+    if package_size:
+        result["packageSize"] = package_size
+    if base_unit_price:
+        result["priceByBaseUnit"] = base_unit_price
     return result
 
 ALDI_API_URL = "https://api.aldi-sued.de/v3/product-search"
@@ -2811,3 +2913,4 @@ if __name__ == "__main__":
         print("Unbekannte Quelle:", ", ".join(unknown), file=sys.stderr)
         sys.exit(2)
     sys.exit(main(arguments))
+

@@ -22,6 +22,54 @@ class ProspectParserTest(unittest.TestCase):
         expected = datetime.now(ZoneInfo("Europe/Berlin")).date()
         self.assertEqual(refresh.local_today(), expected)
 
+    def test_record_preserves_single_package_and_base_price(self):
+        item = refresh.record(
+            "Lidl",
+            "Butter 250 g",
+            1.99,
+            refresh.date(2026, 10, 12),
+            refresh.date(2026, 10, 17),
+            "https://example.test/butter",
+        )
+        self.assertEqual(item["packageSize"], "250 g")
+        self.assertEqual(item["priceByBaseUnit"], "7,96 €/kg")
+
+    def test_record_uses_total_multipack_quantity(self):
+        item = refresh.record(
+            "PENNY",
+            "Mineralwasser 6 x 1,5 l",
+            3.99,
+            refresh.date(2026, 10, 12),
+            refresh.date(2026, 10, 17),
+            "https://example.test/water",
+        )
+        self.assertEqual(item["packageSize"], "6 x 1,5 l")
+        self.assertEqual(item["priceByBaseUnit"], "0,44 €/l")
+
+    def test_record_does_not_guess_over_variable_package_range(self):
+        item = refresh.record(
+            "Netto",
+            "Tomaten 160 g - 175 g",
+            0.99,
+            refresh.date(2026, 10, 12),
+            refresh.date(2026, 10, 17),
+            "https://example.test/tomatoes",
+        )
+        self.assertNotIn("packageSize", item)
+        self.assertNotIn("priceByBaseUnit", item)
+
+    def test_record_does_not_choose_one_variant_from_slash_package(self):
+        item = refresh.record(
+            "Lidl",
+            "Pralinen je 114/110/105 g",
+            1.49,
+            refresh.date(2026, 10, 12),
+            refresh.date(2026, 10, 17),
+            "https://example.test/pralines",
+        )
+        self.assertNotIn("packageSize", item)
+        self.assertNotIn("priceByBaseUnit", item)
+
     def test_http_403_is_not_retried_with_a_different_user_agent(self):
         error = HTTPError(
             "https://example.test/prospect",
@@ -1229,3 +1277,4 @@ ab Montag, 28.09.26
 
 if __name__ == "__main__":
     unittest.main()
+

@@ -159,4 +159,34 @@ void main() {
       isNotEmpty,
     );
   });
+
+  test('Prospektfeed bewahrt sichere Packungs- und Grundpreisbasen', () {
+    final raw = File('assets/prospects/current.json').readAsStringSync();
+    final feed = parseProspectFeed(raw);
+    final packaged = feed.records
+        .where(
+          (record) =>
+              record.packageSize != null &&
+              record.packageSize!.trim().isNotEmpty &&
+              record.priceByBaseUnit != null &&
+              record.priceByBaseUnit!.contains('€/'),
+        )
+        .toList(growable: false);
+
+    expect(packaged, isNotEmpty);
+    expect(packaged.any((record) => record.packageSize == '250 ml'), isTrue);
+    expect(
+      packaged.any((record) => record.priceByBaseUnit == '27,96 €/l'),
+      isTrue,
+    );
+    expect(
+      feed.records.any(
+        (record) => record.productLabel.contains('114/110/105 g') &&
+            record.packageSize == null &&
+            record.priceByBaseUnit == null,
+      ),
+      isTrue,
+    );
+  });
 }
+

@@ -62,6 +62,10 @@ Die Testsuite enthält Domänen-, Store-, Service-, Widget- und Ablaufprüfungen
 - `test_kaufda_prospects.py` prüft zusätzlich, dass ein fehlgeschlagener
   Cache-Ersatz den vorherigen Offline-Datensatz und keine temporäre Datei
   zurücklässt.
+- `test_refresh_prospects.py` prüft, dass offizielle Prospektlabels ihre
+  sichere Einzel-/Mehrfach-/Zählpackung und den daraus berechneten Grundpreis
+  behalten. Variable Angaben mit Bindestrich oder Schrägstrich werden bewusst
+  ohne Grundpreis übernommen.
 - Derselbe Adapter speichert Liveantworten erst nach erfolgreichem Parsing und
   verwendet bei einer HTTP-200-Formatänderung den vorherigen gültigen Cache;
   eine Regression prüft außerdem, dass der alte Cache unverändert bleibt.
@@ -329,3 +333,4 @@ Quellen keinen Request erzeugen und ausschließlich lokale Daten verwenden.
   erfolgreich abschließen; native Geräteabnahme bleibt davon getrennt.
 - Bei Daten-/Preis-/Routenänderungen die passenden Regressionen benennen; bei UI-Änderungen die geprüften Screens/Viewport dokumentieren.
 - Release-Workflow separat bewerten, falls er durch den Auftrag berührt wird.
+
