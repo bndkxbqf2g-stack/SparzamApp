@@ -337,3 +337,8 @@ Die Shell-Regression wechselt zwischen Prospekte und Liste und prüft, dass der 
 - Release-Workflow separat bewerten, falls er durch den Auftrag berührt wird.
 
 - `price_observation_store_test.dart` simuliert ein Browser-`QuotaExceededError`, prüft die Verdichtung automatischer Preisbeobachtungen und stellt sicher, dass Bonbelege erhalten bleiben.
+
+
+Die Preislern-Regression prüft zusätzlich, dass abgelaufene und zukünftige
+Prospektperioden beim automatischen regulären Preisimport ignoriert werden,
+während die jeweils aktive Periode mit ihrer Gültigkeit erhalten bleibt.
