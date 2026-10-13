@@ -84,7 +84,7 @@ void main() {
             ProspectIssue(
               storeName: 'PENNY',
               title: 'Aktionsprospekt',
-              pages: const <ProspectPage>[],
+               pages: <ProspectPage>[],
               location: 'Zellingen',
               sourceStatus: 'error',
               recordCount: 1,
@@ -306,7 +306,7 @@ void main() {
             ProspectIssue(
               storeName: 'Lidl',
               title: 'KaufDA regional',
-              pages: const <ProspectPage>[],
+               pages: <ProspectPage>[],
               sourceStatus: 'regional_only',
               recordCount: 1,
             ),
@@ -341,7 +341,7 @@ void main() {
             ProspectIssue(
               storeName: 'Lidl',
               title: 'Offizieller Prospekt',
-              pages: const <ProspectPage>[],
+              pages: <ProspectPage>[],
               sourceStatus: 'ok',
               recordCount: 1,
             ),
