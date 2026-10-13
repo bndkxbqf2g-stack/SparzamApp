@@ -397,8 +397,8 @@ class _PriceComparisonCardState extends State<_PriceComparisonCard> {
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Text(
-          '${current}/${matrix.length} Märkte aktuell'
-          '${historical == 0 ? '' : ' · ${historical} historisch'}',
+          '$current/${matrix.length} Märkte aktuell'
+          '${historical == 0 ? '' : ' · $historical historisch'}',
         ),
         children: expanded
             ? [
