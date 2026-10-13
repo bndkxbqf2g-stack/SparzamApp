@@ -1326,3 +1326,15 @@ Query-Auflösung zu keinem Abruf und wird nicht still auf den Defaultwert
 angehoben. Negative oder syntaktisch ungültige Werte bleiben beim sicheren
 Default.
 
+## D172 – Automatische Preisbeobachtungen bleiben browser-speicherfähig
+
+Prospekt-, Händler-, Open-Prices- und Schätzbeobachtungen werden lokal nicht
+unbegrenzt als JSON-Liste fortgeschrieben. Die Persistenz behält pro exakter
+Produkt-/Markt-/Quell-/Variantenbasis die neuesten drei automatischen
+Beobachtungen und insgesamt höchstens 2.000 automatische Einträge. Bei einem
+Browser-Quota-Fehler wird ein kleinerer Retry mit den neuesten automatischen
+Belegen ausgeführt.
+
+Bon-, manuelle, Bild- und sonstige nutzernahe Preisbelege bleiben geschützt.
+Ein Speicherfehler darf weder den validierten Live-Prospektfeed noch dessen
+Cache-/Asset-Fallback als Händlerfehler erscheinen lassen.

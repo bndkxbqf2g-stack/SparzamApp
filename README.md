@@ -480,6 +480,7 @@ Diese Funktionen benötigen eine Internetverbindung.
 - Die Vergleichbarkeitsprüfung historischer Bonpreise verlangt vorhandene Einzel-/Grundpreise und führt bekannte Masse-/Volumeneinheiten vor dem Median auf die gemeinsame Basiseinheit (kg/l) zurück; gemischte Dimensionen oder unvollständige Mengenmetadaten bleiben als historische Packungspreise gekennzeichnet.
 - Händlerprospekte aus proprietären Händler-Apps werden nicht automatisch importiert.
 - Keine Cloud-/Mehrbenutzer-Synchronisierung.
+- Automatische externe Preisbeobachtungen werden lokal begrenzt verdichtet, damit Browser-Speicherlimits den Prospektimport nicht blockieren; Bon- und manuelle Belege bleiben erhalten.
 - Die Regalvideo-Erfassung befindet sich weiterhin nur in Evaluation und verändert ohne separate Entscheidung keine App-Daten.
 
 ## 14. Projektstruktur
