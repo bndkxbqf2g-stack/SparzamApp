@@ -170,6 +170,17 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
           controller: _bringScrollController,
           key: const ValueKey('prospect-bring-scroll'),
           slivers: [
+            if (hasSelection)
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                sliver: _ProspectSearchResultsSliver(
+                  records: matchingRecords,
+                  prospects: visibleProspects,
+                  catalogProducts: widget.catalogProducts,
+                  onAddProduct: widget.onAddProduct,
+                  query: query,
+                ),
+              ),
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
               sliver: SliverList(
@@ -311,21 +322,11 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                 ]),
               ),
             ),
-            if (hasSelection)
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                sliver: _ProspectSearchResultsSliver(
-                  records: matchingRecords,
-                  prospects: visibleProspects,
-                  catalogProducts: widget.catalogProducts,
-                  onAddProduct: widget.onAddProduct,
-                  query: query,
-                ),
-              ),
             if (!hasSelection && visibleProspects.isNotEmpty)
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 sliver: SliverLayoutBuilder(
+                  key: const ValueKey('prospect-grid'),
                   builder: (context, constraints) {
                     final columns =
                         constraints.crossAxisExtent >= 650 ? 3 : 2;
@@ -360,7 +361,6 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                       ),
                     );
                   },
-                  key: const ValueKey('prospect-grid'),
                 ),
               ),
             if (query.trim().isEmpty && visibleProspects.isNotEmpty)
