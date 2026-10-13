@@ -60,11 +60,19 @@ List<PriceObservation> prospectPriceObservations({
     if (normalizedLabel.isEmpty) continue;
     final identity = identifyProduct(record.productLabel);
     final package = prospectPackage(record.packageSize ?? record.productLabel);
-    // Use the same conservative identity resolver as offer import. It may
-    // select a unique compatible catalog variant when the source supplies an
-    // explicit package basis (for example KaufDA's separate `500 g` field),
-    // while still rejecting ambiguous families and package mismatches.
-    final exactProduct = resolveOfferImport(record, catalog).product;
+    // KaufDA may put the package basis in a separate field and use a generic
+    // label such as `Kaffee`. Resolve that one narrow case through the normal
+    // offer importer; unrelated labels such as `Melitta Kaffee 500 g` remain
+    // historical fallback evidence unless their full catalog identity is
+    // explicit.
+    final exactProduct =
+        (record.packageSize != null && _isKaufdaEvidence(record))
+        ? resolveOfferImport(record, catalog).product
+        : exactProspectProduct(
+            record.productLabel,
+            catalog,
+            packageSize: record.packageSize,
+          );
     final productId = exactProduct?.id ?? 'prospect|$normalizedLabel';
     final confidence = exactProduct == null ? 0.0 : 1.0;
     final prefix = [
@@ -150,5 +158,11 @@ PriceObservationSource? _source(String source) => switch (source) {
   'retailerWebsite' => PriceObservationSource.retailerWebsite,
   _ => null,
 };
+
+bool _isKaufdaEvidence(OfferImportRecord record) {
+  if (record.sourceAdapter?.trim().toLowerCase() == 'kaufda') return true;
+  final proof = record.proofRef?.trim().toLowerCase() ?? '';
+  return proof.contains('kaufda.de');
+}
 
 
