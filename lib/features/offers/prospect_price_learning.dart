@@ -50,6 +50,24 @@ List<PriceObservation> datedProspectRegularPriceObservations({
 /// Turns a verified prospect claim into dated price evidence. An unknown or
 /// package-ambiguous label remains historical evidence, not an exact route
 /// price. Both the temporary offer price and a stated regular price are kept.
+/// Returns only regular-price evidence from prospect records that are
+/// active on the selected day. Feed refreshes may retain historical and
+/// future periods for diagnostics, but automatic current-price persistence
+/// must never promote either period into the current database snapshot.
+List<PriceObservation> currentDatedProspectRegularPriceObservations({
+  required Iterable<OfferImportRecord> records,
+  required Iterable<Product> catalogProducts,
+  DateTime? observedAt,
+  DateTime? now,
+  Iterable<String>? refreshedStores,
+}) =>
+    datedProspectRegularPriceObservations(
+      records: currentProspectRecords(records, now: now),
+      catalogProducts: catalogProducts,
+      observedAt: observedAt,
+      refreshedStores: refreshedStores,
+    );
+
 List<PriceObservation> prospectPriceObservations({
   required Iterable<OfferImportRecord> records,
   required Iterable<Product> catalogProducts,
