@@ -215,7 +215,10 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Prospekte'));
-      await tester.pumpAndSettle();
+      // The shell refreshes and persists the feed in the background. Waiting
+      // for animation quiescence would also wait on the feed status spinner;
+      // one frame is enough for the already mounted Prospekte page.
+      await tester.pump(const Duration(milliseconds: 500));
       final search = find.byWidgetPredicate(
         (widget) =>
             widget is TextField &&
@@ -258,7 +261,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Prospekte'));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
       final restartSearch = find.byWidgetPredicate(
         (widget) =>
             widget is TextField &&
