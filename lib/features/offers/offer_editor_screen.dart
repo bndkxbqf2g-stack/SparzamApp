@@ -159,10 +159,10 @@ class _OfferEditorScreenState extends State<OfferEditorScreen> {
               )
             : prospectPackage(selectedProduct.unit);
     final packageAmount = preserveEvidence
-        ? previous!.packageAmount ?? selectedPackage?.amount
+        ? previous.packageAmount ?? selectedPackage?.amount
         : selectedPackage?.amount;
     final packageUnit = preserveEvidence
-        ? previous!.packageUnit ?? selectedPackage?.unit
+        ? previous.packageUnit ?? selectedPackage?.unit
         : selectedPackage?.unit;
 
     Navigator.pop(
@@ -174,12 +174,12 @@ class _OfferEditorScreenState extends State<OfferEditorScreen> {
         originalPrice: normal,
         offerPrice: sale,
         validUntil: validUntil,
-        validFrom: preserveEvidence ? previous!.validFrom : null,
-        source: preserveEvidence ? previous!.source : 'manual',
-        sourceAdapter: preserveEvidence ? previous!.sourceAdapter : null,
-        capturedAt: preserveEvidence ? previous!.capturedAt : null,
-        proofRef: preserveEvidence ? previous!.proofRef : null,
-        imageUrl: preserveEvidence ? previous!.imageUrl : null,
+        validFrom: preserveEvidence ? previous.validFrom : null,
+        source: preserveEvidence ? previous.source : 'manual',
+        sourceAdapter: preserveEvidence ? previous.sourceAdapter : null,
+        capturedAt: preserveEvidence ? previous.capturedAt : null,
+        proofRef: preserveEvidence ? previous.proofRef : null,
+        imageUrl: preserveEvidence ? previous.imageUrl : null,
         packageAmount: packageAmount,
         packageUnit: packageUnit,
         unitPrice: normalizedUnitPrice(
@@ -187,9 +187,9 @@ class _OfferEditorScreenState extends State<OfferEditorScreen> {
           amount: packageAmount,
           unit: packageUnit,
         ),
-        locationId: preserveEvidence ? previous!.locationId : null,
-        region: preserveEvidence ? previous!.region : null,
-        address: preserveEvidence ? previous!.address : null,
+        locationId: preserveEvidence ? previous.locationId : null,
+        region: preserveEvidence ? previous.region : null,
+        address: preserveEvidence ? previous.address : null,
         buyQuantity: _int(buyQuantity),
         payQuantity: _int(payQuantity),
         couponPercent: _double(couponPercent),
