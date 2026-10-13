@@ -32,6 +32,7 @@ class _ProspectOfferCardState extends State<ProspectOfferCard> {
   void _add() {
     final callback = widget.onAdd;
     if (callback == null) return;
+    debugPrint('PROSPECT_CARD_ADD ${widget.record.sourceId}');
     callback();
     if (!mounted) return;
     setState(() => added = true);
@@ -387,4 +388,5 @@ String _dateTime(DateTime value) {
   final local = value.toLocal();
   return '${_date(local)} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')} Uhr';
 }
+
 
