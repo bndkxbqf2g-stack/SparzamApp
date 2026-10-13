@@ -44,7 +44,11 @@ void main() {
       findsOneWidget,
     );
 
-    await tester.tap(find.byKey(const ValueKey('offer-cover-open-grid-Lidl')));
+    final cover = find.byKey(
+      const ValueKey('offer-cover-open-grid-Lidl'),
+    );
+    await tester.ensureVisible(cover);
+    await tester.tap(cover);
     await tester.pump();
 
     expect(find.text('Prospektseiten (1)'), findsOneWidget);
