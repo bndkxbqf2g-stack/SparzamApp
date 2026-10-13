@@ -33,6 +33,37 @@ void main() {
     validUntil: DateTime(2026, 9, 30),
   );
 
+  test('shopping quotes retain package and base-unit price', () {
+    const basisProduct = Product(
+      id: 'basis-milk',
+      name: 'Milch',
+      unit: '500 g',
+      group: 'milch',
+      packageAmount: 500,
+      packageUnit: 'g',
+    );
+    final quote = shoppingQuotes(
+      ListItem(product: basisProduct),
+      prices: [
+        MarketPrice(
+          productId: basisProduct.id,
+          storeName: 'Lidl',
+          price: 2.49,
+          updatedAt: DateTime(2026, 9, 24),
+          source: MarketPriceSource.openPrices,
+          quantity: 500,
+          unit: 'g',
+          unitPrice: 4.98,
+        ),
+      ],
+      offers: const [],
+      enabledStores: const ['Lidl'],
+      now: DateTime(2026, 9, 24),
+    ).single;
+
+    expect(quote.packageLabel, '500 g');
+    expect(quote.baseUnitPriceLabel, 'Grundpreis 4,98 €/kg');
+  });
   test('older receipts remain dated observations alongside current offers', () {
     final quotes = shoppingQuotes(
       item,

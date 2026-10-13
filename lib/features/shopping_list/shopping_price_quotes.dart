@@ -10,6 +10,7 @@ import '../offers/prospect_price_statistics.dart';
 import '../route/market_price_quality.dart';
 import '../../services/branch_identity.dart';
 import '../../services/market_price_comparability.dart';
+import '../../services/quantity_normalizer.dart';
 
 enum ShoppingQuoteKind { receipt, ownPrice, openPrices, offer, prospectHistory }
 
@@ -21,6 +22,9 @@ class ShoppingQuote {
     this.observedAt,
     this.offer,
     this.comparisonPrice,
+    this.quantity,
+    this.unit,
+    this.baseUnitPrice,
     this.historical = false,
   });
 
@@ -32,9 +36,39 @@ class ShoppingQuote {
   /// Quality-adjusted value used only to choose the visible quote in a market.
   /// The displayed amount remains the observed checkout or offer amount.
   final double? comparisonPrice;
+  /// Package basis retained for the price matrix and its detail view.
+  final double? quantity;
+  final String? unit;
+  /// Normalized price for [unit], for example €/kg or €/l.
+  final double? baseUnitPrice;
   final bool historical;
 
   double get rankingPrice => comparisonPrice ?? unitPrice;
+
+  String? get packageLabel {
+    final amount = quantity;
+    final packageUnit = unit?.trim();
+    if (amount == null ||
+        !amount.isFinite ||
+        amount <= 0 ||
+        packageUnit == null ||
+        packageUnit.isEmpty) {
+      return null;
+    }
+    return '${_number(amount)} $packageUnit';
+  }
+
+  String? get baseUnitPriceLabel {
+    final price = baseUnitPrice;
+    final normalized = normalizeQuantity(quantity, unit);
+    if (price == null ||
+        !price.isFinite ||
+        price <= 0 ||
+        normalized == null) {
+      return null;
+    }
+    return 'Grundpreis ${_money(price)} €/${normalized.baseUnit}';
+  }
 
   String get sourceLabel => switch (kind) {
     ShoppingQuoteKind.receipt =>
@@ -167,6 +201,9 @@ List<ShoppingQuote> shoppingQuotes(
             ? ShoppingQuoteKind.openPrices
             : ShoppingQuoteKind.ownPrice,
         observedAt: price.updatedAt,
+        quantity: price.quantity,
+        unit: price.unit,
+        baseUnitPrice: price.unitPrice,
         comparisonPrice: price.price *
             (1 + marketPriceQuality(price, today).uncertaintyRate),
         historical: price.source == MarketPriceSource.receipt && !usable,
@@ -200,6 +237,14 @@ List<ShoppingQuote> shoppingQuotes(
         unitPrice: effective.finalPrice,
         kind: ShoppingQuoteKind.offer,
         offer: offer,
+        quantity: offer.packageAmount,
+        unit: offer.packageUnit,
+        baseUnitPrice: normalizedUnitPrice(
+              price: effective.finalPrice,
+              amount: offer.packageAmount,
+              unit: offer.packageUnit,
+            ) ??
+            offer.unitPrice,
         comparisonPrice: effective.finalPrice,
       ),
     );
@@ -364,6 +409,12 @@ int _quoteSourceOrder(ShoppingQuote quote) => switch (quote.kind) {
   ShoppingQuoteKind.prospectHistory => 2,
 };
 
+String _money(double value) => value.toStringAsFixed(2).replaceAll('.', ',');
+
+String _number(double value) {
+  final text = value.toStringAsFixed(3).replaceFirst(RegExp(r'0+$'), '');
+  return text.replaceFirst(RegExp(r'\.$'), '').replaceAll('.', ',');
+}
 String offerEvidenceLabel(Offer offer) {
   final proof = offer.proofRef?.trim();
   return '${_offerSourceLabel(offer.sourceAdapter ?? offer.source)} · '

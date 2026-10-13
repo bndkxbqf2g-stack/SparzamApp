@@ -45,6 +45,49 @@ void main() {
     expect(find.textContaining('Ersparnis 0,49 €'), findsOneWidget);
   });
 
+  testWidgets('Preisfenster zeigt Packung und Grundpreis', (tester) async {
+    const product = Product(
+      id: 'basis-milk',
+      name: 'Milch',
+      unit: '500 g',
+      group: 'milch',
+      packageAmount: 500,
+      packageUnit: 'g',
+    );
+    final price = MarketPrice(
+      productId: product.id,
+      storeName: 'Lidl',
+      price: 2.49,
+      updatedAt: DateTime.now(),
+      source: MarketPriceSource.openPrices,
+      quantity: 500,
+      unit: 'g',
+      unitPrice: 4.98,
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ShoppingPriceBadge(
+            item: ListItem(product: product),
+            prices: [price],
+            offers: const <Offer>[],
+            enabledStores: const <String>['Lidl'],
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      find.textContaining('Open Prices Lidl: 2,49 €'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('Grundpreis 4,98 €/kg'), findsOneWidget);
+    await tester.tap(find.textContaining('Open Prices Lidl: 2,49 €'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Packung 500 g'), findsOneWidget);
+    expect(find.textContaining('Grundpreis 4,98 €/kg'), findsNWidgets(2));
+  });
   testWidgets('Preisfenster zeigt Produktbild und Angebotsbild', (
     tester,
   ) async {
