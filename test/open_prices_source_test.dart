@@ -84,6 +84,87 @@ void main() {
     expect(prices.single.unitPrice, closeTo(8.98, 0.00001));
   });
 
+  test('configured branch ID cannot override a conflicting city', () async {
+    final source = OpenPricesSource(
+      client: MockClient((_) async => http.Response(
+        jsonEncode({
+          'items': [
+            {
+              'id': 12,
+              'product_code': product.ean,
+              'price': 4.49,
+              'currency': 'EUR',
+              'price_is_discounted': false,
+              'price_per': 'UNIT',
+              'date': '2026-09-20',
+              'location': {
+                'id': 42,
+                'osm_brand': 'Lidl',
+                'osm_name': 'Lidl',
+                'osm_address_city': 'München',
+              },
+            },
+          ],
+        }),
+        200,
+      )),
+    );
+
+    final prices = await source.fetchRecentPrices(
+      product: product,
+      stores: const [store],
+      now: DateTime(2026, 9, 22),
+    );
+    source.close();
+
+    expect(prices, isEmpty);
+  });
+
+  test('configured branch ID cannot override a conflicting retailer label',
+      () async {
+    const aldi = Store(
+      name: 'ALDI Süd',
+      location: 'Zellingen',
+      address: 'Filiale, 97225 Zellingen',
+      branchId: '7',
+      distanceKm: 2,
+      prices: {},
+    );
+    final source = OpenPricesSource(
+      client: MockClient((_) async => http.Response(
+        jsonEncode({
+          'items': [
+            {
+              'id': 13,
+              'product_code': product.ean,
+              'price': 4.49,
+              'currency': 'EUR',
+              'price_is_discounted': false,
+              'price_per': 'UNIT',
+              'date': '2026-09-20',
+              'location': {
+                'id': 42,
+                'osm_brand': 'ALDI Süd',
+                'osm_name': 'ALDI Süd',
+                'osm_address_city': 'Zellingen',
+              },
+            },
+          ],
+        }),
+        200,
+      )),
+    );
+
+    final prices = await source.fetchRecentPrices(
+      product: product,
+      stores: const [store, aldi],
+      now: DateTime(2026, 9, 22),
+    );
+    source.close();
+
+    expect(prices, isEmpty);
+  });
+
   test('cache is used on provider failure and stale result stays non-routeable',
       () async {
     final cache = MemoryOpenPricesCache();
