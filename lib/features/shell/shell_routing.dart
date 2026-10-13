@@ -6,7 +6,7 @@ import '../../models/road_route_matrix.dart';
 import '../route/route_optimizer.dart';
 
 class ShellRouting {
-  const ShellRouting({
+  ShellRouting({
     required this.items,
     required this.offers,
     required this.mobility,
