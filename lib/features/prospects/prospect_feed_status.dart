@@ -119,6 +119,7 @@ class ProspectCoverage {
     required this.offerImageCount,
     required this.offerCategoryCount,
     required this.offerProofCount,
+    this.regularPriceCount = 0,
     required this.hasBranch,
     required this.hasLocation,
     required this.hasAddress,
@@ -133,6 +134,9 @@ class ProspectCoverage {
   final int offerImageCount;
   final int offerCategoryCount;
   final int offerProofCount;
+  /// Count of explicitly stated, valid regular prices that can be learned
+  /// without promoting an offer amount into the regular-price history.
+  final int regularPriceCount;
   final bool hasBranch;
   final bool hasLocation;
   final bool hasAddress;
@@ -203,6 +207,7 @@ ProspectCoverage _coverageForStore(
   final offerProofCount = records
       .where((record) => hasTrustedOfferProofReference(record.proofRef))
       .length;
+  final regularPriceCount = records.where(_hasLearnableRegularPrice).length;
   final regionalOnlyCount = records.where((record) => record.regionalOnly).length;
   return ProspectCoverage(
     storeName: storeName,
@@ -213,11 +218,27 @@ ProspectCoverage _coverageForStore(
     offerImageCount: offerImageCount,
     offerCategoryCount: offerCategoryCount,
     offerProofCount: offerProofCount,
+    regularPriceCount: regularPriceCount,
     hasBranch: issue?.branchId?.trim().isNotEmpty == true,
     hasLocation: issue?.location?.trim().isNotEmpty == true,
     hasAddress: issue?.address?.trim().isNotEmpty == true,
     hasValidity: issue?.validFrom != null && issue?.validUntil != null,
   );
+}
+
+bool _hasLearnableRegularPrice(OfferImportRecord record) {
+  final regular = record.originalPrice;
+  return !record.regionalOnly &&
+      hasExactOfferRecordBranch(record) &&
+      hasTrustedOfferProofReference(record.proofRef) &&
+      regular != null &&
+      regular.isFinite &&
+      regular > 0 &&
+      record.offerPrice.isFinite &&
+      record.offerPrice > 0 &&
+      regular >= record.offerPrice &&
+      (record.validFrom == null ||
+          !record.validUntil.isBefore(record.validFrom!));
 }
 
 int _prospectPageCount(ProspectIssue? issue) {
@@ -263,6 +284,9 @@ class _ProspectCoverageCardState extends State<ProspectCoverageCard> {
     final marketsWithProof = coverage
         .where((entry) => entry.offerProofCount > 0)
         .length;
+    final marketsWithRegularPrices = coverage
+        .where((entry) => entry.regularPriceCount > 0)
+        .length;
     final regionalOffers = coverage.fold<int>(
       0,
       (sum, entry) => sum + entry.regionalOnlyCount,
@@ -280,6 +304,7 @@ class _ProspectCoverageCardState extends State<ProspectCoverageCard> {
           '${coverage.length} Märkte · $marketsWithOffers mit strukturierten '
           'Angeboten · $marketsWithPages mit Bildseiten · '
           '$marketsWithValidity mit Gültigkeitszeitraum · '
+          '$marketsWithRegularPrices mit Normalpreis · '
           '$marketsWithProof mit Originalnachweis'
           '${regionalOffers == 0 ? '' : ' · $regionalOffers nur regional'}',
         ),
@@ -334,6 +359,8 @@ String _coverageDetails(ProspectCoverage coverage) {
       '${coverage.offerCategoryCount}/${coverage.structuredOfferCount} Kategorien';
   final proofs =
       '${coverage.offerProofCount}/${coverage.structuredOfferCount} Nachweise';
+  final regularPrices =
+      '${coverage.regularPriceCount}/${coverage.structuredOfferCount} Normalpreise';
   final storeSignals = '${coverage.availableStoreSignals}/4 Filialdaten';
   final regional = coverage.regionalOnlyCount == 0
       ? ''
@@ -342,6 +369,7 @@ String _coverageDetails(ProspectCoverage coverage) {
       '$regional · '
       '${coverage.pageCount} Bildseiten · $productImages · $categories · '
       '$proofs · '
+      '$regularPrices · '
       '$storeSignals';
 }
 
