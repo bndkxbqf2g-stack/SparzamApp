@@ -111,6 +111,7 @@ class RoutePriceEvidenceSummary {
     required this.offers,
     required this.receipts,
     required this.ownPrices,
+    this.prospectPrices = 0,
     required this.openPrices,
     required this.undocumented,
     required this.oldestObservation,
