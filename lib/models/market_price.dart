@@ -102,6 +102,10 @@ class MarketPrice {
       return isUsable(now: now, openPricesMaxAgeDays: openPricesMaxAgeDays)
           ? 'Bonpreis' : 'historischer Bonpreis';
     }
+    if (source == MarketPriceSource.prospect) {
+      return isUsable(now: now, openPricesMaxAgeDays: openPricesMaxAgeDays)
+          ? 'Prospektpreis' : 'historischer Prospektpreis';
+    }
     return isUsable(
       now: now,
       openPricesMaxAgeDays: openPricesMaxAgeDays,
