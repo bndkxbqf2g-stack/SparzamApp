@@ -176,6 +176,7 @@ List<Widget> buildShellPages({
     prospectPriceHistory: prospectPriceHistory,
     onOpenList: onOpenList,
     onOpenRoute: onOpenRoute,
+    onResolvePriceGap: onResolvePriceGap,
   ),
   MoreScreen(
     onOpenStores: onEditStores,
