@@ -91,10 +91,14 @@ void main() {
       );
       await tester.tap(find.text('Öffnen'));
       await tester.pumpAndSettle();
-      await tester.enterText(
-        find.widgetWithText(TextFormField, 'Zeitwert für Wegezeit (optional)'),
-        '12,50',
+      final timeValue = find.byWidgetPredicate(
+        (widget) =>
+            widget is TextFormField &&
+            widget.decoration?.labelText ==
+                'Zeitwert für Wegezeit (optional)',
       );
+      expect(timeValue, findsOneWidget);
+      await tester.enterText(timeValue, '12,50');
       await tester.scrollUntilVisible(
         find.text('Speichern'),
         250,
@@ -107,3 +111,4 @@ void main() {
     },
   );
 }
+
