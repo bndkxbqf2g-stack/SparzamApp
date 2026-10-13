@@ -59,6 +59,7 @@ class _InMemoryShoppingListStore extends ShoppingListStore {
 
   @override
   Future<void> save(List<ListItem> next) async {
+    print('TEST_LIST_SAVE ${next.length}');
     items = List<ListItem>.of(next);
   }
 
