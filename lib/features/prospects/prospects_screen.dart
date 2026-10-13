@@ -449,6 +449,12 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
       issueByStore.putIfAbsent(issue.storeName, () => issue);
     }
 
+    // Keep product identity resolution out of repeated sliver child builds. The
+    // map lives for the lifetime of this delegate build, so fast scrolling can
+    // reuse both positive and negative matches without changing the identity
+    // rules used by addableProductForProspectOffer.
+    final resolvedProducts = <String, Product?>{};
+
     final rows = <_ProspectSearchRow>[
       _ProspectSearchRow.heading('${records.length} passende Prospektartikel'),
       const _ProspectSearchRow.description(
@@ -509,7 +515,11 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
               ),
             _ProspectSearchRowKind.offer => Padding(
                 padding: const EdgeInsets.only(bottom: 8),
-                child: _buildOffer(context, row.record!),
+                child: _buildOffer(
+                context,
+                row.record!,
+                resolvedProducts,
+              ),
               ),
           };
         },
@@ -520,8 +530,16 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
     );
   }
 
-  Widget _buildOffer(BuildContext context, OfferImportRecord record) {
-    final product = addableProductForProspectOffer(record, catalogProducts);
+  Widget _buildOffer(
+    BuildContext context,
+    OfferImportRecord record,
+    Map<String, Product?> resolvedProducts,
+  ) {
+    final product = _memoizedProspectProduct(
+      record,
+      catalogProducts,
+      resolvedProducts,
+    );
     return ProspectOfferCard(
       key: ValueKey('prospect-search-offer-${record.sourceId}'),
       record: record,
@@ -537,6 +555,21 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
 }
 
 enum _ProspectSearchRowKind { heading, description, store, offer }
+
+Product? _memoizedProspectProduct(
+  OfferImportRecord record,
+  Iterable<Product> catalogProducts,
+  Map<String, Product?> cache,
+) {
+  final sourceId = record.sourceId.trim();
+  final key = sourceId.isEmpty
+      ? '${record.storeName}|${record.productLabel}|${record.offerPrice}|${record.validUntil.toIso8601String()}'
+      : sourceId;
+  if (cache.containsKey(key)) return cache[key];
+  final product = addableProductForProspectOffer(record, catalogProducts);
+  cache[key] = product;
+  return product;
+}
 
 class _ProspectSearchRow {
   const _ProspectSearchRow.heading(this.text)
@@ -1470,6 +1503,7 @@ class ProspectViewerScreen extends StatelessWidget {
           .putIfAbsent(_prospectCategoryForRecord(record), () => [])
           .add(record);
     }
+    final resolvedProducts = <String, Product?>{};
     final categories = groupedItems.keys.toList()
       ..sort(
         (a, b) =>
@@ -1597,9 +1631,10 @@ class ProspectViewerScreen extends StatelessWidget {
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
                       final record = groupedItems[category]![index];
-                      final product = addableProductForProspectOffer(
+                      final product = _memoizedProspectProduct(
                         record,
                         catalogProducts,
+                        resolvedProducts,
                       );
                       return ProspectOfferCard(
                         key: ValueKey('prospect-offer-${record.sourceId}'),

@@ -1,3 +1,8 @@
+## Update 13.10.2026 – Prospekt-Produktzuordnung beim Scrollen memoisiert
+- Suchergebnisse und Prospektseiten lösen die konkrete Produktidentität pro Angebotsdatensatz höchstens einmal je sichtbarem Delegaten auf.
+- Positive und negative Identitätsentscheidungen bleiben zwischengespeichert; die bestehende konservative Zuordnungslogik, Filialprovenienz und Übernahmeprüfung ändern sich nicht.
+- Dadurch sinkt die Arbeit beim schnellen Scrollen durch große Angebotslisten, ohne zusätzliche Datenquelle oder Abhängigkeit.
+
 ## Update 13.10.2026 – Prospektfeed zeigt lokalen Stand sofort
 - Der Shell-Start lädt einen validierten Cache-/Bundle-Stand ohne Netzwerk vor.
 - Danach läuft der öffentliche Feed wie bisher als normaler Refresh und ersetzt den lokalen Stand nur bei erfolgreicher Prüfung.

@@ -63,6 +63,9 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
   mit Zeitraum, Seite und exakter Filiale anzeigen.
 - [ ] Prospektfeed weiter auf vollständige Artikelbilder, Kategorien,
   Filialbezug und belastbare Gültigkeit ausbauen.
+- [x] Konkrete Produktzuordnung in Such- und Seitenlisten je sichtbarem
+  Angebotsdatensatz memoisiert, damit große Prospekte beim Scrollen keine
+  wiederholte Identitätsauflösung ausführen.
 - [x] Bildseiten ermöglichen eine geprüfte manuelle Artikelübernahme mit
   Seitenlink, Preis, Gültigkeitsende und bestehender Filialprovenienz.
 
