@@ -16,6 +16,7 @@ import '../price_gaps/price_gap_card.dart';
 import '../price_gaps/price_gap_history.dart';
 import '../price_gaps/price_gap_priority.dart';
 import 'route_alternative_card.dart';
+import 'route_cost_breakdown_card.dart';
 import 'route_recommendation.dart';
 import 'route_recommendation_card.dart';
 import 'route_optimizer.dart';
@@ -279,6 +280,8 @@ class _RouteScreenState extends State<RouteScreen> {
           extraSavings: savings,
           offerSavings: offerSavings,
         ),
+        const SizedBox(height: 10),
+        RouteCostBreakdownCard(plan: best),
         if (priceEvidence.hasEvidence) ...[
           const SizedBox(height: 10),
           RoutePriceEvidenceCard(summary: priceEvidence),
