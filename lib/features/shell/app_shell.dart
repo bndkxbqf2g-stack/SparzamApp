@@ -179,6 +179,10 @@ class _AppShellState extends State<AppShell> {
   // backup, offer refresh, list save, and price sync from interleaving writes
   // to the same local preference store.
   final _persistenceSaves = SequentialWriteQueue();
+  // Receipt reinterpretation is a startup migration over separate receipt
+  // and price-observation keys. Keep it off the interactive list/offer queue
+  // so a slow local migration cannot delay a user's first add action.
+  final _backgroundSaves = SequentialWriteQueue();
   SequentialWriteQueue get _shoppingListSaves => _persistenceSaves;
   SequentialWriteQueue get _offerSaves => _persistenceSaves;
   SequentialWriteQueue get _priceSaves => _persistenceSaves;
@@ -469,7 +473,7 @@ class _AppShellState extends State<AppShell> {
     final loaded = await store.load();
     if (!_isCurrentDataRevision(revision)) return;
     final reinterpreted = reinterpretReceiptObservations(loaded);
-    await _persistenceSaves.add(() async {
+    await _backgroundSaves.add(() async {
       if (!_isCurrentDataRevision(revision)) return;
       await store.addMany(reinterpreted);
       if (!_isCurrentDataRevision(revision)) return;
