@@ -147,7 +147,7 @@ class PricesHubScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: _PriceComparisonCard(
-                key: ValueKey('${price-comparison-${item.product.id}}'),
+                key: ValueKey('price-comparison-${item.product.id}'),
                 item: item,
                 prices: marketPrices,
                 offers: offers,
