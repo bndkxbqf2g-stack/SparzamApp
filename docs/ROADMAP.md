@@ -1,3 +1,9 @@
+## Update 13.10.2026 – Shell-Routing-Snapshot
+- [x] Dashboard, Kaufabschluss und Seitensammlung teilen je Build einen
+  aktuellen und regulären RouteOptimizer für identische Eingaben.
+- [x] Wiederholte Preis-/Alternativenaufbereitung wird damit aus demselben
+  Build entfernt; ein neuer Datenstand erzeugt bewusst einen neuen Snapshot.
+
 # SparzamApp – Roadmap
 
 Diese Roadmap ist eine Prioritätenliste, kein starres Releaseversprechen.
