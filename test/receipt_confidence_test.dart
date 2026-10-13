@@ -63,15 +63,17 @@ Datum 23.07.26
   testWidgets('confidence badges expose labels and explanations', (tester) async {
     await tester.pumpWidget(
       const MaterialApp(
-        home: Wrap(
-          children: [
+        home: Scaffold(
+          body: Wrap(
+            children: [
             ReceiptConfidenceBadge(level: ReceiptConfidenceLevel.belegt),
             ReceiptConfidenceBadge(level: ReceiptConfidenceLevel.wahrscheinlich),
             ReceiptConfidenceBadge(level: ReceiptConfidenceLevel.unsicher),
             ReceiptConfidenceBadge(
               level: ReceiptConfidenceLevel.manuellBestaetigt,
             ),
-          ],
+            ],
+          ),
         ),
       ),
     );
