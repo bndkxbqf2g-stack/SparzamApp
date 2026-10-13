@@ -1305,6 +1305,7 @@ String _sourceStatusLabel(ProspectIssue issue) {
 
 class ProspectViewerScreen extends StatelessWidget {
   const ProspectViewerScreen({
+    super.key,
     required this.issue,
     required this.records,
     required this.catalogProducts,
