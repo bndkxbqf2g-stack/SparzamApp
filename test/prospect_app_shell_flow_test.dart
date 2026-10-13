@@ -272,13 +272,13 @@ void main() {
       await tester.enterText(restartSearch, 'Kaffee');
       await tester.pump();
       expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
-      await tester.tap(find.text('Liste'));
-      await tester.pump(const Duration(milliseconds: 500));
-
+      final persistedAfterRestart = await stores.shoppingList.load();
+      expect(persistedAfterRestart.single.product.name,
+          'Jacobs Kaffee Crema 500 g');
       expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
-      // Route opening is covered by the dedicated route flow tests. Keeping
-      // this test focused on feed import and restart persistence avoids
-      // coupling it to the route screen's background distance work.
+      // Route opening is covered by dedicated route flow tests. Keeping this
+      // test focused on feed import and restart persistence avoids coupling it
+      // to the route screen's background distance work.
     },
   );
 
