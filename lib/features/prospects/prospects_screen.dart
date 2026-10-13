@@ -285,6 +285,9 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                           itemBuilder: (context, index) {
                             final issue = favoriteProspects[index];
                             return _ProspectCard(
+                              key: ValueKey(
+                                'prospect-card-favorite-${issue.storeName}',
+                              ),
                               issue: issue,
                               compact: false,
                               showLocation: true,
@@ -333,6 +336,9 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                     (context, index) {
                       final issue = visibleProspects[index];
                       return _ProspectCard(
+                        key: ValueKey(
+                          'prospect-card-grid-${issue.storeName}',
+                        ),
                         issue: issue,
                         compact: true,
                         showLocation: false,
@@ -777,6 +783,7 @@ int _prospectStatusRank(String status) => switch (status) {
 
 class _ProspectCard extends StatelessWidget {
   const _ProspectCard({
+    super.key,
     required this.issue,
     required this.onTap,
     required this.isFavorite,
