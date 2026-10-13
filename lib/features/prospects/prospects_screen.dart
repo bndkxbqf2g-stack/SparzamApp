@@ -656,25 +656,27 @@ class _ProspectStoreChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          ChoiceChip(
-            label: const Text('Alle Märkte'),
-            selected: selectedStore == null,
-            onSelected: (_) => onSelected(null),
-          ),
-          const SizedBox(width: 8),
-          for (final store in stores) ...[
-            ChoiceChip(
-              label: Text(store),
-              selected: selectedStore == store,
-              onSelected: (_) => onSelected(store),
-            ),
-            const SizedBox(width: 8),
-          ],
-        ],
+    return SizedBox(
+      height: 40,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: stores.length + 1,
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return ChoiceChip(
+              label: const Text('Alle Märkte'),
+              selected: selectedStore == null,
+              onSelected: (_) => onSelected(null),
+            );
+          }
+          final store = stores[index - 1];
+          return ChoiceChip(
+            label: Text(store),
+            selected: selectedStore == store,
+            onSelected: (_) => onSelected(store),
+          );
+        },
+        separatorBuilder: (context, index) => const SizedBox(width: 8),
       ),
     );
   }
