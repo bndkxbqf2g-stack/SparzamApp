@@ -239,6 +239,12 @@ void main() {
       addTearDown(tester.view.resetDevicePixelRatio);
 
       final now = DateTime.now();
+      final coffeeProduct = Product(
+        id: 'test-jacobs-kaffee-crema-500-g',
+        name: 'Jacobs Kaffee Crema 500 g',
+        unit: '500 g',
+        group: 'Kaffee & Snacks',
+      );
       final record = OfferImportRecord(
         sourceId: 'netto-coffee-shell',
         productLabel: 'Jacobs Kaffee Crema 500 g',
@@ -273,7 +279,13 @@ void main() {
         productCatalogStore: _InMemoryProductCatalogStore(),
       );
 
-      await tester.pumpWidget(_app(stores, module));
+      await tester.pumpWidget(
+        _app(
+          stores,
+          module,
+          initialCustomProducts: [coffeeProduct],
+        ),
+      );
       await tester.pump(const Duration(milliseconds: 500));
 
       await tester.tap(find.text('Prospekte'));
@@ -316,7 +328,7 @@ void main() {
           module,
           key: const ValueKey('simulated-restart'),
           initialOffers: savedOffers,
-          initialCustomProducts: await stores.products.load(),
+          initialCustomProducts: [coffeeProduct],
           initialShoppingList: savedItems,
         ),
       );
@@ -371,7 +383,11 @@ void main() {
         validFrom: now.subtract(const Duration(days: 1)),
         validUntil: now.add(const Duration(days: 2)),
       );
-      final stores = _Stores();
+      final stores = _Stores(
+        shoppingListStore: _InMemoryShoppingListStore(),
+        offerStore: _InMemoryOfferStore(),
+        productCatalogStore: _InMemoryProductCatalogStore(),
+      );
       final module = _FakeProspectImportModule(
         ProspectFeedLoadResult(
           records: const <OfferImportRecord>[],
@@ -392,7 +408,9 @@ void main() {
       // The prospect feed persists in the background; a bounded pump keeps
       // this navigation assertion deterministic while the page is mounted.
       await tester.pump(const Duration(milliseconds: 500));
-      await tester.tap(find.text('Netto').last);
+      await tester.tap(
+        find.byKey(const ValueKey('prospect-card-favorite-Netto')),
+      );
       await tester.pump(const Duration(milliseconds: 500));
       expect(find.text('Prospektseiten (1)'), findsOneWidget);
       expect(find.text('Thüngersheim'), findsOneWidget);
