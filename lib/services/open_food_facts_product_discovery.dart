@@ -21,7 +21,6 @@ class OpenFoodFactsProductDiscovery {
     if (product.ean != null && normalizeBarcode(product.ean!) != null) {
       return product;
     }
-    if (isGenericFamilyRequest(product.name)) return null;
     if (product.packageAmount == null || product.packageUnit == null) return null;
 
     final uri = Uri.https('world.openfoodfacts.org', '/cgi/search.pl', {
@@ -42,6 +41,7 @@ class OpenFoodFactsProductDiscovery {
 
     final json = jsonDecode(response.body) as Map<String, dynamic>;
     final products = json['products'] as List<dynamic>? ?? const [];
+    final matches = <Product>[];
     for (final raw in products) {
       if (raw is! Map<String, dynamic>) continue;
       final codeValue = raw['code'];
@@ -53,12 +53,17 @@ class OpenFoodFactsProductDiscovery {
       if (code == null || code.isEmpty || name == null || name.isEmpty) continue;
       if (!_nameMatches(product, name)) continue;
       if (!_packageMatches(product, quantity)) continue;
-      return product.copyWith(
-        ean: code,
-        brand: (raw['brands'] as String?)?.trim(),
+      matches.add(
+        product.copyWith(
+          ean: code,
+          brand: (raw['brands'] as String?)?.trim(),
+        ),
       );
     }
-    return null;
+    // A generic family request may only be enriched when the response leaves
+    // one concrete identity. Multiple compatible variants (for example two
+    // milk fat levels) remain unresolved instead of guessing an EAN.
+    return matches.length == 1 ? matches.single : null;
   }
 
   bool _nameMatches(Product wanted, String candidate) {
@@ -121,3 +126,4 @@ class OpenFoodFactsProductDiscovery {
 
   void close() => _client.close();
 }
+
