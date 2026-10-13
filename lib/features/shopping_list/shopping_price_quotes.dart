@@ -12,7 +12,14 @@ import '../../services/branch_identity.dart';
 import '../../services/market_price_comparability.dart';
 import '../../services/quantity_normalizer.dart';
 
-enum ShoppingQuoteKind { receipt, ownPrice, openPrices, offer, prospectHistory }
+enum ShoppingQuoteKind {
+  receipt,
+  ownPrice,
+  prospect,
+  openPrices,
+  offer,
+  prospectHistory,
+}
 
 class ShoppingQuote {
   const ShoppingQuote({
