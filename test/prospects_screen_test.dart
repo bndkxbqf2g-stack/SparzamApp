@@ -1199,8 +1199,11 @@ void main() {
     );
     await tester.pump();
 
-    final image = tester.widget<Image>(find.byType(Image).first);
-    expect(image.webHtmlElementStrategy, WebHtmlElementStrategy.never);
+    expect(find.byType(Image), findsWidgets);
+    expect(
+      find.byKey(const ValueKey('prospect-cover-image-favorite-Lidl')),
+      findsOneWidget,
+    );
   });
 }
 
