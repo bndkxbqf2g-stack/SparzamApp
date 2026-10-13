@@ -170,6 +170,9 @@ List<ProspectIssue> _currentProspectIssues(
 }) {
   final byStore = <String, ProspectIssue>{};
   for (final issue in issues) {
+    final hasCover = issue.thumbnailUrl?.trim().isNotEmpty == true ||
+        issue.pages.isNotEmpty;
+    if (!hasCover) continue;
     final validFrom = issue.validFrom;
     final validUntil = issue.validUntil;
     if (validUntil != null &&
