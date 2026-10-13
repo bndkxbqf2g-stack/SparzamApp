@@ -448,6 +448,7 @@ int _quoteSourceOrder(ShoppingQuote quote) => switch (quote.kind) {
   ShoppingQuoteKind.offer => 0,
   ShoppingQuoteKind.receipt ||
   ShoppingQuoteKind.ownPrice ||
+  ShoppingQuoteKind.prospect ||
   ShoppingQuoteKind.openPrices => 1,
   ShoppingQuoteKind.prospectHistory => 2,
 };
