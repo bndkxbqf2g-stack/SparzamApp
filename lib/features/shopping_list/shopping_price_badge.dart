@@ -75,6 +75,7 @@ class ShoppingPriceBadge extends StatelessWidget {
                 highlighted == null
                     ? 'Noch kein belegter Marktpreis'
                     : '${highlighted.displayPrefix} ${highlighted.storeName}: ${highlighted.amountLabel}'
+                          '${highlighted.baseUnitPriceLabel == null ? '' : ' · ${highlighted.baseUnitPriceLabel}'}'
                           '${highlighted.savingsLabel == null ? '' : ' · ${highlighted.savingsLabel}'}'
                           '${quotes.length > 1 ? ' · +${quotes.length - 1}' : ''}',
                 maxLines: 1,
@@ -243,8 +244,14 @@ class ShoppingPriceBadge extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       subtitle: Text(
-                        '${quote.evidenceLabel}'
-                        '${quote.savingsLabel == null ? '' : ' · ${quote.savingsLabel}'}',
+                        [
+                          quote.evidenceLabel,
+                          if (quote.packageLabel != null)
+                            'Packung ${quote.packageLabel}',
+                          if (quote.baseUnitPriceLabel != null)
+                            quote.baseUnitPriceLabel!,
+                          if (quote.savingsLabel != null) quote.savingsLabel!,
+                        ].join(' · '),
                       ),
                       trailing: Text(
                         quote.amountLabel,
