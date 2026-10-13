@@ -64,6 +64,8 @@ String _feed({required String validUntil}) =>
 ''';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   setUp(() {
     SharedPreferencesAsyncPlatform.instance =
         InMemorySharedPreferencesAsync.empty();
@@ -297,3 +299,4 @@ void main() {
     expect(service.load, throwsA(isA<StateError>()));
   });
 }
+
