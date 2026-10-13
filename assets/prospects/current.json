@@ -1,19 +1,19 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-12T11:56:58.364070Z",
+  "generatedAt": "2026-10-13T12:07:26.418588Z",
   "sources": [
     {
       "id": "aldi_sued",
       "storeName": "ALDI Süd",
       "url": "https://www.aldi-sued.de/",
       "status": "ok",
-      "recordCount": 32,
+      "recordCount": 33,
       "mode": "structured_api",
       "prospects": [
         {
-          "id": "e1a666f26329bf57c1ad",
+          "id": "ef542289037fab6ad8a2",
           "title": "ALDI Süd Prospekt 12.10.2026 – 17.10.2026",
-          "url": "https://prospekt.aldi-sued.de/kw42-26-op-mp",
+          "url": "https://prospekt.aldi-sued.de/kw42-26-op-mp?utm_label=diy_household",
           "offerStartDate": "2026-10-12",
           "offerEndDate": "2026-10-17",
           "status": "current",
@@ -36,7 +36,7 @@
       "branchId": "B384",
       "location": "Zellingen",
       "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "rawRecordCount": 247
+      "rawRecordCount": 245
     },
     {
       "id": "edeka_zellingen",
@@ -82,23 +82,24 @@
       "mode": "structured_api",
       "prospects": [
         {
-          "id": "7355613a0e31f16768ff",
+          "id": "7c4dd417c79b559cc20b",
           "title": "Kaufland Prospekt 12.10.2026 – 17.10.2026",
-          "url": "https://leaflets.kaufland.com/de-DE/DE_de_KDZ1_5103_D42/ar/5103",
+          "url": "https://leaflets.kaufland.com/de-DE/DE_de_leaflet1_5103_D42-OD/ar/5103",
           "offerStartDate": "2026-10-12",
           "offerEndDate": "2026-10-17",
           "status": "current",
           "productCount": 0,
           "pageCount": 1,
-          "thumbnailUrl": "https://imgproxy.leaflets.schwarz/mH8oHrSRtP-BF2mFjYL8Q_MHZxAhmqCx7n6VHCbuYY8/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMTE1N2MtZDM4My03Y2FkLTk2ODQtMjdlYWIxODhhMTZkL3BhZ2UtMDFfZDgyODZmM2NjMDEzYmU4OWMxNmIxOTM1OTg5ZGI0MmUucG5n.jpg",
+          "thumbnailUrl": "https://imgproxy.leaflets.schwarz/_IeYG9xMdw5d_qMe5JPWzQ-YOVcdmBIDEYz5PGntKq8/rs:fit:400:400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMTIwZTQtNWRmOS03MTRlLTkyMWQtZTc4NDYzZTg4M2I3L3BhZ2UtMDFfODhiOWVjNDBjYzA1NmM1MDMxOTJkMTRkZjgyNjk3YTEucG5n.jpg",
           "pageSamples": [
             {
               "number": 1,
               "altText": "Titelseite des aktuellen Kaufland-Prospekts",
               "keyWords": "",
-              "image": "https://imgproxy.leaflets.schwarz/mH8oHrSRtP-BF2mFjYL8Q_MHZxAhmqCx7n6VHCbuYY8/rs:fit:1200:1200:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMTE1N2MtZDM4My03Y2FkLTk2ODQtMjdlYWIxODhhMTZkL3BhZ2UtMDFfZDgyODZmM2NjMDEzYmU4OWMxNmIxOTM1OTg5ZGI0MmUucG5n.jpg"
+              "image": "https://imgproxy.leaflets.schwarz/_IeYG9xMdw5d_qMe5JPWzQ-YOVcdmBIDEYz5PGntKq8/rs:fit:400:400:1/g:no/czM6Ly9sZWFmbGV0cy9pbWFnZXMvMDFhMTIwZTQtNWRmOS03MTRlLTkyMWQtZTc4NDYzZTg4M2I3L3BhZ2UtMDFfODhiOWVjNDBjYzA1NmM1MDMxOTJkMTRkZjgyNjk3YTEucG5n.jpg"
             }
           ],
+          "sourceLabel": "Gültig vom 12.10. bis 17.10. Jetzt blättern",
           "branchId": "DE5103",
           "location": "Würzburg · Nürnberger Straße",
           "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
@@ -107,7 +108,7 @@
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
       "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "rawRecordCount": 877
+      "rawRecordCount": 834
     },
     {
       "id": "lidl_zellingen",
@@ -623,30 +624,7 @@
       "status": "ok",
       "recordCount": 4,
       "mode": "netto",
-      "prospects": [
-        {
-          "id": "190027028881188547cc",
-          "title": "Netto Wochenprospekt 12.10.2026 – 17.10.2026",
-          "url": "https://wochenprospekt.netto-online.de/hz42_kisa/",
-          "offerStartDate": "2026-10-12",
-          "offerEndDate": "2026-10-17",
-          "status": "current",
-          "pageCount": 1,
-          "productCount": 0,
-          "thumbnailUrl": "https://www.netto-online.de/media_nfs/images/2026-42/flipbook_kisa-500x700-kisa_Seite_01-c.jpg",
-          "pageSamples": [
-            {
-              "number": 1,
-              "altText": "Filial-Angebote",
-              "image": "https://www.netto-online.de/media_nfs/images/2026-42/flipbook_kisa-500x700-kisa_Seite_01-c.jpg",
-              "keyWords": ""
-            }
-          ],
-          "branchId": "4371",
-          "location": "Thüngersheim",
-          "address": "Am Straßacker 1, 97291 Thüngersheim, Germany"
-        }
-      ],
+      "prospects": [],
       "branchId": "4371",
       "location": "Thüngersheim",
       "address": "Am Straßacker 1, 97291 Thüngersheim, Germany"
@@ -668,6 +646,20 @@
       "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
+      "sourceId": "a83bca7e6001e0d064ed",
+      "productLabel": "CROFTON Halloween Tasse, Fledermaus",
+      "storeName": "ALDI Süd",
+      "offerPrice": 2.49,
+      "validFrom": "2026-10-12",
+      "validUntil": "2026-10-17",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.aldi-sued.de/produkt/crofton-halloween-tasse-fledermaus-000000000737059001",
+      "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5cff6124-8c37-4e05-af45-73dfeddc6e4e/image.jpg",
+      "branchId": "B384",
+      "location": "Zellingen",
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
+    },
+    {
       "sourceId": "c611bb04271febb2b313",
       "productLabel": "LACURA Beauty- oder Aloe-Vera-Shot 250 ml, Kollagen Drink",
       "storeName": "ALDI Süd",
@@ -677,11 +669,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/lacura-beauty-oder-aloe-vera-shot-250-ml-kollagen-drink-000000000738636001",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/58d61bec-46b3-42e8-8241-9d5f570e2e6b/image.jpg",
+      "packageSize": "250 ml",
+      "priceByBaseUnit": "27,96 €/l",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "250 ml",
-      "priceByBaseUnit": "27,96 €/l"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "3c16bbf40d5a1e9add3e",
@@ -693,11 +685,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/lacura-beauty-oder-aloe-vera-shot-250-ml-aloe-vera-000000000738636002",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/bd3852ee-e390-4163-a2a7-045b6c20c115/image.jpg",
+      "packageSize": "250 ml",
+      "priceByBaseUnit": "27,96 €/l",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "250 ml",
-      "priceByBaseUnit": "27,96 €/l"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "f0464c54f00ee2883c93",
@@ -765,11 +757,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/wintertraum-elisen-lebkuchen-300-g-000000000000194693",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/03e640ca-3942-4770-9702-4bd086c35eaa/image.jpg",
+      "packageSize": "300 g",
+      "priceByBaseUnit": "19,97 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "300 g",
-      "priceByBaseUnit": "19,97 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "12c25da6d37a61c7ef6c",
@@ -781,11 +773,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/wintertraum-tassenhaenger-knuspermaennchen-170-g-000000000000744934",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/a8839b57-7344-4de7-9ae4-9f6e768b842c/image.jpg",
+      "packageSize": "170 g",
+      "priceByBaseUnit": "8,76 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "170 g",
-      "priceByBaseUnit": "8,76 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "a1071e8cf1d074899919",
@@ -797,11 +789,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/wintertraum-pfeffernuesse-0-6-kg-000000000194139001",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5a25c9dd-f6f0-4062-8bf5-6d9efd72cf01/image.jpg",
+      "packageSize": "0,6 kg",
+      "priceByBaseUnit": "4,98 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "0,6 kg",
-      "priceByBaseUnit": "4,98 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "4615dc7c2ab8dae32fcd",
@@ -813,11 +805,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/wintertraum-magenbrot-0-6-kg-000000000194139002",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/b8f0015c-5315-4680-bae4-2d01e91da995/image.jpg",
+      "packageSize": "0,6 kg",
+      "priceByBaseUnit": "4,98 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "0,6 kg",
-      "priceByBaseUnit": "4,98 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "1aba188b0926f7fc6abd",
@@ -829,11 +821,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/wintertraum-fruechte-lebkuchen-0-5-kg-000000000194139003",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/a79815fb-1b15-437f-98f1-280c109ff811/image.jpg",
+      "packageSize": "0,5 kg",
+      "priceByBaseUnit": "5,98 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "0,5 kg",
-      "priceByBaseUnit": "5,98 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "4330a176e2e0812b1f8d",
@@ -845,11 +837,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/wintertraum-lebkuchen-0-6-kg-000000000194139004",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/e93e66d8-df48-4070-8f56-8e3f64d9603f/image.jpg",
+      "packageSize": "0,6 kg",
+      "priceByBaseUnit": "4,98 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "0,6 kg",
-      "priceByBaseUnit": "4,98 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "e42458289d7ba358dcee",
@@ -861,11 +853,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/gourmet-finest-cuisine-premium-elisen-lebkuchen-275-g-ohne-mehl-000000000267177001",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/731c03a6-d1e1-403c-a079-175727dc833d/image.jpg",
+      "packageSize": "275 g",
+      "priceByBaseUnit": "21,78 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "275 g",
-      "priceByBaseUnit": "21,78 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "fa154e75179dfde26d8d",
@@ -877,11 +869,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/gourmet-finest-cuisine-premium-elisen-lebkuchen-275-g-marzipan-000000000267177002",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/079ea6ff-813c-4a84-8915-16fe173deca4/image.jpg",
+      "packageSize": "275 g",
+      "priceByBaseUnit": "21,78 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "275 g",
-      "priceByBaseUnit": "21,78 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "0a4f38bc22e11bd60e99",
@@ -893,11 +885,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/gourmet-finest-cuisine-premium-elisen-lebkuchen-275-g-nuss-000000000267177003",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/d3cd7f82-f143-42ff-bb60-c269b0fd498a/image.jpg",
+      "packageSize": "275 g",
+      "priceByBaseUnit": "21,78 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "275 g",
-      "priceByBaseUnit": "21,78 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "99294150ca8f8a4ac75d",
@@ -909,11 +901,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/wintertraum-nussprinten-125-g-mandel-000000000269026001",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/f8321726-b723-4fe1-905f-59f0bef82636/image.jpg",
+      "packageSize": "125 g",
+      "priceByBaseUnit": "27,92 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "125 g",
-      "priceByBaseUnit": "27,92 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "e9600734ee3fcecdd952",
@@ -925,11 +917,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/wintertraum-nussprinten-125-g-nussspitzkuchen-000000000269026002",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/143ff8ad-7d0d-4daa-9fea-5559f9bc28bd/image.jpg",
+      "packageSize": "125 g",
+      "priceByBaseUnit": "27,92 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "125 g",
-      "priceByBaseUnit": "27,92 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "00d95bc6a8440a46a392",
@@ -941,11 +933,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/wintertraum-keksdose-kokos-0-6-kg-000000000272622001",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/851a982f-3b9f-4ffe-a300-ba426569c0f2/image.jpg",
+      "packageSize": "0,6 kg",
+      "priceByBaseUnit": "6,65 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "0,6 kg",
-      "priceByBaseUnit": "6,65 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "eb5a7bc81520613e4ae0",
@@ -957,11 +949,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/wintertraum-keksdose-mandelblaetter-0-6-kg-000000000272622002",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/5cabc555-7f48-4956-b8ba-562ca7e83455/image.jpg",
+      "packageSize": "0,6 kg",
+      "priceByBaseUnit": "6,65 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "0,6 kg",
-      "priceByBaseUnit": "6,65 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "734bc130646b3c41d608",
@@ -973,11 +965,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/gourmet-finest-cuisine-trueffelpralinen-125-g-marc-de-champagne-000000000341353002",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/7995f8d7-5bff-49b2-84f1-6be0cea006d5/image.jpg",
+      "packageSize": "125 g",
+      "priceByBaseUnit": "19,92 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "125 g",
-      "priceByBaseUnit": "19,92 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "e2185aa288cb0d5c2c69",
@@ -989,11 +981,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/bio-bio-gebaeck-zimtstern-115-g-000000000493521001",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/0fc848d2-71c2-4cb5-8833-3c727d9f3da2/image.jpg",
+      "packageSize": "115 g",
+      "priceByBaseUnit": "26,00 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "115 g",
-      "priceByBaseUnit": "26,00 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "4358145927fbecfa4c8f",
@@ -1005,11 +997,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/bio-bio-gebaeck-dominosteine-125-g-000000000493521002",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/4701a8a6-dab1-4cf5-bbe2-2a1212af7c4b/image.jpg",
+      "packageSize": "125 g",
+      "priceByBaseUnit": "23,92 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "125 g",
-      "priceByBaseUnit": "23,92 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "24fd890609390cd6b22a",
@@ -1021,11 +1013,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/bio-bio-gebaeck-spritzgebaeck-zartbitter-175-g-000000000493521003",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/140abead-6e90-47fc-bbc2-33f0f67306f5/image.jpg",
+      "packageSize": "175 g",
+      "priceByBaseUnit": "17,09 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "175 g",
-      "priceByBaseUnit": "17,09 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "6ee48cbfacbecc5f957d",
@@ -1037,11 +1029,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/gut-bio-nuernberger-bio-mini-elisen-lebkuchen-150-g-schokolade-000000000496471001",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/9fb07471-6efe-4dac-9117-8d974985a3af/image.jpg",
+      "packageSize": "150 g",
+      "priceByBaseUnit": "28,60 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "150 g",
-      "priceByBaseUnit": "28,60 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "ecf7de286b4ed4bb8e50",
@@ -1053,11 +1045,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/gut-bio-nuernberger-bio-mini-elisen-lebkuchen-150-g-zuckerglasur-000000000496471002",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/f2807231-731b-4dfe-8c6a-bdf6d8929653/image.jpg",
+      "packageSize": "150 g",
+      "priceByBaseUnit": "28,60 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "150 g",
-      "priceByBaseUnit": "28,60 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "138dddf811c745075df0",
@@ -1069,11 +1061,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/wintertraum-feines-mandelkonfekt-200-g-000000000513931001",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/2253bd9f-2ffb-40c5-a925-fda8a6ddc253/image.jpg",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "14,95 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "14,95 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "ade46c881cb830abe2a8",
@@ -1085,11 +1077,11 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.aldi-sued.de/produkt/wintertraum-feines-nusskonfekt-200-g-000000000513931002",
       "imageUrl": "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/product/jpg/scaleWidth/600/9ce58be8-f9ba-49c1-b8af-6134046c27d2/image.jpg",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "14,95 €/kg",
       "branchId": "B384",
       "location": "Zellingen",
-      "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "14,95 €/kg"
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "19abda981abf19852e11",
@@ -1893,11 +1885,11 @@
       "originalPrice": 1.19,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/2050006078341_DE_P-1",
       "category": "01_Fleisch__Gefluegel__Wurst",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "7,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "7,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "a0a04d4827e03716130d",
@@ -1911,11 +1903,11 @@
       "originalPrice": 1.89,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/2050006160459_DE_P-1",
       "category": "01_Fleisch__Gefluegel__Wurst",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "14,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "14,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "4912d0092f016d0f34f8",
@@ -1929,11 +1921,11 @@
       "originalPrice": 4.99,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/2050005916224_DE_P-1",
       "category": "01_Fleisch__Gefluegel__Wurst",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "39,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "39,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "598a0a96fe147e268aef",
@@ -1947,11 +1939,11 @@
       "originalPrice": 1.79,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/2823100000000_DE_P-1",
       "category": "01_Fleisch__Gefluegel__Wurst",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "12,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "12,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "e3e58680cbac6e093c25",
@@ -1965,11 +1957,11 @@
       "originalPrice": 1.49,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/2050008067350_DE_P-1",
       "category": "01_Fleisch__Gefluegel__Wurst",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "9,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "9,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "29ed08a6c654e1650e3e",
@@ -1983,11 +1975,11 @@
       "originalPrice": 1.49,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4063367666865_DE_P-1",
       "category": "01_Fleisch__Gefluegel__Wurst",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "8,80 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "8,80 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "ea6f9c484b05d4795508",
@@ -2001,11 +1993,11 @@
       "originalPrice": 2.59,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/2050002084896_DE_P-1",
       "category": "01_Fleisch__Gefluegel__Wurst",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "17,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "17,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "99c4d185264e3a8185d0",
@@ -2019,11 +2011,11 @@
       "originalPrice": 1.59,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/00967244FR",
       "category": "01_Fleisch__Gefluegel__Wurst",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "9,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "9,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "672e19745a9b51480cc7",
@@ -2037,11 +2029,11 @@
       "originalPrice": 1.39,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/2050009182496_DE_P-1",
       "category": "01_Fleisch__Gefluegel__Wurst",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "6,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "6,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "abb65b90d923058713b9",
@@ -2055,11 +2047,11 @@
       "originalPrice": 3.49,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/95998003165490_DE_P-1",
       "category": "01_Fleisch__Gefluegel__Wurst",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "14,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "14,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "f83c2338c049e75ce7ec",
@@ -2169,11 +2161,11 @@
       "originalPrice": 4.79,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4063367487644_DE_P-1",
       "category": "01_Fleisch__Gefluegel__Wurst",
+      "packageSize": "8 St",
+      "priceByBaseUnit": "0,44 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "8 St",
-      "priceByBaseUnit": "0,44 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "de241fccb85ad76e89b6",
@@ -2235,11 +2227,11 @@
       "originalPrice": 1.59,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/2050007884545_DE_V_8300-1",
       "category": "01_Fleisch__Gefluegel__Wurst",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "12,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "12,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "004e5f50524a39b68ed4",
@@ -2252,11 +2244,11 @@
       "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-week=current#offer-ART.1214836_KAV.3693412",
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/2050009641238_DE_P-1",
       "category": "01_Fleisch__Gefluegel__Wurst",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "22,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "22,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "4622c473690991f6fb5a",
@@ -2364,11 +2356,11 @@
       "originalPrice": 2.99,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/DE00010972-P-4063367227639",
       "category": "01_Fleisch__Gefluegel__Wurst",
+      "packageSize": "5 St",
+      "priceByBaseUnit": "0,46 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "5 St",
-      "priceByBaseUnit": "0,46 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "2ecd258db2ca6152ca73",
@@ -2478,11 +2470,11 @@
       "originalPrice": 1.69,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/00102291",
       "category": "01_Fleisch__Gefluegel__Wurst",
+      "packageSize": "3 St",
+      "priceByBaseUnit": "0,33 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "3 St",
-      "priceByBaseUnit": "0,33 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "62d673a1027ba7e2d93c",
@@ -2495,11 +2487,11 @@
       "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-week=current#offer-ART.806488_KAV.3693412",
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4006639207892_DE_P-1",
       "category": "01_Fleisch__Gefluegel__Wurst",
+      "packageSize": "10 St",
+      "priceByBaseUnit": "0,20 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "10 St",
-      "priceByBaseUnit": "0,20 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "029ccd245a15169a3ccc",
@@ -2528,11 +2520,11 @@
       "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-week=current#offer-ART.1150425_KAV.3693412",
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/DE20961256-P-4260225052130",
       "category": "01a_Frischer_Fisch",
+      "packageSize": "8 St",
+      "priceByBaseUnit": "2,00 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "8 St",
-      "priceByBaseUnit": "2,00 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "d2006760df33454c0f3c",
@@ -2546,11 +2538,11 @@
       "originalPrice": 2.99,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4009239747782_DE_P-1",
       "category": "01a_Frischer_Fisch",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "22,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "22,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "8e9dc8eb651226bfcd67",
@@ -2564,11 +2556,11 @@
       "originalPrice": 1.79,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4009239799095_DE_V_3809-1",
       "category": "01a_Frischer_Fisch",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "12,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "12,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "72c485498be707b8ad5d",
@@ -2582,11 +2574,11 @@
       "originalPrice": 1.89,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/04500914FR",
       "category": "01a_Frischer_Fisch",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "13,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "13,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "6f954e4c0f37bb180d94",
@@ -2600,11 +2592,11 @@
       "originalPrice": 3.49,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/04500977FR",
       "category": "01a_Frischer_Fisch",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "29,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "29,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "437491e6eb3adff20c5c",
@@ -2618,11 +2610,11 @@
       "originalPrice": 3.19,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/01305157FR",
       "category": "03_Molkereiprodukte__Fette",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "22,20 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "22,20 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "a07aa546659ab7bdde07",
@@ -2636,11 +2628,11 @@
       "originalPrice": 3.79,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/2050007650522_DE_P-1",
       "category": "03_Molkereiprodukte__Fette",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "29,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "29,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "cd29840f8984e99f92a1",
@@ -2654,11 +2646,11 @@
       "originalPrice": 1.89,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4002334119577_DE_P-1",
       "category": "03_Molkereiprodukte__Fette",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "9,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "9,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "be8b6dfc2dde152f22db",
@@ -2672,11 +2664,11 @@
       "originalPrice": 2.79,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/2050005404066_DE_P-1",
       "category": "03_Molkereiprodukte__Fette",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "19,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "19,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "520c9f95c8a54f779280",
@@ -2690,11 +2682,11 @@
       "originalPrice": 2.19,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/2880110000000_DE_P-1",
       "category": "03_Molkereiprodukte__Fette",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "9,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "9,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "c5eaa240b7bba8541044",
@@ -2708,11 +2700,11 @@
       "originalPrice": 2.79,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/3265150025502_DE_P-1",
       "category": "03_Molkereiprodukte__Fette",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "19,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "19,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "89e2dbb885f2079de485",
@@ -2774,11 +2766,11 @@
       "originalPrice": 1.89,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4002334117214_DE_P-1",
       "category": "03_Molkereiprodukte__Fette",
+      "packageSize": "4 St",
+      "priceByBaseUnit": "0,35 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "4 St",
-      "priceByBaseUnit": "0,35 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "e5cfe9de4454e05e3dc3",
@@ -2792,11 +2784,11 @@
       "originalPrice": 3.29,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/00424937",
       "category": "03_Molkereiprodukte__Fette",
+      "packageSize": "8 St",
+      "priceByBaseUnit": "0,31 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "8 St",
-      "priceByBaseUnit": "0,31 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "75d1c4745006bc8ebcb7",
@@ -2842,11 +2834,11 @@
       "originalPrice": 3.99,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4009700074720_DE_P-1",
       "category": "03_Molkereiprodukte__Fette",
+      "packageSize": "8 x 100-g",
+      "priceByBaseUnit": "2,49 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "8 x 100-g",
-      "priceByBaseUnit": "2,49 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "51e93c63163ca9ee9be6",
@@ -2924,11 +2916,11 @@
       "originalPrice": 3.69,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/01165248",
       "category": "03_Molkereiprodukte__Fette",
+      "packageSize": "6 x 65-ml",
+      "priceByBaseUnit": "7,67 €/l",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "6 x 65-ml",
-      "priceByBaseUnit": "7,67 €/l"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "16c44b32bc1f755cfa4f",
@@ -2958,11 +2950,11 @@
       "originalPrice": 2.39,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4009700035707_DE_P-1",
       "category": "03_Molkereiprodukte__Fette",
+      "packageSize": "6 St",
+      "priceByBaseUnit": "0,25 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "6 St",
-      "priceByBaseUnit": "0,25 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "ba44a181ee3e3cbdabea",
@@ -3088,11 +3080,11 @@
       "originalPrice": 2.99,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/3228023230069_DE_P",
       "category": "03_Molkereiprodukte__Fette",
+      "packageSize": "6 St",
+      "priceByBaseUnit": "0,37 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "6 St",
-      "priceByBaseUnit": "0,37 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "3490d329f59dec59c43d",
@@ -3249,11 +3241,11 @@
       "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-week=current#offer-ART.1077275_KAV.3693412",
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/DE20914735-P-4067776095803",
       "category": "04_Tiefkuehlkost",
+      "packageSize": "8 St",
+      "priceByBaseUnit": "0,37 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "8 St",
-      "priceByBaseUnit": "0,37 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "bbf9636a93654c80ce59",
@@ -3283,11 +3275,11 @@
       "originalPrice": 4.99,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/00979184",
       "category": "04_Tiefkuehlkost",
+      "packageSize": "15 St",
+      "priceByBaseUnit": "0,22 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "15 St",
-      "priceByBaseUnit": "0,22 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "e182afc55ca1d3f73471",
@@ -3317,11 +3309,11 @@
       "originalPrice": 1.19,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4260012587678_DE_P-1",
       "category": "05_Feinkost__Konserven",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "9,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "9,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "678c4b3fc2372450167a",
@@ -3335,11 +3327,11 @@
       "originalPrice": 1.19,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4260012587654_DE_P-1",
       "category": "05_Feinkost__Konserven",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "9,90 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "9,90 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "c216ea40087bc3dcec0b",
@@ -3687,11 +3679,11 @@
       "originalPrice": 0.99,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/DE20712466-P-4068445000210",
       "category": "06_Grundnahrungsmittel",
+      "packageSize": "6 St",
+      "priceByBaseUnit": "0,13 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "6 St",
-      "priceByBaseUnit": "0,13 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "99ca25a805a0bc55cca4",
@@ -3976,11 +3968,11 @@
       "originalPrice": 3.99,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/00949156",
       "category": "07_Kaffee__Tee__Suesswaren__Knabberartikel",
+      "packageSize": "10 St",
+      "priceByBaseUnit": "0,26 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "10 St",
-      "priceByBaseUnit": "0,26 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "6bcb8d2ef54893f978c7",
@@ -3994,11 +3986,11 @@
       "originalPrice": 3.29,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/00983736",
       "category": "07_Kaffee__Tee__Suesswaren__Knabberartikel",
+      "packageSize": "16 St",
+      "priceByBaseUnit": "0,14 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "16 St",
-      "priceByBaseUnit": "0,14 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "830cca4e2adafbcc8327",
@@ -4204,11 +4196,11 @@
       "originalPrice": 3.19,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/02727808",
       "category": "07_Kaffee__Tee__Suesswaren__Knabberartikel",
+      "packageSize": "15 St",
+      "priceByBaseUnit": "0,19 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "15 St",
-      "priceByBaseUnit": "0,19 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "abde6d5d8ff80b1e5e3b",
@@ -4238,11 +4230,11 @@
       "originalPrice": 1.27,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4021700800529_DE_P",
       "category": "07_Kaffee__Tee__Suesswaren__Knabberartikel",
+      "packageSize": "3 St",
+      "priceByBaseUnit": "0,37 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "3 St",
-      "priceByBaseUnit": "0,37 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "9c917faa685b3522994b",
@@ -4511,11 +4503,11 @@
       "originalPrice": 0.99,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/02748069",
       "category": "07_Kaffee__Tee__Suesswaren__Knabberartikel",
+      "packageSize": "4 x 26,5-g",
+      "priceByBaseUnit": "6,51 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "4 x 26,5-g",
-      "priceByBaseUnit": "6,51 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "1edbb77c30107b2c4711",
@@ -4561,11 +4553,11 @@
       "originalPrice": 3.79,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/01055190",
       "category": "07_Kaffee__Tee__Suesswaren__Knabberartikel",
+      "packageSize": "12 St",
+      "priceByBaseUnit": "0,17 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "12 St",
-      "priceByBaseUnit": "0,17 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "a172068422d09e54e2ea",
@@ -4675,11 +4667,11 @@
       "originalPrice": 4.14,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/02000105",
       "category": "08_Getraenke__Spirituosen",
+      "packageSize": "6 x 0,5-l",
+      "priceByBaseUnit": "1,10 €/l",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "6 x 0,5-l",
-      "priceByBaseUnit": "1,10 €/l"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "3159a38a02828cadd0c8",
@@ -5300,11 +5292,11 @@
       "originalPrice": 6.29,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/8008440542748_DE_P-1",
       "category": "08_Getraenke__Spirituosen",
+      "packageSize": "6 x 0,33-l",
+      "priceByBaseUnit": "2,52 €/l",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "6 x 0,33-l",
-      "priceByBaseUnit": "2,52 €/l"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "bbf9b391d660d1e2c965",
@@ -5318,11 +5310,11 @@
       "originalPrice": 17.99,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/01453428",
       "category": "08_Getraenke__Spirituosen",
+      "packageSize": "20 x 0,5-l",
+      "priceByBaseUnit": "0,80 €/l",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "20 x 0,5-l",
-      "priceByBaseUnit": "0,80 €/l"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "33d3e60af5244adca21c",
@@ -5336,11 +5328,11 @@
       "originalPrice": 20.49,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4004866221551_DE_P-1",
       "category": "08_Getraenke__Spirituosen",
+      "packageSize": "20 x 0,5-l",
+      "priceByBaseUnit": "1,50 €/l",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "20 x 0,5-l",
-      "priceByBaseUnit": "1,50 €/l"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "0ad078d4f4e02bc3ab23",
@@ -5354,11 +5346,11 @@
       "originalPrice": 17.79,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4102430010003_DE_P-1",
       "category": "08_Getraenke__Spirituosen",
+      "packageSize": "20 x 0,5-l",
+      "priceByBaseUnit": "1,10 €/l",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "20 x 0,5-l",
-      "priceByBaseUnit": "1,10 €/l"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "d9cf0d59f1bac714a6f1",
@@ -5372,11 +5364,11 @@
       "originalPrice": 21.99,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/8410655001642_DE_P",
       "category": "08_Getraenke__Spirituosen",
+      "packageSize": "24 x 0,33-l",
+      "priceByBaseUnit": "1,51 €/l",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "24 x 0,33-l",
-      "priceByBaseUnit": "1,51 €/l"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "4d7a41dc58ef15870616",
@@ -5390,11 +5382,11 @@
       "originalPrice": 13.99,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/01476870",
       "category": "08_Getraenke__Spirituosen",
+      "packageSize": "20 x 0,5-l",
+      "priceByBaseUnit": "1,00 €/l",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "20 x 0,5-l",
-      "priceByBaseUnit": "1,00 €/l"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "b39d2595ec511dd3f942",
@@ -5408,11 +5400,11 @@
       "originalPrice": 11.99,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/02377786",
       "category": "08_Getraenke__Spirituosen",
+      "packageSize": "20 x 0,5-l",
+      "priceByBaseUnit": "0,80 €/l",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "20 x 0,5-l",
-      "priceByBaseUnit": "0,80 €/l"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "8d1d8a0fcb136c562266",
@@ -5426,11 +5418,11 @@
       "originalPrice": 44.99,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/9120045503111_DE_V_7313-1",
       "category": "08_Getraenke__Spirituosen",
+      "packageSize": "24 x 0,33-l",
+      "priceByBaseUnit": "3,79 €/l",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "24 x 0,33-l",
-      "priceByBaseUnit": "3,79 €/l"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "1a04737b1c603f6c6ee3",
@@ -5444,11 +5436,11 @@
       "originalPrice": 4.89,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4053400058528_DE_P",
       "category": "08_Getraenke__Spirituosen",
+      "packageSize": "6 x 0,33-l",
+      "priceByBaseUnit": "2,02 €/l",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "6 x 0,33-l",
-      "priceByBaseUnit": "2,02 €/l"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "37e3c2a8f98b78b6ba83",
@@ -5462,11 +5454,11 @@
       "originalPrice": 4.99,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/01461233",
       "category": "08_Getraenke__Spirituosen",
+      "packageSize": "6 x 0,33-l",
+      "priceByBaseUnit": "2,02 €/l",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "6 x 0,33-l",
-      "priceByBaseUnit": "2,02 €/l"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "ecf81a9f276e824de4da",
@@ -5527,11 +5519,11 @@
       "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-week=current#offer-ART.775770_KAV.3693412",
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/20830341",
       "category": "08_Getraenke__Spirituosen",
+      "packageSize": "3 x 7-g",
+      "priceByBaseUnit": "190,00 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "3 x 7-g",
-      "priceByBaseUnit": "190,00 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "34169db20bddb785ccab",
@@ -5544,11 +5536,11 @@
       "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-week=current#offer-ART.1214823_KAV.3693412",
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4260715297829_DE_P-1",
       "category": "08_Getraenke__Spirituosen",
+      "packageSize": "15 x 7-g",
+      "priceByBaseUnit": "142,76 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "15 x 7-g",
-      "priceByBaseUnit": "142,76 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "338511a01f77402be5a8",
@@ -6062,11 +6054,11 @@
       "originalPrice": 3.03,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/8445292390620_DE_P-1",
       "category": "221_Halloween",
+      "packageSize": "10 St",
+      "priceByBaseUnit": "0,25 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "10 St",
-      "priceByBaseUnit": "0,25 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "89cd8417bbf983dc88de",
@@ -6096,11 +6088,11 @@
       "originalPrice": 1.79,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/01204538",
       "category": "221_Halloween",
+      "packageSize": "10 St",
+      "priceByBaseUnit": "0,13 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "10 St",
-      "priceByBaseUnit": "0,13 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "aaa276bdb14b06a6d2b9",
@@ -6220,11 +6212,11 @@
       "originalPrice": 2.29,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4001724038207_DE_P-1",
       "category": "445_Samstagswerbung",
+      "packageSize": "2 St",
+      "priceByBaseUnit": "0,65 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "2 St",
-      "priceByBaseUnit": "0,65 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "922b1cf93588cc06318b",
@@ -6270,11 +6262,11 @@
       "originalPrice": 2.87,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/5900951311390",
       "category": "445_Samstagswerbung",
+      "packageSize": "5 St",
+      "priceByBaseUnit": "0,36 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "5 St",
-      "priceByBaseUnit": "0,36 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "64ea290652e654730a4f",
@@ -6320,11 +6312,11 @@
       "originalPrice": 75.0,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/20716197_P_1106745",
       "category": "761_Werkstatt",
+      "packageSize": "10 l",
+      "priceByBaseUnit": "5,00 €/l",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "10 l",
-      "priceByBaseUnit": "5,00 €/l"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "c7172a582424beda762a",
@@ -6338,11 +6330,11 @@
       "originalPrice": 6.07,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/05572425_P_495266",
       "category": "761_Werkstatt",
+      "packageSize": "3 x 1 g",
+      "priceByBaseUnit": "996,67 €/kg",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "3 x 1 g",
-      "priceByBaseUnit": "996,67 €/kg"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "6cdad5265e8408ad038c",
@@ -6388,11 +6380,11 @@
       "originalPrice": 2.59,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/3073781106336_DE_P-1",
       "category": "766_K-Card_Xtra2",
+      "packageSize": "5 St",
+      "priceByBaseUnit": "0,36 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "5 St",
-      "priceByBaseUnit": "0,36 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "44132d3edb8bdb03ec67",
@@ -6470,11 +6462,11 @@
       "originalPrice": 16.49,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/01452529",
       "category": "766_K-Card_Xtra2",
+      "packageSize": "20 x 0,5-l",
+      "priceByBaseUnit": "1,10 €/l",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "20 x 0,5-l",
-      "priceByBaseUnit": "1,10 €/l"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "6d65c7fe6bb291256c92",
@@ -6488,11 +6480,11 @@
       "originalPrice": 17.99,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4005249000367_DE_P",
       "category": "766_K-Card_Xtra2",
+      "packageSize": "20 x 0,5-l",
+      "priceByBaseUnit": "1,10 €/l",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "20 x 0,5-l",
-      "priceByBaseUnit": "1,10 €/l"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "d23fcf393dcc6c779cf2",
@@ -6776,11 +6768,11 @@
       "originalPrice": 2.92,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4008400122625_DE_P-1",
       "category": "806_Foodknueller2",
+      "packageSize": "36 St",
+      "priceByBaseUnit": "0,07 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "36 St",
-      "priceByBaseUnit": "0,07 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "9a71f514fc0fba70003e",
@@ -6794,11 +6786,11 @@
       "originalPrice": 2.63,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/8000500272442_DE_P-1",
       "category": "806_Foodknueller2",
+      "packageSize": "10 St",
+      "priceByBaseUnit": "0,23 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "10 St",
-      "priceByBaseUnit": "0,23 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "baefffd84106c4907381",
@@ -6892,11 +6884,11 @@
       "originalPrice": 16.99,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4017300000223_DE_P-1",
       "category": "806_Foodknueller2",
+      "packageSize": "20 x 0,33-l",
+      "priceByBaseUnit": "2,12 €/l",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "20 x 0,33-l",
-      "priceByBaseUnit": "2,12 €/l"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "d3bca902432e988bcecf",
@@ -6910,11 +6902,11 @@
       "originalPrice": 19.49,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4017300007048_DE_P-1",
       "category": "806_Foodknueller2",
+      "packageSize": "20 x 0,5-l",
+      "priceByBaseUnit": "1,40 €/l",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "20 x 0,5-l",
-      "priceByBaseUnit": "1,40 €/l"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "04b15d04ba7e93426355",
@@ -6989,11 +6981,11 @@
       "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-week=current#offer-ART.428980_KAV.3693412",
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/DE00014414-P",
       "category": "807_Frische",
+      "packageSize": "6 St",
+      "priceByBaseUnit": "1,08 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "6 St",
-      "priceByBaseUnit": "1,08 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "51f3780c595e050f5824",
@@ -7401,11 +7393,11 @@
       "originalPrice": 1.19,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4014400400007_DE_P-1",
       "category": "810_Bester_Preis2",
+      "packageSize": "15 St",
+      "priceByBaseUnit": "0,06 €/Stk",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany",
-      "packageSize": "15 St",
-      "priceByBaseUnit": "0,06 €/Stk"
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
       "sourceId": "abd8ee6d173fbbbf2c50",
@@ -7467,11 +7459,11 @@
       "originalPrice": 2.29,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/36aa4fa3-c352-4904-94fd-dd5024277738.jpg?t=1790675594",
       "category": "Store",
+      "packageSize": "400 g",
+      "priceByBaseUnit": "4,97 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "400 g",
-      "priceByBaseUnit": "4,97 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "2499e76b119ddce768e2",
@@ -7485,11 +7477,11 @@
       "originalPrice": 0.88,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/5b33943b-fe4f-4933-8531-ab57bb2f54ae.jpg?t=1790676428",
       "category": "Store",
+      "packageSize": "500 ml",
+      "priceByBaseUnit": "1,54 €/l",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "500 ml",
-      "priceByBaseUnit": "1,54 €/l"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "49cc3df11a9fbcfd5edb",
@@ -7503,11 +7495,11 @@
       "originalPrice": 2.49,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/4f3eed89-caf4-4613-8cef-03c4b3ad9b3f.jpg?t=1791372435",
       "category": "Store",
+      "packageSize": "500 g",
+      "priceByBaseUnit": "3,98 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "500 g",
-      "priceByBaseUnit": "3,98 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "f5e8453b249154af0b57",
@@ -7521,11 +7513,11 @@
       "originalPrice": 1.99,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/f04af197-3443-4921-a498-c56df81f1041.jpg?t=1791372456",
       "category": "Store",
+      "packageSize": "2 Stück",
+      "priceByBaseUnit": "0,84 €/Stk",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "2 Stück",
-      "priceByBaseUnit": "0,84 €/Stk"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "5aee2a9324e69323c97f",
@@ -7539,11 +7531,11 @@
       "originalPrice": 1.99,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/61183168-2b71-42dc-b474-50aa2c8f2a43.jpg?t=1791372867",
       "category": "Store",
+      "packageSize": "400 g",
+      "priceByBaseUnit": "4,47 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "400 g",
-      "priceByBaseUnit": "4,47 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "af9c0b3c31cff12ce390",
@@ -7557,11 +7549,11 @@
       "originalPrice": 2.99,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/f17cc9e8-a75e-43cf-9df7-074dc084014f.jpg?t=1791372325",
       "category": "Store",
+      "packageSize": "3 Stück",
+      "priceByBaseUnit": "0,74 €/Stk",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "3 Stück",
-      "priceByBaseUnit": "0,74 €/Stk"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "d9e344b85a1cc2ede394",
@@ -7591,11 +7583,11 @@
       "originalPrice": 5.49,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/0c2066f9-570b-475d-acf8-f375c0619678.jpg?t=1790674119",
       "category": "Store",
+      "packageSize": "1,4 kg",
+      "priceByBaseUnit": "3,14 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "1,4 kg",
-      "priceByBaseUnit": "3,14 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "065f0ea281361c75b9c7",
@@ -7609,11 +7601,11 @@
       "originalPrice": 5.49,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/1c8f28e6-1ad7-4c21-b22a-db5898d8c59f.jpg?t=1790674700",
       "category": "Store",
+      "packageSize": "600 g",
+      "priceByBaseUnit": "6,48 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "600 g",
-      "priceByBaseUnit": "6,48 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "29d9b6238aabd97555ad",
@@ -7627,11 +7619,11 @@
       "originalPrice": 3.79,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/02e7426d-24fe-4dfe-b06b-ad8fa2512f73.jpg?t=1790674886",
       "category": "Store",
+      "packageSize": "220 g",
+      "priceByBaseUnit": "14,50 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "220 g",
-      "priceByBaseUnit": "14,50 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "e069910a673c75d3d7dc",
@@ -7645,11 +7637,11 @@
       "originalPrice": 1.59,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/1963d145-cfe9-411b-982c-d794571a24ff.jpg?t=1790598950",
       "category": "Store",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "12,90 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "12,90 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "c17049096e43ffbf4ec4",
@@ -7663,11 +7655,11 @@
       "originalPrice": 2.45,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/1c83202f-a5f7-4e82-b402-78052c6a0736.jpg?t=1790602137",
       "category": "Store",
+      "packageSize": "185 g",
+      "priceByBaseUnit": "10,76 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "185 g",
-      "priceByBaseUnit": "10,76 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "2d03f2d01a8c7d9d5f16",
@@ -7681,11 +7673,11 @@
       "originalPrice": 2.79,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/08660af3-1453-45b5-b73b-11d4792162b0.jpg?t=1790602796",
       "category": "Store",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "11,45 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "11,45 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "0f2c0f8f791f7099a146",
@@ -7699,11 +7691,11 @@
       "originalPrice": 1.99,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/3ea29445-fc92-48ba-ab2a-af3fd7141f9e.jpg?t=1790605580",
       "category": "Store",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "7,95 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "7,95 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "bdb2a38a0eb02764672e",
@@ -7717,11 +7709,11 @@
       "originalPrice": 1.99,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/bb847c98-5e97-4766-b6bb-a1e8c4dcdf4a.jpg?t=1790668893",
       "category": "Store",
+      "packageSize": "150 g",
+      "priceByBaseUnit": "12,60 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "150 g",
-      "priceByBaseUnit": "12,60 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "33f3ac107ee55e04a494",
@@ -7735,11 +7727,11 @@
       "originalPrice": 2.49,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/9eca9e38-1a64-4c35-8e6c-bbc1e8529a1b.jpg?t=1790671689",
       "category": "Store",
+      "packageSize": "2x 160 g",
+      "priceByBaseUnit": "6,22 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "2x 160 g",
-      "priceByBaseUnit": "6,22 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "36110584b13d573c9983",
@@ -7753,11 +7745,11 @@
       "originalPrice": 0.89,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/4629268c-5b46-4883-985f-b40018283022.jpg?t=1790672058",
       "category": "Store",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "3,45 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "3,45 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "85ef1e782b7ae36e567b",
@@ -7771,11 +7763,11 @@
       "originalPrice": 2.29,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/c1cbce82-9e01-4cdc-b951-d51a391be155.jpg?t=1790672215",
       "category": "Store",
+      "packageSize": "250 g",
+      "priceByBaseUnit": "7,56 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "250 g",
-      "priceByBaseUnit": "7,56 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "4f09836f212a2684a3d7",
@@ -7789,11 +7781,11 @@
       "originalPrice": 1.39,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/2b331c22-03b2-4942-b29d-8e893ca388a2.jpg?t=1790672780",
       "category": "Store",
+      "packageSize": "80 g",
+      "priceByBaseUnit": "14,87 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "80 g",
-      "priceByBaseUnit": "14,87 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "b2519a651f8c8f322b17",
@@ -7807,11 +7799,11 @@
       "originalPrice": 3.49,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/b6cda6cd-9d21-4f7f-8778-3a2349ad3a9a.jpg?t=1790672948",
       "category": "Store",
+      "packageSize": "350 g",
+      "priceByBaseUnit": "8,54 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "350 g",
-      "priceByBaseUnit": "8,54 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "234ea0cff312f59b2635",
@@ -7825,11 +7817,11 @@
       "originalPrice": 2.69,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/b59e8f70-51a4-40e4-8bf3-cc53dcd5a1b8.jpg?t=1790673100",
       "category": "Store",
+      "packageSize": "500 g",
+      "priceByBaseUnit": "3,98 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "500 g",
-      "priceByBaseUnit": "3,98 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "80cbde1929ba7ad8edd4",
@@ -7843,11 +7835,11 @@
       "originalPrice": 2.19,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/9c3b2410-ece5-414e-acc4-1173595d0222.jpg?t=1790673951",
       "category": "Store",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "8,95 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "8,95 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "5633f7de9c9ffb2ea493",
@@ -7861,11 +7853,11 @@
       "originalPrice": 2.49,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/ec068714-6a49-4243-b29a-5e83103bb075.jpg?t=1790675072",
       "category": "Store",
+      "packageSize": "600 g",
+      "priceByBaseUnit": "3,82 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "600 g",
-      "priceByBaseUnit": "3,82 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "b09ee96474ee6d0e2090",
@@ -7879,11 +7871,11 @@
       "originalPrice": 2.79,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/fa8f0096-14ef-45cf-ba3f-4f7899a73b37.jpg?t=1790675355",
       "category": "Store",
+      "packageSize": "180 g",
+      "priceByBaseUnit": "13,83 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "180 g",
-      "priceByBaseUnit": "13,83 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "61d8abc54cd852afb2e1",
@@ -7897,11 +7889,11 @@
       "originalPrice": 2.99,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/fa036029-c010-48ed-890a-4f009c213e26.jpg?t=1790668118",
       "category": "Store",
+      "packageSize": "1 kg",
+      "priceByBaseUnit": "2,79 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "1 kg",
-      "priceByBaseUnit": "2,79 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "00ca274729a4e5381cdf",
@@ -7931,11 +7923,11 @@
       "originalPrice": 0.89,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/6904f673-cbf9-404e-9ed5-663635e7c377.jpg?t=1790346448",
       "category": "Store",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "7,50 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "7,50 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "af6675fb6104f17449be",
@@ -7949,11 +7941,11 @@
       "originalPrice": 1.99,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/a86904f6-ac34-4046-afa2-06c7d5dbfca1.jpg?t=1790581020",
       "category": "Store",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "8,45 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "8,45 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "a11cf16667c648f3d52e",
@@ -7999,11 +7991,11 @@
       "originalPrice": 1.59,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/33338e7f-02e9-4d25-acc7-4eaa72c9412e.jpg?t=1790600772",
       "category": "Store",
+      "packageSize": "0,5 l",
+      "priceByBaseUnit": "1,50 €/l",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "0,5 l",
-      "priceByBaseUnit": "1,50 €/l"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "4235de46c95a844e14da",
@@ -8017,11 +8009,11 @@
       "originalPrice": 2.49,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/3fffdac4-88af-46ab-82de-2c10543fe376.jpg?t=1790601977",
       "category": "Store",
+      "packageSize": "180 g",
+      "priceByBaseUnit": "9,39 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "180 g",
-      "priceByBaseUnit": "9,39 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "f9a77e3a4c2c5c2b8806",
@@ -8035,11 +8027,11 @@
       "originalPrice": 1.19,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/328a7a16-8044-4f42-8a96-f75dd129020f.jpg?t=1790603238",
       "category": "Store",
+      "packageSize": "250 g",
+      "priceByBaseUnit": "3,96 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "250 g",
-      "priceByBaseUnit": "3,96 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "10561e0d9d0db79d8ac8",
@@ -8053,11 +8045,11 @@
       "originalPrice": 1.19,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/a671fa34-2668-4a00-a421-5ecdcb724426.jpg?t=1790603741",
       "category": "Store",
+      "packageSize": "1,25 l",
+      "priceByBaseUnit": "0,79 €/l",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "1,25 l",
-      "priceByBaseUnit": "0,79 €/l"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "060ff8c71d179008a5c5",
@@ -8087,11 +8079,11 @@
       "originalPrice": 1.19,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/19977e1f-afc4-4f8b-a1a6-439b32e45c9f.jpg?t=1790606897",
       "category": "Store",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "9,90 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "9,90 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "5da9e4e96802a5e8602c",
@@ -8105,11 +8097,11 @@
       "originalPrice": 0.79,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/b1026856-f631-4333-af8e-80d6207aa6b8.jpg?t=1790667332",
       "category": "Store",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "6,90 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "6,90 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "6c8bea621a90639f9566",
@@ -8123,11 +8115,11 @@
       "originalPrice": 0.99,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/1fa5195f-cfb0-4990-85ce-4c751edff6f8.jpg?t=1790863720",
       "category": "Store",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "7,90 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "7,90 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "bf14ebe0b0c9ac6358ff",
@@ -8141,11 +8133,11 @@
       "originalPrice": 3.99,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/bad37623-2b5e-46ce-b358-5a94a0fe2900.jpg?t=1790670873",
       "category": "Store",
+      "packageSize": "1 l",
+      "priceByBaseUnit": "2,99 €/l",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "1 l",
-      "priceByBaseUnit": "2,99 €/l"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "9b8f81dccac6fd9365bf",
@@ -8159,11 +8151,11 @@
       "originalPrice": 4.99,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/2a684200-a709-492e-97b5-54846fd77691.jpg?t=1790672395",
       "category": "Store",
+      "packageSize": "0,75 l",
+      "priceByBaseUnit": "5,32 €/l",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "0,75 l",
-      "priceByBaseUnit": "5,32 €/l"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "03b9e2c6f25f8e17299d",
@@ -8177,11 +8169,11 @@
       "originalPrice": 7.99,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/1936ad1b-fdf2-4c3f-9848-48dd991bf42e.jpg?t=1790672581",
       "category": "Store",
+      "packageSize": "500 ml",
+      "priceByBaseUnit": "11,98 €/l",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "500 ml",
-      "priceByBaseUnit": "11,98 €/l"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "fa0d51ebc6ac617e7ba8",
@@ -8195,11 +8187,11 @@
       "originalPrice": 10.99,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/eb714337-8f76-49b2-99d3-6f6e03a2d58b.jpg?t=1790673298",
       "category": "Store",
+      "packageSize": "1 kg",
+      "priceByBaseUnit": "9,99 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "1 kg",
-      "priceByBaseUnit": "9,99 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "b87d4854a9c19ee278b9",
@@ -8213,11 +8205,11 @@
       "originalPrice": 2.99,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/342dd19f-e27d-4421-959f-f46b61a56255.jpg?t=1790673745",
       "category": "Store",
+      "packageSize": "10x 200 ml",
+      "priceByBaseUnit": "1,25 €/l",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "10x 200 ml",
-      "priceByBaseUnit": "1,25 €/l"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "8ec7c8453361f55b6430",
@@ -8231,11 +8223,11 @@
       "originalPrice": 0.99,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/45d7e8e2-02f2-4a10-8469-d6d47b18650b.jpg?t=1790680362",
       "category": "Store",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "7,90 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "7,90 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "ad95bbd5aca8b6cea108",
@@ -8249,11 +8241,11 @@
       "originalPrice": 1.29,
       "imageUrl": "https://static-coupons.lidlplus.com/images/promotions/DE/bae5d282-63ff-430d-a8a7-4dc443b392f1.jpg?t=1791366459",
       "category": "Store",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "3,20 €/kg",
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
-      "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "3,20 €/kg"
+      "address": "Am Güßgraben 2, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "16f152f46065ee263e90",
@@ -8297,11 +8289,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-f30482f9-c74f-46d5-a389-131a1a881fd7",
       "imageUrl": "https://cdn.penny.de/dam/jcr:4c033dc8-8e0d-450f-bf25-9db39890b397/40970760.png?impolicy=penny&imwidth=800",
       "category": "obst-und-gemuese",
+      "packageSize": "3er-Schale",
+      "priceByBaseUnit": "0,33 €/Stk",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "3er-Schale",
-      "priceByBaseUnit": "0,33 €/Stk"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "5ffd74cbc13c9ad879f7",
@@ -8361,11 +8353,11 @@
       "originalPrice": 1.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:15b80b79-dcb9-4438-9277-5ae251991ddd/35218887.png?impolicy=penny&imwidth=800",
       "category": "obst-und-gemuese",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "7,45 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "7,45 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "cf68a6ae078500e78111",
@@ -8378,11 +8370,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-5237e52c-c5bc-4275-8bbe-3847cbb9617f",
       "imageUrl": "https://cdn.penny.de/dam/jcr:f8858fe0-8372-4e8d-b0a6-9110daff4dd7/KW42_MB_Aubergine.png?impolicy=penny&imwidth=800",
       "category": "obst-und-gemuese",
+      "packageSize": "2 Stück",
+      "priceByBaseUnit": "0,50 €/Stk",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "2 Stück",
-      "priceByBaseUnit": "0,50 €/Stk"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "0331e51c5ab6c934d40b",
@@ -8427,11 +8419,11 @@
       "originalPrice": 4.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:926f0b42-3f9a-4af4-bf10-23558d06b42f/21333031.png?impolicy=penny&imwidth=800",
       "category": "kuehlregal",
+      "packageSize": "400 g",
+      "priceByBaseUnit": "6,47 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "400 g",
-      "priceByBaseUnit": "6,47 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "6ba40aaece52182efbc0",
@@ -8445,11 +8437,11 @@
       "originalPrice": 1.79,
       "imageUrl": "https://cdn.penny.de/dam/jcr:31d19c77-7752-439e-8c6d-0eaa01ec7766/34829535.png?impolicy=penny&imwidth=800",
       "category": "kuehlregal",
+      "packageSize": "225 g",
+      "priceByBaseUnit": "5,73 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "225 g",
-      "priceByBaseUnit": "5,73 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "c4e452721eb27daf528b",
@@ -8463,11 +8455,11 @@
       "originalPrice": 2.59,
       "imageUrl": "https://cdn.penny.de/dam/jcr:2119a727-8dae-4798-aafb-4b5364652871/27484152.png?impolicy=penny&imwidth=800",
       "category": "kuehlregal",
+      "packageSize": "150 g",
+      "priceByBaseUnit": "8,60 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "150 g",
-      "priceByBaseUnit": "8,60 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "9263e7524b86b3a5638d",
@@ -8481,11 +8473,11 @@
       "originalPrice": 2.59,
       "imageUrl": "https://cdn.penny.de/dam/jcr:6cff6b28-a8d9-4d22-bd96-7efd5f9de4ae/27484152_01.png?impolicy=penny&imwidth=800",
       "category": "kuehlregal",
+      "packageSize": "150 g",
+      "priceByBaseUnit": "8,60 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "150 g",
-      "priceByBaseUnit": "8,60 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "d7bd3a28503985f328de",
@@ -8499,11 +8491,11 @@
       "originalPrice": 2.69,
       "imageUrl": "https://cdn.penny.de/dam/jcr:cbc80037-1903-4e6c-bd59-d3b41089d0a2/35504236.png?impolicy=penny&imwidth=800",
       "category": "kuehlregal",
+      "packageSize": "190 g",
+      "priceByBaseUnit": "10,47 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "190 g",
-      "priceByBaseUnit": "10,47 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "5da7368f4e978886510a",
@@ -8517,11 +8509,11 @@
       "originalPrice": 2.89,
       "imageUrl": "https://cdn.penny.de/dam/jcr:8ae098b0-4cb8-4121-aeea-2e27c55647a5/35504236_01.png?impolicy=penny&imwidth=800",
       "category": "kuehlregal",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "19,90 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "19,90 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "52ed1c3aed1a1c76c92e",
@@ -8535,11 +8527,11 @@
       "originalPrice": 3.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:dd34cc0a-b032-40cf-bb5f-87d44e08fd2e/30967363.png?impolicy=penny&imwidth=800",
       "category": "kuehlregal",
+      "packageSize": "330 g",
+      "priceByBaseUnit": "10,09 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "330 g",
-      "priceByBaseUnit": "10,09 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "af7966279f5872969d2f",
@@ -8553,11 +8545,11 @@
       "originalPrice": 3.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:bda6aafe-50d9-415c-a49d-a126bd9dafa3/30967363_01.png?impolicy=penny&imwidth=800",
       "category": "kuehlregal",
+      "packageSize": "300 g",
+      "priceByBaseUnit": "11,10 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "300 g",
-      "priceByBaseUnit": "11,10 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "4ae58c722130eaa76da4",
@@ -8571,11 +8563,11 @@
       "originalPrice": 0.89,
       "imageUrl": "https://cdn.penny.de/dam/jcr:15c6b69c-0922-4c17-aa4b-b32b1293b5be/56712345.png?impolicy=penny&imwidth=800",
       "category": "kuehlregal",
+      "packageSize": "70 g",
+      "priceByBaseUnit": "11,00 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "70 g",
-      "priceByBaseUnit": "11,00 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "43b8495b3eb563f5e0eb",
@@ -8588,11 +8580,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-55ae3303-555f-4905-9e91-0a0658160923",
       "imageUrl": "https://cdn.penny.de/dam/jcr:ad8454af-ed94-45bc-ad4f-6c6afd93554a/39154638.png?impolicy=penny&imwidth=800",
       "category": "kuehlregal",
+      "packageSize": "4 x 57 g",
+      "priceByBaseUnit": "8,73 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "4 x 57 g",
-      "priceByBaseUnit": "8,73 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "9781ccd1c094cb5f3d8e",
@@ -8606,11 +8598,11 @@
       "originalPrice": 0.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:3ccbe9ad-9b3f-4a0f-b4a4-6f8a3552a53c/41982763.png?impolicy=penny&imwidth=800",
       "category": "kuehlregal",
+      "packageSize": "500 g",
+      "priceByBaseUnit": "1,18 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "500 g",
-      "priceByBaseUnit": "1,18 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "f82e5c30d5ab1d3082a3",
@@ -8624,11 +8616,11 @@
       "originalPrice": 1.79,
       "imageUrl": "https://cdn.penny.de/dam/jcr:d43047f0-9a50-4020-a1d0-18e5499f37cf/2673320.png?impolicy=penny&imwidth=800",
       "category": "kuehlregal",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "6,45 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "6,45 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "cbf76d88a61592686b81",
@@ -8642,11 +8634,11 @@
       "originalPrice": 1.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:b9ffef5a-da3a-40a2-ab8a-a851dacbf89d/2459600.png?impolicy=penny&imwidth=800",
       "category": "kuehlregal",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "8,45 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "8,45 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "0137633a377042eb66b7",
@@ -8659,11 +8651,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-84aa27ad-0810-41c6-9db9-111ab158093c",
       "imageUrl": "https://cdn.penny.de/dam/jcr:d0e880c6-4adc-4e42-843e-afb57fade38d/3330680.png?impolicy=penny&imwidth=800",
       "category": "kuehlregal",
+      "packageSize": "350 g",
+      "priceByBaseUnit": "8,54 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "350 g",
-      "priceByBaseUnit": "8,54 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "72667747d1ac2403df38",
@@ -8677,11 +8669,11 @@
       "originalPrice": 3.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:a65c26a3-fda5-4b67-bbb6-0149305892ec/47534257.png?impolicy=penny&imwidth=800",
       "category": "kuehlregal",
+      "packageSize": "825 ml",
+      "priceByBaseUnit": "2,41 €/l",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "825 ml",
-      "priceByBaseUnit": "2,41 €/l"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "4d06371525a469cb11fd",
@@ -8695,11 +8687,11 @@
       "originalPrice": 5.49,
       "imageUrl": "https://cdn.penny.de/dam/jcr:a06c60fe-6bf3-4697-9917-7c49f2f2d44e/55795105.png?impolicy=penny&imwidth=800",
       "category": "kuehlregal",
+      "packageSize": "455 ml",
+      "priceByBaseUnit": "8,77 €/l",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "455 ml",
-      "priceByBaseUnit": "8,77 €/l"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "a1b49a29cf66f9079980",
@@ -8713,11 +8705,11 @@
       "originalPrice": 5.49,
       "imageUrl": "https://cdn.penny.de/dam/jcr:f1227611-afb7-417c-bb1f-f4ec8e4e185e/55795105_01.png?impolicy=penny&imwidth=800",
       "category": "kuehlregal",
+      "packageSize": "470 ml",
+      "priceByBaseUnit": "8,49 €/l",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "470 ml",
-      "priceByBaseUnit": "8,49 €/l"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "77511776d931d08d54ed",
@@ -8730,11 +8722,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-ee8d6b85-221b-482b-9fa0-e7c3696ab8b4",
       "imageUrl": "https://cdn.penny.de/dam/jcr:6a774174-3521-4154-8ab2-b90b14085e7b/55861430.png?impolicy=penny&imwidth=800",
       "category": "kuehlregal",
+      "packageSize": "5 x 70 ml",
+      "priceByBaseUnit": "8,54 €/l",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "5 x 70 ml",
-      "priceByBaseUnit": "8,54 €/l"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "63215fe1bbba463dc6c1",
@@ -8748,11 +8740,11 @@
       "originalPrice": 2.69,
       "imageUrl": "https://cdn.penny.de/dam/jcr:0103c006-d16e-4500-bde6-d8c55d74bb7c/51540887.png?impolicy=penny&imwidth=800",
       "category": "lindenhof",
+      "packageSize": "220 g",
+      "priceByBaseUnit": "9,05 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "220 g",
-      "priceByBaseUnit": "9,05 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "263f3559e437502b4032",
@@ -8765,11 +8757,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-4df8e735-12aa-4132-8c09-7c31711531d9",
       "imageUrl": "https://cdn.penny.de/dam/jcr:5a19bbc4-94c5-4e57-bdf6-02fb665a759e/50397269.png?impolicy=penny&imwidth=800",
       "category": "lindenhof",
+      "packageSize": "450 g",
+      "priceByBaseUnit": "8,42 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "450 g",
-      "priceByBaseUnit": "8,42 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "9b78eb0e47a58d571b9e",
@@ -8783,11 +8775,11 @@
       "originalPrice": 2.45,
       "imageUrl": "https://cdn.penny.de/dam/jcr:ea529738-313c-44c5-a092-b54fffbd06ea/50310904.png?impolicy=penny&imwidth=800",
       "category": "lindenhof",
+      "packageSize": "400 g",
+      "priceByBaseUnit": "5,55 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "400 g",
-      "priceByBaseUnit": "5,55 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "8b0ae33ad2f382c03c5a",
@@ -8801,11 +8793,11 @@
       "originalPrice": 2.59,
       "imageUrl": "https://cdn.penny.de/dam/jcr:fad4978f-a57e-425f-82d5-65b08d8bf954/52689130.png?impolicy=penny&imwidth=800",
       "category": "lindenhof",
+      "packageSize": "150 g",
+      "priceByBaseUnit": "13,27 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "150 g",
-      "priceByBaseUnit": "13,27 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "9e2a8f9e73e566cd7cd5",
@@ -8818,11 +8810,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-433a2d73-a823-4a51-a7a8-37f3156dd8b3",
       "imageUrl": "https://cdn.penny.de/dam/jcr:1c687dd5-c880-4293-b95f-8a26dce14b2a/50891570.png?impolicy=penny&imwidth=800",
       "category": "lindenhof",
+      "packageSize": "125 g",
+      "priceByBaseUnit": "7,92 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "125 g",
-      "priceByBaseUnit": "7,92 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "d1eeda54c1bcb30f7115",
@@ -8835,11 +8827,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-57d8098a-926d-4955-a691-ed69444fad7e",
       "imageUrl": "https://cdn.penny.de/dam/jcr:1a160cf1-33be-4de6-8aa9-377eb2dfb89c/56869555.png?impolicy=penny&imwidth=800",
       "category": "lindenhof",
+      "packageSize": "150 g",
+      "priceByBaseUnit": "6,60 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "150 g",
-      "priceByBaseUnit": "6,60 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "4c75920cc52f353f59f5",
@@ -8852,11 +8844,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-85fa938a-1278-4faa-94d8-4911eeb523f2",
       "imageUrl": "https://cdn.penny.de/dam/jcr:0f9360c1-83d8-48d7-a522-19b2539a456c/50513851.png?impolicy=penny&imwidth=800",
       "category": "lindenhof",
+      "packageSize": "300 g",
+      "priceByBaseUnit": "5,30 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "300 g",
-      "priceByBaseUnit": "5,30 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "efe0ed46eafada1b8cbb",
@@ -8869,11 +8861,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-28e42b0a-c166-4d6b-96dc-72ce52cf9efb",
       "imageUrl": "https://cdn.penny.de/dam/jcr:9ab21805-6d61-4bef-9b50-bb4cffba3516/50401934.png?impolicy=penny&imwidth=800",
       "category": "lindenhof",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "5,95 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "5,95 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "9e4f1a200b7da9572246",
@@ -8886,11 +8878,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-dfab4d8f-be5a-45fe-8b45-1d8263245df7",
       "imageUrl": "https://cdn.penny.de/dam/jcr:f28cd379-9a10-4aaf-a6e8-0c32d526c211/50826528.png?impolicy=penny&imwidth=800",
       "category": "lindenhof",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "7,45 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "7,45 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "dcb9477a3bc9a4d8184b",
@@ -8904,11 +8896,11 @@
       "originalPrice": 1.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:4c6f3121-209f-4c75-8d11-a367f4dca607/51788028.png?impolicy=penny&imwidth=800",
       "category": "lindenhof",
+      "packageSize": "250 g",
+      "priceByBaseUnit": "7,16 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "250 g",
-      "priceByBaseUnit": "7,16 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "f80b7fedf729b1ec5a55",
@@ -8921,11 +8913,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-d048e3bf-0def-420c-8eb9-8b75c0569481",
       "imageUrl": "https://cdn.penny.de/dam/jcr:0552f065-55fc-46da-b119-d3db9d68055e/52367838.png?impolicy=penny&imwidth=800",
       "category": "lindenhof",
+      "packageSize": "115 g",
+      "priceByBaseUnit": "11,22 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "115 g",
-      "priceByBaseUnit": "11,22 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "dc4f30c4078e6c425c43",
@@ -8938,11 +8930,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-d670bb9d-4a83-4909-ac71-7ee389cdc362",
       "imageUrl": "https://cdn.penny.de/dam/jcr:bb46fa0d-5358-46a9-ac0f-473204a4e322/52689125.png?impolicy=penny&imwidth=800",
       "category": "lindenhof",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "9,95 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "9,95 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "6e9b52e019d5e294bbea",
@@ -8956,11 +8948,11 @@
       "originalPrice": 5.69,
       "imageUrl": "https://cdn.penny.de/dam/jcr:f1daf0f3-2407-4a4e-92c7-c53984b18e61/28383839.png?impolicy=penny&imwidth=800",
       "category": "suessigkeiten-und-snacks",
+      "packageSize": "172 g",
+      "priceByBaseUnit": "25,81 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "172 g",
-      "priceByBaseUnit": "25,81 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "971dc9c9a3faca3dd7e4",
@@ -8974,11 +8966,11 @@
       "originalPrice": 5.39,
       "imageUrl": "https://cdn.penny.de/dam/jcr:74a0548e-d1e2-4a6e-a47f-f95c3c7014e9/28383839_01.png?impolicy=penny&imwidth=800",
       "category": "suessigkeiten-und-snacks",
+      "packageSize": "138 g",
+      "priceByBaseUnit": "32,17 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "138 g",
-      "priceByBaseUnit": "32,17 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "3eca7301ce47a3b28055",
@@ -8992,11 +8984,11 @@
       "originalPrice": 11.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:31245f48-60b1-4ffb-a7ce-6a5304c355ce/47667384.png?impolicy=penny&imwidth=800",
       "category": "suessigkeiten-und-snacks",
+      "packageSize": "375 g",
+      "priceByBaseUnit": "21,31 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "375 g",
-      "priceByBaseUnit": "21,31 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "9e966579c1fc7499a46c",
@@ -9010,11 +9002,11 @@
       "originalPrice": 3.59,
       "imageUrl": "https://cdn.penny.de/dam/jcr:785e3e94-ec45-4576-8fd5-995fc21c0d84/55131304.png?impolicy=penny&imwidth=800",
       "category": "suessigkeiten-und-snacks",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "14,95 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "14,95 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "c1deac29c537726498dc",
@@ -9028,11 +9020,11 @@
       "originalPrice": 1.19,
       "imageUrl": "https://cdn.penny.de/dam/jcr:6bfa1f63-bedc-4ac9-bac1-d3d03a1d285e/42409698.png?impolicy=penny&imwidth=800",
       "category": "suessigkeiten-und-snacks",
+      "packageSize": "20 g",
+      "priceByBaseUnit": "38,50 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "20 g",
-      "priceByBaseUnit": "38,50 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "7b8960d2a96e09624bbc",
@@ -9046,11 +9038,11 @@
       "originalPrice": 1.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:a1e1298f-2ebf-4965-adef-230d519c3156/31865922.png?impolicy=penny&imwidth=800",
       "category": "suessigkeiten-und-snacks",
+      "packageSize": "110 g",
+      "priceByBaseUnit": "13,55 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "110 g",
-      "priceByBaseUnit": "13,55 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "84c5d5f68cb62bfde750",
@@ -9064,11 +9056,11 @@
       "originalPrice": 1.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:8c01f4ef-595c-415c-86c8-4ce8ff05ce77/31865922_01.png?impolicy=penny&imwidth=800",
       "category": "suessigkeiten-und-snacks",
+      "packageSize": "110 g",
+      "priceByBaseUnit": "13,55 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "110 g",
-      "priceByBaseUnit": "13,55 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "ed9f384172f162f6c6ec",
@@ -9082,11 +9074,11 @@
       "originalPrice": 2.69,
       "imageUrl": "https://cdn.penny.de/dam/jcr:9979fc8e-7930-484a-afe1-7d082abd1d3d/48937921.png?impolicy=penny&imwidth=800",
       "category": "suessigkeiten-und-snacks",
+      "packageSize": "140 g",
+      "priceByBaseUnit": "14,21 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "140 g",
-      "priceByBaseUnit": "14,21 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "59b5c925733d2dcdba5d",
@@ -9100,11 +9092,11 @@
       "originalPrice": 2.39,
       "imageUrl": "https://cdn.penny.de/dam/jcr:2e123a40-16ca-4950-9d43-82c565ca42ac/51489839.png?impolicy=penny&imwidth=800",
       "category": "suessigkeiten-und-snacks",
+      "packageSize": "5 x 35 g",
+      "priceByBaseUnit": "10,23 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "5 x 35 g",
-      "priceByBaseUnit": "10,23 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "a63c479b93c72b06315b",
@@ -9116,7 +9108,7 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-e18791e4-11cd-43b2-b343-74d92288de6c",
       "originalPrice": 8.99,
-      "imageUrl": "https://cdn.penny.de/.resources/penny/webresources/media/placeholders/placeholder-square.png?impolicy=penny&imwidth=800",
+      "imageUrl": "https://cdn.penny.de/dam/jcr:701e128e-b545-4cd0-86c7-9fbd01f59066/54684555.png?impolicy=penny&imwidth=800",
       "category": "fleisch-und-wurst",
       "branchId": "230061",
       "location": "Zellingen",
@@ -9131,22 +9123,22 @@
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-bece6da1-1b4e-49c6-a634-c38f9c907d7d",
-      "imageUrl": "https://cdn.penny.de/.resources/penny/webresources/media/placeholders/placeholder-square.png?impolicy=penny&imwidth=800",
+      "imageUrl": "https://cdn.penny.de/dam/jcr:0a5ea8e7-bb11-495a-95bd-06e807d1b802/46346079.png?impolicy=penny&imwidth=800",
       "category": "fleisch-und-wurst",
       "branchId": "230061",
       "location": "Zellingen",
       "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
-      "sourceId": "0349d8a4c6b4bc882767",
-      "productLabel": "MÜHLENHOFFrisches Puten-Gulasch* je 800-g-Packung",
+      "sourceId": "e04a4fca79b9d72e28f5",
+      "productLabel": "MÜHLENHOF Frisches Puten-Gulasch* je 800-g-Packung",
       "storeName": "PENNY",
       "offerPrice": 6.99,
       "validFrom": "2026-10-12",
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-6a6cd1fe-078e-45f6-ac0a-c3c4e18c2652",
-      "imageUrl": "https://cdn.penny.de/.resources/penny/webresources/media/placeholders/placeholder-square.png?impolicy=penny&imwidth=800",
+      "imageUrl": "https://cdn.penny.de/dam/jcr:1f2a9f7e-b326-4829-8728-bf4194884479/51070257.png?impolicy=penny&imwidth=800",
       "category": "fleisch-und-wurst",
       "branchId": "230061",
       "location": "Zellingen",
@@ -9161,13 +9153,13 @@
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-e2f070de-30fb-4268-b765-2269a0b2ad68",
-      "imageUrl": "https://cdn.penny.de/.resources/penny/webresources/media/placeholders/placeholder-square.png?impolicy=penny&imwidth=800",
+      "imageUrl": "https://cdn.penny.de/dam/jcr:2f3f24fa-9d95-4a63-8703-a36f4ead0de2/53336921.png?impolicy=penny&imwidth=800",
       "category": "fleisch-und-wurst",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "14,95 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "14,95 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "ea464609f0d86c39c897",
@@ -9193,7 +9185,7 @@
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-b448668b-eb60-4671-bdee-514eff8f2440",
-      "imageUrl": "https://cdn.penny.de/.resources/penny/webresources/media/placeholders/placeholder-square.png?impolicy=penny&imwidth=800",
+      "imageUrl": "https://cdn.penny.de/dam/jcr:65de1323-1ed0-468a-a6de-b6ebbcd3bdd0/41639562_01.png?impolicy=penny&imwidth=800",
       "category": "fleisch-und-wurst",
       "branchId": "230061",
       "location": "Zellingen",
@@ -9208,7 +9200,7 @@
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-ebfdf90e-c4a5-43cf-8bd5-d5e2798cc9ac",
-      "imageUrl": "https://cdn.penny.de/.resources/penny/webresources/media/placeholders/placeholder-square.png?impolicy=penny&imwidth=800",
+      "imageUrl": "https://cdn.penny.de/dam/jcr:42475764-9214-475d-a418-0577d6bbe205/42062562.png?impolicy=penny&imwidth=800",
       "category": "fleisch-und-wurst",
       "branchId": "230061",
       "location": "Zellingen",
@@ -9224,13 +9216,13 @@
       "source": "retailerWebsite",
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-43360fa1-c2d3-4208-8cb0-e83ed2333cfe",
       "originalPrice": 6.49,
-      "imageUrl": "https://cdn.penny.de/.resources/penny/webresources/media/placeholders/placeholder-square.png?impolicy=penny&imwidth=800",
+      "imageUrl": "https://cdn.penny.de/dam/jcr:0df5a2b7-dbed-4132-b5ba-ab3bca915612/50741688.png?impolicy=penny&imwidth=800",
       "category": "fleisch-und-wurst",
+      "packageSize": "1.000 g",
+      "priceByBaseUnit": "5490,00 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "1.000 g",
-      "priceByBaseUnit": "5490,00 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "8e1fcaddf4d0061e5e4b",
@@ -9243,11 +9235,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-de8f6382-80c0-44ea-8c32-4df66b9cb849",
       "imageUrl": "https://cdn.penny.de/dam/jcr:a29a6f6c-259c-4875-97cd-4cdb51434b97/9244800.png?impolicy=penny&imwidth=800",
       "category": "fleisch-und-wurst",
+      "packageSize": "70 g",
+      "priceByBaseUnit": "21,29 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "70 g",
-      "priceByBaseUnit": "21,29 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "e3c5dde3c6d963ba5b82",
@@ -9258,30 +9250,13 @@
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-b7dd5146-a936-48fe-bf46-c9eb1ab56688",
-      "imageUrl": "https://cdn.penny.de/.resources/penny/webresources/media/placeholders/placeholder-square.png?impolicy=penny&imwidth=800",
+      "imageUrl": "https://cdn.penny.de/dam/jcr:bdf3b81d-fb1d-43dc-ad41-8ba7131f9026/13833090.png?impolicy=penny&imwidth=800",
       "category": "fleisch-und-wurst",
-      "branchId": "230061",
-      "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
       "packageSize": "250 g",
-      "priceByBaseUnit": "15,96 €/kg"
-    },
-    {
-      "sourceId": "3ce03383cd0cc7c3e7af",
-      "productLabel": "AOSTE Longhetti* je 65 g",
-      "storeName": "PENNY",
-      "offerPrice": 1.79,
-      "validFrom": "2026-10-12",
-      "validUntil": "2026-10-17",
-      "source": "retailerWebsite",
-      "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-ca28b301-c197-474d-b132-722f191bdd1f",
-      "imageUrl": "https://cdn.penny.de/.resources/penny/webresources/media/placeholders/placeholder-square.png?impolicy=penny&imwidth=800",
-      "category": "fleisch-und-wurst",
+      "priceByBaseUnit": "15,96 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "65 g",
-      "priceByBaseUnit": "27,54 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "9e104a99b03eab699bc1",
@@ -9292,13 +9267,30 @@
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-9bd59403-ab5e-4233-be94-605d54b81641",
-      "imageUrl": "https://cdn.penny.de/.resources/penny/webresources/media/placeholders/placeholder-square.png?impolicy=penny&imwidth=800",
+      "imageUrl": "https://cdn.penny.de/dam/jcr:b570d9b2-a326-44da-8770-94fc9bc46540/16656570.png?impolicy=penny&imwidth=800",
       "category": "fleisch-und-wurst",
+      "packageSize": "70 g",
+      "priceByBaseUnit": "25,57 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "70 g",
-      "priceByBaseUnit": "25,57 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
+    },
+    {
+      "sourceId": "3ce03383cd0cc7c3e7af",
+      "productLabel": "AOSTE Longhetti* je 65 g",
+      "storeName": "PENNY",
+      "offerPrice": 1.79,
+      "validFrom": "2026-10-12",
+      "validUntil": "2026-10-17",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-ca28b301-c197-474d-b132-722f191bdd1f",
+      "imageUrl": "https://cdn.penny.de/dam/jcr:8b17b647-84a4-40ee-a335-8ff9d779675e/16656570_01.png?impolicy=penny&imwidth=800",
+      "category": "fleisch-und-wurst",
+      "packageSize": "65 g",
+      "priceByBaseUnit": "27,54 €/kg",
+      "branchId": "230061",
+      "location": "Zellingen",
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "cf11246aa5d59146c1ef",
@@ -9309,13 +9301,13 @@
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-541e0f20-5072-4c86-a4a6-ca98fb68786b",
-      "imageUrl": "https://cdn.penny.de/.resources/penny/webresources/media/placeholders/placeholder-square.png?impolicy=penny&imwidth=800",
+      "imageUrl": "https://cdn.penny.de/dam/jcr:5a31853a-6b42-4afb-ae88-1a0809c1c42b/57781302.png?impolicy=penny&imwidth=800",
       "category": "fleisch-und-wurst",
+      "packageSize": "500 g",
+      "priceByBaseUnit": "9,98 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "500 g",
-      "priceByBaseUnit": "9,98 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "68d7e873cacbe07f5252",
@@ -9326,13 +9318,13 @@
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-a0c60d5b-6e09-42ad-b1f0-4c1a1d0b6f3b",
-      "imageUrl": "https://cdn.penny.de/.resources/penny/webresources/media/placeholders/placeholder-square.png?impolicy=penny&imwidth=800",
+      "imageUrl": "https://cdn.penny.de/dam/jcr:581f82f0-becf-4640-bfd0-16a89d830eba/24459596.png?impolicy=penny&imwidth=800",
       "category": "fleisch-und-wurst",
+      "packageSize": "500 g",
+      "priceByBaseUnit": "5,98 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "500 g",
-      "priceByBaseUnit": "5,98 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "21f78593177d14fc88fd",
@@ -9345,11 +9337,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-6f925286-56ac-4fa3-b8e0-490aaa0ad93f",
       "imageUrl": "https://cdn.penny.de/dam/jcr:2c43323a-366b-4983-8571-1543c732241d/43411300.png?impolicy=penny&imwidth=800",
       "category": "weitere-angebote",
+      "packageSize": "675 g",
+      "priceByBaseUnit": "3,69 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "675 g",
-      "priceByBaseUnit": "3,69 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "2b43fc7ff5e3fed48661",
@@ -9362,11 +9354,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-a6efa17e-e663-4426-8171-51a27faac25d",
       "imageUrl": "https://cdn.penny.de/dam/jcr:4e03ed0d-677c-4780-adb7-08021039e22f/55491029.png?impolicy=penny&imwidth=800",
       "category": "weitere-angebote",
+      "packageSize": "33 g",
+      "priceByBaseUnit": "14,85 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "33 g",
-      "priceByBaseUnit": "14,85 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "8f92aa6752aa3317dfed",
@@ -9379,11 +9371,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-b8dab9b5-a0e3-4b49-8d68-88560cedf9fb",
       "imageUrl": "https://cdn.penny.de/dam/jcr:623c718e-54e1-4f46-aad0-8e2a81442fee/31983440_01.png?impolicy=penny&imwidth=800",
       "category": "weitere-angebote",
+      "packageSize": "65 g",
+      "priceByBaseUnit": "21,38 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "65 g",
-      "priceByBaseUnit": "21,38 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "bc2ae905fb2a483bc253",
@@ -9411,11 +9403,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-7e93d635-f022-4be7-81db-71926a3af649",
       "imageUrl": "https://cdn.penny.de/dam/jcr:892e3c00-1ba1-40e7-baf6-7ff2230e4729/9057060.png?impolicy=penny&imwidth=800",
       "category": "weitere-angebote",
+      "packageSize": "500 ml",
+      "priceByBaseUnit": "7,58 €/l",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "500 ml",
-      "priceByBaseUnit": "7,58 €/l"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "2fb044619fdea8d72240",
@@ -9429,11 +9421,11 @@
       "originalPrice": 1.35,
       "imageUrl": "https://cdn.penny.de/dam/jcr:2260fc39-0f9d-451a-a02c-a23253923365/KW42_MB_BK_Berliner.png?impolicy=penny&imwidth=800",
       "category": "weitere-angebote",
+      "packageSize": "3 Stück",
+      "priceByBaseUnit": "0,33 €/Stk",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "3 Stück",
-      "priceByBaseUnit": "0,33 €/Stk"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "3758499d3352c0b8bd26",
@@ -9447,11 +9439,11 @@
       "originalPrice": 1.95,
       "imageUrl": "https://cdn.penny.de/dam/jcr:b01a1a07-ba9a-42b9-a164-f7c547d6560b/KW42_MB_BK_Pain%20au%20Chocolat.png?impolicy=penny&imwidth=800",
       "category": "weitere-angebote",
+      "packageSize": "3 Stück",
+      "priceByBaseUnit": "0,43 €/Stk",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "3 Stück",
-      "priceByBaseUnit": "0,43 €/Stk"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "70bb7dc4bcfcc07e7808",
@@ -9465,11 +9457,11 @@
       "originalPrice": 3.49,
       "imageUrl": "https://cdn.penny.de/dam/jcr:1d1ad2f1-65be-42ee-b557-ff949e6943a6/33562419.png?impolicy=penny&imwidth=800",
       "category": "weitere-angebote",
+      "packageSize": "335 g",
+      "priceByBaseUnit": "7,43 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "335 g",
-      "priceByBaseUnit": "7,43 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "28377c8d6e86a3132dba",
@@ -9482,11 +9474,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-3d67140d-6da9-4bcd-8f33-f35676f024c7",
       "imageUrl": "https://cdn.penny.de/dam/jcr:fe4982c6-2d6e-4ae5-9561-3750818c35e9/50979361.png?impolicy=penny&imwidth=800",
       "category": "weitere-angebote",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "7,45 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "7,45 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "0c550e4260ab33e26290",
@@ -9499,11 +9491,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-b480bf3d-d2bb-4d1f-8e52-23b2111c41d4",
       "imageUrl": "https://cdn.penny.de/dam/jcr:3bb32749-e895-4dc0-8cc2-d5996b52114c/34302481.png?impolicy=penny&imwidth=800",
       "category": "weitere-angebote",
+      "packageSize": "218 g",
+      "priceByBaseUnit": "36,65 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "218 g",
-      "priceByBaseUnit": "36,65 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "19772edd8581a606dbe1",
@@ -9517,11 +9509,11 @@
       "originalPrice": 5.56,
       "imageUrl": "https://cdn.penny.de/dam/jcr:1a58f510-f6be-4470-bcfb-8a5a17fcdd6b/KW42_MG_Rockstar.png?impolicy=penny&imwidth=800",
       "category": "getraenke",
+      "packageSize": "4 x 0,5 l",
+      "priceByBaseUnit": "1,39 €/l",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "4 x 0,5 l",
-      "priceByBaseUnit": "1,39 €/l"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "82781942ca2056ffa2c3",
@@ -9759,11 +9751,11 @@
       "originalPrice": 2.29,
       "imageUrl": "https://cdn.penny.de/dam/jcr:63d27a19-d03c-410e-bc80-babadb06a85c/2062061_26827581.png?impolicy=penny&imwidth=800",
       "category": "dauerhaft-im-preis-gesenkt",
+      "packageSize": "2 x 125 g",
+      "priceByBaseUnit": "7,96 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "2 x 125 g",
-      "priceByBaseUnit": "7,96 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "320ccf48faeed2292ece",
@@ -9777,11 +9769,11 @@
       "originalPrice": 2.29,
       "imageUrl": "https://cdn.penny.de/dam/jcr:ed37831e-54de-4906-881b-f5a53abb4377/2411605_27054126.png?impolicy=penny&imwidth=800",
       "category": "dauerhaft-im-preis-gesenkt",
+      "packageSize": "3 x 50 g",
+      "priceByBaseUnit": "13,27 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "3 x 50 g",
-      "priceByBaseUnit": "13,27 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "4e4d2b38b48ef1abd004",
@@ -9795,11 +9787,11 @@
       "originalPrice": 2.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:07c74299-b811-40b6-9fba-79c485296049/7021602_26662080.png?impolicy=penny&imwidth=800",
       "category": "dauerhaft-im-preis-gesenkt",
+      "packageSize": "400 g",
+      "priceByBaseUnit": "7,22 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "400 g",
-      "priceByBaseUnit": "7,22 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "58aab387148b339c190c",
@@ -9813,11 +9805,11 @@
       "originalPrice": 6.79,
       "imageUrl": "https://cdn.penny.de/dam/jcr:98dd511b-82a6-400e-bef8-b2ccd0585be5/9575177_50741696.png?impolicy=penny&imwidth=800",
       "category": "dauerhaft-im-preis-gesenkt",
+      "packageSize": "1 kg",
+      "priceByBaseUnit": "6,49 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "1 kg",
-      "priceByBaseUnit": "6,49 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "8e32ad5f39cf1e017a52",
@@ -9831,11 +9823,11 @@
       "originalPrice": 3.45,
       "imageUrl": "https://cdn.penny.de/dam/jcr:da49087b-183b-4a8e-8be3-9a6c912d9e71/7021541_26645094.png?impolicy=penny&imwidth=800",
       "category": "dauerhaft-im-preis-gesenkt",
+      "packageSize": "400 g",
+      "priceByBaseUnit": "8,22 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "400 g",
-      "priceByBaseUnit": "8,22 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "006647a8f90f4350e236",
@@ -9849,11 +9841,11 @@
       "originalPrice": 3.45,
       "imageUrl": "https://cdn.penny.de/dam/jcr:7697bbb3-1e0c-4a49-9594-1fa32b0bfce9/7021598_26644984.png?impolicy=penny&imwidth=800",
       "category": "dauerhaft-im-preis-gesenkt",
+      "packageSize": "400 g",
+      "priceByBaseUnit": "8,22 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "400 g",
-      "priceByBaseUnit": "8,22 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "8926bb7a68d3b4789a66",
@@ -9867,11 +9859,11 @@
       "originalPrice": 2.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:172f7073-8565-4f81-bb76-75806d925c1b/7923659_42394685.png?impolicy=penny&imwidth=800",
       "category": "dauerhaft-im-preis-gesenkt",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "14,45 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "14,45 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "42a7ac633098327c3c25",
@@ -9885,11 +9877,11 @@
       "originalPrice": 2.49,
       "imageUrl": "https://cdn.penny.de/dam/jcr:bc0e15d1-3bd9-4ff3-b0e0-0ce04f38f512/2388385_26825483.png?impolicy=penny&imwidth=800",
       "category": "dauerhaft-im-preis-gesenkt",
+      "packageSize": "2 x 160 g",
+      "priceByBaseUnit": "7,47 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "2 x 160 g",
-      "priceByBaseUnit": "7,47 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "b4ddb66aa31eab3e7ecd",
@@ -9903,11 +9895,11 @@
       "originalPrice": 1.69,
       "imageUrl": "https://cdn.penny.de/dam/jcr:4a94df8e-51c8-415a-b62d-37d27eb88e58/7614541_43489382.png?impolicy=penny&imwidth=800",
       "category": "dauerhaft-im-preis-gesenkt",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "7,95 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "7,95 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "3d6c598c5e01505fa1a7",
@@ -9921,11 +9913,11 @@
       "originalPrice": 2.29,
       "imageUrl": "https://cdn.penny.de/dam/jcr:4dd0d96b-a93a-4d78-9d7e-438b3c1f21b0/7332918_55002489.png?impolicy=penny&imwidth=800",
       "category": "dauerhaft-im-preis-gesenkt",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "19,90 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "19,90 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "1ba94235a39f3ac992e9",
@@ -9939,11 +9931,11 @@
       "originalPrice": 1.49,
       "imageUrl": "https://cdn.penny.de/dam/jcr:c6895a9b-f713-4eb6-9879-ef522297d094/9928277_49590345.png?impolicy=penny&imwidth=800",
       "category": "dauerhaft-im-preis-gesenkt",
+      "packageSize": "5 x 26 g",
+      "priceByBaseUnit": "10,69 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "5 x 26 g",
-      "priceByBaseUnit": "10,69 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "5363fab05ded1d0f02ba",
@@ -9957,11 +9949,11 @@
       "originalPrice": 1.39,
       "imageUrl": "https://cdn.penny.de/dam/jcr:c0a3b77e-d29f-4169-8d92-965feaf0b1ce/1940362_26827159.png?impolicy=penny&imwidth=800",
       "category": "dauerhaft-im-preis-gesenkt",
+      "packageSize": "250 g",
+      "priceByBaseUnit": "5,16 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "250 g",
-      "priceByBaseUnit": "5,16 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "483fca0d2974010602aa",
@@ -9975,11 +9967,11 @@
       "originalPrice": 1.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:021cfcb2-cf14-4ab1-be88-baac32bcd1fe/5926556_3903460.png?impolicy=penny&imwidth=800",
       "category": "dauerhaft-im-preis-gesenkt",
+      "packageSize": "2 x 100 g",
+      "priceByBaseUnit": "9,45 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "2 x 100 g",
-      "priceByBaseUnit": "9,45 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "0a02b2911773f8e41f42",
@@ -10007,11 +9999,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-2831221a-5e17-46e3-b77a-4198d1c680cb",
       "imageUrl": "https://cdn.penny.de/dam/jcr:b9247d6f-df92-4156-affa-fba953a78e0d/56180201_02.png?impolicy=penny&imwidth=800",
       "category": "kochen-und-backen",
+      "packageSize": "2er-Packung",
+      "priceByBaseUnit": "2,00 €/Stk",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "2er-Packung",
-      "priceByBaseUnit": "2,00 €/Stk"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "6667b7438d412302567d",
@@ -10253,11 +10245,11 @@
       "originalPrice": 24.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:074d29b3-6c11-4ca5-ad4a-3b7407bbfbbf/57579228.png?impolicy=penny&imwidth=800",
       "category": "sport-und-freizeit",
+      "packageSize": "3er-Packung",
+      "priceByBaseUnit": "5,33 €/Stk",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "3er-Packung",
-      "priceByBaseUnit": "5,33 €/Stk"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "275166a742282cd8fd4e",
@@ -10271,11 +10263,11 @@
       "originalPrice": 14.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:b4fd4020-30a6-477a-9a49-8f3460559d5a/46328155.png?impolicy=penny&imwidth=800",
       "category": "sport-und-freizeit",
+      "packageSize": "5er-Packung",
+      "priceByBaseUnit": "2,00 €/Stk",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "5er-Packung",
-      "priceByBaseUnit": "2,00 €/Stk"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "90196747f66e524ea7f0",
@@ -10470,11 +10462,11 @@
       "originalPrice": 0.89,
       "imageUrl": "https://cdn.penny.de/dam/jcr:d497dcaf-43c4-425d-895b-c686cdce7008/9128910.png?impolicy=penny&imwidth=800",
       "category": "food-highlights-fuer-alle",
+      "packageSize": "150 g",
+      "priceByBaseUnit": "2,33 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "150 g",
-      "priceByBaseUnit": "2,33 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "f741e2dfd96063c00749",
@@ -10488,11 +10480,11 @@
       "originalPrice": 2.19,
       "imageUrl": "https://cdn.penny.de/dam/jcr:c585502f-8fc3-495d-b20b-12e941d0eb31/56986963.png?impolicy=penny&imwidth=800",
       "category": "food-highlights-fuer-alle",
+      "packageSize": "225 g",
+      "priceByBaseUnit": "5,73 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "225 g",
-      "priceByBaseUnit": "5,73 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "ae621f4fd5f9088e7bdb",
@@ -10506,11 +10498,11 @@
       "originalPrice": 4.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:b6b9c976-dfc8-40de-ac7b-b433f2586bef/30761693.png?impolicy=penny&imwidth=800",
       "category": "food-highlights-fuer-alle",
+      "packageSize": "250 g",
+      "priceByBaseUnit": "15,56 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "250 g",
-      "priceByBaseUnit": "15,56 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "b092c58bdbb693c10d4b",
@@ -10523,11 +10515,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-17854b78-c417-4eff-8395-2366acbcaeff",
       "imageUrl": "https://cdn.penny.de/dam/jcr:737efcf5-596e-4446-8ff3-0692ff4d4503/56299685.png?impolicy=penny&imwidth=800",
       "category": "food-highlights-fuer-alle",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "18,95 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "18,95 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "3e595eb018c0bcf5caf6",
@@ -10540,11 +10532,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-4f595e78-e4c0-47d2-a6f2-b8d616348e65",
       "imageUrl": "https://cdn.penny.de/dam/jcr:ddb4865b-ca54-478b-acd3-fc8fd28f10bf/56560656.png?impolicy=penny&imwidth=800",
       "category": "food-highlights-fuer-alle",
+      "packageSize": "500 ml",
+      "priceByBaseUnit": "3,18 €/l",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "500 ml",
-      "priceByBaseUnit": "3,18 €/l"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "babca51ca41cd280b1d3",
@@ -10557,11 +10549,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-1d1e2882-eb69-4376-b9a5-d90bfba412af",
       "imageUrl": "https://cdn.penny.de/dam/jcr:00a21818-8576-4a51-a38b-7e8a12fdf191/55563621.png?impolicy=penny&imwidth=800",
       "category": "food-highlights-fuer-alle",
+      "packageSize": "270 g",
+      "priceByBaseUnit": "4,11 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "270 g",
-      "priceByBaseUnit": "4,11 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "9f9d707e042dd70370f4",
@@ -10575,11 +10567,11 @@
       "originalPrice": 2.29,
       "imageUrl": "https://cdn.penny.de/dam/jcr:c7678da8-4162-4ac0-8528-159bef4ee85e/1921260.png?impolicy=penny&imwidth=800",
       "category": "food-highlights-fuer-alle",
+      "packageSize": "1 l",
+      "priceByBaseUnit": "1,59 €/l",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "1 l",
-      "priceByBaseUnit": "1,59 €/l"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "3fd83cad1b32330b4a2b",
@@ -10592,11 +10584,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-ab10202f-dd06-47d4-9bf5-aad282296049",
       "imageUrl": "https://cdn.penny.de/dam/jcr:c9dd9712-5d9a-4b88-b305-fd2c00c070fc/35096230.png?impolicy=penny&imwidth=800",
       "category": "food-highlights-fuer-alle",
+      "packageSize": "12 Stück",
+      "priceByBaseUnit": "0,21 €/Stk",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "12 Stück",
-      "priceByBaseUnit": "0,21 €/Stk"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "969062ba12025d3223af",
@@ -10610,11 +10602,11 @@
       "originalPrice": 8.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:935112fd-752b-4830-81d9-29e761bf5430/28938464.png?impolicy=penny&imwidth=800",
       "category": "food-highlights-fuer-alle",
+      "packageSize": "800 g",
+      "priceByBaseUnit": "7,49 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "800 g",
-      "priceByBaseUnit": "7,49 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "615f1ff093d1bb3a8be7",
@@ -10657,11 +10649,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-fe359997-0266-45a7-ba00-9fa500c4e166",
       "imageUrl": "https://cdn.penny.de/dam/jcr:058c0bb5-c998-4afb-9e54-c2835e1864d5/53057964.png?impolicy=penny&imwidth=800",
       "category": "food-highlights-fuer-alle",
+      "packageSize": "500 g",
+      "priceByBaseUnit": "5,98 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "500 g",
-      "priceByBaseUnit": "5,98 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "446073a329ab5cd38dbc",
@@ -10674,11 +10666,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-3af035a3-be3a-4703-a3f5-db743733ed21",
       "imageUrl": "https://cdn.penny.de/dam/jcr:2385f4bc-fe24-4989-8ef9-c41c3ca96da2/56671186.png?impolicy=penny&imwidth=800",
       "category": "food-highlights-fuer-alle",
+      "packageSize": "125 g",
+      "priceByBaseUnit": "11,92 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "125 g",
-      "priceByBaseUnit": "11,92 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "08468b5c62133598e643",
@@ -10691,11 +10683,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-e8518b99-c9be-4c60-8371-c217fd9891ab",
       "imageUrl": "https://cdn.penny.de/dam/jcr:d8416e19-dc5b-410a-8f8b-35f787554508/56671186_01.png?impolicy=penny&imwidth=800",
       "category": "food-highlights-fuer-alle",
+      "packageSize": "125 g",
+      "priceByBaseUnit": "11,92 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "125 g",
-      "priceByBaseUnit": "11,92 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "861d44fc17272fc3426e",
@@ -10754,11 +10746,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-8380d986-85d9-48a9-800f-64af2e23a44b",
       "imageUrl": "https://cdn.penny.de/dam/jcr:c95d9354-382c-47cd-a700-84bf551382e6/52857520.png?impolicy=penny&imwidth=800",
       "category": "taste-of-asia",
+      "packageSize": "400 g",
+      "priceByBaseUnit": "6,97 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "400 g",
-      "priceByBaseUnit": "6,97 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "58b3b100380409beab86",
@@ -10771,11 +10763,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-5384c1f0-bbc9-443b-ba39-b9194107f4f7",
       "imageUrl": "https://cdn.penny.de/dam/jcr:b7028776-8dd1-451e-bd9b-407b9fb85cfa/46231266.png?impolicy=penny&imwidth=800",
       "category": "taste-of-asia",
+      "packageSize": "150 g",
+      "priceByBaseUnit": "13,27 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "150 g",
-      "priceByBaseUnit": "13,27 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "df2ee6946461c4baa77b",
@@ -10788,11 +10780,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-52f70f3c-f37b-4038-afcc-ceb5fa1f1409",
       "imageUrl": "https://cdn.penny.de/dam/jcr:54d95926-22b6-47f8-adc0-fb641f993ac5/53294520.png?impolicy=penny&imwidth=800",
       "category": "taste-of-asia",
+      "packageSize": "80 g",
+      "priceByBaseUnit": "37,38 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "80 g",
-      "priceByBaseUnit": "37,38 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "cbab6faab7127d0a1d0b",
@@ -10805,11 +10797,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-fe59e0ee-fd4a-4f42-9f58-adc2d9dc291c",
       "imageUrl": "https://cdn.penny.de/dam/jcr:6edf12b7-723d-44af-85ae-39ddeec87fd7/34593375.png?impolicy=penny&imwidth=800",
       "category": "taste-of-asia",
+      "packageSize": "600 g",
+      "priceByBaseUnit": "3,82 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "600 g",
-      "priceByBaseUnit": "3,82 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "a21402ce0fac81c0bda7",
@@ -10822,11 +10814,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-f79f3e2c-3480-4652-93d3-e7a8b447873b",
       "imageUrl": "https://cdn.penny.de/dam/jcr:aa70cbae-b398-4514-ade5-be674c82ffc1/25389996.png?impolicy=penny&imwidth=800",
       "category": "taste-of-asia",
+      "packageSize": "550 g",
+      "priceByBaseUnit": "16,35 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "550 g",
-      "priceByBaseUnit": "16,35 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "e2010d0f5b6f613b5c36",
@@ -10839,11 +10831,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-b08d91c8-1e4c-4d99-a557-b8142e7e3ede",
       "imageUrl": "https://cdn.penny.de/dam/jcr:fd046dd7-bb12-4fda-bb9a-e35ef8d1a550/53987766.png?impolicy=penny&imwidth=800",
       "category": "taste-of-asia",
+      "packageSize": "290 ml",
+      "priceByBaseUnit": "6,17 €/l",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "290 ml",
-      "priceByBaseUnit": "6,17 €/l"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "cc9231af06817f0a3fe3",
@@ -10856,11 +10848,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-74544f3d-909f-4363-bdf9-c1676743410e",
       "imageUrl": "https://cdn.penny.de/dam/jcr:f07b582f-88e7-403d-9092-eb5bafdd4cb2/31972366.png?impolicy=penny&imwidth=800",
       "category": "taste-of-asia",
+      "packageSize": "250 g",
+      "priceByBaseUnit": "5,56 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "250 g",
-      "priceByBaseUnit": "5,56 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "5a269873eeb5dfa5c2b1",
@@ -10873,11 +10865,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-728c4b57-1e5e-4271-ad1e-1caf0de58776",
       "imageUrl": "https://cdn.penny.de/dam/jcr:dfb10c2f-6a5d-4430-b6be-ce6ca649d92e/41918817.png?impolicy=penny&imwidth=800",
       "category": "taste-of-asia",
+      "packageSize": "4.500 g",
+      "priceByBaseUnit": "1775,56 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "4.500 g",
-      "priceByBaseUnit": "1775,56 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "5991b38e10233c199d0c",
@@ -10890,11 +10882,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-c0fb26cf-baeb-4f82-abde-f11e6bae72e1",
       "imageUrl": "https://cdn.penny.de/dam/jcr:a1fd07f1-a751-4dff-8d9c-6a964b5a8e1a/48896540.png?impolicy=penny&imwidth=800",
       "category": "taste-of-asia",
+      "packageSize": "55 g",
+      "priceByBaseUnit": "16,18 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "55 g",
-      "priceByBaseUnit": "16,18 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "01aef1f041cc904d1f30",
@@ -10907,11 +10899,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-1e5db5c0-f74d-4da8-8384-53df8b984d7e",
       "imageUrl": "https://cdn.penny.de/dam/jcr:ff1c4be2-fd03-48c4-b4f4-21acd5ab22eb/28195087.png?impolicy=penny&imwidth=800",
       "category": "taste-of-asia",
+      "packageSize": "280 g",
+      "priceByBaseUnit": "7,11 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "280 g",
-      "priceByBaseUnit": "7,11 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "8ec66601e51da36152c6",
@@ -10924,11 +10916,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-07bfc208-0f2d-449a-8f4a-3a4d8b14934c",
       "imageUrl": "https://cdn.penny.de/dam/jcr:abe70b8a-7d04-498e-b625-900a476aa345/54378190.png?impolicy=penny&imwidth=800",
       "category": "taste-of-asia",
+      "packageSize": "5 x 60 g",
+      "priceByBaseUnit": "7,40 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "5 x 60 g",
-      "priceByBaseUnit": "7,40 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "75220dd74f6c3d44ac6a",
@@ -10941,11 +10933,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-70972260-1881-403e-a6b9-85dba8c33a52",
       "imageUrl": "https://cdn.penny.de/dam/jcr:42fdd815-a33e-4f99-b151-e666af5b3859/52367940.png?impolicy=penny&imwidth=800",
       "category": "taste-of-asia",
+      "packageSize": "252 g",
+      "priceByBaseUnit": "7,90 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "252 g",
-      "priceByBaseUnit": "7,90 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "8b13581a48c158f07039",
@@ -10958,11 +10950,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-0e8e8766-e4e8-47b8-b2c6-9b2491cf76e9",
       "imageUrl": "https://cdn.penny.de/dam/jcr:b846c6d4-075c-419b-9aac-e62a1ed0b339/32258223.png?impolicy=penny&imwidth=800",
       "category": "taste-of-asia",
+      "packageSize": "1.000 ml",
+      "priceByBaseUnit": "2990,00 €/l",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "1.000 ml",
-      "priceByBaseUnit": "2990,00 €/l"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "80048a5e69dc48927fec",
@@ -10975,11 +10967,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-edf0924b-c912-4305-a76d-c28637aed2ba",
       "imageUrl": "https://cdn.penny.de/dam/jcr:9dc89718-afed-4820-b9d7-440e57d45a5c/34687240.png?impolicy=penny&imwidth=800",
       "category": "taste-of-asia",
+      "packageSize": "250 ml",
+      "priceByBaseUnit": "9,16 €/l",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "250 ml",
-      "priceByBaseUnit": "9,16 €/l"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "c58a6ebc4075acd8664b",
@@ -10992,11 +10984,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-bc2a75f2-fec7-4620-af18-73c31ea51fc4",
       "imageUrl": "https://cdn.penny.de/dam/jcr:b010290a-c607-46e3-bb79-b7dcda062580/37097180.png?impolicy=penny&imwidth=800",
       "category": "taste-of-asia",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "11,90 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "11,90 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "a85baa8c64b18bdf5a17",
@@ -11009,11 +11001,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-99a62ea9-e0de-442a-b468-ad55f436d6a6",
       "imageUrl": "https://cdn.penny.de/dam/jcr:301746fd-69a7-4ead-8665-6e035f182482/56852189.png?impolicy=penny&imwidth=800",
       "category": "taste-of-asia",
+      "packageSize": "150 g",
+      "priceByBaseUnit": "11,27 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "150 g",
-      "priceByBaseUnit": "11,27 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "1d3bd59feb1f4a464c82",
@@ -11026,11 +11018,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-d9afc815-6947-4084-a0ff-3aa5fed6fa40",
       "imageUrl": "https://cdn.penny.de/dam/jcr:453bae32-d93a-4328-ad95-c92a365c082f/28312075.png?impolicy=penny&imwidth=800",
       "category": "douceur",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "19,90 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "19,90 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "c38507c4890c2f4ae4ad",
@@ -11043,11 +11035,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-aee6f8b4-e67c-43b7-a20c-9dbb5310af3e",
       "imageUrl": "https://cdn.penny.de/dam/jcr:7700606d-3a33-4360-b7f7-ef93c9664cec/50079491.png?impolicy=penny&imwidth=800",
       "category": "douceur",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "17,90 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "17,90 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "3ff33607c4b8111541f0",
@@ -11060,11 +11052,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-c82cc7b8-d043-44ee-a999-88106627c6c8",
       "imageUrl": "https://cdn.penny.de/dam/jcr:91b7cc0a-b7ea-4e63-9e27-2e6f4beba6cd/9541500.png?impolicy=penny&imwidth=800",
       "category": "douceur",
+      "packageSize": "150 g",
+      "priceByBaseUnit": "13,27 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "150 g",
-      "priceByBaseUnit": "13,27 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "ce6a90700b4cac15689f",
@@ -11077,11 +11069,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-3f624752-494c-47ac-85de-97178db97a47",
       "imageUrl": "https://cdn.penny.de/dam/jcr:71bf51c9-6277-49a1-ae17-40e453c9d38a/55224877.png?impolicy=penny&imwidth=800",
       "category": "douceur",
+      "packageSize": "180 g",
+      "priceByBaseUnit": "9,94 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "180 g",
-      "priceByBaseUnit": "9,94 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "8a6ff2624d02044c8bca",
@@ -11094,11 +11086,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-5fb08830-b160-4bd3-8b71-34e7893848bf",
       "imageUrl": "https://cdn.penny.de/dam/jcr:abfb6077-ec3e-4d27-a2ad-14cb69d3657f/22878444.png?impolicy=penny&imwidth=800",
       "category": "douceur",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "8,95 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "8,95 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "b767778bc8ad22ea8152",
@@ -11112,11 +11104,11 @@
       "originalPrice": 1.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:a8d440af-0be5-42fb-bcb6-c869d55911b1/50397067.png?impolicy=penny&imwidth=800",
       "category": "douceur",
+      "packageSize": "175 g",
+      "priceByBaseUnit": "9,09 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "175 g",
-      "priceByBaseUnit": "9,09 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "073d28c4223411e912b3",
@@ -11129,11 +11121,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-fba57cef-73f2-4b05-880c-0761af2ae1f1",
       "imageUrl": "https://cdn.penny.de/dam/jcr:12f249a1-3671-4d6e-8a6f-4ef3580641c0/21451698.png?impolicy=penny&imwidth=800",
       "category": "douceur",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "9,45 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "9,45 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "7d8b1499e35f907a11e4",
@@ -11146,11 +11138,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-ec278f0e-27d3-4e6f-a09e-36a71b25b391",
       "imageUrl": "https://cdn.penny.de/dam/jcr:0493ef7f-a3e2-40c1-b55c-bfe81c114ad5/56159801.png?impolicy=penny&imwidth=800",
       "category": "douceur",
+      "packageSize": "175 g",
+      "priceByBaseUnit": "15,37 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "175 g",
-      "priceByBaseUnit": "15,37 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "fccb12a00712541d9c82",
@@ -11163,11 +11155,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-0d0113b1-f88e-4a78-b6d6-9ba15314d3e5",
       "imageUrl": "https://cdn.penny.de/dam/jcr:fd2fb100-c1c5-4780-882b-5ce2173c9107/57196346.png?impolicy=penny&imwidth=800",
       "category": "douceur",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "4,95 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "4,95 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "c48f96668cc39a063cc2",
@@ -11180,11 +11172,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-3ae9f98f-5835-4332-a2e8-5d3052087fb8",
       "imageUrl": "https://cdn.penny.de/dam/jcr:b835a370-1846-4382-8a7b-e38144118c8b/40115635.png?impolicy=penny&imwidth=800",
       "category": "douceur",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "8,95 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "8,95 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "fe2ab19c29ff6feb4f9b",
@@ -11197,11 +11189,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-08af0944-ca6b-475d-9462-01fa3e306d58",
       "imageUrl": "https://cdn.penny.de/dam/jcr:016409b4-b87f-462e-a460-3b5969a6dbd4/56778904.png?impolicy=penny&imwidth=800",
       "category": "douceur",
+      "packageSize": "750 g",
+      "priceByBaseUnit": "4,65 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "750 g",
-      "priceByBaseUnit": "4,65 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "42a3b9ce3ba10076d110",
@@ -11215,11 +11207,11 @@
       "originalPrice": 1.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:4b9e20a2-ab81-4d83-b995-e0632b1f1b16/22749836_neu.png?impolicy=penny&imwidth=800",
       "category": "douceur",
+      "packageSize": "150 g",
+      "priceByBaseUnit": "10,60 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "150 g",
-      "priceByBaseUnit": "10,60 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "7a8e6955180dde53ae37",
@@ -11233,11 +11225,11 @@
       "originalPrice": 2.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:cfc6e356-b7fb-4188-b5e9-1b1ee1d388db/9341560.png?impolicy=penny&imwidth=800",
       "category": "sparen-auf-top-marken",
+      "packageSize": "800 g",
+      "priceByBaseUnit": "2,24 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "800 g",
-      "priceByBaseUnit": "2,24 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "47cd0a6d7f1c3f497bc6",
@@ -11250,11 +11242,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-ff5923db-939e-4600-826a-f3affaf14323",
       "imageUrl": "https://cdn.penny.de/dam/jcr:d0d2482e-8770-40ae-9972-8417a4ad6fd5/41478184.png?impolicy=penny&imwidth=800",
       "category": "sparen-auf-top-marken",
+      "packageSize": "610,4 g",
+      "priceByBaseUnit": "4,90 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "610,4 g",
-      "priceByBaseUnit": "4,90 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "8352b6726a8d47d89937",
@@ -11268,11 +11260,11 @@
       "originalPrice": 3.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:85f399d5-873e-4cbe-8b36-270dcf511bfe/44315727.png?impolicy=penny&imwidth=800",
       "category": "sparen-auf-top-marken",
+      "packageSize": "675 g",
+      "priceByBaseUnit": "3,69 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "675 g",
-      "priceByBaseUnit": "3,69 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "7f6750e96430f167a3d1",
@@ -11286,11 +11278,11 @@
       "originalPrice": 2.79,
       "imageUrl": "https://cdn.penny.de/dam/jcr:feebbc27-2f4d-411f-bb82-3ae65b8fa4ed/7824730.png?impolicy=penny&imwidth=800",
       "category": "sparen-auf-top-marken",
+      "packageSize": "400 g",
+      "priceByBaseUnit": "3,72 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "400 g",
-      "priceByBaseUnit": "3,72 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "a1872fb815ac7234f9a1",
@@ -11304,11 +11296,11 @@
       "originalPrice": 1.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:d7ac0c66-a695-47da-9653-4495c0ba5e84/48972996.png?impolicy=penny&imwidth=800",
       "category": "sparen-auf-top-marken",
+      "packageSize": "80 g",
+      "priceByBaseUnit": "22,38 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "80 g",
-      "priceByBaseUnit": "22,38 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "ebd024b38c0ad01bbb98",
@@ -11322,11 +11314,11 @@
       "originalPrice": 2.29,
       "imageUrl": "https://cdn.penny.de/dam/jcr:654c2493-aa84-4f4e-a596-20a64965b534/6896160.png?impolicy=penny&imwidth=800",
       "category": "sparen-auf-top-marken",
+      "packageSize": "220 ml",
+      "priceByBaseUnit": "6,77 €/l",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "220 ml",
-      "priceByBaseUnit": "6,77 €/l"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "408de13301c52909c5d5",
@@ -11339,11 +11331,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-65706eca-6896-4d5d-8a42-c400ab8c0527",
       "imageUrl": "https://cdn.penny.de/dam/jcr:d0b05282-1cc4-4d24-9118-a1fac4efc714/47889225.png?impolicy=penny&imwidth=800",
       "category": "sparen-auf-top-marken",
+      "packageSize": "250 g",
+      "priceByBaseUnit": "4,76 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "250 g",
-      "priceByBaseUnit": "4,76 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "18ade6395a51f08691af",
@@ -11357,11 +11349,11 @@
       "originalPrice": 8.79,
       "imageUrl": "https://cdn.penny.de/dam/jcr:c786196f-5728-4c07-b6e4-812f5cb289e4/48255747.png?impolicy=penny&imwidth=800",
       "category": "sparen-auf-top-marken",
+      "packageSize": "1.125 g",
+      "priceByBaseUnit": "5324,44 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "1.125 g",
-      "priceByBaseUnit": "5324,44 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "c8586915722428136193",
@@ -11375,11 +11367,11 @@
       "originalPrice": 3.79,
       "imageUrl": "https://cdn.penny.de/dam/jcr:f6792ed1-11d9-4ffd-9d76-e17ea0bc55d1/26160799.png?impolicy=penny&imwidth=800",
       "category": "sparen-auf-top-marken",
+      "packageSize": "320 g",
+      "priceByBaseUnit": "9,34 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "320 g",
-      "priceByBaseUnit": "9,34 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "97063b5bbe14f8bd2da8",
@@ -11393,11 +11385,11 @@
       "originalPrice": 4.49,
       "imageUrl": "https://cdn.penny.de/dam/jcr:529dabd7-86eb-4620-9f1f-739e8297b418/37011961.png?impolicy=penny&imwidth=800",
       "category": "sparen-auf-top-marken",
+      "packageSize": "380 g",
+      "priceByBaseUnit": "9,18 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "380 g",
-      "priceByBaseUnit": "9,18 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "3b16c9dadec09179a903",
@@ -11411,11 +11403,11 @@
       "originalPrice": 2.39,
       "imageUrl": "https://cdn.penny.de/dam/jcr:f69a606e-b1e3-4e14-923a-4d2b20911a0d/54048708.png?impolicy=penny&imwidth=800",
       "category": "sparen-auf-top-marken",
+      "packageSize": "37,5 g",
+      "priceByBaseUnit": "39,73 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "37,5 g",
-      "priceByBaseUnit": "39,73 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "f4be51b7fec9883773c7",
@@ -11429,11 +11421,11 @@
       "originalPrice": 2.49,
       "imageUrl": "https://cdn.penny.de/dam/jcr:a0a0c6e3-69b5-4af2-bc42-18b45f7ae250/25554640.png?impolicy=penny&imwidth=800",
       "category": "sparen-auf-top-marken",
+      "packageSize": "160 g",
+      "priceByBaseUnit": "12,44 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "160 g",
-      "priceByBaseUnit": "12,44 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "b63f3a923148b4801453",
@@ -11447,11 +11439,11 @@
       "originalPrice": 3.29,
       "imageUrl": "https://cdn.penny.de/dam/jcr:fe488ac6-959c-408a-b9b1-89472cb0f52a/44720559.png?impolicy=penny&imwidth=800",
       "category": "sparen-auf-top-marken",
+      "packageSize": "350 g",
+      "priceByBaseUnit": "5,69 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "350 g",
-      "priceByBaseUnit": "5,69 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "7907e4c455300ea1c82f",
@@ -11465,11 +11457,11 @@
       "originalPrice": 3.29,
       "imageUrl": "https://cdn.penny.de/dam/jcr:8e3bedd1-2e7f-4c3e-9038-dc0afcb6ef89/23917869.png?impolicy=penny&imwidth=800",
       "category": "sparen-auf-top-marken",
+      "packageSize": "124 g",
+      "priceByBaseUnit": "17,90 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "124 g",
-      "priceByBaseUnit": "17,90 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "97bfa478f58262ab1401",
@@ -11483,11 +11475,11 @@
       "originalPrice": 9.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:ee330a34-4c88-44c0-9b05-c938b4566642/30080598.png?impolicy=penny&imwidth=800",
       "category": "suessigkeiten-und-snacks1",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "34,95 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "34,95 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "832d6f343ea489063d19",
@@ -11500,11 +11492,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-9cba3634-ebe5-40e0-a5d2-91bf69f04670",
       "imageUrl": "https://cdn.penny.de/dam/jcr:8d54e8c1-6977-4f12-98d9-f8426835715e/45731621.png?impolicy=penny&imwidth=800",
       "category": "suessigkeiten-und-snacks1",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "19,95 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "19,95 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "ce4ec8d8acb07a7383f0",
@@ -11518,11 +11510,11 @@
       "originalPrice": 8.49,
       "imageUrl": "https://cdn.penny.de/dam/jcr:0a661647-7ad7-4f9e-8b6b-f033ad524cbe/17360590.png?impolicy=penny&imwidth=800",
       "category": "suessigkeiten-und-snacks1",
+      "packageSize": "400 g",
+      "priceByBaseUnit": "14,97 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "400 g",
-      "priceByBaseUnit": "14,97 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "31d27d3cda5ee348c538",
@@ -11536,11 +11528,11 @@
       "originalPrice": 2.99,
       "imageUrl": "https://cdn.penny.de/dam/jcr:d62b89bf-64e0-4546-a7a2-64bacb92673e/918210.png?impolicy=penny&imwidth=800",
       "category": "suessigkeiten-und-snacks1",
+      "packageSize": "100 g",
+      "priceByBaseUnit": "14,90 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "100 g",
-      "priceByBaseUnit": "14,90 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "6cca4c954a38366551f2",
@@ -11553,11 +11545,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-f205a392-6427-45e5-b5e0-dae9d8d93fd5",
       "imageUrl": "https://cdn.penny.de/dam/jcr:b6a226b5-39eb-4bbb-9446-b206865d08f6/52480578.png?impolicy=penny&imwidth=800",
       "category": "suessigkeiten-und-snacks1",
+      "packageSize": "5 x 39 g",
+      "priceByBaseUnit": "10,21 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "5 x 39 g",
-      "priceByBaseUnit": "10,21 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "4b7ed3ce528fda174708",
@@ -11570,11 +11562,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-bee9f7a1-cf7e-4865-b466-477ef0cf465f",
       "imageUrl": "https://cdn.penny.de/dam/jcr:f77e0485-56e4-4919-8a09-0ad09b0f77f5/55137722.png?impolicy=penny&imwidth=800",
       "category": "suessigkeiten-und-snacks1",
+      "packageSize": "150 g",
+      "priceByBaseUnit": "4,60 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "150 g",
-      "priceByBaseUnit": "4,60 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "3046def11cc3932e4ae5",
@@ -11587,11 +11579,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-42d4e41f-e379-44b5-9569-0e4e47c67398",
       "imageUrl": "https://cdn.penny.de/dam/jcr:26faf4fd-cb52-4899-bde3-1c917867db68/55137722_01.png?impolicy=penny&imwidth=800",
       "category": "suessigkeiten-und-snacks1",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "8,95 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "200 g",
-      "priceByBaseUnit": "8,95 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "71418704e40ca71a20f3",
@@ -11605,11 +11597,11 @@
       "originalPrice": 2.49,
       "imageUrl": "https://cdn.penny.de/dam/jcr:d5647581-b4cf-4a5e-becf-c09b905a563e/57239241.png?impolicy=penny&imwidth=800",
       "category": "suessigkeiten-und-snacks1",
+      "packageSize": "90 g",
+      "priceByBaseUnit": "19,89 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "90 g",
-      "priceByBaseUnit": "19,89 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "8e744e63ed5989cd4e82",
@@ -11622,11 +11614,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-d6b48912-d2f8-4ab2-8c83-e89da7f74bf3",
       "imageUrl": "https://cdn.penny.de/dam/jcr:ec0e904a-f3ee-4bf8-a7f9-15bc24b69c1b/2843700.png?impolicy=penny&imwidth=800",
       "category": "drogerie-und-haushalt1",
+      "packageSize": "8 Stück",
+      "priceByBaseUnit": "0,12 €/Stk",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "8 Stück",
-      "priceByBaseUnit": "0,12 €/Stk"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "fbe0f921f1c0d159bed0",
@@ -11639,11 +11631,11 @@
       "proofRef": "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1#offer-86c4b54f-1ffd-440d-af62-3be70c38efdd",
       "imageUrl": "https://cdn.penny.de/dam/jcr:56613782-27d1-41cf-9a03-3a8c82e22b28/2843700_01.png?impolicy=penny&imwidth=800",
       "category": "drogerie-und-haushalt1",
+      "packageSize": "8 g",
+      "priceByBaseUnit": "123,75 €/kg",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "8 g",
-      "priceByBaseUnit": "123,75 €/kg"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "be0ceb6fd8ace1bd002e",
@@ -11657,11 +11649,11 @@
       "originalPrice": 1.79,
       "imageUrl": "https://cdn.penny.de/dam/jcr:9144eafc-6606-44ce-b0cf-cefc3464f410/44095535.png?impolicy=penny&imwidth=800",
       "category": "getraenke0",
+      "packageSize": "1,75 l",
+      "priceByBaseUnit": "0,68 €/l",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "1,75 l",
-      "priceByBaseUnit": "0,68 €/l"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "8301a0f2465ef4302472",
@@ -11675,11 +11667,11 @@
       "originalPrice": 3.09,
       "imageUrl": "https://cdn.penny.de/dam/jcr:06dd2a27-4aab-47fe-86b4-a870b23364a1/43890122.png?impolicy=penny&imwidth=800",
       "category": "getraenke0",
+      "packageSize": "0,33 l",
+      "priceByBaseUnit": "6,03 €/l",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "0,33 l",
-      "priceByBaseUnit": "6,03 €/l"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "fa692c2d0405fbc0db64",
@@ -11693,11 +11685,11 @@
       "originalPrice": 1.64,
       "imageUrl": "https://cdn.penny.de/dam/jcr:595e7b68-a578-48f3-a7a6-b392cd926acb/24349272.png?impolicy=penny&imwidth=800",
       "category": "getraenke0",
+      "packageSize": "0,44 l",
+      "priceByBaseUnit": "2,52 €/l",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "0,44 l",
-      "priceByBaseUnit": "2,52 €/l"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "f564b98e4c55f567eef7",
@@ -11711,11 +11703,11 @@
       "originalPrice": 10.2,
       "imageUrl": "https://cdn.penny.de/dam/jcr:5ab7c598-0f13-4e71-824d-19af3996b0ee/KW42_MB_Milprima.png?impolicy=penny&imwidth=800",
       "category": "framstag",
+      "packageSize": "12 x 1 l",
+      "priceByBaseUnit": "0,71 €/l",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "12 x 1 l",
-      "priceByBaseUnit": "0,71 €/l"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
       "sourceId": "0e6bc6c2ebc5993d91d6",
@@ -11729,21 +11721,21 @@
       "originalPrice": 1.19,
       "imageUrl": "https://cdn.penny.de/dam/jcr:e1c050d0-d598-4958-aac0-ff37c88ca59e/25433931.png?impolicy=penny&imwidth=800",
       "category": "framstag",
+      "packageSize": "400 ml",
+      "priceByBaseUnit": "2,47 €/l",
       "branchId": "230061",
       "location": "Zellingen",
-      "address": "Am Güßgraben 1, 97225 Zellingen, Germany",
-      "packageSize": "400 ml",
-      "priceByBaseUnit": "2,47 €/l"
+      "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
-      "sourceId": "7873e8740c9b5cf4f254",
+      "sourceId": "4aa08449fe26a0e06f60",
       "productLabel": "Haribo Fruchtgummi 160 g - 175 g",
       "storeName": "Netto",
       "offerPrice": 0.66,
       "validFrom": "2026-10-12",
-      "validUntil": "2026-10-19",
+      "validUntil": "2026-10-20",
       "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=443853&Name=Haribo+Fruchtgummi&ValidTo=2026-10-19T13%3A56%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F443853-450x450-Haribo-Goldbaeren-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
+      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=443853&Name=Haribo+Fruchtgummi&ValidTo=2026-10-20T14%3A07%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F443853-450x450-Haribo-Goldbaeren-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
       "originalPrice": 1.19,
       "imageUrl": "https://www.netto-online.de/media_nfs/images/2026-42/443853-450x450-Haribo-Goldbaeren-n.webp",
       "branchId": "4371",
@@ -11751,56 +11743,55 @@
       "address": "Am Straßacker 1, 97291 Thüngersheim, Germany"
     },
     {
-      "sourceId": "16565930b45b1567369d",
+      "sourceId": "9f5defcb83d3b139f2db",
       "productLabel": "Trauben hell 500 g",
       "storeName": "Netto",
       "offerPrice": 1.39,
       "validFrom": "2026-10-12",
-      "validUntil": "2026-10-19",
+      "validUntil": "2026-10-20",
       "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=43103&Name=Trauben+hell&ValidTo=2026-10-19T13%3A56%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F43103-450x450-Trauben-hell-neu-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
+      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=43103&Name=Trauben+hell&ValidTo=2026-10-20T14%3A07%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F43103-450x450-Trauben-hell-neu-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
       "originalPrice": 1.69,
       "imageUrl": "https://www.netto-online.de/media_nfs/images/2026-42/43103-450x450-Trauben-hell-neu-n.webp",
+      "packageSize": "500 g",
+      "priceByBaseUnit": "2,78 €/kg",
       "branchId": "4371",
       "location": "Thüngersheim",
-      "address": "Am Straßacker 1, 97291 Thüngersheim, Germany",
-      "packageSize": "500 g",
-      "priceByBaseUnit": "2,78 €/kg"
+      "address": "Am Straßacker 1, 97291 Thüngersheim, Germany"
     },
     {
-      "sourceId": "edac275b0f6cf000c9a1",
+      "sourceId": "346274047223fabcddbc",
       "productLabel": "Paulaner Cola 20 x 0,5 l",
       "storeName": "Netto",
       "offerPrice": 10.99,
       "validFrom": "2026-10-12",
-      "validUntil": "2026-10-19",
+      "validUntil": "2026-10-20",
       "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=454081&Name=Paulaner+Cola&ValidTo=2026-10-19T13%3A56%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F454081-450x450-Paulaner-Cola_Kiste-Flasche-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
+      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=454081&Name=Paulaner+Cola&ValidTo=2026-10-20T14%3A07%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F454081-450x450-Paulaner-Cola_Kiste-Flasche-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
       "originalPrice": 16.49,
       "imageUrl": "https://www.netto-online.de/media_nfs/images/2026-42/454081-450x450-Paulaner-Cola_Kiste-Flasche-n.webp",
+      "packageSize": "20 x 0,5 l",
+      "priceByBaseUnit": "1,10 €/l",
       "branchId": "4371",
       "location": "Thüngersheim",
-      "address": "Am Straßacker 1, 97291 Thüngersheim, Germany",
-      "packageSize": "20 x 0,5 l",
-      "priceByBaseUnit": "1,10 €/l"
+      "address": "Am Straßacker 1, 97291 Thüngersheim, Germany"
     },
     {
-      "sourceId": "ab0fb92f64e6a26d776d",
+      "sourceId": "1668c16c90dd56774269",
       "productLabel": "Minipflaumen Tomaten 1 kg",
       "storeName": "Netto",
       "offerPrice": 3.49,
       "validFrom": "2026-10-12",
-      "validUntil": "2026-10-19",
+      "validUntil": "2026-10-20",
       "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=46812&Name=Minipflaumen+Tomaten&ValidTo=2026-10-19T13%3A56%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F46812-450x450-Minipflaumen-tomaten-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
+      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=46812&Name=Minipflaumen+Tomaten&ValidTo=2026-10-20T14%3A07%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F46812-450x450-Minipflaumen-tomaten-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
       "originalPrice": 4.38,
       "imageUrl": "https://www.netto-online.de/media_nfs/images/2026-42/46812-450x450-Minipflaumen-tomaten-n.webp",
+      "packageSize": "1 kg",
+      "priceByBaseUnit": "3,49 €/kg",
       "branchId": "4371",
       "location": "Thüngersheim",
-      "address": "Am Straßacker 1, 97291 Thüngersheim, Germany",
-      "packageSize": "1 kg",
-      "priceByBaseUnit": "3,49 €/kg"
+      "address": "Am Straßacker 1, 97291 Thüngersheim, Germany"
     }
   ]
 }
-
