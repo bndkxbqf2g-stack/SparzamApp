@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sparzamapp/features/route/route_price_evidence.dart';
 import 'package:sparzamapp/services/market_price_observation_adapter.dart';
 import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/market_price.dart';
