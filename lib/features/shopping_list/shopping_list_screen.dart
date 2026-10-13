@@ -437,6 +437,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           marketPrices: widget.marketPrices,
           openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
           onResolvePriceGap: widget.onResolvePriceGap,
+          onAddToShoppingList: widget.onAdd,
         ),
       ),
     );
