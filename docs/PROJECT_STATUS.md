@@ -1,3 +1,8 @@
+## Update 13.10.2026 – Angebote-Reiter mit begrenztem Renderdruck
+- Der Angebote-Reiter begrenzt den äußeren Scrollvorlauf auf den sichtbaren Bereich.
+- Beim Öffnen einer Händler-/Kategoriegruppe wird die konkrete Produktzuordnung pro Datensatz nur einmal berechnet; die bisherige Nachweis- und Listenlogik bleibt unverändert.
+- Ein Widget-Test schützt den Cache-Rahmen, damit spätere UI-Erweiterungen den Renderdruck nicht unbemerkt erhöhen.
+
 ## Update 13.10.2026 – Prospektviewer beschleunigt
 - Der eingebettete Prospektviewer begrenzt den Scrollvorlauf jetzt explizit auf den sichtbaren Bereich. Dadurch werden beim schnellen Wischen keine zusätzlichen Seitenkarten und Netzwerkbilder vorab aufgebaut.
 - Die bestehende Canvas-first-Bildstrategie, begrenzte Decode-Größen und der verzögerte HTML-Fallback bleiben unverändert; die Änderung reduziert nur den Speicher- und Decode-Druck im langen Seitenviewer.
