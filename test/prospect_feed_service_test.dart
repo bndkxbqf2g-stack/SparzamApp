@@ -31,6 +31,7 @@ void main() {
       "brochurePage": "4",
       "publisherId": "lidl",
       "originalPrice": 0.89,
+      "branchId": "B384",
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
       "source": "retailerWebsite",
@@ -536,9 +537,13 @@ void main() {
 }
 ''');
 
-    expect(result.prospects.single.thumbnailUrl, isNull);
-    expect(result.prospects.single.pages, isEmpty);
+    final issue = result.prospects.firstWhere(
+      (item) => item.storeName == 'Lidl',
+    );
+    expect(issue.thumbnailUrl, isNull);
+    expect(issue.pages, isEmpty);
     expect(result.records.single.imageUrl, isNull);
   });
 
 }
+
