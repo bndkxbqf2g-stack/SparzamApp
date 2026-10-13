@@ -1,5 +1,13 @@
 # SparzamApp
 
+## Update 13.10.2026 – CDN-Cover bleiben in Karten sichtbar
+- Prospektkarten verwenden für genau ein Cover je Markt den begrenzten
+  Browser-Fallback, wenn ein Händler-CDN keine Canvas-CORS-Freigabe liefert.
+- Der große Seitenviewer bleibt Canvas-only mit begrenzter Dekodiergröße; die
+  Änderung erzeugt keine Plattformansicht pro Prospektseite.
+- Eine Widgetregression schützt die Fallback-Renderstrategie für
+  Cross-Origin-Cover.
+
 ## Update 13.10.2026 – Widersprüchliche Bon-Aliase bleiben im Review
 - Treffen mehrere ausreichend bestätigte Produkt-IDs auf dieselbe Händler- und
   Bonbezeichnung, liefert der Alias-Store keine automatische Produktidentität.
