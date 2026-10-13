@@ -141,7 +141,7 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
                 final issue = favorites[index];
                 return ProspectCoverCard(
                   key: ValueKey(
-                    'offer-cover-favorite-${compact ? 'grid' : 'favorite'}-${issue.storeName}',
+                    'offer-cover-favorite-$scope-${issue.storeName}',
                   ),
                   issue: issue,
                   compact: false,
@@ -222,12 +222,13 @@ class ProspectCoverCard extends StatelessWidget {
     final previewUrl = _safeImageUrl(issue.thumbnailUrl) ??
         (issue.pages.isEmpty ? null : _safeImageUrl(issue.pages.first.imageUrl));
     final imageHeight = compact ? 168.0 : 181.0;
+    final scope = compact ? 'grid' : 'favorite';
     final image = previewUrl == null
         ? _coverPlaceholder()
         : Image.network(
             previewUrl,
             key: ValueKey(
-              'offer-cover-image-${compact ? 'grid' : 'favorite'}-${issue.storeName}',
+              'offer-cover-image-$scope-${issue.storeName}',
             ),
             cacheWidth: compact ? 480 : 640,
             cacheHeight: compact ? 400 : 480,
@@ -248,7 +249,7 @@ class ProspectCoverCard extends StatelessWidget {
             children: [
               InkWell(
                 key: ValueKey(
-                  'offer-cover-open-${compact ? 'grid' : 'favorite'}-${issue.storeName}',
+                  'offer-cover-open-$scope-${issue.storeName}',
                 ),
                 onTap: onOpen,
                 child: Column(
