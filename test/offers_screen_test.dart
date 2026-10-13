@@ -370,6 +370,50 @@ void main() {
     expect(find.textContaining('nur regional erkannt'), findsOneWidget);
     expect(find.textContaining('für die Route gesperrt'), findsOneWidget);
   });
+  testWidgets('lädt große Coverlisten seitenweise', (tester) async {
+    final issues = [
+      for (var index = 1; index <= 13; index++)
+        ProspectIssue(
+          storeName: 'Markt $index',
+          title: 'Aktionsprospekt',
+          pages: [
+            ProspectPage(
+              number: 1,
+              imageUrl: 'https://example.test/cover-$index.png',
+            ),
+          ],
+          recordCount: 1,
+        ),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: OffersScreen(
+          catalogProducts: const <Product>[],
+          prospectIssues: issues,
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(
+      find.byKey(const ValueKey('offer-cover-open-grid-Markt 13')),
+      findsNothing,
+    );
+    final loadMore = find.byKey(
+      const ValueKey('prospect-covers-load-more'),
+    );
+    expect(loadMore, findsOneWidget);
+
+    await tester.tap(loadMore);
+    await tester.pump();
+
+    expect(
+      find.byKey(const ValueKey('offer-cover-open-grid-Markt 13')),
+      findsOneWidget,
+    );
+  });
+
 }
 
 
