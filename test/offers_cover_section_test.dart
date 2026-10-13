@@ -51,7 +51,7 @@ void main() {
     );
     await tester.ensureVisible(cover);
     await tester.tap(cover);
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.text('Prospektseiten (1)'), findsOneWidget);
     expect(find.text('Aktionsprospekt'), findsOneWidget);
