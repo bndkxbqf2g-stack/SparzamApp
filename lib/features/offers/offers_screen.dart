@@ -57,6 +57,42 @@ class OffersScreen extends StatefulWidget {
 class _OffersScreenState extends State<OffersScreen> {
   final searchController = TextEditingController();
   var query = '';
+  List<OfferImportRecord>? _currentRecordsInput;
+  DateTime? _currentRecordsNow;
+  List<OfferImportRecord>? _currentRecordsCache;
+  List<ProspectIssue>? _currentIssuesInput;
+  DateTime? _currentIssuesNow;
+  List<ProspectIssue>? _currentIssuesCache;
+
+  List<OfferImportRecord> _currentRecords() {
+    if (identical(_currentRecordsInput, widget.prospectRecords) &&
+        _currentRecordsNow == widget.now) {
+      return _currentRecordsCache ?? const <OfferImportRecord>[];
+    }
+    final current = currentProspectRecords(
+      widget.prospectRecords,
+      now: widget.now,
+    );
+    _currentRecordsInput = widget.prospectRecords;
+    _currentRecordsNow = widget.now;
+    _currentRecordsCache = current;
+    return current;
+  }
+
+  List<ProspectIssue> _currentIssues() {
+    if (identical(_currentIssuesInput, widget.prospectIssues) &&
+        _currentIssuesNow == widget.now) {
+      return _currentIssuesCache ?? const <ProspectIssue>[];
+    }
+    final current = _currentProspectIssues(
+      widget.prospectIssues,
+      now: widget.now,
+    );
+    _currentIssuesInput = widget.prospectIssues;
+    _currentIssuesNow = widget.now;
+    _currentIssuesCache = current;
+    return current;
+  }
 
   @override
   void initState() {
@@ -74,10 +110,7 @@ class _OffersScreenState extends State<OffersScreen> {
       MaterialPageRoute(
         builder: (_) => ProspectViewerScreen(
           issue: issue,
-          records: currentProspectRecords(
-            widget.prospectRecords,
-            now: widget.now,
-          ),
+          records: _currentRecords(),
           catalogProducts: widget.catalogProducts,
           onAddProduct: widget.onAddToShoppingList,
           now: widget.now,
@@ -89,10 +122,8 @@ class _OffersScreenState extends State<OffersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currentProspectIssues = _currentProspectIssues(
-      widget.prospectIssues,
-      now: widget.now,
-    );
+    final currentRecords = _currentRecords();
+    final currentProspectIssues = _currentIssues();
 
     return Scaffold(
       appBar: AppBar(title: const Text('Angebote'), centerTitle: true),
@@ -154,10 +185,7 @@ class _OffersScreenState extends State<OffersScreen> {
           ),
           const SizedBox(height: 14),
           _ProspectOffers(
-            records: currentProspectRecords(
-              widget.prospectRecords,
-              now: widget.now,
-            ),
+            records: currentRecords,
             issues: widget.prospectIssues,
             query: query,
             catalogProducts: widget.catalogProducts,
@@ -234,6 +262,12 @@ class _ProspectOffersState extends State<_ProspectOffers> {
   final expandedStores = <String>{};
   final expandedCategories = <String>{};
   final _resolvedProducts = <String, Product?>{};
+  List<OfferImportRecord>? _filteredInput;
+  String? _filteredQuery;
+  Map<String, List<OfferImportRecord>>? _filteredByStore;
+  List<OfferImportRecord>? _groupedInput;
+  String? _groupedQuery;
+  final _groupedCache = <String, Map<String, List<OfferImportRecord>>>{};
 
   @override
   void didUpdateWidget(covariant _ProspectOffers oldWidget) {
@@ -241,6 +275,47 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     if (!identical(oldWidget.catalogProducts, widget.catalogProducts)) {
       _resolvedProducts.clear();
     }
+  }
+
+  Map<String, List<OfferImportRecord>> _filteredRecordsByStore(
+    String normalizedQuery,
+  ) {
+    if (identical(_filteredInput, widget.records) &&
+        _filteredQuery == normalizedQuery) {
+      return _filteredByStore ?? const <String, List<OfferImportRecord>>{};
+    }
+
+    final byStore = <String, List<OfferImportRecord>>{};
+    for (final record in widget.records) {
+      final searchable = [
+        record.storeName,
+        record.category ?? '',
+        presentProspectCategory(record.category),
+        record.productLabel,
+      ].join(' ').toLowerCase();
+      if (normalizedQuery.isNotEmpty && !searchable.contains(normalizedQuery)) {
+        continue;
+      }
+      byStore.putIfAbsent(record.storeName, () => []).add(record);
+    }
+    _filteredInput = widget.records;
+    _filteredQuery = normalizedQuery;
+    _filteredByStore = byStore;
+    return byStore;
+  }
+
+  Map<String, List<OfferImportRecord>> _groupedRecords(
+    String storeName,
+    List<OfferImportRecord> records,
+    String normalizedQuery,
+  ) {
+    if (!identical(_groupedInput, widget.records) ||
+        _groupedQuery != normalizedQuery) {
+      _groupedInput = widget.records;
+      _groupedQuery = normalizedQuery;
+      _groupedCache.clear();
+    }
+    return _groupedCache.putIfAbsent(storeName, () => _grouped(records));
   }
 
   Product? _memoizedProduct(OfferImportRecord record) {
@@ -265,17 +340,7 @@ class _ProspectOffersState extends State<_ProspectOffers> {
   @override
   Widget build(BuildContext context) {
     final normalizedQuery = widget.query.trim().toLowerCase();
-    final byStore = <String, List<OfferImportRecord>>{};
-    for (final record in widget.records) {
-      final searchable =
-          '${record.storeName} ${record.category ?? ''} '
-                  '${presentProspectCategory(record.category)} ${record.productLabel}'
-              .toLowerCase();
-      if (normalizedQuery.isNotEmpty && !searchable.contains(normalizedQuery)) {
-        continue;
-      }
-      byStore.putIfAbsent(record.storeName, () => []).add(record);
-    }
+    final byStore = _filteredRecordsByStore(normalizedQuery);
 
     if (byStore.isEmpty) {
       return Column(
@@ -311,7 +376,12 @@ class _ProspectOffersState extends State<_ProspectOffers> {
             }),
             children: expandedStores.contains(entry.key)
                 ? [
-                    for (final category in _grouped(entry.value).entries)
+                    for (final category
+                        in _groupedRecords(
+                          entry.key,
+                          entry.value,
+                          normalizedQuery,
+                        ).entries)
                       ExpansionTile(
                         key: PageStorageKey(
                           'prospect-category-${entry.key}-${category.key}',
@@ -358,22 +428,25 @@ class _ProspectOffersState extends State<_ProspectOffers> {
   List<Widget> _sourceNotices() {
     if (widget.query.trim().isNotEmpty) return const <Widget>[];
     final currentCounts = <String, int>{};
+    final regionalCounts = <String, int>{};
     for (final record in widget.records) {
       currentCounts.update(
         record.storeName,
         (count) => count + 1,
         ifAbsent: () => 1,
       );
+      if (record.regionalOnly) {
+        regionalCounts.update(
+          record.storeName,
+          (count) => count + 1,
+          ifAbsent: () => 1,
+        );
+      }
     }
     final visible = <String, ProspectIssue>{};
     for (final issue in widget.issues) {
       final count = currentCounts[issue.storeName] ?? 0;
-      final regionalCount = widget.records
-          .where(
-            (record) =>
-                record.storeName == issue.storeName && record.regionalOnly,
-          )
-          .length;
+      final regionalCount = regionalCounts[issue.storeName] ?? 0;
       final usesCurrentFallback = issue.sourceStatus == 'error' && count > 0;
       final needsRegionalNotice = issue.sourceStatus == 'regional_only' ||
           (count > 0 && regionalCount == count);

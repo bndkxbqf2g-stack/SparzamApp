@@ -1,3 +1,7 @@
+## Update 13.10.2026 – Coverraster progressiv laden
+- [x] Große Prospekt-Coverlisten im Angebote-Reiter zunächst seitenweise rendern und weitere Karten ausdrücklich nachladen lassen.
+- [x] Den bestehenden Detailviewer, die Quellenbelege und die aktuelle Gültigkeitsprüfung unverändert weiterverwenden.
+
 ## Update 13.10.2026 – Prospekt-Cover-Scroll stabilisieren
 - [x] Coverkarten im Überblick auf Canvas-only umstellen, damit Flutter Web beim schnellen Scrollen keine Plattform-Views pro CDN-Bild anlegt.
 - [x] Detailviewer-Fallback für einzelne Bilder und Test für die Renderer-Grenze beibehalten.
