@@ -183,12 +183,16 @@ class _AppShellState extends State<AppShell> {
   // a feed refresh. The list store serializes its own writes, while backup
   // import remains on the coordinated persistence queue above.
   final _shoppingListPersistence = SequentialWriteQueue();
+  // User-reviewed offers have the same responsiveness requirement as list
+  // additions. Feed refreshes remain serialized within this queue, but do not
+  // block list or receipt persistence.
+  final _offerPersistence = SequentialWriteQueue();
   // Receipt reinterpretation is a startup migration over separate receipt
   // and price-observation keys. Keep it off the interactive list/offer queue
   // so a slow local migration cannot delay a user's first add action.
   final _backgroundSaves = SequentialWriteQueue();
   SequentialWriteQueue get _shoppingListSaves => _shoppingListPersistence;
-  SequentialWriteQueue get _offerSaves => _persistenceSaves;
+  SequentialWriteQueue get _offerSaves => _offerPersistence;
   SequentialWriteQueue get _priceSaves => _persistenceSaves;
   bool _purchaseInProgress = false;
 
