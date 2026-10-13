@@ -3202,3 +3202,7 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - [x] Bon-, manuelle und andere nutzernahe Belege bleiben von dieser automatischen Verdichtung ausgeschlossen.
 - [x] Die Prospektanzeige und der Live-/Cache-Fallback bleiben unabhängig von einem lokalen Preis-Historien-Schreibfehler.
 - [x] Eine Regression simuliert `QuotaExceededError` und prüft, dass die neuesten automatischen Daten verdichtet und Bonbelege erhalten bleiben.
+## Update 14.10.2026 – Hauptreiter behalten ihren Zustand
+- [x] Besuchte Hauptreiter bleiben in einem `IndexedStack` gemountet; noch nicht besuchte Reiter werden weiterhin lazy als Platzhalter angelegt.
+- [x] Prospektsuche, Scrollposition und Routen-/Belegcontroller werden beim Wechsel zwischen Liste, Prospekte und Preise nicht mehr verworfen.
+- [x] Regression prüft, dass die Prospektsuche nach einem Wechsel in die Einkaufsliste erhalten bleibt.
