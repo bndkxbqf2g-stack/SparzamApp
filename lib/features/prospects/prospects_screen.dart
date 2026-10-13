@@ -1416,11 +1416,16 @@ class _ProspectViewer extends StatelessWidget {
                 ? const Center(child: Icon(Icons.broken_image_outlined, size: 48))
                 : Image.network(
                     pageUrl,
-                    cacheWidth: 900,
-                    cacheHeight: 720,
+                    key: ValueKey('prospect-page-image-${page.number}'),
+                    // Prospect viewers can contain dozens of pages. Keep
+                    // previews on the Canvas renderer and decode only the
+                    // size needed by the card; the explicit large-view link
+                    // remains available for the full-resolution page.
+                    cacheWidth: 720,
+                    cacheHeight: 480,
                     fit: BoxFit.contain,
                     filterQuality: FilterQuality.low,
-                    webHtmlElementStrategy: WebHtmlElementStrategy.fallback,
+                    webHtmlElementStrategy: WebHtmlElementStrategy.never,
                     loadingBuilder: (context, child, progress) =>
                         progress == null
                             ? child
