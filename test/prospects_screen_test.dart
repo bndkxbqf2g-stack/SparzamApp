@@ -225,6 +225,37 @@ void main() {
     expect(find.text('Markt 23'), findsWidgets);
   });
 
+  testWidgets('keeps cross-origin cover cards on the browser fallback', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: const [],
+              thumbnailUrl: 'https://cdn.example.test/lidl-cover.jpg',
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+            ),
+          ],
+          now: DateTime(2026, 9, 30),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    final cover = find.byWidgetPredicate(
+      (widget) =>
+          widget is Image &&
+          widget.webHtmlElementStrategy.toString().contains('fallback'),
+    );
+    expect(cover, findsWidgets);
+  });
+
   testWidgets('filters current prospect articles by source category', (
     tester,
   ) async {
