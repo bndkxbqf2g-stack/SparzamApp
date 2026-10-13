@@ -91,8 +91,8 @@ bool _isQuotaExceededError(Object error) {
       text.contains('storage quota');
 }
 
-/// Local append-only evidence for small, user-relevant data sets. A scalable
-/// indexed backend can replace this store without changing observation IDs.
+/// Local price evidence for small, user-relevant data sets. Protected user
+/// evidence remains available while repeated external observations are bounded.
 class PriceObservationStore {
   PriceObservationStore({
     SharedPreferencesAsync? preferences,
