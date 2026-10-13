@@ -304,12 +304,25 @@ ReceiptDraft parseReceiptLedger(String text) {
 
 String? _receiptRetailer(String text) {
   final lower = text.toLowerCase();
-  if (lower.contains('kaufland')) return 'Kaufland';
-  // EDEKA receipts can contain "Netto" as a tax/accounting label. Prefer the
-  // explicit retailer marker before the ambiguous generic term.
-  if (lower.contains('edeka')) return 'EDEKA';
-  if (lower.contains('lidl')) return 'Lidl';
-  if (lower.contains('netto')) return 'Netto';
+  bool hasToken(String pattern) =>
+      RegExp('\\b(?:$pattern)\\b').hasMatch(lower);
+
+  if (hasToken(r'kauf\s*land')) return 'Kaufland';
+  // EDEKA receipts can contain “Netto” as a tax/accounting label. Keep the
+  // explicit retailer marker ahead of the generic Netto token.
+  if (hasToken(r'edeka')) return 'EDEKA';
+  if (hasToken(r'lidl')) return 'Lidl';
+
+  // Only a regional ALDI Süd marker is mapped to the configured market. A
+  // generic ALDI label remains reviewable and is never silently assigned to a
+  // different ALDI region.
+  if (RegExp(r'\baldi[\s._-]*(?:süd|sued)\b').hasMatch(lower)) {
+    return 'ALDI Süd';
+  }
+  if (hasToken(r'aldi')) return 'ALDI';
+  if (hasToken(r'netto')) return 'Netto';
+  if (hasToken(r'penny')) return 'PENNY';
+  if (hasToken(r'rewe')) return 'REWE';
   return null;
 }
 

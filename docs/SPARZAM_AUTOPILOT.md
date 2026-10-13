@@ -28,7 +28,7 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [x] Variantenlogik für Milch, Joghurt, Hackfleisch, Paprika u. a.
 - [x] Frisch-/Konserven-Tomaten in der Route trennen
 - [ ] reale sieben Bons als strukturierte Produkt×Markt-Testmatrix absichern
-- [ ] weitere häufige Händlerkürzel generalisiert abdecken
+- [x] weitere häufige Händlerkürzel generalisiert abdecken
 - [x] Identitäts-Konfidenz und Ablehnungsgrund sichtbar/testbar machen
 - [x] Store-Namen zwischen Bon, Open Prices und Marktmodell kanonisieren
 - [ ] fehlende/mehrdeutige Produktidentitäten sauber als unsicher behandeln
