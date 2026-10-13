@@ -79,6 +79,48 @@ void main() {
     expect(quote!.total, 0.79);
   });
 
+  test('planning keeps current prospect regular prices per exact branch', () {
+    final prices = planningMarketPrices(
+      exactPrices: [
+        MarketPrice(
+          productId: 'milk',
+          storeName: 'Lidl',
+          price: 1.29,
+          updatedAt: DateTime(2026, 10, 13),
+          source: MarketPriceSource.prospect,
+          sourceLocationId: 'lidl-thuengersheim',
+          sourceLocationName: 'Lidl Thüngersheim',
+          kind: PriceObservationKind.regular,
+          quantity: 1000,
+          unit: 'ml',
+          unitPrice: 1.29,
+        ),
+        MarketPrice(
+          productId: 'milk',
+          storeName: 'Lidl',
+          price: 1.19,
+          updatedAt: DateTime(2026, 10, 13),
+          source: MarketPriceSource.prospect,
+          sourceLocationId: 'lidl-wuerzburg',
+          sourceLocationName: 'Lidl Würzburg',
+          kind: PriceObservationKind.regular,
+          quantity: 1000,
+          unit: 'ml',
+          unitPrice: 1.19,
+        ),
+      ],
+      familyPrices: const [],
+      now: DateTime(2026, 10, 13),
+    );
+
+    expect(prices, hasLength(2));
+    expect(prices.every((price) => price.source == MarketPriceSource.prospect), isTrue);
+    expect(prices.map((price) => price.sourceLocationId), containsAll([
+      'lidl-thuengersheim',
+      'lidl-wuerzburg',
+    ]));
+  });
+
   test('planning applies the configured Open Prices age', () {
     final prices = planningMarketPrices(
       exactPrices: [
