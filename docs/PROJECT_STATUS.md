@@ -3186,3 +3186,12 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - [x] Gruppenreihenfolge, Artikel, Preisbelege, Angebote und Kaufaktionen bleiben unverändert; nur der Renderumfang des ersten Frames ist begrenzt.
 - [x] Der Offscreen-Scrollcache der langen Liste ist deaktiviert, damit weniger nicht sichtbare Karten vorgebaut werden.
 - [x] Widgetregression prüft das Nachladen der neunten Gruppe.
+
+
+## Update 14.10.2026 – Prospektimport speichert automatisch nur reguläre Preise
+- [x] Der automatische Feed-Lernpfad verwendet jetzt ausschließlich Beobachtungen mit belegtem originalPrice/Streichpreis (PriceObservationKind.regular).
+- [x] Der zeitlich befristete Angebotspreis bleibt im aktuellen OfferStore und wird nicht zusätzlich als automatische Preis-Historie gespeichert.
+- [x] Angebotszeilen ohne regulären Preis bleiben für die Angebotsansicht verfügbar, erzeugen aber keine reguläre Datenbankbeobachtung.
+- [x] Identität, Filiale, Packungsgröße, Quelle, Nachweis, Erfassungszeit und Angebotszeitraum werden beim regulären Preis unverändert mitgeführt.
+- [x] Bestehende historische Beobachtungen werden additiv bewahrt; der neue Importpfad löscht keine lokalen Daten.
+- [x] Regression prüft regulären Preis, Angebotspreis und offer-only Zeile getrennt.
