@@ -388,7 +388,6 @@ class _PriceComparisonCardState extends State<_PriceComparisonCard> {
     return Card(
       clipBehavior: Clip.antiAlias,
       child: ExpansionTile(
-        key: widget.key,
         initiallyExpanded: false,
         onExpansionChanged: (value) => setState(() => expanded = value),
         title: Text(
