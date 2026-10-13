@@ -328,7 +328,9 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Prospekte'));
-      await tester.pumpAndSettle();
+      // The prospect feed persists in the background; a bounded pump keeps
+      // this navigation assertion deterministic while the page is mounted.
+      await tester.pump(const Duration(milliseconds: 500));
       await tester.tap(find.text('Netto').last);
       await tester.pumpAndSettle();
       expect(find.text('Prospektseiten (1)'), findsOneWidget);
