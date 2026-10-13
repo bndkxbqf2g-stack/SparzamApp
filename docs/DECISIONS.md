@@ -1325,4 +1325,14 @@ Nullgrenze gelesen. Der Wert führt zusammen mit der bestehenden begrenzten
 Query-Auflösung zu keinem Abruf und wird nicht still auf den Defaultwert
 angehoben. Negative oder syntaktisch ungültige Werte bleiben beim sicheren
 Default.
+## D172 – Besuchte Hauptreiter bleiben gemountet
 
+`AppShell` verwaltet die sechs Hauptreiter in einem `IndexedStack`. Beim ersten
+Start wird nur der aktive Einkaufslisten-Reiter aufgebaut; weitere Reiter werden
+erst beim ersten Öffnen aktiviert. Danach bleiben ihre Stateful-Controller und
+Scrollpositionen beim Navigieren erhalten.
+
+Das verhindert, dass der Prospekt- oder Preisreiter beim Wechsel in die Liste
+und zurück seine Suche, seinen Scrollstand oder laufende Offline-/Routing-Caches
+verliert. Die fachlichen Daten, Reiterreihenfolge und Persistenz bleiben
+unverändert.
