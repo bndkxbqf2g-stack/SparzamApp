@@ -231,4 +231,33 @@ AUF WIEDERSEHEN BEI EDEKA
     expect(draft.unresolvedLines, isEmpty);
     expect(draft.balances, isTrue);
   });
+  test('erkennt regionale und gängige Händlerkürzel ohne Filialraten', () {
+    const fixtures = <String, String>{
+      'ALDI SÜD': 'ALDI Süd',
+      'ALDI SUED': 'ALDI Süd',
+      'PENNY Markt': 'PENNY',
+      'REWE Center': 'REWE',
+      'ALDI': 'ALDI',
+    };
+
+    for (final entry in fixtures.entries) {
+      final draft = parseReceiptLedger('''
+${entry.key}
+Preis EUR
+Artikel 1,00
+Summe 1,00
+''');
+      expect(draft.retailer, entry.value, reason: entry.key);
+    }
+
+    final edeka = parseReceiptLedger('''
+EDEKA Frischemarkt
+Preis EUR
+Artikel 1,00
+Steuerübersicht NETTO 0,84
+SUMME € 1,00
+''');
+    expect(edeka.retailer, 'EDEKA');
+  });
+
 }
