@@ -696,4 +696,63 @@ void main() {
   });
 
 
+
+  test('kennzeichnet explizite und fehlende Mengenbasis', () {
+    const basisProduct = Product(
+      id: 'basis-comparability',
+      name: 'Milch',
+      unit: '500 g',
+      group: 'milch',
+      packageAmount: 500,
+      packageUnit: 'g',
+    );
+    final explicit = shoppingQuotes(
+      ListItem(product: basisProduct),
+      prices: [
+        MarketPrice(
+          productId: basisProduct.id,
+          storeName: 'Lidl',
+          price: 2.49,
+          updatedAt: DateTime(2026, 9, 24),
+          source: MarketPriceSource.openPrices,
+          quantity: 500,
+          unit: 'g',
+          unitPrice: 4.98,
+        ),
+      ],
+      offers: const [],
+      enabledStores: const ['Lidl'],
+      now: DateTime(2026, 9, 24),
+    ).single;
+    expect(
+      explicit.comparabilityLabel,
+      'Vergleichbarkeit: Packungsbasis belegt',
+    );
+
+    const legacyProduct = Product(
+      id: 'legacy-comparability',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'milch',
+    );
+    final legacy = shoppingQuotes(
+      ListItem(product: legacyProduct),
+      prices: [
+        MarketPrice(
+          productId: legacyProduct.id,
+          storeName: 'Lidl',
+          price: 1.09,
+          updatedAt: DateTime(2026, 9, 24),
+          source: MarketPriceSource.receipt,
+        ),
+      ],
+      offers: const [],
+      enabledStores: const ['Lidl'],
+      now: DateTime(2026, 9, 24),
+    ).single;
+    expect(
+      legacy.comparabilityLabel,
+      'Vergleichbarkeit: Mengenbasis nicht dokumentiert',
+    );
+  });
 }
