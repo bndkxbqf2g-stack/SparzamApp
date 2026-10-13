@@ -141,7 +141,7 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
                 final issue = favorites[index];
                 return ProspectCoverCard(
                   key: ValueKey(
-                    'offer-cover-favorite-$scope-${issue.storeName}',
+                    'offer-cover-favorite-${issue.storeName}',
                   ),
                   issue: issue,
                   compact: false,
