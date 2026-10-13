@@ -99,7 +99,7 @@ class RouteOptimizer {
         if (score < bestScore ||
             (score == bestScore &&
                 (bestStore == null ||
-                    _storeTieKey(store).compareTo(_storeTieKey(bestStore!)) <
+                    _storeTieKey(store).compareTo(_storeTieKey(bestStore)) <
                         0))) {
           bestScore = score;
           bestStore = store;
@@ -267,3 +267,4 @@ String _storeTieKey(Store store) => [
   store.location,
   store.address,
 ].map((value) => value.trim().toLowerCase()).join('|');
+
