@@ -111,6 +111,78 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
       !automaticProductAssignments.contains(key) &&
       !learnedProductAssignments.contains(key);
 
+
+  ReceiptConfidenceLevel _suggestionConfidence(
+    ReceiptDraft draft,
+    ReceiptPriceSuggestion suggestion,
+  ) {
+    final key = _rowKey(draft, suggestion.row);
+    final learned = learnedProductAssignments.contains(key);
+    return receiptConfidenceFor(
+      productId: suggestion.product.id,
+      identityConfirmed: selectedReceiptPrices.contains(
+            _priceKey(draft.fingerprint, suggestion.product.id),
+          ) &&
+          !learned,
+      familyKey: inferReceiptFamily(suggestion.row.label),
+    );
+  }
+
+  ReceiptConfidenceLevel _rowConfidence(
+    ReceiptDraft draft,
+    ReceiptRow row,
+  ) {
+    final key = _rowKey(draft, row);
+    return receiptConfidenceFor(
+      productId: assignedProducts[key],
+      identityConfirmed: assignedProducts.containsKey(key) &&
+          _isExplicitAssignment(key),
+      familyKey: inferReceiptFamily(row.label),
+    );
+  }
+
+  Map<ReceiptConfidenceLevel, int> _confidenceCounts(
+    ReceiptDraft draft,
+    ReceiptPriceReview review,
+  ) {
+    final counts = <ReceiptConfidenceLevel, int>{};
+    for (final row in draft.rows.where(
+      (row) => row.kind == ReceiptRowKind.item,
+    )) {
+      ReceiptConfidenceLevel? level;
+      for (final suggestion in review.suggestions) {
+        if (suggestion.row.line == row.line) {
+          level = _suggestionConfidence(draft, suggestion);
+          break;
+        }
+      }
+      final resolved = level ?? _rowConfidence(draft, row);
+      counts.update(resolved, (count) => count + 1, ifAbsent: () => 1);
+    }
+    return counts;
+  }
+
+  Widget _confidenceSummary(Map<ReceiptConfidenceLevel, int> counts) =>
+      Wrap(
+        spacing: 6,
+        runSpacing: 4,
+        children: [
+          for (final level in ReceiptConfidenceLevel.values)
+            if ((counts[level] ?? 0) > 0)
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ReceiptConfidenceBadge(level: level, compact: true),
+                  const SizedBox(width: 2),
+                  Text(
+                    '×' + (counts[level] ?? 0).toString(),
+                    style: const TextStyle(fontSize: 11),
+                  ),
+                ],
+              ),
+        ],
+      );
+
   Future<void> pickReceiptDate() async {
     final chosen = await showDatePicker(
       context: context,
@@ -577,6 +649,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                   Builder(builder: (context) {
                     final draft = entry.draft;
                     final review = reviewReceiptPrices(draft, availableProducts);
+                    final confidenceCounts = _confidenceCounts(draft, review);
                     return Card(
                       child: ExpansionTile(
                         initiallyExpanded: draft.balances,
@@ -584,9 +657,16 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                           '${draft.retailer ?? 'Unbekannter Markt'} · '
                           '${_dateLabel(draft.receiptDate)}',
                         ),
-                        subtitle: Text(
-                          '${entry.name} · ${review.suggestions.length} Preisvorschläge · '
-                          '${review.unmatchedItems} weitere Artikel',
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${entry.name} · ${review.suggestions.length} Preisvorschläge · '
+                              '${review.unmatchedItems} weitere Artikel',
+                            ),
+                            const SizedBox(height: 4),
+                            _confidenceSummary(confidenceCounts),
+                          ],
                         ),
                         children: [
                           if (!draft.balances)
@@ -627,15 +707,23 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                   '${suggestion.price.price.toStringAsFixed(2).replaceAll('.', ',')} €',
                                   style: const TextStyle(fontWeight: FontWeight.w700),
                                 ),
-                                subtitle: Text(
-                                  '${suggestion.row.label} · '
-                                  '${suggestion.row.quantity == null ? '1 Stück' : '${suggestion.row.quantity} ${suggestion.row.quantityUnit}'} · '
-                                  '${suggestion.price.price.toStringAsFixed(2).replaceAll('.', ',')} € je ${suggestion.product.unit}\n'
-                                  '${_suggestionIdentity(draft, suggestion).summary}'
-                                  '${learnedProductAssignments.contains(_rowKey(draft, suggestion.row)) ? ' · ${learnedAliasConfirmations[_rowKey(draft, suggestion.row)] ?? 2} Bestätigungen' : ''}',
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ReceiptConfidenceBadge(
+                                      level: _suggestionConfidence(draft, suggestion),
+                                      compact: true,
+                                    ),
+                                    Text(
+                                      '${suggestion.row.label} · '
+                                      '${suggestion.row.quantity == null ? '1 Stück' : '${suggestion.row.quantity} ${suggestion.row.quantityUnit}'} · '
+                                      '${suggestion.price.price.toStringAsFixed(2).replaceAll('.', ',')} € je ${suggestion.product.unit}\n'
+                                      '${_suggestionIdentity(draft, suggestion).summary}'
+                                      '${learnedProductAssignments.contains(_rowKey(draft, suggestion.row)) ? ' · ${learnedAliasConfirmations[_rowKey(draft, suggestion.row)] ?? 2} Bestätigungen' : ''}',
+                                    ),
+                                  ],
                                 ),
-                              ),
-                          if (review.unmatchedItems > 0)
+
                             ExpansionTile(
                               initiallyExpanded: true,
                               title: Text(
@@ -672,6 +760,10 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                     subtitle: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
+                                        ReceiptConfidenceBadge(
+                                          level: _rowConfidence(draft, row),
+                                          compact: true,
+                                        ),
                                         Text(
                                           row.quantity == null
                                               ? 'Preis laut Bon · 1 Position'
