@@ -1,5 +1,10 @@
 # SparzamApp
 
+## Update 13.10.2026 – Händlerkürzel im Bonparser
+- Der Bonparser erkennt ALDI Süd/ALDI SUED, PENNY und REWE mit Token-Grenzen.
+- Ein generisches ALDI bleibt als unbestimmte Händlerangabe sichtbar und wird keiner ALDI-Region zugeordnet.
+- EDEKA wird vor einem möglichen Netto-Steuertext erkannt.
+
 ## Update 13.10.2026 – Preisalter und Preisverlauf
 - Preisdetails zeigen neben Quelle und Vergleichbarkeit jetzt das Alter der Preisbeobachtung.
 - Erfassungszeitpunkte von Angeboten werden übernommen; fehlt ein Zeitpunkt, bleibt das Alter als unbekannt gekennzeichnet.
