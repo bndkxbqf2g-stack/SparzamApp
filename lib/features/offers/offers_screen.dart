@@ -99,7 +99,7 @@ class _OffersScreenState extends State<OffersScreen> {
         key: const ValueKey('offers-scroll'),
         // Offer groups can contain many current prospect records. Keep the
         // outer scroll from building a speculative tail while the user moves.
-        cacheExtent: 0,
+        scrollCacheExtent: const ScrollCacheExtent.pixels(0),
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
         children: [
           const Center(child: Text('Die besten Preise. Für dich.')),
