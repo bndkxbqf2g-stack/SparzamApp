@@ -120,6 +120,7 @@ class MarketPrice {
       MarketPriceSource.receipt => 'Kassenbon',
       MarketPriceSource.manual => 'Eigener Preis',
       MarketPriceSource.openPrices => 'Open Prices',
+      MarketPriceSource.prospect => 'Prospekt',
     };
   }
 
