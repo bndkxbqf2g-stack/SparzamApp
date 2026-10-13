@@ -223,22 +223,34 @@ class OpenPricesSource implements PriceSource {
   ) {
     final locationId = _locationId(location);
     if (locationId != null) {
-      for (final store in stores) {
-        if (canonicalBranchId(store.branchId) == canonicalBranchId(locationId)) {
-          return store;
-        }
+      final idMatches = stores
+          .where(
+            (store) =>
+                canonicalBranchId(store.branchId) ==
+                canonicalBranchId(locationId),
+          )
+          .toList(growable: false);
+      if (idMatches.length == 1) {
+        final candidate = idMatches.single;
+        // A provider ID is useful evidence, but contradictory city/postcode
+        // or an explicitly recognized retailer label must still reject the
+        // record. This prevents a malformed source row from assigning a
+        // correct branch ID to the wrong market context.
+        return _locationContextMatches(location, candidate, stores)
+            ? candidate
+            : null;
+      }
+      if (idMatches.length > 1) {
+        final contextualMatches = idMatches
+            .where((store) => _locationContextMatches(location, store, stores))
+            .toList(growable: false);
+        return contextualMatches.length == 1 ? contextualMatches.single : null;
       }
     }
 
     final city = (location['osm_address_city'] as String?)?.trim();
     if (city == null || city.isEmpty) return null;
-    final postcode = (location['osm_address_postcode'] as String?)?.trim();
-    final labels = [
-      location['osm_brand'],
-      location['osm_name'],
-      location['osm_display_name'],
-    ].whereType<String>();
-
+    final labels = _locationLabels(location);
     if (labels.isEmpty) return null;
 
     for (final store in stores) {
@@ -246,19 +258,58 @@ class OpenPricesSource implements PriceSource {
           normalizeStoreIdentityText(city)) {
         continue;
       }
-      final storePostcode = RegExp(r'\b\d{5}\b').firstMatch(store.address);
-      if (postcode != null &&
-          postcode.isNotEmpty &&
-          storePostcode != null &&
-          storePostcode.group(0) != postcode) {
-        continue;
-      }
+      if (!_locationContextMatches(location, store, stores)) continue;
       final matched = labels.any(
         (label) => canonicalStoreName(label, [store]) == store.name,
       );
       if (matched) return store;
     }
     return null;
+  }
+
+  bool _locationContextMatches(
+    Map<String, dynamic> location,
+    Store store,
+    List<Store> stores,
+  ) {
+    final city = (location['osm_address_city'] as String?)?.trim();
+    if (city != null &&
+        city.isNotEmpty &&
+        normalizeStoreIdentityText(store.location.split('·').first) !=
+            normalizeStoreIdentityText(city)) {
+      return false;
+    }
+
+    final postcode = _postcode(location['osm_address_postcode']);
+    final storePostcode =
+        RegExp(r'\b\d{5}\b').firstMatch(store.address)?.group(0);
+    if (postcode != null &&
+        storePostcode != null &&
+        postcode != storePostcode) {
+      return false;
+    }
+
+    final recognizedLabels = _locationLabels(location)
+        .map((label) => canonicalStoreName(label, stores))
+        .whereType<String>()
+        .toSet();
+    return recognizedLabels.isEmpty || recognizedLabels.contains(store.name);
+  }
+
+  List<String> _locationLabels(Map<String, dynamic> location) => [
+        location['osm_brand'],
+        location['osm_name'],
+        location['osm_display_name'],
+      ]
+          .whereType<String>()
+          .map((value) => value.trim())
+          .where((value) => value.isNotEmpty)
+          .toList(growable: false);
+
+  String? _postcode(dynamic value) {
+    final text = value?.toString().trim();
+    if (text == null || text.isEmpty) return null;
+    return RegExp(r'\b\d{5}\b').firstMatch(text)?.group(0);
   }
 
   String? _locationId(Map<String, dynamic> location) {
