@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/offer.dart';
@@ -168,7 +169,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
         color: _bringBackground,
         child: CustomScrollView(
           controller: _bringScrollController,
-          scrollCacheExtent: 0,
+          scrollCacheExtent: const ScrollCacheExtent.pixels(0),
           key: const ValueKey('prospect-bring-scroll'),
           slivers: [
             if (hasSelection)
