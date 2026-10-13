@@ -55,7 +55,7 @@ class ShoppingQuote {
         packageUnit.isEmpty) {
       return null;
     }
-    return '\${_number(amount)} $packageUnit';
+    return '${_number(amount)} $packageUnit';
   }
 
   String? get baseUnitPriceLabel {
@@ -67,7 +67,7 @@ class ShoppingQuote {
         normalized == null) {
       return null;
     }
-    return 'Grundpreis \${_money(price)} €/\${normalized.baseUnit}';
+    return 'Grundpreis ${_money(price)} €/${normalized.baseUnit}';
   }
 
   String get sourceLabel => switch (kind) {
