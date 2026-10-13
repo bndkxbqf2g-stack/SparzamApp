@@ -140,7 +140,7 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
             height: 340,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              cacheExtent: 0,
+              scrollCacheExtent: const ScrollCacheExtent.pixels(0),
               itemCount: favorites.length,
               separatorBuilder: (_, index) => const SizedBox(width: 12),
               itemBuilder: (context, index) {
@@ -195,7 +195,9 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
                   itemBuilder: (context, index) {
                     final issue = issues[index];
                     return ProspectCoverCard(
-                      key: ValueKey('offer-cover-grid-' + issue.storeName),
+                      key: ValueKey(
+                        'offer-cover-grid-${issue.storeName}',
+                      ),
                       issue: issue,
                       compact: true,
                       isFavorite: _isFavorite(issue),
@@ -218,9 +220,7 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
                       ),
                       icon: const Icon(Icons.expand_more),
                       label: Text(
-                        'Weitere Prospekte laden (' +
-                        (issues.length - visibleCount).toString() +
-                        ')',
+                        'Weitere Prospekte laden (${issues.length - visibleCount})',
                       ),
                     ),
                   ),
