@@ -1,3 +1,8 @@
+## Update 13.10.2026 – Angebote-Cover progressiv laden
+- Das Coverraster im Angebote-Reiter baut zunächst höchstens zwölf Karten auf; weitere gültige Prospekte werden über „Weitere Prospekte laden“ nachgeladen.
+- Dadurch werden große öffentliche Feeds nicht mehr als vollständig shrink-wrappedes Bildraster beim ersten Öffnen erzeugt. Die Coverseiten bleiben vollständig erreichbar und öffnen weiterhin denselben Detailviewer.
+- Ein Widget-Test schützt die sichtbare Seitenbegrenzung und das Nachladen; Quellen-, Gültigkeits- und Filialdaten bleiben unverändert.
+
 ## Update 13.10.2026 – Prospekt-Cover ohne Plattform-Views im Scrollweg
 - Coverkarten im Angebote- und Prospekte-Reiter erzwingen jetzt den Canvas-Renderer; Browser-Plattform-Views werden im Überblick nicht mehr pro Händlerbild erzeugt.
 - Der vollständige Prospektviewer behält seinen expliziten Fallback für einzelne Bilder, damit die Coverübersicht stabil bleibt und der Detailpfad erreichbar bleibt.
