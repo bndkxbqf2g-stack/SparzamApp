@@ -1,5 +1,9 @@
 # SparzamApp
 
+## Update 13.10.2026 – Prospektseiten beim Scrollen entlasten
+- Der Seitenviewer rendert Vorschaubilder zuerst im günstigen Canvas-Pfad und erzeugt einen HTML-Plattform-Fallback erst nach einem tatsächlichen Decode-/CORS-Fehler.
+- Dadurch werden beim langen Prospekt-Scrollen nicht vorsorglich für jede Seite Plattform-Views angelegt; die begrenzte 720×480-Dekodierung und die externe Großansicht bleiben erhalten.
+- Eine Widgetregression prüft, dass lange Seitenlisten lazy aufgebaut und bis zur letzten Seite weiter bedienbar sind.
 ## Update 13.10.2026 – Packungs- und Grundpreis in der Einkaufslistenmatrix
 - Aktuelle Marktpreise und Angebote behalten ihre belegte Packungsmenge und Einheit jetzt auch in der Einkaufslisten-Preismatrix.
 - Die Preiszeile zeigt den normalisierten Grundpreis, sofern die Quelle eine gültige Mengenbasis liefert; fehlende Mengen bleiben unbekannt.
