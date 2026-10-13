@@ -1,3 +1,9 @@
+## Update 13.10.2026 – Vertrauensstufen im Bon-/OCR-Review
+
+- Bonpositionen zeigen im Review jetzt die vier nachvollziehbaren Stufen **BELEGT**, **WAHRSCHEINLICH**, **UNSICHER** und **MANUELL_BESTÄTIGT**.
+- Die Stufe wird aus dem vorhandenen Beleg- und Identitätsstatus abgeleitet; sie ändert kein gespeichertes Preisformat und macht einen Preis nicht allein durch das Badge routenfähig.
+- Tooltips erklären die Stufe. Ein Widget-/Fachtest deckt Mapping, Legacy-Kompatibilität und die sichtbaren Labels ab.
+
 ## Update 13.10.2026 – Einkaufslisten- und Startplanung sichtbar abgeschlossen
 
 - Die Einkaufsliste zeigt oberhalb der Positionen jetzt die aktuelle Preisabdeckung mit getrennten Zählungen für aktuelle, historische und unbekannte Werte.

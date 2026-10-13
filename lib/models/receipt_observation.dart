@@ -1,3 +1,5 @@
+import 'receipt_confidence.dart';
+
 class ReceiptObservation {
   const ReceiptObservation({
     required this.id,
@@ -32,6 +34,14 @@ class ReceiptObservation {
   /// True only when the concrete catalog identity was explicitly confirmed
   /// (directly or through previously learned confirmations).
   final bool identityConfirmed;
+
+  /// Confidence is derived from persisted review state so legacy observations
+  /// receive a conservative label without a data migration.
+  ReceiptConfidenceLevel get confidence => receiptConfidenceFor(
+        productId: productId,
+        identityConfirmed: identityConfirmed,
+        familyKey: familyKey,
+      );
 
   Map<String, dynamic> toJson() => {
         'id': id,
