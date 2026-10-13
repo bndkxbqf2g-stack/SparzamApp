@@ -41,6 +41,10 @@ class PricesHubScreen extends StatefulWidget {
   final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
   final DateTime? now;
 
+  @override
+  State<PricesHubScreen> createState() => _PricesHubScreenState();
+}
+
 class _PricesHubScreenState extends State<PricesHubScreen> {
   int? _snapshotSignatureValue;
   List<_PriceSnapshot>? _snapshotCache;
