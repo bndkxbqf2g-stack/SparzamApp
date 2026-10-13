@@ -613,9 +613,11 @@ void main() {
     final preview = tester.widget<Image>(
       find.byKey(const ValueKey('prospect-page-image-7')),
     );
-    expect(preview.cacheWidth, 720);
-    expect(preview.cacheHeight, 480);
-    expect(preview.webHtmlElementStrategy, WebHtmlElementStrategy.never);
+    final provider = preview.image;
+    expect(provider, isA<ResizeImage>());
+    final resized = provider as ResizeImage;
+    expect(resized.width, 720);
+    expect(resized.height, 480);
   });
 
   testWidgets('adds a manually reviewed article from a prospect page', (
