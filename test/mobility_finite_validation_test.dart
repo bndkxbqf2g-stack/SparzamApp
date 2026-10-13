@@ -91,6 +91,11 @@ void main() {
       );
       await tester.tap(find.text('Öffnen'));
       await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.text('Zeitwert für Wegezeit (optional)'),
+        250,
+        scrollable: find.byType(Scrollable).first,
+      );
       final timeValue = find.byKey(const ValueKey('mobility-time-value'));
       expect(timeValue, findsOneWidget);
       await tester.enterText(timeValue, '12,50');
