@@ -39,7 +39,23 @@ class RouteStoreCard extends StatelessWidget {
           '${store.name} · ${store.location}',
           style: const TextStyle(fontWeight: FontWeight.w700),
         ),
-        subtitle: Text('${items.length} Artikel · ${total.toStringAsFixed(2)} €'),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('${items.length} Artikel · ${total.toStringAsFixed(2)} €'),
+            if (store.address.trim().isNotEmpty)
+              Text(
+                store.address,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            if (store.branchId?.trim().isNotEmpty == true)
+              Text(
+                'Filiale: ${store.branchId}',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+          ],
+        ),
         children: [
           for (final item in items) _RouteItemTile(store, item, prices),
         ],
