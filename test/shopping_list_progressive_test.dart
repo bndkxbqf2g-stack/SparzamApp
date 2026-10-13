@@ -19,13 +19,24 @@ void main() {
   testWidgets('lädt Warengruppen im Einkaufslistenpfad schrittweise', (
     tester,
   ) async {
+    const groups = <String>[
+      'obst',
+      'milch',
+      'fleisch',
+      'backwaren',
+      'getraenke',
+      'nudeln',
+      'vorrat',
+      'tiefkuehl',
+      'haushalt',
+    ];
     final products = List<Product>.generate(
-      9,
+      groups.length,
       (index) => Product(
         id: 'shopping-progress-$index',
         name: 'Produkt $index',
         unit: '1 Stück',
-        group: 'Gruppe $index',
+        group: groups[index],
       ),
     );
     final items = products
@@ -68,7 +79,7 @@ void main() {
     );
 
     expect(
-      find.byKey(const ValueKey('shopping-group-Gruppe 8')),
+      find.byKey(const ValueKey('shopping-group-haushalt')),
       findsNothing,
     );
     expect(loadMore, findsOneWidget);
