@@ -56,7 +56,8 @@ int compareMarketPriceTieBreakers(
 int _marketPriceSourceRank(MarketPriceSource source) => switch (source) {
       MarketPriceSource.manual => 0,
       MarketPriceSource.receipt => 1,
-      MarketPriceSource.openPrices => 2,
+      MarketPriceSource.prospect => 2,
+      MarketPriceSource.openPrices => 3,
     };
 
 int _compareOptionalText(String? candidate, String? previous) {
