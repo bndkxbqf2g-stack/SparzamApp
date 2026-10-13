@@ -1362,3 +1362,14 @@ alter oder zukünftiger Normalpreis nicht als aktueller Datenbankpreis in
 Planung und Preisoberfläche erscheinen. Der reguläre, belegte Preis bleibt
 vom zeitlich befristeten Angebotspreis getrennt; Herkunft, Filiale,
 Packungsgröße, Nachweis und Erfassungszeit werden unverändert übernommen.
+
+## D175 – Reguläre Prospektpreise sind eine eigene route-taugliche Quelle
+
+Ein aktuell gültiger, belegter Normalpreis aus einem Prospekt wird nach der
+zentralen Beobachtungsprüfung als MarketPriceSource.prospect projiziert. Der
+zeitlich befristete Angebotspreis bleibt im OfferStore und wird nicht nochmals
+als regulärer Marktpreis projiziert. Dadurch bleiben Normalpreis, Angebot,
+Quelle, Filiale, Packungsgröße, Nachweis und Gültigkeit getrennt sichtbar,
+während Preise-Reiter und Route denselben aktuellen Normalpreis verwenden.
+Die Quelle erhält eigene Frische-/Qualitäts- und Anzeigeetiketten; sie wird
+nicht als eigener Preis oder Open Prices ausgegeben.

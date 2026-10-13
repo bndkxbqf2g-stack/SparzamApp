@@ -430,6 +430,7 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
         sourceLabel: switch (price.source) {
           MarketPriceSource.receipt => 'Bonpreis',
           MarketPriceSource.manual => 'Eigener Preis',
+          MarketPriceSource.prospect => 'Prospekt',
           MarketPriceSource.openPrices => 'Open Prices',
         },
         rankingPrice: price.price *

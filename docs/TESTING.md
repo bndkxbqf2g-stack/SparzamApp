@@ -342,3 +342,7 @@ Die Shell-Regression wechselt zwischen Prospekte und Liste und prüft, dass der 
 Die Preislern-Regression prüft zusätzlich, dass abgelaufene und zukünftige
 Prospektperioden beim automatischen regulären Preisimport ignoriert werden,
 während die jeweils aktive Periode mit ihrer Gültigkeit erhalten bleibt.
+
+Die Preisquellen-Regression prüft außerdem die Projektion einer aktuell gültigen
+regulären Prospektbeobachtung als Prospektpreis und stellt sicher, dass eine
+Prospekt-Angebotsbeobachtung nicht als regulärer MarketPrice erscheint.

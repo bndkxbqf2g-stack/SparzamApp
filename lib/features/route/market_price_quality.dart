@@ -20,11 +20,14 @@ MarketPriceQuality marketPriceQuality(MarketPrice price, DateTime now) {
   final sourceRate = switch (price.source) {
     MarketPriceSource.manual => 0.0,
     MarketPriceSource.receipt => 0.05,
+    MarketPriceSource.prospect => 0.05,
     MarketPriceSource.openPrices => 0.05,
   };
   final ageRate = switch (price.source) {
     MarketPriceSource.manual => days <= 30 ? 0.0 : 0.05,
     MarketPriceSource.receipt => days <= 30 ? 0.0 : days <= 60 ? 0.10 : 0.20,
+    MarketPriceSource.prospect =>
+      days <= 7 ? 0.0 : days <= 14 ? 0.05 : 0.10,
     MarketPriceSource.openPrices => days <= 7 ? 0.0 : 0.05,
   };
   final discountRate = price.source == MarketPriceSource.receipt &&

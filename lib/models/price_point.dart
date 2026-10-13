@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-enum PricePointSource { sample, manual, openPrices, receipt }
+enum PricePointSource { sample, manual, openPrices, receipt, prospect }
 
 extension PricePointSourceLabel on PricePointSource {
   String get label => switch (this) {
@@ -8,6 +8,7 @@ extension PricePointSourceLabel on PricePointSource {
         PricePointSource.manual => 'Eigener Preis',
         PricePointSource.openPrices => 'Open Prices',
         PricePointSource.receipt => 'Kassenbon',
+        PricePointSource.prospect => 'Prospekt'
       };
 }
 

@@ -29,6 +29,7 @@ PricePoint priceHistoryPoint(MarketPrice price) => PricePoint(
       source: switch (price.source) {
         MarketPriceSource.openPrices => PricePointSource.openPrices,
         MarketPriceSource.receipt => PricePointSource.receipt,
+        MarketPriceSource.prospect => PricePointSource.prospect,
         MarketPriceSource.manual => PricePointSource.manual,
       }, 
     );

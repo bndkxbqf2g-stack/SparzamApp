@@ -1,3 +1,9 @@
+## Update 14.10.2026 – Reguläre Prospektpreise erreichen Vergleich und Route
+- [x] Aktuelle reguläre Prospektbeobachtungen werden als eigene Prospektquelle in die bestehende MarketPrice-Projektion übernommen.
+- [x] Angebotspreise bleiben im OfferStore und werden nicht als reguläre Prospekt-MarketPrices dupliziert.
+- [x] Preise-Reiter und Routenevidenz zeigen die Herkunft als Prospekt; KaufDA-Adaptermetadaten bleiben als konkrete Quellkennung erhalten.
+- [x] Eine Fixture-Regression schützt die Projektion aktueller Normalpreise und den Ausschluss von Prospekt-Angebotspreisen.
+
 ## Update 14.10.2026 – Automatische Prospektpreise nur aus aktueller Periode
 - [x] Der automatische Lernpfad filtert vor dem Speichern auf den am Aktualisierungstag gültigen Prospektzeitraum.
 - [x] Historische und zukünftige Feedzeilen bleiben für Diagnose/Preisverlauf erhalten, werden aber nicht als aktueller automatischer Preis in die lokale Preisbeobachtung übernommen.

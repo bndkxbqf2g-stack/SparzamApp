@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/features/offers/prospect_price_learning.dart';
 import 'package:sparzamapp/models/price_observation.dart';
+import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/services/market_price_observation_adapter.dart';
 
@@ -183,14 +184,15 @@ void main() {
       evidence.every((item) => item.validUntil == DateTime(2026, 9, 30)),
       isTrue,
     );
-    expect(
-      marketPricesFromObservations(
-        evidence,
-        products: const [coffee],
-        now: DateTime(2026, 9, 30, 19),
-      ),
-      isEmpty,
+    final currentPrices = marketPricesFromObservations(
+      evidence,
+      products: const [coffee],
+      now: DateTime(2026, 9, 30, 19),
     );
+    expect(currentPrices, hasLength(1));
+    expect(currentPrices.single.price, 8);
+    expect(currentPrices.single.source, MarketPriceSource.prospect);
+    expect(currentPrices.single.kind, PriceObservationKind.regular);
     expect(
       marketPricesFromObservations(
         evidence,

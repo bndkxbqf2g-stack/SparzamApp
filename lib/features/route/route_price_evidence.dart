@@ -57,6 +57,7 @@ RoutePriceEvidenceSummary summarizeRoutePriceEvidence(
   var offers = 0;
   var receipts = 0;
   var ownPrices = 0;
+  var prospectPrices = 0;
   var openPrices = 0;
   var undocumented = 0;
   DateTime? oldestObservation;
@@ -79,6 +80,8 @@ RoutePriceEvidenceSummary summarizeRoutePriceEvidence(
           receipts++;
         case MarketPriceSource.manual:
           ownPrices++;
+        case MarketPriceSource.prospect:
+          prospectPrices++;
         case MarketPriceSource.openPrices:
           openPrices++;
       }
@@ -90,10 +93,12 @@ RoutePriceEvidenceSummary summarizeRoutePriceEvidence(
   }
 
   return RoutePriceEvidenceSummary(
-    pricedPositions: offers + receipts + ownPrices + openPrices + undocumented,
+    pricedPositions:
+        offers + receipts + ownPrices + prospectPrices + openPrices + undocumented,
     offers: offers,
     receipts: receipts,
     ownPrices: ownPrices,
+    prospectPrices: prospectPrices,
     openPrices: openPrices,
     undocumented: undocumented,
     oldestObservation: oldestObservation,
@@ -106,6 +111,7 @@ class RoutePriceEvidenceSummary {
     required this.offers,
     required this.receipts,
     required this.ownPrices,
+    this.prospectPrices = 0,
     required this.openPrices,
     required this.undocumented,
     required this.oldestObservation,
@@ -115,6 +121,7 @@ class RoutePriceEvidenceSummary {
   final int offers;
   final int receipts;
   final int ownPrices;
+  final int prospectPrices;
   final int openPrices;
   final int undocumented;
   final DateTime? oldestObservation;

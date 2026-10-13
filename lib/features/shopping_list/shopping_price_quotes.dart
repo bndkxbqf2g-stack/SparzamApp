@@ -12,7 +12,14 @@ import '../../services/branch_identity.dart';
 import '../../services/market_price_comparability.dart';
 import '../../services/quantity_normalizer.dart';
 
-enum ShoppingQuoteKind { receipt, ownPrice, openPrices, offer, prospectHistory }
+enum ShoppingQuoteKind {
+  receipt,
+  ownPrice,
+  prospect,
+  openPrices,
+  offer,
+  prospectHistory,
+}
 
 class ShoppingQuote {
   const ShoppingQuote({
@@ -105,6 +112,7 @@ class ShoppingQuote {
     ShoppingQuoteKind.receipt =>
       '${isHistorical ? 'Historischer ' : ''}Bonpreis vom ${_date(observedAt!)}',
     ShoppingQuoteKind.ownPrice => 'Eigener Preis vom ${_date(observedAt!)}',
+    ShoppingQuoteKind.prospect => 'Prospektpreis vom ${_date(observedAt!)}',
     ShoppingQuoteKind.openPrices =>
       'Open-Prices-Preis vom ${_date(observedAt!)}',
     ShoppingQuoteKind.offer =>
@@ -125,6 +133,7 @@ class ShoppingQuote {
     ShoppingQuoteKind.receipt =>
       isHistorical ? 'Historischer Bonpreis' : 'Bonpreis',
     ShoppingQuoteKind.ownPrice => 'Eigener Preis',
+    ShoppingQuoteKind.prospect => 'Prospektpreis',
     ShoppingQuoteKind.openPrices => 'Open Prices',
     ShoppingQuoteKind.offer =>
       'Angebot${(offer!.hasCoupon || offer!.hasCashback) ? ', effektiv' : ''}',
@@ -228,6 +237,8 @@ List<ShoppingQuote> shoppingQuotes(
         unitPrice: price.price,
         kind: price.source == MarketPriceSource.receipt
             ? ShoppingQuoteKind.receipt
+            : price.source == MarketPriceSource.prospect
+            ? ShoppingQuoteKind.prospect
             : price.source == MarketPriceSource.openPrices
             ? ShoppingQuoteKind.openPrices
             : ShoppingQuoteKind.ownPrice,
@@ -437,6 +448,7 @@ int _quoteSourceOrder(ShoppingQuote quote) => switch (quote.kind) {
   ShoppingQuoteKind.offer => 0,
   ShoppingQuoteKind.receipt ||
   ShoppingQuoteKind.ownPrice ||
+  ShoppingQuoteKind.prospect ||
   ShoppingQuoteKind.openPrices => 1,
   ShoppingQuoteKind.prospectHistory => 2,
 };

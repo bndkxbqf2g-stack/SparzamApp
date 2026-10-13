@@ -1,6 +1,6 @@
 import 'price_observation.dart';
 
-enum MarketPriceSource { receipt, manual, openPrices }
+enum MarketPriceSource { receipt, manual, openPrices, prospect }
 
 class MarketPrice {
   const MarketPrice({
@@ -76,9 +76,15 @@ class MarketPrice {
       return false;
     }
     if (source == MarketPriceSource.manual) return true;
-    // Provisional safety window until receipt price stability is measured.
-    final maxAgeDays = source == MarketPriceSource.receipt
-        ? 30 : openPricesMaxAgeDays;
+    // External regular prospect prices are bounded by the same configurable
+    // freshness window as other external observations.
+    final maxAgeDays = switch (source) {
+      MarketPriceSource.receipt => 30,
+      MarketPriceSource.prospect || MarketPriceSource.openPrices =>
+        openPricesMaxAgeDays,
+      MarketPriceSource.manual => null,
+    };
+    if (maxAgeDays == null) return true;
     final cutoff = DateTime(
       now.year,
       now.month,
@@ -96,6 +102,10 @@ class MarketPrice {
       return isUsable(now: now, openPricesMaxAgeDays: openPricesMaxAgeDays)
           ? 'Bonpreis' : 'historischer Bonpreis';
     }
+    if (source == MarketPriceSource.prospect) {
+      return isUsable(now: now, openPricesMaxAgeDays: openPricesMaxAgeDays)
+          ? 'Prospektpreis' : 'historischer Prospektpreis';
+    }
     return isUsable(
       now: now,
       openPricesMaxAgeDays: openPricesMaxAgeDays,
@@ -110,6 +120,7 @@ class MarketPrice {
       MarketPriceSource.receipt => 'Kassenbon',
       MarketPriceSource.manual => 'Eigener Preis',
       MarketPriceSource.openPrices => 'Open Prices',
+      MarketPriceSource.prospect => 'Prospekt',
     };
   }
 

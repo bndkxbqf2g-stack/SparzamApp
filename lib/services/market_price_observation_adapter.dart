@@ -29,6 +29,7 @@ PriceObservation observationFromMarketPrice(MarketPrice price) =>
         MarketPriceSource.manual => PriceObservationSource.manual,
         MarketPriceSource.receipt => PriceObservationSource.receipt,
         MarketPriceSource.openPrices => PriceObservationSource.openPrices,
+        MarketPriceSource.prospect => PriceObservationSource.leaflet,
       },
       sourceAdapter: price.sourceAdapter,
       kind: price.kind == PriceObservationKind.unknown && price.discounted
@@ -70,7 +71,9 @@ List<MarketPrice> marketPricesFromObservations(
                 !_day(entry.validUntil!).isBefore(currentDay)) &&
             _sourceAllowed(entry, settings, today) &&
             _matchesProductPackage(entry, productsById[entry.productId]) &&
-            _projectsToLegacyMarketPrice(entry.source),
+            _hasProspectValidity(entry) &&
+            _projectsToLegacyMarketPrice(entry.source) &&
+            !_isProspectOffer(entry),
       )
       .map(
         (entry) => MarketPrice(
@@ -81,6 +84,9 @@ List<MarketPrice> marketPricesFromObservations(
           source: switch (entry.source) {
             PriceObservationSource.receipt => MarketPriceSource.receipt,
             PriceObservationSource.openPrices => MarketPriceSource.openPrices,
+            PriceObservationSource.retailer ||
+            PriceObservationSource.retailerWebsite ||
+            PriceObservationSource.leaflet => MarketPriceSource.prospect,
             _ => MarketPriceSource.manual,
           },
           externalId: _openPricesId(entry.proofRef),
@@ -146,6 +152,32 @@ bool _projectsToLegacyMarketPrice(PriceObservationSource source) =>
     switch (source) {
       PriceObservationSource.manual ||
       PriceObservationSource.receipt ||
-      PriceObservationSource.openPrices => true,
+      PriceObservationSource.openPrices ||
+      PriceObservationSource.retailer ||
+      PriceObservationSource.retailerWebsite ||
+      PriceObservationSource.leaflet => true,
+      _ => false,
+    };
+
+bool _hasProspectValidity(PriceObservation observation) {
+  if (observation.kind != PriceObservationKind.regular) return true;
+  final isProspect = switch (observation.source) {
+    PriceObservationSource.retailer ||
+    PriceObservationSource.retailerWebsite ||
+    PriceObservationSource.leaflet => true,
+    _ => false,
+  };
+  // A regular prospect amount is only current evidence when the source
+  // supplies an explicit end date. Legacy records without a validity window
+  // remain historical evidence and cannot enter route planning.
+  return !isProspect || observation.validUntil != null;
+}
+
+bool _isProspectOffer(PriceObservation observation) =>
+    observation.kind == PriceObservationKind.offer &&
+    switch (observation.source) {
+      PriceObservationSource.retailer ||
+      PriceObservationSource.retailerWebsite ||
+      PriceObservationSource.leaflet => true,
       _ => false,
     };

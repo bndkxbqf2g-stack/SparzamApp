@@ -700,7 +700,10 @@ void main() {
       ),
     ], now: DateTime(2026, 9, 25));
 
-    expect(projected, isEmpty);
+    expect(projected, hasLength(1));
+    expect(projected.single.source, MarketPriceSource.prospect);
+    expect(projected.single.price, 2.19);
+    expect(projected.single.kind, PriceObservationKind.regular);
   });
 
   test('legacy leaflet reference without validity stays history only', () {
