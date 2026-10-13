@@ -85,6 +85,19 @@ class _InMemoryOfferStore extends OfferStore {
   Future<void> save(List<Offer> next) async {
     offers = List<Offer>.of(next);
   }
+
+  @override
+  Future<List<Offer>> upsert(Offer offer, List<Offer> current) async {
+    final next = List<Offer>.of(current);
+    final index = next.indexWhere((item) => item.id == offer.id);
+    if (index < 0) {
+      next.add(offer);
+    } else {
+      next[index] = offer;
+    }
+    offers = next;
+    return List<Offer>.of(next);
+  }
 }
 
 class _InMemoryProductCatalogStore extends ProductCatalogStore {
