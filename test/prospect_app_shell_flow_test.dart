@@ -236,6 +236,18 @@ void main() {
       ]);
       await tester.pump(const Duration(milliseconds: 500));
 
+      // The list now shows a price-coverage card before the item groups. Bring
+      // the newly entered item into the viewport before asserting its visible
+      // presence; the persisted assertion below remains the race guard.
+      await tester.scrollUntilVisible(
+        find.text('Testartikel'),
+        260,
+        scrollable: find.byWidgetPredicate(
+          (widget) =>
+              widget is Scrollable &&
+              widget.axisDirection == AxisDirection.down,
+        ),
+      );
       expect(find.text('Testartikel'), findsOneWidget);
       expect(find.text('Alter Stand'), findsNothing);
       final persisted = await stores.shoppingList.load();
@@ -487,4 +499,3 @@ void main() {
     },
   );
 }
-
