@@ -50,4 +50,53 @@ void main() {
       expect(aldi.address, contains('Würzburger Str. 74'));
     },
   );
+
+  test(
+    'cached feed can render before the first network refresh',
+    () async {
+      var requestCount = 0;
+      final client = MockClient((_) async {
+        requestCount++;
+        return http.Response('''
+{
+  "generatedAt": "2026-10-12T05:00:00Z",
+  "sources": [
+    {"storeName": "Lidl", "status": "ok"}
+  ],
+  "offers": []
+}
+''', 200);
+      });
+      final cache = _MemoryProspectFeedCache()
+        ..value = '''
+{
+  "generatedAt": "2026-10-12T04:00:00Z",
+  "sources": [
+    {"storeName": "Lidl", "status": "ok"}
+  ],
+  "offers": []
+}
+''';
+      final module = ProspectImportModule(client: client, cache: cache);
+
+      final cached = await module.executeCached(
+        startAddress: '97225 Zellingen, Germany',
+      );
+
+      expect(cached, isNotNull);
+      expect(cached!.fromCache, isTrue);
+      expect(cached.generatedAt, DateTime(2026, 10, 12, 4));
+      expect(requestCount, 0);
+
+      final refreshed = await module.execute(
+        startAddress: '97225 Zellingen, Germany',
+      );
+
+      expect(refreshed.fromCache, isFalse);
+      expect(refreshed.generatedAt, DateTime(2026, 10, 12, 5));
+      expect(requestCount, 1);
+      module.close();
+    },
+  );
+
 }
