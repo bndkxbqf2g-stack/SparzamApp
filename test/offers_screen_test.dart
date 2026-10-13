@@ -18,7 +18,7 @@ void main() {
             ProspectIssue(
               storeName: 'Netto',
               title: 'Aktionsprospekt',
-              pages: const <ProspectPage>[],
+               pages: <ProspectPage>[],
               location: 'Thüngersheim',
               sourceStatus: 'error',
               url: 'https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371',
@@ -48,7 +48,7 @@ void main() {
             ProspectIssue(
               storeName: 'KaufDA',
               title: 'Regionaler Treffer',
-              pages: const <ProspectPage>[],
+               pages: <ProspectPage>[],
               sourceStatus: 'error',
               url: 'javascript:alert(1)',
             ),
@@ -354,4 +354,5 @@ void main() {
     expect(find.textContaining('für die Route gesperrt'), findsOneWidget);
   });
 }
+
 
