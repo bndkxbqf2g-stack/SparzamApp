@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:sparzamapp/models/receipt_alias.dart';
 import 'package:sparzamapp/services/receipt_alias_store.dart';
 
 void main() {
@@ -156,5 +157,34 @@ void main() {
 
   test('unknown receipt market labels remain reviewable', () {
     expect(canonicalReceiptAliasStoreName('Mein Hofladen'), 'Mein Hofladen');
+  });
+
+  test('conflicting legacy aliases stay in review instead of auto-assigning',
+      () async {
+    final store = ReceiptAliasStore();
+    await store.save([
+      ReceiptAlias(
+        storeName: 'Kaufland',
+        normalizedLabel: 'k h milch',
+        productId: 'milch_15',
+        confirmations: 3,
+        updatedAt: DateTime(2026, 9, 24),
+      ),
+      ReceiptAlias(
+        storeName: 'Kaufland',
+        normalizedLabel: 'k h milch',
+        productId: 'milch_35',
+        confirmations: 2,
+        updatedAt: DateTime(2026, 9, 25),
+      ),
+    ]);
+
+    expect(
+      await store.learnedProductId(
+        storeName: 'Kaufland',
+        rawLabel: 'K.H-Milch',
+      ),
+      isNull,
+    );
   });
 }
