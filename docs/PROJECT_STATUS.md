@@ -1,3 +1,8 @@
+## Update 13.10.2026 – Prospektviewer beschleunigt
+- Der eingebettete Prospektviewer begrenzt den Scrollvorlauf jetzt explizit auf den sichtbaren Bereich. Dadurch werden beim schnellen Wischen keine zusätzlichen Seitenkarten und Netzwerkbilder vorab aufgebaut.
+- Die bestehende Canvas-first-Bildstrategie, begrenzte Decode-Größen und der verzögerte HTML-Fallback bleiben unverändert; die Änderung reduziert nur den Speicher- und Decode-Druck im langen Seitenviewer.
+- Der Widget-Test prüft den Viewer-Schlüssel und den gesetzten Scroll-Cache-Rahmen; die fachliche Angebots- und Filiallogik bleibt unverändert.
+
 ## Update 13.10.2026 – Vertrauensstufen im Bon-/OCR-Review
 
 - Bonpositionen zeigen im Review jetzt die vier nachvollziehbaren Stufen **BELEGT**, **WAHRSCHEINLICH**, **UNSICHER** und **MANUELL_BESTÄTIGT**.
