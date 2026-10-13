@@ -17,7 +17,10 @@ void main() {
     final scroll = tester.widget<ListView>(
       find.byKey(const ValueKey('offers-scroll')),
     );
-    expect(scroll.cacheExtent, 0);
+    expect(
+      scroll.scrollCacheExtent,
+      const ScrollCacheExtent.pixels(0),
+    );
   });
 
   testWidgets('zeigt einen nicht verfügbaren Angebotsfeed transparent an', (
