@@ -85,7 +85,7 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 
 ### Phase 6 – UX / Dashboard
 - [x] heutiges Sparpotenzial aus aktuell belegten Angeboten und dem Routenvergleich
-- [ ] empfohlene Route prominent
+- [x] empfohlene Route prominent
 - [x] Gesamtpreis + Fahrtkosten + Ersparnis
 - [x] Preisabdeckung und Unsicherheit verständlich
 - [x] schneller Einkaufsliste→Route-Flow
