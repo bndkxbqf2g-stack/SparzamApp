@@ -235,13 +235,21 @@ int _prospectPageCount(ProspectIssue? issue) {
 }
 
 /// Makes missing prospect evidence explicit without changing offer selection.
-class ProspectCoverageCard extends StatelessWidget {
+class ProspectCoverageCard extends StatefulWidget {
   const ProspectCoverageCard({super.key, required this.coverage});
 
   final List<ProspectCoverage> coverage;
 
   @override
+  State<ProspectCoverageCard> createState() => _ProspectCoverageCardState();
+}
+
+class _ProspectCoverageCardState extends State<ProspectCoverageCard> {
+  var _expanded = false;
+
+  @override
   Widget build(BuildContext context) {
+    final coverage = widget.coverage;
     if (coverage.isEmpty) return const SizedBox.shrink();
     final marketsWithOffers = coverage
         .where((entry) => entry.hasStructuredOffers)
@@ -263,6 +271,10 @@ class ProspectCoverageCard extends StatelessWidget {
     return Card(
       child: ExpansionTile(
         leading: const Icon(Icons.fact_check_outlined),
+        onExpansionChanged: (expanded) {
+          if (expanded == _expanded) return;
+          setState(() => _expanded = expanded);
+        },
         title: const Text('Datenabdeckung der aktuellen Prospekte'),
         subtitle: Text(
           '${coverage.length} Märkte · $marketsWithOffers mit strukturierten '
@@ -271,23 +283,25 @@ class ProspectCoverageCard extends StatelessWidget {
           '$marketsWithProof mit Originalnachweis'
           '${regionalOffers == 0 ? '' : ' · $regionalOffers nur regional'}',
         ),
-        children: [
-          for (final entry in coverage)
-            ListTile(
-              dense: true,
-              leading: Icon(
-                _coverageIcon(entry),
-                color: _coverageColor(context, entry),
-              ),
-              title: Text(entry.storeName),
-              subtitle: Text(_coverageDetails(entry)),
-              trailing: Text(
-                _sourceStatusLabel(entry.sourceStatus),
-                textAlign: TextAlign.end,
-                style: Theme.of(context).textTheme.labelSmall,
-              ),
-            ),
-        ],
+        children: _expanded
+            ? [
+                for (final entry in coverage)
+                  ListTile(
+                    dense: true,
+                    leading: Icon(
+                      _coverageIcon(entry),
+                      color: _coverageColor(context, entry),
+                    ),
+                    title: Text(entry.storeName),
+                    subtitle: Text(_coverageDetails(entry)),
+                    trailing: Text(
+                      _sourceStatusLabel(entry.sourceStatus),
+                      textAlign: TextAlign.end,
+                      style: Theme.of(context).textTheme.labelSmall,
+                    ),
+                  ),
+              ]
+            : const <Widget>[],
       ),
     );
   }
@@ -349,3 +363,4 @@ String _sourceStatusLabel(String status) {
       return 'unvollständig';
   }
 }
+
