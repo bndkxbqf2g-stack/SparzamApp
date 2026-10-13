@@ -438,3 +438,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Der Preise-Reiter führt fehlende Marktpreise je Listenposition direkt in die bestehende Datenlückenauflösung.
 - [x] Produkt-/Preiswahl, Quellenprüfung und Speicherung bleiben im vorhandenen `openPriceGapEditor`-Pfad gebündelt.
 - [x] Die neue Aktion erzeugt keine Ersatzpreise und ändert keine Routenentscheidung ohne bestätigte Evidenz.
+
+
+## Update 13.10.2026 – Route-Rebuilds beschleunigen
+- [x] Der Route-Reiter cached den Optimierungs-Snapshot über stabile Eingabereferenzen und invalidiert bei Daten- oder Tageswechsel.
+- [x] Preisabdeckung, Mindestvorteil, Fahrtkosten und Marktanzahl werden weiterhin ausschließlich vom bestehenden `RouteOptimizer` berechnet.
+- [x] Der Performance-Block ändert keine Preisquelle und führt keine zusätzlichen Netzwerkanfragen ein.
