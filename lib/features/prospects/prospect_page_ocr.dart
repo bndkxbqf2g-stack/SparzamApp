@@ -61,7 +61,7 @@ typedef ProspectPageTextRecognizer = Future<String?> Function(Uint8List bytes);
 
 const _maxProspectPageOcrBytes = 8 * 1024 * 1024;
 final _prospectPageMoney = RegExp(
-  r'(\d{1,3}(?:[.,]\d{1,2})?)\s*(?:€|EUR)\b',
+  r'(\d{1,3}(?:[.,]\d{1,2})?)\s*(?:€|EUR)(?!\w)',
   caseSensitive: false,
 );
 final _prospectPageNonProductLine = RegExp(
