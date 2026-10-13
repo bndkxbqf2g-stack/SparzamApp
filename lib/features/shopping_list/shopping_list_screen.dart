@@ -688,5 +688,3 @@ class _ProgressiveShoppingGroupsState
     );
   }
 }
-
-}
