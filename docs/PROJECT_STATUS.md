@@ -3165,3 +3165,10 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - [x] Aktuelle Preisabdeckung, historische Hinweise und unbekannte Preise bleiben vollständig berechnet und unverändert sichtbar.
 - [x] Der Preis-Reiter verwendet keinen zusätzlichen Cache-Vorrat für Offscreen-Karten; dadurch bleiben Scrollen und Expansion bei langen Listen reaktionsfähig.
 - [x] Widgetregression prüft das Nachladen der dreizehnten Position.
+
+
+## Update 13.10.2026 – Fehlende Preise direkt aus dem Preise-Reiter auflösen
+- [x] Jede aufgeklappte Marktvergleichskarte kann eine fehlende aktuelle Evidenz direkt an die bestehende Preis-/Produktauswahl übergeben.
+- [x] Die Auflösung verwendet weiterhin `PriceGapPriority` mit exakter Listenposition und sichtbarer Zahl fehlender Märkte; kein Preis wird geschätzt.
+- [x] Der Shell-Callback nutzt denselben Editorpfad wie Einkaufsliste und Route.
+- [x] Widgetregression prüft Produktidentität und Marktanzahl des übergebenen Datenlückenobjekts.

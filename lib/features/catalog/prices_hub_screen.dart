@@ -6,6 +6,7 @@ import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/offer.dart';
 import '../offers/prospect_price_statistics.dart';
+import '../price_gaps/price_gap_priority.dart';
 import '../shopping_list/shopping_price_quotes.dart';
 
 class PricesHubScreen extends StatelessWidget {
@@ -22,6 +23,7 @@ class PricesHubScreen extends StatelessWidget {
     this.prospectPriceHistory = const <String, ProspectPriceHistorySummary>{},
     this.onOpenList,
     this.onOpenRoute,
+    this.onResolvePriceGap,
     this.now,
   });
 
@@ -36,6 +38,7 @@ class PricesHubScreen extends StatelessWidget {
   final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
   final VoidCallback? onOpenList;
   final VoidCallback? onOpenRoute;
+  final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
   final DateTime? now;
 
   List<_PriceSnapshot> _snapshots() {
@@ -152,6 +155,7 @@ class PricesHubScreen extends StatelessWidget {
             enabledStoreNames: enabledStoreNames,
             openPricesMaxAgeDays: openPricesMaxAgeDays,
             prospectPriceHistory: prospectPriceHistory,
+            onResolvePriceGap: onResolvePriceGap,
             now: now,
           ),
         ],
@@ -351,6 +355,7 @@ class _PriceComparisonList extends StatefulWidget {
     required this.enabledStoreNames,
     required this.openPricesMaxAgeDays,
     required this.prospectPriceHistory,
+    required this.onResolvePriceGap,
     this.now,
   });
 
@@ -362,6 +367,7 @@ class _PriceComparisonList extends StatefulWidget {
   final List<String> enabledStoreNames;
   final int openPricesMaxAgeDays;
   final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
+  final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
   final DateTime? now;
 
   @override
@@ -396,6 +402,7 @@ class _PriceComparisonListState extends State<_PriceComparisonList> {
               enabledStoreNames: widget.enabledStoreNames,
               openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
               prospectPriceHistory: widget.prospectPriceHistory,
+              onResolvePriceGap: widget.onResolvePriceGap,
               now: widget.now,
             ),
           ),
@@ -426,6 +433,7 @@ class _PriceComparisonCard extends StatefulWidget {
     required this.enabledStoreNames,
     required this.openPricesMaxAgeDays,
     required this.prospectPriceHistory,
+    required this.onResolvePriceGap,
     this.now,
   });
 
@@ -435,6 +443,7 @@ class _PriceComparisonCard extends StatefulWidget {
   final List<String> enabledStoreNames;
   final int openPricesMaxAgeDays;
   final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
+  final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
   final DateTime? now;
 
   @override
@@ -457,6 +466,7 @@ class _PriceComparisonCardState extends State<_PriceComparisonCard> {
     );
     final current = matrix.where((entry) => entry.hasCurrentQuote).length;
     final historical = matrix.where((entry) => entry.hasHistoricalQuote).length;
+    final missing = matrix.length - current;
     return Card(
       clipBehavior: Clip.antiAlias,
       child: ExpansionTile(
@@ -473,6 +483,26 @@ class _PriceComparisonCardState extends State<_PriceComparisonCard> {
         ),
         children: expanded
             ? [
+                if (widget.onResolvePriceGap != null && missing > 0)
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton.icon(
+                      key: ValueKey(
+                        'resolve-price-gap-${widget.item.product.id}',
+                      ),
+                      onPressed: () async {
+                        await widget.onResolvePriceGap!(
+                          PriceGapPriority(
+                            item: widget.item,
+                            missingMarketCount: missing,
+                            marketCount: matrix.length,
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.edit_outlined),
+                      label: const Text('Fehlenden Preis ergänzen'),
+                    ),
+                  ),
                 for (final entry in matrix)
                   _PriceMatrixRow(entry: entry, now: widget.now),
               ]
