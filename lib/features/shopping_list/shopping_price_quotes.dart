@@ -237,6 +237,8 @@ List<ShoppingQuote> shoppingQuotes(
         unitPrice: price.price,
         kind: price.source == MarketPriceSource.receipt
             ? ShoppingQuoteKind.receipt
+            : price.source == MarketPriceSource.prospect
+            ? ShoppingQuoteKind.prospect
             : price.source == MarketPriceSource.openPrices
             ? ShoppingQuoteKind.openPrices
             : ShoppingQuoteKind.ownPrice,
