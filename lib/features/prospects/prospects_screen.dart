@@ -821,6 +821,9 @@ class _ProspectCard extends StatelessWidget {
         ? _bringCoverPlaceholder()
         : Image.network(
             previewUrl,
+            key: ValueKey(
+              'prospect-cover-image-\${compact ? 'grid' : 'favorite'}-\${issue.storeName}',
+            ),
             // Keep the overview cheap: a platform view for every cover makes
             // the horizontal rail and grid jank on Flutter web.
             cacheWidth: compact ? 480 : 640,
