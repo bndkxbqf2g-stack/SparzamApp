@@ -247,10 +247,11 @@ void main() {
       ),
     );
     await tester.pump();
+    await _scrollProspects(tester);
 
     expect(
       find.byKey(
-        const ValueKey('prospect-cover-image-favorite-Lidl'),
+        const ValueKey('prospect-cover-image-grid-Lidl'),
       ),
       findsOneWidget,
     );
