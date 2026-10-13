@@ -250,6 +250,7 @@ class ShoppingPriceBadge extends StatelessWidget {
                             'Packung ${quote.packageLabel}',
                           if (quote.baseUnitPriceLabel != null)
                             quote.baseUnitPriceLabel!,
+                          quote.comparabilityLabel,
                           if (quote.savingsLabel != null) quote.savingsLabel!,
                         ].join(' · '),
                       ),
