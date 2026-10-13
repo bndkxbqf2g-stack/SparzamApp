@@ -2650,6 +2650,104 @@ def active_previous(previous, store):
     return active
 
 
+def _prospect_date(value):
+    text = clean(str(value or ""))
+    if not text:
+        return None
+    try:
+        return datetime.strptime(text[:10], "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
+
+def _prospect_has_pages(item):
+    pages = item.get("pageSamples") if isinstance(item, dict) else None
+    if not isinstance(pages, list):
+        return False
+    return any(
+        isinstance(page, dict) and clean(str(page.get("image") or ""))
+        for page in pages
+    )
+
+
+def _merge_previous_prospects(previous, store, prospects, *, today=None):
+    """Keep still-current cover metadata when an offer refresh omits pages.
+
+    Retailer offer endpoints and leaflet endpoints do not always fail
+    together. A successful offer refresh must therefore not erase a cover
+    that was already validated for the same active leaflet. Expired pages are
+    never carried forward as current metadata.
+    """
+
+    previous_source = next(
+        (
+            source
+            for source in previous.get("sources", [])
+            if isinstance(source, dict) and source.get("storeName") == store
+        ),
+        None,
+    )
+    previous_items = [
+        item
+        for item in (previous_source or {}).get("prospects", [])
+        if isinstance(item, dict)
+    ]
+    if not previous_items:
+        return prospects
+    today = today or local_today()
+
+    def active(item):
+        end = _prospect_date(item.get("offerEndDate"))
+        return end is not None and end >= today
+
+    active_previous_items = [
+        item for item in previous_items if active(item) and _prospect_has_pages(item)
+    ]
+    current_items = [item for item in prospects if isinstance(item, dict)]
+    if not current_items:
+        return [dict(item) for item in active_previous_items]
+
+    result = []
+    used = set()
+    for item in current_items:
+        if _prospect_has_pages(item):
+            result.append(item)
+            continue
+        item_id = clean(str(item.get("id") or ""))
+        item_title = clean(str(item.get("title") or ""))
+        item_end = _prospect_date(item.get("offerEndDate"))
+        match = next(
+            (
+                previous_item
+                for previous_item in active_previous_items
+                if id(previous_item) not in used
+                and (
+                    (item_id and item_id == clean(str(previous_item.get("id") or "")))
+                    or (
+                        item_title
+                        and item_title == clean(str(previous_item.get("title") or ""))
+                        and item_end == _prospect_date(previous_item.get("offerEndDate"))
+                    )
+                )
+            ),
+            None,
+        )
+        if match is None and len(current_items) == 1 and len(active_previous_items) == 1:
+            match = active_previous_items[0]
+        if match is None:
+            result.append(item)
+            continue
+        used.add(id(match))
+        merged = dict(item)
+        for field in ("pageSamples", "thumbnailUrl", "url"):
+            if not clean(str(merged.get(field) or "")) and clean(
+                str(match.get(field) or "")
+            ):
+                merged[field] = match[field]
+        result.append(merged)
+    return result
+
+
 def feed_generated_at(previous, refreshed_source_count, now=None):
     """Return a truthful dataset timestamp for the refreshed feed.
 
@@ -2786,6 +2884,7 @@ def main(selected_source_ids=None):
 
             # Keep branch provenance at record level as well as on the source
             # node. Provider-specific values remain authoritative.
+            prospects = _merge_previous_prospects(previous, store, prospects)
             offers = _attach_source_branch_metadata(offers, source_id)
             prospects = _attach_source_branch_metadata(prospects, source_id)
 
