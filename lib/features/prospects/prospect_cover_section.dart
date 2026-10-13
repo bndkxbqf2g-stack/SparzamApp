@@ -27,8 +27,10 @@ class ProspectCoverSection extends StatefulWidget {
 class _ProspectCoverSectionState extends State<ProspectCoverSection> {
   final _allProspectsKey = GlobalKey();
   late final ProspectFavoritesStore _favoriteStore;
+  static const _gridPageSize = 12;
   Set<String>? _favoriteStores;
   String? _selectedStore;
+  var _visibleGridCount = _gridPageSize;
 
   @override
   void initState() {
@@ -91,7 +93,10 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
       ),
     );
     if (!mounted || selected == null) return;
-    setState(() => _selectedStore = selected == 'all' ? null : selected);
+    setState(() {
+      _selectedStore = selected == 'all' ? null : selected;
+      _visibleGridCount = _gridPageSize;
+    });
   }
 
   @override
@@ -135,6 +140,7 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
             height: 340,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
+              cacheExtent: 0,
               itemCount: favorites.length,
               separatorBuilder: (_, index) => const SizedBox(width: 12),
               itemBuilder: (context, index) {
@@ -168,27 +174,58 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
         LayoutBuilder(
           builder: (context, constraints) {
             final columns = constraints.maxWidth >= 650 ? 3 : 2;
-            return GridView.builder(
-              itemCount: issues.length,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.zero,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: columns,
-                mainAxisExtent: 300,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 14,
-              ),
-              itemBuilder: (context, index) {
-                final issue = issues[index];
-                return ProspectCoverCard(
-                  key: ValueKey('offer-cover-grid-${issue.storeName}'),
-                  issue: issue,
-                  compact: true,
-                  isFavorite: _isFavorite(issue),
-                  onToggleFavorite: () => _toggleFavorite(issue.storeName),
-                  onOpen: () => widget.onOpen(issue),
-                );
+            final visibleCount = _visibleGridCount.clamp(0, issues.length);
+            return Column(
+              children: [
+                GridView.builder(
+                  // The cover section lives inside the Offers scroll. A
+                  // shrink-wrapped grid otherwise lays out every feed item at
+                  // once, which is expensive for large public prospect feeds.
+                  // Keep the first page small and add further cards on demand.
+                  itemCount: visibleCount,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.zero,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: columns,
+                    mainAxisExtent: 300,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 14,
+                  ),
+                  itemBuilder: (context, index) {
+                    final issue = issues[index];
+                    return ProspectCoverCard(
+                      key: ValueKey('offer-cover-grid-' + issue.storeName),
+                      issue: issue,
+                      compact: true,
+                      isFavorite: _isFavorite(issue),
+                      onToggleFavorite: () => _toggleFavorite(issue.storeName),
+                      onOpen: () => widget.onOpen(issue),
+                    );
+                  },
+                ),
+                if (visibleCount < issues.length)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: OutlinedButton.icon(
+                      key: const ValueKey('prospect-covers-load-more'),
+                      onPressed: () => setState(
+                        () => _visibleGridCount =
+                            (_visibleGridCount + _gridPageSize).clamp(
+                              0,
+                              issues.length,
+                            ),
+                      ),
+                      icon: const Icon(Icons.expand_more),
+                      label: Text(
+                        'Weitere Prospekte laden (' +
+                        (issues.length - visibleCount).toString() +
+                        ')',
+                      ),
+                    ),
+                  ),
+              ],
+            );
               },
             );
           },
