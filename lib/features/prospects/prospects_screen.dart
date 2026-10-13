@@ -205,7 +205,9 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                       ),
                     ),
                   ),
-                  if (_filtersExpanded && categories.isNotEmpty) ...[
+                  if (!hasSelection &&
+                      _filtersExpanded &&
+                      categories.isNotEmpty) ...[
                     const SizedBox(height: 10),
                     Material(
                       type: MaterialType.transparency,
@@ -217,7 +219,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                       ),
                     ),
                   ],
-                  if (_filtersExpanded && stores.isNotEmpty) ...[
+                  if (!hasSelection && _filtersExpanded && stores.isNotEmpty) ...[
                     const SizedBox(height: 8),
                     Material(
                       type: MaterialType.transparency,
@@ -229,13 +231,14 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                       ),
                     ),
                   ],
-                  ProspectFeedStatusCard(
-                    generatedAt: widget.generatedAt,
-                    now: widget.now,
-                    fromCache: widget.fromCache,
-                    onRefresh: widget.onRefreshProspects,
-                    refreshing: widget.prospectsRefreshing,
-                  ),
+                  if (!hasSelection)
+                    ProspectFeedStatusCard(
+                      generatedAt: widget.generatedAt,
+                      now: widget.now,
+                      fromCache: widget.fromCache,
+                      onRefresh: widget.onRefreshProspects,
+                      refreshing: widget.prospectsRefreshing,
+                    ),
                   const SizedBox(height: 18),
                   if (!hasSelection && visibleProspects.isEmpty)
                     const Card(
@@ -327,7 +330,6 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                     final columns =
                         constraints.crossAxisExtent >= 650 ? 3 : 2;
                     return SliverGrid(
-                      key: const ValueKey('prospect-grid'),
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final issue = visibleProspects[index];
@@ -358,6 +360,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                       ),
                     );
                   },
+                  key: const ValueKey('prospect-grid'),
                 ),
               ),
             if (query.trim().isEmpty && visibleProspects.isNotEmpty)
@@ -1597,7 +1600,7 @@ class _ProspectViewer extends StatelessWidget {
                   ),
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 240,
-                    mainAxisExtent: 520,
+                    mainAxisExtent: 540,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 12,
                   ),
@@ -1670,4 +1673,5 @@ Uri? _officialProspectUri(String? value) {
   }
   return uri;
 }
+
 
