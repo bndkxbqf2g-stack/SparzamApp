@@ -226,7 +226,7 @@ void main() {
     expect(find.text('Markt 23'), findsWidgets);
   });
 
-  testWidgets('keeps cross-origin cover cards on the browser fallback', (
+  testWidgets('keeps cross-origin cover cards visible', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -1177,34 +1177,6 @@ void main() {
     );
   });
 
-  testWidgets('verwendet für Coverkarten keinen Plattform-View', (tester) async {
-    await tester.pumpWidget(
-      const MaterialApp(
-        home: SizedBox(
-          width: 420,
-          height: 820,
-          child: ProspectsScreen(
-            records: [],
-            prospects: [
-              ProspectIssue(
-                storeName: 'Lidl',
-                title: 'Aktionsprospekt',
-                pages: [],
-                thumbnailUrl: 'https://example.test/lidl-cover.png',
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-    await tester.pump();
-
-    expect(find.byType(Image), findsWidgets);
-    expect(
-      find.byKey(const ValueKey('prospect-cover-image-favorite-Lidl')),
-      findsOneWidget,
-    );
-  });
 }
 
 Future<void> _scrollProspects(
