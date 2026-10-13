@@ -845,6 +845,9 @@ class _ProspectCard extends StatelessWidget {
           child: Stack(
           children: [
             InkWell(
+              key: ValueKey(
+                'prospect-open-${compact ? 'grid' : 'favorite'}-${issue.storeName}',
+              ),
               onTap: onTap,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
