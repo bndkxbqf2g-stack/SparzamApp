@@ -87,7 +87,7 @@ void main() {
     await tester.pump();
 
     expect(
-      find.byKey(const ValueKey('shopping-group-Gruppe 8')),
+      find.byKey(const ValueKey('shopping-group-haushalt')),
       findsOneWidget,
     );
   });
