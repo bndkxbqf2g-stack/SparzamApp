@@ -532,7 +532,7 @@ class _AppShellState extends State<AppShell> {
   List<ReplenishmentSuggestion> get replenishmentSuggestions =>
       buildReplenishmentSuggestions(
         history: purchaseHistory,
-        catalogProducts: catalogProducts,
+        catalogProducts: catalog,
         currentListProductIds: shoppingList
             .map((item) => item.product.id)
             .toSet(),
@@ -686,17 +686,14 @@ class _AppShellState extends State<AppShell> {
     final selected = await showShoppingCandidateSelector(
       context: context,
       request: item.product.name,
-      catalogProducts: catalogProducts,
+      catalogProducts: catalog,
       offers: offers,
       marketPrices: [...activeMarketPrices, ...historicalMarketPrices],
       receiptPriceStats: buildReceiptPriceStats(
         receiptObservations,
         maxAgeDays: 60,
       ),
-      prospectPriceHistory: prospectPriceHistorySummaries(
-        historicalPriceObservations,
-        enabledStores: mobility.enabledStoreNames,
-      ),
+      prospectPriceHistory: prospectHistory,
       enabledStores: mobility.enabledStoreNames,
       openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
     );
@@ -818,7 +815,7 @@ class _AppShellState extends State<AppShell> {
     items: shoppingList,
     offers: offers,
     mobility: mobility,
-    marketPrices: planningMarketPrices,
+    marketPrices: plannedPrices,
     openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
     roadDistances: roadDistances,
     roadMatrix: roadMatrix,
@@ -848,13 +845,13 @@ class _AppShellState extends State<AppShell> {
     offerStore: widget.offerStore,
   );
 
-  DashboardData dashboardData() => buildShellDashboard(
+  DashboardData dashboardData([ShellRouting? routeSnapshot]) => buildShellDashboard(
     shoppingList: shoppingList,
     offers: offers,
     mobility: mobility,
     roadDistances: roadDistances,
     roadMatrix: roadMatrix,
-    routing: routing,
+    routing: routeSnapshot ?? routing,
     budget: budget,
     purchaseHistory: purchaseHistory,
     replenishment: replenishmentSuggestions,
@@ -1216,17 +1213,14 @@ class _AppShellState extends State<AppShell> {
       final selected = await showShoppingCandidateSelector(
         context: context,
         request: gap.item.product.name,
-        catalogProducts: catalogProducts,
+        catalogProducts: catalog,
         offers: offers,
         marketPrices: [...activeMarketPrices, ...historicalMarketPrices],
         receiptPriceStats: buildReceiptPriceStats(
           receiptObservations,
           maxAgeDays: 60,
         ),
-        prospectPriceHistory: prospectPriceHistorySummaries(
-          historicalPriceObservations,
-          enabledStores: mobility.enabledStoreNames,
-        ),
+        prospectPriceHistory: prospectHistory,
         enabledStores: mobility.enabledStoreNames,
         openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
       );
@@ -1385,7 +1379,7 @@ class _AppShellState extends State<AppShell> {
             timeValuePerHour: mobility.timeValuePerHour,
             travelMinutesPerKm: 60 / mobility.mode.averageSpeedKmh,
             enabledStoreNames: mobility.enabledStoreNames,
-            marketPrices: planningMarketPrices,
+            marketPrices: plannedPrices,
             openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
             roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
           ).bestPlan();
@@ -1627,7 +1621,7 @@ class _AppShellState extends State<AppShell> {
                 items: shoppingList,
                 offers: offers,
                 mobility: mobility,
-                marketPrices: planningMarketPrices,
+                marketPrices: plannedPrices,
                 openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
                 recentPurchases: recentPurchases,
                 historicalPriceObservations: historicalPriceObservations,
@@ -1653,8 +1647,27 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
-    final pages = buildShellPages(
-      dashboard: dashboardData(),
+    final catalog = catalogProducts;
+    final plannedPrices = planningMarketPrices;
+    final routeSnapshot = ShellRouting(
+      items: shoppingList,
+      offers: offers,
+      mobility: mobility,
+      marketPrices: plannedPrices,
+      openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
+      roadDistances: roadDistances,
+      roadMatrix: roadMatrix,
+    );
+    final currentRouteOptimizer = routeSnapshot.current;
+    final regularRouteOptimizer = routeSnapshot.regular;
+    final currentPlan = currentRouteOptimizer?.bestPlan();
+    final regularPlan = regularRouteOptimizer?.bestSingleStorePlan();
+    final replenishment = replenishmentSuggestions;
+    final prospectHistory = prospectPriceHistorySummaries(
+      historicalPriceObservations,
+      enabledStores: mobility.enabledStoreNames,
+    );
+    final pages = buildShellPages(      dashboard: dashboardData(routeSnapshot),
       onOpenList: () => setState(() => selectedIndex = 1),
       onOpenRoute: openRoute,
       onOpenOffers: () => setState(() => selectedIndex = 2),
@@ -1684,16 +1697,13 @@ class _AppShellState extends State<AppShell> {
       prospectsRefreshing: _prospectFeedRefreshing,
       priceHistory: priceHistory,
       mobility: mobility,
-      catalogProducts: catalogProducts,
-      marketPrices: planningMarketPrices,
+      catalogProducts: catalog,
+      marketPrices: plannedPrices,
       openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
-      priceObservations: [...planningMarketPrices],
+      priceObservations: plannedPrices,
       historicalPriceObservations: historicalPriceObservations,
-      prospectPriceHistory: prospectPriceHistorySummaries(
-        historicalPriceObservations,
-        enabledStores: mobility.enabledStoreNames,
-      ),
-      replenishmentSuggestions: replenishmentSuggestions,
+      prospectPriceHistory: prospectHistory,
+      replenishmentSuggestions: replenishment,
       onRoadDistancesChanged: (value) => setState(() => roadDistances = value),
       onRoadMatrixChanged: (value) => setState(() => roadMatrix = value),
       currentPlan: currentOptimizer?.bestPlan(),
