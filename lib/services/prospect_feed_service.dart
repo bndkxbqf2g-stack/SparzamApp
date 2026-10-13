@@ -204,6 +204,15 @@ class ProspectFeedService {
     return started;
   }
 
+  /// Returns the newest locally available validated feed without any
+  /// network request. The shell uses this for an immediate first render and
+  /// follows it with the normal online refresh.
+  Future<ProspectFeedLoadResult?> loadCached() async {
+    final cached = await _loadCachedFeed();
+    if (cached != null) return cached;
+    return _loadBundledFeed();
+  }
+
   Future<ProspectFeedLoadResult> _loadNow() async {
     if (!networkEnabled) {
       final cached = await _loadCachedFeed();
