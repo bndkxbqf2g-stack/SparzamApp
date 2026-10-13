@@ -195,7 +195,7 @@ void main() {
         ProspectIssue(
           storeName: 'Markt $index',
           title: 'Aktionsprospekt',
-          pages: const [],
+               pages: [],
           thumbnailUrl: 'https://example.test/cover-$index.jpg',
           validFrom: DateTime(2026, 9, 28),
           validUntil: DateTime(2026, 10, 3),
@@ -696,7 +696,7 @@ void main() {
             ProspectIssue(
               storeName: 'Lidl',
               title: 'KaufDA regional',
-              pages: const [],
+              pages: [],
               sourceStatus: 'regional_only',
               recordCount: 1,
             ),
