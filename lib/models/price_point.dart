@@ -8,6 +8,7 @@ extension PricePointSourceLabel on PricePointSource {
         PricePointSource.manual => 'Eigener Preis',
         PricePointSource.openPrices => 'Open Prices',
         PricePointSource.receipt => 'Kassenbon',
+        PricePointSource.prospect => 'Prospekt'
       };
 }
 
