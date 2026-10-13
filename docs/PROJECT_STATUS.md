@@ -3189,6 +3189,12 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 
 
 ## Update 14.10.2026 – Prospektimport speichert automatisch nur reguläre Preise
+
+## Update 14.10.2026 – Hauptreiter behalten ihren Zustand
+- [x] Besuchte Hauptreiter bleiben in einem `IndexedStack` gemountet; noch nicht besuchte Reiter werden weiterhin lazy als Platzhalter angelegt.
+- [x] Prospektsuche, Scrollposition und Routen-/Belegcontroller werden beim Wechsel zwischen Liste, Prospekte und Preise nicht mehr verworfen.
+- [x] Regression prüft, dass die Prospektsuche nach einem Wechsel in die Einkaufsliste erhalten bleibt.
+
 - [x] Der automatische Feed-Lernpfad verwendet jetzt ausschließlich Beobachtungen mit belegtem originalPrice/Streichpreis (PriceObservationKind.regular).
 - [x] Der zeitlich befristete Angebotspreis bleibt im aktuellen OfferStore und wird nicht zusätzlich als automatische Preis-Historie gespeichert.
 - [x] Angebotszeilen ohne regulären Preis bleiben für die Angebotsansicht verfügbar, erzeugen aber keine reguläre Datenbankbeobachtung.
