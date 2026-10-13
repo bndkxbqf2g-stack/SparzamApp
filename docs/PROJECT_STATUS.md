@@ -1,5 +1,14 @@
 # SparzamApp
 
+## Update 13.10.2026 – Widersprüchliche Bon-Aliase bleiben im Review
+- Treffen mehrere ausreichend bestätigte Produkt-IDs auf dieselbe Händler- und
+  Bonbezeichnung, liefert der Alias-Store keine automatische Produktidentität.
+- Eindeutige Treffer werden bei gleichem Preis-/Bestätigungsstand weiterhin
+  deterministisch nach Bestätigungszahl und Aktualität gewählt.
+- Damit können alte, widersprüchliche Aliasbestände weder eine falsche Variante
+  vortäuschen noch spätere Preisbeobachtungen an das falsche Produkt binden.
+- Eine Regression deckt den Legacy-Fall mit zwei bestätigten Produkt-IDs ab.
+
 ## Update 13.10.2026 – Prospektangebote behalten Packungs- und Grundpreisbasis
 - Der öffentliche Prospekt-Refresh leitet aus einer ausdrücklich im Händlerlabel
   enthaltenen Packungsangabe jetzt `packageSize` und den normalisierten
