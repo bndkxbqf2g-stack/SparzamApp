@@ -826,12 +826,11 @@ class _ProspectCard extends StatelessWidget {
             cacheWidth: compact ? 480 : 640,
             cacheHeight: compact ? 400 : 480,
             filterQuality: FilterQuality.low,
-            // The favorites rail is short enough to retain a browser fallback
-            // for CDNs without Canvas-CORS. The scrolling grid must stay on
-            // Canvas so it cannot create a platform view per cover.
-            webHtmlElementStrategy: compact
-                ? WebHtmlElementStrategy.never
-                : WebHtmlElementStrategy.fallback,
+            // A single cover per market is cheap enough to use the browser
+            // fallback when a retailer CDN omits Canvas-CORS headers. The
+            // long page viewer below stays Canvas-only, so this does not
+            // create one platform view per prospect page while scrolling.
+            webHtmlElementStrategy: WebHtmlElementStrategy.fallback,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) =>
                 _bringCoverPlaceholder(),
