@@ -1,3 +1,8 @@
+## Update 13.10.2026 – Angebote-Reiter memoisiert Produktzuordnung
+- Händler- und Kategoriegruppen behalten die konkrete Katalogauflösung je Angebotsdatensatz zwischen Such-/Expand-Rebuilds lokal im Widget.
+- Ein negatives Ergebnis bleibt ebenfalls zwischengespeichert; unbekannte oder nicht belegte Artikel werden dadurch weder automatisch routenfähig noch anders zugeordnet.
+- Der Cache wird bei einem neuen Katalogsnapshot verworfen und ändert keine Gültigkeits-, Filial- oder Nachweisprüfung.
+
 ## Update 13.10.2026 – Mehrere OCR-Vorschläge im Prospektviewer
 - Erkennt die lokale Seitenprüfung mehrere plausible Preiszeilen, zeigt der Viewer eine Auswahl mit Preis- und Sicherheitsstufe.
 - Erst die ausdrücklich gewählte Zeile wird in das bestehende Angebotsformular übernommen; Abbrechen verwirft den OCR-Vorschlag ohne Speicherung.
