@@ -21,6 +21,7 @@ import 'route_recommendation_card.dart';
 import 'route_optimizer.dart';
 import 'route_price_evidence.dart';
 import 'route_price_evidence_card.dart';
+import 'route_savings.dart';
 import 'route_store_card.dart';
 import 'route_summary_card.dart';
 import 'travel_estimator.dart';
@@ -211,6 +212,7 @@ class _RouteScreenState extends State<RouteScreen> {
     final savings = single == null
         ? 0.0
         : single.planningScore - best.planningScore;
+    final offerSavings = routeOfferSavings(best, optimizer.prices);
     final alternatives = optimizer.alternatives();
     final visibleAlternatives = _uniqueAlternatives(alternatives);
     final cheapest = alternatives.first;
@@ -272,7 +274,11 @@ class _RouteScreenState extends State<RouteScreen> {
           ),
         ),
         const SizedBox(height: 18),
-        RouteSummaryCard(best: best, extraSavings: savings),
+        RouteSummaryCard(
+          best: best,
+          extraSavings: savings,
+          offerSavings: offerSavings,
+        ),
         if (priceEvidence.hasEvidence) ...[
           const SizedBox(height: 10),
           RoutePriceEvidenceCard(summary: priceEvidence),

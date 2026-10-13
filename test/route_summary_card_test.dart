@@ -41,4 +41,34 @@ void main() {
     expect(find.textContaining('1 Position.'), findsOneWidget);
     expect(find.textContaining('1 Positionen.'), findsNothing);
   });
+
+  testWidgets('zeigt die belegte Angebotsersparnis im Warenkorb', (
+    tester,
+  ) async {
+    final plan = RoutePlan(
+      stores: const [store],
+      assignments: const {},
+      basket: 4.76,
+      travel: 0.48,
+      total: 5.24,
+      unassigned: const [],
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: RouteSummaryCard(
+            best: plan,
+            extraSavings: 0,
+            offerSavings: 1.23,
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      find.textContaining('Angebotsersparnis im Warenkorb: 1.23 €'),
+      findsOneWidget,
+    );
+  });
 }

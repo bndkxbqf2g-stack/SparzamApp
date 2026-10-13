@@ -1,5 +1,12 @@
 # SparzamApp
 
+## Update 13.10.2026 – Angebotssparpotenzial in der Routenübersicht
+- Die Routenübersicht zeigt jetzt die belegte Ersparnis aktiver Angebote, die für die konkrete Filiale, Variante, Menge und den aktuellen Gültigkeitszeitraum ausgewählt wurden.
+- Abgelaufene, unbestätigte oder nicht zur Filiale passende Angebote fließen über den bestehenden RoutePriceResolver nicht in diese Anzeige ein.
+- Bei einer Teilroute wird die Summe ausdrücklich als „belegte Angebotsersparnis“ gekennzeichnet; die Anzeige behauptet keine Ersparnis für fehlende Positionen.
+- Fach- und Widgettests decken Mengenmultiplikatoren, abgelaufene Angebote und die sichtbare Zusammenfassung ab.
+
+
 ## Update 13.10.2026 – Prospektseiten beim Scrollen entlasten
 - Der Seitenviewer rendert Vorschaubilder zuerst im günstigen Canvas-Pfad und erzeugt einen HTML-Plattform-Fallback erst nach einem tatsächlichen Decode-/CORS-Fehler.
 - Dadurch werden beim langen Prospekt-Scrollen nicht vorsorglich für jede Seite Plattform-Views angelegt; die begrenzte 720×480-Dekodierung und die externe Großansicht bleiben erhalten.
