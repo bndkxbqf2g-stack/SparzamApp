@@ -286,7 +286,7 @@ void main() {
               proofRef: 'https://example.test/lidl/coffee',
             ),
           ],
-          prospects: const [
+          prospects: [
             ProspectIssue(
               storeName: 'Lidl',
               title: 'Aktionsprospekt',
@@ -354,7 +354,7 @@ void main() {
       MaterialApp(
         home: ProspectsScreen(
           records: const [],
-          prospects: const [
+          prospects: [
             ProspectIssue(
               storeName: 'Lidl',
               title: 'Aktionsprospekt',
@@ -557,7 +557,7 @@ void main() {
       MaterialApp(
         home: ProspectsScreen(
           records: const [],
-          prospects: const [
+          prospects: [
             ProspectIssue(
               storeName: 'Netto',
               title: 'Netto Wochenprospekt',
@@ -786,7 +786,7 @@ void main() {
         home: ProspectsScreen(
           now: DateTime(2026, 10, 13),
           records: const [],
-          prospects: const [
+          prospects: [
             ProspectIssue(
               storeName: 'ALDI Süd',
               title: 'Aktionsprospekt ohne Bildseiten',
@@ -880,4 +880,5 @@ Future<void> _scrollProspects(
   await tester.drag(scrollable.first, Offset(0, -distance));
   await tester.pumpAndSettle();
 }
+
 
