@@ -60,7 +60,7 @@ List<ReceiptPriceStat> buildReceiptPriceStats(
     final comparable = comparableBasis != null;
     final values =
         (comparable
-                ? comparableBasis!.prices
+                ? comparableBasis.prices
                 : entries.map((e) => e.totalPrice))
             .toList()
           ..sort();
@@ -70,13 +70,13 @@ List<ReceiptPriceStat> buildReceiptPriceStats(
         productId: entries.first.productId,
         storeName: entries.first.storeName,
         latestPrice: comparable
-            ? comparableBasis!.prices.first
+            ? comparableBasis.prices.first
             : entries.first.totalPrice,
         latestAt: entries.first.observedAt,
         observationCount: entries.length,
         medianPrice: _median(values),
         comparable: comparable,
-        priceBasis: comparable ? comparableBasis!.baseUnit : 'Packung',
+        priceBasis: comparable ? comparableBasis.baseUnit : 'Packung',
         identityConfirmed: entries.every(
           (entry) => entry.productId == null || entry.identityConfirmed,
         ),
@@ -162,3 +162,4 @@ double _median(List<double> values) {
       : (values[middle - 1] + values[middle]) / 2;
   return (median * 100).roundToDouble() / 100;
 }
+
