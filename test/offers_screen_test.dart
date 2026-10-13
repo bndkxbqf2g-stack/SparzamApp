@@ -404,6 +404,7 @@ void main() {
       const ValueKey('prospect-covers-load-more'),
     );
     expect(loadMore, findsOneWidget);
+    await tester.ensureVisible(loadMore);
 
     await tester.tap(loadMore);
     await tester.pump();
