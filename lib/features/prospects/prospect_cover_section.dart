@@ -140,7 +140,9 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
               itemBuilder: (context, index) {
                 final issue = favorites[index];
                 return ProspectCoverCard(
-                  key: ValueKey('offer-cover-favorite-$${issue.storeName}'),
+                  key: ValueKey(
+                    'offer-cover-favorite-${compact ? 'grid' : 'favorite'}-${issue.storeName}',
+                  ),
                   issue: issue,
                   compact: false,
                   isFavorite: _isFavorite(issue),
@@ -180,7 +182,7 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
               itemBuilder: (context, index) {
                 final issue = issues[index];
                 return ProspectCoverCard(
-                  key: ValueKey('offer-cover-grid-$${issue.storeName}'),
+                  key: ValueKey('offer-cover-grid-${issue.storeName}'),
                   issue: issue,
                   compact: true,
                   isFavorite: _isFavorite(issue),
@@ -224,7 +226,9 @@ class ProspectCoverCard extends StatelessWidget {
         ? _coverPlaceholder()
         : Image.network(
             previewUrl,
-            key: ValueKey('offer-cover-image-$${issue.storeName}'),
+            key: ValueKey(
+              'offer-cover-image-${compact ? 'grid' : 'favorite'}-${issue.storeName}',
+            ),
             cacheWidth: compact ? 480 : 640,
             cacheHeight: compact ? 400 : 480,
             filterQuality: FilterQuality.low,
@@ -243,7 +247,9 @@ class ProspectCoverCard extends StatelessWidget {
           child: Stack(
             children: [
               InkWell(
-                key: ValueKey('offer-cover-open-$${issue.storeName}'),
+                key: ValueKey(
+                  'offer-cover-open-${compact ? 'grid' : 'favorite'}-${issue.storeName}',
+                ),
                 onTap: onOpen,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -293,7 +299,7 @@ class ProspectCoverCard extends StatelessWidget {
                             ),
                           Text(
                             issue.recordCount > 0
-                                ? '$${issue.recordCount} Angebote geladen'
+                                ? '${issue.recordCount} Angebote geladen'
                                 : 'Prospekt öffnen',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -312,10 +318,10 @@ class ProspectCoverCard extends StatelessWidget {
                 top: imageHeight + 8,
                 right: compact ? 8 : 10,
                 child: IconButton(
-                  key: ValueKey('offer-cover-favorite-$${issue.storeName}'),
+                  key: ValueKey('offer-cover-favorite-${issue.storeName}'),
                   tooltip: isFavorite
-                      ? '$${issue.storeName} aus Favoriten entfernen'
-                      : '$${issue.storeName} zu Favoriten hinzufügen',
+                      ? '${issue.storeName} aus Favoriten entfernen'
+                      : '${issue.storeName} zu Favoriten hinzufügen',
                   onPressed: onToggleFavorite,
                   padding: EdgeInsets.zero,
                   constraints: BoxConstraints.tightFor(
@@ -429,8 +435,8 @@ String? _validity(ProspectIssue issue) {
   final until = issue.validUntil;
   if (from == null || until == null) return null;
   String date(DateTime value) =>
-      '$${value.day.toString().padLeft(2, '0')}.$${value.month.toString().padLeft(2, '0')}.$${value.year}';
-  return '$${date(from)} – $${date(until)}';
+      '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.${value.year}';
+  return '${date(from)} – ${date(until)}';
 }
 
 List<ProspectIssue> _uniqueIssues(Iterable<ProspectIssue> issues) {
