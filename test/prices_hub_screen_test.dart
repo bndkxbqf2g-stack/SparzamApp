@@ -56,6 +56,50 @@ void main() {
     expect(openedRoute, [true]);
   });
 
+  testWidgets('zeigt Herkunft und Datum eines regulären Prospektpreises', (
+    tester,
+  ) async {
+    const product = Product(
+      id: 'price-hub-prospect-milk',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'Milch',
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PricesHubScreen(
+            onOpenCatalog: () {},
+            onOpenSettings: () {},
+            summary: 'Prospektpreise',
+            shoppingList: [ListItem(product: product)],
+            marketPrices: [
+              MarketPrice(
+                productId: product.id,
+                storeName: 'Lidl',
+                price: 1.29,
+                updatedAt: DateTime(2026, 10, 13),
+                source: MarketPriceSource.prospect,
+              ),
+            ],
+            enabledStoreNames: const ['Lidl'],
+            now: DateTime(2026, 10, 13),
+          ),
+        ),
+      ),
+    );
+
+    final card = find.byKey(
+      const ValueKey('price-comparison-price-hub-prospect-milk'),
+    );
+    await tester.tap(card);
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Prospektpreis vom 13.10.2026'), findsOneWidget);
+    expect(find.textContaining('Preisalter: heute'), findsOneWidget);
+  });
+
   testWidgets('öffnet den Marktvergleich je Listenposition', (tester) async {
     const product = Product(
       id: 'price-hub-matrix-milk',
