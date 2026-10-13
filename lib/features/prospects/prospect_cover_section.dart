@@ -28,6 +28,7 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
   final _allProspectsKey = GlobalKey();
   late final ProspectFavoritesStore _favoriteStore;
   Set<String>? _favoriteStores;
+  String? _selectedStore;
 
   @override
   void initState() {
@@ -58,9 +59,49 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
     }
   }
 
+  Future<void> _chooseStore() async {
+    final stores = _uniqueIssues(widget.issues)
+        .map((issue) => issue.storeName)
+        .toSet()
+        .toList()
+      ..sort();
+    final selected = await showModalBottomSheet<String>(
+      context: context,
+      builder: (context) => SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            const ListTile(
+              title: Text('Prospektfilter'),
+              subtitle: Text('Einen Markt für die Coveransicht auswählen'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.all_inclusive),
+              title: const Text('Alle Märkte'),
+              onTap: () => Navigator.of(context).pop('all'),
+            ),
+            for (final store in stores)
+              ListTile(
+                leading: const Icon(Icons.store_outlined),
+                title: Text(store),
+                onTap: () => Navigator.of(context).pop(store),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (!mounted || selected == null) return;
+    setState(() => _selectedStore = selected == 'all' ? null : selected);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final issues = _uniqueIssues(widget.issues);
+    final allIssues = _uniqueIssues(widget.issues);
+    final issues = _selectedStore == null
+        ? allIssues
+        : allIssues
+            .where((issue) => issue.storeName == _selectedStore)
+            .toList(growable: false);
     if (issues.isEmpty) return const SizedBox.shrink();
 
     final favorites = _favoriteStores == null
@@ -114,6 +155,7 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
           key: _allProspectsKey,
           title: 'Weitere Prospekte',
           showFilter: true,
+          onFilter: _chooseStore,
         ),
         const SizedBox(height: 2),
         const Text(
@@ -302,12 +344,14 @@ class _SectionHeader extends StatelessWidget {
     this.actionLabel,
     this.onAction,
     this.showFilter = false,
+    this.onFilter,
   });
 
   final String title;
   final String? actionLabel;
   final VoidCallback? onAction;
   final bool showFilter;
+  final VoidCallback? onFilter;
 
   @override
   Widget build(BuildContext context) {
@@ -334,7 +378,7 @@ class _SectionHeader extends StatelessWidget {
         if (showFilter)
           IconButton(
             tooltip: 'Prospektfilter',
-            onPressed: null,
+            onPressed: onFilter,
             icon: const Icon(Icons.tune),
           ),
       ],
