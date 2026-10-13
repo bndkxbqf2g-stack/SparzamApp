@@ -777,7 +777,7 @@ void main() {
       'Preisalter: vor 2 Tagen',
     );
 
-    const historical = ShoppingQuote(
+    final historical = ShoppingQuote(
       storeName: 'Lidl',
       unitPrice: 0.95,
       kind: ShoppingQuoteKind.prospectHistory,
