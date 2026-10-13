@@ -175,7 +175,7 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Optionalen standortbezogenen Bring-Adapter für aktuelle Prospektseiten, strukturierte Produkt-Hotspots, Bilder, Angebots- und Normalpreise implementiert.
 - [x] Bring-Angebote laufen mit Gültigkeit und Nachweis durch den bestehenden Angebots-/PriceObservation-Vertrag.
 - [ ] Live-Abruf in GitHub aktivieren, sobald die drei Bring-Zugangsdaten als Repository-Secrets hinterlegt sind; bis dahin bleiben die offiziellen Händleradapter führend.
-- [x] Bild-only-Prospektseiten können lokale OCR-Vorschläge mit Confidence anzeigen und ausschließlich über das bestehende Nutzer-Review in ein manuelles Angebot überführen.
+- [x] Bild-only-Prospektseiten können lokale OCR-Vorschläge mit Confidence anzeigen; bei mehreren Treffern wählt der Nutzer eine Zeile, bevor sie ausschließlich über das bestehende Nutzer-Review in ein manuelles Angebot überführt wird.
 
 ## Update 01.10.2026 – Preisabdeckung direkt in der Einkaufsliste
 - [x] Das Preisfenster zeigt für jeden aktivierten Markt eine eigene Zeile.
