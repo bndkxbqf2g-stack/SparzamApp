@@ -233,6 +233,34 @@ class _ProspectOffers extends StatefulWidget {
 class _ProspectOffersState extends State<_ProspectOffers> {
   final expandedStores = <String>{};
   final expandedCategories = <String>{};
+  final _resolvedProducts = <String, Product?>{};
+
+  @override
+  void didUpdateWidget(covariant _ProspectOffers oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.catalogProducts, widget.catalogProducts)) {
+      _resolvedProducts.clear();
+    }
+  }
+
+  Product? _memoizedProduct(OfferImportRecord record) {
+    final key = [
+      record.sourceId,
+      record.storeName,
+      record.productLabel,
+      record.offerPrice,
+      record.packageSize,
+    ].join('|');
+    if (_resolvedProducts.containsKey(key)) {
+      return _resolvedProducts[key];
+    }
+    final product = addableProductForProspectOffer(
+      record,
+      widget.catalogProducts,
+    );
+    _resolvedProducts[key] = product;
+    return product;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -316,10 +344,7 @@ class _ProspectOffersState extends State<_ProspectOffers> {
   }
 
   Widget _buildProspectCard(OfferImportRecord record) {
-    final product = addableProductForProspectOffer(
-      record,
-      widget.catalogProducts,
-    );
+    final product = _memoizedProduct(record);
     final onAdd = widget.onAddToShoppingList;
     return ProspectOfferCard(
       key: ValueKey('prospect-offer-${record.sourceId}'),
