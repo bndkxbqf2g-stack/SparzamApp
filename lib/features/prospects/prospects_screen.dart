@@ -326,13 +326,13 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
             ),
             if (!hasSelection && visibleProspects.isNotEmpty)
               SliverPadding(
+                key: const ValueKey('prospect-grid'),
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 sliver: SliverLayoutBuilder(
                   builder: (context, constraints) {
                     final columns =
                         constraints.crossAxisExtent >= 650 ? 3 : 2;
                     return SliverGrid(
-                      key: const ValueKey('prospect-grid'),
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final issue = visibleProspects[index];
