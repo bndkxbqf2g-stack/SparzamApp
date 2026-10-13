@@ -1,5 +1,11 @@
 # SparzamApp
 
+## Update 13.10.2026 – Vergleichbarkeit in der Preis-Matrix
+- Jede sichtbare Preiszeile kennzeichnet jetzt, ob eine explizite Packungsbasis vorliegt oder die Mengenbasis der Quelle nicht dokumentiert ist.
+- Die Kennzeichnung ergänzt Quelle, Beobachtungs-/Gültigkeitsstand, Packungsgröße, Grundpreis und Ersparnis; sie ändert keine Preiswahl und erzeugt keinen fehlenden Preis.
+- Fach- und Widgettests decken explizite 500-g-Basis sowie Legacy-Preise ohne Mengenbasis ab.
+
+
 ## Update 13.10.2026 – Angebotssparpotenzial in der Routenübersicht
 - Die Routenübersicht zeigt jetzt die belegte Ersparnis aktiver Angebote, die für die konkrete Filiale, Variante, Menge und den aktuellen Gültigkeitszeitraum ausgewählt wurden.
 - Abgelaufene, unbestätigte oder nicht zur Filiale passende Angebote fließen über den bestehenden RoutePriceResolver nicht in diese Anzeige ein.
