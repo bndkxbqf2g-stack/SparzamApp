@@ -100,6 +100,16 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ],
+          if (data.itemCount > 0 ||
+              data.monthlyPurchases > 0 ||
+              data.budgetConfigured) ...[
+            const SizedBox(height: 16),
+            _PlanningStatusCard(
+              data: data,
+              onOpenRoute: onOpenRoute,
+              euro: euro,
+            ),
+          ],
           const SizedBox(height: 26),
           _SectionHeader(title: 'Aktuelle Highlights', onTap: onOpenOffers),
           const SizedBox(height: 12),
@@ -157,6 +167,136 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       );
+}
+
+class _PlanningStatusCard extends StatelessWidget {
+  const _PlanningStatusCard({
+    required this.data,
+    required this.onOpenRoute,
+    required this.euro,
+  });
+
+  final DashboardData data;
+  final VoidCallback onOpenRoute;
+  final String Function(double value) euro;
+
+  @override
+  Widget build(BuildContext context) => Card(
+    child: InkWell(
+      onTap: data.itemCount > 0 ? onOpenRoute : null,
+      borderRadius: BorderRadius.circular(18),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(18, 16, 18, 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Planungsstatus',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(Icons.route_outlined, color: SparzamTheme.deepGreen),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Beste Route',
+                        style: TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                      Text(
+                        data.routeNames,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        '${data.mobilityLabel} · '
+                        '${data.routeTravelMinutes} Min. Fahrtzeit',
+                        style: const TextStyle(color: SparzamTheme.muted),
+                      ),
+                    ],
+                  ),
+                ),
+                if (data.itemCount > 0)
+                  const Icon(Icons.chevron_right),
+              ],
+            ),
+            const Divider(height: 22),
+            Row(
+              children: [
+                const Icon(
+                  Icons.savings_outlined,
+                  color: SparzamTheme.deepGreen,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Diesen Monat gespart',
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                ),
+                Text(
+                  euro(data.monthlySavings),
+                  style: const TextStyle(fontWeight: FontWeight.w800),
+                ),
+              ],
+            ),
+            const SizedBox(height: 2),
+            Padding(
+              padding: const EdgeInsets.only(left: 36),
+              child: Text(
+                '${data.monthlyPurchases} bestätigte Einkäufe',
+                style: const TextStyle(color: SparzamTheme.muted),
+              ),
+            ),
+            if (data.budgetConfigured) ...[
+              const Divider(height: 22),
+              Row(
+                children: [
+                  const Icon(
+                    Icons.account_balance_wallet_outlined,
+                    color: SparzamTheme.deepGreen,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Budgetprognose',
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                  Text(
+                    data.budgetForecastLabel,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      color: data.budgetForecastLabel ==
+                              'voraussichtlich drüber'
+                          ? Colors.red.shade700
+                          : null,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 2),
+              Padding(
+                padding: const EdgeInsets.only(left: 36),
+                child: Text(
+                  'Geplant ${euro(data.budgetProjectedSpend)} · '
+                  '${euro(data.budgetWeeklyAllowance)}/Woche',
+                  style: const TextStyle(color: SparzamTheme.muted),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 class _SavingsCard extends StatelessWidget {
