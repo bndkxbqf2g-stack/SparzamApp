@@ -37,8 +37,10 @@ class ReceiptConfidenceBadge extends StatelessWidget {
         Icons.warning_amber_outlined,
       ),
     };
-    return Chip(
-      avatar: Icon(icon, size: compact ? 14 : 16, color: foreground),
+    return Tooltip(
+      message: level.description,
+      child: Chip(
+        avatar: Icon(icon, size: compact ? 14 : 16, color: foreground),
       label: Text(
         level.label,
         style: TextStyle(
@@ -49,7 +51,8 @@ class ReceiptConfidenceBadge extends StatelessWidget {
       ),
       backgroundColor: background,
       visualDensity: compact ? VisualDensity.compact : null,
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
     );
   }
 }
