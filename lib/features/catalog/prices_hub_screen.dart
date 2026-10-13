@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import '../../design/sparzam_theme.dart';
 import '../../models/list_item.dart';
@@ -81,6 +82,7 @@ class PricesHubScreen extends StatelessWidget {
     );
 
     return ListView(
+      scrollCacheExtent: ScrollCacheExtent.pixels(0),
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
       children: [
         const Icon(
@@ -143,20 +145,15 @@ class PricesHubScreen extends StatelessWidget {
             'Belege je aktiviertem Markt zu prüfen.',
           ),
           const SizedBox(height: 10),
-          for (final item in shoppingList)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: _PriceComparisonCard(
-                key: ValueKey('price-comparison-${item.product.id}'),
-                item: item,
-                prices: marketPrices,
-                offers: offers,
-                enabledStoreNames: enabledStoreNames,
-                openPricesMaxAgeDays: openPricesMaxAgeDays,
-                prospectPriceHistory: prospectPriceHistory,
-                now: now,
-              ),
-            ),
+          _PriceComparisonList(
+            shoppingList: shoppingList,
+            prices: marketPrices,
+            offers: offers,
+            enabledStoreNames: enabledStoreNames,
+            openPricesMaxAgeDays: openPricesMaxAgeDays,
+            prospectPriceHistory: prospectPriceHistory,
+            now: now,
+          ),
         ],
         if (snapshots.isNotEmpty && missing > 0) ...[
           const SizedBox(height: 12),
@@ -341,6 +338,81 @@ class _PriceSnapshotTile extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.w800),
         ),
       ),
+    );
+  }
+}
+
+
+class _PriceComparisonList extends StatefulWidget {
+  const _PriceComparisonList({
+    required this.shoppingList,
+    required this.prices,
+    required this.offers,
+    required this.enabledStoreNames,
+    required this.openPricesMaxAgeDays,
+    required this.prospectPriceHistory,
+    this.now,
+  });
+
+  static const pageSize = 12;
+
+  final List<ListItem> shoppingList;
+  final List<MarketPrice> prices;
+  final List<Offer> offers;
+  final List<String> enabledStoreNames;
+  final int openPricesMaxAgeDays;
+  final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
+  final DateTime? now;
+
+  @override
+  State<_PriceComparisonList> createState() => _PriceComparisonListState();
+}
+
+class _PriceComparisonListState extends State<_PriceComparisonList> {
+  var _visibleCount = _PriceComparisonList.pageSize;
+
+  void _showMore() {
+    setState(() {
+      final nextCount = _visibleCount + _PriceComparisonList.pageSize;
+      _visibleCount = nextCount > widget.shoppingList.length
+          ? widget.shoppingList.length
+          : nextCount;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final visibleItems = widget.shoppingList.take(_visibleCount);
+    return Column(
+      children: [
+        for (final item in visibleItems)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: _PriceComparisonCard(
+              key: ValueKey('price-comparison-${item.product.id}'),
+              item: item,
+              prices: widget.prices,
+              offers: widget.offers,
+              enabledStoreNames: widget.enabledStoreNames,
+              openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
+              prospectPriceHistory: widget.prospectPriceHistory,
+              now: widget.now,
+            ),
+          ),
+        if (_visibleCount < widget.shoppingList.length)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: OutlinedButton.icon(
+              key: const ValueKey('price-comparisons-load-more'),
+              onPressed: _showMore,
+              icon: const Icon(Icons.expand_more),
+              label: Text(
+                'Weitere ${widget.shoppingList.length - _visibleCount} '
+                'Preisvergleiche laden',
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
