@@ -526,7 +526,7 @@ void main() {
             ProspectIssue(
               storeName: 'EDEKA',
               title: 'EDEKA Wochenangebote',
-              pages: const [],
+              pages: [],
               url: 'https://example.test/edeka-prospekt',
               location: 'Zellingen',
               sourceStatus: 'ok',
