@@ -532,7 +532,7 @@ class _AppShellState extends State<AppShell> {
   List<ReplenishmentSuggestion> get replenishmentSuggestions =>
       buildReplenishmentSuggestions(
         history: purchaseHistory,
-        catalogProducts: catalog,
+        catalogProducts: catalogProducts,
         currentListProductIds: shoppingList
             .map((item) => item.product.id)
             .toSet(),
@@ -686,14 +686,17 @@ class _AppShellState extends State<AppShell> {
     final selected = await showShoppingCandidateSelector(
       context: context,
       request: item.product.name,
-      catalogProducts: catalog,
+      catalogProducts: catalogProducts,
       offers: offers,
       marketPrices: [...activeMarketPrices, ...historicalMarketPrices],
       receiptPriceStats: buildReceiptPriceStats(
         receiptObservations,
         maxAgeDays: 60,
       ),
-      prospectPriceHistory: prospectHistory,
+      prospectPriceHistory: prospectPriceHistorySummaries(
+        historicalPriceObservations,
+        enabledStores: mobility.enabledStoreNames,
+      ),
       enabledStores: mobility.enabledStoreNames,
       openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
     );
@@ -815,7 +818,7 @@ class _AppShellState extends State<AppShell> {
     items: shoppingList,
     offers: offers,
     mobility: mobility,
-    marketPrices: plannedPrices,
+    marketPrices: planningMarketPrices,
     openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
     roadDistances: roadDistances,
     roadMatrix: roadMatrix,
@@ -1213,14 +1216,17 @@ class _AppShellState extends State<AppShell> {
       final selected = await showShoppingCandidateSelector(
         context: context,
         request: gap.item.product.name,
-        catalogProducts: catalog,
+        catalogProducts: catalogProducts,
         offers: offers,
         marketPrices: [...activeMarketPrices, ...historicalMarketPrices],
         receiptPriceStats: buildReceiptPriceStats(
           receiptObservations,
           maxAgeDays: 60,
         ),
-        prospectPriceHistory: prospectHistory,
+        prospectPriceHistory: prospectPriceHistorySummaries(
+          historicalPriceObservations,
+          enabledStores: mobility.enabledStoreNames,
+        ),
         enabledStores: mobility.enabledStoreNames,
         openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
       );
@@ -1379,7 +1385,7 @@ class _AppShellState extends State<AppShell> {
             timeValuePerHour: mobility.timeValuePerHour,
             travelMinutesPerKm: 60 / mobility.mode.averageSpeedKmh,
             enabledStoreNames: mobility.enabledStoreNames,
-            marketPrices: plannedPrices,
+            marketPrices: planningMarketPrices,
             openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
             roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
           ).bestPlan();
@@ -1621,7 +1627,7 @@ class _AppShellState extends State<AppShell> {
                 items: shoppingList,
                 offers: offers,
                 mobility: mobility,
-                marketPrices: plannedPrices,
+                marketPrices: planningMarketPrices,
                 openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
                 recentPurchases: recentPurchases,
                 historicalPriceObservations: historicalPriceObservations,
@@ -1706,10 +1712,9 @@ class _AppShellState extends State<AppShell> {
       replenishmentSuggestions: replenishment,
       onRoadDistancesChanged: (value) => setState(() => roadDistances = value),
       onRoadMatrixChanged: (value) => setState(() => roadMatrix = value),
-      currentPlan: currentOptimizer?.bestPlan(),
-      baselineTotal: regularOptimizer?.bestSingleStorePlan()?.total ?? 0,
-      baselineHasDataGaps:
-          regularOptimizer?.bestSingleStorePlan()?.hasDataGaps ?? false,
+      currentPlan: currentPlan,
+      baselineTotal: regularPlan?.total ?? 0,
+      baselineHasDataGaps: regularPlan?.hasDataGaps ?? false,
       purchaseHistory: purchaseHistory,
       onCompletePurchase: completePurchase,
       onUpdatePurchase: updatePurchase,
