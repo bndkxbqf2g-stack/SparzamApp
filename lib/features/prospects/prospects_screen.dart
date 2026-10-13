@@ -722,10 +722,11 @@ ProspectIssue _visibleIssue(
       currentRegionalRecordCount == currentRecordCount &&
       selected.sourceStatus != 'error') {
     sourceStatus = 'regional_only';
-  } else if (current == null &&
-      currentRecordCount == 0 &&
+  } else if (currentRecordCount == 0 &&
       selected.sourceStatus != 'error' &&
       selected.sourceStatus != 'regional_only') {
+    // A current metadata-only prospect is still a valid source card, but
+    // it has no structured items to display as current offers.
     sourceStatus = 'no_current_offers';
   } else if (selected.sourceStatus == 'error' && currentRecordCount > 0) {
     sourceStatus = 'current_fallback';
