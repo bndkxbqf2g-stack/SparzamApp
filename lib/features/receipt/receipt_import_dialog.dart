@@ -175,7 +175,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                   ReceiptConfidenceBadge(level: level, compact: true),
                   const SizedBox(width: 2),
                   Text(
-                    '×' + (counts[level] ?? 0).toString(),
+                    '×${counts[level] ?? 0}',
                     style: const TextStyle(fontSize: 11),
                   ),
                 ],
