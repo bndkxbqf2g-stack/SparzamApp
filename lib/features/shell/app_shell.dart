@@ -848,7 +848,10 @@ class _AppShellState extends State<AppShell> {
     offerStore: widget.offerStore,
   );
 
-  DashboardData dashboardData([ShellRouting? routeSnapshot]) => buildShellDashboard(
+  DashboardData dashboardData([
+    ShellRouting? routeSnapshot,
+    List<ReplenishmentSuggestion>? replenishmentSnapshot,
+  ]) => buildShellDashboard(
     shoppingList: shoppingList,
     offers: offers,
     mobility: mobility,
@@ -857,7 +860,7 @@ class _AppShellState extends State<AppShell> {
     routing: routeSnapshot ?? routing,
     budget: budget,
     purchaseHistory: purchaseHistory,
-    replenishment: replenishmentSuggestions,
+    replenishment: replenishmentSnapshot ?? replenishmentSuggestions,
   );
 
   Future<void> completePurchase() async {
@@ -1673,7 +1676,8 @@ class _AppShellState extends State<AppShell> {
       historicalPriceObservations,
       enabledStores: mobility.enabledStoreNames,
     );
-    final pages = buildShellPages(      dashboard: dashboardData(routeSnapshot),
+    final pages = buildShellPages(
+      dashboard: dashboardData(routeSnapshot, replenishment),
       onOpenList: () => setState(() => selectedIndex = 1),
       onOpenRoute: openRoute,
       onOpenOffers: () => setState(() => selectedIndex = 2),
