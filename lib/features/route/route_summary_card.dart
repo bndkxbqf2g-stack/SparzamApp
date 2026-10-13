@@ -7,10 +7,12 @@ class RouteSummaryCard extends StatelessWidget {
     super.key,
     required this.best,
     required this.extraSavings,
+    this.offerSavings = 0,
   });
 
   final RoutePlan best;
   final double extraSavings;
+  final double offerSavings;
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +82,17 @@ class RouteSummaryCard extends StatelessWidget {
               'Effektiver Warenkorb ${best.basket.toStringAsFixed(2)} € · '
               'Fahrt ${best.travel.toStringAsFixed(2)} €',
             ),
+            if (offerSavings > 0) ...[
+              const SizedBox(height: 4),
+              Text(
+                '${complete ? 'Angebotsersparnis im Warenkorb' : 'Belegte Angebotsersparnis'}: '
+                '${offerSavings.toStringAsFixed(2)} €',
+                style: TextStyle(
+                  color: Colors.green.shade700,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
             if (best.travelMinutes > 0) ...[
               const SizedBox(height: 4),
               Text('Geschätzte Wegezeit ${_formatMinutes(best.travelMinutes)}'),
