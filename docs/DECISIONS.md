@@ -1338,3 +1338,15 @@ Belegen ausgeführt.
 Bon-, manuelle, Bild- und sonstige nutzernahe Preisbelege bleiben geschützt.
 Ein Speicherfehler darf weder den validierten Live-Prospektfeed noch dessen
 Cache-/Asset-Fallback als Händlerfehler erscheinen lassen.
+## D173 – Besuchte Hauptreiter bleiben montiert
+
+`AppShell` verwaltet die sechs Hauptreiter in einem `IndexedStack`. Beim ersten
+Start wird nur der aktive Einkaufslisten-Reiter aufgebaut; weitere Reiter werden
+erst beim ersten Öffnen aktiviert. Danach bleiben ihre Stateful-Controller und
+Scrollpositionen beim Navigieren erhalten.
+
+Das verhindert, dass der Prospekt- oder Preisreiter beim Wechsel in die Liste
+und zurück seine Suche, seinen Scrollstand oder laufende Offline-/Routing-Caches
+verliert. Die fachlichen Daten, Reiterreihenfolge und Persistenz bleiben
+unverändert.
+

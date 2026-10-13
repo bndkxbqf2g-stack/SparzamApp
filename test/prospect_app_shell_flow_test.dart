@@ -329,6 +329,23 @@ void main() {
       await tester.pump();
       expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
 
+      // Switching tabs must keep the prospect search controller and scroll state.
+      await tester.tap(find.text('Liste').last);
+      await tester.pump();
+      await tester.tap(find.text('Prospekte').last);
+      await tester.pump();
+      final retainedSearch = find.byWidgetPredicate(
+        (widget) =>
+            widget is TextField &&
+            widget.decoration?.hintText ==
+                'Prospekte und Artikel durchsuchen',
+      );
+      expect(retainedSearch, findsOneWidget);
+      expect(
+        tester.widget<TextField>(retainedSearch).controller?.text,
+        'Kaffee',
+      );
+
       final addButton = find.byTooltip('Zur Einkaufsliste');
       expect(addButton, findsOneWidget);
       await tester.ensureVisible(addButton);

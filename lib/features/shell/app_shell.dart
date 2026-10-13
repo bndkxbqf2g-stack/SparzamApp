@@ -138,6 +138,8 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   // The primary task is adding items. Open the app on the list, like Bring.
   int selectedIndex = 1;
+  // Keep visited tabs mounted so scrolling state and controllers survive tab switches.
+  final Set<int> _visitedTabs = <int>{1};
   late BudgetPlan budget;
   late MobilitySettings mobility;
   late List<ListItem> shoppingList;
@@ -195,6 +197,14 @@ class _AppShellState extends State<AppShell> {
   SequentialWriteQueue get _offerSaves => _offerPersistence;
   SequentialWriteQueue get _priceSaves => _persistenceSaves;
   bool _purchaseInProgress = false;
+
+  void _selectTab(int index) {
+    if (selectedIndex == index && _visitedTabs.contains(index)) return;
+    setState(() {
+      _visitedTabs.add(index);
+      selectedIndex = index;
+    });
+  }
 
   Product? _catalogProduct(String id) {
     return catalogProductById(id, customProducts);
@@ -1678,9 +1688,9 @@ class _AppShellState extends State<AppShell> {
     );
     final pages = buildShellPages(
       dashboard: dashboardData(routeSnapshot, replenishment),
-      onOpenList: () => setState(() => selectedIndex = 1),
+      onOpenList: () => _selectTab(1),
       onOpenRoute: openRoute,
-      onOpenOffers: () => setState(() => selectedIndex = 2),
+      onOpenOffers: () => _selectTab(2),
       onOpenBudget: openBudget,
       onOpenScanner: openScanner,
       shoppingList: shoppingList,
@@ -1744,10 +1754,20 @@ class _AppShellState extends State<AppShell> {
     );
 
     return Scaffold(
-      body: SafeArea(child: pages[selectedIndex]),
+      body: SafeArea(
+        child: IndexedStack(
+          index: selectedIndex,
+          children: [
+            for (var index = 0; index < pages.length; index++)
+              _visitedTabs.contains(index)
+                  ? pages[index]
+                  : const SizedBox.shrink(),
+          ],
+        ),
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,
-        onDestinationSelected: (index) => setState(() => selectedIndex = index),
+        onDestinationSelected: _selectTab,
         destinations: shellDestinations,
       ),
     );
