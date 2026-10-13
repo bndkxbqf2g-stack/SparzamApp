@@ -151,13 +151,13 @@ class _OfferEditorScreenState extends State<OfferEditorScreen> {
     }
     final selectedPackage = selectedProduct == null
         ? null
-        : selectedProduct!.packageAmount != null &&
-                selectedProduct!.packageUnit != null
+        : selectedProduct.packageAmount != null &&
+                selectedProduct.packageUnit != null
             ? (
-                amount: selectedProduct!.packageAmount!,
-                unit: selectedProduct!.packageUnit!,
+                amount: selectedProduct.packageAmount!,
+                unit: selectedProduct.packageUnit!,
               )
-            : prospectPackage(selectedProduct!.unit);
+            : prospectPackage(selectedProduct.unit);
     final packageAmount = preserveEvidence
         ? previous!.packageAmount ?? selectedPackage?.amount
         : selectedPackage?.amount;
@@ -304,3 +304,4 @@ class _OfferEditorScreenState extends State<OfferEditorScreen> {
   String _date(DateTime date) =>
       '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}';
 }
+
