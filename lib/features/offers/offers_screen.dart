@@ -10,6 +10,8 @@ import 'prospect_offer_products.dart';
 import '../prospects/prospect_category_presentation.dart';
 import '../../services/prospect_feed_service.dart';
 import '../prospects/prospect_feed_status.dart';
+import '../prospects/prospect_cover_section.dart';
+import '../prospects/prospects_screen.dart';
 
 class OffersScreen extends StatefulWidget {
   const OffersScreen({
@@ -65,8 +67,31 @@ class _OffersScreenState extends State<OffersScreen> {
     super.dispose();
   }
 
+  void _openProspect(BuildContext context, ProspectIssue issue) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ProspectViewerScreen(
+          issue: issue,
+          records: currentProspectRecords(
+            widget.prospectRecords,
+            now: widget.now,
+          ),
+          catalogProducts: widget.catalogProducts,
+          onAddProduct: widget.onAddToShoppingList,
+          now: widget.now,
+          onSaveOffer: widget.onSave,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final currentProspectIssues = _currentProspectIssues(
+      widget.prospectIssues,
+      now: widget.now,
+    );
+
     return Scaffold(
       appBar: AppBar(title: const Text('Angebote'), centerTitle: true),
       body: ListView(
@@ -106,6 +131,13 @@ class _OffersScreenState extends State<OffersScreen> {
             refreshing: widget.prospectsRefreshing,
           ),
           const SizedBox(height: 12),
+          if (currentProspectIssues.isNotEmpty) ...[
+            ProspectCoverSection(
+              issues: currentProspectIssues,
+              onOpen: (issue) => _openProspect(context, issue),
+            ),
+            const SizedBox(height: 22),
+          ],
           Text(
             'Aktuelles Prospekt',
             style: Theme.of(context).textTheme.titleLarge,
@@ -129,6 +161,45 @@ class _OffersScreenState extends State<OffersScreen> {
       ),
     );
   }
+}
+
+List<ProspectIssue> _currentProspectIssues(
+  Iterable<ProspectIssue> issues, {
+  DateTime? now,
+}) {
+  final byStore = <String, ProspectIssue>{};
+  for (final issue in issues) {
+    final validFrom = issue.validFrom;
+    final validUntil = issue.validUntil;
+    if (validUntil != null &&
+        !isOfferDateRangeActive(
+          validFrom: validFrom,
+          validUntil: validUntil,
+          now: now,
+        )) {
+      continue;
+    }
+    final previous = byStore[issue.storeName];
+    if (previous == null ||
+        _prospectIssueScore(issue) > _prospectIssueScore(previous)) {
+      byStore[issue.storeName] = issue;
+    }
+  }
+  return byStore.values.toList(growable: false);
+}
+
+int _prospectIssueScore(ProspectIssue issue) {
+  final status = switch (issue.sourceStatus) {
+    'ok' => 4,
+    'metadata_only' => 3,
+    'current_fallback' => 2,
+    'regional_only' => 1,
+    _ => 0,
+  };
+  return status * 100000 +
+      issue.pages.length * 1000 +
+      (issue.thumbnailUrl?.trim().isNotEmpty == true ? 100 : 0) +
+      issue.recordCount;
 }
 
 class _ProspectOffers extends StatefulWidget {
