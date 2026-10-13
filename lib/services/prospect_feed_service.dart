@@ -75,7 +75,7 @@ final _nonFoodProspectLabel = RegExp(
   r'fleece|pyjama|anti-rutsch|platzset|tischläufer|tischlaeufer|kissen|'
   r'spielzeug|bausteine|figuren|laterne|kostüm|kostuem|stabkerzen|'
   r'lichterkette|naturgeräuschebox|naturgeraeuschebox|waffeleisen|'
-  r'möbel|moebel|garten|pflanzen|pflanze|orchidee|herbstheide|chrysanthemen|'
+  r'möbel|moebel|garten|pflanzen(?!öl)|pflanze(?!nöl)|orchidee|herbstheide|chrysanthemen|'
   r'skimmie|elektronik|handy|fernseher|hörgerätebatterien|'
   r'hoergeraetebatterien|batterien|waschmittel|geschirrreiniger|wc-ente|'
   r'shampoo|spülung|spuelung|kosmetik|tierbedarf|katzennahrung|kratzhaus|'
