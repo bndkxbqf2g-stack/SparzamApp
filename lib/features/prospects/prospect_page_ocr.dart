@@ -106,7 +106,7 @@ List<ProspectPageOcrCandidate> parseProspectPageOcrText(String text) {
         .replaceAll(RegExp(r'[|•·*]+$'), '')
         .replaceAll(RegExp(r'\s+'), ' ')
         .trim();
-    if (label.length < 3) continue;
+    if (label.length < 2) continue;
 
     prices.sort();
     final offerPrice = prices.first;
