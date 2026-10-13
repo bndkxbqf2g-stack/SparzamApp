@@ -1,3 +1,8 @@
+## Update 13.10.2026 – Bild-only-Prospektseiten mit lokalem OCR-Review
+- Der Prospektviewer kann eine öffentliche Bildseite lokal auf explizite Preiszeilen prüfen und daraus unverbindliche Produktvorschläge mit hoher, mittlerer oder niedriger Sicherheit erzeugen.
+- Jeder Vorschlag wird im bestehenden Seitenformular vorbefüllt, aber erst nach sichtbarer Nutzerprüfung als manuelles Angebot gespeichert; OCR bestätigt weder Produktidentität noch Preis automatisch.
+- Web/macOS/Linux bleiben bei fehlender lokaler OCR-Unterstützung im verständlichen manuellen Pfad; Roh-OCR-Texte werden nicht gespeichert.
+
 ## Update 13.10.2026 – Prospekt-Feednormalisierung pro Ansicht memoisiert
 - Die Prospektübersicht cached aktuelle Datensätze, Kategorien, Filialkarten und Gültigkeitsauswahl, solange sich der Feed-Snapshot nicht ändert.
 - Suche, Filter und Favoritenwechsel berechnen dadurch nur noch ihre tatsächlich veränderte Ansicht; Quellen-, Filial- und Gültigkeitsregeln bleiben unverändert.
