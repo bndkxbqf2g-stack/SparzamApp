@@ -1,5 +1,20 @@
 # SparzamApp
 
+## Update 13.10.2026 – Prospektangebote behalten Packungs- und Grundpreisbasis
+- Der öffentliche Prospekt-Refresh leitet aus einer ausdrücklich im Händlerlabel
+  enthaltenen Packungsangabe jetzt `packageSize` und den normalisierten
+  `priceByBaseUnit` ab. Einzel-, Mehrfach- und Zählpackungen werden dabei auf
+  die Gesamtmenge der Packung bezogen.
+- Variable Angaben wie `160 g – 175 g` oder `114/110/105 g` bleiben ohne
+  Packungs- und Grundpreisbehauptung. Dadurch wird keine beliebige Variante als
+  Vergleichsbasis gewählt.
+- Die Metadaten laufen unverändert durch Feedparser, Angebotsdetail,
+  Preisbeobachtung und Routenvergleich; bestehende Quellenwerte werden nicht
+  überschrieben.
+- `tool/tests/test_refresh_prospects.py` deckt Einzelpackung, Mehrfachpackung
+  und beide unsicheren Bereichsformen ab. Der versionierte Feed enthält aktuell
+  677 gültige Angebote, davon 283 mit sicherer Packungs- und Grundpreisbasis.
+
 ## Update 13.10.2026 – KaufDA-Umgebungsgrenze kann Abrufe hart stoppen
 - `SPARZAM_KAUFDA_MAX_QUERIES=0` wird jetzt als absichtliche Nullgrenze
   übernommen und nicht mehr auf den Standardwert zurückgesetzt.
@@ -2960,4 +2975,5 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - PR #143 (`f7d3fc2`) ergänzt die Regression für frische und nicht aktualisierte
   Märkte. Die PR-CI bestand mit 558 Tests; Main-CI und Release-Artefakte sind
   nach dem Merge einschließlich Pages-Deployment und Android-APK grün.
+
 
