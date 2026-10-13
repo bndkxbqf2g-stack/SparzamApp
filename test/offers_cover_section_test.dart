@@ -9,6 +9,8 @@ void main() {
   testWidgets('zeigt Coverkarten im Angebote-Reiter und öffnet die Seitenansicht', (
     tester,
   ) async {
+    await tester.binding.setSurfaceSize(const Size(800, 1000));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
     final issue = ProspectIssue(
       storeName: 'Lidl',
       title: 'Aktionsprospekt',
