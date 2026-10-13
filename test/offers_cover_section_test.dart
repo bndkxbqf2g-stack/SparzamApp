@@ -40,11 +40,11 @@ void main() {
     expect(find.text('Deine Favoriten'), findsOneWidget);
     expect(find.text('Weitere Prospekte'), findsOneWidget);
     expect(
-      find.byKey(const ValueKey('offer-cover-open-Lidl')),
+      find.byKey(const ValueKey('offer-cover-open-favorite-Lidl')),
       findsOneWidget,
     );
 
-    await tester.tap(find.byKey(const ValueKey('offer-cover-open-Lidl')));
+    await tester.tap(find.byKey(const ValueKey('offer-cover-open-favorite-Lidl')));
     await tester.pump();
 
     expect(find.text('Prospektseiten (1)'), findsOneWidget);
