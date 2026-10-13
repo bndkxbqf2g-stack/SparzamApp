@@ -138,4 +138,52 @@ void main() {
     expect(find.text('2 Positionen ohne aktuellen Preis'), findsOneWidget);
     expect(find.text('2 unbekannt'), findsOneWidget);
   });
+
+  testWidgets('lädt große Marktvergleiche schrittweise', (tester) async {
+    final items = List<ListItem>.generate(
+      13,
+      (index) => ListItem(
+        product: Product(
+          id: 'price-hub-progress-$index',
+          name: 'Produkt $index',
+          unit: '1 Stück',
+          group: 'Test',
+        ),
+      ),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PricesHubScreen(
+            onOpenCatalog: () {},
+            onOpenSettings: () {},
+            summary: 'Testpreise',
+            shoppingList: items,
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      find.byKey(const ValueKey('price-comparison-price-hub-progress-0')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('price-comparison-price-hub-progress-12')),
+      findsNothing,
+    );
+
+    final loadMore = find.byKey(
+      const ValueKey('price-comparisons-load-more'),
+    );
+    expect(loadMore, findsOneWidget);
+    tester.widget<OutlinedButton>(loadMore).onPressed!.call();
+    await tester.pump();
+
+    expect(
+      find.byKey(const ValueKey('price-comparison-price-hub-progress-12')),
+      findsOneWidget,
+    );
+  });
 }

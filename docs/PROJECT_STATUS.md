@@ -3158,3 +3158,10 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   nach dem Merge einschließlich Pages-Deployment und Android-APK grün.
 
 
+
+
+## Update 13.10.2026 – Marktvergleich im Preise-Reiter schrittweise laden
+- [x] Große Einkaufslisten bauen zunächst nur zwölf Preisvergleichskarten; weitere Positionen werden bewusst über „Weitere Preisvergleiche laden“ nachgeladen.
+- [x] Aktuelle Preisabdeckung, historische Hinweise und unbekannte Preise bleiben vollständig berechnet und unverändert sichtbar.
+- [x] Der Preis-Reiter verwendet keinen zusätzlichen Cache-Vorrat für Offscreen-Karten; dadurch bleiben Scrollen und Expansion bei langen Listen reaktionsfähig.
+- [x] Widgetregression prüft das Nachladen der dreizehnten Position.

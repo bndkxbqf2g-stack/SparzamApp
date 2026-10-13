@@ -426,3 +426,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   ersetzt.
 - [x] Ungültige URI-Schemes oder URLs ohne Host werden nicht als belastbarer
   Originalnachweis gezählt.
+
+
+## Update 13.10.2026 – Preisvergleich für lange Listen
+- [x] Preisvergleichskarten im Preise-Reiter werden in kleinen Seiten aufgebaut, damit lange Einkaufslisten nicht beim ersten Öffnen alle Detailkarten rendern.
+- [x] Die bestehende Preisabdeckung bleibt vollständig; nur die sichtbare Vergleichsliste wird schrittweise erweitert.
+- [x] Der Nachladepfad ist widgetgetestet und ändert keine Preis-, Angebots- oder Routenlogik.
