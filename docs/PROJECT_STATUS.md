@@ -1,3 +1,8 @@
+## Update 13.10.2026 – Mehrere OCR-Vorschläge im Prospektviewer
+- Erkennt die lokale Seitenprüfung mehrere plausible Preiszeilen, zeigt der Viewer eine Auswahl mit Preis- und Sicherheitsstufe.
+- Erst die ausdrücklich gewählte Zeile wird in das bestehende Angebotsformular übernommen; Abbrechen verwirft den OCR-Vorschlag ohne Speicherung.
+- Produktidentität, Gültigkeit und Routenfähigkeit bleiben hinter dem bestehenden manuellen Review.
+
 ## Update 13.10.2026 – Bild-only-Prospektseiten mit lokalem OCR-Review
 - Der Prospektviewer kann eine öffentliche Bildseite lokal auf explizite Preiszeilen prüfen und daraus unverbindliche Produktvorschläge mit hoher, mittlerer oder niedriger Sicherheit erzeugen.
 - Jeder Vorschlag wird im bestehenden Seitenformular vorbefüllt, aber erst nach sichtbarer Nutzerprüfung als manuelles Angebot gespeichert; OCR bestätigt weder Produktidentität noch Preis automatisch.
