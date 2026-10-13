@@ -12,7 +12,7 @@ class RouteCostBreakdownCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final money = (double value) =>
+    String money(double value) =>
         '${value.toStringAsFixed(2).replaceAll('.', ',')} €';
     return Card(
       child: Padding(
