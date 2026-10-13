@@ -23,6 +23,7 @@ class OfferDetailsScreen extends StatelessWidget {
     required this.marketPrices,
     this.openPricesMaxAgeDays = 60,
     this.onResolvePriceGap,
+    this.onAddToShoppingList,
   });
 
   final Offer offer;
@@ -34,6 +35,7 @@ class OfferDetailsScreen extends StatelessWidget {
   final List<MarketPrice> marketPrices;
   final int openPricesMaxAgeDays;
   final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
+  final ValueChanged<Product>? onAddToShoppingList;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +50,7 @@ class OfferDetailsScreen extends StatelessWidget {
             offer: offer,
             priceHistory: priceHistory,
             catalogProducts: catalogProducts,
+            onAddToShoppingList: onAddToShoppingList,
           ),
           if (store != null) ...[
             const SizedBox(height: 16),
