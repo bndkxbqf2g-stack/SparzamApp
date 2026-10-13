@@ -580,6 +580,44 @@ void main() {
     expect(find.text('Seite 1'), findsOneWidget);
   });
 
+  testWidgets('keeps prospect page previews bounded for smooth scrolling', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: [
+                ProspectPage(
+                  number: 7,
+                  imageUrl: 'https://example.test/lidl-page-7.png',
+                ),
+              ],
+              validFrom: DateTime(2026, 10, 12),
+              validUntil: DateTime(2026, 10, 17),
+            ),
+          ],
+          now: DateTime(2026, 10, 13),
+        ),
+      ),
+    );
+
+    await _scrollProspects(tester);
+    await tester.tap(find.text('Lidl').last);
+    await tester.pumpAndSettle();
+
+    final preview = tester.widget<Image>(
+      find.byKey(const ValueKey('prospect-page-image-7')),
+    );
+    expect(preview.cacheWidth, 720);
+    expect(preview.cacheHeight, 480);
+    expect(preview.webHtmlElementStrategy, WebHtmlElementStrategy.never);
+  });
+
   testWidgets('adds a manually reviewed article from a prospect page', (
     tester,
   ) async {
