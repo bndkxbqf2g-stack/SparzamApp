@@ -1535,6 +1535,11 @@ class ProspectViewerScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(issue.storeName)),
       body: CustomScrollView(
+        key: const ValueKey('prospect-viewer-scroll'),
+        // Do not prebuild network-heavy page cards beyond the viewport. The
+        // overview and viewer can contain dozens of retailer pages, and a
+        // zero scroll cache keeps image decoding bounded during fast swipes.
+        scrollCacheExtent: const ScrollCacheExtent.pixels(0),
         slivers: [
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
