@@ -80,6 +80,8 @@ RoutePriceEvidenceSummary summarizeRoutePriceEvidence(
           receipts++;
         case MarketPriceSource.manual:
           ownPrices++;
+        case MarketPriceSource.prospect:
+          prospectPrices++;
         case MarketPriceSource.openPrices:
           openPrices++;
       }
