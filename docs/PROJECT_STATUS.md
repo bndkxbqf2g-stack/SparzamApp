@@ -1,5 +1,14 @@
 # SparzamApp
 
+## Update 13.10.2026 – Prospektseiten trotz CDN-CORS sichtbar
+- Verifizierte Prospektseiten verwenden im Viewer weiterhin die begrenzte
+  Vorschaugröße 720×480, dürfen bei fehlenden Canvas-CORS-Headern aber auf den
+  Browser-Fallback wechseln.
+- Dadurch bleiben Coverkarten und die eigentlichen Prospektseiten sichtbar;
+  ein leerer Bildhalter wird nicht mehr als erfolgreiche Seitenanzeige gezeigt.
+- Der vorhandene Seiten-/Scrolltest bleibt aktiv; der Web-Sichttest deckt das
+  Nachladen von Cover und Seite gegen den veröffentlichten Prospektstand ab.
+
 ## Update 13.10.2026 – CDN-Cover bleiben in Karten sichtbar
 - Prospektkarten verwenden für genau ein Cover je Markt den begrenzten
   Browser-Fallback, wenn ein Händler-CDN keine Canvas-CORS-Freigabe liefert.
