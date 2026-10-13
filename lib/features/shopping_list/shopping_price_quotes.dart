@@ -79,6 +79,28 @@ class ShoppingQuote {
     return 'Vergleichbarkeit: Mengenbasis nicht dokumentiert';
   }
 
+  /// Gives the visible quote an explicit observation age without implying
+  /// that a historical value is still a valid route price.
+  String freshnessLabel({DateTime? now}) {
+    if (isHistorical) return 'Preisalter: historisch';
+    final observed = observedAt?.toLocal();
+    if (observed == null) return 'Preisalter: unbekannt';
+    final reference = now ?? DateTime.now();
+    final observedDay = DateTime(observed.year, observed.month, observed.day);
+    final referenceDay = DateTime(
+      reference.year,
+      reference.month,
+      reference.day,
+    );
+    if (observedDay.isAfter(referenceDay)) {
+      return 'Preisalter: Zeitpunkt in Zukunft';
+    }
+    final ageDays = referenceDay.difference(observedDay).inDays;
+    if (ageDays == 0) return 'Preisalter: heute';
+    if (ageDays == 1) return 'Preisalter: vor 1 Tag';
+    return 'Preisalter: vor $ageDays Tagen';
+  }
+
   String get sourceLabel => switch (kind) {
     ShoppingQuoteKind.receipt =>
       '${isHistorical ? 'Historischer ' : ''}Bonpreis vom ${_date(observedAt!)}',
@@ -245,6 +267,7 @@ List<ShoppingQuote> shoppingQuotes(
         storeName: offer.storeName,
         unitPrice: effective.finalPrice,
         kind: ShoppingQuoteKind.offer,
+        observedAt: offer.capturedAt,
         offer: offer,
         quantity: offer.packageAmount,
         unit: offer.packageUnit,
