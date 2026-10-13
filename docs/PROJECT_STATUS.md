@@ -1,3 +1,12 @@
+## Update 13.10.2026 – Preis-Reiter zeigt den vollständigen Marktvergleich
+- Der Preise-Reiter enthält jetzt pro Einkaufslistenposition eine aufklappbare
+  Markt-Matrix für alle aktivierten Filialen.
+- Aktuelle Preise, historische Hinweise und unbekannte Märkte werden je
+  Händler getrennt dargestellt; fehlende Belege bleiben unbekannt und werden
+  nicht als 0 € gerechnet.
+- Packungsbasis, Grundpreis, Quelle und Preisalter bleiben in derselben
+  Anzeige nachvollziehbar. Eine Widget-Regression schützt den Öffnen-/Scrollpfad.
+
 ## Update 13.10.2026 – Abgelaufene Prospektcover bleiben aus der aktuellen Anzeige
 - Die sichtbare Prospektkarte übernimmt Seiten und Cover jetzt ausschließlich aus
   einem aktuell gültigen Zeitraum.
