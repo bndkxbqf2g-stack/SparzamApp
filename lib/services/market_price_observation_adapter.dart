@@ -71,6 +71,7 @@ List<MarketPrice> marketPricesFromObservations(
                 !_day(entry.validUntil!).isBefore(currentDay)) &&
             _sourceAllowed(entry, settings, today) &&
             _matchesProductPackage(entry, productsById[entry.productId]) &&
+            _hasProspectValidity(entry) &&
             _projectsToLegacyMarketPrice(entry.source) &&
             !_isProspectOffer(entry),
       )
@@ -157,6 +158,20 @@ bool _projectsToLegacyMarketPrice(PriceObservationSource source) =>
       PriceObservationSource.leaflet => true,
       _ => false,
     };
+
+bool _hasProspectValidity(PriceObservation observation) {
+  if (observation.kind != PriceObservationKind.regular) return true;
+  final isProspect = switch (observation.source) {
+    PriceObservationSource.retailer ||
+    PriceObservationSource.retailerWebsite ||
+    PriceObservationSource.leaflet => true,
+    _ => false,
+  };
+  // A regular prospect amount is only current evidence when the source
+  // supplies an explicit end date. Legacy records without a validity window
+  // remain historical evidence and cannot enter route planning.
+  return !isProspect || observation.validUntil != null;
+}
 
 bool _isProspectOffer(PriceObservation observation) =>
     observation.kind == PriceObservationKind.offer &&
