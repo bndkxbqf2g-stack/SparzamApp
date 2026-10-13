@@ -1153,6 +1153,9 @@ String? _prospectValidityLabel(ProspectIssue issue) {
   return '${_prospectDate(from)} – ${_prospectDate(until)}';
 }
 
+String _ocrCandidatePrice(double value) =>
+    '${value.toStringAsFixed(2).replaceAll('.', ',')} €';
+
 const _bringBackground = Color(0xFF283A44);
 const _bringSurface = Color(0xFF344953);
 const _bringAccent = Color(0xFF9DE5D8);
