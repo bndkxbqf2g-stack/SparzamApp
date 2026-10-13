@@ -61,6 +61,46 @@ class RouteSummaryCard extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 8),
+            Semantics(
+              label: complete
+                  ? 'Empfohlene Route'
+                  : 'Vorläufige Empfehlung',
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: complete
+                        ? Colors.green.shade50
+                        : Colors.amber.shade50,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: complete
+                          ? Colors.green.shade200
+                          : Colors.amber.shade300,
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
+                    child: Text(
+                      complete
+                          ? 'Empfohlene Route'
+                          : 'Vorläufige Empfehlung',
+                      style: TextStyle(
+                        color: complete
+                            ? Colors.green.shade800
+                            : Colors.amber.shade900,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(height: 16),
             Text(
               best.stores

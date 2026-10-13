@@ -1,5 +1,11 @@
 # SparzamApp
 
+## Update 13.10.2026 – Empfohlene Route auf kleinen Ansichten
+- Die Routen-Zusammenfassung zeigt ein sichtbares Kennzeichen „Empfohlene Route“.
+- Bei fehlenden Preisbelegen wird stattdessen „Vorläufige Empfehlung“ angezeigt; dadurch bleibt die Teilroute klar von einem vollständigen Einkaufsplan getrennt.
+- Ein Widgettest deckt beide Zustände ab.
+
+
 ## Update 13.10.2026 – Vergleichbarkeit in der Preis-Matrix
 - Jede sichtbare Preiszeile kennzeichnet jetzt, ob eine explizite Packungsbasis vorliegt oder die Mengenbasis der Quelle nicht dokumentiert ist.
 - Die Kennzeichnung ergänzt Quelle, Beobachtungs-/Gültigkeitsstand, Packungsgröße, Grundpreis und Ersparnis; sie ändert keine Preiswahl und erzeugt keinen fehlenden Preis.
