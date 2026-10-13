@@ -165,6 +165,60 @@ void main() {
     expect(prices, isEmpty);
   });
 
+  test('same-day duplicate observations use the highest Open Prices ID',
+      () async {
+    final source = OpenPricesSource(
+      client: MockClient((_) async => http.Response(
+        jsonEncode({
+          'items': [
+            {
+              'id': 11,
+              'product_code': product.ean,
+              'price': 2.50,
+              'currency': 'EUR',
+              'price_is_discounted': false,
+              'price_per': 'UNIT',
+              'date': '2026-09-20',
+              'location': {
+                'id': 42,
+                'osm_brand': 'Lidl',
+                'osm_name': 'Lidl',
+                'osm_address_city': 'Zellingen',
+              },
+            },
+            {
+              'id': 12,
+              'product_code': product.ean,
+              'price': 1.90,
+              'currency': 'EUR',
+              'price_is_discounted': false,
+              'price_per': 'UNIT',
+              'date': '2026-09-20',
+              'location': {
+                'id': 42,
+                'osm_brand': 'Lidl',
+                'osm_name': 'Lidl',
+                'osm_address_city': 'Zellingen',
+              },
+            },
+          ],
+        }),
+        200,
+      )),
+    );
+
+    final prices = await source.fetchRecentPrices(
+      product: product,
+      stores: const [store],
+      now: DateTime(2026, 9, 22),
+    );
+    source.close();
+
+    expect(prices, hasLength(1));
+    expect(prices.single.externalId, 12);
+    expect(prices.single.price, 1.90);
+  });
+
   test('cache is used on provider failure and stale result stays non-routeable',
       () async {
     final cache = MemoryOpenPricesCache();
