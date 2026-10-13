@@ -642,6 +642,11 @@ void main() {
     await tester.tap(find.text('Lidl').last);
     await tester.pumpAndSettle();
 
+    final viewer = tester.widget<CustomScrollView>(
+      find.byKey(const ValueKey('prospect-viewer-scroll')),
+    );
+    expect(viewer.scrollCacheExtent, isNotNull);
+
     final preview = tester.widget<Image>(
       find.byKey(const ValueKey('prospect-page-image-7')),
     );
