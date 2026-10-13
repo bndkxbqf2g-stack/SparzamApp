@@ -55,6 +55,15 @@ class RouteOptimizer {
   final Set<String> enabledStoreNames;
   final int openPricesMaxAgeDays;
 
+  // RouteScreen reads the same deterministic result for its summary,
+  // recommendation and comparison cards. Keep it for this immutable input
+  // snapshot instead of rebuilding every store combination on each read.
+  List<RoutePlan>? _alternativesCache;
+  RoutePlan? _bestPlanCache;
+  var _bestPlanComputed = false;
+  RoutePlan? _bestSingleStorePlanCache;
+  var _bestSingleStorePlanComputed = false;
+
   bool isStoreEnabled(Store store) =>
       enabledStoreNames.isEmpty || enabledStoreNames.contains(store.name);
 
@@ -185,62 +194,75 @@ class RouteOptimizer {
   }
 
   List<RoutePlan> alternatives() {
-    return storeCombinations()
+    final cached = _alternativesCache;
+    if (cached != null) return cached;
+
+    final computed = storeCombinations()
         .map(buildPlan)
         .where((plan) => plan.pricedItemCount > 0)
         .toList()
       ..sort(_comparePlans);
+    final stable = List<RoutePlan>.unmodifiable(computed);
+    _alternativesCache = stable;
+    return stable;
   }
 
   RoutePlan? bestPlan() {
+    if (_bestPlanComputed) return _bestPlanCache;
+
     final plans = alternatives();
-    if (items.isEmpty || plans.isEmpty) return null;
+    RoutePlan? recommended;
+    if (items.isNotEmpty && plans.isNotEmpty) {
+      final bestByCount = <int, RoutePlan>{};
+      for (final plan in plans) {
+        bestByCount.putIfAbsent(plan.stores.length, () => plan);
+      }
 
-    final bestByCount = <int, RoutePlan>{};
-    for (final plan in plans) {
-      bestByCount.putIfAbsent(plan.stores.length, () => plan);
+      var current =
+          bestByCount[1] ??
+          bestByCount.values.reduce(
+            (a, b) => a.stores.length <= b.stores.length ? a : b,
+          );
+
+      for (
+        var count = current.stores.length + 1;
+        count <= maxStores;
+        count++
+      ) {
+        final candidate = bestByCount[count];
+        if (candidate == null) continue;
+        // A route that prices more of the requested basket is always preferred.
+        // Savings thresholds only decide between routes with equal coverage.
+        if (candidate.priceCoverage > current.priceCoverage) {
+          current = candidate;
+          continue;
+        }
+        if (candidate.priceCoverage < current.priceCoverage) continue;
+
+        final addedStores = candidate.stores.length - current.stores.length;
+        final requiredSavings = minExtraStoreSavings * addedStores;
+        if (current.planningScore - candidate.planningScore >
+            requiredSavings) {
+          current = candidate;
+        }
+      }
+      recommended = current;
     }
 
-    var recommended =
-        bestByCount[1] ??
-        bestByCount.values.reduce(
-          (a, b) => a.stores.length <= b.stores.length ? a : b,
-        );
-
-    for (
-      var count = recommended.stores.length + 1;
-      count <= maxStores;
-      count++
-    ) {
-      final candidate = bestByCount[count];
-      if (candidate == null) continue;
-      // A route that prices more of the requested basket is always preferred.
-      // Savings thresholds only decide between routes with equal coverage.
-      if (candidate.priceCoverage > recommended.priceCoverage) {
-        recommended = candidate;
-        continue;
-      }
-      if (candidate.priceCoverage < recommended.priceCoverage) continue;
-
-      final addedStores = candidate.stores.length - recommended.stores.length;
-      final requiredSavings = minExtraStoreSavings * addedStores;
-      if (recommended.planningScore - candidate.planningScore >
-          requiredSavings) {
-        recommended = candidate;
-      }
-    }
-
+    _bestPlanCache = recommended;
+    _bestPlanComputed = true;
     return recommended;
   }
 
   RoutePlan? bestSingleStorePlan() {
-    final plans =
-        availableStores
-            .map((store) => buildPlan([store]))
-            .where((plan) => plan.pricedItemCount > 0)
-            .toList()
-          ..sort(_comparePlans);
-    return plans.isEmpty ? null : plans.first;
+    if (_bestSingleStorePlanComputed) return _bestSingleStorePlanCache;
+
+    final plans = alternatives()
+        .where((plan) => plan.stores.length == 1)
+        .toList(growable: false);
+    _bestSingleStorePlanCache = plans.isEmpty ? null : plans.first;
+    _bestSingleStorePlanComputed = true;
+    return _bestSingleStorePlanCache;
   }
 
   /// Keeps equal coverage/cost choices reproducible across all callers.

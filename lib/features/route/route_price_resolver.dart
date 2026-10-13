@@ -62,7 +62,21 @@ class RoutePriceResolver {
   final Map<String, MarketPrice> marketPrices;
   final List<MarketPrice> _marketPriceCandidates;
 
+  // The optimizer evaluates each market/product/quantity combination more
+  // than once while building alternatives. Quotes are immutable for one
+  // resolver instance, including null results for missing evidence.
+  final Map<String, RoutePriceQuote?> _quoteCache =
+      <String, RoutePriceQuote?>{};
+
   RoutePriceQuote? quote(Store store, ListItem item) {
+    final key = _quoteCacheKey(store, item);
+    if (_quoteCache.containsKey(key)) return _quoteCache[key];
+    final result = _resolveQuote(store, item);
+    _quoteCache[key] = result;
+    return result;
+  }
+
+  RoutePriceQuote? _resolveQuote(Store store, ListItem item) {
     if (isGenericShoppingIntent(item.product)) return null;
     final offer = _bestOffer(store, item.product, item.quantity);
     final customPrice = _bestMarketPrice(store, item.product);
@@ -200,6 +214,16 @@ class RoutePriceResolver {
     return best;
   }
 }
+
+String _quoteCacheKey(Store store, ListItem item) => [
+  store.name,
+  canonicalBranchId(store.branchId) ?? '',
+  store.location,
+  store.address,
+  store.prices[item.product.id]?.toString() ?? '',
+  item.product.id,
+  item.quantity.toString(),
+].join('\\u0000');
 
 List<MarketPrice> _usableMarketPriceCandidates(
   Iterable<MarketPrice> prices,

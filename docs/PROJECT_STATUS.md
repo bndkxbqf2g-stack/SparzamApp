@@ -1,3 +1,8 @@
+## Update 13.10.2026 – Routenberechnung ohne wiederholte Arbeit
+- Der Routenoptimierer memoisiert Alternativen, Einzelmarkt- und Empfohlenen-Plan pro unverändertem Eingabesnapshot.
+- Der Preisresolver verwendet eine lokale Quote-Zwischenspeicherung je exakter Filiale, Produktvariante und Menge; unbekannte Preise bleiben dabei weiterhin unbekannt.
+- Damit werden wiederholte UI-Neuberechnungen im Routen- und Preise-Reiter deutlich kürzer, ohne Quellenpriorität, Gültigkeit oder Tie-Breaker zu verändern.
+
 ## Update 13.10.2026 – Preis-Reiter zeigt den vollständigen Marktvergleich
 - Der Preise-Reiter enthält jetzt pro Einkaufslistenposition eine aufklappbare
   Markt-Matrix für alle aktivierten Filialen.
