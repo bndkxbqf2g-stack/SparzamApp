@@ -1085,7 +1085,7 @@ class _AppShellState extends State<AppShell> {
               ? null
               : (processed, total) {
                   if (_isCurrentDataRevision(revision)) {
-                    progressCallback!(processed, total);
+                    progressCallback(processed, total);
                   }
                 },
           shouldCancel: () =>
@@ -1697,3 +1697,4 @@ class _AppShellState extends State<AppShell> {
     );
   }
 }
+
