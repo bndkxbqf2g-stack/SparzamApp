@@ -45,6 +45,11 @@ void main() {
     expect(find.text('Teilroute prüfen'), findsOneWidget);
     expect(find.text('Preisabdeckung prüfen'), findsOneWidget);
     expect(find.textContaining('1 von 2 Artikeln preislich belegt'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Planungsstatus'),
+      260,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Planungsstatus'), findsOneWidget);
     expect(find.text('Lidl'), findsOneWidget);
     expect(find.text('Auto · 4 Min. Fahrtzeit'), findsOneWidget);
@@ -88,6 +93,11 @@ void main() {
       ),
     );
 
+    await tester.scrollUntilVisible(
+      find.text('Planungsstatus'),
+      260,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Diesen Monat gespart'), findsOneWidget);
     expect(find.text('7,40 €'), findsOneWidget);
     expect(find.text('4 bestätigte Einkäufe'), findsOneWidget);
