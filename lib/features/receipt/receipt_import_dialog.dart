@@ -4,10 +4,12 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../models/market_price.dart';
 import '../../models/product.dart';
+import '../../models/receipt_confidence.dart';
 import '../../models/receipt_identity.dart';
 import '../../services/receipt_observation_store.dart';
 import '../../services/receipt_alias_store.dart';
 import 'receipt_auto_product.dart';
+import 'receipt_confidence_badge.dart';
 import 'receipt_file_text_reader.dart';
 import 'receipt_import.dart';
 import 'receipt_import_display.dart';
