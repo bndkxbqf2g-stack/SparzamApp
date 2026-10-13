@@ -66,6 +66,16 @@ class _RouteScreenState extends State<RouteScreen> {
   bool loadingRoadDistances = false;
   int _distanceRequestRevision = 0;
 
+  RouteOptimizer? _optimizerCache;
+  List<ListItem>? _optimizerItems;
+  List<Offer>? _optimizerOffers;
+  List<MarketPrice>? _optimizerMarketPrices;
+  Map<String, double>? _optimizerRoadDistances;
+  RoadRouteMatrix? _optimizerRoadMatrix;
+  MobilitySettings? _optimizerMobility;
+  int _optimizerOpenPricesMaxAgeDays = -1;
+  int _optimizerDayKey = -1;
+
   @override
   void initState() {
     super.initState();
@@ -175,11 +185,37 @@ class _RouteScreenState extends State<RouteScreen> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (widget.items.isEmpty) return const _EmptyRoute();
+  bool _sameListReferences<T>(
+    List<T>? previous,
+    List<T> current,
+  ) {
+    if (previous == null || previous.length != current.length) return false;
+    for (var index = 0; index < current.length; index++) {
+      if (!identical(previous[index], current[index])) return false;
+    }
+    return true;
+  }
 
-    final optimizer = RouteOptimizer(
+  int _dayKey(DateTime value) =>
+      value.year * 10000 + value.month * 100 + value.day;
+
+  RouteOptimizer _optimizerForCurrentInputs() {
+    final today = DateTime.now();
+    final dayKey = _dayKey(today);
+    final cached = _optimizerCache;
+    if (cached != null &&
+        _sameListReferences(_optimizerItems, widget.items) &&
+        _sameListReferences(_optimizerOffers, widget.offers) &&
+        _sameListReferences(_optimizerMarketPrices, widget.marketPrices) &&
+        identical(_optimizerRoadDistances, roadDistances) &&
+        identical(_optimizerRoadMatrix, roadMatrix) &&
+        identical(_optimizerMobility, widget.mobility) &&
+        _optimizerOpenPricesMaxAgeDays == widget.openPricesMaxAgeDays &&
+        _optimizerDayKey == dayKey) {
+      return cached;
+    }
+
+    final next = RouteOptimizer(
       widget.items,
       widget.offers,
       roadDistances: roadDistances,
@@ -193,7 +229,25 @@ class _RouteScreenState extends State<RouteScreen> {
       marketPrices: widget.marketPrices,
       openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
       roadMatrix: widget.mobility.mode == MobilityMode.car ? roadMatrix : null,
+      now: today,
     );
+    _optimizerCache = next;
+    _optimizerItems = widget.items;
+    _optimizerOffers = widget.offers;
+    _optimizerMarketPrices = widget.marketPrices;
+    _optimizerRoadDistances = roadDistances;
+    _optimizerRoadMatrix = roadMatrix;
+    _optimizerMobility = widget.mobility;
+    _optimizerOpenPricesMaxAgeDays = widget.openPricesMaxAgeDays;
+    _optimizerDayKey = dayKey;
+    return next;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.items.isEmpty) return const _EmptyRoute();
+
+    final optimizer = _optimizerForCurrentInputs();
     final best = optimizer.bestPlan();
     final priceGaps = _buildPriceGaps(
       optimizer,
