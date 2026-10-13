@@ -33,18 +33,24 @@ void main() {
       unit: '1 l',
       group: 'milch',
     );
-    final quote = RoutePriceResolver([
-      Offer(
+    // The resolver correctly keeps an unproven external offer out of a
+    // current route. The evidence label still needs to render that state for
+    // a quote that was already selected by an older or manual flow.
+    const quote = RoutePriceQuote(
+      unitPrice: 0.89,
+      total: 0.89,
+      regularTotal: 1.29,
+      offer: Offer(
         id: 'milk-offer',
-        productId: product.id,
-        storeName: store.name,
+        productId: 'milk',
+        storeName: 'Lidl',
         originalPrice: 1.29,
         offerPrice: 0.89,
         validFrom: DateTime(2026, 9, 29),
         validUntil: DateTime(2026, 10, 3),
         source: 'leaflet',
       ),
-    ], now: today).quote(store, ListItem(product: product))!;
+    );
 
     expect(
       routePriceEvidenceLabel(quote, now: today),
@@ -254,3 +260,4 @@ void main() {
     expect(find.textContaining('30.09.2026'), findsOneWidget);
   });
 }
+
