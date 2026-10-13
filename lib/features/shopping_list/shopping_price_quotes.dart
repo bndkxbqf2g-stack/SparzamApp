@@ -133,6 +133,7 @@ class ShoppingQuote {
     ShoppingQuoteKind.receipt =>
       isHistorical ? 'Historischer Bonpreis' : 'Bonpreis',
     ShoppingQuoteKind.ownPrice => 'Eigener Preis',
+    ShoppingQuoteKind.prospect => 'Prospektpreis',
     ShoppingQuoteKind.openPrices => 'Open Prices',
     ShoppingQuoteKind.offer =>
       'Angebot${(offer!.hasCoupon || offer!.hasCashback) ? ', effektiv' : ''}',
