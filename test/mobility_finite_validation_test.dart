@@ -20,7 +20,7 @@ void main() {
     },
   );
 
-  testWidgets('nicht endliche Fahrtkosten können nicht gespeichert werden', (
+  testWidgets('nicht endlicher Kraftstoffverbrauch kann nicht gespeichert werden', (
     tester,
   ) async {
     MobilitySettings? saved;
@@ -47,7 +47,7 @@ void main() {
     await tester.tap(find.text('Öffnen'));
     await tester.pumpAndSettle();
     await tester.enterText(
-      find.widgetWithText(TextFormField, 'Fahrtkosten pro km'),
+      find.widgetWithText(TextFormField, 'Verbrauch'),
       'NaN',
     );
     await tester.scrollUntilVisible(
@@ -60,7 +60,7 @@ void main() {
 
     expect(saved, isNull);
     expect(
-      find.text('Bitte gültigen Wert zwischen 0 und 5 € eingeben'),
+      find.text('Bitte einen Verbrauch zwischen 0 und 30 l eingeben'),
       findsOneWidget,
     );
   });
