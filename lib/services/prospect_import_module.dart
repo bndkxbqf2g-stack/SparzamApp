@@ -27,6 +27,22 @@ class ProspectImportModule {
 
   Future<ProspectFeedLoadResult> execute({String? startAddress}) async {
     final feed = await _feedService.load();
+    return _withResolvedBranches(feed, startAddress: startAddress);
+  }
+
+  /// Loads a validated cache or bundled feed without network access. This is
+  /// intentionally separate from [execute], so callers can render quickly and
+  /// still perform a normal refresh afterwards.
+  Future<ProspectFeedLoadResult?> executeCached({String? startAddress}) async {
+    final feed = await _feedService.loadCached();
+    if (feed == null) return null;
+    return _withResolvedBranches(feed, startAddress: startAddress);
+  }
+
+  ProspectFeedLoadResult _withResolvedBranches(
+    ProspectFeedLoadResult feed, {
+    String? startAddress,
+  }) {
     if (startAddress == null || startAddress.trim().isEmpty) return feed;
 
     final branches = resolveBranches(startAddress);

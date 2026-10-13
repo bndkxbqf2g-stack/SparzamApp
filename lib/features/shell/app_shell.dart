@@ -238,7 +238,7 @@ class _AppShellState extends State<AppShell> {
     _loadNamedShoppingLists();
     _loadReceiptObservations();
     _loadPriceObservations();
-    _loadProspectOffers();
+    _loadProspectOffers(preferCached: true);
   }
 
   List<ListItem> _copyItems(List<ListItem> items) => items
@@ -364,7 +364,7 @@ class _AppShellState extends State<AppShell> {
     });
   }
 
-  Future<void> _loadProspectOffers() async {
+  Future<void> _loadProspectOffers({bool preferCached = false}) async {
     if (_prospectFeedRefreshing) return;
     final revision = _dataRevision;
     _prospectFeedRefreshing = true;
@@ -372,22 +372,34 @@ class _AppShellState extends State<AppShell> {
         widget.prospectImportModule ?? ProspectImportModule();
     final ownsProspectImportModule = widget.prospectImportModule == null;
     if (mounted) setState(() {});
+
     try {
+      // Start the local snapshot and the normal refresh together. A slow
+      // asset/cache read must never delay the first live result.
+      var networkFeedShown = false;
+      if (preferCached) {
+        unawaited(() async {
+          try {
+            final cached = await prospectImportModule.executeCached(
+              startAddress: mobility.startAddress,
+            );
+            if (!networkFeedShown &&
+                _isCurrentDataRevision(revision) &&
+                cached != null) {
+              _showProspectFeed(cached);
+            }
+          } catch (_) {
+            // The normal refresh below remains the source of truth.
+          }
+        }());
+      }
+
       final feed = await prospectImportModule.execute(
         startAddress: mobility.startAddress,
       );
+      networkFeedShown = true;
       if (!_isCurrentDataRevision(revision)) return;
-      if (mounted) {
-        setState(() {
-          // The Angebotsbereich and its import pipeline only need offers from
-          // the currently valid prospect. Historical observations remain in
-          // the price observation store, but must not be loaded as tiles.
-          prospectRecords = currentProspectRecords(feed.records);
-          prospectIssues = feed.prospects;
-          prospectFeedFromCache = feed.fromCache;
-          prospectFeedGeneratedAt = feed.generatedAt;
-        });
-      }
+      _showProspectFeed(feed);
 
       final currentRecords = currentProspectRecords(feed.records);
       final offerBackedProducts = prospectOfferProducts(
@@ -473,6 +485,19 @@ class _AppShellState extends State<AppShell> {
       _prospectFeedRefreshing = false;
       if (mounted) setState(() {});
     }
+  }
+
+  void _showProspectFeed(ProspectFeedLoadResult feed) {
+    if (!mounted) return;
+    setState(() {
+      // The visible offer area only receives currently valid prospect records;
+      // the feed remains the source of truth for provenance and cache status.
+      // Historical observations stay in the price store.
+      prospectRecords = currentProspectRecords(feed.records);
+      prospectIssues = feed.prospects;
+      prospectFeedFromCache = feed.fromCache;
+      prospectFeedGeneratedAt = feed.generatedAt;
+    });
   }
 
   Future<void> _loadReceiptObservations() async {
@@ -1655,7 +1680,7 @@ class _AppShellState extends State<AppShell> {
       prospectIssues: prospectIssues,
       prospectFeedFromCache: prospectFeedFromCache,
       prospectFeedGeneratedAt: prospectFeedGeneratedAt,
-      onRefreshProspects: _loadProspectOffers,
+      onRefreshProspects: () => _loadProspectOffers(preferCached: false),
       prospectsRefreshing: _prospectFeedRefreshing,
       priceHistory: priceHistory,
       mobility: mobility,

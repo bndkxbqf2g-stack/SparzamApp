@@ -1,3 +1,8 @@
+## Update 13.10.2026 – Prospektfeed zeigt lokalen Stand sofort
+- Der Shell-Start lädt einen validierten Cache-/Bundle-Stand ohne Netzwerk vor.
+- Danach läuft der öffentliche Feed wie bisher als normaler Refresh und ersetzt den lokalen Stand nur bei erfolgreicher Prüfung.
+- Manuelles Aktualisieren überspringt den Vorab-Cache; Gültigkeit, Quellenstatus, Filialbezug und Angebotsnachweise bleiben unverändert.
+
 ## Update 13.10.2026 – Routenberechnung ohne wiederholte Arbeit
 - Der Routenoptimierer memoisiert Alternativen, Einzelmarkt- und Empfohlenen-Plan pro unverändertem Eingabesnapshot.
 - Der Preisresolver verwendet eine lokale Quote-Zwischenspeicherung je exakter Filiale, Produktvariante und Menge; unbekannte Preise bleiben dabei weiterhin unbekannt.
