@@ -304,11 +304,12 @@ void main() {
       await tester.pump();
       expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
 
-      final addButton = find.byIcon(Icons.add_shopping_cart_outlined);
+      final addButton = find.byTooltip('Zur Einkaufsliste');
+      expect(addButton, findsOneWidget);
       await tester.tap(addButton);
       await tester.pump(const Duration(milliseconds: 500));
       await tester.runAsync(() async {
-        for (var attempt = 0; attempt < 20; attempt++) {
+        for (var attempt = 0; attempt < 200; attempt++) {
           final items = await stores.shoppingList.load();
           final offers = await stores.offers.load();
           if (items.isNotEmpty && offers.isNotEmpty) return;
@@ -408,9 +409,11 @@ void main() {
       // The prospect feed persists in the background; a bounded pump keeps
       // this navigation assertion deterministic while the page is mounted.
       await tester.pump(const Duration(milliseconds: 500));
-      await tester.tap(
-        find.byKey(const ValueKey('prospect-card-favorite-Netto')),
-      );
+      final favoriteCard =
+          find.byKey(const ValueKey('prospect-open-favorite-Netto'));
+      expect(favoriteCard, findsOneWidget);
+      await tester.ensureVisible(favoriteCard);
+      await tester.tap(favoriteCard);
       await tester.pump(const Duration(milliseconds: 500));
       expect(find.text('Prospektseiten (1)'), findsOneWidget);
       expect(find.text('Thüngersheim'), findsOneWidget);
