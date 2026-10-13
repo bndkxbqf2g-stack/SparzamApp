@@ -70,7 +70,8 @@ List<MarketPrice> marketPricesFromObservations(
                 !_day(entry.validUntil!).isBefore(currentDay)) &&
             _sourceAllowed(entry, settings, today) &&
             _matchesProductPackage(entry, productsById[entry.productId]) &&
-            _projectsToLegacyMarketPrice(entry.source),
+            _projectsToLegacyMarketPrice(entry.source) &&
+            !_isProspectOffer(entry),
       )
       .map(
         (entry) => MarketPrice(
