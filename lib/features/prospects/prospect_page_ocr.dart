@@ -110,7 +110,7 @@ List<ProspectPageOcrCandidate> parseProspectPageOcrText(String text) {
       label,
       priceCount: matches.length,
     );
-    final key = '\u0024{label.toLowerCase()}|\u0024{offerPrice.toStringAsFixed(2)}';
+    final key = '${label.toLowerCase()}|${offerPrice.toStringAsFixed(2)}';
     if (!seen.add(key)) continue;
     candidates.add(
       ProspectPageOcrCandidate(
@@ -177,7 +177,7 @@ Future<ProspectPageOcrResult> analyzeProspectPage(
       return ProspectPageOcrResult(
         status: ProspectPageOcrStatus.unavailable,
         message:
-            'Prospektseite konnte nicht geladen werden (HTTP \u0024{response.statusCode}).',
+            'Prospektseite konnte nicht geladen werden (HTTP ${response.statusCode}).',
       );
     }
     if (response.bodyBytes.isEmpty ||
@@ -210,7 +210,7 @@ Future<ProspectPageOcrResult> analyzeProspectPage(
     return ProspectPageOcrResult(
       status: ProspectPageOcrStatus.ready,
       message:
-          '\u0024{candidates.length} Vorschlag\u0024{candidates.length == 1 ? '' : 'e'} '
+          '${candidates.length} Vorschlag${candidates.length == 1 ? '' : 'e'} '
           'gefunden. Vor dem Speichern bitte prüfen.',
       candidates: candidates,
     );
