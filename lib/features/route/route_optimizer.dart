@@ -218,14 +218,14 @@ class RouteOptimizer {
         bestByCount.putIfAbsent(plan.stores.length, () => plan);
       }
 
-      recommended =
+      var current =
           bestByCount[1] ??
           bestByCount.values.reduce(
             (a, b) => a.stores.length <= b.stores.length ? a : b,
           );
 
       for (
-        var count = recommended.stores.length + 1;
+        var count = current.stores.length + 1;
         count <= maxStores;
         count++
       ) {
@@ -233,19 +233,20 @@ class RouteOptimizer {
         if (candidate == null) continue;
         // A route that prices more of the requested basket is always preferred.
         // Savings thresholds only decide between routes with equal coverage.
-        if (candidate.priceCoverage > recommended.priceCoverage) {
-          recommended = candidate;
+        if (candidate.priceCoverage > current.priceCoverage) {
+          current = candidate;
           continue;
         }
-        if (candidate.priceCoverage < recommended.priceCoverage) continue;
+        if (candidate.priceCoverage < current.priceCoverage) continue;
 
-        final addedStores = candidate.stores.length - recommended.stores.length;
+        final addedStores = candidate.stores.length - current.stores.length;
         final requiredSavings = minExtraStoreSavings * addedStores;
-        if (recommended.planningScore - candidate.planningScore >
+        if (current.planningScore - candidate.planningScore >
             requiredSavings) {
-          recommended = candidate;
+          current = candidate;
         }
       }
+      recommended = current;
     }
 
     _bestPlanCache = recommended;
