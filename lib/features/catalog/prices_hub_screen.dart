@@ -21,6 +21,7 @@ class PricesHubScreen extends StatelessWidget {
     this.prospectPriceHistory = const <String, ProspectPriceHistorySummary>{},
     this.onOpenList,
     this.onOpenRoute,
+    this.now,
   });
 
   final VoidCallback onOpenCatalog;
@@ -34,6 +35,7 @@ class PricesHubScreen extends StatelessWidget {
   final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
   final VoidCallback? onOpenList;
   final VoidCallback? onOpenRoute;
+  final DateTime? now;
 
   List<_PriceSnapshot> _snapshots() {
     return [
@@ -50,6 +52,7 @@ class PricesHubScreen extends StatelessWidget {
       prospectPriceHistory: prospectPriceHistory,
       enabledStores: enabledStoreNames,
       openPricesMaxAgeDays: openPricesMaxAgeDays,
+      now: now,
     );
     ShoppingQuote? current;
     for (final quote in quotes) {
@@ -124,6 +127,35 @@ class PricesHubScreen extends StatelessWidget {
             Text(
               'Weitere ${current - 8} Positionen findest du direkt in der Einkaufsliste.',
               style: Theme.of(context).textTheme.bodySmall,
+            ),
+        ],
+        if (snapshots.isNotEmpty) ...[
+          const SizedBox(height: 22),
+          Text(
+            'Marktvergleich deiner Liste',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 6),
+          const Text(
+            'Öffne eine Position, um aktuelle, historische und fehlende '
+            'Belege je aktiviertem Markt zu prüfen.',
+          ),
+          const SizedBox(height: 10),
+          for (final item in shoppingList)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: _PriceComparisonCard(
+                key: ValueKey('${price-comparison-${item.product.id}}'),
+                item: item,
+                prices: marketPrices,
+                offers: offers,
+                enabledStoreNames: enabledStoreNames,
+                openPricesMaxAgeDays: openPricesMaxAgeDays,
+                prospectPriceHistory: prospectPriceHistory,
+                now: now,
+              ),
             ),
         ],
         if (snapshots.isNotEmpty && missing > 0) ...[
@@ -307,6 +339,119 @@ class _PriceSnapshotTile extends StatelessWidget {
         trailing: Text(
           '$amount €',
           style: const TextStyle(fontWeight: FontWeight.w800),
+        ),
+      ),
+    );
+  }
+}
+
+class _PriceComparisonCard extends StatefulWidget {
+  const _PriceComparisonCard({
+    super.key,
+    required this.item,
+    required this.prices,
+    required this.offers,
+    required this.enabledStoreNames,
+    required this.openPricesMaxAgeDays,
+    required this.prospectPriceHistory,
+    this.now,
+  });
+
+  final ListItem item;
+  final List<MarketPrice> prices;
+  final List<Offer> offers;
+  final List<String> enabledStoreNames;
+  final int openPricesMaxAgeDays;
+  final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
+  final DateTime? now;
+
+  @override
+  State<_PriceComparisonCard> createState() => _PriceComparisonCardState();
+}
+
+class _PriceComparisonCardState extends State<_PriceComparisonCard> {
+  bool expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final matrix = shoppingPriceMatrix(
+      widget.item,
+      prices: widget.prices,
+      offers: widget.offers,
+      enabledStores: widget.enabledStoreNames,
+      openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
+      prospectPriceHistory: widget.prospectPriceHistory,
+      now: widget.now,
+    );
+    final current = matrix.where((entry) => entry.hasCurrentQuote).length;
+    final historical = matrix.where((entry) => entry.hasHistoricalQuote).length;
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: ExpansionTile(
+        key: widget.key,
+        initiallyExpanded: false,
+        onExpansionChanged: (value) => setState(() => expanded = value),
+        title: Text(
+          widget.item.product.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        subtitle: Text(
+          '${current}/${matrix.length} Märkte aktuell'
+          '${historical == 0 ? '' : ' · ${historical} historisch'}',
+        ),
+        children: expanded
+            ? [
+                for (final entry in matrix)
+                  _PriceMatrixRow(entry: entry, now: widget.now),
+              ]
+            : const [],
+      ),
+    );
+  }
+}
+
+class _PriceMatrixRow extends StatelessWidget {
+  const _PriceMatrixRow({required this.entry, this.now});
+
+  final ShoppingPriceMatrixEntry entry;
+  final DateTime? now;
+
+  @override
+  Widget build(BuildContext context) {
+    final quote = entry.quote;
+    if (quote == null) {
+      return ListTile(
+        dense: true,
+        leading: const Icon(Icons.help_outline, color: Colors.amber),
+        title: Text(entry.storeName),
+        subtitle: const Text('Kein aktueller, vergleichbarer Preisbeleg'),
+        trailing: const Text('fehlt'),
+      );
+    }
+    final details = <String>[
+      quote.displayPrefix,
+      if (quote.packageLabel != null) 'Packung ${quote.packageLabel}',
+      if (quote.baseUnitPriceLabel != null) quote.baseUnitPriceLabel!,
+      quote.comparabilityLabel,
+      quote.freshnessLabel(now: now),
+      if (quote.savingsLabel != null) quote.savingsLabel!,
+    ];
+    return ListTile(
+      dense: true,
+      leading: Icon(
+        quote.isHistorical
+            ? Icons.history_toggle_off_outlined
+            : Icons.price_check_outlined,
+        color: quote.isHistorical ? Colors.grey : SparzamTheme.deepGreen,
+      ),
+      title: Text(entry.storeName),
+      subtitle: Text(details.join(' · ')),
+      trailing: Text(
+        quote.amountLabel,
+        style: TextStyle(
+          fontWeight: FontWeight.w800,
+          color: quote.isHistorical ? Colors.grey : null,
         ),
       ),
     );
