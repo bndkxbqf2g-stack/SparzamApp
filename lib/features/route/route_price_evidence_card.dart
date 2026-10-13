@@ -30,6 +30,12 @@ class RoutePriceEvidenceCard extends StatelessWidget {
           label: '${summary.ownPrices} eigene Preise',
           color: Colors.indigo,
         ),
+      if (summary.prospectPrices > 0)
+        _EvidenceChip(
+          icon: Icons.menu_book_outlined,
+          label: '${summary.prospectPrices} Prospektpreise',
+          color: Colors.deepPurple,
+        ),
       if (summary.openPrices > 0)
         _EvidenceChip(
           icon: Icons.public_outlined,
