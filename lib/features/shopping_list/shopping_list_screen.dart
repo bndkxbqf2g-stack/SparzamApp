@@ -27,6 +27,7 @@ import 'shopping_suggestions.dart';
 import 'custom_shopping_product.dart';
 import 'shopping_additions.dart';
 import 'shopping_list_header.dart';
+import 'shopping_list_cost_summary_card.dart';
 import 'shopping_input.dart';
 import 'shopping_recent_choices.dart';
 import 'receipt_search_products.dart';
@@ -501,6 +502,15 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 },
               ),
               const SizedBox(height: 14),
+              ShoppingListCostSummaryCard(
+                items: widget.items,
+                marketPrices: widget.marketPrices,
+                offers: widget.offers,
+                prospectPriceHistory: widget.prospectPriceHistory,
+                enabledStoreNames: widget.mobility.enabledStoreNames,
+                openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
+                onOpenRoute: widget.onOpenRoute,
+              ),
               if (widget.items.isNotEmpty && widget.onOpenRoute != null) ...[
                 FilledButton.icon(
                   onPressed: widget.onOpenRoute,
