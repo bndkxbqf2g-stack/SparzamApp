@@ -248,12 +248,12 @@ void main() {
     );
     await tester.pump();
 
-    final cover = find.byWidgetPredicate(
-      (widget) =>
-          widget is Image &&
-          widget.webHtmlElementStrategy.toString().contains('fallback'),
+    expect(
+      find.byKey(
+        const ValueKey('prospect-cover-image-favorite-Lidl'),
+      ),
+      findsOneWidget,
     );
-    expect(cover, findsWidgets);
   });
 
   testWidgets('filters current prospect articles by source category', (
