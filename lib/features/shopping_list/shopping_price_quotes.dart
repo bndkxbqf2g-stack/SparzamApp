@@ -412,74 +412,8 @@ int _quoteSourceOrder(ShoppingQuote quote) => switch (quote.kind) {
 String _money(double value) => value.toStringAsFixed(2).replaceAll('.', ',');
 
 String _number(double value) {
-  final text = value.toStringAsFixed(3).replaceFirst(RegExp(r'0+
-  final proof = offer.proofRef?.trim();
-  return '${_offerSourceLabel(offer.sourceAdapter ?? offer.source)} · '
-      '${proof == null || proof.isEmpty ? 'Nachweis fehlt' : 'Nachweis vorhanden'}';
-}
-
-String _offerSourceLabel(String source) =>
-    switch (source.trim().toLowerCase()) {
-      'leaflet' => 'Prospekt',
-      'kaufda' => 'KaufDA',
-      'retailer' => 'Händler',
-      'retailerwebsite' || 'retailer_website' => 'Händler-Website',
-      'receipt' => 'Kassenbon',
-      'manual' => 'Manuell',
-      'openprices' || 'open_prices' => 'Open Prices',
-      _ => source.trim().isEmpty ? 'Quelle unbekannt' : source.trim(),
-    };
-
-int _compareHistoricalSummaries(
-  ProspectPriceHistorySummary candidate,
-  ProspectPriceHistorySummary previous,
-) {
-  if (candidate.kind != previous.kind) {
-    return candidate.kind == PriceObservationKind.offer ? -1 : 1;
-  }
-  final byPrice = candidate.medianPrice.compareTo(previous.medianPrice);
-  if (byPrice != 0) return byPrice;
-  final byDate = previous.latestValidUntil.compareTo(
-    candidate.latestValidUntil,
-  );
-  if (byDate != 0) return byDate;
-  return previous.observationCount.compareTo(candidate.observationCount);
-}
-), '');
-  return text.replaceFirst(RegExp(r'\.
-  final proof = offer.proofRef?.trim();
-  return '${_offerSourceLabel(offer.sourceAdapter ?? offer.source)} · '
-      '${proof == null || proof.isEmpty ? 'Nachweis fehlt' : 'Nachweis vorhanden'}';
-}
-
-String _offerSourceLabel(String source) =>
-    switch (source.trim().toLowerCase()) {
-      'leaflet' => 'Prospekt',
-      'kaufda' => 'KaufDA',
-      'retailer' => 'Händler',
-      'retailerwebsite' || 'retailer_website' => 'Händler-Website',
-      'receipt' => 'Kassenbon',
-      'manual' => 'Manuell',
-      'openprices' || 'open_prices' => 'Open Prices',
-      _ => source.trim().isEmpty ? 'Quelle unbekannt' : source.trim(),
-    };
-
-int _compareHistoricalSummaries(
-  ProspectPriceHistorySummary candidate,
-  ProspectPriceHistorySummary previous,
-) {
-  if (candidate.kind != previous.kind) {
-    return candidate.kind == PriceObservationKind.offer ? -1 : 1;
-  }
-  final byPrice = candidate.medianPrice.compareTo(previous.medianPrice);
-  if (byPrice != 0) return byPrice;
-  final byDate = previous.latestValidUntil.compareTo(
-    candidate.latestValidUntil,
-  );
-  if (byDate != 0) return byDate;
-  return previous.observationCount.compareTo(candidate.observationCount);
-}
-), '').replaceAll('.', ',');
+  final text = value.toStringAsFixed(3).replaceFirst(RegExp(r'0+$'), '');
+  return text.replaceFirst(RegExp(r'\.$'), '').replaceAll('.', ',');
 }
 String offerEvidenceLabel(Offer offer) {
   final proof = offer.proofRef?.trim();
