@@ -96,6 +96,10 @@ class _OffersScreenState extends State<OffersScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Angebote'), centerTitle: true),
       body: ListView(
+        key: const ValueKey('offers-scroll'),
+        // Offer groups can contain many current prospect records. Keep the
+        // outer scroll from building a speculative tail while the user moves.
+        cacheExtent: 0,
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
         children: [
           const Center(child: Text('Die besten Preise. Für dich.')),
@@ -299,37 +303,7 @@ class _ProspectOffersState extends State<_ProspectOffers> {
                             )
                             ? [
                                 for (final record in category.value)
-                                  ProspectOfferCard(
-                                    key: ValueKey(
-                                      'prospect-offer-${record.sourceId}',
-                                    ),
-                                    record: record,
-                                    product: addableProductForProspectOffer(
-                                      record,
-                                      widget.catalogProducts,
-                                    ),
-                                    compact: true,
-                                    onAdd:
-                                        widget.onAddToShoppingList == null ||
-                                            addableProductForProspectOffer(
-                                                  record,
-                                                  widget.catalogProducts,
-                                                ) ==
-                                                null
-                                        ? null
-                                        : () {
-                                            final product =
-                                                addableProductForProspectOffer(
-                                                  record,
-                                                  widget.catalogProducts,
-                                                );
-                                            if (product != null) {
-                                              widget.onAddToShoppingList!(
-                                                product,
-                                              );
-                                            }
-                                          },
-                                  ),
+                                  _buildProspectCard(record),
                               ]
                             : const [],
                       ),
@@ -337,6 +311,21 @@ class _ProspectOffersState extends State<_ProspectOffers> {
                 : const [],
           ),
       ],
+    );
+  }
+
+  Widget _buildProspectCard(OfferImportRecord record) {
+    final product = addableProductForProspectOffer(
+      record,
+      widget.catalogProducts,
+    );
+    final onAdd = widget.onAddToShoppingList;
+    return ProspectOfferCard(
+      key: ValueKey('prospect-offer-${record.sourceId}'),
+      record: record,
+      product: product,
+      compact: true,
+      onAdd: product == null || onAdd == null ? null : () => onAdd(product),
     );
   }
 
