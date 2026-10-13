@@ -1115,6 +1115,67 @@ void main() {
     expect(added, isNotNull);
     expect(added!.name, 'Käsesticks 300 g');
   });
+
+  testWidgets('lässt mehrere OCR-Vorschläge vor dem Formular auswählen', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectViewerScreen(
+          issue: ProspectIssue(
+            storeName: 'Lidl',
+            title: 'Aktionsprospekt',
+            pages: const [
+              ProspectPage(
+                number: 2,
+                imageUrl: 'https://example.test/lidl/page-2.png',
+              ),
+            ],
+            validFrom: DateTime(2026, 10, 12),
+            validUntil: DateTime(2026, 10, 17),
+          ),
+          records: const [],
+          catalogProducts: const [],
+          onAddProduct: (_) {},
+          onSaveOffer: (offer) async => [offer],
+          ocrRunner: (_) async => const ProspectPageOcrResult(
+            status: ProspectPageOcrStatus.ready,
+            message: '2 Vorschläge gefunden.',
+            candidates: [
+              ProspectPageOcrCandidate(
+                productLabel: 'Kaffee Crema 500 g',
+                offerPrice: 4.99,
+                confidence: ProspectPageOcrConfidence.high,
+              ),
+              ProspectPageOcrCandidate(
+                productLabel: 'Milch 1 l',
+                offerPrice: 0.99,
+                confidence: ProspectPageOcrConfidence.medium,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Seite per OCR prüfen'));
+    await tester.pumpAndSettle();
+    expect(find.text('OCR-Vorschlag auswählen'), findsOneWidget);
+    expect(find.text('Kaffee Crema 500 g'), findsOneWidget);
+    expect(find.text('Milch 1 l'), findsOneWidget);
+
+    await tester.tap(find.text('Milch 1 l'));
+    await tester.pumpAndSettle();
+    final fields = find.byType(TextFormField);
+    expect(
+      tester.widget<TextFormField>(fields.at(0)).controller!.text,
+      'Milch 1 l',
+    );
+    expect(
+      tester.widget<TextFormField>(fields.at(1)).controller!.text,
+      '0,99',
+    );
+  });
 }
 
 Future<void> _scrollProspects(
