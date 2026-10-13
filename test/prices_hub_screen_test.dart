@@ -99,7 +99,7 @@ void main() {
 
     expect(find.text('Lidl'), findsOneWidget);
     expect(find.text('ALDI Süd'), findsOneWidget);
-    expect(find.text('1,19 €'), findsOneWidget);
+    expect(find.text('1,19 €'), findsNWidgets(2));
     expect(find.text('Kein aktueller, vergleichbarer Preisbeleg'), findsOneWidget);
   });
 
