@@ -1,5 +1,14 @@
 # SparzamApp
 
+## Update 13.10.2026 – Coverkarten im Angebote-Reiter
+- Der Angebote-Reiter zeigt aktuelle, nach Gültigkeit gefilterte Prospekte jetzt
+  als Coverkarten mit Favoritenrail und Raster.
+- Ein Cover öffnet direkt den eingebetteten Seitenviewer; Marktfilter,
+  Filialkontext und bestehende Artikelübernahme bleiben im selben Datenpfad.
+- Die neue Ansicht nutzt begrenzte Bilddekodierung und Repaint-Grenzen, damit
+  die Übersicht auch bei mehreren Händlern leichtgewichtig bleibt.
+
+
 ## Update 13.10.2026 – Händlerkürzel im Bonparser
 - Der Bonparser erkennt ALDI Süd/ALDI SUED, PENNY und REWE mit Token-Grenzen.
 - Ein generisches ALDI bleibt als unbestimmte Händlerangabe sichtbar und wird keiner ALDI-Region zugeordnet.

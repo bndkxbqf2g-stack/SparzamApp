@@ -393,7 +393,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
   ) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => _ProspectViewer(
+        builder: (_) => ProspectViewerScreen(
           issue: issue,
           records: currentRecords,
           catalogProducts: widget.catalogProducts,
@@ -1303,8 +1303,9 @@ String _sourceStatusLabel(ProspectIssue issue) {
   return 'Offizielle Prospektquelle verfügbar.';
 }
 
-class _ProspectViewer extends StatelessWidget {
-  const _ProspectViewer({
+class ProspectViewerScreen extends StatelessWidget {
+  const ProspectViewerScreen({
+    super.key,
     required this.issue,
     required this.records,
     required this.catalogProducts,
