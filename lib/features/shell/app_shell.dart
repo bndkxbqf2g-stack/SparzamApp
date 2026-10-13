@@ -450,7 +450,7 @@ class _AppShellState extends State<AppShell> {
         for (final entry in offerBackedProducts) entry.offer.id: entry.offer,
       };
 
-      final learnedPrices = datedProspectRegularPriceObservations(
+      final learnedPrices = currentDatedProspectRegularPriceObservations(
         records: feed.records,
         catalogProducts: buildCatalogProducts(customProducts),
         observedAt: feed.generatedAt,

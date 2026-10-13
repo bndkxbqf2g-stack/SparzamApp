@@ -98,6 +98,54 @@ void main() {
   );
   final observedAt = DateTime(2026, 9, 30, 15);
 
+  test('automatic regular learning ignores expired and future periods', () {
+    final records = [
+      OfferImportRecord(
+        sourceId: 'expired',
+        productLabel: 'Butter 250 g',
+        storeName: 'Lidl',
+        originalPrice: 2.49,
+        offerPrice: 1.99,
+        validFrom: DateTime(2026, 10, 1),
+        validUntil: DateTime(2026, 10, 5),
+        proofRef: 'https://example.test/lidl/expired',
+      ),
+      OfferImportRecord(
+        sourceId: 'current',
+        productLabel: 'Butter 250 g',
+        storeName: 'Lidl',
+        originalPrice: 2.49,
+        offerPrice: 1.99,
+        validFrom: DateTime(2026, 10, 10),
+        validUntil: DateTime(2026, 10, 17),
+        proofRef: 'https://example.test/lidl/current',
+      ),
+      OfferImportRecord(
+        sourceId: 'future',
+        productLabel: 'Butter 250 g',
+        storeName: 'Lidl',
+        originalPrice: 2.79,
+        offerPrice: 2.29,
+        validFrom: DateTime(2026, 10, 18),
+        validUntil: DateTime(2026, 10, 24),
+        proofRef: 'https://example.test/lidl/future',
+      ),
+    ];
+
+    final evidence = currentDatedProspectRegularPriceObservations(
+      records: records,
+      catalogProducts: const [],
+      observedAt: DateTime(2026, 10, 12, 8),
+      now: DateTime(2026, 10, 12, 8),
+    );
+
+    expect(evidence, hasLength(1));
+    expect(evidence.single.price, 2.49);
+    expect(evidence.single.validFrom, DateTime(2026, 10, 10));
+    expect(evidence.single.validUntil, DateTime(2026, 10, 17));
+    expect(evidence.single.kind, PriceObservationKind.regular);
+  });
+
   test('current prospect learns offer and stated regular price separately', () {
     final evidence = prospectPriceObservations(
       records: [

@@ -1350,3 +1350,15 @@ und zurück seine Suche, seinen Scrollstand oder laufende Offline-/Routing-Cache
 verliert. Die fachlichen Daten, Reiterreihenfolge und Persistenz bleiben
 unverändert.
 
+
+
+## D174 – Automatische Prospektpreisbeobachtungen beschränken sich auf aktuelle Zeiträume
+
+Der Feed darf historische und kommende Prospektperioden für Diagnose und
+Nachvollziehbarkeit enthalten. Beim automatischen Speichern in
+PriceObservationStore werden jedoch nur Datensätze berücksichtigt, deren
+validFrom/validUntil am Aktualisierungstag aktiv sind. Dadurch kann ein
+alter oder zukünftiger Normalpreis nicht als aktueller Datenbankpreis in
+Planung und Preisoberfläche erscheinen. Der reguläre, belegte Preis bleibt
+vom zeitlich befristeten Angebotspreis getrennt; Herkunft, Filiale,
+Packungsgröße, Nachweis und Erfassungszeit werden unverändert übernommen.
