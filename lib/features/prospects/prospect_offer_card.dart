@@ -32,7 +32,6 @@ class _ProspectOfferCardState extends State<ProspectOfferCard> {
   void _add() {
     final callback = widget.onAdd;
     if (callback == null) return;
-    debugPrint('PROSPECT_CARD_ADD ${widget.record.sourceId}');
     callback();
     if (!mounted) return;
     setState(() => added = true);
