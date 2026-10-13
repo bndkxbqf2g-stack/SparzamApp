@@ -1,6 +1,6 @@
 import 'price_observation.dart';
 
-enum MarketPriceSource { receipt, manual, openPrices }
+enum MarketPriceSource { receipt, manual, openPrices, prospect }
 
 class MarketPrice {
   const MarketPrice({
