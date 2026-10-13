@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/product.dart';
+import '../../services/barcode_normalizer.dart';
 import '../../services/open_food_facts_product_source.dart';
 import '../../services/product_data_cache.dart';
 
@@ -67,8 +68,9 @@ class _ProductEditorScreenState extends State<ProductEditorScreen> {
   }
 
   Future<void> enrichFromEan() async {
-    final code = ean.text.trim();
-    if (code.isEmpty || enriching) return;
+    final code = normalizeBarcode(ean.text);
+    if (code == null || enriching) return;
+    ean.text = code;
     setState(() => enriching = true);
 
     final existing = widget.product ??
@@ -121,7 +123,7 @@ class _ProductEditorScreenState extends State<ProductEditorScreen> {
         brand: brand.text.trim().isEmpty ? null : brand.text.trim(),
         unit: unit.text.trim(),
         group: group.text.trim().toLowerCase(),
-        ean: ean.text.trim().isEmpty ? null : ean.text.trim(),
+        ean: normalizeBarcode(ean.text),
         aliases: aliases.text
             .split(',')
             .map((item) => item.trim())
@@ -203,6 +205,13 @@ class _ProductEditorScreenState extends State<ProductEditorScreen> {
                         labelText: 'EAN / Barcode',
                         hintText: 'optional',
                       ),
+                      validator: (value) {
+                        final input = value?.trim() ?? '';
+                        if (input.isEmpty) return null;
+                        return normalizeBarcode(input) == null
+                            ? 'Nur Ziffern, Leerzeichen oder Bindestriche eingeben'
+                            : null;
+                      },
                     ),
                   ),
                   const SizedBox(width: 8),

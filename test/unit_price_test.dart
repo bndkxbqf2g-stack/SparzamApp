@@ -31,6 +31,20 @@ void main() {
     expect(baseUnitPriceLabel(product, 2.25), '3.00 €/l');
   });
 
+  test('20 cl wird als Liter-Grundpreis berechnet', () {
+    const product = Product(
+      id: 'cream',
+      name: 'Sahne',
+      unit: '20 cl',
+      group: 'milch',
+    );
+
+    expect(productQuantity(product)?.amount, 20);
+    expect(productQuantity(product)?.unit, 'cl');
+    expect(baseUnitPrice(product, 1.20), closeTo(6.0, 0.001));
+    expect(baseUnitPriceLabel(product, 1.20), '6.00 €/l');
+  });
+
   test('Stückpreis bleibt pro Stück', () {
     const product = Product(
       id: 'eggs',
@@ -55,5 +69,44 @@ void main() {
 
     expect(baseUnitPrice(product, 1.99), isNull);
     expect(baseUnitPriceLabel(product, 1.99), isNull);
+  });
+
+  test('liest eine eindeutige Packungsgröße aus der Produkt-Einheit', () {
+    const product = Product(
+      id: 'catalog-coffee',
+      name: 'Kaffee',
+      unit: '4 x 125 g',
+      group: 'kaffee',
+    );
+
+    final quantity = productQuantity(product);
+
+    expect(quantity?.amount, 500);
+    expect(quantity?.unit, 'g');
+    expect(baseUnitPriceLabel(product, 4.99), '9.98 €/kg');
+  });
+
+  test('lässt uneindeutige Variantenbereiche ohne Packungsbasis offen', () {
+    const product = Product(
+      id: 'variant-pack',
+      name: 'Schokolade',
+      unit: '100/95/90 g',
+      group: 'süßwaren',
+    );
+
+    expect(productQuantity(product), isNull);
+    expect(baseUnitPrice(product, 1.99), isNull);
+  });
+
+  test('erkennt eine eindeutige Zählpackung als Stückbasis', () {
+    const product = Product(
+      id: 'yoghurt-pack',
+      name: 'Joghurt',
+      unit: '3er-Schale',
+      group: 'joghurt',
+    );
+
+    expect(productQuantity(product)?.amount, 3);
+    expect(productQuantity(product)?.unit, 'st');
   });
 }

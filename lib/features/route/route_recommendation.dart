@@ -44,7 +44,7 @@ RouteRecommendationInfo buildRouteRecommendationInfo({
         detail:
             '${recommended.stores.length} Märkte verbessern den Planungswert '
             'um ${savings.toStringAsFixed(2)} € gegenüber dem besten Einzelmarkt.'
-            '${_timeValueSuffix(mobility)}',
+            '${_planningSuffix(mobility)}',
       );
     }
   }
@@ -60,7 +60,7 @@ RouteRecommendationInfo buildRouteRecommendationInfo({
           '$extraStores zusätzliche ${extraStores == 1 ? 'Markt' : 'Märkte'} '
           'würden den Planungswert nur um ${possibleSavings.toStringAsFixed(2)} € verbessern. '
           'Deine Schwelle liegt bei ${threshold.toStringAsFixed(2)} €.'
-          '${_timeValueSuffix(mobility)}',
+          '${_planningSuffix(mobility)}',
     );
   }
 
@@ -73,13 +73,29 @@ RouteRecommendationInfo buildRouteRecommendationInfo({
 }
 
 String _planningBasis(MobilitySettings mobility) =>
-    mobility.timeValuePerHour > 0
-    ? 'Preisen, Fahrtkosten und Zeitwert'
-    : 'Preisen und Fahrtkosten';
+    [
+      'Preisen',
+      'Fahrtkosten',
+      if (mobility.additionalStoreCost > 0) 'Kosten zusätzlicher Märkte',
+      if (mobility.timeValuePerHour > 0) 'Zeitwert',
+    ].join(', ').replaceFirstMapped(
+      RegExp(r', ([^,]+)$'),
+      (match) => ' und ${match.group(1)}',
+    );
 
-String _timeValueSuffix(MobilitySettings mobility) =>
-    mobility.timeValuePerHour > 0
-    ? ' Der persönliche Zeitwert von '
-          '${mobility.timeValuePerHour.toStringAsFixed(2)} €/Std. ist dabei '
-          'im Planungswert enthalten.'
-    : '';
+String _planningSuffix(MobilitySettings mobility) {
+  final parts = <String>[];
+  if (mobility.additionalStoreCost > 0) {
+    parts.add(
+      ' ${mobility.additionalStoreCost.toStringAsFixed(2)} € je zusätzlichem Markt',
+    );
+  }
+  if (mobility.timeValuePerHour > 0) {
+    parts.add(
+      ' Der persönliche Zeitwert von '
+      '${mobility.timeValuePerHour.toStringAsFixed(2)} €/Std. ist dabei '
+      'im Planungswert enthalten.',
+    );
+  }
+  return parts.join('.');
+}

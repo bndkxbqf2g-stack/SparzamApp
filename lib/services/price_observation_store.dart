@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/price_observation.dart';
+import 'sequential_operation_queue.dart';
 
 /// Local append-only evidence for small, user-relevant data sets. A scalable
 /// indexed backend can replace this store without changing observation IDs.
@@ -11,10 +12,12 @@ class PriceObservationStore {
     : _preferences = preferences ?? SharedPreferencesAsync();
 
   static const storageKey = 'price_observations_v1';
-  static Future<void> _pending = Future<void>.value();
+  static final _queue = SequentialOperationQueue();
   final SharedPreferencesAsync _preferences;
 
-  Future<List<PriceObservation>> load() async {
+  Future<List<PriceObservation>> load() => _queue.schedule(_loadNow);
+
+  Future<List<PriceObservation>> _loadNow() async {
     final raw = await _preferences.getStringList(storageKey) ?? const [];
     final observations = <PriceObservation>[];
     for (final value in raw) {
@@ -31,8 +34,8 @@ class PriceObservationStore {
 
   Future<List<PriceObservation>> append(Iterable<PriceObservation> incoming) {
     final valid = incoming.where((entry) => entry.isValid).toList();
-    final result = _pending.then((_) async {
-      final existing = await load();
+    return _queue.schedule(() async {
+      final existing = await _loadNow();
       final ids = existing.map((entry) => entry.id).toSet();
       final additions = valid.where((entry) => ids.add(entry.id)).toList();
       if (additions.isEmpty) return existing;
@@ -43,8 +46,6 @@ class PriceObservationStore {
       );
       return next;
     });
-    _pending = result.then<void>((_) {}, onError: (Object _) {});
-    return result;
   }
 
   /// Replaces evidence with the same stable ID. This is reserved for
@@ -54,8 +55,8 @@ class PriceObservationStore {
     Iterable<PriceObservation> incoming,
   ) {
     final valid = incoming.where((entry) => entry.isValid).toList();
-    final result = _pending.then((_) async {
-      final existing = await load();
+    return _queue.schedule(() async {
+      final existing = await _loadNow();
       final byId = <String, PriceObservation>{
         for (final entry in existing) entry.id: entry,
       };
@@ -77,22 +78,18 @@ class PriceObservationStore {
       );
       return next;
     });
-    _pending = result.then<void>((_) {}, onError: (Object _) {});
-    return result;
   }
 
   Future<List<PriceObservation>> replaceAll(
     Iterable<PriceObservation> observations,
   ) {
     final valid = observations.where((entry) => entry.isValid).toList();
-    final result = _pending.then((_) async {
+    return _queue.schedule(() async {
       await _preferences.setStringList(
         storageKey,
         valid.map((entry) => jsonEncode(entry.toJson())).toList(),
       );
       return valid;
     });
-    _pending = result.then<void>((_) {}, onError: (Object _) {});
-    return result;
   }
 }

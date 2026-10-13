@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/list_item.dart';
+import '../../services/safe_external_url.dart';
 import '../../models/market_price.dart';
 import '../../models/offer.dart';
 import '../../models/price_observation.dart';
@@ -376,11 +377,11 @@ class _ProductImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageUrl = product.imageUrl?.trim();
+    final imageUrl = safeExternalHttpUrl(product.imageUrl);
     return SizedBox(
       height: height,
       width: double.infinity,
-      child: imageUrl == null || imageUrl.isEmpty
+      child: imageUrl == null
           ? Icon(
               Icons.local_grocery_store_outlined,
               size: 42,

@@ -22,6 +22,7 @@ class MobilitySettings {
     this.mode = MobilityMode.car,
     this.maxStores = 3,
     this.minExtraStoreSavings = 0.50,
+    this.additionalStoreCost = 0,
     this.enabledStoreNames = const <String>[],
   });
 
@@ -35,6 +36,8 @@ class MobilitySettings {
   final MobilityMode mode;
   final int maxStores;
   final double minExtraStoreSavings;
+  /// Optional planning cost for every market after the first one.
+  final double additionalStoreCost;
   final List<String> enabledStoreNames;
 
   double get effectiveEuroPerKm => mode == MobilityMode.car ? euroPerKm : 0.0;
@@ -49,6 +52,7 @@ class MobilitySettings {
     MobilityMode? mode,
     int? maxStores,
     double? minExtraStoreSavings,
+    double? additionalStoreCost,
     List<String>? enabledStoreNames,
   }) => MobilitySettings(
     startAddress: startAddress ?? this.startAddress,
@@ -57,6 +61,7 @@ class MobilitySettings {
     mode: mode ?? this.mode,
     maxStores: maxStores ?? this.maxStores,
     minExtraStoreSavings: minExtraStoreSavings ?? this.minExtraStoreSavings,
+    additionalStoreCost: additionalStoreCost ?? this.additionalStoreCost,
     enabledStoreNames: enabledStoreNames ?? this.enabledStoreNames,
   );
 
@@ -67,6 +72,7 @@ class MobilitySettings {
     'mode': mode.name,
     'maxStores': maxStores,
     'minExtraStoreSavings': minExtraStoreSavings,
+    'additionalStoreCost': additionalStoreCost,
     'enabledStoreNames': enabledStoreNames,
   };
 
@@ -81,6 +87,8 @@ class MobilitySettings {
     final euroPerKm = (json['euroPerKm'] as num?)?.toDouble();
     final timeValuePerHour = (json['timeValuePerHour'] as num?)?.toDouble();
     final minSavings = (json['minExtraStoreSavings'] as num?)?.toDouble();
+    final additionalStoreCost =
+        (json['additionalStoreCost'] as num?)?.toDouble();
 
     return MobilitySettings(
       startAddress: (json['startAddress'] as String?)?.trim().isNotEmpty == true
@@ -111,6 +119,13 @@ class MobilitySettings {
               minSavings <= 50
           ? minSavings
           : 0.50,
+      additionalStoreCost:
+          additionalStoreCost != null &&
+              additionalStoreCost.isFinite &&
+              additionalStoreCost >= 0 &&
+              additionalStoreCost <= 50
+          ? additionalStoreCost
+          : 0,
       enabledStoreNames: stores,
     );
   }

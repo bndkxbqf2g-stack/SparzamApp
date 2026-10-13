@@ -40,6 +40,40 @@ void main() {
     expect(quote.usesOffer, isTrue);
   });
 
+  test('equal active offers use a stable evidence tie-breaker', () {
+    final first = Offer(
+      id: 'z-offer',
+      productId: product.id,
+      storeName: store.name,
+      originalPrice: 2,
+      offerPrice: 1,
+      validUntil: DateTime(2026, 9, 30),
+      source: 'retailerWebsite',
+      proofRef: 'https://example.test/z',
+    );
+    final second = Offer(
+      id: 'a-offer',
+      productId: product.id,
+      storeName: store.name,
+      originalPrice: 2,
+      offerPrice: 1,
+      validUntil: DateTime(2026, 9, 30),
+      source: 'retailerWebsite',
+      proofRef: 'https://example.test/a',
+    );
+
+    for (final order in [
+      [first, second],
+      [second, first],
+    ]) {
+      final quote = RoutePriceResolver(
+        order,
+        now: DateTime(2026, 9, 22),
+      ).quote(store, ListItem(product: product));
+      expect(quote?.offer?.id, 'a-offer');
+    }
+  });
+
   test('reserved demo offers never enter route pricing', () {
     final demo = sampleOffers.first;
     final demoStore = Store(
@@ -61,6 +95,27 @@ void main() {
     ).quote(demoStore, ListItem(product: demoProduct));
 
     expect(quote, isNull);
+  });
+
+  test('external offer without proof cannot enter route pricing', () {
+    final unproven = Offer(
+      id: 'unproven-retailer-offer',
+      productId: 'test',
+      storeName: 'Markt',
+      originalPrice: 2,
+      offerPrice: 0.49,
+      validUntil: DateTime(2026, 9, 30),
+      source: 'retailerWebsite',
+    );
+
+    final quote = RoutePriceResolver(
+      [unproven],
+      now: DateTime(2026, 9, 22),
+    ).quote(store, ListItem(product: product));
+
+    expect(quote, isNotNull);
+    expect(quote!.total, 2);
+    expect(quote.usesOffer, isFalse);
   });
 
   test('does not let an unverified offer override a cheaper market price', () {
@@ -175,6 +230,166 @@ void main() {
     );
 
     expect(quote, isNull);
+  });
+
+  test('market prices stay bound to the selected exact branch', () {
+    const branchProduct = Product(
+      id: 'milk-branch',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'milch',
+    );
+    const zellingen = Store(
+      name: 'Lidl',
+      branchId: 'lidl-zellingen',
+      location: 'Zellingen',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    const wuerzburg = Store(
+      name: 'Lidl',
+      branchId: 'lidl-wuerzburg',
+      location: 'Würzburg',
+      distanceKm: 20,
+      prices: <String, double>{},
+    );
+    final resolver = RoutePriceResolver(
+      const [],
+      marketPrices: [
+        MarketPrice(
+          productId: branchProduct.id,
+          storeName: 'Lidl',
+          price: 0.79,
+          updatedAt: DateTime(2026, 10, 12),
+          sourceLocationId: 'lidl-zellingen',
+        ),
+        MarketPrice(
+          productId: branchProduct.id,
+          storeName: 'Lidl',
+          price: 0.49,
+          updatedAt: DateTime(2026, 10, 12),
+          sourceLocationId: 'lidl-wuerzburg',
+        ),
+      ],
+      now: DateTime(2026, 10, 12),
+    );
+
+    expect(
+      resolver.quote(zellingen, ListItem(product: branchProduct))!.unitPrice,
+      0.79,
+    );
+    expect(
+      resolver.quote(wuerzburg, ListItem(product: branchProduct))!.unitPrice,
+      0.49,
+    );
+  });
+
+  test('a branch-specific offer cannot leak into another branch', () {
+    const branchProduct = Product(
+      id: 'coffee-branch',
+      name: 'Kaffee',
+      unit: '500 g',
+      group: 'kaffee',
+    );
+    const selectedStore = Store(
+      name: 'Lidl',
+      branchId: 'lidl-zellingen',
+      location: 'Zellingen',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    final resolver = RoutePriceResolver(
+      [
+        Offer(
+          id: 'wrong-branch',
+          productId: branchProduct.id,
+          storeName: 'Lidl',
+          originalPrice: 5,
+          offerPrice: 1,
+          validUntil: DateTime(2026, 10, 17),
+          source: 'retailerWebsite',
+          proofRef: 'https://example.test/wrong-branch',
+          locationId: 'lidl-wuerzburg',
+        ),
+      ],
+      now: DateTime(2026, 10, 12),
+    );
+
+    expect(
+      resolver.quote(selectedStore, ListItem(product: branchProduct)),
+      isNull,
+    );
+  });
+
+  test('legacy regional KaufDA offer without branch stays unresolved', () {
+    const regionalProduct = Product(
+      id: 'regional-coffee',
+      name: 'Kaffee',
+      unit: '500 g',
+      group: 'kaffee',
+    );
+    const regionalStore = Store(
+      name: 'Lidl',
+      location: 'Zellingen',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    final quote = RoutePriceResolver(
+      [
+        Offer(
+          id: 'legacy-regional-kaufda',
+          productId: regionalProduct.id,
+          storeName: 'Lidl',
+          originalPrice: 5,
+          offerPrice: 1,
+          validUntil: DateTime(2026, 10, 17),
+          source: 'retailerWebsite',
+          sourceAdapter: 'kaufda',
+          proofRef: 'https://www.kaufda.de/Wuerzburg/Angebote/Kaffee',
+        ),
+      ],
+      now: DateTime(2026, 10, 12),
+    ).quote(regionalStore, ListItem(product: regionalProduct));
+
+    expect(quote, isNull);
+  });
+
+  test('an offer with an incompatible explicit package stays unresolved', () {
+    const packageProduct = Product(
+      id: 'coffee-package',
+      name: 'Kaffee',
+      unit: '500 g',
+      group: 'kaffee',
+      packageAmount: 500,
+      packageUnit: 'g',
+    );
+    final offer = Offer(
+      id: 'wrong-package-offer',
+      productId: packageProduct.id,
+      storeName: 'Markt',
+      originalPrice: 8.99,
+      offerPrice: 2.49,
+      validUntil: DateTime(2026, 9, 30),
+      source: 'retailerWebsite',
+      proofRef: 'https://example.test/coffee',
+      packageAmount: 1,
+      packageUnit: 'kg',
+      unitPrice: 2.49,
+    );
+    const market = Store(
+      name: 'Markt',
+      location: 'Ort',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+
+    expect(
+      RoutePriceResolver([offer], now: DateTime(2026, 9, 24)).quote(
+        market,
+        ListItem(product: packageProduct),
+      ),
+      isNull,
+    );
   });
 
   test('does not route an unresolved generic custom shopping request', () {

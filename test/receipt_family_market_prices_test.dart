@@ -99,6 +99,41 @@ void main() {
     expect(prices.single.updatedAt, DateTime(2026, 9, 1));
   });
 
+  test('family projection breaks equal evidence ties independently of input order', () {
+    const product = Product(
+      id: 'shopping_schmand_tie',
+      name: 'Schmand',
+      unit: 'Stück',
+      group: 'sonstiges',
+    );
+    ReceiptObservation observation(String fingerprint) => ReceiptObservation(
+      id: fingerprint,
+      receiptFingerprint: fingerprint,
+      rowLine: 1,
+      rawLabel: 'Schmand',
+      familyKey: 'schmand',
+      storeName: 'Lidl',
+      observedAt: DateTime(2026, 9, 20),
+      totalPrice: 0.69,
+      quantity: null,
+      quantityUnit: '',
+      unitPrice: null,
+      discounted: false,
+    );
+
+    for (final observations in [
+      [observation('z-receipt'), observation('a-receipt')],
+      [observation('a-receipt'), observation('z-receipt')],
+    ]) {
+      final prices = receiptFamilyMarketPrices(
+        items: [ListItem(product: product)],
+        observations: observations,
+        now: DateTime(2026, 9, 24),
+      );
+      expect(prices.single.proofRef, 'receipt:a-receipt|line:1');
+    }
+  });
+
   test('provisional auto product cannot become a family route price', () {
     const product = Product(
       id: 'shopping_schmand',

@@ -29,6 +29,16 @@ void main() {
     expect(await store.load(), isEmpty);
   });
 
+  test('ein paralleler Read wartet auf einen Favoriten-Write', () async {
+    final store = ProspectFavoritesStore();
+    final reader = ProspectFavoritesStore();
+    final writing = store.save(['Lidl', 'ALDI Süd']);
+    final reading = reader.load();
+
+    await writing;
+    expect(await reading, {'ALDI Süd', 'Lidl'});
+  });
+
   testWidgets('heart toggles a favorite without opening the prospect', (
     tester,
   ) async {

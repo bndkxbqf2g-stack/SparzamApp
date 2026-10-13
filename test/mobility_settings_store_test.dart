@@ -23,6 +23,7 @@ void main() {
       mode: MobilityMode.bike,
       maxStores: 2,
       minExtraStoreSavings: 1.25,
+      additionalStoreCost: 2.40,
       enabledStoreNames: ['Lidl', 'ALDI Süd'],
     );
 
@@ -35,6 +36,7 @@ void main() {
     expect(loaded.mode, MobilityMode.bike);
     expect(loaded.maxStores, 2);
     expect(loaded.minExtraStoreSavings, 1.25);
+    expect(loaded.additionalStoreCost, 2.40);
     expect(loaded.enabledStoreNames, ['Lidl', 'ALDI Süd']);
     expect(loaded.effectiveEuroPerKm, 0);
   });
@@ -47,6 +49,26 @@ void main() {
       expect(loaded.startAddress, '97225 Zellingen, Germany');
       expect(loaded.euroPerKm, 0.22);
       expect(loaded.timeValuePerHour, 0);
+      expect(loaded.additionalStoreCost, 0);
     },
   );
+
+  test('ein paralleler Read wartet auf einen laufenden Mobilitäts-Write',
+      () async {
+    final store = MobilitySettingsStore();
+    final reader = MobilitySettingsStore();
+    const settings = MobilitySettings(
+      startAddress: 'Teststraße 1, Würzburg',
+      mode: MobilityMode.bike,
+      additionalStoreCost: 1.80,
+    );
+
+    final writing = store.save(settings);
+    final reading = reader.load();
+
+    await writing;
+    expect((await reading).startAddress, settings.startAddress);
+    expect((await reading).mode, MobilityMode.bike);
+    expect((await reading).additionalStoreCost, 1.80);
+  });
 }

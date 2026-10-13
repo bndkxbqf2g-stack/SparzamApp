@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import '../features/offers/offer_import.dart';
@@ -20,6 +21,8 @@ class ProspectFeedLoadResult {
   final List<ProspectIssue> prospects;
   final bool fromCache;
 }
+
+typedef ProspectFeedAssetLoader = Future<String> Function();
 
 class ProspectIssue {
   const ProspectIssue({
@@ -63,6 +66,68 @@ class ProspectPage {
   final String keyWords;
 }
 
+// Retailer feeds can contain household and seasonal campaign articles next to
+// food. Keep the app-side boundary defensive even when an older public feed
+// was generated before the refresh workflow applied its food-only filter.
+final _nonFoodProspectLabel = RegExp(
+  r'\b(?:'
+  r'hausschuhe|schuhe|bettwäsche|bettwaesche|bekleidung|sweatbekleidung|'
+  r'fleece|pyjama|anti-rutsch|platzset|tischläufer|tischlaeufer|kissen|'
+  r'spielzeug|bausteine|figuren|laterne|kostüm|kostuem|stabkerzen|'
+  r'lichterkette|naturgeräuschebox|naturgeraeuschebox|waffeleisen|'
+  r'möbel|moebel|garten|pflanzen(?!öl)|pflanze(?!nöl)|orchidee|herbstheide|chrysanthemen|'
+  r'skimmie|elektronik|handy|fernseher|hörgerätebatterien|'
+  r'hoergeraetebatterien|batterien|waschmittel|geschirrreiniger|wc-ente|'
+  r'shampoo|spülung|spuelung|kosmetik|tierbedarf|katzennahrung|kratzhaus|'
+  r'katzenstreu|drucker|glade|vileda|somat|ariel|lenor|perwoll|garnier|'
+  r'nivea|colgate|zahnbürste|zahnbuerste|zahnpasta|deospray|handcreme|'
+  r'bodylotion|rexona|neutrogena|odol|dr\.\s*best|pril|finish|swiffer|'
+  r'dirt\s+devil|cleanmaxx|parkside|multifunktionswerkzeug|dampfreiniger|'
+  r'wäschetrockner|waeschetrockner|ofenhandschuh|strukturpflanze|'
+  r'herbstpflanzen|küchenrolle|kuechenrolle|toilettenpapier|servietten|'
+  r'haushaltstücher|haushaltstuecher|wärmepad|waermepad|wärmepflaster|'
+  r'waermepflaster|tabletten|halstabletten|kollagenpulver|'
+  r'gutschein-adventskalender|mila.?s\s+world|max.?s\s+world|home\s+creation|'
+  r'block\s+tech|ambiano|cachet|novitesse|multinorm|rose|taschentücher|'
+  r'taschentuecher|poly\s+palette|schwarzkopf|taft|dove|duschgel|dusche|'
+  r'haarreif|wasserkocher|kochgeschirr|haushaltshelfer|besenheide|'
+  r'geschenkpapier|geschenkband|geschenktaschen|paw\s+patrol|franzis|playmobil|craze|lego|'
+  r'funko|mattel|revell|majorette|kosmos|spice\s*&\s*soul|silvercrest|'
+  r'livarno|liv&bo|handbrause|frottier|trinkglas|tasche.{0,15}halloween'
+  r'|bepflanzt(?:es|e)?|holzgefäß|holzgefaess|badesalz|anginetten|'
+  r'purina|gourmet\s+(?:perle|gold)|vitakraft|sheba|calgon|cosmea|'
+  r'viss|wc-frisch|pampers|gillette|emyo|slipeinlagen|hundesnack|hundefutter|'
+  r'katzenfutter|tiernahrung'
+  r')\b',
+  caseSensitive: false,
+);
+
+final _nonFoodProspectCategory = RegExp(
+  r'(?:tierbedarf|tiernahrung|haustierbedarf|pet\s*food)',
+  caseSensitive: false,
+);
+final _foodInNonFoodProspectCategory = RegExp(
+  r'(?:slim\s+shake|protein-riegel)',
+  caseSensitive: false,
+);
+
+bool isFoodProspectLabel(String label) =>
+    label.trim().isNotEmpty && !_nonFoodProspectLabel.hasMatch(label);
+
+bool isFoodProspectRecord({
+  required String label,
+  String? category,
+  String? subcategory,
+  String? department,
+}) {
+  final metadata = [category, subcategory, department]
+      .whereType<String>()
+      .join(' ');
+  return isFoodProspectLabel(label) &&
+      (!_nonFoodProspectCategory.hasMatch(metadata) ||
+          _foodInNonFoodProspectCategory.hasMatch(label));
+}
+
 const configuredProspectStores = <String>[
   'Lidl',
   'ALDI Süd',
@@ -96,21 +161,68 @@ String? _optionalNonEmptyString(Object? value) {
 }
 
 class ProspectFeedService {
-  ProspectFeedService({http.Client? client, ProspectFeedCache? cache})
+  ProspectFeedService({
+    http.Client? client,
+    ProspectFeedCache? cache,
+    ProspectFeedAssetLoader? bundledLoader,
+    this.networkEnabled = true,
+  })
     : _client = client ?? http.Client(),
-      _cache = cache ?? SharedPreferencesProspectFeedCache();
+      _cache = cache ?? SharedPreferencesProspectFeedCache(),
+      _bundledLoader = bundledLoader ??
+          (() => rootBundle.loadString(ProspectFeedService.bundledFeedAsset));
 
+  static const bundledFeedAsset = 'assets/prospects/current.json';
   static const feedUrl =
       'https://raw.githubusercontent.com/bndkxbqf2g-stack/SparzamApp/'
       'main/assets/prospects/current.json';
 
   final http.Client _client;
   final ProspectFeedCache _cache;
+  final ProspectFeedAssetLoader _bundledLoader;
+  final bool networkEnabled;
+  Future<ProspectFeedLoadResult>? _inFlight;
 
-  Future<ProspectFeedLoadResult> load() async {
+  /// Closes the client created by this service. Callers that inject a client
+  /// retain ownership of that client and may close it themselves.
+  void close() => _client.close();
+
+  Future<ProspectFeedLoadResult> load() {
+    final running = _inFlight;
+    if (running != null) return running;
+
+    final started = _loadNow();
+    _inFlight = started;
+    started.then<void>(
+      (_) {
+        if (identical(_inFlight, started)) _inFlight = null;
+      },
+      onError: (Object _, StackTrace _) {
+        if (identical(_inFlight, started)) _inFlight = null;
+      },
+    );
+    return started;
+  }
+
+  Future<ProspectFeedLoadResult> _loadNow() async {
+    if (!networkEnabled) {
+      final cached = await _loadCachedFeed();
+      if (cached != null) return cached;
+      final bundled = await _loadBundledFeed();
+      if (bundled != null) return bundled;
+      throw StateError(
+        'Prospektfeed ist deaktiviert und offline nicht verfügbar.',
+      );
+    }
     try {
       final response = await _client
-          .get(Uri.parse(feedUrl))
+          .get(
+            Uri.parse(feedUrl),
+            headers: const {
+              'Accept': 'application/json',
+              'User-Agent': 'SparzamApp/1.0 (prospect feed)',
+            },
+          )
           .timeout(const Duration(seconds: 10));
       if (response.statusCode < 200 || response.statusCode >= 300) {
         throw StateError('Prospektfeed HTTP ${response.statusCode}');
@@ -126,6 +238,8 @@ class ProspectFeedService {
     } catch (error, stackTrace) {
       final cached = await _loadCachedFeed();
       if (cached != null) return cached;
+      final bundled = await _loadBundledFeed();
+      if (bundled != null) return bundled;
       Error.throwWithStackTrace(error, stackTrace);
     }
   }
@@ -144,6 +258,16 @@ class ProspectFeedService {
       return null;
     }
   }
+
+  Future<ProspectFeedLoadResult?> _loadBundledFeed() async {
+    try {
+      final raw = await _bundledLoader();
+      if (raw.trim().isEmpty) return null;
+      return parseProspectFeed(raw, fromCache: true);
+    } catch (_) {
+      return null;
+    }
+  }
 }
 
 ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
@@ -152,7 +276,9 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     throw const FormatException('Ungültiger Prospektfeed');
   }
 
-  final generatedAt = DateTime.tryParse(json['generatedAt'] as String? ?? '');
+  final generatedAt = DateTime.tryParse(
+    _stringValue(json['generatedAt']) ?? '',
+  );
   final refreshedStores = <String>[];
   final availableStores = <String>[...configuredProspectStores];
   final availableStoreUrls = <String, String>{};
@@ -163,31 +289,31 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
   final sourceRecordCounts = <String, int>{};
   for (final source in (json['sources'] as List<dynamic>? ?? const [])) {
     if (source is! Map<String, dynamic>) continue;
-    final storeName = source['storeName'] as String?;
+    final storeName = _stringValue(source['storeName']);
     if (storeName == null || storeName.trim().isEmpty) continue;
     if (!availableStores.contains(storeName)) {
       availableStores.add(storeName);
     }
-    sourceStatuses[storeName] = source['status'] as String? ?? 'unknown';
-    sourceRecordCounts[storeName] =
-        (source['recordCount'] as num?)?.toInt() ?? 0;
-    final sourceUrl = source['url'] as String?;
+    sourceStatuses[storeName] = _stringValue(source['status']) ?? 'unknown';
+    sourceRecordCounts[storeName] = _intValue(source['recordCount']) ?? 0;
+    final sourceUrl = _stringValue(source['url']);
     if (sourceUrl != null && sourceUrl.trim().isNotEmpty) {
       availableStoreUrls[storeName] = sourceUrl;
     }
-    final branchId = source['branchId'] as String?;
+    final branchId = _stringValue(source['branchId']);
     if (branchId != null && branchId.trim().isNotEmpty) {
       sourceBranchIds[storeName] = branchId;
     }
-    final location = source['location'] as String?;
+    final location = _stringValue(source['location']);
     if (location != null && location.trim().isNotEmpty) {
       sourceLocations[storeName] = location;
     }
-    final address = source['address'] as String?;
+    final address = _stringValue(source['address']);
     if (address != null && address.trim().isNotEmpty) {
       sourceAddresses[storeName] = address;
     }
-    if (source['status'] == 'ok' && !refreshedStores.contains(storeName)) {
+    if ((_stringValue(source['status']) ?? '') == 'ok' &&
+        !refreshedStores.contains(storeName)) {
       refreshedStores.add(storeName);
     }
   }
@@ -196,35 +322,44 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
   final prospects = <ProspectIssue>[];
   for (final source in (json['sources'] as List<dynamic>? ?? const [])) {
     if (source is! Map<String, dynamic>) continue;
-    final storeName = source['storeName'] as String?;
+    final storeName = _stringValue(source['storeName']);
     for (final raw in (source['prospects'] as List<dynamic>? ?? const [])) {
       if (storeName == null || raw is! Map<String, dynamic>) continue;
-      final pages = <ProspectPage>[];
+      final pagesByNumber = <int, ProspectPage>{};
       for (final page in (raw['pageSamples'] as List<dynamic>? ?? const [])) {
         if (page is! Map<String, dynamic>) continue;
-        final image = page['image'] as String?;
-        final number = (page['number'] as num?)?.toInt();
-        if (image != null && number != null) {
-          pages.add(
-            ProspectPage(
-              number: number,
-              imageUrl: image,
-              zoomUrl: page['zoom'] as String?,
-              keyWords: page['keyWords'] as String? ?? '',
-            ),
-          );
-        }
+        final image = _httpUrlValue(page['image']);
+        final number = _intValue(page['number']);
+        if (image == null || number == null || number < 1) continue;
+        // A few public feed variants repeat the same page or emit samples
+        // out of order. Keep one source page per positive number and sort it
+        // deterministically for the viewer and cover fallback.
+        pagesByNumber.putIfAbsent(
+          number,
+          () => ProspectPage(
+            number: number,
+            imageUrl: image,
+            zoomUrl: _httpUrlValue(page['zoom']),
+            keyWords: _stringValue(page['keyWords']) ?? '',
+          ),
+        );
       }
+      final pages = pagesByNumber.values.toList()
+        ..sort((a, b) => a.number.compareTo(b.number));
       // Keep metadata-only prospect entries as well. Some retailers publish
       // dates, branch context and an official link before they provide page
       // images; dropping those fields makes a current source look unknown.
       prospects.add(
         ProspectIssue(
           storeName: storeName,
-          title: raw['title'] as String? ?? 'Prospekt',
+          title: _stringValue(raw['title']) ?? 'Prospekt',
           pages: pages,
-          url: raw['url'] as String?,
-          thumbnailUrl: raw['thumbnailUrl'] as String?,
+          url: _httpUrlValue(raw['url']),
+          // Older source formats exposed only pageSamples. Reuse the first
+          // already validated page as the cover instead of dropping a valid
+          // image and rendering a misleading empty card.
+          thumbnailUrl: _httpUrlValue(raw['thumbnailUrl']) ??
+              (pages.isEmpty ? null : pages.first.imageUrl),
           branchId:
               _optionalNonEmptyString(raw['branchId']) ??
               sourceBranchIds[storeName],
@@ -237,12 +372,14 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
           sourceStatus: sourceStatuses[storeName] ?? 'unknown',
           recordCount: sourceRecordCounts[storeName] ?? 0,
           validFrom: DateTime.tryParse(
-            raw['offerStartDate'] as String? ??
-                raw['startDate'] as String? ??
+            _stringValue(raw['offerStartDate']) ??
+                _stringValue(raw['startDate']) ??
                 '',
           ),
           validUntil: DateTime.tryParse(
-            raw['offerEndDate'] as String? ?? raw['endDate'] as String? ?? '',
+            _stringValue(raw['offerEndDate']) ??
+                _stringValue(raw['endDate']) ??
+                '',
           ),
         ),
       );
@@ -289,6 +426,12 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     final hasMalformedValidFrom = validFromValue != null &&
         (validFromText == null ||
             (validFromText.isNotEmpty && validFrom == null));
+    final capturedAtValue = value['capturedAt'];
+    final capturedAtText = _stringValue(capturedAtValue);
+    final capturedAt = DateTime.tryParse(capturedAtText ?? '');
+    final hasMalformedCapturedAt = capturedAtValue != null &&
+        (capturedAtText == null ||
+            (capturedAtText.isNotEmpty && capturedAt == null));
     if (sourceId == null ||
         sourceId.trim().isEmpty ||
         productLabel == null ||
@@ -301,10 +444,19 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         validUntil == null) {
       continue;
     }
+    if (!isFoodProspectRecord(
+      label: productLabel,
+      category: _stringValue(value['category']),
+      subcategory: _stringValue(value['subcategory']),
+      department: _stringValue(value['department']),
+    )) {
+      continue;
+    }
     // A malformed optional start date is not the same as an absent start
     // date. Treating it as absent could make an unverifiable offer appear
     // current and routeable. Reversed periods are equally unusable.
     if (hasMalformedValidFrom ||
+        hasMalformedCapturedAt ||
         (validFrom != null && validUntil.isBefore(validFrom))) {
       continue;
     }
@@ -318,6 +470,19 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
             !originalPrice.isFinite ||
             originalPrice <= 0);
     if (hasMalformedOriginalPrice) continue;
+    final regionalOnlyValue = value['regionalOnly'];
+    final parsedRegionalOnly = _boolValue(regionalOnlyValue);
+    final sourceAdapter = _stringValue(value['sourceAdapter']);
+    final explicitBranchId = _optionalNonEmptyString(value['branchId']);
+    final isKaufdaWithoutBranch =
+        sourceAdapter?.trim().toLowerCase() == 'kaufda' &&
+        explicitBranchId == null;
+    // A false/changed-format regional flag cannot promote a publisher-level
+    // KaufDA hit to a branch price. The branch assertion must be present on
+    // the record itself; source-level branch metadata is only a UI fallback.
+    final regionalOnly = isKaufdaWithoutBranch
+        ? true
+        : (parsedRegionalOnly ?? (regionalOnlyValue != null));
     records.add(
       OfferImportRecord(
         sourceId: sourceId,
@@ -329,17 +494,29 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         validUntil: validUntil,
         source: _stringValue(value['source']) ?? 'retailerWebsite',
         proofRef: _stringValue(value['proofRef']),
-        imageUrl: _stringValue(value['imageUrl']),
+        imageUrl: _httpUrlValue(value['imageUrl']),
         category: _stringValue(value['category']),
-        branchId:
-            _optionalNonEmptyString(value['branchId']) ??
-            sourceBranchIds[storeName],
-        location:
-            _optionalNonEmptyString(value['location']) ??
-            sourceLocations[storeName],
-        address:
-            _optionalNonEmptyString(value['address']) ??
-            sourceAddresses[storeName],
+        packageSize: _stringValue(value['packageSize']),
+        priceByBaseUnit: _stringValue(value['priceByBaseUnit']),
+        sourceAdapter: sourceAdapter,
+        // An unknown explicit regional flag is treated conservatively. It
+        // remains visible as diagnostic evidence but cannot become routeable.
+        regionalOnly: regionalOnly,
+        brochureId: _stringValue(value['brochureId']),
+        brochurePage: _intValue(value['brochurePage']),
+        publisherId: _stringValue(value['publisherId']),
+        capturedAt: capturedAt,
+        branchId: regionalOnly
+            ? explicitBranchId
+            : (explicitBranchId ?? sourceBranchIds[storeName]),
+        location: regionalOnly
+            ? _optionalNonEmptyString(value['location'])
+            : (_optionalNonEmptyString(value['location']) ??
+                sourceLocations[storeName]),
+        address: regionalOnly
+            ? _optionalNonEmptyString(value['address'])
+            : (_optionalNonEmptyString(value['address']) ??
+                sourceAddresses[storeName]),
       ),
     );
   }
@@ -354,3 +531,47 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
 }
 
 String? _stringValue(Object? value) => value is String ? value.trim() : null;
+
+String? _httpUrlValue(Object? value) {
+  final raw = _stringValue(value);
+  if (raw == null || raw.isEmpty) return null;
+  final uri = Uri.tryParse(raw);
+  final scheme = uri?.scheme.toLowerCase();
+  if (uri == null ||
+      uri.host.trim().isEmpty ||
+      (scheme != 'http' && scheme != 'https')) {
+    return null;
+  }
+  return raw;
+}
+
+int? _intValue(Object? value) {
+  if (value is num && value.isFinite) return value.toInt();
+  if (value is! String) return null;
+  final trimmed = value.trim();
+  if (trimmed.isEmpty) return null;
+  return int.tryParse(trimmed);
+}
+
+bool? _boolValue(Object? value) {
+  if (value is bool) return value;
+  if (value is num) {
+    if (value == 1) return true;
+    if (value == 0) return false;
+    return null;
+  }
+  if (value is! String) return null;
+  switch (value.trim().toLowerCase()) {
+    case 'true':
+    case '1':
+    case 'yes':
+      return true;
+    case 'false':
+    case '0':
+    case 'no':
+      return false;
+    default:
+      return null;
+  }
+}
+

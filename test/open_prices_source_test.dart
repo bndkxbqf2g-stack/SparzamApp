@@ -27,6 +27,8 @@ const product = Product(
   unit: '500 g',
   group: 'kaffee',
   ean: '1234567890123',
+  packageAmount: 500,
+  packageUnit: 'g',
 );
 
 const store = Store(
@@ -77,6 +79,9 @@ void main() {
     expect(source, isA<PriceSource>());
     expect(prices.single.sourceLocationId, '42');
     expect(prices.single.sourceLocationName, 'Lidl · Zellingen');
+    expect(prices.single.quantity, 500);
+    expect(prices.single.unit, 'g');
+    expect(prices.single.unitPrice, closeTo(8.98, 0.00001));
   });
 
   test('cache is used on provider failure and stale result stays non-routeable',

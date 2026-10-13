@@ -37,4 +37,20 @@ void main() {
         catalog);
     expect(code.single.relation, CandidateRelation.sameBarcode);
   });
+
+  test('barcode candidates use the same canonical form as scanner input', () {
+    final code = suggestProducts(
+      const ProductQuery(label: 'unbekannt', ean: '123-456789012'),
+      [
+        const Product(
+          id: 'upc',
+          name: 'UPC-Produkt',
+          group: 'vorrat',
+          unit: '1 Stück',
+          ean: '0123456789012',
+        ),
+      ],
+    );
+    expect(code.single.relation, CandidateRelation.sameBarcode);
+  });
 }

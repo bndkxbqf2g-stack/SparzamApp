@@ -4,6 +4,12 @@ import '../models/receipt_observation.dart';
 import '../models/receipt_identity.dart';
 import '../features/catalog/product_identity.dart';
 import '../features/offers/offer_import.dart';
+import 'quantity_normalizer.dart';
+
+/// Keeps a source-provided capture time when an offer enters price history.
+/// Legacy/manual offers without one use the caller's local fallback time.
+DateTime observedAtForOffer(Offer offer, {required DateTime fallback}) =>
+    offer.capturedAt ?? fallback;
 
 PriceObservation observationFromReceipt(ReceiptObservation receipt) {
   final identity = assessReceiptIdentity(
@@ -40,8 +46,17 @@ PriceObservation observationFromOffer(
   productId: offer.productId,
   storeName: offer.storeName,
   price: offer.offerPrice,
+  quantity: offer.packageAmount,
+  unit: offer.packageUnit,
+  unitPrice: offer.unitPrice ??
+      normalizedUnitPrice(
+        price: offer.offerPrice,
+        amount: offer.packageAmount,
+        unit: offer.packageUnit,
+      ),
   observedAt: observedAt,
   source: _offerSource(offer),
+  sourceAdapter: offer.sourceAdapter,
   kind: PriceObservationKind.offer,
   validFrom: offer.validFrom,
   validUntil: offer.validUntil,
@@ -60,8 +75,16 @@ PriceObservation regularObservationFromOffer(
   productId: offer.productId,
   storeName: offer.storeName,
   price: offer.originalPrice,
+  quantity: offer.packageAmount,
+  unit: offer.packageUnit,
+  unitPrice: normalizedUnitPrice(
+    price: offer.originalPrice,
+    amount: offer.packageAmount,
+    unit: offer.packageUnit,
+  ),
   observedAt: observedAt,
   source: _offerSource(offer),
+  sourceAdapter: offer.sourceAdapter,
   kind: PriceObservationKind.regular,
   validFrom: offer.validFrom,
   validUntil: offer.validUntil,
@@ -84,8 +107,7 @@ Iterable<PriceObservation> observationsFromOffer(
 }
 
 double _offerIdentityConfidence(Offer offer) {
-  if (offer.source == 'manual') return 1;
-  return hasTrustedOfferProofReference(offer.proofRef) ? 1 : 0;
+  return hasTrustedOfferEvidence(offer) && hasExactOfferBranch(offer) ? 1 : 0;
 }
 
 PriceObservationSource _offerSource(Offer offer) => switch (offer.source) {

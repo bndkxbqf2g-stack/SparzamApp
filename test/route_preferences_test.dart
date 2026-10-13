@@ -50,6 +50,33 @@ void main() {
     ListItem(product: noodles),
   ];
 
+  Offer stopCostOffer() => Offer(
+    id: 'lidl-milk-stop-cost',
+    productId: 'milch_35',
+    storeName: 'Lidl',
+    originalPrice: 1.29,
+    offerPrice: 0.10,
+    validFrom: DateTime(2026, 9, 25),
+    validUntil: DateTime(2026, 9, 26),
+    source: 'leaflet',
+    proofRef: 'leaflet://lidl-milk-stop-cost',
+  );
+
+  RouteOptimizer stopCostOptimizer(
+    double additionalStoreCost, {
+    List<String> enabledStoreNames = const ['Lidl', 'Kaufland'],
+  }) =>
+      RouteOptimizer(
+        items(),
+        [stopCostOffer()],
+        now: DateTime(2026, 9, 25),
+        euroPerKm: 0,
+        maxStores: 2,
+        additionalStoreCost: additionalStoreCost,
+        enabledStoreNames: enabledStoreNames,
+        marketPrices: _baselinePrices(),
+      );
+
   test('maxStores begrenzt erzeugte Routen', () {
     final optimizer = RouteOptimizer(
       items(),
@@ -132,6 +159,7 @@ void main() {
         validFrom: DateTime(2026, 9, 25),
         validUntil: DateTime(2026, 9, 26),
         source: 'leaflet',
+        proofRef: 'leaflet://lidl-milk-special',
       );
 
       final withoutTravel = RouteOptimizer(
@@ -176,6 +204,7 @@ void main() {
           validFrom: DateTime(2026, 9, 25),
           validUntil: DateTime(2026, 9, 26),
           source: 'leaflet',
+          proofRef: 'leaflet://lidl-milk-time-value',
         ),
       ],
       now: DateTime(2026, 9, 25),
@@ -195,6 +224,56 @@ void main() {
     expect(recommended.timeCost, greaterThan(0));
     expect(recommended.planningScore, greaterThan(recommended.total));
   });
+
+  test('Kosten je zusätzlichem Markt fließen in den Planungswert ein', () {
+    final withoutCost = stopCostOptimizer(0).bestPlan()!;
+    final withCost = stopCostOptimizer(0.30).bestPlan()!;
+
+    expect(withoutCost.stores, hasLength(2));
+    expect(withoutCost.additionalStoreCost, 0);
+    expect(withCost.stores, hasLength(1));
+    expect(withCost.stores.single.name, 'Lidl');
+    expect(withCost.additionalStoreCost, 0);
+  });
+
+  test(
+    'Marktstopp-Aufwand erhöht nur den Planungswert einer Mehrmarktroute',
+    () {
+      final freeOptimizer = stopCostOptimizer(
+        0,
+        enabledStoreNames: const ['ALDI Süd', 'Kaufland'],
+      );
+      final pricedOptimizer = stopCostOptimizer(
+        0.30,
+        enabledStoreNames: const ['ALDI Süd', 'Kaufland'],
+      );
+      final freePlan = freeOptimizer.buildPlan([
+        freeOptimizer.availableStores.firstWhere(
+          (store) => store.name == 'ALDI Süd',
+        ),
+        freeOptimizer.availableStores.firstWhere(
+          (store) => store.name == 'Kaufland',
+        ),
+      ]);
+      final pricedPlan = pricedOptimizer.buildPlan([
+        pricedOptimizer.availableStores.firstWhere(
+          (store) => store.name == 'ALDI Süd',
+        ),
+        pricedOptimizer.availableStores.firstWhere(
+          (store) => store.name == 'Kaufland',
+        ),
+      ]);
+
+      expect(freePlan.stores, hasLength(2));
+      expect(pricedPlan.stores, hasLength(2));
+      expect(pricedPlan.total, closeTo(freePlan.total, 0.0001));
+      expect(pricedPlan.additionalStoreCost, closeTo(0.30, 0.0001));
+      expect(
+        pricedPlan.planningScore,
+        closeTo(freePlan.planningScore + 0.30, 0.0001),
+      );
+    },
+  );
 
   test('deaktivierte Märkte werden aus der Optimierung entfernt', () {
     final optimizer = RouteOptimizer(
@@ -342,3 +421,4 @@ void main() {
     expect(optimizer.alternatives().first.stores.single.name, 'EDEKA');
   });
 }
+

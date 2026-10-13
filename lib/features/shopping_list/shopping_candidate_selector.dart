@@ -4,6 +4,7 @@ import '../../models/market_price.dart';
 import '../../models/offer.dart';
 import '../../models/product.dart';
 import '../../models/receipt_price_stat.dart';
+import '../../services/safe_external_url.dart';
 import '../offers/prospect_price_statistics.dart';
 import 'shopping_candidate_service.dart';
 
@@ -184,8 +185,9 @@ class _CandidateImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final image = (product.imageUrl ?? fallbackImageUrl)?.trim();
-    if (image == null || image.isEmpty) {
+    final image = safeExternalHttpUrl(product.imageUrl) ??
+        safeExternalHttpUrl(fallbackImageUrl);
+    if (image == null) {
       return const CircleAvatar(child: Icon(Icons.shopping_basket_outlined));
     }
     return ClipRRect(

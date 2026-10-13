@@ -80,12 +80,13 @@ class _ProspectPageOfferDialogState extends State<_ProspectPageOfferDialog> {
       firstDate: today,
       lastDate: lastDay,
     );
-    if (selected != null) {
-      setState(() {
-        _validUntil = DateUtils.dateOnly(selected);
-        _dateError = null;
-      });
+    if (!mounted || selected == null) {
+      return;
     }
+    setState(() {
+      _validUntil = DateUtils.dateOnly(selected);
+      _dateError = null;
+    });
   }
 
   void _submit() {

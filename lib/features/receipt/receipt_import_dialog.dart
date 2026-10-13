@@ -201,8 +201,10 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
         if (text != null && text.trim().isNotEmpty) {
           if (_isStructuredReceiptFile(file.name)) {
             final draft = parseReceiptLedger(text);
-            final existing = [...receiptDrafts, ...newDrafts]
-                .any((entry) => entry.draft.fingerprint == draft.fingerprint);
+            final existing = [...receiptDrafts, ...newDrafts].any(
+              (entry) =>
+                  entry.draft.duplicateFingerprint == draft.duplicateFingerprint,
+            );
             if (existing) {
               duplicateCount++;
             } else {
@@ -342,6 +344,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
           id: 'receipt_auto_${DateTime.now().microsecondsSinceEpoch}_${row.line}',
         );
         availableProducts = await createProduct(product);
+        if (!mounted) return;
         assignedProducts[key] = product.id;
         automaticProductAssignments.add(key);
       }
@@ -471,6 +474,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
       if (prices.isNotEmpty) {
         await widget.onSavePrices(prices);
       }
+      if (!mounted) return;
       if (prices.isEmpty && savedObservations == 0) {
         setState(() => errorMessage =
             'Keine verwertbaren Produkt- oder Preisbeobachtungen gefunden.');

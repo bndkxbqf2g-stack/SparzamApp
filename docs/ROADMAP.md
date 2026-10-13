@@ -43,6 +43,23 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 - [x] Den zuletzt validierten öffentlichen Prospektfeed bei vorübergehendem
   Offline-Abruf als datierten Fallback nutzen, ohne abgelaufene Angebote zu
   reaktivieren.
+- [x] Den versionierten öffentlichen Feed auch beim Kaltstart ohne Netzwerk und
+  ohne lokalen Cache als App-Asset laden; der Stand bleibt als nicht-live
+  gekennzeichnet und wird weiterhin auf Angebotsgültigkeit geprüft.
+- [x] Bei einem vollständigen Refresh-Ausfall den ursprünglichen
+  `generatedAt`-Zeitpunkt erhalten, damit Fallback-Daten nicht künstlich frisch
+  erscheinen.
+- [x] Artikelbilder in großen Prospektlisten im Web strikt im Canvas rendern;
+  die wenigen Cover- und Viewerbilder dürfen bei einem Bild-/CORS-Problem auf
+  HTML-Plattform-Views zurückfallen. Dadurch bleibt der große Scrollpfad ohne
+  unnötige Plattform-Views.
+- [x] Non-Food-Kampagnenartikel an Refresh- und App-Grenze aus dem aktuellen
+  Angebotsbestand ausschließen, ohne Lebensmittelbegriffe mit ähnlichen
+  Wortteilen zu verlieren.
+- [x] Die sichtbare Quellenabdeckung nach dem Filter zählen und abweichende
+  Provider-Rohmengen separat als `rawRecordCount` erhalten.
+- [x] Eine verifizierte Coverseite des Netto-Filialprospekts im Offline-Stand
+  mit Zeitraum, Seite und exakter Filiale anzeigen.
 - [ ] Prospektfeed weiter auf vollständige Artikelbilder, Kategorien,
   Filialbezug und belastbare Gültigkeit ausbauen.
 - [x] Bildseiten ermöglichen eine geprüfte manuelle Artikelübernahme mit
@@ -140,6 +157,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Externe Angebotsimporte ohne belastbaren Nachweis von exakter Preisprojektion ausschließen.
 - [x] Ausgewiesenen Normalpreis eines belegten Angebots als getrennte reguläre Preisbeobachtung erhalten.
 - [ ] Hierarchie über weitere Produktfamilien systematisch ausbauen; die vollständige Katalogmigration bleibt offen.
+- [x] Scanner- und manuelle EAN-Eingaben werden ohne Identitätsraten
+  normalisiert; UPC-A und getrennte Eingabeformatierung bleiben exakt
+  vergleichbar.
 - [ ] Angebotsquellen automatisiert aus realen Prospekten/Bildern einspeisen und Gültigkeit/Filialbezug prüfen.
 
 

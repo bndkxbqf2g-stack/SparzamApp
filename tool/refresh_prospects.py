@@ -9,7 +9,6 @@ from datetime import date, datetime, timedelta, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import parse_qs, quote, unquote, urljoin, urlsplit
-from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
 
@@ -19,6 +18,11 @@ except ModuleNotFoundError:
     # unittest loads this module from the repository root, whereas
     # `python tool/refresh_prospects.py` puts tool/ itself on sys.path.
     from tool.bring_prospects import fetch_current_bring_prospects
+
+try:
+    from kaufda_prospects import fetch_current_kaufda_prospects
+except ModuleNotFoundError:
+    from tool.kaufda_prospects import fetch_current_kaufda_prospects
 
 OUTPUT = Path("assets/prospects/current.json")
 UA = "SparzamApp/1.0 (+https://github.com/bndkxbqf2g-stack/SparzamApp)"
@@ -145,24 +149,11 @@ def fetch(url, extra_headers=None):
     if extra_headers:
         headers.update(extra_headers)
     request = Request(url, headers=headers)
-    try:
-        with urlopen(request, timeout=30) as response:
-            return response.read().decode("utf-8", errors="replace")
-    except HTTPError as error:
-        if error.code != 403:
-            raise
-        # Some public retailer pages reject non-browser user agents although
-        # the same page is intended for normal browser access. Retry once with
-        # a standard browser UA; no login, challenge or protected endpoint is bypassed.
-        browser_headers = {
-            **headers,
-            "User-Agent": (
-                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                "(KHTML, like Gecko) Chrome/140.0 Safari/537.36"
-            ),
-        }
-        with urlopen(Request(url, headers=browser_headers), timeout=30) as response:
-            return response.read().decode("utf-8", errors="replace")
+    # A 403 is a source boundary. Do not retry with a browser identity or
+    # otherwise attempt to bypass a retailer's access decision; callers keep
+    # the previous validated feed or use their configured fallback instead.
+    with urlopen(request, timeout=30) as response:
+        return response.read().decode("utf-8", errors="replace")
 
 def parsed(html_text):
     parser = VisibleTextParser()
@@ -261,6 +252,96 @@ def record(
     return result
 
 ALDI_API_URL = "https://api.aldi-sued.de/v3/product-search"
+ALDI_HOME_URL = "https://www.aldi-sued.de/"
+ALDI_PROSPECT_HOST = "prospekt.aldi-sued.de"
+ALDI_PROSPECT_LINK_RE = re.compile(
+    r"https://prospekt\.aldi-sued\.de/(?P<slug>kw(?P<week>\d{1,2})-(?P<year>\d{2})(?:-[a-z0-9-]+)?)"
+    r"(?:/page/\d+)?(?:\?[^\"'<>\s]*)?",
+    re.IGNORECASE,
+)
+ALDI_PROSPECT_IMAGE_RE = re.compile(
+    r"https?://[^\"'<>\s]+/is/image/[^\"'<>\s]+",
+    re.IGNORECASE,
+)
+
+
+def _aldi_prospect_period(week_text, year_text):
+    try:
+        start = date.fromisocalendar(2000 + int(year_text), int(week_text), 1)
+    except ValueError:
+        return None
+    return start, start + timedelta(days=5)
+
+
+def parse_aldi_prospects(html_text, base_url=ALDI_HOME_URL, *, today=None):
+    """Extract the current public ALDI Süd leaflet cover from the homepage.
+
+    The official page publishes a public leaflet link and a matching CMS
+    image. We keep one verified cover page; offer records continue to come
+    from the structured product endpoint.
+    """
+    reference = today or local_today()
+    candidates = []
+    for match in ALDI_PROSPECT_LINK_RE.finditer(html_text or ""):
+        href = html.unescape(match.group(0))
+        absolute = urljoin(base_url, href)
+        if urlsplit(absolute).netloc.casefold() != ALDI_PROSPECT_HOST:
+            continue
+        # Teaser links may point at an interior page. Store the canonical
+        # leaflet root so the viewer opens consistently and IDs stay stable.
+        absolute = re.sub(r"/page/\d+(?=$|[?#])", "", absolute)
+        period = _aldi_prospect_period(match.group("week"), match.group("year"))
+        if period is None:
+            continue
+        start, end = period
+        if end < reference or start > reference + timedelta(days=14):
+            continue
+        candidates.append((start, end, absolute, match.group("slug").casefold()))
+    if not candidates:
+        return []
+
+    active = [candidate for candidate in candidates if candidate[0] <= reference <= candidate[1]]
+    valid_from, valid_until, prospect_url, slug = max(
+        active or candidates,
+        key=lambda value: (value[0], value[1], value[2]),
+    )
+    week_match = re.search(r"kw(\d{1,2})-", slug, flags=re.I)
+    if week_match is None:
+        return []
+    week_marker = "kw" + str(int(week_match.group(1)))
+    kind = slug.split("-", 2)[-1].replace("-", "")
+    images = []
+    for raw_image in ALDI_PROSPECT_IMAGE_RE.findall(html_text or ""):
+        image = html.unescape(raw_image)
+        image = image.rstrip(".,)")
+        lower = image.casefold()
+        if week_marker not in lower:
+            continue
+        if kind and kind not in lower:
+            continue
+        if image not in images:
+            images.append(image)
+    if not images:
+        return []
+
+    title = f"ALDI Süd Prospekt {valid_from:%d.%m.%Y} – {valid_until:%d.%m.%Y}"
+    return [{
+        "id": stable_id("ALDI Süd", prospect_url, title),
+        "title": title,
+        "url": prospect_url,
+        "offerStartDate": valid_from.isoformat(),
+        "offerEndDate": valid_until.isoformat(),
+        "status": "current",
+        "productCount": 0,
+        "pageCount": 1,
+        "thumbnailUrl": images[0],
+        "pageSamples": [{
+            "number": 1,
+            "altText": "Titelseite des aktuellen ALDI Süd-Prospekts",
+            "keyWords": "",
+            "image": images[0],
+        }],
+    }]
 
 
 def _aldi_api_url(promotion_day, offset=0):
@@ -394,7 +475,14 @@ def fetch_aldi_api_offers():
 
     if successful_days == 0 or not all_offers:
         raise ValueError("ALDI API lieferte keine verwertbaren Aktionstage")
-    return dedupe(all_offers), []
+    prospects = []
+    try:
+        prospects = parse_aldi_prospects(fetch(ALDI_HOME_URL), ALDI_HOME_URL)
+    except Exception:
+        # The structured price source remains usable if the public cover
+        # teaser is temporarily unavailable or changes its markup.
+        prospects = []
+    return dedupe(all_offers), prospects
 
 
 def parse_aldi(html_text, base_url):
@@ -552,6 +640,87 @@ def parse_edeka_api(json_text, base_url):
     return dedupe(offers), []
 
 
+def parse_edeka_prospects(html_text, base_url, *, today=None):
+    """Extract the current branch-linked EDEKA leaflet cover.
+
+    EDEKA's market page exposes both the exact market prospect link and the
+    public page-1 image from its leaflets catalog. Keep those two signals
+    together so a generic campaign image cannot become a branch prospect.
+    """
+    market_match = re.search(r"/maerkte/(\d+)/", base_url)
+    if market_match is None:
+        return []
+    market_id = market_match.group(1)
+    prospect_url = None
+    for raw_href in re.findall(
+        r'<a\b[^>]*\bhref=["\']([^"\']*?/prospekte/[^"\']*)["\']',
+        html_text or "",
+        flags=re.I,
+    ):
+        href = html.unescape(raw_href)
+        absolute = urljoin(base_url, href)
+        if urlsplit(absolute).netloc.casefold() != "www.edeka.de":
+            continue
+        if not re.search(r"/maerkte/" + re.escape(market_id) + r"/prospekte/", absolute):
+            continue
+        prospect_url = absolute
+        break
+    if not prospect_url:
+        return []
+
+    validity = re.search(
+        r"Gültig\s+vom\s+(\d{2})\.(\d{2})\.(\d{4})\s+bis(?:\s+zum)?\s+"
+        r"(\d{2})\.(\d{2})\.(\d{4})",
+        clean(re.sub(r"<[^>]+>", " ", html_text or "")),
+        flags=re.I,
+    )
+    if validity is None:
+        return []
+    try:
+        valid_from = date(
+            int(validity.group(3)), int(validity.group(2)), int(validity.group(1))
+        )
+        valid_until = date(
+            int(validity.group(6)), int(validity.group(5)), int(validity.group(4))
+        )
+    except ValueError:
+        return []
+    reference = today or local_today()
+    if valid_until < reference or valid_from > reference + timedelta(days=14):
+        return []
+
+    images = []
+    for raw_image in re.findall(
+        r"https?://blaetterkatalog\.edeka\.de/[^\"'<>\s]+/bk_1\.jpg(?:\?[^\"'<>\s]*)?",
+        html_text or "",
+        flags=re.I,
+    ):
+        image = html.unescape(raw_image).rstrip(".,)")
+        if image not in images:
+            images.append(image)
+    if not images:
+        return []
+
+    title = f"EDEKA Prospekt {valid_from:%d.%m.%Y} – {valid_until:%d.%m.%Y}"
+    return [{
+        "id": stable_id("EDEKA", prospect_url, title),
+        "title": title,
+        "url": prospect_url,
+        "offerStartDate": valid_from.isoformat(),
+        "offerEndDate": valid_until.isoformat(),
+        "status": "current",
+        "productCount": 0,
+        "pageCount": 1,
+        "thumbnailUrl": images[0],
+        "pageSamples": [{
+            "number": 1,
+            "altText": "Titelseite des aktuellen EDEKA-Prospekts",
+            "keyWords": "",
+            "image": images[0],
+        }],
+    }]
+
+
 def parse_edeka(html_text, base_url):
     # EDEKA currently embeds part of the offer markup inside script/template
     # payloads. HTMLParser intentionally skips scripts, so scan a tag-stripped
@@ -644,10 +813,15 @@ def parse_edeka(html_text, base_url):
         if previous is None or has_specific_start:
             candidates[key] = item
 
-    return list(candidates.values()), []
+    return list(candidates.values()), parse_edeka_prospects(html_text, base_url)
 
 KAUFLAND_OVERVIEW_URL = (
     "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-week=current"
+)
+KAUFLAND_LEAFLET_HOST = "leaflets.kaufland.com"
+KAUFLAND_LEAFLET_IMAGE_RE = re.compile(
+    r"https://imgproxy\.leaflets\.schwarz/[^\"'\s<>]+?\.(?:jpg|jpeg|png)(?:\?[^\"'\s<>]*)?",
+    re.IGNORECASE,
 )
 
 
@@ -657,6 +831,128 @@ def _kaufland_selector(store_url):
         return match.group(1).upper()
     match = re.search(r"storeName=(DE\d+)", store_url, flags=re.I)
     return match.group(1).upper() if match else ""
+
+
+def _kaufland_leaflet_date_range(label, today=None):
+    """Parse a short public leaflet validity label around the reference day.
+
+    Kaufland omits years from this label. Trying the neighbouring years keeps
+    a December-to-January leaflet tied to the correct period at year
+    boundaries instead of treating its start as almost a year in the future.
+    """
+    match = re.search(
+        r"Gültig\s+vom\s+(\d{2})\.(\d{2})\.\s*bis\s+(\d{2})\.(\d{2})\.",
+        clean(label),
+        flags=re.I,
+    )
+    if match is None:
+        return None
+    reference = today or local_today()
+    intervals = []
+    for start_year in (reference.year - 1, reference.year, reference.year + 1):
+        try:
+            start = date(start_year, int(match.group(2)), int(match.group(1)))
+            end = date(start_year, int(match.group(4)), int(match.group(3)))
+        except ValueError:
+            continue
+        if end < start:
+            end = date(start_year + 1, end.month, end.day)
+        intervals.append((start, end))
+    if not intervals:
+        return None
+    active = [interval for interval in intervals if interval[0] <= reference <= interval[1]]
+    if active:
+        return max(active, key=lambda interval: interval[0])
+    future = [interval for interval in intervals if interval[0] > reference]
+    if future:
+        return min(future, key=lambda interval: interval[0])
+    return max(intervals, key=lambda interval: interval[1])
+
+
+def _kaufland_leaflet_branch_pattern(selector):
+    """Return the public leaflet path pattern for a DE store selector.
+
+    Kaufland's branch page exposes the country-prefixed selector (for example
+    ``DE5103``), while the public leaflet URL uses only the numeric branch
+    code (``/ar/5103``).  Accepting that documented URL form keeps the exact
+    branch constraint without relying on a looser text match.
+    """
+    branch_code = selector[2:] if selector.upper().startswith("DE") else selector
+    return r"/ar/" + re.escape(branch_code) + r"(?:$|[/?])"
+
+
+def parse_kaufland_leaflet_prospect(
+    branch_html,
+    viewer_html,
+    store_url,
+    *,
+    today=None,
+):
+    """Extract one current public Kaufland leaflet cover.
+
+    The branch page is the source of the exact store and validity label. The
+    separate public viewer supplies the cover image. Only a single verified
+    page is published; no private API or account state is required.
+    """
+    selector = _kaufland_selector(store_url)
+    if not selector:
+        return []
+    reference = today or local_today()
+    branch_page = parsed(branch_html)
+    candidates = []
+    for href, text in branch_page.anchors:
+        absolute = urljoin(store_url, href)
+        if urlsplit(absolute).netloc.casefold() != KAUFLAND_LEAFLET_HOST:
+            continue
+        if not re.search(_kaufland_leaflet_branch_pattern(selector), absolute):
+            continue
+        dates = _kaufland_leaflet_date_range(text, reference)
+        if dates is None:
+            continue
+        start, end = dates
+        if end < reference or start > reference + timedelta(days=14):
+            continue
+        candidates.append((start, end, absolute, text))
+    if not candidates:
+        return []
+    active = [
+        candidate
+        for candidate in candidates
+        if candidate[0] <= reference <= candidate[1]
+    ]
+    # A branch page may keep an overlapping prior leaflet alongside the
+    # current one. Prefer the leaflet active today, then the latest upcoming
+    # period when no active period is published.
+    pool = active or candidates
+    valid_from, valid_until, viewer_url, label = max(
+        pool,
+        key=lambda value: (value[0], value[1], value[2]),
+    )
+    images = []
+    for image in KAUFLAND_LEAFLET_IMAGE_RE.findall(viewer_html or ""):
+        if image not in images:
+            images.append(image)
+    if not images:
+        return []
+    title = f"Kaufland Prospekt {valid_from:%d.%m.%Y} – {valid_until:%d.%m.%Y}"
+    return [{
+        "id": stable_id("Kaufland", viewer_url, title),
+        "title": title,
+        "url": viewer_url,
+        "offerStartDate": valid_from.isoformat(),
+        "offerEndDate": valid_until.isoformat(),
+        "status": "current",
+        "productCount": 0,
+        "pageCount": 1,
+        "thumbnailUrl": images[0],
+        "pageSamples": [{
+            "number": 1,
+            "altText": "Titelseite des aktuellen Kaufland-Prospekts",
+            "keyWords": "",
+            "image": images[0],
+        }],
+        "sourceLabel": clean(label),
+    }]
 
 
 def _kaufland_available_ids(json_text):
@@ -810,7 +1106,38 @@ def fetch_kaufland_api_offers(store_url):
     )
     if not offers:
         raise ValueError("Kaufland Strukturdaten lieferten keine Angebote")
-    return offers, []
+    prospects = []
+    try:
+        branch_page = fetch(
+            store_url,
+            {"Cookie": "x-aem-variant=" + selector},
+        )
+        branch_parser = parsed(branch_page)
+        current_link = next(
+            (
+                urljoin(store_url, href)
+                for href, text in branch_parser.anchors
+                if KAUFLAND_LEAFLET_HOST in urlsplit(urljoin(store_url, href)).netloc
+                and re.search(
+                    _kaufland_leaflet_branch_pattern(selector),
+                    urljoin(store_url, href),
+                )
+                and _kaufland_leaflet_date_range(text, local_today()) is not None
+            ),
+            None,
+        )
+        if current_link:
+            viewer_page = fetch(current_link)
+            prospects = parse_kaufland_leaflet_prospect(
+                branch_page,
+                viewer_page,
+                store_url,
+            )
+    except Exception:
+        # Cover metadata is optional. The structured offer source remains
+        # usable when the public viewer changes or is temporarily unavailable.
+        prospects = []
+    return offers, prospects
 
 
 def parse_kaufland(html_text, base_url):
@@ -1406,6 +1733,76 @@ def parse_penny_api(json_text, base_url, valid_from, valid_until, category=None)
     return dedupe(offers), []
 
 
+def parse_penny_prospect(html_text, base_url=PENNY_OFFERS_PAGE, *, today=None):
+    """Extract the current public PENNY handout cover.
+
+    The offers page publishes the handout period and its CMS image in the
+    current-week wrapper. Keep only that wrapper so category tiles or stale
+    preview images cannot become a current prospect.
+    """
+    wrapper_match = re.search(
+        r'<div\b[^>]*\bid=["\']handout-current-week["\'][^>]*>(.*?)</div>',
+        html_text or "",
+        flags=re.I | re.S,
+    )
+    if wrapper_match is None:
+        return []
+    wrapper = wrapper_match.group(0)
+    period_match = re.search(
+        r'<div\b[^>]*class=["\'][^"\']*handout__subline[^"\']*["\'][^>]*>'
+        r'\s*(\d{2})\.(\d{2})\.\s*bis\s*(\d{2})\.(\d{2})\.\s*</div>',
+        html_text or "",
+        flags=re.I | re.S,
+    )
+    if period_match is None:
+        return []
+    reference = today or local_today()
+    try:
+        valid_from = date(reference.year, int(period_match.group(2)), int(period_match.group(1)))
+        valid_until = date(reference.year, int(period_match.group(4)), int(period_match.group(3)))
+    except ValueError:
+        return []
+    if valid_until < valid_from:
+        valid_until = date(reference.year + 1, valid_until.month, valid_until.day)
+    if valid_until < reference or valid_from > reference + timedelta(days=14):
+        return []
+    image_match = re.search(
+        r'\b(?:data-src|src)=["\'](https?://cdn\.penny\.de/[^"\']+)["\']',
+        wrapper,
+        flags=re.I,
+    )
+    if image_match is None:
+        return []
+    image = html.unescape(image_match.group(1))
+    # Prefer the large public rendition when a responsive source is present.
+    for candidate in re.findall(
+        r'https?://cdn\.penny\.de/[^\s"\']+imwidth=(?:1800|2400)',
+        wrapper,
+        flags=re.I,
+    ):
+        image = html.unescape(candidate)
+        break
+    prospect_url = urljoin(base_url, "#handout")
+    title = f"PENNY Prospekt {valid_from:%d.%m.%Y} – {valid_until:%d.%m.%Y}"
+    return [{
+        "id": stable_id("PENNY", prospect_url, title),
+        "title": title,
+        "url": prospect_url,
+        "offerStartDate": valid_from.isoformat(),
+        "offerEndDate": valid_until.isoformat(),
+        "status": "current",
+        "productCount": 0,
+        "pageCount": 1,
+        "thumbnailUrl": image,
+        "pageSamples": [{
+            "number": 1,
+            "altText": "Titelseite des aktuellen PENNY-Prospekts",
+            "keyWords": "",
+            "image": image,
+        }],
+    }]
+
+
 def fetch_penny_api_offers(base_url):
     market_id = _penny_market_id(base_url)
     market_body = fetch(PENNY_MARKETS_URL)
@@ -1434,7 +1831,14 @@ def fetch_penny_api_offers(base_url):
 
     if successful_categories == 0 or not all_offers:
         raise ValueError("PENNY API lieferte keine verwertbaren Kategorien")
-    return dedupe(all_offers), []
+    prospects = []
+    try:
+        prospects = parse_penny_prospect(catalog_html, PENNY_OFFERS_PAGE)
+    except Exception:
+        # The category offer source remains usable when the optional handout
+        # markup or its cover image is unavailable.
+        prospects = []
+    return dedupe(all_offers), prospects
 
 
 def parse_penny(html_text, base_url):
@@ -1643,7 +2047,101 @@ def parse_netto(html_text, base_url):
             valid_until=valid_until,
         )
     )
-    return dedupe(offers), []
+    return dedupe(offers), _parse_netto_prospects(
+        html_text,
+        base_url,
+        valid_from=valid_from,
+        valid_until=valid_until,
+    )
+
+
+def _parse_netto_prospects(
+    html_text,
+    base_url,
+    *,
+    valid_from,
+    valid_until,
+):
+    """Read the current filial-specific Netto weekly leaflet cover.
+
+    The public store page links the weekly leaflet through a ``wochenprospekt``
+    URL and marks its cover image with the stable ``Filial-Angebote`` alt text.
+    Keep this deliberately narrower than the offer parser so shop banners and
+    generic campaign brochures cannot become a branch prospect by accident.
+    """
+    expected_store_id = ""
+    store_match = re.search(r"/(\d+)(?:/)?(?:[?#]|$)", base_url)
+    if store_match:
+        expected_store_id = store_match.group(1)
+
+    anchor_re = re.compile(
+        r"<a\b[^>]*\bhref\s*=\s*['\"]([^'\"]*wochenprospekt[^'\"]*)['\"][^>]*>"
+        r"(.*?)</a>",
+        re.I | re.S,
+    )
+    image_re = re.compile(
+        r"<img\b[^>]*\balt\s*=\s*['\"]Filial-Angebote['\"][^>]*>",
+        re.I | re.S,
+    )
+    attribute_re = re.compile(
+        r"\b(?:data-src|data-lazy-src|src)\s*=\s*['\"]([^'\"]+)['\"]",
+        re.I,
+    )
+    def make_prospect(href, thumbnail):
+        query = parse_qs(urlsplit(href).query)
+        linked_store_id = clean(str((query.get("storeid") or [""])[0]))
+        if expected_store_id and linked_store_id and linked_store_id != expected_store_id:
+            return None
+        title = "Netto Wochenprospekt"
+        if valid_from and valid_until:
+            title += " " + valid_from.strftime("%d.%m.%Y")
+            title += " – " + valid_until.strftime("%d.%m.%Y")
+        prospect_id = stable_id("Netto", href, title)
+        return [{
+            "id": prospect_id,
+            "title": title,
+            "url": href,
+            "offerStartDate": valid_from.isoformat() if valid_from else None,
+            "offerEndDate": valid_until.isoformat() if valid_until else None,
+            "status": "current",
+            "pageCount": 1,
+            "thumbnailUrl": thumbnail,
+            "pageSamples": [{
+                "number": 1,
+                "altText": "Filial-Angebote",
+                "image": thumbnail,
+            }],
+        }]
+    for match in anchor_re.finditer(html_text):
+        href = urljoin(base_url, html.unescape(match.group(1)))
+        image_match = image_re.search(match.group(2))
+        if image_match is None:
+            continue
+        image_source = attribute_re.search(image_match.group(0))
+        if image_source is None:
+            continue
+        prospect = make_prospect(
+            href,
+            urljoin(base_url, html.unescape(image_source.group(1))),
+        )
+        if prospect:
+            return prospect
+
+    # The Jina reader fallback converts the same official anchor to Markdown.
+    # Accept only the exact Filial-Angebote image/link pair so unrelated images
+    # from the store page cannot be promoted to a current prospect.
+    markdown_re = re.compile(
+        r"\[!\[Filial-Angebote\]\(([^)\s]+)\)\]\(([^)\s]+)\)",
+        re.I,
+    )
+    for match in markdown_re.finditer(html_text):
+        prospect = make_prospect(
+            urljoin(base_url, html.unescape(match.group(2))),
+            urljoin(base_url, html.unescape(match.group(1))),
+        )
+        if prospect:
+            return prospect
+    return []
 
 
 def _parse_netto_markdown_tiles(
@@ -1860,8 +2358,117 @@ def dedupe(offers):
     unique = {}
     for item in offers:
         key = (item["storeName"], clean(item["productLabel"]).lower(), item["validFrom"], item["validUntil"], item["offerPrice"])
-        unique[key] = item
+        previous = unique.get(key)
+        if previous is None:
+            unique[key] = item
+            continue
+        # An optional KaufDA hit may describe the same current article as an
+        # official retailer record. Keep the official record as the primary
+        # evidence while retaining any metadata KaufDA supplied that the
+        # official adapter lacks.
+        previous_is_kaufda = clean(previous.get("sourceAdapter")).casefold() == "kaufda"
+        item_is_kaufda = clean(item.get("sourceAdapter")).casefold() == "kaufda"
+        if previous_is_kaufda and not item_is_kaufda:
+            selected, supplement = item, previous
+        elif item_is_kaufda and not previous_is_kaufda:
+            selected, supplement = previous, item
+        else:
+            selected, supplement = item, previous
+        merged = dict(selected)
+        for field in ("imageUrl", "category", "packageSize", "priceByBaseUnit", "brochureId", "brochurePage", "publisherId"):
+            if not clean(merged.get(field)) and clean(supplement.get(field)):
+                merged[field] = supplement[field]
+        unique[key] = merged
     return list(unique.values())
+
+
+# Public retailer feeds also expose non-food campaign articles. The app's
+# visible offer contract is intentionally food-only, so apply one conservative
+# final guard after every source adapter. Word boundaries keep food names such
+# as "Pflanzenöl" from being rejected by the household "Pflanzen" marker.
+NON_FOOD_OFFER_RE = re.compile(
+    r"\b(?:"
+    r"hausschuhe|schuhe|bettwäsche|bettwaesche|bekleidung|sweatbekleidung|"
+    r"fleece|pyjama|anti-rutsch|platzset|tischläufer|tischlaeufer|kissen|"
+    r"spielzeug|bausteine|figuren|laterne|kostüm|kostuem|stabkerzen|"
+    r"lichterkette|naturgeräuschebox|naturgeraeuschebox|waffeleisen|"
+    r"möbel|moebel|garten|pflanzen|pflanze|orchidee|herbstheide|chrysanthemen|"
+    r"skimmie|elektronik|handy|fernseher|hörgerätebatterien|"
+    r"hoergeraetebatterien|batterien|"
+    r"waschmittel|geschirrreiniger|wc-ente|shampoo|spülung|spuelung|"
+    r"kosmetik|tierbedarf|katzennahrung|kratzhaus|katzenstreu|drucker|glade|"
+    r"vileda|somat|ariel|lenor|perwoll|garnier|nivea|colgate|"
+    r"zahnbürste|zahnbuerste|zahnpasta|deospray|handcreme|bodylotion|"
+    r"rexona|neutrogena|odol|dr\.\s*best|pril|finish|swiffer|dirt\s+devil|"
+    r"cleanmaxx|parkside|garnier\s+fructis|multifunktionswerkzeug|"
+    r"dampfreiniger|wäschetrockner|waeschetrockner|ofenhandschuh|"
+    r"strukturpflanze|herbstpflanzen|küchenrolle|kuechenrolle|toilettenpapier|"
+    r"servietten|haushaltstücher|haushaltstuecher|"
+    r"wärmepad|waermepad|wärmepflaster|waermepflaster|tabletten|halstabletten|"
+    r"kollagenpulver|gutschein-adventskalender|mila's\s+world|max's\s+world|"
+    r"home\s+creation|block\s+tech|ambiano|cachet|novitesse|multinorm|"
+    r"rose|taschentücher|taschentuecher|poly\s+palette|schwarzkopf|taft|"
+    r"dove|duschgel|dusche|haarreif|wasserkocher|kochgeschirr|haushaltshelfer|"
+    r"besenheide|geschenkpapier|geschenkband|"
+    r"geschenktaschen|paw\s+patrol|franzis|playmobil|craze|lego|funko|"
+    r"mattel|revell|majorette|kosmos|spice\s*&\s*soul|silvercrest|"
+    r"livarno|liv&bo|handbrause|frottier|trinkglas|tasche\s*[„\"]|"
+    r"bepflanzt(?:es|e)?|holzgefäß|holzgefaess|badesalz|anginetten|"
+    r"purina|gourmet\s+(?:perle|gold)|vitakraft|sheba|calgon|cosmea|"
+    r"viss|wc-frisch|pampers|gillette|emyo|slipeinlagen|hundesnack|hundefutter|"
+    r"katzenfutter|tiernahrung|"
+    r"tasche.{0,15}halloween"
+    r")\b",
+    re.IGNORECASE,
+)
+
+NON_FOOD_CATEGORY_RE = re.compile(
+    r"(?:tierbedarf|tiernahrung|haustierbedarf|pet\s*food)",
+    re.IGNORECASE,
+)
+KNOWN_FOOD_IN_NON_FOOD_CATEGORY_RE = re.compile(
+    r"(?:slim\s+shake|protein-riegel)",
+    re.IGNORECASE,
+)
+
+
+def is_food_offer(item):
+    label = clean(item.get("productLabel", "")) if isinstance(item, dict) else ""
+    category = ""
+    if isinstance(item, dict):
+        category = clean(
+            " ".join(
+                str(item.get(key, ""))
+                for key in ("category", "subcategory", "department")
+                if item.get(key) is not None
+            )
+        )
+    return (
+        bool(label)
+        and NON_FOOD_OFFER_RE.search(label) is None
+        and (
+            NON_FOOD_CATEGORY_RE.search(category) is None
+            or KNOWN_FOOD_IN_NON_FOOD_CATEGORY_RE.search(label) is not None
+        )
+    )
+
+
+def update_source_record_counts(sources, offers):
+    """Expose filtered food counts while retaining the provider raw count."""
+    counts = {}
+    for item in offers:
+        store = clean(item.get("storeName", ""))
+        if store:
+            counts[store] = counts.get(store, 0) + 1
+    for source in sources:
+        if not isinstance(source, dict):
+            continue
+        store = clean(source.get("storeName", ""))
+        raw_count = source.get("recordCount")
+        filtered_count = counts.get(store, 0)
+        if isinstance(raw_count, int) and raw_count != filtered_count:
+            source.setdefault("rawRecordCount", raw_count)
+        source["recordCount"] = filtered_count
 
 
 def current_prospect_offers(offers, today=None):
@@ -1869,6 +2476,8 @@ def current_prospect_offers(offers, today=None):
     reference = today or local_today()
     active = []
     for item in offers:
+        if not is_food_offer(item):
+            continue
         try:
             start = date.fromisoformat(str(item.get("validFrom", ""))[:10])
             end = date.fromisoformat(str(item.get("validUntil", ""))[:10])
@@ -1883,10 +2492,26 @@ def current_prospect_offers(offers, today=None):
     selected = set()
     by_store = {}
     for key, values in groups.items():
-        by_store.setdefault(key[0], []).append((len(values), key[1], key[2], key))
+        # Optional KaufDA discovery must never displace an official retailer
+        # period merely because it returned more search hits. It may enrich
+        # the selected official period, but its own period is only selected
+        # when no authoritative period exists for that retailer.
+        has_official_record = any(
+            clean(item.get("sourceAdapter", "")).casefold() != "kaufda"
+            for item in values
+        )
+        by_store.setdefault(key[0], []).append(
+            (
+                1 if has_official_record else 0,
+                len(values),
+                key[1],
+                key[2],
+                key,
+            )
+        )
     for candidates in by_store.values():
-        candidates.sort(key=lambda value: (value[0], value[1], value[2]), reverse=True)
-        selected.add(candidates[0][3])
+        candidates.sort(key=lambda value: (value[0], value[1], value[2], value[3]), reverse=True)
+        selected.add(candidates[0][4])
     return dedupe([item for item in active if (item.get("storeName"), item.get("validFrom"), item.get("validUntil")) in selected])
 
 PARSERS = {
@@ -1922,9 +2547,26 @@ def active_previous(previous, store):
         ]
     return active
 
+
+def feed_generated_at(previous, refreshed_source_count, now=None):
+    """Return a truthful dataset timestamp for the refreshed feed.
+
+    A run where every source failed only carries forward still-valid previous
+    records. Calling that result "generated now" would make stale data look
+    fresh in the app, so preserve the previous timestamp until a source was
+    actually refreshed.
+    """
+    previous_value = previous.get("generatedAt")
+    if refreshed_source_count <= 0 and isinstance(previous_value, str) and previous_value.strip():
+        return previous_value
+    timestamp = now or datetime.now(timezone.utc)
+    return timestamp.isoformat().replace("+00:00", "Z")
+
+
 def main(selected_source_ids=None):
     previous = load_previous()
     all_offers, sources = [], []
+    refreshed_source_count = 0
     try:
         bring_by_store = fetch_current_bring_prospects()
     except Exception:
@@ -1966,6 +2608,10 @@ def main(selected_source_ids=None):
                     source_mode = "structured_api"
                     if not offers:
                         raise ValueError("EDEKA API lieferte keine Angebote")
+                    try:
+                        prospects = parse_edeka_prospects(fetch(url), url)
+                    except Exception:
+                        prospects = []
                 except Exception:
                     body = fetch(url)
                     offers, prospects = parse_edeka(body, url)
@@ -2053,6 +2699,7 @@ def main(selected_source_ids=None):
                 diagnostics = "edeka-sample=" + snippet[:220]
                 raise ValueError("keine sicher extrahierbaren Angebote gefunden; " + diagnostics)
             all_offers.extend(offers)
+            refreshed_source_count += 1
             sources.append({"id": source_id, "storeName": store, "url": url, "status": "metadata_only" if metadata_only else "ok", "recordCount": len(offers), "mode": source_mode, "prospects": prospects, **source_branch_metadata(source_id)})
         except Exception as error:
             bring_data = bring_by_store.get(store)
@@ -2078,15 +2725,89 @@ def main(selected_source_ids=None):
                     "retailerError": clean(str(error))[:240],
                     **source_branch_metadata(source_id),
                 })
+                refreshed_source_count += 1
                 continue
             kept = active_previous(previous, store)
             all_offers.extend(kept)
             sources.append({"id": source_id, "storeName": store, "url": url, "status": "error", "recordCount": len(kept), "error": clean(str(error))[:240], **source_branch_metadata(source_id)})
+
+    # kaufDA is an explicitly opt-in discovery adapter. Its public search
+    # pages identify publishers but do not reliably prove the exact branch;
+    # only records with an explicitly configured branch mapping become
+    # routeable. The default configuration is disabled and performs no fetch.
+    if not selected or "kaufda" in selected:
+        try:
+            kaufda_by_store = fetch_current_kaufda_prospects()
+        except Exception as error:
+            kaufda_by_store = {}
+            sources.append({
+                "id": "kaufda",
+                "storeName": "kaufDA",
+                "url": "https://www.kaufda.de/",
+                "status": "error",
+                "recordCount": 0,
+                "mode": "kaufda_next_data",
+                "error": clean(str(error))[:240],
+            })
+        for store, data in kaufda_by_store.items():
+            if not isinstance(data, dict):
+                continue
+            kaufda_offers = data.get("offers", [])
+            if not isinstance(kaufda_offers, list):
+                kaufda_offers = []
+            all_offers.extend(kaufda_offers)
+            branch = data.get("branch")
+            if not isinstance(branch, dict):
+                branch = {}
+            kaufda_metadata = {
+                "url": data.get("url") or "https://www.kaufda.de/",
+                "status": data.get("status", "unknown"),
+                "recordCount": len(kaufda_offers),
+                "mode": "kaufda_next_data",
+                "prospects": data.get("prospects", []),
+                "queries": data.get("queries", []),
+                "discoveredCount": data.get("rawItemCount", 0),
+                "regionalOnlyCount": data.get("regionalOnlyCount", 0),
+                "capturedAt": data.get("capturedAt"),
+                "cacheUsed": bool(data.get("cacheUsed", False)),
+                "errors": data.get("errors", []),
+            }
+            for key in ("branchId", "location", "address"):
+                if clean(branch.get(key)):
+                    kaufda_metadata[key] = clean(branch[key])
+            # Keep kaufDA provenance beside the authoritative retailer source.
+            matching_source = next(
+                (item for item in sources if item.get("storeName") == store),
+                None,
+            )
+            if matching_source is not None:
+                matching_source["kaufda"] = kaufda_metadata
+                if kaufda_metadata["status"] in ("ok", "metadata_only"):
+                    refreshed_source_count += 1
+            else:
+                sources.append({
+                    "id": "kaufda_" + re.sub(r"[^a-z0-9]+", "_", store.casefold()).strip("_"),
+                    "storeName": store,
+                    **kaufda_metadata,
+                })
+                if kaufda_metadata["status"] in ("ok", "metadata_only"):
+                    refreshed_source_count += 1
     all_offers = current_prospect_offers(all_offers)
-    payload = {"schemaVersion": 1, "generatedAt": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"), "sources": sources, "offers": all_offers}
+    update_source_record_counts(sources, all_offers)
+    payload = {"schemaVersion": 1, "generatedAt": feed_generated_at(previous, refreshed_source_count), "sources": sources, "offers": all_offers}
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("Prospektfeed:", len(payload["offers"]), "Angebote")
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    arguments = sys.argv[1:]
+    if any(argument in ("-h", "--help") for argument in arguments):
+        print("Usage: python tool/refresh_prospects.py [source-id ...]")
+        print("Source IDs:", ", ".join(source[0] for source in SOURCES), "(kaufda is opt-in)")
+        sys.exit(0)
+    allowed = {source[0] for source in SOURCES} | {"kaufda"}
+    unknown = sorted(set(arguments) - allowed)
+    if unknown:
+        print("Unbekannte Quelle:", ", ".join(unknown), file=sys.stderr)
+        sys.exit(2)
+    sys.exit(main(arguments))

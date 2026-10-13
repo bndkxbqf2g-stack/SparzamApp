@@ -24,8 +24,19 @@ class _ScannerScreenState extends State<ScannerScreen> {
   );
 
   Future<void> resolve(String? code, {bool retry = false}) async {
-    final normalizedCode = code?.trim();
-    if (completing || normalizedCode == null || normalizedCode.isEmpty) return;
+    final normalizedCode = code == null ? null : normalizeBarcode(code);
+    if (completing) return;
+    if (normalizedCode == null) {
+      // Camera frames can contain non-product QR/text payloads. Only show a
+      // message for an explicit manual retry; otherwise ignore the frame
+      // without flooding the snackbar queue.
+      if (retry && code != null && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Kein gültiger Barcode erkannt.')),
+        );
+      }
+      return;
+    }
     final product = productForBarcode(normalizedCode, widget.learnedProducts);
     if (product != null) {
       completing = true;

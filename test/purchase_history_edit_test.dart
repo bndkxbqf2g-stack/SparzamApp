@@ -48,6 +48,16 @@ void main() {
     expect(loaded.single.createdAt, DateTime(2026, 9, 3));
   });
 
+  test('ein paralleler Kauf-Read wartet auf einen laufenden Write', () async {
+    final store = PurchaseStore();
+    final reader = PurchaseStore();
+    final writing = store.add(record('parallel', DateTime(2026, 9, 4)), const []);
+    final reading = reader.load();
+
+    await writing;
+    expect((await reading).single.id, 'parallel');
+  });
+
   test('Historie bleibt nach einer Datumskorrektur chronologisch', () async {
     final store = PurchaseStore();
     var current = await store.add(

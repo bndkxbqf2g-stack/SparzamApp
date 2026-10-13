@@ -91,6 +91,14 @@ class RouteSummaryCard extends StatelessWidget {
                 '(nur für den Routenvergleich)',
               ),
             ],
+            if (best.additionalStoreCost > 0) ...[
+              const SizedBox(height: 4),
+              Text(
+                'Zusätzliche Marktstopps: '
+                '${best.additionalStoreCost.toStringAsFixed(2)} € '
+                '(nur für den Routenvergleich)',
+              ),
+            ],
             if (best.hasDataGaps) ...[
               const SizedBox(height: 12),
               Container(

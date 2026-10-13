@@ -35,6 +35,7 @@ class PriceObservation {
     this.validUntil,
     this.identityConfidence = 1,
     this.proofRef,
+    this.sourceAdapter,
     this.discounted = false,
   });
 
@@ -55,6 +56,10 @@ class PriceObservation {
   final DateTime? validUntil;
   final DateTime observedAt;
   final PriceObservationSource source;
+  /// Optional concrete adapter identity, for example kaufda. The
+  /// technical source enum remains stable for older consumers while this
+  /// field preserves source-specific provenance.
+  final String? sourceAdapter;
   /// Confidence in product identity only; source and age are scored separately.
   final double identityConfidence;
   final String? proofRef;
@@ -88,6 +93,7 @@ class PriceObservation {
         'validUntil': validUntil?.toIso8601String(),
         'observedAt': observedAt.toIso8601String(),
         'source': source.name,
+        'sourceAdapter': sourceAdapter,
         'identityConfidence': identityConfidence,
         'proofRef': proofRef,
         'discounted': discounted,
@@ -116,6 +122,7 @@ class PriceObservation {
       validUntil: DateTime.tryParse(json['validUntil'] as String? ?? ''),
       observedAt: DateTime.parse(json['observedAt'] as String),
       source: source,
+      sourceAdapter: json['sourceAdapter'] as String?,
       identityConfidence:
           (json['identityConfidence'] as num?)?.toDouble() ??
               (source == PriceObservationSource.receipt ? 0 : 1),

@@ -17,6 +17,12 @@ List<ReceiptPriceStat> buildReceiptPriceStats(
   final groups = <String, List<ReceiptObservation>>{};
 
   for (final item in observations) {
+    // A future-dated receipt must not influence historical statistics. This
+    // mirrors the route-price projection, which also treats future evidence
+    // as unusable until its observation time has actually arrived.
+    if (item.observedAt.isAfter(today)) {
+      continue;
+    }
     if (item.observedAt.isBefore(cutoff)) {
       continue;
     }
@@ -50,13 +56,11 @@ List<ReceiptPriceStat> buildReceiptPriceStats(
   final result = <ReceiptPriceStat>[];
   for (final entries in groups.values) {
     entries.sort((a, b) => b.observedAt.compareTo(a.observedAt));
-    final unitEntries = entries.where((e) => e.unitPrice != null).toList();
-    final comparable =
-        unitEntries.length == entries.length &&
-        _hasComparableUnitBasis(entries);
+    final comparableBasis = _comparableUnitBasis(entries);
+    final comparable = comparableBasis != null;
     final values =
         (comparable
-                ? unitEntries.map((e) => e.unitPrice!)
+                ? comparableBasis.prices
                 : entries.map((e) => e.totalPrice))
             .toList()
           ..sort();
@@ -66,13 +70,13 @@ List<ReceiptPriceStat> buildReceiptPriceStats(
         productId: entries.first.productId,
         storeName: entries.first.storeName,
         latestPrice: comparable
-            ? entries.first.unitPrice!
+            ? comparableBasis.prices.first
             : entries.first.totalPrice,
         latestAt: entries.first.observedAt,
         observationCount: entries.length,
         medianPrice: _median(values),
         comparable: comparable,
-        priceBasis: comparable ? entries.first.quantityUnit : 'Packung',
+        priceBasis: comparable ? comparableBasis.baseUnit : 'Packung',
         identityConfirmed: entries.every(
           (entry) => entry.productId == null || entry.identityConfirmed,
         ),
@@ -83,24 +87,38 @@ List<ReceiptPriceStat> buildReceiptPriceStats(
   return result;
 }
 
-bool _hasComparableUnitBasis(List<ReceiptObservation> entries) {
+class _ComparableUnitBasis {
+  const _ComparableUnitBasis({required this.prices, required this.baseUnit});
+
+  final List<double> prices;
+  final String baseUnit;
+}
+
+_ComparableUnitBasis? _comparableUnitBasis(
+  List<ReceiptObservation> entries,
+) {
   if (entries.any(
     (entry) =>
         entry.unitPrice == null ||
         !entry.unitPrice!.isFinite ||
         entry.unitPrice! <= 0,
   )) {
-    return false;
+    return null;
   }
 
   // Legacy observations may contain a parsed unit price without quantity
   // metadata. Keep those histories readable and comparable as before.
   final quantified = entries.where((entry) => entry.quantity != null).toList();
-  if (quantified.isEmpty) return true;
+  if (quantified.isEmpty) {
+    return _ComparableUnitBasis(
+      prices: entries.map((entry) => entry.unitPrice!).toList(),
+      baseUnit: entries.first.quantityUnit,
+    );
+  }
 
   // A unit price with only partial quantity metadata cannot establish a
   // common basis for the whole history.
-  if (quantified.length != entries.length) return false;
+  if (quantified.length != entries.length) return null;
 
   final normalized = quantified
       .map(
@@ -108,10 +126,33 @@ bool _hasComparableUnitBasis(List<ReceiptObservation> entries) {
             normalizeQuantity(entry.quantity!.toDouble(), entry.quantityUnit),
       )
       .toList();
-  if (normalized.any((quantity) => quantity == null)) return false;
+  if (normalized.any((quantity) => quantity == null)) return null;
 
   final dimension = normalized.first!.dimension;
-  return normalized.every((quantity) => quantity!.dimension == dimension);
+  if (!normalized.every((quantity) => quantity!.dimension == dimension)) {
+    return null;
+  }
+
+  // Receipt parsers store unitPrice per declared quantityUnit. Convert every
+  // value to the dimension's base unit so e.g. €/g and €/kg are not averaged
+  // as if they used the same scale. The purchased amount is only used for the
+  // dimension check; it must not change a printed per-unit price.
+  final prices = <double>[];
+  for (final entry in entries) {
+    final basePrice = normalizedUnitPrice(
+      price: entry.unitPrice!,
+      amount: 1,
+      unit: entry.quantityUnit,
+    );
+    if (basePrice == null || !basePrice.isFinite || basePrice <= 0) {
+      return null;
+    }
+    prices.add(basePrice);
+  }
+  return _ComparableUnitBasis(
+    prices: prices,
+    baseUnit: normalized.first!.baseUnit,
+  );
 }
 
 double _median(List<double> values) {
@@ -121,3 +162,4 @@ double _median(List<double> values) {
       : (values[middle - 1] + values[middle]) / 2;
   return (median * 100).roundToDouble() / 100;
 }
+

@@ -43,6 +43,8 @@ List<PriceObservation> prospectPriceObservations({
         record.sourceId.trim().isEmpty ||
         record.storeName.trim().isEmpty ||
         record.productLabel.trim().isEmpty ||
+        record.regionalOnly ||
+        !hasExactOfferRecordBranch(record) ||
         !hasTrustedOfferProofReference(record.proofRef) ||
         !record.offerPrice.isFinite ||
         record.offerPrice <= 0 ||
@@ -57,8 +59,20 @@ List<PriceObservation> prospectPriceObservations({
     final normalizedLabel = normalizeIdentityText(record.productLabel);
     if (normalizedLabel.isEmpty) continue;
     final identity = identifyProduct(record.productLabel);
-    final package = prospectPackage(record.productLabel);
-    final exactProduct = exactProspectProduct(record.productLabel, catalog);
+    final package = prospectPackage(record.packageSize ?? record.productLabel);
+    // KaufDA may put the package basis in a separate field and use a generic
+    // label such as `Kaffee`. Resolve that one narrow case through the normal
+    // offer importer; unrelated labels such as `Melitta Kaffee 500 g` remain
+    // historical fallback evidence unless their full catalog identity is
+    // explicit.
+    final exactProduct =
+        (record.packageSize != null && _isKaufdaEvidence(record))
+        ? resolveOfferImport(record, catalog).product
+        : exactProspectProduct(
+            record.productLabel,
+            catalog,
+            packageSize: record.packageSize,
+          );
     final productId = exactProduct?.id ?? 'prospect|$normalizedLabel';
     final confidence = exactProduct == null ? 0.0 : 1.0;
     final prefix = [
@@ -88,8 +102,9 @@ List<PriceObservation> prospectPriceObservations({
         quantity: package?.amount,
         unit: package?.unit,
         unitPrice: unitPrice,
-        observedAt: observedAt,
+        observedAt: record.capturedAt ?? observedAt,
         source: source,
+        sourceAdapter: record.sourceAdapter,
         kind: PriceObservationKind.offer,
         validFrom: record.validFrom,
         validUntil: record.validUntil,
@@ -120,8 +135,9 @@ List<PriceObservation> prospectPriceObservations({
                   amount: package.amount,
                   unit: package.unit,
                 ),
-          observedAt: observedAt,
+          observedAt: record.capturedAt ?? observedAt,
           source: source,
+          sourceAdapter: record.sourceAdapter,
           kind: PriceObservationKind.regular,
           validFrom: record.validFrom,
           validUntil: record.validUntil,
@@ -142,4 +158,11 @@ PriceObservationSource? _source(String source) => switch (source) {
   'retailerWebsite' => PriceObservationSource.retailerWebsite,
   _ => null,
 };
+
+bool _isKaufdaEvidence(OfferImportRecord record) {
+  if (record.sourceAdapter?.trim().toLowerCase() == 'kaufda') return true;
+  final proof = record.proofRef?.trim().toLowerCase() ?? '';
+  return proof.contains('kaufda.de');
+}
+
 

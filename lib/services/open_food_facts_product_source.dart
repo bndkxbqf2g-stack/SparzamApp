@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../models/product.dart';
+import 'barcode_normalizer.dart';
 import 'product_data_cache.dart';
 import 'product_data_source.dart';
 
@@ -29,8 +30,8 @@ class OpenFoodFactsProductSource implements ProductDataSource {
     Product? existing,
   }) async {
     if (!enabled) return null;
-    final code = ean.trim();
-    if (code.isEmpty) return null;
+    final code = normalizeBarcode(ean);
+    if (code == null) return null;
 
     final cached = await _loadCached(code, existing);
     final uri = Uri.https(
@@ -63,7 +64,8 @@ class OpenFoodFactsProductSource implements ProductDataSource {
       final raw = json['product'];
       if (raw is! Map<String, dynamic>) return cached;
       for (final returnedCode in [json['code'], raw['code']]) {
-        if (returnedCode != null && returnedCode.toString().trim() != code) {
+        if (returnedCode != null &&
+            normalizeBarcode(returnedCode.toString()) != code) {
           return cached;
         }
       }
@@ -158,7 +160,15 @@ class OpenFoodFactsProductSource implements ProductDataSource {
         amount > 0 &&
         unit != null &&
         unit.isNotEmpty) {
-      return _ParsedQuantity(amount: amount, unit: _normalizeUnit(unit));
+      var normalizedAmount = amount;
+      final normalizedUnit = _normalizeUnit(unit);
+      if (normalizedUnit == null) return null;
+      if (normalizedUnit == 'cl') {
+        normalizedAmount *= 10;
+        if (!normalizedAmount.isFinite) return null;
+        return _ParsedQuantity(amount: normalizedAmount, unit: 'ml');
+      }
+      return _ParsedQuantity(amount: normalizedAmount, unit: normalizedUnit);
     }
 
     final quantity = (raw['quantity'] as String?)?.trim();
@@ -190,7 +200,9 @@ class OpenFoodFactsProductSource implements ProductDataSource {
       return null;
     }
 
-    var parsedUnit = _normalizeUnit(match.group(unitGroup)!);
+    final parsedUnitValue = _normalizeUnit(match.group(unitGroup)!);
+    if (parsedUnitValue == null) return null;
+    var parsedUnit = parsedUnitValue;
     var parsedAmount = parsed * multiplier;
     if (parsedUnit == 'cl') {
       parsedAmount *= 10;
@@ -201,9 +213,14 @@ class OpenFoodFactsProductSource implements ProductDataSource {
     return _ParsedQuantity(amount: parsedAmount, unit: parsedUnit);
   }
 
-  String _normalizeUnit(String value) => switch (value) {
+  String? _normalizeUnit(String value) => switch (value.trim().toLowerCase()) {
+        'g' || 'gramm' || 'gram' => 'g',
+        'kg' || 'kilogramm' || 'kilogram' => 'kg',
+        'ml' || 'milliliter' || 'millilitre' => 'ml',
+        'cl' || 'centiliter' || 'centilitre' => 'cl',
+        'l' || 'liter' || 'litre' => 'l',
         'stück' || 'stuck' || 'stk' || 'st' => 'st',
-        _ => value,
+        _ => null,
       };
 
   String? _firstCategory(String? categories) {

@@ -11,8 +11,13 @@ class Offer {
     required this.validUntil,
     this.validFrom,
     this.source = 'manual',
+    this.sourceAdapter,
+    this.capturedAt,
     this.proofRef,
     this.imageUrl,
+    this.packageAmount,
+    this.packageUnit,
+    this.unitPrice,
     this.locationId,
     this.region,
     this.address,
@@ -35,8 +40,23 @@ class Offer {
   final DateTime validUntil;
   final DateTime? validFrom;
   final String source;
+  /// Optional adapter identity kept separate from the legal/source class.
+  /// For example, a KaufDA discovery record still has
+  /// `source == retailerWebsite`, while this field preserves the adapter
+  /// that produced the evidence.
+  final String? sourceAdapter;
+  /// Timestamp supplied by the adapter when this offer was captured. It is
+  /// optional for legacy/manual offers and is evidence metadata only; validity
+  /// still comes from [validFrom]/[validUntil].
+  final DateTime? capturedAt;
   final String? proofRef;
   final String? imageUrl;
+  /// Source-provided package basis. This is kept separate from the requested
+  /// purchase quantity and is copied into price observations when available.
+  final double? packageAmount;
+  final String? packageUnit;
+  /// Normalized price for the package basis, for example €/kg or €/l.
+  final double? unitPrice;
   final String? locationId;
   final String? region;
   final String? address;
@@ -67,6 +87,9 @@ class Offer {
     final originalPrice = _finiteDouble(json['originalPrice']);
     final originalPriceVerified = json['originalPriceVerified'] as bool? ?? true;
     final offerPrice = _finiteDouble(json['offerPrice']);
+    final packageAmount = _optionalPositiveDouble(json['packageAmount']);
+    final packageUnit = json['packageUnit'] as String?;
+    final unitPrice = _optionalPositiveDouble(json['unitPrice']);
     if (id == null ||
         id.trim().isEmpty ||
         productId == null ||
@@ -77,7 +100,8 @@ class Offer {
         originalPrice <= 0 ||
         offerPrice == null ||
         offerPrice <= 0 ||
-        (originalPriceVerified && offerPrice > originalPrice)) {
+        (originalPriceVerified && offerPrice > originalPrice) ||
+        (packageAmount != null && packageUnit?.trim().isNotEmpty != true)) {
       throw const FormatException('Ungültiges Angebot');
     }
     return Offer(
@@ -90,8 +114,13 @@ class Offer {
       validUntil: DateTime.parse(json['validUntil'] as String),
       validFrom: DateTime.tryParse(json['validFrom'] as String? ?? ''),
       source: json['source'] as String? ?? 'manual',
+      sourceAdapter: json['sourceAdapter'] as String?,
+      capturedAt: DateTime.tryParse(json['capturedAt'] as String? ?? ''),
       proofRef: json['proofRef'] as String?,
       imageUrl: json['imageUrl'] as String?,
+      packageAmount: packageAmount,
+      packageUnit: packageUnit,
+      unitPrice: unitPrice,
       locationId: json['locationId'] as String?,
       region: json['region'] as String?,
       address: json['address'] as String?,
@@ -108,6 +137,15 @@ class Offer {
 
   static double? _finiteDouble(Object? value) =>
       value is num && value.toDouble().isFinite ? value.toDouble() : null;
+
+  static double? _optionalPositiveDouble(Object? value) {
+    if (value == null) return null;
+    final parsed = _finiteDouble(value);
+    if (parsed == null || parsed <= 0) {
+      throw const FormatException('Ungültige Angebotsmenge');
+    }
+    return parsed;
+  }
 
   static double? _optionalFiniteDouble(Object? value) {
     if (value == null) return null;
@@ -128,8 +166,13 @@ class Offer {
         'validUntil': validUntil.toIso8601String(),
         'validFrom': validFrom?.toIso8601String(),
         'source': source,
+        'sourceAdapter': sourceAdapter,
+        'capturedAt': capturedAt?.toIso8601String(),
         'proofRef': proofRef,
         'imageUrl': imageUrl,
+        'packageAmount': packageAmount,
+        'packageUnit': packageUnit,
+        'unitPrice': unitPrice,
         'locationId': locationId,
         'region': region,
         'address': address,

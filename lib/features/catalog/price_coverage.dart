@@ -1,5 +1,7 @@
 import '../../models/market_price.dart';
 import '../../models/product.dart';
+import '../../services/barcode_normalizer.dart';
+import '../../services/market_price_comparability.dart';
 
 class PriceCoverage {
   const PriceCoverage({
@@ -8,6 +10,7 @@ class PriceCoverage {
     required this.manualPrices,
     required this.openPrices,
     required this.staleOpenPrices,
+    this.incompatiblePrices = 0,
   });
 
   final int products;
@@ -15,6 +18,7 @@ class PriceCoverage {
   final int manualPrices;
   final int openPrices;
   final int staleOpenPrices;
+  final int incompatiblePrices;
 
   double get eanCoverage =>
       products == 0 ? 0 : productsWithEan / products;
@@ -26,24 +30,46 @@ class StorePriceCoverage {
     required this.products,
     required this.receiptPrices,
     required this.openPrices,
+    this.incompatiblePrices = 0,
   });
 
   final String storeName;
   final int products;
   final int receiptPrices;
   final int openPrices;
+  final int incompatiblePrices;
 }
 
 List<StorePriceCoverage> calculateStorePriceCoverage(
   List<MarketPrice> prices, {
   List<String> storeNames = const <String>[],
+  List<Product> products = const <Product>[],
 }) {
+  final productById = <String, Product>{
+    for (final product in products) product.id: product,
+  };
   final names = <String>{
     ...storeNames,
     ...prices.map((price) => price.storeName),
   };
   final result = names.map((name) {
-    final matches = prices.where((price) => price.storeName == name).toList();
+    final matches = prices.where((price) {
+      if (price.storeName != name) return false;
+      final product = productById[price.productId];
+      // Callers without a catalog retain the legacy coverage behavior. Once
+      // the catalog is available, unknown products and incompatible package
+      // quantities are data gaps rather than store coverage.
+      return (products.isEmpty && product == null) ||
+          (product != null && marketPriceMatchesProduct(price, product));
+    }).toList();
+    final incompatiblePrices = products.isEmpty
+        ? 0
+        : prices.where((price) {
+            final product = productById[price.productId];
+            return price.storeName == name &&
+                product != null &&
+                !marketPriceMatchesProduct(price, product);
+          }).length;
     return StorePriceCoverage(
       storeName: name,
       products: matches.map((price) => price.productId).toSet().length,
@@ -53,6 +79,7 @@ List<StorePriceCoverage> calculateStorePriceCoverage(
       openPrices: matches
           .where((price) => price.source == MarketPriceSource.openPrices)
           .length,
+      incompatiblePrices: incompatiblePrices,
     );
   }).toList();
   result.sort((a, b) {
@@ -69,16 +96,33 @@ PriceCoverage calculatePriceCoverage(
   DateTime? now,
 }) {
   final today = now ?? DateTime.now();
-  final external =
-      prices.where((price) => price.source == MarketPriceSource.openPrices);
+  final productById = <String, Product>{
+    for (final product in products) product.id: product,
+  };
+  final catalogPrices = prices.where((price) => productById.containsKey(price.productId));
+  final incompatiblePrices = catalogPrices.where((price) {
+    final product = productById[price.productId]!;
+    return !marketPriceMatchesProduct(price, product);
+  }).length;
+  final comparablePrices = catalogPrices.where((price) {
+    final product = productById[price.productId];
+    return product != null && marketPriceMatchesProduct(price, product);
+  });
+  final external = comparablePrices.where(
+    (price) => price.source == MarketPriceSource.openPrices,
+  );
 
   return PriceCoverage(
     products: products.length,
     productsWithEan: products
-        .where((product) => (product.ean ?? '').trim().isNotEmpty)
+        .where(
+          (product) =>
+              product.ean != null && normalizeBarcode(product.ean!) != null,
+        )
         .length,
-    manualPrices: prices.where((price) => price.isManual).length,
+    manualPrices: comparablePrices.where((price) => price.isManual).length,
     openPrices: external.length,
+    incompatiblePrices: incompatiblePrices,
     staleOpenPrices: external
         .where(
           (price) => !price.isUsable(

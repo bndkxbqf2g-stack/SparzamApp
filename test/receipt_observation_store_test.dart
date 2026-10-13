@@ -43,6 +43,16 @@ void main() {
     expect(await store.addMany([observation()]), 0);
   });
 
+  test('a parallel read waits for a pending receipt observation write', () async {
+    final store = ReceiptObservationStore();
+    final reader = ReceiptObservationStore();
+    final writing = store.addMany([observation(id: 'parallel|item:1')]);
+    final reading = reader.load();
+
+    await writing;
+    expect((await reading).single.id, 'parallel|item:1');
+  });
+
   test('counts a corrected identity update as a saved observation', () async {
     final store = ReceiptObservationStore();
     await store.addMany([observation(productId: 'receipt_auto_unknown')]);
@@ -94,5 +104,23 @@ void main() {
     expect(saved.single.productId, 'catalog_milk');
     expect(saved.single.identityConfirmed, isTrue);
     expect(saved.single.rowLine, 7);
+  });
+
+  test('serializes an import before a backup replacement', () async {
+    final store = ReceiptObservationStore();
+    final imported = observation(id: 'receipt|item:1');
+    final backup = observation(
+      id: 'backup|item:1',
+      productId: 'catalog_milk',
+      identityConfirmed: true,
+    );
+
+    final importFuture = store.addMany([imported]);
+    final replaceFuture = store.replaceAll([backup]);
+    await Future.wait([importFuture, replaceFuture]);
+
+    final saved = await store.load();
+    expect(saved, hasLength(1));
+    expect(saved.single.id, backup.id);
   });
 }

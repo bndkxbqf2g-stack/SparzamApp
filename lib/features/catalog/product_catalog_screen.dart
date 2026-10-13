@@ -6,6 +6,7 @@ import '../../models/market_price.dart';
 import '../../models/product.dart';
 import '../../models/price_data_settings.dart';
 import '../../models/price_sync_result.dart';
+import '../../services/barcode_normalizer.dart';
 import 'price_coverage.dart';
 import 'market_price_editor_screen.dart';
 import 'product_editor_screen.dart';
@@ -98,7 +99,10 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
     if (syncing || !widget.priceDataSettings.openPricesEnabled) return;
     final retryIds = retryFailuresOnly ? [...failedProductIds] : null;
     final eanCount = retryIds?.length ?? allProducts
-        .where((product) => (product.ean ?? '').trim().isNotEmpty)
+        .where(
+          (product) =>
+              product.ean != null && normalizeBarcode(product.ean!) != null,
+        )
         .length;
     setState(() {
       syncing = true;
@@ -161,12 +165,15 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
     final updated = result;
     if (!mounted || updated == null) return;
 
-    final duplicateEan = updated.ean != null &&
+    final updatedCode = updated.ean == null
+        ? null
+        : normalizeBarcode(updated.ean!);
+    final duplicateEan = updatedCode != null &&
         allProducts.any(
           (item) =>
               item.id != updated.id &&
               item.ean != null &&
-              item.ean == updated.ean,
+              normalizeBarcode(item.ean!) == updatedCode,
         );
     if (duplicateEan) {
       if (mounted) {
@@ -279,6 +286,7 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                 final storeCoverage = calculateStorePriceCoverage(
                   marketPrices,
                   storeNames: stores.map((store) => store.name).toList(),
+                  products: allProducts,
                 );
                 return Card(
                   child: Padding(
@@ -298,6 +306,12 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                           '${coverage.manualPrices} eigene Preise · '
                           '${coverage.openPrices} Open-Prices-Daten',
                         ),
+                        if (coverage.incompatiblePrices > 0)
+                          Text(
+                            '${coverage.incompatiblePrices} Preiswerte wegen '
+                            'abweichender Packungsgröße ausgeblendet.',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
                         if (coverage.staleOpenPrices > 0)
                           Text(
                             '${coverage.staleOpenPrices} Open-Prices-Werte sind veraltet.',
@@ -315,7 +329,8 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                           Text(
                             '${store.storeName}: ${store.products} Produkte'
                             '${store.receiptPrices > 0 ? ' · ${store.receiptPrices} Kassenbon' : ''}'
-                            '${store.openPrices > 0 ? ' · ${store.openPrices} Open Prices' : ''}',
+                            '${store.openPrices > 0 ? ' · ${store.openPrices} Open Prices' : ''}'
+                            '${store.incompatiblePrices > 0 ? ' · ${store.incompatiblePrices} Packung abweichend' : ''}',
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         if (widget.priceDataSettings.openPricesEnabled) ...[

@@ -62,6 +62,7 @@ class _RouteScreenState extends State<RouteScreen> {
   Map<String, double> roadDistances = <String, double>{};
   RoadRouteMatrix? roadMatrix;
   bool loadingRoadDistances = false;
+  int _distanceRequestRevision = 0;
 
   @override
   void initState() {
@@ -74,20 +75,35 @@ class _RouteScreenState extends State<RouteScreen> {
   void didUpdateWidget(covariant RouteScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.mobility.startAddress != widget.mobility.startAddress) {
+      _distanceRequestRevision++;
       service.close();
       service = RoadDistanceService(
         originAddress: widget.mobility.startAddress,
       );
       roadDistances = <String, double>{};
       roadMatrix = null;
+      loadingRoadDistances = false;
       _loadRoadDistances();
     }
   }
 
   Future<void> _loadRoadDistances() async {
-    final loaded = await cache.load(widget.mobility.startAddress);
-    final matrix = await matrixCache.load(widget.mobility.startAddress);
-    if (!mounted) return;
+    final revision = ++_distanceRequestRevision;
+    final originAddress = widget.mobility.startAddress;
+    Map<String, double> loaded = <String, double>{};
+    RoadRouteMatrix? matrix;
+    try {
+      loaded = await cache.load(widget.mobility.startAddress);
+      matrix = await matrixCache.load(widget.mobility.startAddress);
+    } catch (_) {
+      // Offline storage is an optimization. A corrupt or unavailable cache
+      // must not prevent the route screen from rendering its fallback values.
+    }
+    if (!mounted ||
+        revision != _distanceRequestRevision ||
+        originAddress != widget.mobility.startAddress) {
+      return;
+    }
     setState(() {
       roadDistances = loaded;
       roadMatrix = matrix;
@@ -96,6 +112,8 @@ class _RouteScreenState extends State<RouteScreen> {
 
   Future<void> _refreshRoadDistances() async {
     if (loadingRoadDistances) return;
+    final revision = ++_distanceRequestRevision;
+    final originAddress = widget.mobility.startAddress;
     setState(() => loadingRoadDistances = true);
 
     final destinations = {
@@ -104,28 +122,49 @@ class _RouteScreenState extends State<RouteScreen> {
             store.address.isNotEmpty)
           store.name: store.address,
     };
-    final matrix = await service.fetchMatrix(destinations);
-    final next = {...roadDistances};
-
-    if (matrix != null) {
-      for (final store in stores) {
-        final distance = matrix.distance(RoadRouteMatrix.origin, store.name);
-        if (distance != null && distance > 0) {
-          next[store.name] = distance;
-        }
+    try {
+      final matrix = await service.fetchMatrix(destinations);
+      if (!mounted ||
+          revision != _distanceRequestRevision ||
+          originAddress != widget.mobility.startAddress) {
+        return;
       }
-      await matrixCache.save(matrix);
-    }
 
-    await cache.save(widget.mobility.startAddress, next);
-    if (!mounted) return;
-    setState(() {
-      roadDistances = next;
-      roadMatrix = matrix ?? roadMatrix;
-      loadingRoadDistances = false;
-    });
-    widget.onRoadDistancesChanged?.call(next);
-    widget.onRoadMatrixChanged?.call(matrix ?? roadMatrix);
+      final next = {...roadDistances};
+      if (matrix != null) {
+        for (final store in stores) {
+          final distance = matrix.distance(RoadRouteMatrix.origin, store.name);
+          if (distance != null && distance > 0) {
+            next[store.name] = distance;
+          }
+        }
+        await matrixCache.save(matrix);
+      }
+
+      await cache.save(originAddress, next);
+      if (!mounted ||
+          revision != _distanceRequestRevision ||
+          originAddress != widget.mobility.startAddress) {
+        return;
+      }
+      setState(() {
+        roadDistances = next;
+        roadMatrix = matrix ?? roadMatrix;
+      });
+      widget.onRoadDistancesChanged?.call(next);
+      widget.onRoadMatrixChanged?.call(matrix ?? roadMatrix);
+    } catch (_) {
+      if (!mounted || revision != _distanceRequestRevision) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Straßenstrecke konnte nicht aktualisiert werden.'),
+        ),
+      );
+    } finally {
+      if (mounted && revision == _distanceRequestRevision) {
+        setState(() => loadingRoadDistances = false);
+      }
+    }
   }
 
   @override
@@ -145,6 +184,7 @@ class _RouteScreenState extends State<RouteScreen> {
       euroPerKm: widget.mobility.effectiveEuroPerKm,
       maxStores: widget.mobility.maxStores,
       minExtraStoreSavings: widget.mobility.minExtraStoreSavings,
+      additionalStoreCost: widget.mobility.additionalStoreCost,
       timeValuePerHour: widget.mobility.timeValuePerHour,
       travelMinutesPerKm: 60 / widget.mobility.mode.averageSpeedKmh,
       enabledStoreNames: widget.mobility.enabledStoreNames,

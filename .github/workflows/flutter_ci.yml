@@ -8,6 +8,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 8
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -21,6 +22,9 @@ jobs:
       - name: Analyze
         run: flutter analyze
       - name: Run tests
-        run: flutter test
+        # Keep a broken widget test from holding the entire CI job open while
+        # still running the complete suite and reporting the test name.
+        run: timeout --signal=TERM 5m flutter test --timeout 30s --reporter expanded
       - name: Build web
         run: flutter build web --release
+

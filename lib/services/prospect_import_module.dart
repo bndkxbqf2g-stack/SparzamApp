@@ -10,11 +10,20 @@ import 'prospect_feed_cache.dart';
 /// official source adapters. The app consumes one validated, status-aware
 /// result and never treats an unavailable retailer as an empty successful feed.
 class ProspectImportModule {
-  ProspectImportModule({http.Client? client, ProspectFeedCache? cache})
-    : _feedService = ProspectFeedService(client: client, cache: cache);
+  ProspectImportModule({
+    http.Client? client,
+    ProspectFeedCache? cache,
+    bool networkEnabled = true,
+  }) : _feedService = ProspectFeedService(
+         client: client,
+         cache: cache,
+         networkEnabled: networkEnabled,
+       );
 
   final ProspectFeedService _feedService;
   final ProspectBranchResolver _branchResolver = const ProspectBranchResolver();
+
+  void close() => _feedService.close();
 
   Future<ProspectFeedLoadResult> execute({String? startAddress}) async {
     final feed = await _feedService.load();

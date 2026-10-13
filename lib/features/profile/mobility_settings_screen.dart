@@ -16,6 +16,7 @@ class _MobilitySettingsScreenState extends State<MobilitySettingsScreen> {
   late final TextEditingController addressController;
   late final TextEditingController costController;
   late final TextEditingController savingsController;
+  late final TextEditingController additionalStoreCostController;
   late final TextEditingController timeValueController;
   late MobilityMode mode;
   late int maxStores;
@@ -34,6 +35,9 @@ class _MobilitySettingsScreenState extends State<MobilitySettingsScreen> {
     savingsController = TextEditingController(
       text: widget.initialSettings.minExtraStoreSavings.toStringAsFixed(2),
     );
+    additionalStoreCostController = TextEditingController(
+      text: widget.initialSettings.additionalStoreCost.toStringAsFixed(2),
+    );
     timeValueController = TextEditingController(
       text: widget.initialSettings.timeValuePerHour.toStringAsFixed(2),
     );
@@ -44,6 +48,7 @@ class _MobilitySettingsScreenState extends State<MobilitySettingsScreen> {
     addressController.dispose();
     costController.dispose();
     savingsController.dispose();
+    additionalStoreCostController.dispose();
     timeValueController.dispose();
     super.dispose();
   }
@@ -62,6 +67,7 @@ class _MobilitySettingsScreenState extends State<MobilitySettingsScreen> {
         mode: mode,
         maxStores: maxStores,
         minExtraStoreSavings: _number(savingsController.text)!,
+        additionalStoreCost: _number(additionalStoreCostController.text)!,
         timeValuePerHour: _number(timeValueController.text)!,
       ),
     );
@@ -174,6 +180,29 @@ class _MobilitySettingsScreenState extends State<MobilitySettingsScreen> {
           ),
           const SizedBox(height: 16),
           TextFormField(
+            controller: additionalStoreCostController,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            decoration: const InputDecoration(
+              labelText: 'Kosten je zusätzlichem Markt',
+              suffixText: '€',
+              prefixIcon: Icon(Icons.store_mall_directory_outlined),
+              helperText:
+                  'Optionaler Aufwand pro Markt ab dem zweiten; fließt nur in den Planungswert ein.',
+            ),
+            validator: (value) {
+              final number = _number(value ?? '');
+              if (number == null ||
+                  !number.isFinite ||
+                  number < 0 ||
+                  number > 50) {
+                return 'Bitte gültigen Wert zwischen 0 und 50 € eingeben';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
+          TextFormField(
+            key: const ValueKey('mobility-time-value'),
             controller: timeValueController,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             decoration: InputDecoration(
@@ -206,3 +235,4 @@ class _MobilitySettingsScreenState extends State<MobilitySettingsScreen> {
     ),
   );
 }
+

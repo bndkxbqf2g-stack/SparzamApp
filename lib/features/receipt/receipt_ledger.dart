@@ -44,6 +44,35 @@ class ReceiptDraft {
   final String? retailer;
   final String fingerprint;
 
+  /// Stronger duplicate key for the import UI.
+  ///
+  /// [fingerprint] is kept stable for persisted observation IDs and therefore
+  /// intentionally contains only the legacy priced-ledger fields. This key
+  /// additionally includes quantity/unit metadata and discount linkage so two
+  /// receipts with the same rounded totals cannot be hidden as duplicates.
+  /// Physical source line numbers remain excluded, keeping OCR/PDF layout
+  /// shifts deduplicated.
+  String get duplicateFingerprint => _fingerprint(
+    [
+      retailer ?? '',
+      receiptDate?.toIso8601String() ?? '',
+      totalCents?.toString() ?? '',
+      calculatedCents.toString(),
+      unresolvedLines.length.toString(),
+      ...rows.map(
+        (row) => [
+          row.kind.name,
+          _fingerprintLabel(row.label),
+          row.cents,
+          row.quantity,
+          _fingerprintLabel(row.quantityUnit),
+          row.unitCents,
+          row.linkedItemLine != null,
+        ].join('|'),
+      ),
+    ].join('\n'),
+  );
+
   bool get balances =>
       totalCents != null &&
       totalCents == calculatedCents &&
@@ -323,3 +352,8 @@ String _fingerprint(String value) {
   }
   return hash.toRadixString(16).padLeft(8, '0');
 }
+
+String _fingerprintLabel(String value) => value
+    .toLowerCase()
+    .replaceAll(RegExp(r'\s+'), ' ')
+    .trim();

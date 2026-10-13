@@ -67,7 +67,7 @@ void main() {
       validUntil: DateTime(2099, 1, 1),
       imageUrl: 'https://example.com/offer.jpg',
       source: 'leaflet',
-      proofRef: 'proof',
+      proofRef: 'https://example.com/offer',
     );
     final item = ListItem(product: product, quantity: 1);
 
@@ -261,3 +261,4 @@ void main() {
     expect(find.text('0,95 €'), findsOneWidget);
   });
 }
+

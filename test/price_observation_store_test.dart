@@ -47,6 +47,25 @@ void main() {
     expect(saved.map((item) => item.price), containsAll([0.79, 0.89]));
   });
 
+  test('a parallel read waits for a pending price observation write', () async {
+    final store = PriceObservationStore();
+    final reader = PriceObservationStore();
+    final observation = observationFromMarketPrice(
+      MarketPrice(
+        productId: 'parallel',
+        storeName: 'Lidl',
+        price: 1.29,
+        updatedAt: DateTime(2026, 9, 24),
+      ),
+    );
+
+    final writing = store.append([observation]);
+    final reading = reader.load();
+
+    await writing;
+    expect((await reading).single.price, 1.29);
+  });
+
   test('stable derived evidence can be reinterpreted in place', () async {
     final store = PriceObservationStore();
     final old = PriceObservation(
@@ -87,6 +106,7 @@ void main() {
       source: MarketPriceSource.receipt,
       discounted: true,
       proofRef: 'receipt:abc123|line:4',
+      sourceAdapter: 'receipt-fixture',
       quantity: 1,
       unit: 'l',
       unitPrice: 1.09,
@@ -95,6 +115,8 @@ void main() {
 
     final restored = MarketPrice.fromJson(price.toJson());
     expect(restored.proofRef, price.proofRef);
+    expect(restored.sourceAdapter, 'receipt-fixture');
+    expect(restored.sourceLabel, 'Kassenbon');
     expect(restored.quantity, 1);
     expect(restored.unit, 'l');
     expect(restored.unitPrice, 1.09);
@@ -102,6 +124,7 @@ void main() {
 
     final observation = observationFromMarketPrice(price);
     expect(observation.proofRef, price.proofRef);
+    expect(observation.sourceAdapter, price.sourceAdapter);
     expect(observation.quantity, 1);
     expect(observation.unit, 'l');
     expect(observation.unitPrice, 1.09);
@@ -112,6 +135,7 @@ void main() {
       now: DateTime(2026, 9, 24),
     );
     expect(projected.single.proofRef, price.proofRef);
+    expect(projected.single.sourceAdapter, price.sourceAdapter);
     expect(projected.single.quantity, 1);
     expect(projected.single.unit, 'l');
     expect(projected.single.unitPrice, 1.09);
@@ -137,6 +161,7 @@ void main() {
       validUntil: DateTime(2026, 9, 27),
       observedAt: DateTime(2026, 9, 24),
       source: PriceObservationSource.shelfImage,
+      sourceAdapter: 'fixture-adapter',
       identityConfidence: 0.9,
       proofRef: 'local-photo-7',
     );
@@ -146,6 +171,7 @@ void main() {
     expect(restored.validUntil, DateTime(2026, 9, 27));
     expect(restored.proofRef, 'local-photo-7');
     expect(restored.identityConfidence, 0.9);
+    expect(restored.sourceAdapter, 'fixture-adapter');
   });
 
   test(
@@ -342,6 +368,80 @@ void main() {
     expect(observation.discounted, isTrue);
   });
 
+  test('offer adapter derives a missing normalized package price', () {
+    final observation = observationFromOffer(
+      Offer(
+        id: 'o-package',
+        productId: 'coffee',
+        storeName: 'Lidl',
+        originalPrice: 4.99,
+        offerPrice: 2.49,
+        validUntil: DateTime(2026, 9, 27),
+        packageAmount: 500,
+        packageUnit: 'g',
+      ),
+      observedAt: DateTime(2026, 9, 24),
+    );
+
+    expect(observation.quantity, 500);
+    expect(observation.unit, 'g');
+    expect(observation.unitPrice, closeTo(4.98, 0.00001));
+  });
+
+  test('offer adapter keeps the source capture time as observation time', () {
+    final capturedAt = DateTime(2026, 10, 12, 8, 15);
+    final offer = Offer(
+      id: 'kaufda-o1',
+      productId: 'schmand',
+      storeName: 'Lidl',
+      originalPrice: 0.89,
+      offerPrice: 0.69,
+      validUntil: DateTime(2026, 10, 17),
+      source: 'retailerWebsite',
+      sourceAdapter: 'KaufDA',
+      capturedAt: capturedAt,
+      proofRef: 'https://www.kaufda.de/prospekt/example',
+      locationId: 'lidl_zellingen',
+      packageAmount: 200,
+      packageUnit: 'g',
+      unitPrice: 3.45,
+    );
+    final observation = observationFromOffer(
+      offer,
+      observedAt: observedAtForOffer(
+        offer,
+        fallback: DateTime(2026, 10, 13),
+      ),
+    );
+
+    expect(observation.observedAt, capturedAt);
+    expect(observation.proofRef, contains('kaufda'));
+    expect(observation.sourceAdapter, 'KaufDA');
+    expect(observation.identityConfidence, 1);
+    expect(observation.quantity, 200);
+    expect(observation.unit, 'g');
+    expect(observation.unitPrice, closeTo(3.45, 0.00001));
+  });
+
+  test('legacy regional KaufDA offer is not an exact observation', () {
+    final observation = observationFromOffer(
+      Offer(
+        id: 'regional-kaufda-o1',
+        productId: 'schmand',
+        storeName: 'Lidl',
+        originalPrice: 0.89,
+        offerPrice: 0.69,
+        validUntil: DateTime(2026, 10, 17),
+        source: 'retailerWebsite',
+        sourceAdapter: 'KaufDA',
+        proofRef: 'https://www.kaufda.de/prospekt/example',
+      ),
+      observedAt: DateTime(2026, 10, 13),
+    );
+
+    expect(observation.identityConfidence, 0);
+  });
+
   test('external offer observations without proof cannot become exact route prices', () {
     final offer = Offer(
       id: 'leaflet-unproven',
@@ -369,6 +469,26 @@ void main() {
         discounted,
       ], now: DateTime(2026, 9, 25)),
       isEmpty,
+    );
+  });
+
+  test('manual offer evidence stays confirmed without an external proof', () {
+    final offer = Offer(
+      id: 'manual-case-variant',
+      productId: 'schmand',
+      storeName: 'Lidl',
+      originalPrice: 0.89,
+      offerPrice: 0.69,
+      validUntil: DateTime(2026, 9, 27),
+      source: 'MANUAL',
+    );
+
+    expect(
+      observationFromOffer(
+        offer,
+        observedAt: DateTime(2026, 9, 25),
+      ).identityConfidence,
+      1,
     );
   });
 
@@ -409,6 +529,9 @@ void main() {
       proofRef: 'leaflet:lidl:2026-09-25:p1',
       locationId: 'L-42',
       region: 'Zellingen',
+      packageAmount: 100,
+      packageUnit: 'g',
+      unitPrice: 19.9,
     );
     final regular = regularObservationFromOffer(
       offer,
@@ -426,12 +549,18 @@ void main() {
     expect(regular.locationId, 'L-42');
     expect(regular.region, 'Zellingen');
     expect(regular.validUntil, DateTime(2026, 9, 26));
+    expect(regular.quantity, 100);
+    expect(regular.unit, 'g');
+    expect(regular.unitPrice, closeTo(21.9, 0.00001));
     expect(discounted.price, 1.99);
     expect(discounted.kind, PriceObservationKind.offer);
     expect(discounted.validFrom, DateTime(2026, 9, 25));
     expect(discounted.locationId, 'L-42');
     expect(discounted.region, 'Zellingen');
     expect(discounted.source, PriceObservationSource.leaflet);
+    expect(discounted.quantity, 100);
+    expect(discounted.unit, 'g');
+    expect(discounted.unitPrice, closeTo(19.9, 0.00001));
   });
 
   test('exact route projection rejects a different declared package size', () {
@@ -549,6 +678,23 @@ void main() {
         validUntil: DateTime(2026, 10, 7),
         source: PriceObservationSource.manual,
         kind: PriceObservationKind.offer,
+      ),
+    ], now: DateTime(2026, 9, 25));
+
+    expect(projected, isEmpty);
+  });
+
+  test('future observation timestamps stay out of market price projection', () {
+    final projected = marketPricesFromObservations([
+      PriceObservation(
+        id: 'future-observation',
+        productId: 'schmand',
+        storeName: 'Lidl',
+        price: 0.99,
+        observedAt: DateTime(2026, 10, 1),
+        validFrom: DateTime(2026, 9, 25),
+        validUntil: DateTime(2026, 10, 7),
+        source: PriceObservationSource.manual,
       ),
     ], now: DateTime(2026, 9, 25));
 

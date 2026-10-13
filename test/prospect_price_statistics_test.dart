@@ -76,6 +76,29 @@ void main() {
     expect(summaries, isEmpty);
   });
 
+  test('zukünftige Prospektbeobachtungen werden auch historisch ignoriert', () {
+    final summaries = prospectPriceHistorySummaries(
+      [
+        PriceObservation(
+          id: 'future-capture',
+          productId: 'coffee-500',
+          storeName: 'Netto',
+          price: 1.99,
+          quantity: 500,
+          unit: 'g',
+          observedAt: DateTime(2026, 10, 1),
+          source: PriceObservationSource.leaflet,
+          kind: PriceObservationKind.offer,
+          validUntil: DateTime(2026, 9, 20),
+          proofRef: 'https://example.test/future-capture',
+        ),
+      ],
+      now: DateTime(2026, 9, 30),
+    );
+
+    expect(summaries, isEmpty);
+  });
+
   test('legacy prospect evidence without a pack basis cannot set a median', () {
     final summaries = prospectPriceHistorySummaries([
       PriceObservation(

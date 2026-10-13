@@ -77,6 +77,8 @@ void main() {
           validFrom: DateTime(2026, 9, 28),
           validUntil: DateTime(2026, 9, 30),
           source: 'retailerWebsite',
+          sourceAdapter: 'KaufDA',
+          branchId: 'netto_4371',
           proofRef: 'https://example.test/netto/coffee',
         ),
       ],
@@ -95,6 +97,7 @@ void main() {
     expect(evidence.every((item) => item.unit == 'g'), isTrue);
     expect(evidence.every((item) => item.identityConfidence == 1), isTrue);
     expect(evidence.every((item) => item.proofRef != null), isTrue);
+    expect(evidence.every((item) => item.sourceAdapter == 'KaufDA'), isTrue);
     expect(
       evidence.every((item) => item.validUntil == DateTime(2026, 9, 30)),
       isTrue,
@@ -115,6 +118,120 @@ void main() {
       ),
       isEmpty,
     );
+  });
+
+  test('multipack labels use the complete package quantity', () {
+    final evidence = prospectPriceObservations(
+      records: [
+        OfferImportRecord(
+          sourceId: 'multipack',
+          productLabel: 'Riegel je 3 x 50-g-Packg.',
+          storeName: 'Lidl',
+          offerPrice: 2.49,
+          validUntil: DateTime(2026, 10, 3),
+          source: 'retailerWebsite',
+          proofRef: 'https://example.test/lidl/multipack',
+        ),
+      ],
+      catalogProducts: const [],
+      observedAt: observedAt,
+    );
+
+    expect(evidence.single.quantity, 150);
+    expect(evidence.single.unit, 'g');
+    expect(evidence.single.unitPrice, closeTo(16.6, 0.0001));
+  });
+
+  test('KaufDA package metadata supplies quantity when the label omits it', () {
+    final evidence = prospectPriceObservations(
+      records: [
+        OfferImportRecord(
+          sourceId: 'kaufda-coffee',
+          productLabel: 'Kaffee',
+          packageSize: '500 g',
+          storeName: 'Lidl',
+          offerPrice: 2.49,
+          validUntil: DateTime(2026, 10, 17),
+          source: 'retailerWebsite',
+          proofRef: 'https://www.kaufda.de/Wuerzburg/Angebote/Kaffee',
+          capturedAt: observedAt,
+        ),
+      ],
+      catalogProducts: const [coffee],
+      observedAt: observedAt,
+    );
+
+    expect(evidence, hasLength(1));
+    expect(evidence.single.productId, coffee.id);
+    expect(evidence.single.quantity, 500);
+    expect(evidence.single.unit, 'g');
+    expect(evidence.single.unitPrice, closeTo(4.98, 0.0001));
+  });
+
+  test('regional-only KaufDA evidence is not learned as a price', () {
+    final evidence = prospectPriceObservations(
+      records: [
+        OfferImportRecord(
+          sourceId: 'regional-only',
+          productLabel: coffee.name,
+          storeName: 'Lidl',
+          offerPrice: 4.99,
+          validUntil: DateTime(2026, 10, 17),
+          source: 'retailerWebsite',
+          sourceAdapter: 'kaufda',
+          regionalOnly: false,
+          proofRef: 'https://www.kaufda.de/Wuerzburg/Angebote/Kaffee',
+        ),
+      ],
+      catalogProducts: const [coffee],
+      observedAt: observedAt,
+    );
+
+    expect(evidence, isEmpty);
+  });
+
+  test('variant ranges do not invent a package size', () {
+    final evidence = prospectPriceObservations(
+      records: [
+        OfferImportRecord(
+          sourceId: 'variant-range',
+          productLabel: 'Milka Tafelschokolade je 100/95/90 g',
+          storeName: 'Lidl',
+          offerPrice: 1.11,
+          validUntil: DateTime(2026, 10, 3),
+          source: 'retailerWebsite',
+          proofRef: 'https://example.test/lidl/range',
+        ),
+      ],
+      catalogProducts: const [],
+      observedAt: observedAt,
+    );
+
+    expect(evidence.single.quantity, isNull);
+    expect(evidence.single.unit, isNull);
+    expect(evidence.single.unitPrice, isNull);
+  });
+
+  test('record capture time wins over the combined feed timestamp', () {
+    final capturedAt = DateTime(2026, 10, 12, 8);
+    final evidence = prospectPriceObservations(
+      records: [
+        OfferImportRecord(
+          sourceId: 'cached-kaufda',
+          productLabel: coffee.name,
+          storeName: 'Lidl',
+          offerPrice: 4.99,
+          validUntil: DateTime(2026, 10, 17),
+          source: 'retailerWebsite',
+          proofRef: 'https://www.kaufda.de/Wuerzburg/Angebote/Kaffee',
+          capturedAt: capturedAt,
+        ),
+      ],
+      catalogProducts: const [coffee],
+      observedAt: DateTime(2026, 10, 12, 12),
+    );
+
+    expect(evidence.single.observedAt, capturedAt);
   });
 
   test('expired prospect remains dated history but cannot price a route', () {

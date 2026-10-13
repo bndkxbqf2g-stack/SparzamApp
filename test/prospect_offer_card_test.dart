@@ -51,6 +51,38 @@ void main() {
     expect(find.text('Hinzugefügt'), findsOneWidget);
   });
 
+  testWidgets('shows a comparable base price when package data is known', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ProspectOfferCard(
+            record: OfferImportRecord(
+              sourceId: 'milk-1',
+              productLabel: 'Milch 1 l',
+              storeName: 'Lidl',
+              offerPrice: 0.95,
+              validUntil: DateTime(2026, 10, 2),
+              source: 'leaflet',
+              proofRef: 'https://example.test/lidl/milk-1',
+            ),
+            product: const Product(
+              id: 'milk',
+              name: 'Milch 1 l',
+              unit: '1 l',
+              group: 'milch',
+              packageAmount: 1,
+              packageUnit: 'l',
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Grundpreis 0.95 €/l'), findsOneWidget);
+  });
+
   testWidgets('hides hostless proof action', (tester) async {
     final record = OfferImportRecord(
       sourceId: 'hostless-proof',
@@ -71,6 +103,72 @@ void main() {
     );
 
     expect(find.text('Prospektnachweis öffnen'), findsNothing);
+  });
+
+  testWidgets('shows KaufDA provenance and regional limitation', (tester) async {
+    final record = OfferImportRecord(
+      sourceId: 'regional-kaufda',
+      productLabel: 'Butter 250 g',
+      storeName: 'Lidl',
+      offerPrice: 1.49,
+      validUntil: DateTime(2026, 10, 2),
+      source: 'retailerWebsite',
+      sourceAdapter: 'kaufda',
+      regionalOnly: true,
+      proofRef: 'https://example.test/kaufda/butter',
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ProspectOfferCard(record: record, compact: true),
+        ),
+      ),
+    );
+
+    expect(find.text('Quelle KaufDA'), findsOneWidget);
+    expect(
+      find.text('Nur regional erkannt · Filiale noch nicht bestätigt'),
+      findsOneWidget,
+    );
+    final addButton = find.ancestor(
+      of: find.byIcon(Icons.add_shopping_cart_outlined),
+      matching: find.byType(IconButton),
+    );
+    expect(addButton, findsOneWidget);
+    expect(
+      tester.widget<IconButton>(addButton).onPressed,
+      isNull,
+    );
+  });
+
+  testWidgets('shows KaufDA capture time and prospect page when available', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ProspectOfferCard(
+            record: OfferImportRecord(
+              sourceId: 'kaufda-page',
+              productLabel: 'Butter 250 g',
+              storeName: 'Lidl',
+              offerPrice: 1.49,
+              validUntil: DateTime(2026, 10, 2),
+              source: 'retailerWebsite',
+              sourceAdapter: 'kaufda',
+              capturedAt: DateTime(2026, 9, 30, 8, 5),
+              brochurePage: 3,
+              proofRef: 'https://example.test/kaufda/butter',
+            ),
+            compact: true,
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Erfasst 30.09.2026 08:05 Uhr'), findsOneWidget);
+    expect(find.text('Prospektseite 3'), findsOneWidget);
   });
 }
 

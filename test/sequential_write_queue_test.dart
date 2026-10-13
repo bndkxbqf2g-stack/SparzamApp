@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sparzamapp/services/sequential_operation_queue.dart';
 import 'package:sparzamapp/services/sequential_write_queue.dart';
 
 void main() {
@@ -38,5 +39,27 @@ void main() {
     await recovered;
     await queue.pending;
     expect(calls, ['failed', 'recovered']);
+  });
+
+  test('Reads und Writes teilen eine fehlerisolierte Reihenfolge', () async {
+    final queue = SequentialOperationQueue();
+    final first = Completer<void>();
+    final calls = <String>[];
+    final writing = queue.schedule(() async {
+      calls.add('write');
+      await first.future;
+    });
+    final reading = queue.schedule(() async {
+      calls.add('read');
+      return 42;
+    });
+
+    await Future<void>.delayed(Duration.zero);
+    expect(calls, ['write']);
+    first.complete();
+    await writing;
+    expect(await reading, 42);
+    await queue.pending;
+    expect(calls, ['write', 'read']);
   });
 }

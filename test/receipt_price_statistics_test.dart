@@ -76,6 +76,34 @@ void main() {
     expect(stats.single.comparable, isTrue);
   });
 
+  test('future receipt observations are excluded from statistics', () {
+    final now = DateTime(2026, 9, 24, 12);
+    final stats = buildReceiptPriceStats(
+      [
+        obs(id: 'past', price: 1.49, day: 23),
+        ReceiptObservation(
+          id: 'future',
+          receiptFingerprint: 'bon-future',
+          rowLine: 1,
+          rawLabel: 'Hackfleisch',
+          familyKey: 'hackfleisch',
+          storeName: 'Kaufland',
+          observedAt: DateTime(2026, 9, 24, 13),
+          totalPrice: 0.49,
+          quantity: null,
+          quantityUnit: 'Stück',
+          unitPrice: null,
+          discounted: true,
+        ),
+      ],
+      now: now,
+    );
+
+    expect(stats.single.observationCount, 1);
+    expect(stats.single.latestPrice, 1.49);
+    expect(stats.single.latestAt, DateTime(2026, 9, 23));
+  });
+
   test(
     'unit prices remain comparable across package amounts in one dimension',
     () {
@@ -108,6 +136,74 @@ void main() {
       expect(stats.single.priceBasis, 'kg');
     },
   );
+
+  test('normalizes mass unit prices before calculating the median', () {
+    ReceiptObservation weighted(
+      String id,
+      double quantity,
+      String unit,
+      double totalPrice,
+      double unitPrice,
+      int day,
+    ) => ReceiptObservation(
+      id: id,
+      receiptFingerprint: 'bon$id',
+      rowLine: 1,
+      rawLabel: 'Tomaten',
+      familyKey: 'tomaten',
+      storeName: 'Kaufland',
+      observedAt: DateTime(2026, 9, day),
+      totalPrice: totalPrice,
+      quantity: quantity,
+      quantityUnit: unit,
+      unitPrice: unitPrice,
+      discounted: false,
+    );
+
+    final stats = buildReceiptPriceStats([
+      weighted('grams', 500, 'g', 5, 0.01, 22),
+      weighted('kilograms', 1, 'kg', 8, 8, 23),
+    ], now: DateTime(2026, 9, 24));
+
+    expect(stats.single.comparable, isTrue);
+    expect(stats.single.latestPrice, 8);
+    expect(stats.single.medianPrice, 9);
+    expect(stats.single.priceBasis, 'kg');
+  });
+
+  test('normalizes volume unit prices before calculating the median', () {
+    ReceiptObservation liquid(
+      String id,
+      double quantity,
+      String unit,
+      double totalPrice,
+      double unitPrice,
+      int day,
+    ) => ReceiptObservation(
+      id: id,
+      receiptFingerprint: 'bon$id',
+      rowLine: 1,
+      rawLabel: 'Milch',
+      familyKey: 'milch',
+      storeName: 'Kaufland',
+      observedAt: DateTime(2026, 9, day),
+      totalPrice: totalPrice,
+      quantity: quantity,
+      quantityUnit: unit,
+      unitPrice: unitPrice,
+      discounted: false,
+    );
+
+    final stats = buildReceiptPriceStats([
+      liquid('cl', 20, 'cl', 0.4, 0.02, 22),
+      liquid('litre', 1, 'l', 3.5, 3.5, 23),
+    ], now: DateTime(2026, 9, 24));
+
+    expect(stats.single.comparable, isTrue);
+    expect(stats.single.latestPrice, 3.5);
+    expect(stats.single.medianPrice, 2.75);
+    expect(stats.single.priceBasis, 'l');
+  });
 
   test('mixed quantity dimensions fall back to package prices', () {
     ReceiptObservation priced(

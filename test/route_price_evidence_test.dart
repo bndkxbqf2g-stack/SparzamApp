@@ -17,6 +17,7 @@ void main() {
     location: 'Zellingen',
     distanceKm: 1,
     prices: {},
+    branchId: 'lidl_zellingen',
   );
   const pricedStore = Store(
     name: 'Lidl',
@@ -26,24 +27,24 @@ void main() {
   );
 
   test('zeigt Angebotsquelle und vollständige Gültigkeit', () {
-    const product = Product(
-      id: 'milk',
-      name: 'Milch',
-      unit: '1 l',
-      group: 'milch',
-    );
-    final quote = RoutePriceResolver([
-      Offer(
+    // The resolver correctly keeps an unproven external offer out of a
+    // current route. The evidence label still needs to render that state for
+    // a quote that was already selected by an older or manual flow.
+    final quote = RoutePriceQuote(
+      unitPrice: 0.89,
+      total: 0.89,
+      regularTotal: 1.29,
+      offer: Offer(
         id: 'milk-offer',
-        productId: product.id,
-        storeName: store.name,
+        productId: 'milk',
+        storeName: 'Lidl',
         originalPrice: 1.29,
         offerPrice: 0.89,
         validFrom: DateTime(2026, 9, 29),
         validUntil: DateTime(2026, 10, 3),
         source: 'leaflet',
       ),
-    ], now: today).quote(store, ListItem(product: product))!;
+    );
 
     expect(
       routePriceEvidenceLabel(quote, now: today),
@@ -74,6 +75,35 @@ void main() {
     expect(
       routePriceEvidenceLabel(quote, now: today),
       'Angebot · Händler-Website · Nachweis vorhanden · gültig bis 03.10.2026',
+    );
+  });
+
+  test('kennzeichnet KaufDA getrennt von der technischen Website-Quelle', () {
+    const product = Product(
+      id: 'kaufda-coffee',
+      name: 'KaufDA Kaffee',
+      unit: '500 g',
+      group: 'kaffee',
+    );
+    final quote = RoutePriceResolver([
+      Offer(
+        id: 'kaufda-coffee-offer',
+        productId: product.id,
+        storeName: store.name,
+        originalPrice: 8,
+        offerPrice: 5,
+        validUntil: DateTime(2026, 10, 3),
+        source: 'retailerWebsite',
+        sourceAdapter: 'kaufda',
+        capturedAt: DateTime(2026, 9, 30, 7, 5),
+        proofRef: 'https://www.kaufda.de/example',
+        locationId: 'lidl_zellingen',
+      ),
+    ], now: today).quote(store, ListItem(product: product))!;
+
+    expect(
+      routePriceEvidenceLabel(quote, now: today),
+      'Angebot · KaufDA · Nachweis vorhanden · gültig bis 03.10.2026 · erfasst 30.09.2026 · 07:05 Uhr',
     );
   });
 
@@ -224,3 +254,4 @@ void main() {
     expect(find.textContaining('30.09.2026'), findsOneWidget);
   });
 }
+

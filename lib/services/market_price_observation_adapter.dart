@@ -2,7 +2,7 @@ import '../models/market_price.dart';
 import '../models/price_observation.dart';
 import '../models/product.dart';
 import '../models/price_data_settings.dart';
-import 'quantity_normalizer.dart';
+import 'market_price_comparability.dart';
 
 /// Existing exact market prices can enter the history without changing their
 /// current UI/storage contract. A location label is not assumed to be a unique
@@ -30,6 +30,7 @@ PriceObservation observationFromMarketPrice(MarketPrice price) =>
         MarketPriceSource.receipt => PriceObservationSource.receipt,
         MarketPriceSource.openPrices => PriceObservationSource.openPrices,
       },
+      sourceAdapter: price.sourceAdapter,
       kind: price.kind == PriceObservationKind.unknown && price.discounted
           ? PriceObservationKind.offer
           : price.kind,
@@ -62,6 +63,7 @@ List<MarketPrice> marketPricesFromObservations(
             entry.isValid &&
             entry.productId?.isNotEmpty == true &&
             entry.identityConfidence >= 1 &&
+            !_day(entry.observedAt).isAfter(currentDay) &&
             (entry.validFrom == null ||
                 !_day(entry.validFrom!).isAfter(currentDay)) &&
             (entry.validUntil == null ||
@@ -84,6 +86,7 @@ List<MarketPrice> marketPricesFromObservations(
           externalId: _openPricesId(entry.proofRef),
           sourceLocationId: entry.locationId,
           sourceLocationName: entry.region,
+          sourceAdapter: entry.sourceAdapter,
           discounted:
               entry.discounted || entry.kind == PriceObservationKind.offer,
           proofRef: entry.proofRef,
@@ -103,27 +106,11 @@ bool _matchesProductPackage(PriceObservation observation, Product? product) {
   if (product == null) {
     return true;
   }
-  final expectedAmount = product.packageAmount;
-  final expectedUnit = product.packageUnit;
-  final observedAmount = observation.quantity;
-  final observedUnit = observation.unit;
-
-  // Legacy observations without quantity metadata remain readable. Once an
-  // observation declares a quantity, it must match the exact product package.
-  if (observedAmount == null || observedUnit == null) {
-    return true;
-  }
-  if (expectedAmount == null || expectedUnit == null) {
-    return false;
-  }
-  final expected = normalizeQuantity(expectedAmount, expectedUnit);
-  final observed = normalizeQuantity(observedAmount, observedUnit);
-  if (expected == null ||
-      observed == null ||
-      expected.dimension != observed.dimension) {
-    return false;
-  }
-  return (expected.amount - observed.amount).abs() < 0.000001;
+  return quantityMatchesProduct(
+    quantity: observation.quantity,
+    unit: observation.unit,
+    product: product,
+  );
 }
 
 int? _openPricesId(String? proofRef) {

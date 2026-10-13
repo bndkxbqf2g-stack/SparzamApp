@@ -4,9 +4,12 @@ import '../../models/market_price.dart';
 import '../../models/offer.dart';
 import '../../models/price_observation.dart';
 import '../offers/effective_price.dart';
+import '../offers/offer_import.dart';
 import '../offers/offer_filter.dart';
 import '../offers/prospect_price_statistics.dart';
 import '../route/market_price_quality.dart';
+import '../../services/branch_identity.dart';
+import '../../services/market_price_comparability.dart';
 
 enum ShoppingQuoteKind { receipt, ownPrice, openPrices, offer, prospectHistory }
 
@@ -41,7 +44,7 @@ class ShoppingQuote {
       'Open-Prices-Preis vom ${_date(observedAt!)}',
     ShoppingQuoteKind.offer =>
       'Angebot${(offer!.hasCoupon || offer!.hasCashback) ? ', effektiv' : ''} '
-          'bis ${_date(offer!.validUntil)}',
+          'bis ${_date(offer!.validUntil)}${_capturedSuffix(offer!.capturedAt)}',
     ShoppingQuoteKind.prospectHistory =>
       'Prospekt-Median (historisch, bis ${_date(observedAt!)})',
   };
@@ -96,6 +99,12 @@ class ShoppingQuote {
   static String _date(DateTime date) =>
       '${date.day.toString().padLeft(2, '0')}.'
       '${date.month.toString().padLeft(2, '0')}.${date.year}';
+
+  static String _capturedSuffix(DateTime? value) {
+    if (value == null) return '';
+    final local = value.toLocal();
+    return ' · erfasst ${_date(local)} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')} Uhr';
+  }
 }
 
 /// One row of the product × market view shown from the shopping list.
@@ -131,13 +140,17 @@ List<ShoppingQuote> shoppingQuotes(
   final candidates = <ShoppingQuote>[];
 
   for (final price in prices) {
+    final usable = price.isUsable(
+      now: today,
+      openPricesMaxAgeDays: openPricesMaxAgeDays,
+    );
     if (price.productId != item.product.id ||
+        !marketPriceMatchesProduct(price, item.product) ||
+        !matchesConfiguredBranch(price.storeName, price.sourceLocationId) ||
         _isFutureObservation(price.updatedAt, today) ||
-        (price.source == MarketPriceSource.openPrices &&
-            !price.isUsable(
-              now: today,
-              openPricesMaxAgeDays: openPricesMaxAgeDays,
-            )) ||
+        price.identityConfidence < 1 ||
+        !price.hasComparableBasis ||
+        (!usable && price.source != MarketPriceSource.receipt) ||
         !price.price.isFinite ||
         price.price <= 0 ||
         (enabledStores.isNotEmpty &&
@@ -156,14 +169,16 @@ List<ShoppingQuote> shoppingQuotes(
         observedAt: price.updatedAt,
         comparisonPrice: price.price *
             (1 + marketPriceQuality(price, today).uncertaintyRate),
-        historical: price.source == MarketPriceSource.receipt &&
-            !price.isUsable(now: today, openPricesMaxAgeDays: 36500),
+        historical: price.source == MarketPriceSource.receipt && !usable,
       ),
     );
   }
 
   for (final offer in offers) {
     if (offer.productId != item.product.id ||
+        !offerMatchesProduct(offer, item.product) ||
+        !matchesConfiguredBranch(offer.storeName, offer.locationId) ||
+        !hasExactOfferBranch(offer) ||
         (enabledStores.isNotEmpty &&
             !enabledStores.contains(offer.storeName)) ||
         !isOfferDateRangeActive(
@@ -171,6 +186,7 @@ List<ShoppingQuote> shoppingQuotes(
           validUntil: offer.validUntil,
           now: today,
         ) ||
+        !hasTrustedOfferEvidence(offer) ||
         isSampleOffer(offer)) {
       continue;
     }
@@ -350,13 +366,14 @@ int _quoteSourceOrder(ShoppingQuote quote) => switch (quote.kind) {
 
 String offerEvidenceLabel(Offer offer) {
   final proof = offer.proofRef?.trim();
-  return '${_offerSourceLabel(offer.source)} · '
+  return '${_offerSourceLabel(offer.sourceAdapter ?? offer.source)} · '
       '${proof == null || proof.isEmpty ? 'Nachweis fehlt' : 'Nachweis vorhanden'}';
 }
 
 String _offerSourceLabel(String source) =>
     switch (source.trim().toLowerCase()) {
       'leaflet' => 'Prospekt',
+      'kaufda' => 'KaufDA',
       'retailer' => 'Händler',
       'retailerwebsite' || 'retailer_website' => 'Händler-Website',
       'receipt' => 'Kassenbon',

@@ -19,6 +19,7 @@ void main() {
     required DateTime observedAt,
     double confidence = 1,
     PriceObservationKind kind = PriceObservationKind.regular,
+    String? sourceAdapter,
   }) => PriceObservation(
     id: id,
     productId: milk.id,
@@ -26,6 +27,7 @@ void main() {
     price: price,
     observedAt: observedAt,
     source: PriceObservationSource.leaflet,
+    sourceAdapter: sourceAdapter,
     kind: kind,
     validUntil: DateTime(2026, 9, 30),
     quantity: 1,
@@ -77,7 +79,26 @@ void main() {
     expect(result.first.unitPrice, 0.99);
     expect(result.first.hasProof, isTrue);
     expect(result.first.kindLabel, 'Angebot');
+    expect(result.first.sourceLabel, 'Prospekt');
     expect(result.last.storeName, 'Lidl');
+  });
+
+  test('shows concrete adapter provenance in the price history', () {
+    final result = shoppingPriceHistory(
+      product: milk,
+      now: now,
+      observations: [
+        observation(
+          id: 'kaufda',
+          store: 'Netto',
+          price: 0.99,
+          observedAt: DateTime(2026, 10, 1),
+          sourceAdapter: 'KaufDA',
+        ),
+      ],
+    );
+
+    expect(result.single.sourceLabel, 'KaufDA');
   });
 
   test('limits the visible timeline deterministically', () {

@@ -4,6 +4,8 @@ import '../../data/products.dart';
 import '../../models/offer.dart';
 import '../../models/price_point.dart';
 import '../../models/product.dart';
+import '../../services/safe_external_url.dart';
+import '../../services/quantity_normalizer.dart';
 import 'cashback_calculator.dart';
 import 'coupon_calculator.dart';
 import 'effective_price.dart';
@@ -45,10 +47,9 @@ class OfferCard extends StatelessWidget {
       currentPrice: price.finalPrice,
     );
     final name = product?.name ?? offer.productId;
-    final imageUrl = (offer.imageUrl?.trim().isNotEmpty == true
-            ? offer.imageUrl
-            : product?.imageUrl)
-        ?.trim();
+    final imageUrl = safeExternalHttpUrl(offer.imageUrl) ??
+        safeExternalHttpUrl(product?.imageUrl);
+    final unitPriceLabel = _unitPriceLabel(offer);
 
     return Card(
       child: Padding(
@@ -105,6 +106,10 @@ class OfferCard extends StatelessWidget {
             Text(offer.originalPriceVerified
                 ? '${offer.storeName} · statt ${offer.originalPrice.toStringAsFixed(2)} €'
                 : '${offer.storeName} · Aktionspreis'),
+            if (unitPriceLabel != null) ...[
+              const SizedBox(height: 3),
+              Text(unitPriceLabel, style: Theme.of(context).textTheme.bodySmall),
+            ],
             const SizedBox(height: 10),
             Row(
               children: [
@@ -161,6 +166,24 @@ class OfferCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String? _unitPriceLabel(Offer offer) {
+    final amount = offer.packageAmount;
+    final unit = offer.packageUnit;
+    if (amount == null || unit == null || amount <= 0 || unit.trim().isEmpty) {
+      return null;
+    }
+    final normalized = normalizeQuantity(amount, unit);
+    if (normalized == null) return null;
+    final price = offer.unitPrice ??
+        normalizedUnitPrice(
+          price: offer.offerPrice,
+          amount: amount,
+          unit: unit,
+        );
+    if (price == null || !price.isFinite || price <= 0) return null;
+    return 'Grundpreis ${price.toStringAsFixed(2).replaceAll('.', ',')} €/${normalized.baseUnit}';
   }
 
 }

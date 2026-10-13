@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/offer.dart';
+import '../../services/safe_external_url.dart';
 
 class OfferEvidence extends StatelessWidget {
   const OfferEvidence({super.key, required this.offer});
@@ -10,7 +11,7 @@ class OfferEvidence extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final proofRef = offer.proofRef?.trim();
-    final imageUrl = offer.imageUrl?.trim();
+    final imageUrl = safeExternalHttpUrl(offer.imageUrl);
     final hasProof = proofRef != null && proofRef.isNotEmpty;
     final hasImage = imageUrl != null && imageUrl.isNotEmpty;
 
@@ -19,7 +20,7 @@ class OfferEvidence extends StatelessWidget {
       children: [
         const SizedBox(height: 10),
         Text(
-          'Quelle: ${_sourceLabel(offer.source)}',
+          'Quelle: ${_sourceLabel(offer.sourceAdapter ?? offer.source)}',
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 4),
@@ -27,6 +28,13 @@ class OfferEvidence extends StatelessWidget {
           _validityLabel(offer),
           style: Theme.of(context).textTheme.bodySmall,
         ),
+        if (offer.capturedAt != null) ...[
+          const SizedBox(height: 4),
+          Text(
+            'Erfasst am ${_dateTime(offer.capturedAt!)}',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
         if (hasProof) ...[
           const SizedBox(height: 4),
           Text(
@@ -68,8 +76,9 @@ class OfferEvidence extends StatelessWidget {
 
   String _sourceLabel(String source) => switch (source.trim().toLowerCase()) {
         'leaflet' => 'Prospekt',
+        'kaufda' => 'KaufDA',
         'retailer' => 'Händler',
-        'retailerwebsite' => 'Händler-Website',
+        'retailerwebsite' || 'retailer_website' => 'Händler-Website',
         'receipt' => 'Kassenbon',
         'manual' => 'Manuell',
         'openprices' || 'open_prices' => 'Open Prices',
@@ -78,4 +87,9 @@ class OfferEvidence extends StatelessWidget {
 
   String _date(DateTime date) =>
       '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}';
+
+  String _dateTime(DateTime date) {
+    final local = date.toLocal();
+    return '${_date(local)} · ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')} Uhr';
+  }
 }

@@ -47,6 +47,23 @@ Future<void> main() async {
   final purchaseStore = PurchaseStore();
   final shoppingListStore = ShoppingListStore();
 
+  // These stores use independent keys. Start all initial reads before the
+  // first await so a slow local backend (or a repaired legacy entry) does not
+  // serialize the whole app startup. The futures are still awaited below,
+  // therefore the first frame receives one consistent initial snapshot.
+  final initialBudgetFuture = budgetStore.load();
+  final initialOffersFuture = offerStore.load();
+  final initialMobilityFuture = mobilityStore.load();
+  final initialMarketPricesFuture = marketPriceStore.load();
+  final initialCustomProductsFuture = productCatalogStore.load();
+  final initialPriceHistoryFuture = priceHistoryStore.load();
+  final initialPriceDataSettingsFuture = priceDataSettingsStore.load();
+  final initialRecentPurchasesFuture = recentPurchaseStore.load();
+  final initialPurchaseHistoryFuture = purchaseStore.load();
+  final initialShoppingListFuture = shoppingListStore.load();
+  final initialPreferredProductsFuture =
+      shoppingListStore.loadPreferredProducts();
+
   runApp(
     SparzamApp(
       budgetStore: budgetStore,
@@ -60,18 +77,17 @@ Future<void> main() async {
       purchaseStore: purchaseStore,
       shoppingListStore: shoppingListStore,
       diagnosticLogService: diagnosticLogService,
-      initialBudget: await budgetStore.load(),
-      initialOffers: await offerStore.load(),
-      initialMobility: await mobilityStore.load(),
-      initialMarketPrices: await marketPriceStore.load(),
-      initialCustomProducts: await productCatalogStore.load(),
-      initialPriceHistory: await priceHistoryStore.load(),
-      initialPriceDataSettings: await priceDataSettingsStore.load(),
-      initialRecentPurchases: await recentPurchaseStore.load(),
-      initialPurchaseHistory: await purchaseStore.load(),
-      initialShoppingList: await shoppingListStore.load(),
-      initialPreferredProductByGroup:
-          await shoppingListStore.loadPreferredProducts(),
+      initialBudget: await initialBudgetFuture,
+      initialOffers: await initialOffersFuture,
+      initialMobility: await initialMobilityFuture,
+      initialMarketPrices: await initialMarketPricesFuture,
+      initialCustomProducts: await initialCustomProductsFuture,
+      initialPriceHistory: await initialPriceHistoryFuture,
+      initialPriceDataSettings: await initialPriceDataSettingsFuture,
+      initialRecentPurchases: await initialRecentPurchasesFuture,
+      initialPurchaseHistory: await initialPurchaseHistoryFuture,
+      initialShoppingList: await initialShoppingListFuture,
+      initialPreferredProductByGroup: await initialPreferredProductsFuture,
     ),
   );
 }

@@ -11,10 +11,12 @@ void main() {
         'euroPerKm': double.nan,
         'timeValuePerHour': double.infinity,
         'minExtraStoreSavings': double.infinity,
+        'additionalStoreCost': double.infinity,
       });
       expect(settings.euroPerKm, 0.22);
       expect(settings.timeValuePerHour, 0);
       expect(settings.minExtraStoreSavings, 0.50);
+      expect(settings.additionalStoreCost, 0);
     },
   );
 
@@ -89,10 +91,14 @@ void main() {
       );
       await tester.tap(find.text('Öffnen'));
       await tester.pumpAndSettle();
-      await tester.enterText(
-        find.widgetWithText(TextFormField, 'Zeitwert für Wegezeit (optional)'),
-        '12,50',
+      await tester.scrollUntilVisible(
+        find.text('Zeitwert für Wegezeit (optional)'),
+        250,
+        scrollable: find.byType(Scrollable).first,
       );
+      final timeValue = find.byKey(const ValueKey('mobility-time-value'));
+      expect(timeValue, findsOneWidget);
+      await tester.enterText(timeValue, '12,50');
       await tester.scrollUntilVisible(
         find.text('Speichern'),
         250,
@@ -105,3 +111,4 @@ void main() {
     },
   );
 }
+

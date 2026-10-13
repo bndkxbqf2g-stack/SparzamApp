@@ -1,9 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../design/sparzam_theme.dart';
 import '../../models/product.dart';
+import '../catalog/unit_price.dart';
 import '../offers/offer_import.dart';
 
 /// A prospect offer keeps the public leaflet evidence visible at the point
@@ -33,12 +33,15 @@ class _ProspectOfferCardState extends State<ProspectOfferCard> {
     final callback = widget.onAdd;
     if (callback == null) return;
     callback();
+    if (!mounted) return;
     setState(() => added = true);
   }
 
   @override
   Widget build(BuildContext context) {
-    return widget.compact ? _buildCompact(context) : _buildGrid(context);
+    return RepaintBoundary(
+      child: widget.compact ? _buildCompact(context) : _buildGrid(context),
+    );
   }
 
   Widget _buildCompact(BuildContext context) {
@@ -160,15 +163,19 @@ class _OfferImage extends StatelessWidget {
         color: SparzamTheme.deepGreen,
       ),
     );
-    final imageUrl = record.imageUrl;
-    final image = imageUrl == null || imageUrl.trim().isEmpty
+    final imageUrl = _imageUri(record.imageUrl);
+    final image = imageUrl == null
         ? fallback
         : Image.network(
             imageUrl,
-            cacheWidth: kIsWeb ? null : (expanded ? 720 : 360),
-            cacheHeight: kIsWeb ? null : (expanded ? 520 : 360),
+            // Offer grids can contain hundreds of records. Keep each tile on
+            // the Canvas renderer so scrolling does not create one HTML
+            // platform view per external retailer image. The prospect viewer
+            // is the intentional single-image HTML fallback boundary.
+            cacheWidth: expanded ? 720 : 360,
+            cacheHeight: expanded ? 520 : 360,
             filterQuality: FilterQuality.low,
-            webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
+            webHtmlElementStrategy: WebHtmlElementStrategy.never,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) => fallback,
           );
@@ -179,6 +186,19 @@ class _OfferImage extends StatelessWidget {
       child: image,
     );
   }
+}
+
+String? _imageUri(String? value) {
+  final raw = value?.trim();
+  if (raw == null || raw.isEmpty) return null;
+  final uri = Uri.tryParse(raw);
+  final scheme = uri?.scheme.toLowerCase();
+  if (uri == null ||
+      uri.host.trim().isEmpty ||
+      (scheme != 'http' && scheme != 'https')) {
+    return null;
+  }
+  return raw;
 }
 
 class _OfferSummary extends StatelessWidget {
@@ -200,7 +220,13 @@ class _OfferSummary extends StatelessWidget {
     final discount = record.originalPrice == null || record.originalPrice! <= 0
         ? null
         : ((savings! / record.originalPrice!) * 100).round();
-    final unit = product?.unit.trim();
+    final unit = product?.unit.trim() ?? record.packageSize?.trim();
+    final baseUnitPrice = product == null
+        ? null
+        : baseUnitPriceLabel(product!, record.offerPrice);
+    final sourceBaseUnitPrice = baseUnitPrice == null
+        ? record.priceByBaseUnit?.trim()
+        : null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -245,6 +271,24 @@ class _OfferSummary extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(fontSize: 12, color: Colors.black54),
         ),
+        if (record.sourceAdapter?.trim().isNotEmpty == true)
+          Text(
+            'Quelle ${_sourceAdapterLabel(record.sourceAdapter!)}',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 12, color: Colors.black54),
+          ),
+        if (record.regionalOnly)
+          const Text(
+            'Nur regional erkannt · Filiale noch nicht bestätigt',
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.deepOrange,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
         if (record.location?.trim().isNotEmpty == true)
           Text(
             record.location!,
@@ -266,12 +310,43 @@ class _OfferSummary extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(fontSize: 12, color: Colors.black54),
           ),
+        if (baseUnitPrice != null)
+          Text(
+            'Grundpreis $baseUnitPrice',
+            style: const TextStyle(fontSize: 12, color: Colors.black54),
+          ),
+        if (sourceBaseUnitPrice != null && sourceBaseUnitPrice.isNotEmpty)
+          Text(
+            'Grundpreis $sourceBaseUnitPrice',
+            style: const TextStyle(fontSize: 12, color: Colors.black54),
+          ),
         Text(
           'Gültig bis ${_date(record.validUntil)}',
           style: const TextStyle(fontSize: 12, color: Colors.black54),
         ),
+        if (record.capturedAt != null)
+          Text(
+            'Erfasst ${_dateTime(record.capturedAt!)}',
+            style: const TextStyle(fontSize: 12, color: Colors.black54),
+          ),
+        if (record.brochurePage != null)
+          Text(
+            'Prospektseite ${record.brochurePage}',
+            style: const TextStyle(fontSize: 12, color: Colors.black54),
+          ),
       ],
     );
+  }
+}
+
+String _sourceAdapterLabel(String value) {
+  switch (value.trim().toLowerCase()) {
+    case 'kaufda':
+      return 'KaufDA';
+    case 'bring':
+      return 'Bring';
+    default:
+      return value.trim();
   }
 }
 
@@ -307,4 +382,10 @@ String _price(double value) =>
 
 String _date(DateTime value) =>
     '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.${value.year}';
+
+String _dateTime(DateTime value) {
+  final local = value.toLocal();
+  return '${_date(local)} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')} Uhr';
+}
+
 

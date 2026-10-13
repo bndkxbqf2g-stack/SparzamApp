@@ -1,4 +1,5 @@
 import '../../models/product.dart';
+import '../../services/barcode_normalizer.dart';
 
 enum CandidateRelation {
   sameBarcode,
@@ -43,7 +44,7 @@ List<ProductCandidate> suggestProducts(
 ) {
   final label = _normalize(query.label);
   final requestedBrand = _normalize(query.requiredBrand ?? '');
-  final code = query.ean?.trim();
+  final code = query.ean == null ? null : normalizeBarcode(query.ean!);
   final candidates = <ProductCandidate>[];
   for (final product in products) {
     final brand = _normalize(product.brand ?? '');
@@ -51,7 +52,10 @@ List<ProductCandidate> suggestProducts(
     final names = [product.name, ...product.aliases].map(_normalize).toList();
     final normalizedName = _normalize(product.name);
     final category = _normalize(query.category ?? query.label);
-    final sameCode = code != null && code.isNotEmpty && code == product.ean;
+    final productCode = product.ean == null
+        ? null
+        : normalizeBarcode(product.ean!);
+    final sameCode = code != null && productCode == code;
     final sameLabel = label.isNotEmpty && normalizedName == label;
     final alias = label.isNotEmpty && names.skip(1).contains(label);
     final related = label.length >= 4 &&

@@ -6,6 +6,7 @@ import '../models/list_item.dart';
 import '../models/named_shopping_list.dart';
 import '../models/product.dart';
 import '../models/recent_purchase.dart';
+import 'sequential_operation_queue.dart';
 
 class ShoppingListStore {
   static const _storageKey = 'shopping_list';
@@ -14,9 +15,13 @@ class ShoppingListStore {
   static const _preferredProductsStorageKey = 'preferred_products_by_group';
   static const _aisleOrderStorageKey = 'shopping_aisle_order_v1';
   static const _tileViewStorageKey = 'shopping_tile_view_v1';
+  static final _queue = SequentialOperationQueue();
   final SharedPreferencesAsync _preferences = SharedPreferencesAsync();
 
-  Future<Map<String, String>> loadPreferredProducts() async {
+  Future<Map<String, String>> loadPreferredProducts() =>
+      _queue.schedule(_loadPreferredProductsNow);
+
+  Future<Map<String, String>> _loadPreferredProductsNow() async {
     final values = await _preferences.getStringList(
       _preferredProductsStorageKey,
     );
@@ -30,16 +35,24 @@ class ShoppingListStore {
     return result;
   }
 
-  Future<void> savePreferredProduct(String group, String productId) async {
-    final current = await loadPreferredProducts();
-    current[group] = productId;
-    await _preferences.setStringList(
-      _preferredProductsStorageKey,
-      current.entries.map((entry) => '${entry.key}|${entry.value}').toList(),
-    );
-  }
+  Future<void> savePreferredProduct(String group, String productId) =>
+      _queue.schedule(
+        () async {
+          final current = await _loadPreferredProductsNow();
+          current[group] = productId;
+          await _preferences.setStringList(
+            _preferredProductsStorageKey,
+            current.entries
+                .map((entry) => '${entry.key}|${entry.value}')
+                .toList(),
+          );
+        },
+      );
 
-  Future<List<RecentPurchase>> loadKnownItems() async {
+  Future<List<RecentPurchase>> loadKnownItems() =>
+      _queue.schedule(_loadKnownItemsNow);
+
+  Future<List<RecentPurchase>> _loadKnownItemsNow() async {
     final values = await _preferences.getStringList(_knownItemsStorageKey);
     if (values == null) return <RecentPurchase>[];
 
@@ -54,50 +67,72 @@ class ShoppingListStore {
     return items;
   }
 
-  Future<void> saveKnownItem(Product product) async {
-    final current = await loadKnownItems();
-    final item = RecentPurchase.fromProduct(product);
-    final next = [item, ...current.where((existing) => existing.id != item.id)];
-    await _preferences.setStringList(
-      _knownItemsStorageKey,
-      next.map((entry) => entry.toJson()).toList(),
-    );
-  }
-
-  Future<void> saveKnownItems(List<RecentPurchase> items) =>
-      _preferences.setStringList(
+  Future<void> saveKnownItem(Product product) => _queue.schedule(
+    () async {
+      final current = await _loadKnownItemsNow();
+      final item = RecentPurchase.fromProduct(product);
+      final next = [
+        item,
+        ...current.where((existing) => existing.id != item.id),
+      ];
+      await _preferences.setStringList(
         _knownItemsStorageKey,
-        items.map((entry) => entry.toJson()).toList(),
+        next.map((entry) => entry.toJson()).toList(),
       );
+    },
+  );
 
-  Future<void> savePreferredProducts(Map<String, String> products) =>
-      _preferences.setStringList(
+  Future<void> saveKnownItems(List<RecentPurchase> items) {
+    final snapshot = List<RecentPurchase>.of(items, growable: false);
+    return _queue.schedule(
+      () => _preferences.setStringList(
+        _knownItemsStorageKey,
+        snapshot.map((entry) => entry.toJson()).toList(),
+      ),
+    );
+  }
+
+  Future<void> savePreferredProducts(Map<String, String> products) {
+    final snapshot = Map<String, String>.from(products);
+    return _queue.schedule(
+      () => _preferences.setStringList(
         _preferredProductsStorageKey,
-        products.entries.map((entry) => '${entry.key}|${entry.value}').toList(),
+        snapshot.entries.map((entry) => '${entry.key}|${entry.value}').toList(),
+      ),
+    );
+  }
+
+  Future<void> removeKnownItem(String id) => _queue.schedule(
+    () async {
+      final current = await _loadKnownItemsNow();
+      await _preferences.setStringList(
+        _knownItemsStorageKey,
+        current
+            .where((item) => item.id != id)
+            .map((entry) => entry.toJson())
+            .toList(),
+      );
+    },
+  );
+
+  Future<void> removePreferredProduct(String group, String id) =>
+      _queue.schedule(
+        () async {
+          final current = await _loadPreferredProductsNow();
+          if (current[group] != id) return;
+          current.remove(group);
+          await _preferences.setStringList(
+            _preferredProductsStorageKey,
+            current.entries
+                .map((entry) => '${entry.key}|${entry.value}')
+                .toList(),
+          );
+        },
       );
 
-  Future<void> removeKnownItem(String id) async {
-    final current = await loadKnownItems();
-    await _preferences.setStringList(
-      _knownItemsStorageKey,
-      current
-          .where((item) => item.id != id)
-          .map((entry) => entry.toJson())
-          .toList(),
-    );
-  }
+  Future<List<ListItem>> load() => _queue.schedule(_loadNow);
 
-  Future<void> removePreferredProduct(String group, String id) async {
-    final current = await loadPreferredProducts();
-    if (current[group] != id) return;
-    current.remove(group);
-    await _preferences.setStringList(
-      _preferredProductsStorageKey,
-      current.entries.map((entry) => '${entry.key}|${entry.value}').toList(),
-    );
-  }
-
-  Future<List<ListItem>> load() async {
+  Future<List<ListItem>> _loadNow() async {
     final values = await _preferences.getStringList(_storageKey);
     if (values == null) return <ListItem>[];
 
@@ -105,6 +140,8 @@ class ShoppingListStore {
     for (final value in values) {
       try {
         final json = jsonDecode(value) as Map<String, dynamic>;
+        final quantity = (json['quantity'] as num?)?.toInt() ?? 1;
+        if (quantity <= 0) continue;
         items.add(
           ListItem(
             product: Product(
@@ -115,7 +152,7 @@ class ShoppingListStore {
               ean: json['ean'] as String?,
               imageUrl: json['imageUrl'] as String?,
             ),
-            quantity: (json['quantity'] as num?)?.toInt() ?? 1,
+            quantity: quantity,
             note: json['note'] as String? ?? '',
             checked: json['checked'] as bool? ?? false,
           ),
@@ -127,30 +164,38 @@ class ShoppingListStore {
     return items;
   }
 
-  Future<void> save(List<ListItem> items) async {
-    await _preferences.setStringList(
-      _storageKey,
-      items
-          .map(
-            (item) => jsonEncode({
-              'id': item.product.id,
-              'name': item.product.name,
-              'unit': item.product.unit,
-              'group': item.product.group,
-              'ean': item.product.ean,
-              'imageUrl': item.product.imageUrl,
-              'quantity': item.quantity,
-              'note': item.note,
-              'checked': item.checked,
-            }),
-          )
-          .toList(),
+  Future<void> save(List<ListItem> items) {
+    final snapshot = List<ListItem>.of(items, growable: false);
+    return _queue.schedule(
+      () => _preferences.setStringList(
+        _storageKey,
+        snapshot
+            .map(
+              (item) => jsonEncode({
+                'id': item.product.id,
+                'name': item.product.name,
+                'unit': item.product.unit,
+                'group': item.product.group,
+                'ean': item.product.ean,
+                'imageUrl': item.product.imageUrl,
+                'quantity': item.quantity,
+                'note': item.note,
+                'checked': item.checked,
+              }),
+            )
+            .toList(),
+      ),
     );
   }
 
-  Future<void> clear() => _preferences.remove(_storageKey);
+  Future<void> clear() => _queue.schedule(() async {
+    await _preferences.remove(_storageKey);
+  });
 
-  Future<List<NamedShoppingList>> loadNamedLists() async {
+  Future<List<NamedShoppingList>> loadNamedLists() =>
+      _queue.schedule(_loadNamedListsNow);
+
+  Future<List<NamedShoppingList>> _loadNamedListsNow() async {
     final values = await _preferences.getStringList(_listsStorageKey);
     if (values == null) return const <NamedShoppingList>[];
     final result = <NamedShoppingList>[];
@@ -166,21 +211,35 @@ class ShoppingListStore {
     return result;
   }
 
-  Future<void> saveNamedLists(List<NamedShoppingList> lists) =>
-      _preferences.setStringList(
+  Future<void> saveNamedLists(List<NamedShoppingList> lists) {
+    final snapshot = List<NamedShoppingList>.of(lists, growable: false);
+    return _queue.schedule(
+      () => _preferences.setStringList(
         _listsStorageKey,
-        lists.map((list) => jsonEncode(list.toJson())).toList(),
-      );
+        snapshot.map((list) => jsonEncode(list.toJson())).toList(),
+      ),
+    );
+  }
 
-  Future<List<String>> loadAisleOrder() async =>
-      await _preferences.getStringList(_aisleOrderStorageKey) ?? <String>[];
+  Future<List<String>> loadAisleOrder() => _queue.schedule(() async {
+    return await _preferences.getStringList(_aisleOrderStorageKey) ??
+        <String>[];
+  });
 
-  Future<void> saveAisleOrder(List<String> groups) =>
-      _preferences.setStringList(_aisleOrderStorageKey, groups);
+  Future<void> saveAisleOrder(List<String> groups) {
+    final snapshot = List<String>.of(groups, growable: false);
+    return _queue.schedule(
+      () => _preferences.setStringList(
+        _aisleOrderStorageKey,
+        snapshot,
+      ),
+    );
+  }
 
-  Future<bool> loadTileView() async =>
-      await _preferences.getBool(_tileViewStorageKey) ?? true;
+  Future<bool> loadTileView() => _queue.schedule(() async {
+    return await _preferences.getBool(_tileViewStorageKey) ?? true;
+  });
 
   Future<void> saveTileView(bool enabled) =>
-      _preferences.setBool(_tileViewStorageKey, enabled);
+      _queue.schedule(() => _preferences.setBool(_tileViewStorageKey, enabled));
 }

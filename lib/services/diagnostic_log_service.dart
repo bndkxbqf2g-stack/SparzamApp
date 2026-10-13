@@ -3,13 +3,17 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/diagnostic_log_entry.dart';
+import 'sequential_operation_queue.dart';
 
 class DiagnosticLogService {
   static const _key = 'diagnostic_log_v1';
   static const _maxEntries = 100;
+  static final _queue = SequentialOperationQueue();
   final SharedPreferencesAsync _preferences = SharedPreferencesAsync();
 
-  Future<List<DiagnosticLogEntry>> load() async {
+  Future<List<DiagnosticLogEntry>> load() => _queue.schedule(_loadNow);
+
+  Future<List<DiagnosticLogEntry>> _loadNow() async {
     final values = await _preferences.getStringList(_key);
     if (values == null) return <DiagnosticLogEntry>[];
     final entries = <DiagnosticLogEntry>[];
@@ -31,27 +35,28 @@ class DiagnosticLogService {
     required String category,
     required String message,
     String? details,
-  }) async {
-    if (category.trim().isEmpty || message.trim().isEmpty) return;
-    try {
-      final current = await load();
-      final entry = DiagnosticLogEntry(
-        timestamp: DateTime.now().toUtc(),
-        category: category.trim(),
-        message: message.trim(),
-        details: details?.trim().isEmpty == true ? null : details?.trim(),
-      );
-      final next = [entry, ...current].take(_maxEntries).toList();
-      await _preferences.setStringList(
-        _key,
-        next.map((item) => jsonEncode(item.toJson())).toList(),
-      );
-    } catch (_) {
-      // Fehlerprotokollierung darf den eigentlichen Fehler nicht verschärfen.
+  }) {
+    if (category.trim().isEmpty || message.trim().isEmpty) {
+      return Future<void>.value();
     }
+    return _queue.schedule(() async {
+      try {
+        final current = await _loadNow();
+        final entry = DiagnosticLogEntry(
+          timestamp: DateTime.now().toUtc(),
+          category: category.trim(),
+          message: message.trim(),
+          details: details?.trim().isEmpty == true ? null : details?.trim(),
+        );
+        final next = [entry, ...current].take(_maxEntries).toList();
+        await _saveNow(next);
+      } catch (_) {
+        // Fehlerprotokollierung darf den eigentlichen Fehler nicht verschärfen.
+      }
+    });
   }
 
-  Future<void> clear() => _preferences.remove(_key);
+  Future<void> clear() => _queue.schedule(() => _preferences.remove(_key));
 
   Future<String> exportText() async {
     final entries = await load();
@@ -66,4 +71,10 @@ class DiagnosticLogService {
     }
     return buffer.toString();
   }
+
+  Future<void> _saveNow(List<DiagnosticLogEntry> entries) =>
+      _preferences.setStringList(
+        _key,
+        entries.map((item) => jsonEncode(item.toJson())).toList(),
+      );
 }

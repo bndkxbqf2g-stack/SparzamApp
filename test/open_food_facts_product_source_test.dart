@@ -82,4 +82,55 @@ void main() {
     expect(source, isA<ProductDataSource>());
     source.close();
   });
+
+  test('canonicalizes UPC-A before the Open Food Facts request', () async {
+    late http.Request request;
+    final source = OpenFoodFactsProductSource(
+      client: MockClient((captured) async {
+        request = captured;
+        return http.Response(
+          jsonEncode({
+            'status': 1,
+            'product': {
+              'code': '0123456789012',
+              'product_name': 'Beispielprodukt',
+            },
+          }),
+          200,
+        );
+      }),
+    );
+
+    final product = await source.fetchProductByEan('123456789012');
+    source.close();
+
+    expect(request.url.path, '/api/v2/product/0123456789012.json');
+    expect(product?.ean, '0123456789012');
+  });
+
+  test('normalizes structured centiliter quantities to milliliters', () async {
+    final source = OpenFoodFactsProductSource(
+      client: MockClient((_) async {
+        return http.Response(
+          jsonEncode({
+            'status': 1,
+            'product': {
+              'code': '456',
+              'product_name': 'Sahne',
+              'product_quantity': 20,
+              'product_quantity_unit': 'cl',
+            },
+          }),
+          200,
+        );
+      }),
+    );
+
+    final product = await source.fetchProductByEan('456');
+    source.close();
+
+    expect(product?.packageAmount, 200);
+    expect(product?.packageUnit, 'ml');
+    expect(product?.unit, '200 ml');
+  });
 }

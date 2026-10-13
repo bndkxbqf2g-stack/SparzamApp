@@ -63,4 +63,22 @@ void main() {
     final empty = await store.remove(updated.id, second);
     expect(empty, isEmpty);
   });
+
+  test('ein paralleler Read wartet auf einen laufenden Katalogimport', () async {
+    final store = ProductCatalogStore();
+    final reader = ProductCatalogStore();
+    const product = Product(
+      id: 'parallel_product',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'milch',
+      ean: '4001234567890',
+    );
+
+    final writing = store.upsert(product, const <Product>[]);
+    final reading = reader.load();
+
+    await writing;
+    expect((await reading).single.id, 'parallel_product');
+  });
 }

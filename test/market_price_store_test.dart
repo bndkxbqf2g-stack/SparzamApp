@@ -33,6 +33,47 @@ void main() {
     expect(loaded.single.price, 2.49);
   });
 
+  test('ein paralleler Marktpreis-Read wartet auf einen Preis-Write', () async {
+    final store = MarketPriceStore();
+    final reader = MarketPriceStore();
+    final price = MarketPrice(
+      productId: 'parallel',
+      storeName: 'Lidl',
+      price: 1.29,
+      updatedAt: DateTime(2026, 9, 24),
+    );
+
+    final writing = store.upsert(price, const <MarketPrice>[]);
+    final reading = reader.load();
+
+    await writing;
+    expect((await reading).single.productId, 'parallel');
+  });
+
+  test('parallele Marktpreis-Upserts verlieren keine unterschiedlichen Slots', () async {
+    final store = MarketPriceStore();
+    final first = MarketPrice(
+      productId: 'first',
+      storeName: 'Lidl',
+      price: 1.10,
+      updatedAt: DateTime(2026, 9, 24),
+    );
+    final second = MarketPrice(
+      productId: 'second',
+      storeName: 'Kaufland',
+      price: 2.20,
+      updatedAt: DateTime(2026, 9, 24),
+    );
+
+    await Future.wait([
+      store.upsert(first, const <MarketPrice>[]),
+      store.upsert(second, const <MarketPrice>[]),
+    ]);
+
+    expect((await store.load()).map((price) => price.productId),
+        containsAll(['first', 'second']));
+  });
+
   test('beschädigte oder negative gespeicherte Preise werden ignoriert',
       () async {
     final preferences = InMemorySharedPreferencesAsync.empty();
@@ -103,6 +144,55 @@ void main() {
 
     expect(second.single.price, 2.29);
     expect(second.single.updatedAt, DateTime(2026, 9, 20));
+  });
+
+  test('bewahrt Preise derselben Kette für getrennte Filialen', () async {
+    final store = MarketPriceStore();
+    final zellingen = MarketPrice(
+      productId: 'milk',
+      storeName: 'Lidl',
+      price: 0.99,
+      updatedAt: DateTime(2026, 10, 12),
+      source: MarketPriceSource.openPrices,
+      sourceLocationId: 'LIDL-ZELLINGEN',
+    );
+    final wuerzburg = MarketPrice(
+      productId: 'milk',
+      storeName: 'Lidl',
+      price: 1.09,
+      updatedAt: DateTime(2026, 10, 12),
+      source: MarketPriceSource.openPrices,
+      sourceLocationId: 'lidl-wuerzburg',
+    );
+
+    final next = await store.upsertMany(
+      [zellingen, wuerzburg],
+      const <MarketPrice>[],
+    );
+
+    expect(next, hasLength(2));
+    expect(next.map((price) => price.sourceLocationId), containsAll([
+      'LIDL-ZELLINGEN',
+      'lidl-wuerzburg',
+    ]));
+    final refreshed = await store.upsert(
+      MarketPrice(
+        productId: 'milk',
+        storeName: 'Lidl',
+        price: 0.89,
+        updatedAt: DateTime(2026, 10, 13),
+        source: MarketPriceSource.openPrices,
+        sourceLocationId: 'lidl-zellingen',
+      ),
+      next,
+    );
+    expect(refreshed, hasLength(2));
+    expect(
+      refreshed.firstWhere(
+        (price) => price.sourceLocationId == 'lidl-zellingen',
+      ).price,
+      0.89,
+    );
   });
 
   test('alle Preise eines Produkts können gemeinsam entfernt werden', () async {

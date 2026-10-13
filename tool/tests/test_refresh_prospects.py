@@ -2,9 +2,17 @@ import importlib.util
 import pathlib
 import unittest
 from datetime import datetime
+from unittest import mock
+from urllib.error import HTTPError
 from zoneinfo import ZoneInfo
 
 MODULE = pathlib.Path(__file__).resolve().parents[1] / "refresh_prospects.py"
+FEED = (
+    pathlib.Path(__file__).resolve().parents[2]
+    / "assets"
+    / "prospects"
+    / "current.json"
+)
 spec = importlib.util.spec_from_file_location("refresh_prospects", MODULE)
 refresh = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(refresh)
@@ -13,6 +21,41 @@ class ProspectParserTest(unittest.TestCase):
     def test_default_refresh_day_uses_berlin_calendar(self):
         expected = datetime.now(ZoneInfo("Europe/Berlin")).date()
         self.assertEqual(refresh.local_today(), expected)
+
+    def test_http_403_is_not_retried_with_a_different_user_agent(self):
+        error = HTTPError(
+            "https://example.test/prospect",
+            403,
+            "forbidden",
+            hdrs=None,
+            fp=None,
+        )
+        with mock.patch.object(refresh, "urlopen", side_effect=error) as request:
+            with self.assertRaises(HTTPError):
+                refresh.fetch("https://example.test/prospect")
+        self.assertEqual(request.call_count, 1)
+
+    def test_failed_refresh_keeps_previous_dataset_timestamp(self):
+        previous = {"generatedAt": "2026-10-11T04:15:00Z"}
+        self.assertEqual(
+            refresh.feed_generated_at(
+                previous,
+                0,
+                now=refresh.datetime(2026, 10, 12, 4, 15, tzinfo=refresh.timezone.utc),
+            ),
+            "2026-10-11T04:15:00Z",
+        )
+
+    def test_successful_refresh_gets_the_actual_refresh_timestamp(self):
+        previous = {"generatedAt": "2026-10-11T04:15:00Z"}
+        self.assertEqual(
+            refresh.feed_generated_at(
+                previous,
+                1,
+                now=refresh.datetime(2026, 10, 12, 4, 15, tzinfo=refresh.timezone.utc),
+            ),
+            "2026-10-12T04:15:00Z",
+        )
 
     def test_current_week_ends_on_the_german_retailer_saturday(self):
         self.assertEqual(
@@ -29,6 +72,40 @@ class ProspectParserTest(unittest.TestCase):
             self.assertTrue(metadata["location"])
             self.assertTrue(metadata["address"])
 
+    def test_versioned_feed_has_current_cover_and_branch_for_every_source(self):
+        payload = refresh.json.loads(FEED.read_text(encoding="utf-8"))
+        expected_store_names = {source[1] for source in refresh.SOURCES}
+        self.assertEqual(
+            {source["storeName"] for source in payload["sources"]},
+            expected_store_names,
+        )
+
+        generated_at = str(payload.get("generatedAt", ""))
+        self.assertTrue(generated_at)
+        reference_day = refresh.date.fromisoformat(generated_at[:10]).isoformat()
+        for source in payload["sources"]:
+            with self.subTest(store=source["storeName"]):
+                self.assertEqual(source.get("status"), "ok")
+                self.assertTrue(source.get("branchId"))
+                self.assertTrue(source.get("location"))
+                self.assertTrue(source.get("address"))
+
+                current_prospects = [
+                    prospect
+                    for prospect in source.get("prospects", [])
+                    if prospect.get("offerStartDate", "")
+                    <= reference_day
+                    <= prospect.get("offerEndDate", "")
+                ]
+                self.assertTrue(current_prospects)
+
+                cover_pages = current_prospects[0].get("pageSamples", [])
+                self.assertTrue(cover_pages)
+                self.assertEqual(cover_pages[0].get("number"), 1)
+                self.assertTrue(
+                    str(cover_pages[0].get("image", "")).startswith("https://")
+                )
+
     def test_current_prospect_offers_drop_overlapping_old_periods(self):
         offers = [
             {"storeName": "Kaufland", "validFrom": "2026-09-24", "validUntil": "2026-09-30", "productLabel": str(i), "offerPrice": 1.0}
@@ -36,6 +113,169 @@ class ProspectParserTest(unittest.TestCase):
         ] + [{"storeName": "Kaufland", "validFrom": "2026-08-23", "validUntil": "2026-09-30", "productLabel": "old", "offerPrice": 1.0}]
         result = refresh.current_prospect_offers(offers, refresh.date(2026, 9, 29))
         self.assertEqual(len(result), 3)
+
+    def test_current_prospect_offers_excludes_non_food_campaign_items(self):
+        offers = [
+            {
+                "storeName": "Kaufland",
+                "validFrom": "2026-10-12",
+                "validUntil": "2026-10-17",
+                "productLabel": "ARIEL Colorwaschmittel",
+                "offerPrice": 4.99,
+            },
+            {
+                "storeName": "Kaufland",
+                "validFrom": "2026-10-12",
+                "validUntil": "2026-10-17",
+                "productLabel": "Pflanzenöl 1 l",
+                "offerPrice": 1.99,
+            },
+        ]
+        result = refresh.current_prospect_offers(
+            offers,
+            refresh.date(2026, 10, 12),
+        )
+        self.assertEqual([item["productLabel"] for item in result], ["Pflanzenöl 1 l"])
+
+    def test_official_period_beats_larger_optional_kaufda_period(self):
+        offers = [
+            {
+                "storeName": "Lidl",
+                "productLabel": "Offizielles Angebot",
+                "offerPrice": 1.29,
+                "validFrom": "2026-10-12",
+                "validUntil": "2026-10-17",
+                "source": "retailerWebsite",
+            },
+            *[
+                {
+                    "storeName": "Lidl",
+                    "productLabel": f"KaufDA Treffer {index}",
+                    "offerPrice": 1.39,
+                    "validFrom": "2026-10-11",
+                    "validUntil": "2026-10-17",
+                    "source": "retailerWebsite",
+                    "sourceAdapter": "kaufda",
+                }
+                for index in range(3)
+            ],
+        ]
+
+        result = refresh.current_prospect_offers(
+            offers,
+            refresh.date(2026, 10, 12),
+        )
+
+        self.assertEqual(
+            [item["productLabel"] for item in result],
+            ["Offizielles Angebot"],
+        )
+
+    def test_food_guard_keeps_food_words_that_contain_non_food_like_terms(self):
+        self.assertTrue(
+            refresh.is_food_offer(
+                {"productLabel": "Dtsch. Halloween-Kürbis, lose je Stück"}
+            )
+        )
+        self.assertTrue(
+            refresh.is_food_offer({"productLabel": "GARDENLINE Frische Kräuter"})
+        )
+        self.assertFalse(
+            refresh.is_food_offer({"productLabel": "HOME CREATION LED-Kerzen"})
+        )
+        self.assertFalse(
+            refresh.is_food_offer(
+                {"productLabel": "DRESDNER ESSENZ Badesalz je 60 g"}
+            )
+        )
+        self.assertFalse(
+            refresh.is_food_offer(
+                {
+                    "productLabel": "Gourmet Gold je 24 x 85 g",
+                    "category": "09_Drogerie__Tiernahrung",
+                }
+            )
+        )
+        self.assertFalse(
+            refresh.is_food_offer(
+                {"productLabel": "Bepflanztes Holzgefäß je Stück"}
+            )
+        )
+
+    def test_source_counts_report_filtered_food_and_keep_provider_count(self):
+        sources = [{"storeName": "Kaufland", "recordCount": 3}]
+        offers = [
+            {"storeName": "Kaufland"},
+            {"storeName": "Kaufland"},
+        ]
+
+        refresh.update_source_record_counts(sources, offers)
+
+        self.assertEqual(sources[0]["recordCount"], 2)
+        self.assertEqual(sources[0]["rawRecordCount"], 3)
+
+    def test_versioned_feed_contains_only_proven_food_records(self):
+        payload = refresh.json.loads(FEED.read_text(encoding="utf-8"))
+        offers = payload.get("offers", [])
+        self.assertTrue(offers)
+        self.assertTrue(all(refresh.is_food_offer(item) for item in offers))
+        self.assertTrue(all(float(item["offerPrice"]) > 0 for item in offers))
+        self.assertTrue(all(item.get("proofRef") for item in offers))
+
+    def test_versioned_feed_keeps_verified_netto_cover(self):
+        payload = refresh.json.loads(FEED.read_text(encoding="utf-8"))
+        netto = next(
+            source for source in payload["sources"] if source["storeName"] == "Netto"
+        )
+        prospect = netto["prospects"][0]
+        self.assertEqual(prospect["offerStartDate"], "2026-10-12")
+        self.assertEqual(prospect["offerEndDate"], "2026-10-17")
+        self.assertEqual(prospect["pageSamples"][0]["number"], 1)
+        self.assertEqual(prospect["branchId"], "4371")
+
+    def test_versioned_feed_keeps_verified_aldi_cover(self):
+        payload = refresh.json.loads(FEED.read_text(encoding="utf-8"))
+        aldi = next(
+            source for source in payload["sources"] if source["storeName"] == "ALDI Süd"
+        )
+        prospect = aldi["prospects"][0]
+        self.assertEqual(prospect["offerStartDate"], "2026-10-12")
+        self.assertEqual(prospect["offerEndDate"], "2026-10-17")
+        self.assertEqual(prospect["pageSamples"][0]["number"], 1)
+        self.assertEqual(prospect["branchId"], "B384")
+
+    def test_versioned_feed_keeps_verified_penny_cover(self):
+        payload = refresh.json.loads(FEED.read_text(encoding="utf-8"))
+        penny = next(
+            source for source in payload["sources"] if source["storeName"] == "PENNY"
+        )
+        prospect = penny["prospects"][0]
+        self.assertEqual(prospect["offerStartDate"], "2026-10-12")
+        self.assertEqual(prospect["offerEndDate"], "2026-10-17")
+        self.assertEqual(prospect["pageSamples"][0]["number"], 1)
+        self.assertEqual(prospect["branchId"], "230061")
+
+    def test_versioned_feed_keeps_verified_edeka_cover(self):
+        payload = refresh.json.loads(FEED.read_text(encoding="utf-8"))
+        edeka = next(
+            source for source in payload["sources"] if source["storeName"] == "EDEKA"
+        )
+        prospect = edeka["prospects"][0]
+        self.assertEqual(prospect["offerStartDate"], "2026-10-12")
+        self.assertEqual(prospect["offerEndDate"], "2026-10-17")
+        self.assertEqual(prospect["pageSamples"][0]["number"], 1)
+        self.assertEqual(prospect["branchId"], "023738")
+
+    def test_versioned_feed_keeps_verified_kaufland_cover(self):
+        payload = refresh.json.loads(FEED.read_text(encoding="utf-8"))
+        kaufland = next(
+            source for source in payload["sources"] if source["storeName"] == "Kaufland"
+        )
+        prospect = kaufland["prospects"][0]
+        self.assertEqual(prospect["offerStartDate"], "2026-10-12")
+        self.assertEqual(prospect["offerEndDate"], "2026-10-17")
+        self.assertEqual(prospect["pageSamples"][0]["number"], 1)
+        self.assertEqual(prospect["branchId"], "DE5103")
 
     def test_netto_previous_fallback_drops_unactionable_labels(self):
         valid_until = (refresh.date.today() + refresh.timedelta(days=2)).isoformat()
@@ -73,6 +313,31 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(len(merged), 1)
         self.assertEqual(merged[0]["proofRef"], "lidl-product")
 
+    def test_official_record_wins_over_matching_kaufda_hit(self):
+        shared = {
+            "storeName": "Lidl",
+            "productLabel": "Butter 250 g",
+            "validFrom": "2026-10-12",
+            "validUntil": "2026-10-17",
+            "offerPrice": 1.29,
+        }
+        official = {
+            **shared,
+            "source": "retailerWebsite",
+            "proofRef": "https://lidl.example/butter",
+        }
+        kaufda = {
+            **shared,
+            "source": "retailerWebsite",
+            "sourceAdapter": "kaufda",
+            "proofRef": "https://www.kaufda.de/butter",
+            "imageUrl": "https://img.example/butter.jpg",
+        }
+        merged = refresh.dedupe([official, kaufda])
+        self.assertEqual(len(merged), 1)
+        self.assertEqual(merged[0]["proofRef"], "https://lidl.example/butter")
+        self.assertEqual(merged[0]["imageUrl"], "https://img.example/butter.jpg")
+
     def test_aldi_api_resolves_image_rendition_placeholders(self):
         payload = """
         {
@@ -96,6 +361,31 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(
             offers[0]["imageUrl"],
             "https://images.example/scaleWidth/600/id/image.jpg",
+        )
+
+    def test_aldi_public_prospect_parser_keeps_current_cover_and_period(self):
+        html = """
+        <a href="https://prospekt.aldi-sued.de/kw41-26-op-mp/page/10">Vorwoche</a>
+        <a href="https://prospekt.aldi-sued.de/kw42-26-op-mp/page/10">Teaser</a>
+        <a href="https://prospekt.aldi-sued.de/kw42-26-op-mp">Prospekt ansehen</a>
+        <a href="https://prospekt.aldi-sued.de/kw43-26-op">Nächste Woche</a>
+        <img src="https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/prospekte-opmp-kw42%3A2-1?wid=1400&amp;fmt=png-alpha">
+        <img src="https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/prospekte-op-kw43%3A2-1?wid=1400&amp;fmt=png-alpha">
+        """
+        prospects = refresh.parse_aldi_prospects(
+            html,
+            today=refresh.date(2026, 10, 12),
+        )
+        self.assertEqual(len(prospects), 1)
+        self.assertEqual(
+            prospects[0]["url"],
+            "https://prospekt.aldi-sued.de/kw42-26-op-mp",
+        )
+        self.assertEqual(prospects[0]["offerStartDate"], "2026-10-12")
+        self.assertEqual(prospects[0]["offerEndDate"], "2026-10-17")
+        self.assertEqual(
+            prospects[0]["pageSamples"][0]["image"],
+            "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/prospekte-opmp-kw42%3A2-1?wid=1400&fmt=png-alpha",
         )
 
     def test_edeka_api_reads_market_offers_and_dates(self):
@@ -132,6 +422,26 @@ class ProspectParserTest(unittest.TestCase):
             "https://offer-images.api.edeka/schmand.jpg",
         )
         self.assertTrue(offers[0]["proofRef"].endswith("#offer-12345"))
+
+    def test_edeka_public_prospect_parser_keeps_branch_cover_and_period(self):
+        html = """
+        <p>Gültig vom 12.10.2026 bis zum 17.10.2026.</p>
+        <a href="/maerkte/023738/prospekte/#prospekt-abc">Prospekt ansehen</a>
+        <img src="https://blaetterkatalog.edeka.de/NORDBAYERN/8002976/blaetterkatalog/normal/bk_1.jpg">
+        """
+        prospects = refresh.parse_edeka_prospects(
+            html,
+            "https://www.edeka.de/maerkte/023738/",
+            today=refresh.date(2026, 10, 12),
+        )
+        self.assertEqual(len(prospects), 1)
+        self.assertIn("/maerkte/023738/prospekte/", prospects[0]["url"])
+        self.assertEqual(prospects[0]["offerStartDate"], "2026-10-12")
+        self.assertEqual(prospects[0]["offerEndDate"], "2026-10-17")
+        self.assertEqual(
+            prospects[0]["pageSamples"][0]["image"],
+            "https://blaetterkatalog.edeka.de/NORDBAYERN/8002976/blaetterkatalog/normal/bk_1.jpg",
+        )
 
     def test_edeka_api_does_not_invent_regular_price_from_discount(self):
         payload = """
@@ -282,6 +592,30 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(offers[0]["storeName"], "ALDI Süd")
         self.assertEqual(offers[0]["offerPrice"], 0.39)
         self.assertEqual(offers[0]["originalPrice"], 0.49)
+
+    def test_penny_public_prospect_parser_keeps_current_cover_and_period(self):
+        html = """
+        <section class="handout">
+          <div class="handout__subline">12.10. bis 17.10.</div>
+          <div class="handout__image-wrapper" id="handout-current-week">
+            <picture>
+              <source srcset="https://cdn.penny.de/dam/prospekt.png?imwidth=400 400w">
+              <img src="https://cdn.penny.de/dam/prospekt.png?imwidth=1800" srcset="https://cdn.penny.de/dam/prospekt.png?imwidth=1800 1800w">
+            </picture>
+          </div>
+        </section>
+        """
+        prospects = refresh.parse_penny_prospect(
+            html,
+            today=refresh.date(2026, 10, 12),
+        )
+        self.assertEqual(len(prospects), 1)
+        self.assertEqual(prospects[0]["offerStartDate"], "2026-10-12")
+        self.assertEqual(prospects[0]["offerEndDate"], "2026-10-17")
+        self.assertEqual(
+            prospects[0]["pageSamples"][0]["image"],
+            "https://cdn.penny.de/dam/prospekt.png?imwidth=1800",
+        )
 
 
     def test_lidl_store_search_prefers_zellingen_postal_code(self):
@@ -537,6 +871,47 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(offers[1]["productLabel"], "Kiwi gold, Neuseeland, Stück")
         self.assertEqual(offers[1]["offerPrice"], 0.59)
 
+    def test_netto_reads_current_weekly_prospect_cover(self):
+        html = """
+        <p>Filial-Angebote gültig von Montag, 12.10.26 - Samstag, 17.10.26</p>
+        <a href="https://wochenprospekt.netto-online.de/hz42_kisa/?storeid=4371">
+          <img src="/media_nfs/images/2026-42/filial-cover.jpg" alt="Filial-Angebote">
+        </a>
+        """
+        offers, prospects = refresh.parse_netto(
+            html,
+            "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371",
+        )
+        self.assertEqual(offers, [])
+        self.assertEqual(len(prospects), 1)
+        self.assertEqual(prospects[0]["title"], "Netto Wochenprospekt 12.10.2026 – 17.10.2026")
+        self.assertEqual(
+            prospects[0]["url"],
+            "https://wochenprospekt.netto-online.de/hz42_kisa/?storeid=4371",
+        )
+        self.assertEqual(
+            prospects[0]["thumbnailUrl"],
+            "https://www.netto-online.de/media_nfs/images/2026-42/filial-cover.jpg",
+        )
+        self.assertEqual(prospects[0]["pageSamples"][0]["number"], 1)
+        self.assertEqual(prospects[0]["offerEndDate"], "2026-10-17")
+
+    def test_netto_reads_weekly_prospect_cover_from_reader_markdown(self):
+        markdown = """
+        Filial-Angebote gültig von Montag, 12.10.26 - Samstag, 17.10.26
+        [![Filial-Angebote](https://www.netto-online.de/media_nfs/images/2026-42/filial-cover.jpg)](https://wochenprospekt.netto-online.de/hz42_kisa/?storeid=4371)
+        """
+        offers, prospects = refresh.parse_netto(
+            markdown,
+            "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371",
+        )
+        self.assertEqual(offers, [])
+        self.assertEqual(len(prospects), 1)
+        self.assertEqual(
+            prospects[0]["thumbnailUrl"],
+            "https://www.netto-online.de/media_nfs/images/2026-42/filial-cover.jpg",
+        )
+
     def test_netto_drops_unactionable_placeholder_labels(self):
         html = """
         <div data-slider-headline="gültig von Montag, 28.09.26 - Freitag, 02.10.26">
@@ -651,6 +1026,48 @@ ab Montag, 28.09.26
                 "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html"
             ),
             "DE5103",
+        )
+
+    def test_kaufland_leaflet_date_range_handles_year_boundary(self):
+        self.assertEqual(
+            refresh._kaufland_leaflet_date_range(
+                "Gültig vom 29.12. bis 04.01.",
+                today=refresh.date(2027, 1, 2),
+            ),
+            (refresh.date(2026, 12, 29), refresh.date(2027, 1, 4)),
+        )
+
+    def test_kaufland_public_leaflet_parser_keeps_current_cover_and_period(self):
+        branch_html = """
+        <a href="https://leaflets.kaufland.com/de-DE/DE_de_KDZ2_5103_D41/ar/5103">
+          Gültig vom 08.10. bis 14.10. Jetzt blättern
+        </a>
+        <a href="https://leaflets.kaufland.com/de-DE/DE_de_KDZ1_5103_D42/ar/5103">
+          Gültig vom 12.10. bis 17.10. Jetzt blättern
+        </a>
+        """
+        viewer_html = """
+        <img src="https://imgproxy.leaflets.schwarz/example-cover.png" alt="Cover">
+        <img src="https://imgproxy.leaflets.schwarz/example-page-2.png" alt="Page 2">
+        """
+
+        prospects = refresh.parse_kaufland_leaflet_prospect(
+            branch_html,
+            viewer_html,
+            "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html",
+            today=refresh.date(2026, 10, 12),
+        )
+
+        self.assertEqual(len(prospects), 1)
+        self.assertEqual(
+            prospects[0]["url"],
+            "https://leaflets.kaufland.com/de-DE/DE_de_KDZ1_5103_D42/ar/5103",
+        )
+        self.assertEqual(prospects[0]["offerStartDate"], "2026-10-12")
+        self.assertEqual(prospects[0]["offerEndDate"], "2026-10-17")
+        self.assertEqual(
+            prospects[0]["pageSamples"][0]["image"],
+            "https://imgproxy.leaflets.schwarz/example-cover.png",
         )
 
     def test_kaufland_structured_offer_reads_price_old_price_and_image(self):

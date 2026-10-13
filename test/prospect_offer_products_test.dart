@@ -76,6 +76,28 @@ void main() {
     expect(product, isNull);
   });
 
+  test('regional-only source evidence is never routeable', () {
+    final entries = prospectOfferProducts(
+      records: [
+        OfferImportRecord(
+          sourceId: 'regional-only',
+          productLabel: 'Butter 250 g',
+          storeName: 'Lidl',
+          offerPrice: 1.49,
+          validUntil: DateTime(2026, 10, 17),
+          source: 'retailerWebsite',
+          sourceAdapter: 'kaufda',
+          regionalOnly: false,
+          proofRef: 'https://www.kaufda.de/Wuerzburg/Angebote/Butter',
+        ),
+      ],
+      catalogProducts: const <Product>[],
+      now: DateTime(2026, 10, 12),
+    );
+
+    expect(entries, isEmpty);
+  });
+
   test('unsafe proof cannot be transferred to the shopping list', () {
     final product = addableProductForProspectOffer(
       OfferImportRecord(
@@ -138,6 +160,49 @@ void main() {
     expect(entries.single.product.packageUnit, 'l');
   });
 
+  test('keeps variant package ranges without a guessed quantity', () {
+    final entries = prospectOfferProducts(
+      records: [
+        OfferImportRecord(
+          sourceId: 'variant-range',
+          productLabel: 'Milka Tafelschokolade Je 100/95/90 g',
+          storeName: 'Lidl',
+          offerPrice: 1.11,
+          validUntil: DateTime(2026, 10, 2),
+          source: 'retailerWebsite',
+          proofRef: 'https://example.test/lidl/range',
+        ),
+      ],
+      catalogProducts: const <Product>[],
+      now: current,
+    );
+
+    expect(entries.single.product.packageAmount, isNull);
+    expect(entries.single.product.packageUnit, isNull);
+    expect(entries.single.product.unit, 'Packung');
+  });
+
+  test('understands count packs as pieces', () {
+    final entries = prospectOfferProducts(
+      records: [
+        OfferImportRecord(
+          sourceId: 'count-pack',
+          productLabel: 'Kiwi Gold je 3er-Schale',
+          storeName: 'PENNY',
+          offerPrice: 1,
+          validUntil: DateTime(2026, 10, 2),
+          source: 'retailerWebsite',
+          proofRef: 'https://example.test/penny/kiwi',
+        ),
+      ],
+      catalogProducts: const <Product>[],
+      now: current,
+    );
+
+    expect(entries.single.product.packageAmount, 3);
+    expect(entries.single.product.packageUnit, 'Stück');
+  });
+
   test('matching exact catalog identity is reused across stores', () {
     const coffee = Product(
       id: 'coffee-jacobs-500',
@@ -167,6 +232,47 @@ void main() {
       entries.map((entry) => entry.offer.productId),
       everyElement(coffee.id),
     );
+  });
+
+  test('uses KaufDA package metadata for exact catalog identity', () {
+    const coffee = Product(
+      id: 'coffee-500',
+      name: 'Kaffee',
+      unit: '500 g',
+      group: 'kaffee',
+      packageAmount: 500,
+      packageUnit: 'g',
+    );
+    final entries = prospectOfferProducts(
+      records: [
+        OfferImportRecord(
+          sourceId: 'kaufda-coffee',
+          productLabel: 'Kaffee',
+          packageSize: '500 g',
+          priceByBaseUnit: '4,98 €/kg',
+          storeName: 'Lidl',
+          offerPrice: 2.49,
+          validUntil: DateTime(2026, 10, 17),
+          source: 'retailerWebsite',
+          sourceAdapter: 'kaufda',
+          capturedAt: DateTime(2026, 10, 12, 7, 30),
+          proofRef: 'https://www.kaufda.de/Wuerzburg/Angebote/Kaffee',
+          branchId: 'lidl_zellingen',
+        ),
+      ],
+      catalogProducts: const [coffee],
+      now: DateTime(2026, 10, 12),
+    );
+
+    expect(entries, hasLength(1));
+    expect(entries.single.product.id, coffee.id);
+    expect(entries.single.offer.sourceAdapter, 'kaufda');
+    expect(entries.single.offer.capturedAt, DateTime(2026, 10, 12, 7, 30));
+    expect(entries.single.offer.packageAmount, 500);
+    expect(entries.single.offer.packageUnit, 'g');
+    expect(entries.single.offer.unitPrice, closeTo(4.98, 0.00001));
+    expect(entries.single.product.packageAmount, 500);
+    expect(entries.single.offer.productId, coffee.id);
   });
 
   test('unknown verified prospect offer remains routeable by exact label', () {

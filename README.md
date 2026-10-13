@@ -76,9 +76,24 @@ Preisquellen bleiben unterscheidbar:
 - manuell gepflegter eigener Preis
 - Open Prices
 - Angebot
-- interne Schätzung
+- interne Schätzung (historische Orientierung, nicht routefähig)
 
-Eine Schätzung wird nicht stillschweigend zu einem bestätigten Marktpreis.
+Eine Schätzung wird nicht stillschweigend zu einem bestätigten Marktpreis oder
+zu einer aktuellen Routenquote.
+
+Explizite Mengen an einem Preisbeleg werden gegen die konkrete Produktpackung
+geprüft. Eindeutige Katalogeinheiten wie `500 g`, Mehrfachpackungen und
+Zählpackungen können dafür automatisch normalisiert werden; unklare
+Variantenbereiche bleiben ohne route-taugliche Vergleichsbasis.
+
+Produktdaten aus Open Food Facts werden an der Adaptergrenze ebenfalls
+normalisiert, zum Beispiel `20 cl` zu `200 ml`. Nicht unterstützte Einheiten
+werden nicht als sichere Packungsgröße gespeichert.
+
+Die Preisabdeckung im Produktkatalog verwendet dieselbe Prüfung. Preise mit
+abweichender Packungsgröße oder unbekannter Produkt-ID erhöhen bei bekanntem
+Katalog weder die Open-Prices- noch die Filialabdeckung. Bekannte abweichende
+Packungen werden als eigene Datenlücke angezeigt.
 
 Auf einer frischen Installation werden weder Marktstammpreise noch Angebote
 oder Preishistorie als Beispielbestand vorgefüllt. Die Routenplanung startet
@@ -100,6 +115,10 @@ Bonimporte, eigene Preise oder andere belegte Quellen routenfähig.
 - Jede nachgewiesene Artikelkarte bietet den Originalnachweis direkt an. Der
   Link wird nur für eine gültige HTTP(S)-Quelle angezeigt und verändert keine
   Preis- oder Produktidentität.
+- Bereits lokal gespeicherte Bildreferenzen werden beim Rendern erneut auf
+  absolute HTTP(S)-Ziele mit Host geprüft. Ungültige oder alte URL-Werte werden
+  als fehlendes Bild behandelt und können Angebots-, Preis- oder
+  Variantenansichten nicht in einen ungültigen Netzwerkwidget führen.
 - Marktübergreifende Treffer zeigen zusätzlich den im Prospektfeed gelieferten
   Filialort, damit gleiche Händler und unterschiedliche Standorte nicht
   verwechselt werden.
@@ -108,8 +127,12 @@ Bonimporte, eigene Preise oder andere belegte Quellen routenfähig.
   ein gespeichertes Angebot mitgeführt.
 - Händlerchips erlauben die direkte Auswahl eines Marktes; sie filtern dieselben
   aktuellen, nachgewiesenen Artikelkarten wie die Volltext- und Kategorieauswahl.
+- Optionale KaufDA-Treffer bleiben als eigene Quelle sichtbar. Ohne separat
+  bestätigte Filiale werden sie als regional erkannt markiert und können nicht
+  in Liste, Preisbeobachtung oder Route übernommen werden; bestätigte Branch-
+  IDs werden bis zur Routenauflösung filialgenau verglichen.
 - Der zuletzt erfolgreich validierte öffentliche Feed bleibt lokal als Cache verfügbar, wenn der nächste Abruf vorübergehend scheitert. Auch Cache-Daten werden vor Anzeige und Routenplanung nach ihrer Angebotsgültigkeit gefiltert und als Cache-Ergebnis kenntlich gemacht.
-- Belegte Prospekt-Angebotspreise und ausdrücklich angegebene Normalpreise bleiben mit Markt, Quelle, Nachweis, Packungsgröße und Gültigkeit als Preisbeobachtungen erhalten. Abgelaufene Preise dienen nur der Historie; sie werden nicht als aktuell verfügbarer Routenpreis ausgegeben.
+- Belegte Prospekt-Angebotspreise und ausdrücklich angegebene Normalpreise bleiben mit Markt, Quelle, konkreter Adapterherkunft, Nachweis, Packungsgröße und Gültigkeit als Preisbeobachtungen erhalten. Die parsebare Packungsbasis und der normalisierte Grundpreis werden auch am gespeicherten Angebot erhalten und im Angebotsdetail angezeigt. Abgelaufene Preise dienen nur der Historie; sie werden nicht als aktuell verfügbarer Routenpreis ausgegeben.
 - Marken-/Text-Matching kann passende Angebote zu Produkten finden.
 - Coupon, Cashback und Mehrfachkauf werden rechnerisch berücksichtigt, soweit die Angebotsdaten diese Bedingungen enthalten.
 
@@ -124,6 +147,9 @@ Bonimporte, eigene Preise oder andere belegte Quellen routenfähig.
   nur zum Vergleich der Routen verwendet, nicht als tatsächliche Ausgabe
   verbucht. Bei `0 €` bleibt die bisherige Geldberechnung unverändert; die
   Wegezeit bleibt trotzdem sichtbar.
+- Zusätzlich kann ein persönlicher Aufwand je Markt nach dem ersten hinterlegt
+  werden. Dieser Marktstopp-Aufwand beeinflusst nur den Planungswert und wird
+  in Routenkarte und Alternativen getrennt vom erwarteten Zahlbetrag angezeigt.
 - Produkte ohne belastbaren Preis bleiben für die Route unzugeordnet; dadurch wird keine scheinbar günstige Route aus Schätzpreisen erzeugt.
 - Bei identischer Preisabdeckung und identischem Planungswert löst die Route
   Gleichstände deterministisch über die geringere Marktanzahl und danach den
@@ -132,7 +158,9 @@ Bonimporte, eigene Preise oder andere belegte Quellen routenfähig.
 ### Bon / Kaufhistorie
 - Textbasierte PDF-, TXT- und CSV-Bons können eingelesen werden.
 - Mehrere Dateien können in einem Import verarbeitet werden.
-- Doppelte PDF-Bons werden über einen Bon-Fingerprint erkannt.
+- Doppelte PDF-Bons werden über einen layoutstabilen Bon-Fingerprint erkannt;
+  die Importprüfung berücksichtigt zusätzlich Mengen-, Einheits- und
+  Rabattmetadaten, ohne alte Beobachtungs-IDs zu verändern.
 - Kaufhistorie kann bearbeitet oder gelöscht werden.
 - JPG-/PNG-Bons und Kameraaufnahmen werden auf Android/iOS lokal per ML Kit OCR
   gelesen und danach in denselben Bonreview mit Identitäts- und Preisprüfung
@@ -274,23 +302,21 @@ Wenn `buyQuantity` und `payQuantity` gültig sind:
 
 Ungültige oder nicht sparende Mehrfachkaufdefinitionen werden wie normale Mengen behandelt.
 
-## 6. Preisauflösung und Schätzungen
+## 6. Preisauflösung und fehlende Evidenz
 
-Für einen Artikel in einem Markt wird zunächst nach beobachteten/gespeicherten Preisen gesucht. Die Route berücksichtigt außerdem gültige Angebote.
+Für einen Artikel in einem Markt wird zunächst nach beobachteten/gespeicherten
+Preisen gesucht. Die Route berücksichtigt außerdem gültige Angebote mit
+nachvollziehbarer Quelle, Filiale und Gültigkeitszeitraum.
 
-Fehlt ein belastbarer regulärer Preis, existiert eine interne Schätzung. Sie dient der Anzeige/Orientierung und wird mit `isEstimated` gekennzeichnet.
+Fehlt ein belastbarer marktbezogener Preis, bleibt die Position **unbekannt**
+und erhält keine Routenquote. Dadurch werden weder Kategorie-Mittelwerte noch
+frei erfundene Gruppenpreise als Ladenpreis ausgegeben. Das Dashboard zeigt die
+fehlende Preisabdeckung separat, damit ein unvollständiger Vergleich nicht wie
+eine echte Ersparnis wirkt.
 
-Schätzlogik:
-1. Falls für genau diese Produkt-ID andere beobachtete Marktpreise existieren, wird deren Median verwendet.
-2. Sonst gelten derzeit Gruppen-Fallbacks:
-   - Butter: 1,89 €
-   - Milch: 1,29 €
-   - Obst: 1,59 €
-   - Fleisch: 4,99 €
-   - Nudeln: 0,89 €
-   - sonstige Gruppen: 2,49 €
-
-Diese Werte sind **keine bestätigten Ladenpreise**.
+Historische Hinweise aus Bons oder Prospekten können weiterhin als solche
+gekennzeichnet erscheinen. Sie ersetzen keine aktuelle Marktbeobachtung und
+werden nicht stillschweigend zu einem bestätigten oder routenfähigen Preis.
 
 ## 7. Routenberechnung
 
@@ -312,11 +338,16 @@ Wenn ein persönlicher Zeitwert `t` hinterlegt ist, wird zusätzlich gerechnet:
 
 `Zeitwert = Wegezeit in Stunden × t`
 
-`Planungswert = Gesamt + Preisunsicherheitsreserve + Zeitwert`
+Für jeden Markt nach dem ersten kann optional ein persönlicher
+`Marktstopp-Aufwand` hinterlegt werden:
+
+`Marktstopp-Aufwand = (Anzahl Märkte − 1) × Kosten je zusätzlichem Markt`
+
+`Planungswert = Gesamt + Preisunsicherheitsreserve + Zeitwert + Marktstopp-Aufwand`
 
 Der Planungswert entscheidet zwischen Routen. Warenkorb und Fahrtkosten bleiben
-als erwartete tatsächliche Ausgaben getrennt sichtbar; der Zeitwert ist kein
-zusätzlicher Kassenbetrag.
+als erwartete tatsächliche Ausgaben getrennt sichtbar; Zeitwert und
+Marktstopp-Aufwand sind keine zusätzlichen Kassenbeträge.
 
 ### Marktzuordnung
 Für jeden Artikel wird innerhalb einer betrachteten Marktkombination der günstigste **nicht geschätzte** Preis gesucht. Gibt es keinen belastbaren Preis, bleibt der Artikel unzugeordnet.
@@ -399,9 +430,16 @@ Bonbeobachtungen pro konkreter Produkt-ID berechnet.
 
 ### Open Food Facts
 Wird zur Produktidentifikation bzw. Ergänzung von Produktdaten per EAN verwendet. Daraus wird kein verlässlicher Ladenpreis abgeleitet.
+Eine fehlende EAN darf nur über token- und familien-/variantenkompatible
+Kandidaten recherchiert werden; ein Discovery-Treffer bestätigt die Identität
+erst nach dem bestehenden Prüfpfad.
 
 ### Open Prices
-Kann EUR-Preise für Produkte mit EAN liefern. Die Implementierung prüft Markt-/Ortsbezug und Aktualität. Open Prices bleibt eine eigene Quelle und ist in den Einstellungen abschaltbar.
+Kann EUR-Preise für Produkte mit EAN liefern. Wenn das Katalogprodukt eine
+bekannte Packungsbasis besitzt, werden Menge, Einheit und normierter Grundpreis
+mit dem Preisbeleg gespeichert. Die Implementierung prüft Markt-/Ortsbezug,
+Packungsvergleich und Aktualität. Open Prices bleibt eine eigene Quelle und ist
+in den Einstellungen abschaltbar.
 
 Preisdatensätze ohne ausreichend passenden Ortsbezug sowie nicht unterstützte Rabatt-/Gewichtspreise werden nicht als normale Marktpreise übernommen. Der automatische Abgleich beim Öffnen des Katalogs ist standardmäßig deaktiviert.
 
@@ -439,7 +477,7 @@ Diese Funktionen benötigen eine Internetverbindung.
 - Keine garantierte vollständige Preisabdeckung.
 - Historische Bonpreise sind Beobachtungen und keine Garantie für den heutigen Regalpreis.
 - Familien-Fallbacks dürfen Varianten nicht als identisch ausgeben.
-- Die aktuelle Vergleichbarkeitsprüfung historischer Bonpreise verlangt vorhandene Einzel-/Grundpreise, prüft aber noch nicht in jedem Fall eine vollständig normalisierte gemeinsame Maßeinheit.
+- Die Vergleichbarkeitsprüfung historischer Bonpreise verlangt vorhandene Einzel-/Grundpreise und führt bekannte Masse-/Volumeneinheiten vor dem Median auf die gemeinsame Basiseinheit (kg/l) zurück; gemischte Dimensionen oder unvollständige Mengenmetadaten bleiben als historische Packungspreise gekennzeichnet.
 - Händlerprospekte aus proprietären Händler-Apps werden nicht automatisch importiert.
 - Keine Cloud-/Mehrbenutzer-Synchronisierung.
 - Die Regalvideo-Erfassung befindet sich weiterhin nur in Evaluation und verändert ohne separate Entscheidung keine App-Daten.

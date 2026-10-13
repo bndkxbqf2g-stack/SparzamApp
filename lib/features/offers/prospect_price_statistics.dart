@@ -44,6 +44,7 @@ Map<String, ProspectPriceHistorySummary> prospectPriceHistorySummaries(
     final end = entry.validUntil;
     if (!entry.isValid ||
         entry.productId?.isNotEmpty != true ||
+        _day(entry.observedAt).isAfter(today) ||
         entry.quantity == null ||
         entry.unit == null ||
         normalizeQuantity(entry.quantity!, entry.unit!) == null ||

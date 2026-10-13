@@ -4,6 +4,7 @@ import '../../models/receipt_observation.dart';
 import '../../models/price_observation.dart';
 import '../catalog/product_identity.dart';
 import '../route/market_price_quality.dart';
+import '../route/market_price_selection.dart';
 import '../../services/quantity_normalizer.dart';
 
 /// Bridges receipt history into the common market-price pipeline.
@@ -94,7 +95,9 @@ bool _isBetterFamilyPrice(
       (1 + marketPriceQuality(previous, now).uncertaintyRate);
   return candidateScore < previousScore ||
       (candidateScore == previousScore &&
-          candidate.updatedAt.isAfter(previous.updatedAt));
+          (candidate.updatedAt.isAfter(previous.updatedAt) ||
+              (candidate.updatedAt.isAtSameMomentAs(previous.updatedAt) &&
+                  compareMarketPriceTieBreakers(candidate, previous) < 0)));
 }
 
 double? _comparablePrice(ListItem item, ReceiptObservation observation) {

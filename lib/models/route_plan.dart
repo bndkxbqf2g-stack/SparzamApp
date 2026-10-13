@@ -12,6 +12,7 @@ class RoutePlan {
     this.uncertaintyReserve = 0,
     this.travelMinutes = 0,
     this.timeCost = 0,
+    this.additionalStoreCost = 0,
   });
 
   final List<Store> stores;
@@ -30,7 +31,13 @@ class RoutePlan {
 
   /// Personal time value used only for comparing routes; it is not charged.
   final double timeCost;
-  double get planningScore => total + uncertaintyReserve + timeCost;
+
+  /// Planning cost for every market after the first one. This is a user
+  /// preference for effort/stop overhead, not a checkout amount.
+  final double additionalStoreCost;
+
+  double get planningScore =>
+      total + uncertaintyReserve + timeCost + additionalStoreCost;
 
   int get pricedItemCount =>
       assignments.values.fold<int>(0, (sum, entries) => sum + entries.length);
