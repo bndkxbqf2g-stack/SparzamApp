@@ -1419,15 +1419,15 @@ class _ProspectViewer extends StatelessWidget {
                 : Image.network(
                     pageUrl,
                     key: ValueKey('prospect-page-image-${page.number}'),
-                    // Prospect viewers can contain dozens of pages. Keep
-                    // previews on the Canvas renderer and decode only the
-                    // size needed by the card; the explicit large-view link
-                    // remains available for the full-resolution page.
+                    // Keep page previews bounded while allowing a browser
+                    // fallback for retailer CDNs without Canvas-CORS headers.
+                    // The previous Canvas-only setting rendered these verified
+                    // cover pages as empty placeholders on Flutter web.
                     cacheWidth: 720,
                     cacheHeight: 480,
                     fit: BoxFit.contain,
                     filterQuality: FilterQuality.low,
-                    webHtmlElementStrategy: WebHtmlElementStrategy.never,
+                    webHtmlElementStrategy: WebHtmlElementStrategy.fallback,
                     loadingBuilder: (context, child, progress) =>
                         progress == null
                             ? child
