@@ -163,7 +163,7 @@ void main() {
           ],
         ),
       ]);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.text('Testartikel'), findsOneWidget);
       expect(find.text('Alter Stand'), findsNothing);
@@ -212,7 +212,7 @@ void main() {
       final stores = _Stores();
 
       await tester.pumpWidget(_app(stores, module));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       await tester.tap(find.text('Prospekte'));
       // The shell refreshes and persists the feed in the background. Waiting
@@ -232,7 +232,7 @@ void main() {
 
       final addButton = find.byIcon(Icons.add_shopping_cart_outlined);
       await tester.tap(addButton);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
       await tester.runAsync(() async {
         for (var attempt = 0; attempt < 20; attempt++) {
           final items = await stores.shoppingList.load();
@@ -258,7 +258,7 @@ void main() {
           initialShoppingList: savedItems,
         ),
       );
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       await tester.tap(find.text('Prospekte'));
       await tester.pump(const Duration(milliseconds: 500));
@@ -273,11 +273,11 @@ void main() {
       await tester.pump();
       expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
       await tester.tap(find.text('Liste'));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
       await tester.tap(find.text('Sparroute prüfen'));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
       expect(find.text('Einkaufsoptimierung'), findsOneWidget);
       expect(find.textContaining('Netto'), findsWidgets);
     },
@@ -321,22 +321,22 @@ void main() {
       );
 
       await tester.pumpWidget(_app(stores, module));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
       await tester.runAsync(
         () => Future<void>.delayed(const Duration(milliseconds: 250)),
       );
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       await tester.tap(find.text('Prospekte'));
       // The prospect feed persists in the background; a bounded pump keeps
       // this navigation assertion deterministic while the page is mounted.
       await tester.pump(const Duration(milliseconds: 500));
       await tester.tap(find.text('Netto').last);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
       expect(find.text('Prospektseiten (1)'), findsOneWidget);
       expect(find.text('Thüngersheim'), findsOneWidget);
       await tester.tap(find.text('Artikel von Seite hinzufügen'));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.text('Artikel von Prospektseite hinzufügen'), findsOneWidget);
       final fields = find.byType(TextFormField);
@@ -346,7 +346,7 @@ void main() {
       await tester.tap(
         find.widgetWithText(FilledButton, 'Artikel hinzufügen'),
       );
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
       await tester.runAsync(() async {
         for (var attempt = 0; attempt < 200; attempt++) {
           final items = await stores.shoppingList.load();
