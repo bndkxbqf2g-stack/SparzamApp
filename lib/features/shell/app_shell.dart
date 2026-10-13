@@ -257,9 +257,7 @@ class _AppShellState extends State<AppShell> {
       return;
     }
     if (loaded.isEmpty) {
-      debugPrint('APP_NAMED_QUEUE_SCHEDULE');
       await _shoppingListSaves.add(() async {
-        debugPrint('APP_NAMED_QUEUE_RUN');
         if (!_isCurrentDataRevision(revision) ||
             listMutationRevision != _shoppingListMutationRevision) {
           return;
@@ -404,9 +402,7 @@ class _AppShellState extends State<AppShell> {
           .where((offer) => !offer.id.startsWith('import|'))
           .toList(growable: false);
       late List<Offer> persistedOffers;
-      debugPrint('APP_OFFER_QUEUE_SCHEDULE');
       await _offerSaves.add(() async {
-        debugPrint('APP_OFFER_QUEUE_RUN');
         if (!_isCurrentDataRevision(revision)) {
           persistedOffers = [...offers];
           return;
@@ -537,9 +533,7 @@ class _AppShellState extends State<AppShell> {
         )
         .toList();
     namedShoppingLists = lists;
-    debugPrint('APP_LIST_QUEUE_SCHEDULE ${snapshot.length}');
     return _shoppingListSaves.add(() async {
-      debugPrint('APP_LIST_QUEUE_RUN ${snapshot.length}');
       await widget.shoppingListStore.save(snapshot);
       await widget.shoppingListStore.saveNamedLists(lists);
     });
@@ -648,7 +642,6 @@ class _AppShellState extends State<AppShell> {
   }
 
   void addProduct(Product product) {
-    debugPrint('APP_SHELL_ADD_PRODUCT ${product.id}');
     setState(() => shoppingList = addShoppingProduct(shoppingList, product));
     persistShoppingListWithFeedback();
     _saveKnownItem(product);
