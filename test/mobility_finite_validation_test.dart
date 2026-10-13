@@ -91,9 +91,9 @@ void main() {
       );
       await tester.tap(find.text('Öffnen'));
       await tester.pumpAndSettle();
-      final fields = find.byType(TextFormField);
-      expect(fields, findsAtLeastNWidgets(4));
-      await tester.enterText(fields.last, '12,50');
+      final timeValue = find.byKey(const ValueKey('mobility-time-value'));
+      expect(timeValue, findsOneWidget);
+      await tester.enterText(timeValue, '12,50');
       await tester.scrollUntilVisible(
         find.text('Speichern'),
         250,
