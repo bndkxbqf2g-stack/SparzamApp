@@ -43,6 +43,7 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 - [x] Den zuletzt validierten öffentlichen Prospektfeed bei vorübergehendem
   Offline-Abruf als datierten Fallback nutzen, ohne abgelaufene Angebote zu
   reaktivieren.
+- [x] Einen validierten lokalen Cache-/Bundle-Stand beim Shell-Kaltstart vor dem Netzwerkabruf anzeigen und anschließend im Hintergrund aktualisieren.
 - [x] Den versionierten öffentlichen Feed auch beim Kaltstart ohne Netzwerk und
   ohne lokalen Cache als App-Asset laden; der Stand bleibt als nicht-live
   gekennzeichnet und wird weiterhin auf Angebotsgültigkeit geprüft.
