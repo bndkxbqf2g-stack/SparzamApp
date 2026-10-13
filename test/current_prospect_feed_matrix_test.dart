@@ -13,6 +13,39 @@ import 'package:sparzamapp/features/route/route_price_resolver.dart';
 import 'package:sparzamapp/services/prospect_feed_service.dart';
 
 void main() {
+  test('geparste aktuelle Prospekte behalten Cover und exakte Filiale', () {
+    final raw = File('assets/prospects/current.json').readAsStringSync();
+    final feed = parseProspectFeed(raw);
+    final generatedAt = feed.generatedAt;
+    expect(generatedAt, isNotNull);
+    final generated = generatedAt!;
+    final referenceDay = DateTime(
+      generated.year,
+      generated.month,
+      generated.day,
+    );
+
+    for (final storeName in configuredProspectStores) {
+      final current = feed.prospects.firstWhere(
+        (issue) =>
+            issue.storeName == storeName &&
+            issue.validFrom != null &&
+            issue.validUntil != null &&
+            !issue.validFrom!.isAfter(referenceDay) &&
+            !issue.validUntil!.isBefore(referenceDay),
+      );
+
+      expect(current.branchId, isNotEmpty, reason: storeName);
+      expect(current.location, isNotEmpty, reason: storeName);
+      expect(current.address, isNotEmpty, reason: storeName);
+      expect(current.pages, isNotEmpty, reason: storeName);
+      expect(current.pages.first.number, 1, reason: storeName);
+      final cover = Uri.tryParse(current.pages.first.imageUrl);
+      expect(cover?.scheme, 'https', reason: storeName);
+      expect(cover?.host, isNotEmpty, reason: storeName);
+    }
+  });
+
   test('versionierter Prospektfeed deckt sechs Märkte durchgängig ab', () {
     final raw = File('assets/prospects/current.json').readAsStringSync();
     final feed = parseProspectFeed(raw);

@@ -36,6 +36,7 @@ import '../offers/offer_import.dart';
 import '../offers/prospect_offer_products.dart';
 import '../offers/prospect_price_learning.dart';
 import '../offers/prospect_price_statistics.dart';
+import 'price_observation_merge.dart';
 import '../../services/market_price_observation_adapter.dart';
 import '../../services/recent_purchase_store.dart';
 import '../../services/receipt_observation_store.dart';
@@ -166,8 +167,21 @@ class _AppShellState extends State<AppShell> {
   RoadRouteMatrix? roadMatrix;
   late Map<String, String> preferredProductByGroup;
   int backupRevision = 0;
-  final _shoppingListSaves = SequentialWriteQueue();
-  final _offerSaves = SequentialWriteQueue();
+  // Prevent a delayed named-list startup read from replacing a list that the
+  // user has already changed in the visible shell.
+  int _shoppingListMutationRevision = 0;
+  // Invalidates asynchronous startup/refresh work while a local backup is
+  // being applied. The visible backup revision advances only after all
+  // persistent writes and the in-memory snapshot have completed.
+  int _dataRevision = 0;
+  // All mutations that can be part of a backup snapshot share one queue.
+  // Separate queue names keep the call sites readable while preventing a
+  // backup, offer refresh, list save, and price sync from interleaving writes
+  // to the same local preference store.
+  final _persistenceSaves = SequentialWriteQueue();
+  SequentialWriteQueue get _shoppingListSaves => _persistenceSaves;
+  SequentialWriteQueue get _offerSaves => _persistenceSaves;
+  SequentialWriteQueue get _priceSaves => _persistenceSaves;
   bool _purchaseInProgress = false;
 
   Product? _catalogProduct(String id) {
@@ -227,10 +241,21 @@ class _AppShellState extends State<AppShell> {
       .toList();
 
   Future<void> _loadNamedShoppingLists() async {
+    final revision = _dataRevision;
+    final listMutationRevision = _shoppingListMutationRevision;
     final loaded = await widget.shoppingListStore.loadNamedLists();
-    if (!mounted) return;
+    if (!_isCurrentDataRevision(revision) ||
+        listMutationRevision != _shoppingListMutationRevision) {
+      return;
+    }
     if (loaded.isEmpty) {
-      await widget.shoppingListStore.saveNamedLists(namedShoppingLists);
+      await _shoppingListSaves.add(() async {
+        if (!_isCurrentDataRevision(revision) ||
+            listMutationRevision != _shoppingListMutationRevision) {
+          return;
+        }
+        await widget.shoppingListStore.saveNamedLists(namedShoppingLists);
+      });
       return;
     }
 
@@ -250,7 +275,13 @@ class _AppShellState extends State<AppShell> {
           )
           .toList(growable: false);
       namedShoppingLists = migrated;
-      await widget.shoppingListStore.saveNamedLists(migrated);
+      await _shoppingListSaves.add(() async {
+        if (!_isCurrentDataRevision(revision) ||
+            listMutationRevision != _shoppingListMutationRevision) {
+          return;
+        }
+        await widget.shoppingListStore.saveNamedLists(migrated);
+      });
       return;
     }
 
@@ -262,9 +293,17 @@ class _AppShellState extends State<AppShell> {
   }
 
   Future<void> _loadRoadDistances() async {
-    final loaded = await roadDistanceStore.load(mobility.startAddress);
-    final matrix = await roadRouteMatrixStore.load(mobility.startAddress);
-    if (!mounted) return;
+    final revision = _dataRevision;
+    Map<String, double> loaded = <String, double>{};
+    RoadRouteMatrix? matrix;
+    try {
+      loaded = await roadDistanceStore.load(mobility.startAddress);
+      matrix = await roadRouteMatrixStore.load(mobility.startAddress);
+    } catch (_) {
+      // Local route data is an optional optimization. A malformed or
+      // unavailable cache must not prevent the shell from starting.
+    }
+    if (!_isCurrentDataRevision(revision)) return;
     setState(() {
       roadDistances = loaded;
       roadMatrix = matrix;
@@ -302,19 +341,30 @@ class _AppShellState extends State<AppShell> {
       );
 
   Future<void> _loadPriceObservations() async {
+    final revision = _dataRevision;
     final loaded = await priceObservationStore.load();
-    if (!mounted) return;
-    setState(() => historicalPriceObservations = loaded);
+    if (!_isCurrentDataRevision(revision)) return;
+    setState(() {
+      historicalPriceObservations = mergePriceObservations(
+        historicalPriceObservations,
+        loaded,
+      );
+    });
   }
 
   Future<void> _loadProspectOffers() async {
     if (_prospectFeedRefreshing) return;
+    final revision = _dataRevision;
     _prospectFeedRefreshing = true;
+    final prospectImportModule =
+        widget.prospectImportModule ?? ProspectImportModule();
+    final ownsProspectImportModule = widget.prospectImportModule == null;
     if (mounted) setState(() {});
     try {
-      final feed = await (widget.prospectImportModule ?? ProspectImportModule()).execute(
+      final feed = await prospectImportModule.execute(
         startAddress: mobility.startAddress,
       );
+      if (!_isCurrentDataRevision(revision)) return;
       if (mounted) {
         setState(() {
           // The Angebotsbereich and its import pipeline only need offers from
@@ -338,11 +388,17 @@ class _AppShellState extends State<AppShell> {
       // price to a different family or variant.
       final resolved = offersFromProspectProducts(offerBackedProducts);
 
+      if (!_isCurrentDataRevision(revision)) return;
+
       final retained = offers
           .where((offer) => !offer.id.startsWith('import|'))
           .toList(growable: false);
       late List<Offer> persistedOffers;
       await _offerSaves.add(() async {
+        if (!_isCurrentDataRevision(revision)) {
+          persistedOffers = [...offers];
+          return;
+        }
         // Feed refresh and user-reviewed page claims share one preference key.
         // Read inside the queue so an in-flight manual save cannot be lost.
         final stored = await widget.offerStore.load();
@@ -354,6 +410,7 @@ class _AppShellState extends State<AppShell> {
         persistedOffers = [...retainedById.values, ...resolved];
         await widget.offerStore.save(persistedOffers);
       });
+      if (!_isCurrentDataRevision(revision)) return;
       final offersById = <String, Offer>{
         for (final offer in persistedOffers) offer.id: offer,
         for (final entry in offerBackedProducts) entry.offer.id: entry.offer,
@@ -366,17 +423,24 @@ class _AppShellState extends State<AppShell> {
         refreshedStores: feed.refreshedStores,
       );
       if (learnedPrices.isNotEmpty) {
-        await priceObservationStore.append(learnedPrices);
+        await _priceSaves.add(() async {
+          if (!_isCurrentDataRevision(revision)) return;
+          await priceObservationStore.append(learnedPrices);
+        });
+        if (!_isCurrentDataRevision(revision)) return;
       }
 
       final historical = await priceObservationStore.load();
-      if (!mounted) return;
+      if (!_isCurrentDataRevision(revision)) return;
       setState(() {
         offers = offersById.values.toList(growable: false);
         prospectProducts = offerBackedProducts
             .map((entry) => entry.product)
             .toList(growable: false);
-        historicalPriceObservations = historical;
+        historicalPriceObservations = mergePriceObservations(
+          historicalPriceObservations,
+          historical,
+        );
       });
       widget.diagnosticLogService.record(
         category: 'Prospekte',
@@ -393,26 +457,40 @@ class _AppShellState extends State<AppShell> {
         details: error.toString(),
       );
     } finally {
+      if (ownsProspectImportModule) prospectImportModule.close();
       _prospectFeedRefreshing = false;
       if (mounted) setState(() {});
     }
   }
 
   Future<void> _loadReceiptObservations() async {
+    final revision = _dataRevision;
     final store = ReceiptObservationStore();
     final loaded = await store.load();
+    if (!_isCurrentDataRevision(revision)) return;
     final reinterpreted = reinterpretReceiptObservations(loaded);
-    await store.addMany(reinterpreted);
-    await priceObservationStore.upsertById(
-      reinterpreted.map(observationFromReceipt),
-    );
+    await _persistenceSaves.add(() async {
+      if (!_isCurrentDataRevision(revision)) return;
+      await store.addMany(reinterpreted);
+      if (!_isCurrentDataRevision(revision)) return;
+      await priceObservationStore.upsertById(
+        reinterpreted.map(observationFromReceipt),
+      );
+    });
+    if (!_isCurrentDataRevision(revision)) return;
     final historical = await priceObservationStore.load();
-    if (!mounted) return;
+    if (!_isCurrentDataRevision(revision)) return;
     setState(() {
       receiptObservations = reinterpreted;
-      historicalPriceObservations = historical;
+      historicalPriceObservations = mergePriceObservations(
+        historicalPriceObservations,
+        historical,
+      );
     });
   }
+
+  bool _isCurrentDataRevision(int revision) =>
+      mounted && revision == _dataRevision;
 
   List<ReplenishmentSuggestion> get replenishmentSuggestions =>
       buildReplenishmentSuggestions(
@@ -425,6 +503,7 @@ class _AppShellState extends State<AppShell> {
       );
 
   Future<void> persistShoppingList() {
+    _shoppingListMutationRevision++;
     final snapshot = [
       for (final item in shoppingList)
         ListItem(
@@ -462,7 +541,10 @@ class _AppShellState extends State<AppShell> {
       activeShoppingListId = selected.id;
       shoppingList = _copyItems(selected.items);
     });
-    await widget.shoppingListStore.save(shoppingList);
+    final selectedItems = _copyItems(shoppingList);
+    await _shoppingListSaves.add(
+      () => widget.shoppingListStore.save(selectedItems),
+    );
     widget.diagnosticLogService.record(
       category: 'Einkaufsliste',
       message: 'Liste gewechselt.',
@@ -485,8 +567,20 @@ class _AppShellState extends State<AppShell> {
       activeShoppingListId = created.id;
       shoppingList = <ListItem>[];
     });
-    await widget.shoppingListStore.saveNamedLists(namedShoppingLists);
-    await widget.shoppingListStore.save(shoppingList);
+    final savedLists = namedShoppingLists
+        .map(
+          (list) => NamedShoppingList(
+            id: list.id,
+            name: list.name,
+            items: _copyItems(list.items),
+          ),
+        )
+        .toList(growable: false);
+    final savedItems = _copyItems(shoppingList);
+    await _shoppingListSaves.add(() async {
+      await widget.shoppingListStore.saveNamedLists(savedLists);
+      await widget.shoppingListStore.save(savedItems);
+    });
     widget.diagnosticLogService.record(
       category: 'Einkaufsliste',
       message: 'Neue Liste erstellt.',
@@ -516,17 +610,33 @@ class _AppShellState extends State<AppShell> {
         customProducts.any((item) => item.id == product.id)) {
       return;
     }
-    final next = await widget.productCatalogStore.upsert(
-      product,
-      customProducts,
+    final revision = _dataRevision;
+    List<Product>? next;
+    await _persistenceSaves.add(() async {
+      if (!_isCurrentDataRevision(revision)) return;
+      next = await widget.productCatalogStore.upsert(product, customProducts);
+      if (_isCurrentDataRevision(revision) && next != null) {
+        // Keep the next queued catalog mutation from using a stale list while
+        // the caller is waiting to schedule its rebuild.
+        customProducts = next!;
+      }
+    });
+    if (!_isCurrentDataRevision(revision) || next == null) return;
+    setState(() => customProducts = next!);
+  }
+
+  void _saveKnownItem(Product product) {
+    unawaited(
+      _persistenceSaves.add(
+        () => widget.shoppingListStore.saveKnownItem(product),
+      ),
     );
-    if (mounted) setState(() => customProducts = next);
   }
 
   void addProduct(Product product) {
     setState(() => shoppingList = addShoppingProduct(shoppingList, product));
     persistShoppingListWithFeedback();
-    widget.shoppingListStore.saveKnownItem(product);
+    _saveKnownItem(product);
     ensureCatalogProduct(product);
     widget.diagnosticLogService.record(
       category: 'Einkaufsliste',
@@ -573,7 +683,7 @@ class _AppShellState extends State<AppShell> {
     });
     persistShoppingListWithFeedback();
     for (final product in selected) {
-      widget.shoppingListStore.saveKnownItem(product);
+      _saveKnownItem(product);
       ensureCatalogProduct(product);
     }
     widget.diagnosticLogService.record(
@@ -603,18 +713,27 @@ class _AppShellState extends State<AppShell> {
   }
 
   Future<void> markPurchased(Product product, int quantity) async {
-    final next = await widget.recentPurchaseStore.add(
-      product,
-      quantity,
-      recentPurchases,
-    );
-    await widget.shoppingListStore.savePreferredProduct(
-      product.group,
-      product.id,
-    );
+    final revision = _dataRevision;
+    List<RecentPurchase>? next;
+    await _persistenceSaves.add(() async {
+      if (!_isCurrentDataRevision(revision)) return;
+      next = await widget.recentPurchaseStore.add(
+        product,
+        quantity,
+        recentPurchases,
+      );
+      await widget.shoppingListStore.savePreferredProduct(
+        product.group,
+        product.id,
+      );
+      if (_isCurrentDataRevision(revision) && next != null) {
+        recentPurchases = next!;
+      }
+    });
+    if (!_isCurrentDataRevision(revision) || next == null) return;
     setState(() {
       preferredProductByGroup[product.group] = product.id;
-      recentPurchases = next;
+      recentPurchases = next!;
     });
   }
 
@@ -681,6 +800,7 @@ class _AppShellState extends State<AppShell> {
   ShellPriceCoordinator get priceCoordinator => ShellPriceCoordinator(
     marketPriceStore: widget.marketPriceStore,
     priceHistoryStore: widget.priceHistoryStore,
+    observationStore: priceObservationStore,
   );
 
   ShellCatalogCoordinator get catalogCoordinator => ShellCatalogCoordinator(
@@ -717,21 +837,29 @@ class _AppShellState extends State<AppShell> {
       0,
       (sum, item) => sum + item.quantity,
     );
+    final revision = _dataRevision;
+    final items = _copyItems(shoppingList);
+    final history = [...purchaseHistory];
+    final currentBudget = budget;
     _purchaseInProgress = true;
     try {
-      await _shoppingListSaves.pending;
-      final result = await purchaseCoordinator.complete(
-        plan: plan,
-        baselineTotal: baseline.total,
-        items: shoppingList,
-        history: purchaseHistory,
-        budget: budget,
-      );
+      PurchaseMutationResult? result;
+      await _persistenceSaves.add(() async {
+        if (!_isCurrentDataRevision(revision)) return;
+        result = await purchaseCoordinator.complete(
+          plan: plan,
+          baselineTotal: baseline.total,
+          items: items,
+          history: history,
+          budget: currentBudget,
+        );
+      });
 
-      if (!mounted) return;
+      if (!_isCurrentDataRevision(revision) || result == null) return;
+      final applied = result!;
       setState(() {
-        purchaseHistory = result.history;
-        budget = result.budget;
+        purchaseHistory = applied.history;
+        budget = applied.budget;
         shoppingList.clear();
       });
       await persistShoppingList();
@@ -746,82 +874,139 @@ class _AppShellState extends State<AppShell> {
   }
 
   Future<void> updatePurchase(PurchaseRecord record) async {
-    final result = await purchaseCoordinator.update(
-      record: record,
-      history: purchaseHistory,
-      budget: budget,
-    );
-    if (!mounted) return;
+    final revision = _dataRevision;
+    PurchaseMutationResult? result;
+    await _persistenceSaves.add(() async {
+      if (!_isCurrentDataRevision(revision)) return;
+      result = await purchaseCoordinator.update(
+        record: record,
+        history: purchaseHistory,
+        budget: budget,
+      );
+      if (_isCurrentDataRevision(revision)) {
+        purchaseHistory = result!.history;
+        budget = result!.budget;
+      }
+    });
+    if (!_isCurrentDataRevision(revision) || result == null) return;
+    final applied = result!;
     setState(() {
-      purchaseHistory = result.history;
-      budget = result.budget;
+      purchaseHistory = applied.history;
+      budget = applied.budget;
     });
   }
 
   Future<void> deletePurchase(PurchaseRecord record) async {
-    final result = await purchaseCoordinator.delete(
-      record: record,
-      history: purchaseHistory,
-      budget: budget,
-    );
+    final revision = _dataRevision;
+    PurchaseMutationResult? result;
+    await _persistenceSaves.add(() async {
+      if (!_isCurrentDataRevision(revision)) return;
+      result = await purchaseCoordinator.delete(
+        record: record,
+        history: purchaseHistory,
+        budget: budget,
+      );
+      if (_isCurrentDataRevision(revision)) {
+        purchaseHistory = result!.history;
+        budget = result!.budget;
+      }
+    });
 
-    if (!mounted) return;
+    if (!_isCurrentDataRevision(revision) || result == null) return;
+    final applied = result!;
     setState(() {
-      purchaseHistory = result.history;
-      budget = result.budget;
+      purchaseHistory = applied.history;
+      budget = applied.budget;
     });
   }
 
   Future<List<Product>> saveCatalogProduct(Product product) async {
-    final result = await catalogCoordinator.save(
-      product: product,
-      products: customProducts,
-      shoppingList: shoppingList,
-    );
-    if (mounted) {
-      setState(() {
-        customProducts = result.products;
-        shoppingList = result.shoppingList;
-      });
+    final revision = _dataRevision;
+    CatalogSaveResult? result;
+    await _persistenceSaves.add(() async {
+      if (!_isCurrentDataRevision(revision)) return;
+      result = await catalogCoordinator.save(
+        product: product,
+        products: customProducts,
+        shoppingList: _copyItems(shoppingList),
+      );
+      if (_isCurrentDataRevision(revision)) {
+        customProducts = result!.products;
+        shoppingList = result!.shoppingList;
+      }
+    });
+    if (!_isCurrentDataRevision(revision) || result == null) {
+      return customProducts;
     }
-    return result.products;
+    final applied = result!;
+    setState(() {
+      customProducts = applied.products;
+      shoppingList = applied.shoppingList;
+    });
+    return applied.products;
   }
 
   Future<List<Product>> deleteCatalogProduct(Product product) async {
-    final result = await catalogCoordinator.delete(
-      product: product,
-      products: customProducts,
-      prices: marketPrices,
-      priceHistory: priceHistory,
-      offers: offers,
-      shoppingList: shoppingList,
-      preferredProductByGroup: preferredProductByGroup,
-    );
-    if (mounted) {
-      setState(() {
-        customProducts = result.products;
-        marketPrices = result.prices;
-        priceHistory = result.priceHistory;
-        offers = result.offers;
-        shoppingList = result.shoppingList;
-        preferredProductByGroup = result.preferredProductByGroup;
-      });
+    final revision = _dataRevision;
+    CatalogDeleteResult? result;
+    await _persistenceSaves.add(() async {
+      if (!_isCurrentDataRevision(revision)) return;
+      result = await catalogCoordinator.delete(
+        product: product,
+        products: customProducts,
+        prices: marketPrices,
+        priceHistory: priceHistory,
+        offers: offers,
+        shoppingList: _copyItems(shoppingList),
+        preferredProductByGroup: preferredProductByGroup,
+      );
+      if (_isCurrentDataRevision(revision)) {
+        customProducts = result!.products;
+        marketPrices = result!.prices;
+        priceHistory = result!.priceHistory;
+        offers = result!.offers;
+        shoppingList = result!.shoppingList;
+        preferredProductByGroup = result!.preferredProductByGroup;
+      }
+    });
+    if (!_isCurrentDataRevision(revision) || result == null) {
+      return customProducts;
     }
-    return result.products;
+    final applied = result!;
+    setState(() {
+      customProducts = applied.products;
+      marketPrices = applied.prices;
+      priceHistory = applied.priceHistory;
+      offers = applied.offers;
+      shoppingList = applied.shoppingList;
+      preferredProductByGroup = applied.preferredProductByGroup;
+    });
+    return applied.products;
   }
 
   Future<List<MarketPrice>> saveMarketPrice(MarketPrice price) async {
-    final result = await priceCoordinator.save(
-      price: price,
-      prices: marketPrices,
-      history: priceHistory,
-    );
-    if (mounted) {
-      setState(() {
-        marketPrices = result.prices;
-        priceHistory = result.history;
-      });
+    final revision = _dataRevision;
+    PriceMutationResult? result;
+    await _priceSaves.add(() async {
+      if (!_isCurrentDataRevision(revision)) return;
+      result = await priceCoordinator.save(
+        price: price,
+        prices: marketPrices,
+        history: priceHistory,
+      );
+      if (_isCurrentDataRevision(revision)) {
+        marketPrices = result!.prices;
+        priceHistory = result!.history;
+      }
+    });
+    if (!_isCurrentDataRevision(revision) || result == null) {
+      return marketPrices;
     }
+    final applied = result!;
+    setState(() {
+      marketPrices = applied.prices;
+      priceHistory = applied.history;
+    });
     await _loadPriceObservations();
     widget.diagnosticLogService.record(
       category: 'Preisdaten',
@@ -831,20 +1016,28 @@ class _AppShellState extends State<AppShell> {
       details:
           '${price.storeName} · ${price.productId} · ${price.price.toStringAsFixed(2)} €',
     );
-    return result.prices;
+    return applied.prices;
   }
 
   Future<List<MarketPrice>> deleteMarketPrice(
     String productId,
     String storeName,
   ) async {
-    final next = await priceCoordinator.delete(
-      productId: productId,
-      storeName: storeName,
-      prices: marketPrices,
-    );
-    if (mounted) setState(() => marketPrices = next);
-    return next;
+    final revision = _dataRevision;
+    List<MarketPrice>? next;
+    await _priceSaves.add(() async {
+      if (!_isCurrentDataRevision(revision)) return;
+      next = await priceCoordinator.delete(
+        productId: productId,
+        storeName: storeName,
+        prices: marketPrices,
+      );
+      if (_isCurrentDataRevision(revision)) marketPrices = next!;
+    });
+    if (!_isCurrentDataRevision(revision) || next == null) return marketPrices;
+    final applied = next!;
+    setState(() => marketPrices = applied);
+    return applied;
   }
 
   List<Product> _openPricesDemandProducts() {
@@ -872,20 +1065,38 @@ class _AppShellState extends State<AppShell> {
     }
 
     final retryIds = retryProductIds?.toSet();
-    late PriceSyncResult result;
+    final revision = _dataRevision;
+    final progressCallback = onProgress;
+    final cancelCallback = shouldCancel;
+    PriceSyncResult? result;
     try {
-      result = await priceCoordinator.syncOpenPrices(
-        products: retryIds == null
-            ? _openPricesDemandProducts()
-            : catalogProducts
-                  .where((product) => retryIds.contains(product.id))
-                  .toList(),
-        maxAgeDays: priceDataSettings.openPricesMaxAgeDays,
-        prices: marketPrices,
-        history: priceHistory,
-        onProgress: onProgress,
-        shouldCancel: shouldCancel,
-      );
+      await _priceSaves.add(() async {
+        if (!_isCurrentDataRevision(revision)) return;
+        result = await priceCoordinator.syncOpenPrices(
+          products: retryIds == null
+              ? _openPricesDemandProducts()
+              : catalogProducts
+                    .where((product) => retryIds.contains(product.id))
+                    .toList(),
+          maxAgeDays: priceDataSettings.openPricesMaxAgeDays,
+          prices: marketPrices,
+          history: priceHistory,
+          onProgress: progressCallback == null
+              ? null
+              : (processed, total) {
+                  if (_isCurrentDataRevision(revision)) {
+                    progressCallback!(processed, total);
+                  }
+                },
+          shouldCancel: () =>
+              !_isCurrentDataRevision(revision) ||
+              (cancelCallback?.call() ?? false),
+        );
+        if (_isCurrentDataRevision(revision)) {
+          marketPrices = result!.prices;
+          priceHistory = result!.history;
+        }
+      });
     } catch (error) {
       widget.diagnosticLogService.record(
         category: 'Open Prices',
@@ -895,24 +1106,36 @@ class _AppShellState extends State<AppShell> {
       rethrow;
     }
 
+    if (!_isCurrentDataRevision(revision) || result == null) {
+      return PriceSyncResult(
+        prices: marketPrices,
+        history: priceHistory,
+        productsChecked: 0,
+        productsWithEan: 0,
+        pricesFound: 0,
+        productsProcessed: 0,
+        cancelled: true,
+      );
+    }
+    final applied = result!;
     if (mounted) {
       setState(() {
-        marketPrices = result.prices;
-        priceHistory = result.history;
+        marketPrices = applied.prices;
+        priceHistory = applied.history;
       });
     }
     await _loadPriceObservations();
     widget.diagnosticLogService.record(
       category: 'Open Prices',
-      message: result.cancelled
+      message: applied.cancelled
           ? 'Preisabgleich abgebrochen.'
           : 'Preisabgleich abgeschlossen.',
       details:
-          '${result.productsProcessed}/${result.productsWithEan} Produkte · '
-          '${result.pricesFound} Preise · '
-          '${result.failedProductIds.length} Fehler',
+          '${applied.productsProcessed}/${applied.productsWithEan} Produkte · '
+          '${applied.pricesFound} Preise · '
+          '${applied.failedProductIds.length} Fehler',
     );
-    return result;
+    return applied;
   }
 
   Future<void> openPriceDataSettings() async {
@@ -924,9 +1147,14 @@ class _AppShellState extends State<AppShell> {
     );
     if (result == null) return;
 
-    await widget.priceDataSettingsStore.save(result);
-    if (!mounted) return;
-    setState(() => priceDataSettings = result);
+    final nextSettings = result;
+    final revision = _dataRevision;
+    await _persistenceSaves.add(() async {
+      if (!_isCurrentDataRevision(revision)) return;
+      await widget.priceDataSettingsStore.save(nextSettings);
+    });
+    if (!_isCurrentDataRevision(revision)) return;
+    setState(() => priceDataSettings = nextSettings);
   }
 
   Future<void> openCatalog() async {
@@ -976,7 +1204,7 @@ class _AppShellState extends State<AppShell> {
       setState(() => shoppingList = next);
       persistShoppingListWithFeedback();
       for (final product in selected) {
-        widget.shoppingListStore.saveKnownItem(product);
+        _saveKnownItem(product);
         ensureCatalogProduct(product);
       }
       widget.diagnosticLogService.record(
@@ -1003,21 +1231,34 @@ class _AppShellState extends State<AppShell> {
   }
 
   Future<List<Offer>> saveOffer(Offer offer) async {
-    late List<Offer> next;
+    final revision = _dataRevision;
+    List<Offer>? next;
     await _offerSaves.add(() async {
+      if (!_isCurrentDataRevision(revision)) return;
       final stored = await widget.offerStore.load();
-      next = await widget.offerStore.upsert(offer, stored);
+      final updated = await widget.offerStore.upsert(offer, stored);
+      if (_isCurrentDataRevision(revision)) next = updated;
     });
-    if (mounted) setState(() => offers = next);
+    if (!_isCurrentDataRevision(revision) || next == null) return offers;
+    final applied = next!;
+    setState(() => offers = applied);
     unawaited(_recordOfferHistory(offer));
-    return next;
+    return applied;
   }
 
   Future<void> _recordOfferHistory(Offer offer) async {
+    final revision = _dataRevision;
     try {
-      await priceObservationStore.append(
-        observationsFromOffer(offer, observedAt: DateTime.now()),
-      );
+      await _priceSaves.add(() async {
+        if (!_isCurrentDataRevision(revision)) return;
+        await priceObservationStore.append(
+          observationsFromOffer(
+            offer,
+            observedAt: observedAtForOffer(offer, fallback: DateTime.now()),
+          ),
+        );
+      });
+      if (!_isCurrentDataRevision(revision)) return;
       await _loadPriceObservations();
     } catch (error) {
       widget.diagnosticLogService.record(
@@ -1029,13 +1270,18 @@ class _AppShellState extends State<AppShell> {
   }
 
   Future<List<Offer>> deleteOffer(Offer offer) async {
-    late List<Offer> next;
+    final revision = _dataRevision;
+    List<Offer>? next;
     await _offerSaves.add(() async {
+      if (!_isCurrentDataRevision(revision)) return;
       final stored = await widget.offerStore.load();
-      next = await widget.offerStore.remove(offer.id, stored);
+      final updated = await widget.offerStore.remove(offer.id, stored);
+      if (_isCurrentDataRevision(revision)) next = updated;
     });
-    if (mounted) setState(() => offers = next);
-    return next;
+    if (!_isCurrentDataRevision(revision) || next == null) return offers;
+    final applied = next!;
+    setState(() => offers = applied);
+    return applied;
   }
 
   Future<void> openMobilitySettings() async {
@@ -1046,12 +1292,25 @@ class _AppShellState extends State<AppShell> {
     );
     if (result == null) return;
 
-    await widget.mobilityStore.save(result);
-    final loaded = await roadDistanceStore.load(result.startAddress);
-    final matrix = await roadRouteMatrixStore.load(result.startAddress);
-    if (!mounted) return;
+    final nextMobility = result;
+    final revision = _dataRevision;
+    await _persistenceSaves.add(() async {
+      if (!_isCurrentDataRevision(revision)) return;
+      await widget.mobilityStore.save(nextMobility);
+    });
+    if (!_isCurrentDataRevision(revision)) return;
+    Map<String, double> loaded = <String, double>{};
+    RoadRouteMatrix? matrix;
+    try {
+      loaded = await roadDistanceStore.load(nextMobility.startAddress);
+      matrix = await roadRouteMatrixStore.load(nextMobility.startAddress);
+    } catch (_) {
+      // A broken local route cache must not block saving otherwise valid
+      // mobility settings; the route screen keeps its configured fallbacks.
+    }
+    if (!_isCurrentDataRevision(revision)) return;
     setState(() {
-      mobility = result;
+      mobility = nextMobility;
       roadDistances = loaded;
       roadMatrix = matrix;
     });
@@ -1065,9 +1324,14 @@ class _AppShellState extends State<AppShell> {
     );
     if (result == null) return;
 
-    await widget.mobilityStore.save(result);
-    if (!mounted) return;
-    setState(() => mobility = result);
+    final nextMobility = result;
+    final revision = _dataRevision;
+    await _persistenceSaves.add(() async {
+      if (!_isCurrentDataRevision(revision)) return;
+      await widget.mobilityStore.save(nextMobility);
+    });
+    if (!_isCurrentDataRevision(revision)) return;
+    setState(() => mobility = nextMobility);
   }
 
   void openBudget() {
@@ -1080,6 +1344,7 @@ class _AppShellState extends State<AppShell> {
             euroPerKm: mobility.effectiveEuroPerKm,
             maxStores: mobility.maxStores,
             minExtraStoreSavings: mobility.minExtraStoreSavings,
+            additionalStoreCost: mobility.additionalStoreCost,
             timeValuePerHour: mobility.timeValuePerHour,
             travelMinutesPerKm: 60 / mobility.mode.averageSpeedKmh,
             enabledStoreNames: mobility.enabledStoreNames,
@@ -1223,6 +1488,10 @@ class _AppShellState extends State<AppShell> {
   }
 
   Future<void> _applyBackup(AppBackup backup) async {
+    // Invalidate startup and refresh callbacks before the first await. Their
+    // stores are then either ordered behind the backup write queue or ignored
+    // before they can project stale data into the UI again.
+    final revision = ++_dataRevision;
     final lists = backup.namedLists.isEmpty
         ? [
             NamedShoppingList(
@@ -1236,37 +1505,42 @@ class _AppShellState extends State<AppShell> {
         ? backup.activeShoppingListId
         : lists.first.id;
 
-    await Future.wait([
-      widget.budgetStore.save(backup.budget),
-      widget.mobilityStore.save(backup.mobility),
-      widget.priceDataSettingsStore.save(backup.priceDataSettings),
-      widget.offerStore.save(backup.offers),
-      widget.marketPriceStore.save(backup.marketPrices),
-      widget.productCatalogStore.save(backup.customProducts),
-      widget.priceHistoryStore.save(backup.priceHistory),
-      widget.recentPurchaseStore.save(backup.recentPurchases),
-      widget.purchaseStore.save(backup.purchaseHistory),
-      widget.shoppingListStore.save(backup.shoppingList),
-      widget.shoppingListStore.saveNamedLists(lists),
-      widget.shoppingListStore.saveKnownItems(backup.knownItems),
-      widget.shoppingListStore.savePreferredProducts(
-        backup.preferredProductByGroup,
-      ),
-      widget.shoppingListStore.saveAisleOrder(backup.aisleOrder),
-      widget.shoppingListStore.saveTileView(backup.tileView),
-      ReceiptObservationStore().replaceAll(backup.receiptObservations),
-      priceObservationStore.replaceAll(backup.priceObservations),
-      receiptAliasStore.save(backup.receiptAliases),
-      roadDistanceStore.save(
-        backup.mobility.startAddress,
-        backup.roadDistances,
-      ),
-      if (backup.roadMatrix != null)
-        roadRouteMatrixStore.save(backup.roadMatrix!),
-      if (backup.roadMatrix == null) roadRouteMatrixStore.clear(),
-    ]);
+    await _persistenceSaves.add(() async {
+      // A second import may have superseded this snapshot while it waited in
+      // the queue. Do not let an older backup overwrite the newer one.
+      if (!_isCurrentDataRevision(revision)) return;
+      await Future.wait([
+        widget.budgetStore.save(backup.budget),
+        widget.mobilityStore.save(backup.mobility),
+        widget.priceDataSettingsStore.save(backup.priceDataSettings),
+        widget.offerStore.save(backup.offers),
+        widget.marketPriceStore.save(backup.marketPrices),
+        widget.productCatalogStore.save(backup.customProducts),
+        widget.priceHistoryStore.save(backup.priceHistory),
+        widget.recentPurchaseStore.save(backup.recentPurchases),
+        widget.purchaseStore.save(backup.purchaseHistory),
+        widget.shoppingListStore.save(backup.shoppingList),
+        widget.shoppingListStore.saveNamedLists(lists),
+        widget.shoppingListStore.saveKnownItems(backup.knownItems),
+        widget.shoppingListStore.savePreferredProducts(
+          backup.preferredProductByGroup,
+        ),
+        widget.shoppingListStore.saveAisleOrder(backup.aisleOrder),
+        widget.shoppingListStore.saveTileView(backup.tileView),
+        ReceiptObservationStore().replaceAll(backup.receiptObservations),
+        priceObservationStore.replaceAll(backup.priceObservations),
+        receiptAliasStore.save(backup.receiptAliases),
+        roadDistanceStore.save(
+          backup.mobility.startAddress,
+          backup.roadDistances,
+        ),
+        if (backup.roadMatrix != null)
+          roadRouteMatrixStore.save(backup.roadMatrix!),
+        if (backup.roadMatrix == null) roadRouteMatrixStore.clear(),
+      ]);
+    });
 
-    if (!mounted) return;
+    if (!_isCurrentDataRevision(revision)) return;
     setState(() {
       budget = backup.budget;
       mobility = backup.mobility;

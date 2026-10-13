@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/product.dart';
+import '../../services/safe_external_url.dart';
 import '../catalog/product_hierarchy.dart';
 import '../../models/recent_purchase.dart';
 
@@ -137,8 +138,8 @@ class _ProductSuggestionImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageUrl = product.imageUrl?.trim();
-    if (imageUrl == null || imageUrl.isEmpty) {
+    final imageUrl = safeExternalHttpUrl(product.imageUrl);
+    if (imageUrl == null) {
       return CircleAvatar(
         radius: 22,
         child: Icon(related ? Icons.alt_route : Icons.add, size: 18),

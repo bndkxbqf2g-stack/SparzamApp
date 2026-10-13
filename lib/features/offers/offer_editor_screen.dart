@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../data/stores.dart';
 import '../../models/offer.dart';
 import '../../models/product.dart';
+import '../../services/quantity_normalizer.dart';
+import 'prospect_product_match.dart';
 
 class OfferEditorScreen extends StatefulWidget {
   const OfferEditorScreen({
@@ -121,7 +123,8 @@ class _OfferEditorScreenState extends State<OfferEditorScreen> {
       firstDate: today,
       lastDate: lastDay,
     );
-    if (date != null) setState(() => validUntil = date);
+    if (!mounted || date == null) return;
+    setState(() => validUntil = date);
   }
 
   void _save() {
@@ -135,6 +138,33 @@ class _OfferEditorScreenState extends State<OfferEditorScreen> {
       return;
     }
 
+    final previous = widget.offer;
+    final preserveEvidence = previous != null &&
+        previous.storeName == storeName &&
+        previous.productId == productId;
+    Product? selectedProduct;
+    for (final product in widget.catalogProducts) {
+      if (product.id == productId) {
+        selectedProduct = product;
+        break;
+      }
+    }
+    final selectedPackage = selectedProduct == null
+        ? null
+        : selectedProduct!.packageAmount != null &&
+                selectedProduct!.packageUnit != null
+            ? (
+                amount: selectedProduct!.packageAmount!,
+                unit: selectedProduct!.packageUnit!,
+              )
+            : prospectPackage(selectedProduct!.unit);
+    final packageAmount = preserveEvidence
+        ? previous!.packageAmount ?? selectedPackage?.amount
+        : selectedPackage?.amount;
+    final packageUnit = preserveEvidence
+        ? previous!.packageUnit ?? selectedPackage?.unit
+        : selectedPackage?.unit;
+
     Navigator.pop(
       context,
       Offer(
@@ -144,6 +174,22 @@ class _OfferEditorScreenState extends State<OfferEditorScreen> {
         originalPrice: normal,
         offerPrice: sale,
         validUntil: validUntil,
+        validFrom: preserveEvidence ? previous!.validFrom : null,
+        source: preserveEvidence ? previous!.source : 'manual',
+        sourceAdapter: preserveEvidence ? previous!.sourceAdapter : null,
+        capturedAt: preserveEvidence ? previous!.capturedAt : null,
+        proofRef: preserveEvidence ? previous!.proofRef : null,
+        imageUrl: preserveEvidence ? previous!.imageUrl : null,
+        packageAmount: packageAmount,
+        packageUnit: packageUnit,
+        unitPrice: normalizedUnitPrice(
+          price: sale,
+          amount: packageAmount,
+          unit: packageUnit,
+        ),
+        locationId: preserveEvidence ? previous!.locationId : null,
+        region: preserveEvidence ? previous!.region : null,
+        address: preserveEvidence ? previous!.address : null,
         buyQuantity: _int(buyQuantity),
         payQuantity: _int(payQuantity),
         couponPercent: _double(couponPercent),

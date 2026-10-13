@@ -3,8 +3,12 @@ import '../../models/offer.dart';
 import '../../models/price_observation.dart';
 import '../../models/product.dart';
 import '../../models/receipt_price_stat.dart';
+import '../../services/safe_external_url.dart';
+import '../../services/market_price_comparability.dart';
+import '../../services/branch_identity.dart';
 import '../catalog/product_identity.dart';
 import '../offers/effective_price.dart';
+import '../offers/offer_import.dart';
 import '../offers/offer_filter.dart';
 import '../offers/prospect_price_statistics.dart';
 import 'receipt_product_price_match.dart';
@@ -58,8 +62,8 @@ class ShoppingCandidate {
 
   String? get imageUrl {
     for (final quote in quotes) {
-      final url = quote.imageUrl?.trim();
-      if (url != null && url.isNotEmpty) return url;
+      final url = safeExternalHttpUrl(quote.imageUrl);
+      if (url != null) return url;
     }
     return null;
   }
@@ -100,8 +104,12 @@ List<ShoppingCandidate> buildShoppingCandidates({
     final quotes = <ShoppingCandidateQuote>[];
     for (final offer in offers) {
       if (offer.productId != product.id ||
+          !offerMatchesProduct(offer, product) ||
           !_storeEnabled(offer.storeName, enabledStores) ||
+          !matchesConfiguredBranch(offer.storeName, offer.locationId) ||
+          !hasExactOfferBranch(offer) ||
           isSampleOffer(offer) ||
+          !hasTrustedOfferEvidence(offer) ||
           !isOfferDateRangeActive(
             validFrom: offer.validFrom,
             validUntil: offer.validUntil,
@@ -122,7 +130,9 @@ List<ShoppingCandidate> buildShoppingCandidates({
     }
     for (final price in marketPrices) {
       if (price.productId != product.id ||
+          !marketPriceMatchesProduct(price, product) ||
           !_storeEnabled(price.storeName, enabledStores) ||
+          !matchesConfiguredBranch(price.storeName, price.sourceLocationId) ||
           !price.isUsable(
             now: current,
             openPricesMaxAgeDays: openPricesMaxAgeDays,

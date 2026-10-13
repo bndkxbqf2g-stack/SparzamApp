@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../data/stores.dart';
 import '../../models/market_price.dart';
 import '../../models/product.dart';
+import '../../services/barcode_normalizer.dart';
 import '../../services/open_prices_cache.dart';
 import '../../services/open_prices_service.dart';
 import 'market_price_import.dart';
@@ -124,7 +125,12 @@ class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
   }
 
   Future<void> importOpenPrices() async {
-    if (importing || savingStore != null || widget.product.ean == null) return;
+    if (importing ||
+        savingStore != null ||
+        widget.product.ean == null ||
+        normalizeBarcode(widget.product.ean!) == null) {
+      return;
+    }
     setState(() => importing = true);
 
     try {
@@ -188,7 +194,7 @@ class _MarketPriceEditorScreenState extends State<MarketPriceEditorScreen> {
             ),
             const SizedBox(height: 10),
             if (widget.product.ean != null &&
-                widget.product.ean!.trim().isNotEmpty)
+                normalizeBarcode(widget.product.ean!) != null)
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.cloud_download_outlined),

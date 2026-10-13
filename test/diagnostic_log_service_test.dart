@@ -36,4 +36,21 @@ void main() {
     expect(await service.load(), isEmpty);
     expect(await service.exportText(), contains('Keine Einträge'));
   });
+
+  test('parallele Diagnoseeinträge gehen nicht verloren', () async {
+    final first = DiagnosticLogService();
+    final second = DiagnosticLogService();
+
+    await Future.wait([
+      first.record(category: 'Feed', message: 'Quelle A ausgefallen'),
+      second.record(category: 'OCR', message: 'Beleg braucht Prüfung'),
+    ]);
+
+    final loaded = await DiagnosticLogService().load();
+    expect(loaded, hasLength(2));
+    expect(loaded.map((entry) => entry.message), containsAll([
+      'Quelle A ausgefallen',
+      'Beleg braucht Prüfung',
+    ]));
+  });
 }

@@ -424,6 +424,107 @@ void main() {
     expect(hint?.isOffer, isTrue);
   });
 
+  test('unproven external offers do not rank a shopping suggestion', () {
+    final unproven = Offer(
+      id: 'unproven-leaflet',
+      productId: regular.id,
+      storeName: 'Lidl',
+      originalPrice: 1.49,
+      offerPrice: 0.49,
+      source: 'leaflet',
+      validUntil: DateTime(2026, 10, 2),
+    );
+
+    expect(
+      shoppingSuggestionPriceForProduct(
+        regular,
+        offers: [unproven],
+        now: now,
+      ),
+      isNull,
+    );
+  });
+
+  test('suggestion prices ignore another configured branch', () {
+    final wrongBranch = Offer(
+      id: 'wrong-branch-offer',
+      productId: regular.id,
+      storeName: 'Lidl',
+      originalPrice: 1.49,
+      offerPrice: 0.39,
+      source: 'leaflet',
+      proofRef: 'https://example.test/lidl/wrong-branch',
+      locationId: 'lidl-wuerzburg',
+      validUntil: DateTime(2026, 10, 2),
+    );
+
+    final wrongBranchPrice = MarketPrice(
+      productId: regular.id,
+      storeName: 'Lidl',
+      price: 0.29,
+      sourceLocationId: 'lidl-wuerzburg',
+      updatedAt: now,
+    );
+
+    expect(
+      shoppingSuggestionPriceForProduct(
+        regular,
+        offers: [wrongBranch],
+        marketPrices: [wrongBranchPrice],
+        now: now,
+      ),
+      isNull,
+    );
+  });
+
+  test('suggestion prices ignore an incompatible explicit offer package', () {
+    final wrongPackage = Offer(
+      id: 'wrong-package-offer',
+      productId: regular.id,
+      storeName: 'Lidl',
+      originalPrice: 1.49,
+      offerPrice: 0.39,
+      source: 'leaflet',
+      proofRef: 'https://example.test/lidl/wrong-package',
+      validUntil: DateTime(2026, 10, 2),
+      packageAmount: 500,
+      packageUnit: 'ml',
+      unitPrice: 0.78,
+    );
+
+    expect(
+      shoppingSuggestionPriceForProduct(
+        regular,
+        offers: [wrongPackage],
+        now: now,
+      ),
+      isNull,
+    );
+  });
+
+  test('suggestion prices ignore legacy regional KaufDA offers', () {
+    final regional = Offer(
+      id: 'legacy-regional-kaufda',
+      productId: regular.id,
+      storeName: 'Lidl',
+      originalPrice: 1.49,
+      offerPrice: 0.39,
+      source: 'retailerWebsite',
+      sourceAdapter: 'kaufda',
+      proofRef: 'https://www.kaufda.de/Wuerzburg/Angebote/Milch',
+      validUntil: DateTime(2026, 10, 2),
+    );
+
+    expect(
+      shoppingSuggestionPriceForProduct(
+        regular,
+        offers: [regional],
+        now: now,
+      ),
+      isNull,
+    );
+  });
+
   test('generic sausage search finds a compound sausage prospect offer', () {
     const prospectSausage = Product(
       id: 'prospect|nothwang grobe bratwurst je 100 g',

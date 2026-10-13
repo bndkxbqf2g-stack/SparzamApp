@@ -12,6 +12,7 @@ class MarketPrice {
     this.externalId,
     this.sourceLocationName,
     this.sourceLocationId,
+    this.sourceAdapter,
     this.discounted = false,
     this.proofRef,
     this.quantity,
@@ -30,6 +31,9 @@ class MarketPrice {
   final String? sourceLocationName;
   /// Stable source location/branch ID when the provider exposes one.
   final String? sourceLocationId;
+  /// Optional concrete adapter identity retained when this price is projected
+  /// from a PriceObservation.
+  final String? sourceAdapter;
   final bool discounted;
 
   /// Evidence metadata retained when a price is projected from the central
@@ -100,11 +104,14 @@ class MarketPrice {
         : 'veraltet';
   }
 
-  String get sourceLabel => switch (source) {
-        MarketPriceSource.receipt => 'Kassenbon',
-        MarketPriceSource.manual => 'Eigener Preis',
-        MarketPriceSource.openPrices => 'Open Prices',
-      };
+  String get sourceLabel {
+    if (sourceAdapter?.trim().toLowerCase() == 'kaufda') return 'KaufDA';
+    return switch (source) {
+      MarketPriceSource.receipt => 'Kassenbon',
+      MarketPriceSource.manual => 'Eigener Preis',
+      MarketPriceSource.openPrices => 'Open Prices',
+    };
+  }
 
   Map<String, dynamic> toJson() => {
         'productId': productId,
@@ -115,6 +122,7 @@ class MarketPrice {
         'externalId': externalId,
         'sourceLocationName': sourceLocationName,
         'sourceLocationId': sourceLocationId,
+        'sourceAdapter': sourceAdapter,
         'discounted': discounted,
         'proofRef': proofRef,
         'quantity': quantity,
@@ -154,6 +162,7 @@ class MarketPrice {
       externalId: (json['externalId'] as num?)?.toInt(),
       sourceLocationName: json['sourceLocationName'] as String?,
       sourceLocationId: json['sourceLocationId'] as String?,
+      sourceAdapter: json['sourceAdapter'] as String?,
       discounted: json['discounted'] as bool? ?? false,
       proofRef: json['proofRef'] as String?,
       quantity: (json['quantity'] as num?)?.toDouble(),

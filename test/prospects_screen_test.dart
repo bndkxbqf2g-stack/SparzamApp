@@ -146,6 +146,85 @@ void main() {
     expect(added!.id, startsWith('prospect|'));
   });
 
+  testWidgets('builds large prospect searches lazily', (tester) async {
+    final records = [
+      for (var index = 0; index < 120; index++)
+        OfferImportRecord(
+          sourceId: 'search-$index',
+          productLabel: 'Milch $index 1 l',
+          storeName: 'Lidl',
+          offerPrice: 0.99,
+          validFrom: DateTime(2026, 9, 28),
+          validUntil: DateTime(2026, 10, 3),
+          proofRef: 'https://example.test/search/$index',
+        ),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: records,
+          now: DateTime(2026, 9, 30),
+        ),
+      ),
+    );
+
+    final search = find.byWidgetPredicate(
+      (widget) =>
+          widget is TextField &&
+          widget.decoration?.hintText == 'Prospekte und Artikel durchsuchen',
+    );
+    await tester.enterText(search, 'Milch');
+    await tester.pump();
+
+    expect(find.text('120 passende Prospektartikel'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('prospect-search-offer-search-0')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('prospect-search-offer-search-119')),
+      findsNothing,
+    );
+  });
+
+  testWidgets('scrolls a larger cover grid without eagerly building every card',
+      (tester) async {
+    final prospects = [
+      for (var index = 0; index < 24; index++)
+        ProspectIssue(
+          storeName: 'Markt $index',
+          title: 'Aktionsprospekt',
+          pages: const [],
+          thumbnailUrl: 'https://example.test/cover-$index.jpg',
+          validFrom: DateTime(2026, 9, 28),
+          validUntil: DateTime(2026, 10, 3),
+        ),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: prospects,
+          now: DateTime(2026, 9, 30),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey('prospect-grid')), findsOneWidget);
+    expect(find.text('Markt 0'), findsWidgets);
+    expect(find.text('Markt 23'), findsNothing);
+
+    await tester.scrollUntilVisible(
+      find.text('Markt 23').first,
+      450,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Markt 23'), findsWidgets);
+  });
+
   testWidgets('filters current prospect articles by source category', (
     tester,
   ) async {
@@ -471,6 +550,36 @@ void main() {
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
   });
 
+  testWidgets('shows a source thumbnail as the cover page in the viewer', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: const [
+            ProspectIssue(
+              storeName: 'Netto',
+              title: 'Netto Wochenprospekt',
+              pages: [],
+              thumbnailUrl: 'https://example.test/netto-cover.jpg',
+              validFrom: DateTime(2026, 10, 12),
+              validUntil: DateTime(2026, 10, 17),
+            ),
+          ],
+          now: DateTime(2026, 10, 13),
+        ),
+      ),
+    );
+
+    await _scrollProspects(tester);
+    await tester.tap(find.text('Netto').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Prospektseiten (1)'), findsOneWidget);
+    expect(find.text('Seite 1'), findsOneWidget);
+  });
+
   testWidgets('adds a manually reviewed article from a prospect page', (
     tester,
   ) async {
@@ -565,6 +674,44 @@ void main() {
     );
   });
 
+  testWidgets('labels regional-only prospect sources in the overview', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: [
+            OfferImportRecord(
+              sourceId: 'regional-overview',
+              productLabel: 'Butter 250 g',
+              storeName: 'Lidl',
+              offerPrice: 1.29,
+              validUntil: DateTime(2026, 10, 17),
+              sourceAdapter: 'kaufda',
+              regionalOnly: true,
+              proofRef: 'https://www.kaufda.de/Wuerzburg/Angebote/Butter',
+            ),
+          ],
+          prospects: const [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'KaufDA regional',
+              pages: const [],
+              sourceStatus: 'regional_only',
+              recordCount: 1,
+            ),
+          ],
+          now: DateTime(2026, 10, 12),
+        ),
+      ),
+    );
+
+    expect(
+      find.text('Nur regional erkannt · Filiale noch nicht bestätigt.'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('shows current issue and current prices instead of old pages', (
     tester,
   ) async {
@@ -629,6 +776,50 @@ void main() {
     expect(find.text('Seite 99'), findsNothing);
     expect(find.text('Aktueller Kaffee'), findsOneWidget);
     expect(find.text('Alter Kaffee'), findsNothing);
+  });
+
+  testWidgets('prefers current prospect metadata with available pages', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          now: DateTime(2026, 10, 13),
+          records: const [],
+          prospects: const [
+            ProspectIssue(
+              storeName: 'ALDI Süd',
+              title: 'Aktionsprospekt ohne Bildseiten',
+              pages: [],
+              sourceStatus: 'ok',
+              validFrom: DateTime(2026, 10, 12),
+              validUntil: DateTime(2026, 10, 17),
+            ),
+            ProspectIssue(
+              storeName: 'ALDI Süd',
+              title: 'Aktionsprospekt mit Cover',
+              pages: [
+                ProspectPage(
+                  number: 1,
+                  imageUrl: 'https://example.test/aldi-cover.jpg',
+                ),
+              ],
+              sourceStatus: 'ok',
+              validFrom: DateTime(2026, 10, 12),
+              validUntil: DateTime(2026, 10, 17),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    await _scrollProspects(tester);
+    await tester.tap(find.text('ALDI Süd').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Prospektseiten (1)'), findsOneWidget);
+    expect(find.text('Aktionsprospekt mit Cover'), findsOneWidget);
+    expect(find.text('Aktionsprospekt ohne Bildseiten'), findsNothing);
   });
 
     testWidgets('shows the record location in prospect search results', (

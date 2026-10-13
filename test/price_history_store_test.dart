@@ -22,6 +22,48 @@ void main() {
     expect(await PriceHistoryStore().load(), isEmpty);
   });
 
+  test('ein paralleler Verlauf-Read wartet auf einen Preis-Write', () async {
+    final store = PriceHistoryStore();
+    final reader = PriceHistoryStore();
+    final point = PricePoint(
+      productId: 'parallel',
+      storeName: 'Lidl',
+      price: 1.29,
+      date: DateTime(2026, 9, 24),
+      source: PricePointSource.manual,
+    );
+
+    final writing = store.save([point]);
+    final reading = reader.load();
+
+    await writing;
+    expect((await reading).single.productId, 'parallel');
+  });
+
+  test('parallele Verlauf-Upserts verlieren keine unterschiedlichen Punkte', () async {
+    final store = PriceHistoryStore();
+    final first = PricePoint(
+      productId: 'first',
+      storeName: 'Lidl',
+      price: 1.10,
+      date: DateTime(2026, 9, 24),
+    );
+    final second = PricePoint(
+      productId: 'second',
+      storeName: 'Kaufland',
+      price: 2.20,
+      date: DateTime(2026, 9, 24),
+    );
+
+    await Future.wait([
+      store.upsertObservation(first, const []),
+      store.upsertObservation(second, const []),
+    ]);
+
+    expect((await store.load()).map((point) => point.productId),
+        containsAll(['first', 'second']));
+  });
+
   test('entfernt alte Demo-Historie und bewahrt echte Einträge', () async {
     final custom = PricePoint(
       productId: 'real_product',

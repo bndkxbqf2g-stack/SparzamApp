@@ -1,5 +1,874 @@
 # SparzamApp
 
+## Update 13.10.2026 – KaufDA-Umgebungsgrenze kann Abrufe hart stoppen
+- `SPARZAM_KAUFDA_MAX_QUERIES=0` wird jetzt als absichtliche Nullgrenze
+  übernommen und nicht mehr auf den Standardwert zurückgesetzt.
+- Damit bleibt der optionale KaufDA-Adapter auch in kontrollierten Refresh-
+  Umgebungen ohne Netzwerkabruf deaktivierbar; eine positive Query-Liste oder
+  das Feature-Flag allein aktiviert weiterhin keinen Abruf ohne `enabled`.
+
+## Update 13.10.2026 – Refresh respektiert HTTP-Zugriffsgrenzen
+- Der gemeinsame öffentliche Prospekt-HTTP-Helper wiederholt einen HTTP-403
+  nicht mehr mit einem Browser-User-Agent. Ein solcher Status bleibt ein
+  Quellenfehler und aktiviert nur die vorhandenen Cache-/Asset-Fallbacks.
+- Eine Python-Regression prüft, dass genau ein Abruf erfolgt und keine
+  alternative Identität versucht wird.
+- Der offizielle GitHub-Refresh setzt `SPARZAM_KAUFDA_ENABLED=0` explizit,
+  sodass eine spätere Umgebungsänderung die optionale Quelle nicht unbemerkt
+  produktiv aktiviert.
+
+## Update 13.10.2026 – KaufDA-Parserfehler überschreiben keinen gültigen Cache
+- Der optionale KaufDA-Adapter speichert einen Liveantwort-Body erst nach
+  erfolgreichem `__NEXT_DATA__`-Parsing. Antwortformatänderungen bei HTTP 200
+  können dadurch keinen geprüften Cache zerstören.
+- Schlägt das Parsing live fehl, wird ein noch gültiger vorheriger Cache
+  erneut versucht. Das Angebot behält dabei seinen echten ursprünglichen
+  `capturedAt`-Zeitpunkt und die Formatstörung bleibt in der Quelldiagnose
+  sichtbar.
+
+## Update 13.10.2026 – Versionierter Prospektfeed ist je Filiale prüfbar
+- Die sechs ausgelieferten Händlerquellen im versionierten Feed werden jetzt in
+  einer Python-Regression gemeinsam geprüft. Jede Quelle muss einen aktuellen
+  Gültigkeitszeitraum, Filial-ID/Ort/Adresse sowie eine HTTPS-Coverseite als
+  Seite 1 liefern.
+- Eine Flutter-Regression prüft dieselben Invarianten nach dem Parsen in
+  `ProspectIssue`, damit der Importpfad Coverseiten oder Filialnachweise nicht
+  still verliert.
+- Damit bleibt die Prospektansicht gegen einen stillen Verlust von Coverseiten,
+  Filialbezug oder veralteten Datensätzen geschützt; die Prüfung verwendet den
+  im Asset gespeicherten `generatedAt`-Tag und führt keine Live-Händlerabfrage
+  aus.
+
+## Update 13.10.2026 – Prospekt-Sliver halten keine entfernten Karten fest
+- Die Cover-, Suchergebnis-, Seiten- und Artikel-Sliver deaktivieren nicht
+  benötigte automatische Keep-Alive-Wrapper. Repaint-Grenzen bleiben aktiv,
+  damit große Händlerbestände weiter lazy aufgebaut und getrennt neu gezeichnet
+  werden.
+- Die Daten, Seitenreihenfolge und Add-to-List-Aktionen bleiben unverändert;
+  die Änderung reduziert nur den Speicher- und Renderdruck beim Scrollen.
+
+## Update 13.10.2026 – Gleichzeitige Prospekt-Refreshes werden gebündelt
+- `ProspectFeedService` teilt eine bereits laufende `load()`-Future mit allen
+  weiteren Aufrufern. Startup, AppShell und manuelles Aktualisieren erzeugen
+  dadurch keine doppelten öffentlichen Feed-Anfragen.
+- Erfolgs-, Cache- und Asset-Fallback sowie Fehlerweitergabe bleiben
+  unverändert. Eine Regression prüft identische Futures und genau eine Anfrage.
+
+## Update 13.10.2026 – Externe Fallback-Caches behalten ihre Reihenfolge
+- Die Shared-Preferences-Adapter für Open Prices, Open Food Facts und den
+  öffentlichen Prospektfeed serialisieren Reads und Writes jetzt je Cachetyp.
+  Ein paralleler Refresh kann dadurch keinen älteren Rohantwort- oder
+  Prospektstand nach einem frischeren Cachewert speichern.
+- Cachefehler bleiben weiterhin best effort: Der Livepfad wird nicht blockiert,
+  Barcode-Normalisierung und der datierte Offline-Fallback bleiben unverändert.
+  Read-after-write-Regressionen decken Produkt- und Prospektcache ab.
+
+## Update 13.10.2026 – Prospektfavoriten bleiben bei schnellen Umschaltungen konsistent
+- `ProspectFavoritesStore` serialisiert Reads und Writes jetzt über denselben
+  fehlerisolierten Scheduler. Schnelle Herz-Umschaltungen können dadurch
+  keinen älteren Favoritenstand zurückschreiben.
+- Sortierung, Dublettenbereinigung und der `null`-Fallback bei nicht
+  verfügbarer Plattformpersistenz bleiben unverändert. Eine Regression prüft
+  Read-after-write über getrennte Storeinstanzen.
+
+## Update 13.10.2026 – Diagnoseeinträge bleiben bei parallelen Fehlern erhalten
+- `DiagnosticLogService` serialisiert Reads, Einträge und Löschen jetzt über
+  denselben fehlerisolierten Scheduler. Gleichzeitige Feed-, OCR- oder
+  Speicherfehler können dadurch keinen Diagnoseeintrag durch einen älteren
+  Read-Modify-Write-Stand verlieren.
+- Das Fehlerprotokoll bleibt lokal, auf 100 Einträge begrenzt und darf den
+  eigentlichen Fehler weiterhin nicht verschärfen. Eine Regression prüft zwei
+  parallele Einträge.
+
+## Update 13.10.2026 – Routen- und Preisquelleneinstellungen lesen konsistent aus der Queue
+- `MobilitySettingsStore` und `PriceDataSettingsStore` serialisieren Reads und
+  Writes jetzt je Storetyp über denselben fehlerisolierten Scheduler. Ein
+  Einstellungswechsel kann dadurch nicht zwischen Start- oder Backup-Lesen
+  verloren gehen.
+- Mobilitätsmodus, Marktaufwand, Preisquellen-Schalter und konservative
+  Standardwerte bleiben unverändert. Beide Store-Suites prüfen Read-after-write
+  über getrennte Instanzen.
+
+## Update 13.10.2026 – Budgetstände lesen konsistent aus der Queue
+- `BudgetStore` serialisiert die drei Budgetfelder gemeinsam mit öffentlichen
+  Reads und Writes. Ein Einkaufsabschluss oder eine Korrektur kann dadurch
+  keinen gemischten Zwischenstand aus Monatsbudget, Lebensmittelbudget und
+  Ausgaben in die Oberfläche zurückliefern.
+- Die bestehende Nichtnegativ-/Endlichkeitsprüfung und der sichere Nullfallback
+  bleiben erhalten. Eine Regression prüft Read-after-write über getrennte
+  Storeinstanzen.
+
+## Update 13.10.2026 – Eigener Produktkatalog liest konsistent aus der Queue
+- `ProductCatalogStore` serialisiert öffentliche Reads, Ersetzungen und
+  Read-Modify-Write-Aktionen jetzt über denselben fehlerisolierten Scheduler.
+  Ein Scanner-/Open-Food-Facts-Import kann dadurch keinen älteren Katalogstand
+  zwischen Persistenz und UI-Projektion zurückschreiben.
+- EAN, Varianten, Aliase, Favoriten und die alphabetische Sortierung bleiben
+  unverändert. Eine Regression prüft Read-after-write über getrennte
+  Storeinstanzen.
+
+## Update 13.10.2026 – Angebotsimports lesen konsistent aus der Queue
+- `OfferStore` serialisiert öffentliche Reads, Ersetzungen und Upserts jetzt
+  über denselben fehlerisolierten Scheduler. Ein paralleler Prospekt- oder
+  KaufDA-Import kann dadurch keinen älteren Angebotsstand zwischen Persistenz
+  und UI-Projektion zurückschreiben.
+- Demo-Bereinigung, ID-Ersetzung und bestehende Quellen-/Nachweisfelder
+  bleiben unverändert. Eine Regression prüft Read-after-write über getrennte
+  Storeinstanzen mit einem KaufDA-Nachweis.
+
+## Update 13.10.2026 – Kaufhistorie und Wiederkäufe lesen konsistent aus der Queue
+- `PurchaseStore` und `RecentPurchaseStore` serialisieren öffentliche Reads,
+  Ersetzungen und Read-Modify-Write-Aktionen jetzt je Storetyp über denselben
+  fehlerisolierten Scheduler. Ein paralleler UI-Read kann dadurch keinen
+  älteren Kaufstand zwischen einem laufenden Write und dessen Projektion sehen.
+- Die bestehende ID-Zusammenführung, Chronologie und Begrenzung der letzten
+  30 Wiederkäufe bleiben erhalten. Regressionen prüfen Read-after-write über
+  getrennte Storeinstanzen.
+
+## Update 13.10.2026 – Preisverlauf und Marktpreise lesen konsistent aus der Queue
+- `PriceHistoryStore` und `MarketPriceStore` serialisieren öffentliche Reads,
+  Ersetzungen und Upserts jetzt über denselben fehlerisolierten Scheduler je
+  Storetyp. Ein verspäteter Read kann dadurch keinen älteren Zwischenstand
+  zwischen einem laufenden Preis-Write und dessen UI-Projektion liefern.
+- Der bestehende Demo-Historie-Fallback, die Branch-Slots und die Quellpriorität
+  bleiben unverändert. Zwei Store-Regressionen prüfen Read-after-write über
+  getrennte Storeinstanzen.
+
+## Update 13.10.2026 – Zusätzlicher Marktaufwand fließt transparent in die Routenwahl
+- Die Mobilitätseinstellungen bieten jetzt einen optionalen Kostenwert je Markt
+  nach dem ersten. Der Wert wird lokal gespeichert und mit endlichen Werten
+  zwischen 0 und 50 € validiert.
+- `RouteOptimizer` verwendet ihn ausschließlich im `planningScore`; Warenkorb-
+  und Fahrtkosten bleiben der erwartete Zahlbetrag. Mindestvorteil, Preisabdeckung
+  und maximale Marktanzahl bleiben eigenständige Kriterien.
+- Routenkarte, Alternativen und Empfehlungstext weisen den Marktaufwand separat
+  aus. Regressionen prüfen Persistenz, ungültige Werte, Auswahl eines Einzelmarkts
+  bei zusätzlichem Aufwand und die sichtbare Planungswert-Aufschlüsselung.
+
+## Update 13.10.2026 – Lokale Reads und Writes werden gemeinsam serialisiert
+- Preisbeobachtungen, Bonbeobachtungen, gelernte Bon-Aliase, Straßenentfernungen,
+  Routenmatrizen und Einkaufslisten verwenden jetzt denselben generischen
+  Operation-Scheduler je Store. Ein öffentlicher Read wird selbst eingereiht
+  und kann keinen veralteten Zwischenstand zwischen zwei lokalen Writes sehen.
+- Der Scheduler gibt Fehler weiterhin an den auslösenden Aufrufer weiter,
+  hält aber nachfolgende lokale Operationen ausführbar.
+- `sequential_write_queue_test.dart` schützt zusätzlich die Reihenfolge eines
+  typisierten Reads hinter einem laufenden Write.
+
+## Update 13.10.2026 – Gleichwertige Marktpreise werden deterministisch gewählt
+- Planung und `RoutePriceResolver` verwenden bei identischem qualitätsbereinigtem
+  Preis und identischem Beobachtungszeitpunkt dieselbe stabile Tie-Break-Regel.
+- Quellenart, Adapter, Filiale und Nachweisfelder entscheiden nur diesen exakten
+  Gleichstand; ältere, veraltete oder nicht nutzbare Preise werden weiterhin vor
+  der Auswahl verworfen.
+- `planning_market_prices_test.dart` schützt Planung und Routenquote gegen beide
+  Eingabereihenfolgen.
+- Die Bon-Familienprojektion verwendet dieselbe Regel, bevor sie je Markt einen
+  Kandidaten an die zentrale Planung weiterreicht.
+
+## Update 13.10.2026 – KaufDA-Cache bleibt bei Schreibabbruch lesbar
+- Der optionale KaufDA-Cache schreibt neue JSON-Dokumente zuerst in eine
+  temporäre Datei und ersetzt den Zielbestand erst nach vollständigem Schreiben.
+- Bei einem simulierten Ersetzungsfehler bleibt der bisherige Offline-Stand
+  unverändert und lesbar; temporäre Dateien werden aufgeräumt.
+- Ein beschädigtes Cache-Root-Dokument wird als Cache-Miss behandelt und kann
+  den optionalen Refresh nicht mehr aus dem isolierten Fehlerpfad werfen.
+- Eine direkte Konfiguration mit `max_queries=0` führt jetzt garantiert zu
+  keinem Abruf.
+- Direkt gesetzte Filialmappings werden dabei über dieselben kanonischen
+  Händlernamen aufgelöst wie die kontrollierte Umgebungs-Konfiguration.
+
+## Update 13.10.2026 – Gleiche Marktpreise vergeben den Artikel stabil
+- `RouteOptimizer.buildPlan` verwendet bei gleichem qualitätsbereinigtem
+  Artikelpreis jetzt einen stabilen Schlüssel aus Händler, Filiale, Ort und
+  Adresse. Die Zuweisung hängt damit nicht mehr von der Eingabereihenfolge der
+  Stores ab.
+- `route_multi_market_e2e_test.dart` prüft beide Reihenfolgen.
+- Gleich günstige aktive Angebote verwenden zusätzlich einen stabilen
+  Evidenz-Tie-Breaker, damit ihre Quelle nicht von der Feed-Reihenfolge abhängt.
+
+## Update 13.10.2026 – Verzögerte Listen-Reads überschreiben keine Nutzereingabe
+- Der Start-Read benannter Einkaufslisten merkt sich jetzt eine eigene
+  Mutationsrevision. Sobald der Nutzer die sichtbare Liste ändert, darf ein
+  später eintreffender alter Speicherstand weder UI noch Persistenz ersetzen.
+- Ein Widgettest simuliert den verzögerten Read mit einem veralteten Listenstand.
+- `ShoppingListStore` serialisiert jetzt zusätzlich seine direkten lokalen
+  Reads/Writes über alle Store-Instanzen; ungültige gespeicherte Mengen werden
+  beim Laden verworfen.
+
+## Update 13.10.2026 – Datenabdeckung zählt Cover-Fallbacks korrekt
+- Die Prospektabdeckung zählt ein validiertes `thumbnailUrl` ohne weitere
+  Seiten jetzt als eine sichtbare Bildseite, genau wie der Viewer.
+- Ungültige oder nicht unterstützte URL-Schemata bleiben bei null; die Anzeige
+  erzeugt keine zusätzliche Bildquelle.
+- `prospect_feed_status_test.dart` schützt beide Fälle.
+
+## Update 13.10.2026 – Bildreicher aktueller Prospekt gewinnt deterministisch
+- Liefern mehrere aktuell gültige Datensätze eines Händlers denselben Zeitraum,
+  wählt die Prospektansicht jetzt den belastbarsten Eintrag mit vorhandenen
+  Seiten, Cover und stabilen Metadaten statt blind den ersten Feed-Eintrag.
+- Abgelaufene Zeiträume bleiben aus der Auswahl ausgeschlossen; der
+  Fallbacksortierer bleibt bei gleicher Evidenz reproduzierbar.
+- `prospects_screen_test.dart` schützt den Fall eines metadata-only Eintrags
+  neben einem aktuellen Eintrag mit Coverseite.
+
+## Update 13.10.2026 – Prospektseiten werden deterministisch normalisiert
+- Der Feedparser verwirft Seitenproben ohne positive Seitennummer, dedupliziert
+  wiederholte Seitennummern und sortiert die verbleibenden Seiten vor Viewer und
+  Cover-Fallback.
+- Die erste valide Quelle gewinnt bei einer doppelten Seitennummer; Bilder und
+  Nachweise werden nicht aus anderen Datensätzen ergänzt.
+- `prospect_feed_service_test.dart` schützt Reihenfolge, Deduplizierung und die
+  bestehende Invalid-URL-Grenze.
+
+## Update 13.10.2026 – Legacy-Prospekte behalten ihr erstes Cover
+- Der Feedparser verwendet bei älteren Prospectformaten ohne eigenes
+  `thumbnailUrl` das erste bereits validierte `pageSamples`-Bild als Cover.
+- Dadurch bleiben vorhandene Händlerseiten im Karten- und Viewerpfad sichtbar;
+  unzulässige oder fehlende URLs werden weiterhin nicht erfunden.
+- `prospect_feed_service_test.dart` schützt den Fallback einschließlich der
+  bestehenden HTTP-Validierung.
+
+## Update 13.10.2026 – Zukünftige Preisbeobachtungen erreichen keine Marktpreisprojektion
+- `marketPricesFromObservations` verwirft Beobachtungen jetzt bereits vor der
+  `MarketPrice`-Projektion, wenn ihr `observedAt` nach dem Prüfdatum liegt.
+- Damit können falsch datierte oder manipulierte Zukunftsbelege nicht mehr
+  zuerst im gespeicherten Preisbestand erscheinen und erst später an der
+  Routenauflösung scheitern.
+- Die Regression steht in `price_observation_store_test.dart`; bestehende
+  Gültigkeits- und Altersgrenzen bleiben unverändert.
+
+## Update 13.10.2026 – Prospekt- und Listenpfad im veröffentlichten Webstand geprüft
+- GETESTET: Ein Lidl-Prospekt öffnet mit fünf Seiten und sichtbaren Coverbildern;
+  der Seiten-Scroll blieb stabil und die Browser-Konsole meldete keine Warnungen
+  oder Fehler.
+- GETESTET: „Artikel von Seite hinzufügen“ öffnet den Prüfdialog, verlangt einen
+  gültigen Angebotspreis und bestätigt die Übernahme anschließend in der
+  Einkaufsliste. Der Testeintrag blieb auf der temporären Prüfsitzung und wird
+  nicht als Fixture oder Produktionsdaten übernommen.
+- Der Test deckt den veröffentlichten Webstand ab; ein nativer iOS-/Android-
+  Gerätestest bleibt wegen des fehlenden lokalen Flutter-SDKs offen.
+
+## Update 13.10.2026 – KaufDA ergänzt offizielle Prospektzeiträume nicht ersetzend
+- Der gemeinsame Prospektfilter bewertet pro Händler zuerst, ob ein Zeitraum
+  mindestens einen nicht-KaufDA-Nachweis besitzt. Ein größerer optionaler
+  KaufDA-Trefferbestand kann damit den offiziellen Zeitraum nicht verdrängen;
+  KaufDA-Angebote dürfen den ausgewählten offiziellen Zeitraum weiterhin
+  ergänzen.
+- `tool/tests/test_refresh_prospects.py` schützt den Fall mit einem offiziellen
+  Lidl-Record und drei Treffern aus einem abweichenden KaufDA-Zeitraum.
+
+## Update 13.10.2026 – Fehlende Marktpreise bleiben unbekannt
+- Die README beschreibt jetzt den tatsächlichen Resolver-Vertrag: Fehlt eine
+  belastbare markt- und variantenspezifische Beobachtung, bleibt die
+  Routenquote aus. Kategorie-Gruppenpreise werden nicht synthetisch erzeugt.
+- Historische Bon-/Prospekthinweise bleiben als Orientierung sichtbar, werden
+  aber weder als bestätigte Ladenpreise noch als aktuelle Routenpreise geführt.
+
+## Update 13.10.2026 – Zukünftige Prospektbelege bleiben historisch unsichtbar
+- Die historische Prospektstatistik prüft neben dem abgelaufenen
+  Gültigkeitsende nun auch den taggenauen Erfassungstag. Ein zukünftiger
+  `observedAt`-Wert kann dadurch keine historische Preisorientierung erzeugen.
+- Die Zukunftsgrenze entspricht der zentralen Preisprojektion; eine Regression
+  in `prospect_price_statistics_test.dart` deckt den Fall ab.
+
+## Update 13.10.2026 – Zukünftige Bons bleiben aus Preisstatistiken ausgeschlossen
+- Die lokale Bon-Preisstatistik verwirft Beobachtungen nach dem Prüfzeitpunkt
+  jetzt bereits vor der Gruppierung. Ein falsch datierter oder importierter
+  zukünftiger Bon kann dadurch weder Median noch letzten Historienpreis
+  beeinflussen.
+- Das Verhalten entspricht der bestehenden Route-Projektion und ist durch
+  eine Regression in `receipt_price_statistics_test.dart` abgesichert.
+
+## Update 13.10.2026 – Offline-Strecken akzeptieren normalisierte Startadressen
+- Distanz- und Straßenmatrixcache verwenden jetzt dieselbe normalisierte
+  Startadresse beim Schlüssel und bei der Inhaltsprüfung.
+- Groß-/Kleinschreibung und überflüssiger Leerraum führen dadurch nicht mehr
+  zu einem unnötigen Cache-Miss; unterschiedliche Startorte bleiben getrennt.
+- Beide Store-Regressionen decken den Offline-Fallback ab.
+
+## Update 13.10.2026 – Lokale Startdaten werden parallel geladen
+- Die voneinander unabhängigen Speicher-Reads aus `main.dart` starten jetzt
+  gemeinsam und werden weiterhin vollständig abgewartet, bevor der erste
+  App-Snapshot an `SparzamApp` übergeben wird.
+- Dadurch wird ein langsamer lokaler Speicherzugriff nicht mehr durch zehn
+  nachfolgende Reads vervielfacht; Datenreihenfolge und Persistenzschlüssel
+  bleiben unverändert.
+
+## Update 13.10.2026 – KaufDA-Branchnachweise bewahren die Filialadresse
+- Übergibt eine kontrollierte KaufDA-Abfrage neben `branchId` und Ort auch eine
+  Adresse, bleibt diese bereits im geparsten Angebot erhalten.
+- Die Python-Regression schützt damit die vollständige Filialherkunft vor der
+  späteren Feed-Zusammenführung; ohne explizite Branch-Assertion bleibt der
+  Treffer weiterhin regional und nicht routefähig.
+
+## Update 13.10.2026 – Bon- und Preisbelege lesen konsistent aus der Schreibqueue
+- `PriceObservationStore` und `ReceiptObservationStore` warten bei öffentlichen
+  Reads jetzt auf laufende append/upsert/backup-Schreibvorgänge.
+- Queue-interne Reads umgehen diese Wartefunktion gezielt, damit kein Deadlock
+  entsteht; die bestehende append-only-/Merge-Logik bleibt erhalten.
+- Neue Store-Regressionen sichern den parallelen Read-after-write-Fall.
+
+## Update 13.10.2026 – Öffentlicher Prospektfeed identifiziert sich korrekt
+- Der öffentliche Feed-Abruf sendet jetzt einen eigenen `Accept`- und
+  `User-Agent`-Header. Der Abruf bleibt read-only und verwendet weiterhin
+  Cache-/Asset-Fallbacks.
+- Eine Feed-Regression prüft den Header am injizierten HTTP-Client.
+
+## Update 13.10.2026 – EAN-Discovery trennt Varianten und Teilstrings
+- Open-Food-Facts-Discovery akzeptiert Produktnamen jetzt nur bei echten
+  Token-Grenzen und einer kompatiblen bekannten Produktfamilie/Variante.
+- Abweichende Milch-Fettstufen und zusammengesetzte Teilstrings wie
+  `Milch`/`Milchgetränk` bleiben dadurch unbekannt statt einen fremden EAN zu
+  übernehmen.
+- Zwei Fixture-Regressionen sichern die Ablehnung; bestätigte EANs und
+  kompatible Mehrfachpackungen bleiben unverändert.
+
+## Update 13.10.2026 – Open-Prices-Packungsbasis bleibt erhalten
+- Der Open-Prices-Adapter übernimmt bei bekannten Katalogprodukten jetzt die
+  explizite Packungsmenge/-einheit und berechnet daraus den Grundpreis.
+- Diese Metadaten laufen dadurch durch `MarketPrice` und `PriceObservation`;
+  die zentrale Packungs- und Identitätsprüfung kann inkompatible Daten weiter
+  als unbekannt behandeln, statt einen unbestimmten EAN-Preis zu übernehmen.
+- `open_prices_source_test.dart` prüft Standortnachweis, Packungsbasis und
+  den normierten Grundpreis.
+
+## Update 13.10.2026 – Historische Bon-Grundpreise werden einheitenrein verglichen
+- Die Bonpreisstatistik führt bekannte `g`/`kg`- sowie `ml`/`cl`/`l`-Einzelpreise
+  vor Median und aktuellem Historienwert auf `kg`, `l` bzw. `Stk` zurück.
+- Die gekaufte Menge bleibt weiterhin nur die Vergleichbarkeitsprüfung; ein
+  gedruckter Preis pro Einheit wird nicht versehentlich noch einmal mit der
+  Packungsmenge multipliziert.
+- Gemischte Dimensionen, unbekannte Einheiten und teilweise fehlende Mengen
+  fallen wie zuvor transparent auf historische Packungspreise zurück.
+- Die neuen Regressionen stehen in `receipt_price_statistics_test.dart`.
+
+## Update 13.10.2026 – Open-Food-Facts-Mengenauflösung und Offline-Reads abgesichert
+- Die Discovery erkennt strukturierte Mengenangaben wie `1 l`, `500 g`,
+  `200 ml` und Mehrfachpackungen wie `4 x 125 g` wieder korrekt und verwirft
+  weiterhin abweichende Packungsgrößen.
+- Shell, Routen- und Filialansicht behandeln nicht lesbare lokale
+  Distanzdaten als optionalen Cachefehler und rendern mit ihren hinterlegten
+  Fallbackwerten.
+- Cache-Lesevorgänge warten auf laufende lokale Schreibvorgänge, sodass ein
+  Refresh oder Adresswechsel keinen veralteten Zwischenstand übernimmt.
+- Die neue Discovery-Fixture deckt einen positiven EAN-Fund und eine
+  abweichende Packungsgröße ab; Flutter-Prüfungen bleiben wegen des fehlenden
+  lokalen SDKs offen. Der verfügbare Python-Lauf umfasst aktuell 85 Tests.
+
+## Update 13.10.2026 – Prospekt-Grid bleibt ohne Plattform-Views
+- Die scrollende Coverübersicht rendert externe Bilder jetzt strikt über den
+  Canvas-Renderer. Der HTML-Fallback bleibt auf die kurze Favoritenleiste und
+  den einzelnen Seitenviewer begrenzt, damit schnelles Scrollen keine Vielzahl
+  von Plattform-Views erzeugt.
+- Die Coverreferenz bleibt unverändert erhalten; bei fehlendem Canvas-CORS wird
+  im Grid der vorhandene Bildplatzhalter angezeigt und der vollständige
+  Nachweis bleibt im Viewer bzw. über den offiziellen Link erreichbar.
+
+## Update 13.10.2026 – Beleg- und Mobilitätscallbacks bleiben nach Fehlern stabil
+- Der Belegdialog übernimmt automatisch angelegte Produkte nach einem
+  langsamen Callback nur noch, wenn er noch montiert ist.
+- Das Speichern neuer Mobilitätseinstellungen bleibt auch bei einem defekten
+  lokalen Strecken-Cache möglich; Route und Filialansicht verwenden dann ihre
+  konfigurierten Fallbackdistanzen.
+
+## Update 13.10.2026 – Straßenstrecken-UI bleibt bei Fehlern und Adresswechseln stabil
+- Routen- und Filialansichten verwerfen jetzt verspätete OSRM-/Cache-Antworten,
+  wenn inzwischen eine neue Startadresse oder Aktualisierung gilt.
+- Routing- und Speicherfehler beenden den Ladezustand kontrolliert und zeigen
+  einen verständlichen Hinweis; vorhandene Fallback-Entfernungen bleiben
+  erhalten.
+- Die Python-Regression bleibt grün; Flutter-Analyse, Flutter-Tests und
+  Web-Build sind wegen des fehlenden lokalen SDKs weiterhin offen.
+
+## Update 13.10.2026 – Belegdialog bleibt nach langsamen Imports stabil
+- Der leere Ergebnis-/Fehlerpfad im Kassenbon-Import prüft nach allen
+  asynchronen Speichervorgängen erneut den Widget-Lebenszyklus.
+- Ein geschlossener Dialog wird dadurch nicht mehr durch einen verspäteten
+  `setState`-Aufruf beschädigt.
+
+## Update 13.10.2026 – Angebotsdatum bleibt nach Navigation stabil
+- Der Angebotseditor und der manuelle Prospektseiten-Dialog aktualisieren ihr
+  Datum nach einem DatePicker nur noch bei montiertem Editor.
+- Antworten eines geschlossenen Editors werden verworfen; die sichtbare
+  Angebots- und Quellenlogik bleibt unverändert.
+
+## Update 13.10.2026 – KaufDA-Next-Daten tolerieren fehlendes type-Attribut
+- Der optionale KaufDA-Parser akzeptiert ein exakt benanntes `__NEXT_DATA__`-
+  Script auch ohne optionales `type="application/json"`-Attribut.
+- Die neue Fixture-Regression hält die JSON- und Script-ID-Grenze fest; andere
+  Markupvarianten bleiben Fehler und lösen keinen weiteren Abrufpfad aus.
+
+## Update 13.10.2026 – Angebotscallbacks überschreiben keinen neuen Backup-Stand
+- Das Speichern und Löschen manueller Angebote prüft jetzt ebenfalls die
+  Shell-Datenrevision innerhalb der gemeinsamen Schreibwarteschlange.
+- Ein verzögerter Prospektseiten-Callback wird nach einem Backup verworfen und
+  kann den importierten Angebotsbestand nicht zurücksetzen.
+
+## Update 13.10.2026 – Offline-Strecken bleiben für mehrere Startadressen erhalten
+- `RoadDistanceStore` und `RoadRouteMatrixStore` speichern jetzt mehrere
+  normalisierte Startadressen statt nur eines globalen Einzelwerts.
+- Die alten v2-/v1-Schlüssel bleiben lesbar; Schreibvorgänge werden lokal
+  serialisiert und überschreiben keine bereits gespeicherte andere Adresse.
+- Neue Store-Regressionen prüfen Mehrfachadressen und Legacy-Fallbacks.
+
+## Update 13.10.2026 – Externe Prospekt- und Discovery-Quellen abschaltbar
+- Prospektfeed und Open-Food-Facts-Discovery unterstützen jetzt einen
+  expliziten Netzwerk-Schalter.
+- Bei deaktiviertem Netzwerk werden Cache/Asset genutzt oder ein klarer Fehler
+  geliefert; kein externer Request und keine erfundene Produkt-/Preisbasis.
+
+## Update 13.10.2026 – Non-Food-Angebote aus dem Prospektbestand entfernt
+- Refresh- und App-Grenze erkennen jetzt zusätzlich Tierfutter, Badesalz/
+  Medizin, Hygiene-/Haushaltsartikel und bepflanzte Gefäße. Fehlklassifizierte
+  Händlerkategorien lassen belegte Lebensmittel wie Proteinriegel oder Shakes
+  weiterhin durch.
+- Der versionierte aktuelle Feed wurde um 15 klar belegte Non-Food-Datensätze
+  bereinigt und enthält danach 677 aktuelle Angebote ohne abgelaufene oder
+  formal ungültige Datensätze.
+- Die Python-Regression deckt die neuen Gegenbeispiele ab; Flutter-Analyse,
+  Flutter-Tests und Web-Build bleiben wegen des fehlenden lokalen SDKs offen.
+
+## Update 13.10.2026 – Lokale Mutationen werden vor Backup-Überschreiben geschützt
+- AppShell verwendet jetzt eine gemeinsame `SequentialWriteQueue` für
+  Backup, Preis-/Open-Prices-Synchronisierung, Angebots-Historie, Katalog,
+  Käufe, Einstellungen und Listen. Dadurch können diese lokalen
+  Schreibvorgänge nicht mehr parallel dieselben Speicherbereiche
+  überschreiben.
+- Veraltete Preis-, Katalog- und Beobachtungsoperationen prüfen zusätzlich die
+  Shell-Datenrevision, bevor sie starten oder ihren State anwenden. Ein neuerer
+  Backup-Import kann dadurch keinen alten Callback zurück in die Oberfläche
+  projizieren.
+- Die vorhandene Queue-Regression bleibt grün; Flutter-Analyse, Flutter-Tests
+  und Web-Build sind auf diesem Host weiterhin wegen des fehlenden Flutter-SDKs
+  nicht ausführbar.
+
+## Update 13.10.2026 – Backup-Import schützt vor verspäteten Start-Reads
+- Ein Backup-Import invalidiert vor dem ersten Write die interne Shell-
+  Datenrevision. Alte Listen-, Prospekt-, Bon- und Preis-Callbacks dürfen den
+  importierten In-Memory-Stand danach nicht mehr überschreiben.
+- Angebots- und Listen-Backups werden hinter die bestehenden Schreibqueues
+  gestellt. `ReceiptObservationStore` serialisiert jetzt Import und
+  vollständige Ersetzung über dieselbe Queue.
+- Die neue Queue-Regression steht in `receipt_observation_store_test.dart`;
+  Flutter-Analyse und -Tests bleiben auf diesem Host wegen des fehlenden SDKs
+  offen.
+
+## Update 13.10.2026 – Listenpreise respektieren die Routen-Verwendbarkeitsgrenze
+- `shoppingQuotes` verwirft jetzt Marktpreise mit unsicherer Produktidentität
+  oder ungültiger expliziter Mengenbasis. Manuelle und Open-Prices-Preise
+  müssen zusätzlich die zentrale Aktualitätsprüfung bestehen.
+- Sicher identifizierte alte Bonpreise bleiben als historische Hinweise
+  sichtbar, erzeugen aber keine aktuelle Preisabdeckung. Eine Regression schützt
+  den unsicheren Bonfall.
+
+## Update 13.10.2026 – Prospekt-Übernahme bleibt nach Async-Callbacks stabil
+- Angebotskarten aktualisieren ihren lokalen „Hinzugefügt“-Status nur noch,
+  wenn sie nach dem Eltern-Callback noch montiert sind.
+- Der manuelle Seitenflow prüft vor der Übernahme in die Einkaufsliste erneut
+  den Screen-Lebenszyklus. Dadurch führen verzögerte Speichervorgänge nach
+  Navigation oder Schließen des Screens nicht mehr in einen entfernten State.
+
+## Update 13.10.2026 – Regionale KaufDA-Treffer bleiben an jeder Importgrenze gesperrt
+- `resolveOfferImport` weist `regionalOnly` jetzt vor der Produktauflösung
+  explizit zurück. Ein direkter Importaufruf kann dadurch keinen regionalen
+  Publisher-Treffer als exaktes Angebot speichern.
+- Die Rechercheansicht darf den Treffer weiter anzeigen; erst eine separat
+  bestätigte Branch-ID macht den Datensatz für Angebot, Preisbeobachtung und
+  Route nutzbar.
+- `offer_import_test.dart` schützt den Bypass gegen Regression. Die lokale
+  Flutter-Analyse und Flutter-Tests bleiben wegen des fehlenden SDK offen.
+
+## Update 13.10.2026 – Gespeicherte regionale KaufDA-Altangebote werden nicht routefähig
+- Die aktuelle Preiswahl prüft neben `regionalOnly`-Importdaten auch ältere
+  gespeicherte KaufDA-Angebote: ohne `locationId` werden sie in Route,
+  Preisfenster, Kandidaten und Vorschlägen ignoriert.
+- Der Beobachtungsadapter vergibt für diesen Altfall keine exakte
+  Identitäts-Confidence. Vier Regressionstests decken die Oberflächen ab.
+- Auch eingehende KaufDA-Records ohne Branch-ID bleiben im Import- und
+  Lernpfad regional, wenn ein altes oder manipuliertes Flag `regionalOnly: false`
+  meldet.
+
+## Update 13.10.2026 – Parallele Preis-Reads verlieren keine Beobachtungen mehr
+- AppShell vereinigt allgemeine, Bon- und Prospekt-Leseergebnisse jetzt nach
+  stabiler Beobachtungs-ID, bevor der sichtbare Preisverlauf ersetzt wird.
+- Damit bleibt die append-only Evidenz auch bei konkurrierendem App-Start und
+  Prospekt-Refresh erhalten. Der Merge ist in
+  `price_observation_merge_test.dart` isoliert getestet.
+
+## Update 12.10.2026 – Angebotsbasis bleibt in Preisbeobachtungen erhalten
+- Importierte Angebote übernehmen Packungsmenge, Einheit und den
+  normalisierten Grundpreis aus dem Prospektdatensatz in das gespeicherte
+  `Offer`.
+- `observationFromOffer` und `regularObservationFromOffer` führen diese Basis
+  in die append-only `PriceObservation`-Historie weiter. So können Angebots-
+  und Normalpreis dieselbe Mengenbasis verwenden.
+- Eine explizit abweichende Angebots-Packung wird vor Route, Preisfenster,
+  Suchkandidaten und Vorschlägen als Datenlücke verworfen; Legacy-Angebote
+  ohne Mengenangabe bleiben lesbar.
+- Alte Angebote ohne diese optionalen Felder bleiben lesbar; ihre fehlende
+  Vergleichbarkeit wird nicht durch eine angenommene Packungsgröße ersetzt.
+
+## Update 12.10.2026 – Bon-Dubletten berücksichtigen Mengenmetadaten
+- Die Bon-Importprüfung verwendet neben dem bestehenden layoutstabilen
+  Fingerprint jetzt einen Inhaltsfingerprint. Menge, Einheit, Einzelpreis,
+  Rabattverknüpfung und der berechnete Betrag werden dabei einbezogen.
+- Zahlungszeilen und physische OCR-/PDF-Zeilennummern bleiben ausgeschlossen;
+  ein erneuter Import nach harmloser Layoutverschiebung wird weiterhin erkannt.
+- Der alte Fingerprint bleibt für gespeicherte Beobachtungs- und Preis-IDs
+  unverändert. Die Regression steht in `receipt_ledger_test.dart`.
+
+## Update 12.10.2026 – Filialbezug in Such- und Preisoberflächen
+- Die konfigurierte Filiale wird jetzt in Preisfenstern, Suchkandidaten und
+  Vorschlägen sowohl für Marktpreise als auch für Angebote geprüft. Ein
+  günstiger Datensatz einer anderen Filiale derselben Kette kann dadurch die
+  lokale Planung nicht mehr über Händlername allein beeinflussen.
+- Die gemeinsame Prüfung bleibt bei fehlender Quellfiliale rückwärtskompatibel
+  und lehnt nur eindeutig abweichende bekannte Filialen ab.
+- Die Branch-Regressionen sind ergänzt; Flutter-Analyse und -Tests bleiben auf
+  diesem Host wegen des fehlenden SDK offen.
+
+## Update 12.10.2026 – Angebotsnachweis in allen aktuellen Preisoberflächen
+- Die Nachweisregel für externe Angebote gilt jetzt neben der Route auch für
+  Preisfenster, Suchvorschläge und Produktkandidaten. Unbelegte Händler- oder
+  Prospektdatensätze werden dort nicht mehr als aktuelle Preise gerankt.
+- Manuelle Angebote bleiben ohne externe Referenz zulässig; die
+  Angebotsübersicht behält den sichtbaren Nachweisstatus zur Prüfung.
+- Drei Regressionstests decken die Oberflächen ab. Die Flutter-Prüfung bleibt
+  auf diesem Host wegen des fehlenden SDK offen; die Python-Adapter-Suite lief
+  zuletzt mit 82 Tests erfolgreich.
+- Der Beobachtungsadapter verwendet dieselbe Regel auch für manuelle Angebote
+  unabhängig von Groß-/Kleinschreibung; dafür gibt es eine zusätzliche
+  Roundtrip-Regression.
+
+## Update 12.10.2026 – KaufDA-Herkunft bleibt in der Preisbeobachtung sichtbar
+- Die optionale `sourceAdapter`-Kennung wird beim Übergang von
+  Prospektangeboten und gespeicherten Angeboten in `PriceObservation` und
+  `MarketPrice` mitgeführt. Der technische Quellentyp und die belegte
+  Erfassungszeit bleiben getrennt erhalten.
+- Der Preisverlauf zeigt `KaufDA` als konkrete Herkunft, wenn diese Kennung
+  vorhanden ist. Alte JSON-Einträge ohne das Feld bleiben lesbar.
+- Die unabhängige Python-Adapter-Suite lief mit 82 Tests erfolgreich; der
+  lokale Flutter-Gegencheck bleibt wegen des fehlenden SDK offen.
+
+## Update 12.10.2026 – Unbelegte externe Angebote bleiben außerhalb der Route
+- Der direkte `RoutePriceResolver`-Pfad verlangt für externe Angebote jetzt
+  einen vertrauenswürdigen `proofRef`. Ein unvollständiger oder nachträglich
+  veränderter Händler-/Prospektdatensatz kann dadurch trotz gültigem Zeitraum
+  keinen unbelegten Routepreis erzeugen.
+- Manuell erfasste Angebote bleiben ohne externen Nachweis zulässig. Die
+  Regression liegt in `route_price_resolver_test.dart`; Flutter-Test und
+  -Analyse bleiben auf diesem Host wegen des fehlenden SDK offen.
+
+## Update 12.10.2026 – Preisabdeckung verwirft falsche Packungen
+- Die Katalogübersicht zählt Marktpreise jetzt nur noch, wenn ihre explizite
+  Mengenangabe zur konkreten Produktpackung passt. Ein 1-kg-Beleg erhöht damit
+  weder die Open-Prices-Abdeckung eines 500-g-Produkts noch die Filialabdeckung.
+- Solche Werte werden separat als Packungsdatenlücke gezählt und in der
+  Katalogansicht benannt, statt stillschweigend als fehlende oder kostenlose
+  Preise zu erscheinen.
+- Die Übersicht überträgt den Katalog in dieselbe zentrale
+  `marketPriceMatchesProduct`-Prüfung wie Route, Einkaufs-Preisfenster und
+  Beobachtungsprojektion. Ohne übergebenen Katalog bleibt die ältere
+  Store-Coverage-Hilfsfunktion für Diagnoseaufrufe kompatibel.
+- Die Regression in `market_price_freshness_test.dart` prüft passende und
+  abweichende Mengen gemeinsam.
+
+## Update 12.10.2026 – Open-Food-Facts-Mengen bleiben vergleichbar
+- Strukturierte Open-Food-Facts-Mengen wie `20 cl` werden jetzt ebenso wie
+  Textmengen in die interne Vergleichseinheit `200 ml` überführt. Unbekannte
+  Einheiten werden verworfen, statt eine nicht vergleichbare Packung zu
+  behaupten.
+- Die gemeinsame Mengenbasis erkennt Zentiliter auch in Produkt-, Prospekt-
+  und Preisbelegen; `20 cl` und `200 ml` bleiben damit dieselbe Volumenbasis.
+- `open_food_facts_product_source_test.dart` schützt die Normalisierung und
+  die daraus gespeicherte Produktpackung.
+
+## Update 12.10.2026 – Veröffentlichter Prospektpfad praktisch geprüft
+- Im veröffentlichten Web-Build wurden die Lidl-Coverseite, der Viewer mit
+  fünf Prospektseiten und das Weiter-Scrollen in die lazy geladenen
+  Angebotskarten geprüft. Der Seitenpfad blieb nach mehreren Scrollschritten
+  bedienbar.
+- Ein Artikel von einer Prospektseite wurde zur Einkaufsliste hinzugefügt;
+  der Button wechselte auf „Hinzugefügt“ und die Liste zeigte den Eintrag.
+  Der lokale Browser-Testzustand wurde danach wieder auf den Ausgangsbestand
+  reduziert. Dies ist ein Web-Smoketest, kein nativer iOS-/Android-Nachweis.
+
+## Update 12.10.2026 – Gespeicherte Angebotsbilder bleiben render-sicher
+- Angebots- und Katalogkarten validieren Bildreferenzen jetzt auch beim
+  Rendern. Nur absolute HTTP(S)-URLs mit Host werden an `Image.network`
+  weitergegeben.
+- Alte lokale Werte wie `javascript:`, `data:` oder relative Pfade werden als
+  fehlendes Bild behandelt. Preis-, Quellen- und Produktdaten bleiben dabei
+  unverändert; der Scrollpfad führt keinen ungültigen Netzwerkwidget aus.
+- Die reine URL-Regel ist in `safe_external_url_test.dart` mit gültigen,
+  ungültigen und unvollständigen Beispielen abgedeckt.
+- `offer_image_render_safety_test.dart` prüft zusätzlich, dass der
+  Angebotsnachweis für eine unsichere gespeicherte Bildreferenz kein
+  `Image`-Widget aufbaut.
+- Beim Speichern eines Angebots übernimmt die Preisbeobachtung jetzt den
+  belegten `capturedAt`-Zeitpunkt; nur manuelle/Legacy-Angebote ohne diesen
+  Wert verwenden den aktuellen Speichermoment. Die Adapterregression prüft den
+  KaufDA-Fall.
+
+## Update 12.10.2026 – Preisbelege bleiben packungsgenau
+- Routenresolver, Einkaufslisten-Preisfenster, Variantenempfehlungen und die
+  zentrale Beobachtungsprojektion prüfen jetzt explizite Preis-Mengen gegen die
+  konkrete Produktpackung.
+- Eindeutige Einheiten aus dem Produktfeld (`500 g`, `4 x 125 g`, `3er-Schale`)
+  werden als Vergleichsbasis normalisiert. Ein 1-kg-Beleg kann dadurch nicht
+  mehr als 500-g-Preis erscheinen; mehrdeutige Bereiche bleiben unbekannt.
+- Legacy-Preise ohne Mengenangabe bleiben kompatibel. Fachregressionen decken
+  passende, abweichende und fehlende Mengen sowie Route und Preisfenster ab.
+
+## Update 12.10.2026 – KaufDA-Regionstreffer bleiben suchbar, aber nicht routefähig
+- Gespeicherte, aus dem Feed aufgelöste Angebote behalten jetzt zusätzlich die
+  optionale Adapterkennung (`sourceAdapter`). KaufDA bleibt damit auch nach
+  Neustart und Backup/Restore als konkrete Herkunft sichtbar. Der per Quelle
+  gelieferte `capturedAt`-Zeitpunkt bleibt ebenfalls erhalten; die technische
+  Preisquelle (`retailerWebsite`) bleibt unverändert.
+- Die zentrale Importauflösung lehnt abweichende oder mehrdeutige KaufDA-
+  Packungsgrößen ab. Beim Bearbeiten eines bestehenden Angebots bleiben
+  Quellen- und Filialnachweis erhalten, solange Filiale und Produktidentität
+  nicht gewechselt werden.
+- Der aktivierte KaufDA-Adapter hält aktuelle Lebensmittel-Treffer ohne
+  separat bestätigte Filiale jetzt als `regionalOnly` im Prospektfeed.
+- Die Prospekt- und Suchkarten können diese Artikel mit Herkunft anzeigen;
+  der bestehende Add-to-List-, Preislern- und Routenpfad lehnt sie weiterhin
+  konservativ ab, bis eine exakte Branch-ID vorliegt.
+- Bei identischen Händler-/Artikel-/Preis-/Zeiträumen bleibt der offizielle
+  Händlernachweis gegenüber KaufDA primär; fehlende Bild- oder Kategorie-
+  Metadaten dürfen aus KaufDA ergänzt werden.
+- Mehrere Publisher aus einer KaufDA-Suche behalten ihre Prospektseiten und
+  Laufzeiten jetzt getrennt; eine bestätigte Branch-Zuordnung aktualisiert
+  den Prospektstatus nur für den passenden Händler.
+- Karten und Quellenhinweise benennen regionale KaufDA-Treffer auch in der
+  Übersicht ausdrücklich als nicht filialbestätigt.
+- Der KaufDA-Parser toleriert zusätzlich eine begrenzte Umbenennung der
+  verschachtelten Ergebniscontainer, akzeptiert dabei aber nur Listen mit
+  erkennbaren Angebotsfeldern.
+- `regionalOnly`-Angebote übernehmen keine Filial-ID, keinen Ort und keine
+  Adresse aus einer autoritativen Händler-Quellenkarte; dadurch bleibt ihre
+  unbestätigte Herkunft auch in der UI sichtbar.
+- Ältere KaufDA-Feeds ohne das neue Regionalflag werden bei fehlender eigener
+  Branch-ID ebenfalls konservativ als regional behandelt.
+
+## Update 12.10.2026 – Marktpreise bleiben auch bei mehreren Filialen getrennt
+- Der lokale Marktpreisspeicher ersetzt Beobachtungen jetzt nach Händler,
+  Produkt und kanonischer Filial-ID. Ein Preis aus einer zweiten Filiale kann
+  damit keinen exakten Branchennachweis überschreiben.
+- Standortlose Legacy-Preise bleiben als eigener Fallback-Slot erhalten;
+  `remove` und `removeProduct` entfernen weiterhin bewusst alle Filialen des
+  ausgewählten Produkts.
+
+## Update 12.10.2026 – Open-Prices-EAN bleibt im Parser explizit
+- Der normalisierte EAN wird beim Live- und Cache-Parsing explizit an den
+  internen Antwortparser übergeben.
+- Dadurch bleibt der Antwortvergleich auf genau das angefragte Produkt
+  begrenzt und der Parser verwendet keine außerhalb des Gültigkeitsbereichs
+  liegende Variable.
+
+## Update 12.10.2026 – Prospekt-Refresh schließt eigene HTTP-Ressourcen
+- Automatisch erzeugte Prospekt-Importer schließen ihren HTTP-Client nach
+  erfolgreichem, fehlgeschlagenem oder abgebrochenem Refresh.
+- Injizierte Clients für Tests oder kontrollierte Aufrufer bleiben deren
+  Besitz; dadurch ändern sich Cache-, Fehler- und Testlebenszyklen nicht.
+
+## Update 12.10.2026 – Filial-IDs werden quellenübergreifend stabil verglichen
+- Preisbelege und Angebote vergleichen Filialkennungen jetzt whitespace- und
+  groß-/kleinschreibungsunabhängig, ohne Bindestrich-/Unterstrich-Aliase zu
+  erfinden.
+- Die Normalisierung gilt in Routenresolver, Planungsprojektion,
+  Einkaufspreis-Matrix und Open-Prices-Marktzuordnung gemeinsam.
+- Eine unbekannte oder abweichende Kennung bleibt weiterhin eine andere
+  Filiale und kann nicht als exakter Nachweis durchrutschen.
+
+## Update 12.10.2026 – Preis- und Angebotsnachweise bleiben filialgenau
+- Der Routenresolver akzeptiert marktbezogene Preisbelege mit
+  `sourceLocationId` nur für die ausgewählte `Store.branchId`; ein günstigerer
+  Beleg einer anderen Filiale kann nicht mehr in die Route gelangen.
+- Branchenspezifische Angebote werden nach derselben Regel gefiltert.
+  Standortlose Legacy-Belege bleiben als ausdrücklicher Fallback nutzbar.
+- Die Planungsprojektion bewahrt mehrere Filialen je Händler/Produkt bis zur
+  Routenauflösung, statt sie vorher zu einem möglicherweise falschen Preis zu
+  verschmelzen.
+
+## Update 12.10.2026 – Prospektsuche bleibt beim Scrollen lazy
+- Suchtreffer werden jetzt als Sliver-Liste aufgebaut. Bei großen Trefferlisten
+  werden nur die sichtbaren Artikelkarten und Bilder gebaut; die bisherige
+  komplette Spaltenstruktur entfällt.
+- Bildreferenzen aus dem Feed und aus manuell übergebenen Karten werden vor
+  `Image.network` auf HTTP(S) mit Host begrenzt. Ungültige Händler-Markups
+  bleiben als fehlendes Bild sichtbar und können den Scrollpfad nicht crashen.
+- Der Seitenviewer begrenzt zusätzlich die dekodierte Bildgröße und baut Seiten
+  weiterhin als lazy Sliver auf; große Original-Cover werden nicht vollständig
+  in den Scrollspeicher geladen.
+
+## Update 12.10.2026 – KaufDA-Metadaten bleiben bis zur Preisprüfung erhalten
+- Der App-Feed übernimmt optionale `sourceAdapter`-, `regionalOnly`-,
+  `publisherId`-, `brochureId`- und `brochurePage`-Felder zusätzlich zu
+  Packungsgröße, Grundpreis und Erfassungszeitpunkt.
+- Regional-only-Treffer bleiben als Herkunftsinformation erkennbar, werden
+  aber weder in die Einkaufsliste übertragen noch als aktuelle Routepreise
+  oder Preisbeobachtungen gelernt.
+- Packungsgrößen aus KaufDA werden für exakte Produktidentität und
+  Grundpreisvergleich verwendet. Mehrfachpackungen behalten ihre
+  Gesamtmenge; unklare Varianten werden weiterhin nicht geraten.
+
+## Update 12.10.2026 – kaufDA-Cache behält den echten Erfassungszeitpunkt
+- KaufDA-Treffer tragen bei der optionalen Refresh-Integration jetzt ihren
+  tatsächlichen Abruf- oder Cache-Zeitpunkt am einzelnen Datensatz.
+- Der Preislern-Pfad verwendet diesen Wert vor dem globalen Feedzeitpunkt.
+  Dadurch wird ein zulässiger, älterer kaufDA-Cache nicht durch einen späteren
+  Händler-Refresh künstlich als frischer Preisbeleg dargestellt.
+- Ungültige optionale Zeitstempel werden am App-Eingang verworfen; ältere
+  Feeds ohne dieses Feld bleiben kompatibel und nutzen weiterhin den
+  Feedzeitpunkt.
+
+## Update 12.10.2026 – Kaufland-Prospekt zeigt die öffentliche Coverseite
+- Der strukturierte Kaufland-Refresh liest die aktuelle, filialbezogene
+  Prospektverknüpfung für DE5103 und prüft deren Laufzeit.
+- Die öffentlich sichtbare Seite 1 des aktuellen Viewers wird als Thumbnail
+  und `pageSamples[0]` übernommen; Viewer-/Coverfehler blockieren den
+  Angebotsimport nicht.
+- Der versionierte Offline-Stand enthält den Covernachweis für Würzburg-
+  Grombühl vom 12.10.2026 bis 17.10.2026.
+
+## Update 12.10.2026 – ALDI-Süd-Prospekt zeigt die öffentliche Coverseite
+- Der ALDI-Refresh liest zusätzlich den aktuellen öffentlichen Prospektlink
+  und die zugehörige CMS-Coverreferenz aus der offiziellen Startseite.
+- Kalenderwoche, Gültigkeitszeitraum und Bild werden geprüft; die Coverseite
+  wird als `thumbnailUrl` und `pageSamples[0]` für die konfigurierte Filiale
+  B384 abgelegt. Fällt der Coverabruf aus, bleiben die strukturierten
+  ALDI-Angebote nutzbar.
+- Der versionierte Offline-Stand enthält die verifizierte Titelseite für
+  12.10.2026 bis 17.10.2026.
+
+## Update 12.10.2026 – PENNY-Prospekt zeigt die öffentliche Coverseite
+- Der PENNY-Adapter liest aus dem aktuellen Handout-Bereich der offiziellen
+  Angebotsseite den ausgewiesenen Zeitraum und die große CMS-Coverreferenz.
+- Die Coverseite wird als Seite 1 für die konfigurierte Filiale 230061
+  übernommen; fehlende Handout-Markupdaten blockieren den strukturierten
+  Kategorieimport nicht.
+- Der versionierte Offline-Stand enthält die verifizierte Titelseite für
+  12.10.2026 bis 17.10.2026.
+
+## Update 12.10.2026 – EDEKA-Prospekt bleibt filialbezogen sichtbar
+- Der EDEKA-Refresh verknüpft den aktuellen Prospektlink des Marktes 023738
+  mit der öffentlichen Seite 1 des Blätterkatalogs.
+- Zeitraum, Marktpfad und `bk_1.jpg` werden gemeinsam geprüft; der
+  strukturierte EDEKA-Preisimport bleibt davon getrennt.
+- Der versionierte Offline-Stand enthält die verifizierte Titelseite für
+  Zellingen vom 12.10.2026 bis 17.10.2026.
+
+## Update 12.10.2026 – Non-Food-Angebote bleiben aus dem Prospektbestand
+- Der Refresh filtert Händlerkampagnen wie Haushaltswaren, Kleidung,
+  Pflanzen, Körperpflege und Spielzeug vor dem versionierten Feed heraus.
+- Der Dart-Parser wiederholt diese konservative Prüfung beim App-Eingang, damit
+  auch ein älterer oder zwischengespeicherter öffentlicher Feed keine
+  Non-Food-Artikel in Angebote, Preisbeobachtungen oder Routen bringt.
+- Lebensmittelbegriffe wie Pflanzenöl und Halloween-Kürbis bleiben über
+  Wortgrenzen erhalten; die Regression prüft positive und negative Beispiele.
+- Die Quellenkarte zählt nach diesem Filter die tatsächlich nutzbaren
+  Lebensmittelangebote; ein abweichender Rohwert bleibt als
+  `rawRecordCount` nachvollziehbar.
+- Der mitgelieferte Stand umfasst nach dieser Bereinigung 677 aktuelle
+  Datensätze aus den sechs konfigurierten Märkten; der Feed-Zeitpunkt bleibt
+  der belegte Erzeugungszeitpunkt.
+
+## Update 12.10.2026 – Prospektkarten scrollen ohne unnötige Web-Plattform-Views
+- Artikelkarten verwenden im Web strikt das Canvas-Rendering mit begrenzter
+  Decode-Größe. Dadurch erzeugt eine große Trefferliste nicht für jedes
+  Produktbild ein eigenes HTML-Plattform-View.
+- Cover- und Angebotskacheln sind zusätzlich als getrennte Repaint-Bereiche
+  isoliert, damit ein Bild- oder Favoritenupdate nicht die gesamte Liste neu
+  zeichnet.
+- Die Übersicht und der einzelne Seitenviewer dürfen den HTML-Fallback für
+  wenige Cover-/Seitenbilder behalten, damit externe Händler-CDNs ohne
+  Canvas-CORS weiterhin sichtbar bleiben.
+
+## Update 12.10.2026 – Prospektfeed toleriert Metadatenformatwechsel
+- Der App-Parser akzeptiert `recordCount` und Seitenzahlen auch als
+  numerische JSON-Strings. Ein einzelnes Händler-Markup-Update verwirft damit
+  nicht mehr den gesamten Feed.
+- Preiswerte bleiben strikt numerisch; ein als Text gelieferter Preis wird
+  weiterhin verworfen und kann keine Route oder Preisbeobachtung beeinflussen.
+
+## Update 12.10.2026 – Barcodeeingaben werden konservativ normalisiert
+- Scanner- und manuelle EAN-Eingaben entfernen nur Leerzeichen/Trennzeichen;
+  nichtnumerische Werte werden verworfen.
+- Zwölfstellige UPC-A-Werte werden für den exakten Vergleich als GTIN-13 mit
+  führender Null dargestellt. Die Auflösung bleibt vollständig gleichheits-
+  basiert und übernimmt keine Teilstring- oder Familienzuordnung.
+- Nicht passende Kamera-Frames werden still ignoriert; nur eine manuelle
+  ungültige Eingabe zeigt einen Fehler. Bestehende Katalogcodes bleiben ohne
+  nachträgliche Prüfziffermigration kompatibel.
+- Open Food Facts und Open Prices verwenden dieselbe Normalisierung vor
+  Request, Cache und Antwortvergleich; dadurch bleibt ein Barcode über die
+  gesamte Datenpipeline konsistent.
+- Der lokale Produktdaten-Cache, die Katalog-Duplikatprüfung und die
+  Kandidatenauflösung verwenden ebenfalls die kanonische Form. Ältere
+  Cache-Einträge mit Rohschreibweise bleiben über den bisherigen Schlüssel
+  lesbar und werden beim Laden kanonisiert.
+- Der Produkteditor speichert dieselbe kanonische Form und blockiert
+  nichtnumerische Barcodeangaben bereits vor dem Speichern.
+
+## Update 12.10.2026 – Prospekt-Packungen bleiben vergleichbar
+- Angebotslabels mit echter Mehrfachpackung wie `3 x 50 g` werden für die
+  Preisbeobachtung auf die Gesamtmenge von 150 g normalisiert; dadurch entsteht
+  ein belastbarer Grundpreis statt eines Stückpreis-Missverständnisses.
+- Zählpackungen wie `3er-Schale` werden als Stückmenge geführt.
+- Variantenbereiche und Alternativgrößen wie `100/95/90 g` oder `160 g – 175 g`
+  bleiben bewusst ohne angenommene Packungsgröße und Grundpreis. Eine einzelne
+  Variante wird nicht aus einem mehrdeutigen Händlerlabel geraten.
+
+## Update 12.10.2026 – Feedzeitpunkt bleibt bei vollständigem Abrufausfall unverändert
+- Der Prospekt-Refresh setzt `generatedAt` nur noch nach einer tatsächlich
+  erfolgreichen Quellaktualisierung auf die aktuelle Zeit. Wenn alle Quellen
+  ausfallen und nur noch gültige vorherige Datensätze übernommen werden, bleibt
+  deren ursprünglicher Zeitpunkt erhalten; die App kann einen Fallback damit
+  nicht versehentlich als frisch ausgeben.
+- `--help` und unbekannte Quellargumente ändern den Feed nicht mehr. Die
+  Refresh-Regression prüft beide Zeitstempelpfade.
+
+## Update 12.10.2026 – Öffentlicher Prospektfeed funktioniert auch kalt offline
+- Der zuletzt versionierte öffentliche Prospektfeed wird jetzt als App-Asset
+  mitgebaut und verwendet, wenn Live-Abruf und lokaler Cache gleichzeitig
+  nicht verfügbar sind.
+- Der Stand bleibt im UI als nicht-live/Cache-Fallback gekennzeichnet; die
+  bestehende Gültigkeitsprüfung filtert abgelaufene Angebote weiterhin vor
+  Angeboten, Beobachtungen und Route.
+- Der Fallback enthält keine privaten Belege oder Zugangsdaten und kann beim
+  nächsten normalen Live-Refresh ersetzt werden.
+
+## Update 12.10.2026 – Netto-Wochenprospekt liefert Coverseite
+- Der offizielle Netto-Filialadapter erkennt den aktuellen
+  `wochenprospekt`-Link mit `Filial-Angebote`-Cover für die konfigurierte
+  Filiale Thüngersheim.
+- Die Coverseite wird als `pageSamples[0]` mit URL, Gültigkeitszeitraum,
+  Filialkontext und `thumbnailUrl` an den bestehenden Prospekt-Feed übergeben;
+  der Jina-Reader-Fallback unterstützt dieselbe Struktur als Markdown.
+- Die Übersicht verwendet vorhandene Vorschaubilder für die Karten; der
+  Viewer zeigt bei einem Prospekt ohne strukturierte `pageSamples` trotzdem
+  dessen belegtes Cover als Seite 1.
+- Der versionierte Offline-Stand enthält jetzt zusätzlich das an der
+  öffentlichen Filialseite verifizierte Netto-Cover für die Filiale 4371;
+  der nächste autorisierte Refresh ersetzt diese datierte Referenz durch den
+  dann geprüften Quellstand.
+
+## Update 12.10.2026 – KaufDA-Prospektseiten aus Live-JSON erhalten
+- Der optionale KaufDA-Adapter verarbeitet neben älteren numerischen
+  Seitenwerten jetzt auch die aktuelle öffentliche Form
+  `parentContent.page.number`.
+- Prospektseiten werden am Angebot und zusätzlich in `pageSamples` der
+  Prospektmetadaten gespeichert; die Publisher-ID bleibt als Herkunftsfeld
+  erhalten.
+- Ausgewiesene reguläre Preise werden übernommen, UVP-Werte bleiben bewusst
+  außerhalb der Normalpreisprojektion. REWE wird als optionaler Publisher
+  erkannt, bleibt ohne exakte Filialkonfiguration jedoch nur regional.
+- Eine Fixture-Regression mit dieser Live-Struktur ergänzt die bestehende
+  Prüfung auf aktuelle Lebensmittel, Ablauf, Grundpreis, Bild und Herkunft.
+
 ## Update 12.10.2026 – Prospektgültigkeit konservativ validieren
 - [x] Falsch typisierte oder syntaktisch ungültige Angebotsfelder werden
   verworfen, statt als fehlende Angaben weiterzulaufen.

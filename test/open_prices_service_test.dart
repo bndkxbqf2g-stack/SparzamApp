@@ -126,6 +126,50 @@ void main() {
     service.close();
   });
 
+  test('normalisiert UPC-A für Open Prices und akzeptiert den GTIN-Code', () async {
+    late Uri requested;
+    final client = MockClient((request) async {
+      requested = request.url;
+      return http.Response(
+        jsonEncode({
+          'items': [
+            {
+              'id': 21,
+              'product_code': '0123456789012',
+              'price': 1.49,
+              'currency': 'EUR',
+              'price_is_discounted': false,
+              'price_per': 'UNIT',
+              'date': '2026-09-20',
+              'location': {
+                'osm_brand': 'Lidl',
+                'osm_name': 'Lidl',
+                'osm_address_city': 'Zellingen',
+              },
+            },
+          ],
+        }),
+        200,
+      );
+    });
+    final service = OpenPricesService(client: client);
+    final result = await service.fetchRecentPrices(
+      product: const Product(
+        id: 'upc',
+        name: 'UPC-Produkt',
+        unit: '1 Stück',
+        group: 'custom',
+        ean: '123456789012',
+      ),
+      stores: stores,
+      now: DateTime(2026, 9, 22),
+    );
+    service.close();
+
+    expect(requested.queryParameters['product_code'], '0123456789012');
+    expect(result.single.price, 1.49);
+  });
+
   test('unbekannte Märkte werden nicht importiert', () async {
     final client = MockClient(
       (_) async => http.Response(

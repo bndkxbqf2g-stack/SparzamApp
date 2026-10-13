@@ -37,6 +37,7 @@ class RouteAlternativeCard extends StatelessWidget {
           'Fahrt ${plan.travel.toStringAsFixed(2)} € · '
           'Wegezeit $travelLabel · '
           'Preisabdeckung ${(plan.priceCoverage * 100).round()} % · '
+          '${plan.additionalStoreCost > 0 ? 'Marktstopps ${plan.additionalStoreCost.toStringAsFixed(2)} € · ' : ''}'
           '${plan.timeCost > 0 ? 'Zeitwert ${plan.timeCost.toStringAsFixed(2)} € · ' : ''}'
           'Planungswert ${plan.planningScore.toStringAsFixed(2)} €',
         ),

@@ -33,7 +33,11 @@ Product productForProspectOffer(
   OfferImportRecord record,
   Iterable<Product> catalogProducts,
 ) {
-  return exactProspectProduct(record.productLabel, catalogProducts) ??
+  return exactProspectProduct(
+        record.productLabel,
+        catalogProducts,
+        packageSize: record.packageSize,
+      ) ??
       _offerBackedProduct(record);
 }
 
@@ -55,6 +59,8 @@ bool _hasVerifiedOfferEvidence(OfferImportRecord record) {
   final original = record.originalPrice;
   return record.productLabel.trim().isNotEmpty &&
       record.storeName.trim().isNotEmpty &&
+      !record.regionalOnly &&
+      hasExactOfferRecordBranch(record) &&
       record.offerPrice.isFinite &&
       record.offerPrice > 0 &&
       (original == null ||
@@ -85,6 +91,8 @@ List<Offer> offersFromProspectProducts(
 bool _isUsableRecord(OfferImportRecord record, {DateTime? now}) {
   if (record.productLabel.trim().isEmpty ||
       record.storeName.trim().isEmpty ||
+      record.regionalOnly ||
+      !hasExactOfferRecordBranch(record) ||
       !record.offerPrice.isFinite ||
       record.offerPrice <= 0 ||
       (record.originalPrice != null &&
@@ -105,7 +113,7 @@ bool _isUsableRecord(OfferImportRecord record, {DateTime? now}) {
 
 Product _offerBackedProduct(OfferImportRecord record) {
   final label = record.productLabel.trim();
-  final packaging = _prospectPackaging(label);
+  final packaging = _prospectPackaging(label, record.packageSize);
   final hasEachUnit = RegExp(
     r'\b(?:stück|stk\.?|je stück)\b',
     caseSensitive: false,
@@ -121,14 +129,37 @@ Product _offerBackedProduct(OfferImportRecord record) {
   );
 }
 
+ProspectPackage? _offerPackage(OfferImportRecord record, Product product) {
+  final fromRecord = prospectPackage(record.packageSize ?? record.productLabel);
+  if (fromRecord != null) return fromRecord;
+  if (product.packageAmount != null && product.packageUnit != null) {
+    return (amount: product.packageAmount!, unit: product.packageUnit!);
+  }
+  return prospectPackage(product.unit);
+}
+
 ({double amount, String display, String unit})? _prospectPackaging(
-  String label,
-) {
+  String label, [
+  String? packageSize,
+]) {
+  final packageText = packageSize?.trim().isNotEmpty == true
+      ? packageSize!.trim()
+      : label;
+  final text = packageText.toLowerCase();
+  if (RegExp(
+    r'\d+(?:[,.]\d+)?\s*(?:kg|g|ml|cl|l)\s*(?:/|-|–)\s*'
+    r'\d+(?:[,.]\d+)?\s*(?:kg|g|ml|cl|l)?\b',
+  ).hasMatch(text) || RegExp(
+    r'\d+(?:[,.]\d+)?\s*/\s*\d+(?:[,.]\d+)?\s*'
+    r'(?:kg|g|ml|cl)\b',
+  ).hasMatch(text)) {
+    return null;
+  }
   final multi = RegExp(
     r'\b(\d+)\s*[x×]\s*(\d+(?:[,.]\d+)?)\s*-?\s*'
-    r'(kg|g|ml|l|stk\.?|stück|st)\b',
+    r'(kg|g|ml|cl|l|stk\.?|stück|st)\b',
     caseSensitive: false,
-  ).firstMatch(label);
+  ).firstMatch(packageText);
   if (multi != null) {
     final count = int.tryParse(multi.group(1)!);
     final amountEach = double.tryParse(multi.group(2)!.replaceAll(',', '.'));
@@ -142,10 +173,25 @@ Product _offerBackedProduct(OfferImportRecord record) {
     }
   }
 
-  final single = RegExp(
-    r'\b(\d+(?:[,.]\d+)?)\s*-?\s*(kg|g|ml|l|stk\.?|stück|st)\b',
+  final countPack = RegExp(
+    r'\b(\d+)\s*er\s*[- ]?(?:schale|pack(?:ung)?|becher|dose|flasche)\b',
     caseSensitive: false,
-  ).firstMatch(label);
+  ).firstMatch(packageText);
+  if (countPack != null) {
+    final count = int.tryParse(countPack.group(1)!);
+    if (count != null && count > 0) {
+      return (
+        amount: count.toDouble(),
+        display: '$count Stück',
+        unit: 'Stück',
+      );
+    }
+  }
+
+  final single = RegExp(
+    r'\b(\d+(?:[,.]\d+)?)\s*-?\s*(kg|g|ml|cl|l|stk\.?|stück|st)\b',
+    caseSensitive: false,
+  ).firstMatch(packageText);
   if (single == null) return null;
   final amount = double.tryParse(single.group(1)!.replaceAll(',', '.'));
   final unit = _normalizedProspectUnit(single.group(2)!);
@@ -163,6 +209,7 @@ String? _normalizedProspectUnit(String raw) {
     'kg' => 'kg',
     'g' => 'g',
     'ml' => 'ml',
+    'cl' => 'cl',
     'l' => 'l',
     'stk' || 'st' || 'stück' => 'Stück',
     _ => null,
@@ -180,6 +227,14 @@ Offer? _offerForProduct(
 }) {
   if (!_isUsableRecord(record, now: now)) return null;
   final originalPrice = record.originalPrice ?? record.offerPrice;
+  final package = _offerPackage(record, product);
+  final packagePrice = package == null
+      ? null
+      : normalizedUnitPrice(
+          price: record.offerPrice,
+          amount: package.amount,
+          unit: package.unit,
+        );
   return Offer(
     id: 'import|${record.source}|${record.sourceId}|${product.id}',
     productId: product.id,
@@ -190,8 +245,13 @@ Offer? _offerForProduct(
     validFrom: record.validFrom,
     validUntil: record.validUntil,
     source: record.source,
+    sourceAdapter: record.sourceAdapter,
+    capturedAt: record.capturedAt,
     proofRef: record.proofRef,
     imageUrl: record.imageUrl,
+    packageAmount: package?.amount,
+    packageUnit: package?.unit,
+    unitPrice: packagePrice,
     locationId: record.branchId,
     region: record.location,
     address: record.address,

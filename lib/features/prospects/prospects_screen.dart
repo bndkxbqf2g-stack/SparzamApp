@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -125,12 +124,20 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
       storeName: activeStore,
     );
     final currentCounts = <String, int>{};
+    final currentRegionalCounts = <String, int>{};
     for (final record in currentRecords) {
       currentCounts.update(
         record.storeName,
         (count) => count + 1,
         ifAbsent: () => 1,
       );
+      if (record.regionalOnly) {
+        currentRegionalCounts.update(
+          record.storeName,
+          (count) => count + 1,
+          ifAbsent: () => 1,
+        );
+      }
     }
     final byStore = <String, List<ProspectIssue>>{};
     for (final issue in widget.prospects) {
@@ -141,6 +148,8 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
         _visibleIssue(
           entries,
           currentCounts[entries.first.storeName] ?? 0,
+          currentRegionalRecordCount:
+              currentRegionalCounts[entries.first.storeName] ?? 0,
           now: widget.now,
         ),
     ];
@@ -228,14 +237,6 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                     refreshing: widget.prospectsRefreshing,
                   ),
                   const SizedBox(height: 18),
-                  if (hasSelection)
-                    _ProspectSearchResults(
-                      records: matchingRecords,
-                      prospects: visibleProspects,
-                      catalogProducts: widget.catalogProducts,
-                      onAddProduct: widget.onAddProduct,
-                      query: query,
-                    ),
                   if (!hasSelection && visibleProspects.isEmpty)
                     const Card(
                       color: _bringSurface,
@@ -307,6 +308,17 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                 ]),
               ),
             ),
+            if (hasSelection)
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                sliver: _ProspectSearchResultsSliver(
+                  records: matchingRecords,
+                  prospects: visibleProspects,
+                  catalogProducts: widget.catalogProducts,
+                  onAddProduct: widget.onAddProduct,
+                  query: query,
+                ),
+              ),
             if (!hasSelection && visibleProspects.isNotEmpty)
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -335,6 +347,8 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                           );
                         },
                         childCount: visibleProspects.length,
+                        addAutomaticKeepAlives: false,
+                        addRepaintBoundaries: true,
                       ),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: columns,
@@ -385,8 +399,8 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
   }
 }
 
-class _ProspectSearchResults extends StatelessWidget {
-  const _ProspectSearchResults({
+class _ProspectSearchResultsSliver extends StatelessWidget {
+  const _ProspectSearchResultsSliver({
     required this.records,
     required this.prospects,
     required this.catalogProducts,
@@ -404,14 +418,16 @@ class _ProspectSearchResults extends StatelessWidget {
   Widget build(BuildContext context) {
     if (records.isEmpty) {
       final trimmedQuery = query.trim();
-      return Card(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Text(
-            trimmedQuery.isEmpty
-                ? 'Keine aktuellen Prospektartikel für diese Auswahl gefunden.'
-                : 'Keine aktuellen Prospektartikel für „$trimmedQuery“ gefunden.',
-            textAlign: TextAlign.center,
+      return SliverToBoxAdapter(
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Text(
+              trimmedQuery.isEmpty
+                  ? 'Keine aktuellen Prospektartikel für diese Auswahl gefunden.'
+                  : 'Keine aktuellen Prospektartikel für „$trimmedQuery“ gefunden.',
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
       );
@@ -426,67 +442,117 @@ class _ProspectSearchResults extends StatelessWidget {
       issueByStore.putIfAbsent(issue.storeName, () => issue);
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          '${records.length} passende Prospektartikel',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Artikel werden nur mit ihrem vorhandenen Händlernachweis und '
-          'aktuellen Gültigkeitszeitraum angeboten.',
-        ),
-        const SizedBox(height: 12),
-        for (final entry in byStore.entries) ...[
-          Padding(
-            padding: const EdgeInsets.only(top: 8, bottom: 6),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  entry.key,
-                  style: const TextStyle(fontWeight: FontWeight.w800),
+    final rows = <_ProspectSearchRow>[
+      _ProspectSearchRow.heading('${records.length} passende Prospektartikel'),
+      const _ProspectSearchRow.description(
+        'Artikel werden nur mit ihrem vorhandenen Händlernachweis und '
+        'aktuellen Gültigkeitszeitraum angeboten.',
+      ),
+    ];
+    for (final entry in byStore.entries) {
+      final location = entry.value.every(
+                (record) => record.location?.trim().isEmpty ?? true,
+              )
+              ? issueByStore[entry.key]?.location?.trim()
+              : null;
+      rows.add(_ProspectSearchRow.store(entry.key, location: location));
+      rows.addAll(
+        entry.value.map((record) => _ProspectSearchRow.offer(record)),
+      );
+    }
+
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          final row = rows[index];
+          return switch (row.kind) {
+            _ProspectSearchRowKind.heading => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Text(
+                  row.text!,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
-                if (entry.value.every(
-                      (record) => record.location?.trim().isEmpty ?? true,
-                    ) &&
-                    issueByStore[entry.key]?.location?.trim().isNotEmpty ==
-                        true)
-                  Text(
-                    issueByStore[entry.key]!.location!.trim(),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.black54,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          for (final record in entry.value)
-            ProspectOfferCard(
-              key: ValueKey('prospect-search-offer-${record.sourceId}'),
-              record: record,
-              product: addableProductForProspectOffer(
-                record,
-                catalogProducts,
               ),
-              compact: true,
-              onAdd: onAddProduct == null
-                  ? null
-                  : () {
-                      final product = addableProductForProspectOffer(
-                        record,
-                        catalogProducts,
-                      );
-                      if (product != null) onAddProduct!(product);
-                    },
-            ),
-        ],
-      ],
+            _ProspectSearchRowKind.description => const Padding(
+                padding: EdgeInsets.only(bottom: 12),
+                child: Text(
+                  'Artikel werden nur mit ihrem vorhandenen Händlernachweis und '
+                  'aktuellen Gültigkeitszeitraum angeboten.',
+                ),
+              ),
+            _ProspectSearchRowKind.store => Padding(
+                padding: const EdgeInsets.only(top: 8, bottom: 6),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      row.text!,
+                      style: const TextStyle(fontWeight: FontWeight.w800),
+                    ),
+                    if (row.location != null && row.location!.isNotEmpty)
+                      Text(
+                        row.location!,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.black54,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            _ProspectSearchRowKind.offer => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: _buildOffer(context, row.record!),
+              ),
+          };
+        },
+        childCount: rows.length,
+        addAutomaticKeepAlives: false,
+        addRepaintBoundaries: true,
+      ),
     );
   }
+
+  Widget _buildOffer(BuildContext context, OfferImportRecord record) {
+    final product = addableProductForProspectOffer(record, catalogProducts);
+    return ProspectOfferCard(
+      key: ValueKey('prospect-search-offer-${record.sourceId}'),
+      record: record,
+      product: product,
+      compact: true,
+      onAdd: onAddProduct == null || product == null
+          ? null
+          : () => onAddProduct!(product),
+    );
+  }
+}
+
+enum _ProspectSearchRowKind { heading, description, store, offer }
+
+class _ProspectSearchRow {
+  const _ProspectSearchRow.heading(this.text)
+      : kind = _ProspectSearchRowKind.heading,
+        location = null,
+        record = null;
+
+  const _ProspectSearchRow.description(this.text)
+      : kind = _ProspectSearchRowKind.description,
+        location = null,
+        record = null;
+
+  const _ProspectSearchRow.store(this.text, {this.location})
+      : kind = _ProspectSearchRowKind.store,
+        record = null;
+
+  const _ProspectSearchRow.offer(this.record)
+      : kind = _ProspectSearchRowKind.offer,
+        text = null,
+        location = null;
+
+  final _ProspectSearchRowKind kind;
+  final String? text;
+  final String? location;
+  final OfferImportRecord? record;
 }
 
 List<OfferImportRecord> _matchingProspectRecords(
@@ -616,9 +682,10 @@ class _ProspectStoreChips extends StatelessWidget {
 ProspectIssue _visibleIssue(
   List<ProspectIssue> entries,
   int currentRecordCount, {
+  int currentRegionalRecordCount = 0,
   DateTime? now,
 }) {
-  final current = entries
+  final currentEntries = entries
       .where(
         (issue) =>
             issue.validFrom != null &&
@@ -629,10 +696,17 @@ ProspectIssue _visibleIssue(
               now: now,
             ),
       )
-      .firstOrNull;
-  final selected = current ?? entries.first;
+      .toList(growable: false);
+  final current = currentEntries.isEmpty
+      ? null
+      : _bestVisibleProspect(currentEntries);
+  final selected = current ?? _bestVisibleProspect(entries);
   final String sourceStatus;
-  if (currentRecordCount == 0 &&
+  if (currentRecordCount > 0 &&
+      currentRegionalRecordCount == currentRecordCount &&
+      selected.sourceStatus != 'error') {
+    sourceStatus = 'regional_only';
+  } else if (currentRecordCount == 0 &&
       (current?.sourceStatus ?? selected.sourceStatus) == 'ok') {
     sourceStatus = 'no_current_offers';
   } else if (selected.sourceStatus == 'error' && currentRecordCount > 0) {
@@ -656,6 +730,48 @@ ProspectIssue _visibleIssue(
   );
 }
 
+ProspectIssue _bestVisibleProspect(Iterable<ProspectIssue> entries) {
+  final sorted = entries.toList(growable: false)
+    ..sort(_compareVisibleProspects);
+  return sorted.first;
+}
+
+int _compareVisibleProspects(ProspectIssue a, ProspectIssue b) {
+  final status = _prospectStatusRank(b.sourceStatus).compareTo(
+    _prospectStatusRank(a.sourceStatus),
+  );
+  if (status != 0) return status;
+
+  final pages = b.pages.length.compareTo(a.pages.length);
+  if (pages != 0) return pages;
+
+  final aHasThumbnail = a.thumbnailUrl?.trim().isNotEmpty == true;
+  final bHasThumbnail = b.thumbnailUrl?.trim().isNotEmpty == true;
+  final thumbnails = (bHasThumbnail ? 1 : 0).compareTo(
+    aHasThumbnail ? 1 : 0,
+  );
+  if (thumbnails != 0) return thumbnails;
+
+  final records = b.recordCount.compareTo(a.recordCount);
+  if (records != 0) return records;
+
+  final endDates = (b.validUntil ?? DateTime.fromMillisecondsSinceEpoch(0))
+      .compareTo(a.validUntil ?? DateTime.fromMillisecondsSinceEpoch(0));
+  if (endDates != 0) return endDates;
+
+  final urls = (a.url ?? '').compareTo(b.url ?? '');
+  if (urls != 0) return urls;
+  return a.title.compareTo(b.title);
+}
+
+int _prospectStatusRank(String status) => switch (status) {
+  'ok' => 4,
+  'metadata_only' => 3,
+  'current_fallback' => 2,
+  'regional_only' => 1,
+  _ => 0,
+};
+
 class _ProspectCard extends StatelessWidget {
   const _ProspectCard({
     required this.issue,
@@ -677,31 +793,46 @@ class _ProspectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final previewUrl = issue.pages.isNotEmpty
-        ? issue.pages.first.imageUrl.trim()
-        : issue.thumbnailUrl?.trim();
+    // Cards are visible in both the horizontal favorites rail and the grid.
+    // Prefer the source thumbnail there; full page images stay available in
+    // the viewer and should not all be decoded while the overview scrolls.
+    final thumbnail = _officialProspectUri(issue.thumbnailUrl)?.toString();
+    String? previewUrl;
+    if (thumbnail != null && thumbnail.isNotEmpty) {
+      previewUrl = thumbnail;
+    } else if (issue.pages.isNotEmpty) {
+      previewUrl = _officialProspectUri(issue.pages.first.imageUrl)?.toString();
+    }
     final imageHeight = compact ? 168.0 : 181.0;
     final validity = _prospectValidityLabel(issue);
     final cover = previewUrl == null || previewUrl.isEmpty
         ? _bringCoverPlaceholder()
         : Image.network(
             previewUrl,
-            cacheWidth: kIsWeb ? null : (compact ? 480 : 640),
-            cacheHeight: kIsWeb ? null : (compact ? 400 : 480),
+            // Keep the overview cheap: a platform view for every cover makes
+            // the horizontal rail and grid jank on Flutter web.
+            cacheWidth: compact ? 480 : 640,
+            cacheHeight: compact ? 400 : 480,
             filterQuality: FilterQuality.low,
-            webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
+            // The favorites rail is short enough to retain a browser fallback
+            // for CDNs without Canvas-CORS. The scrolling grid must stay on
+            // Canvas so it cannot create a platform view per cover.
+            webHtmlElementStrategy: compact
+                ? WebHtmlElementStrategy.never
+                : WebHtmlElementStrategy.fallback,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) =>
                 _bringCoverPlaceholder(),
           );
 
-    return SizedBox(
-      width: compact ? double.infinity : 214,
-      child: Card(
-        color: _bringSurface,
-        clipBehavior: Clip.antiAlias,
-        margin: EdgeInsets.zero,
-        child: Stack(
+    return RepaintBoundary(
+      child: SizedBox(
+        width: compact ? double.infinity : 214,
+        child: Card(
+          color: _bringSurface,
+          clipBehavior: Clip.antiAlias,
+          margin: EdgeInsets.zero,
+          child: Stack(
           children: [
             InkWell(
               onTap: onTap,
@@ -825,6 +956,7 @@ class _ProspectCard extends StatelessWidget {
               ),
             ),
           ],
+          ),
         ),
       ),
     );
@@ -1122,6 +1254,9 @@ String _prospectCardSummary(ProspectIssue issue) {
     return '${issue.recordCount} Angebote aus dem letzten geprüften '
         'Prospektstand. Automatische Aktualisierung aktuell nicht verfügbar.';
   }
+  if (issue.sourceStatus == 'regional_only') {
+    return 'Nur regional erkannt · Filiale noch nicht bestätigt.';
+  }
   if (issue.recordCount > 0) return '${issue.recordCount} Angebote geladen';
   return _sourceStatusLabel(issue);
 }
@@ -1137,6 +1272,9 @@ String _sourceStatusLabel(ProspectIssue issue) {
   if (issue.sourceStatus == 'error') {
     return 'Automatischer Abruf aktuell nicht verfügbar. '
         'Der offizielle Prospekt bleibt direkt erreichbar.';
+  }
+  if (issue.sourceStatus == 'regional_only') {
+    return 'Nur regional erkannt. Eine exakte Filiale ist noch nicht bestätigt.';
   }
   if (issue.sourceStatus == 'ok' && issue.recordCount > 0) {
     return '${issue.recordCount} Angebote automatisch geladen. '
@@ -1224,6 +1362,9 @@ class _ProspectViewer extends StatelessWidget {
       source: entry.offer.source,
       proofRef: entry.offer.proofRef,
       imageUrl: entry.offer.imageUrl,
+      packageAmount: entry.offer.packageAmount,
+      packageUnit: entry.offer.packageUnit,
+      unitPrice: entry.offer.unitPrice,
       locationId: entry.offer.locationId,
       region: entry.offer.region,
       address: entry.offer.address,
@@ -1238,15 +1379,15 @@ class _ProspectViewer extends StatelessWidget {
       }
       return;
     }
-    addProduct(entry.product);
     if (!context.mounted) return;
+    addProduct(entry.product);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('${entry.product.name} hinzugefügt')),
     );
   }
 
   Widget _buildPageCard(BuildContext context, ProspectPage page) {
-    final pageUrl = page.imageUrl.trim();
+    final pageUrl = _officialProspectUri(page.imageUrl)?.toString() ?? '';
     final zoomUri = _officialProspectUri(page.zoomUrl);
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -1260,10 +1401,11 @@ class _ProspectViewer extends StatelessWidget {
                 ? const Center(child: Icon(Icons.broken_image_outlined, size: 48))
                 : Image.network(
                     pageUrl,
-                    cacheWidth: kIsWeb ? null : 900,
+                    cacheWidth: 900,
+                    cacheHeight: 720,
                     fit: BoxFit.contain,
                     filterQuality: FilterQuality.low,
-                    webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
+                    webHtmlElementStrategy: WebHtmlElementStrategy.fallback,
                     loadingBuilder: (context, child, progress) =>
                         progress == null
                             ? child
@@ -1305,6 +1447,7 @@ class _ProspectViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pages = _viewerPages(issue);
     final items = records
         .where((record) => record.storeName == issue.storeName)
         .toList(growable: false);
@@ -1350,14 +1493,14 @@ class _ProspectViewer extends StatelessWidget {
           '${_prospectDate(issue.validFrom!)} – ${_prospectDate(issue.validUntil!)}',
           style: const TextStyle(color: Colors.black54),
         ),
-      if (issue.pages.isNotEmpty) ...[
+      if (pages.isNotEmpty) ...[
         const SizedBox(height: 14),
         Text(
-          'Prospektseiten (${issue.pages.length})',
+          'Prospektseiten (${pages.length})',
           style: Theme.of(context).textTheme.titleMedium,
         ),
       ],
-      if (issue.pages.isEmpty)
+      if (pages.isEmpty)
         Card(
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -1394,13 +1537,15 @@ class _ProspectViewer extends StatelessWidget {
               delegate: SliverChildListDelegate(header),
             ),
           ),
-          if (issue.pages.isNotEmpty)
+          if (pages.isNotEmpty)
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
               sliver: SliverList.builder(
-                itemCount: issue.pages.length,
+                itemCount: pages.length,
                 itemBuilder: (context, index) =>
-                    _buildPageCard(context, issue.pages[index]),
+                    _buildPageCard(context, pages[index]),
+                addAutomaticKeepAlives: false,
+                addRepaintBoundaries: true,
               ),
             ),
           if (items.isNotEmpty) ...[
@@ -1447,6 +1592,8 @@ class _ProspectViewer extends StatelessWidget {
                       );
                     },
                     childCount: groupedItems[category]!.length,
+                    addAutomaticKeepAlives: false,
+                    addRepaintBoundaries: true,
                   ),
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 240,
@@ -1463,6 +1610,17 @@ class _ProspectViewer extends StatelessWidget {
       ),
     );
   }
+}
+
+List<ProspectPage> _viewerPages(ProspectIssue issue) {
+  if (issue.pages.isNotEmpty) return issue.pages;
+  final thumbnail = issue.thumbnailUrl?.trim();
+  if (thumbnail == null || thumbnail.isEmpty) {
+    return const <ProspectPage>[];
+  }
+  final uri = _officialProspectUri(thumbnail);
+  if (uri == null) return const <ProspectPage>[];
+  return [ProspectPage(number: 1, imageUrl: uri.toString())];
 }
 
 const _prospectCategoryRanks = <String, int>{
@@ -1504,8 +1662,9 @@ Uri? _officialProspectUri(String? value) {
   final raw = value?.trim();
   if (raw == null || raw.isEmpty) return null;
   final uri = Uri.tryParse(raw);
+  final scheme = uri?.scheme.toLowerCase();
   if (uri == null ||
-      (uri.scheme != 'http' && uri.scheme != 'https') ||
+      (scheme != 'http' && scheme != 'https') ||
       uri.host.isEmpty) {
     return null;
   }

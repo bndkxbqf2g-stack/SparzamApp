@@ -4,6 +4,7 @@ import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/route_plan.dart';
+import 'package:sparzamapp/models/store.dart';
 
 final _now = DateTime(2026, 9, 30);
 
@@ -62,6 +63,49 @@ List<MarketPrice> _prices() => [
     ];
 
 void main() {
+  test('gleiche Marktpreise bleiben bei vertauschter Store-Reihenfolge stabil', () {
+    const first = Store(
+      name: 'B-Markt',
+      location: 'Ort B',
+      branchId: 'branch-b',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    const second = Store(
+      name: 'A-Markt',
+      location: 'Ort A',
+      branchId: 'branch-a',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    final prices = [
+      MarketPrice(
+        productId: _milk.id,
+        storeName: first.name,
+        price: 1,
+        updatedAt: _now,
+      ),
+      MarketPrice(
+        productId: _milk.id,
+        storeName: second.name,
+        price: 1,
+        updatedAt: _now,
+      ),
+    ];
+    final optimizer = RouteOptimizer(
+      [ListItem(product: _milk)],
+      const [],
+      now: _now,
+      marketPrices: prices,
+    );
+
+    final firstOrder = optimizer.buildPlan([first, second]);
+    final secondOrder = optimizer.buildPlan([second, first]);
+
+    expect(firstOrder.assignments.keys.single.name, 'A-Markt');
+    expect(secondOrder.assignments.keys.single.name, 'A-Markt');
+  });
+
   test('vergleicht denselben Warenkorb gegen ein, zwei und drei Märkte', () {
     final optimizer = RouteOptimizer(
       _basket(),

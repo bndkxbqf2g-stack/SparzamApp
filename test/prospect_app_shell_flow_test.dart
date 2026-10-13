@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,6 +11,7 @@ import 'package:sparzamapp/models/budget_plan.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/mobility_settings.dart';
+import 'package:sparzamapp/models/named_shopping_list.dart';
 import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/models/price_data_settings.dart';
 import 'package:sparzamapp/models/price_point.dart';
@@ -38,7 +41,19 @@ class _FakeProspectImportModule extends ProspectImportModule {
   Future<ProspectFeedLoadResult> execute({String? startAddress}) async => result;
 }
 
+class _DelayedNamedListStore extends ShoppingListStore {
+  _DelayedNamedListStore(this.result);
+
+  final Future<List<NamedShoppingList>> result;
+
+  @override
+  Future<List<NamedShoppingList>> loadNamedLists() => result;
+}
+
 class _Stores {
+  _Stores({ShoppingListStore? shoppingListStore})
+    : shoppingList = shoppingListStore ?? ShoppingListStore();
+
   final budget = BudgetStore();
   final offers = OfferStore();
   final mobility = MobilitySettingsStore();
@@ -48,7 +63,7 @@ class _Stores {
   final priceHistory = PriceHistoryStore();
   final recentPurchases = RecentPurchaseStore();
   final purchases = PurchaseStore();
-  final shoppingList = ShoppingListStore();
+  final ShoppingListStore shoppingList;
 }
 
 Widget _app(
@@ -103,6 +118,59 @@ void main() {
   tearDown(() {
     SharedPreferencesAsyncPlatform.instance = null;
   });
+
+  testWidgets(
+    'verzögerter alter Listenstand überschreibt keine neue Nutzereingabe',
+    (tester) async {
+      final gate = Completer<List<NamedShoppingList>>();
+      final stores = _Stores(
+        shoppingListStore: _DelayedNamedListStore(gate.future),
+      );
+      final module = _FakeProspectImportModule(
+        ProspectFeedLoadResult(
+          records: const <OfferImportRecord>[],
+          refreshedStores: const <String>[],
+          generatedAt: DateTime(2026, 10, 13),
+          prospects: const <ProspectIssue>[],
+        ),
+      );
+
+      await tester.pumpWidget(_app(stores, module));
+      await tester.pump();
+      final input = find.byWidgetPredicate(
+        (widget) =>
+            widget is TextField &&
+            widget.decoration?.hintText == 'Was möchtest du einkaufen?',
+      );
+      expect(input, findsOneWidget);
+      await tester.enterText(input, 'Testartikel');
+      tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pump();
+
+      gate.complete([
+        NamedShoppingList(
+          id: 'default',
+          name: 'Einkauf',
+          items: [
+            ListItem(
+              product: Product(
+                id: 'stale-item',
+                name: 'Alter Stand',
+                unit: 'Stück',
+                group: 'sonstiges',
+              ),
+            ),
+          ],
+        ),
+      ]);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Testartikel'), findsOneWidget);
+      expect(find.text('Alter Stand'), findsNothing);
+      final persisted = await stores.shoppingList.load();
+      expect(persisted.single.product.name, 'Testartikel');
+    },
+  );
 
   testWidgets(
     'Prospektartikel lässt sich im AppShell suchen, hinzufügen und nach Neustart sehen',

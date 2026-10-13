@@ -12,13 +12,13 @@ List<MarketPrice> planningMarketPrices({
   int openPricesMaxAgeDays = 60,
 }) {
   final today = now ?? DateTime.now();
-  final selected = preferredMarketPricesByKey(
+  final selected = preferredMarketPricesByKeyAndLocation(
     familyPrices,
     today,
     openPricesMaxAgeDays: openPricesMaxAgeDays,
   );
   selected.addAll(
-    preferredMarketPricesByKey(
+    preferredMarketPricesByKeyAndLocation(
       exactPrices,
       today,
       openPricesMaxAgeDays: openPricesMaxAgeDays,

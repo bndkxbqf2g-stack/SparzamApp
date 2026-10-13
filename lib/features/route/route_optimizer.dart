@@ -17,6 +17,7 @@ class RouteOptimizer {
     this.euroPerKm = 0.22,
     this.maxStores = 3,
     this.minExtraStoreSavings = 0,
+    this.additionalStoreCost = 0,
     this.timeValuePerHour = 0,
     this.travelMinutesPerKm = 60 / 45,
     List<String>? enabledStoreNames,
@@ -43,6 +44,7 @@ class RouteOptimizer {
   final double euroPerKm;
   final int maxStores;
   final double minExtraStoreSavings;
+  final double additionalStoreCost;
 
   /// User-provided value of time. It affects only route comparison, never the
   /// expected amount paid at checkout.
@@ -92,10 +94,14 @@ class RouteOptimizer {
 
       for (final store in selectedStores) {
         final quote = prices.quote(store, item);
-        if (quote != null &&
-            !quote.isEstimated &&
-            quote.total + priceUncertaintyReserve(quote, today) < bestScore) {
-          bestScore = quote.total + priceUncertaintyReserve(quote, today);
+        if (quote == null || quote.isEstimated) continue;
+        final score = quote.total + priceUncertaintyReserve(quote, today);
+        if (score < bestScore ||
+            (score == bestScore &&
+                (bestStore == null ||
+                    _storeTieKey(store).compareTo(_storeTieKey(bestStore!)) <
+                        0))) {
+          bestScore = score;
           bestStore = store;
         }
       }
@@ -124,6 +130,9 @@ class RouteOptimizer {
     final travel = optimizedTravel.distanceKm * euroPerKm;
     final travelMinutes = _travelMinutesForDistance(optimizedTravel.distanceKm);
     final timeCost = travelMinutes / 60 * timeValuePerHour;
+    final additionalStoreCost =
+        (optimizedTravel.stores.length - 1).clamp(0, maxStores).toDouble() *
+        this.additionalStoreCost;
 
     return RoutePlan(
       stores: optimizedTravel.stores,
@@ -135,6 +144,7 @@ class RouteOptimizer {
       uncertaintyReserve: uncertaintyReserve,
       travelMinutes: travelMinutes,
       timeCost: timeCost,
+      additionalStoreCost: additionalStoreCost,
     );
   }
 
@@ -250,3 +260,10 @@ class RouteOptimizer {
     return aNames.compareTo(bNames);
   }
 }
+
+String _storeTieKey(Store store) => [
+  store.name,
+  store.branchId ?? '',
+  store.location,
+  store.address,
+].map((value) => value.trim().toLowerCase()).join('|');

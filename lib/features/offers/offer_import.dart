@@ -2,7 +2,9 @@ import '../../models/offer.dart';
 import '../../models/product.dart';
 import '../catalog/product_identity.dart';
 import 'offer_filter.dart';
+import 'prospect_product_match.dart';
 import '../../services/prospect_branch_resolver.dart';
+import '../../services/quantity_normalizer.dart';
 
 class OfferImportRecord {
   const OfferImportRecord({
@@ -17,6 +19,14 @@ class OfferImportRecord {
     this.proofRef,
     this.imageUrl,
     this.category,
+    this.packageSize,
+    this.priceByBaseUnit,
+    this.sourceAdapter,
+    this.regionalOnly = false,
+    this.brochureId,
+    this.brochurePage,
+    this.publisherId,
+    this.capturedAt,
     this.branchId,
     this.location,
     this.address,
@@ -37,6 +47,25 @@ class OfferImportRecord {
   /// The UI may fall back to its conservative label classifier when absent;
   /// this field is never inferred into product identity or price evidence.
   final String? category;
+
+  /// Optional package and base-price metadata supplied by the retailer. These
+  /// fields remain source evidence; identity matching still requires the
+  /// exact label and a comparable package basis.
+  final String? packageSize;
+  final String? priceByBaseUnit;
+
+  /// Optional adapter identity and regional/leaflet context. A regional-only
+  /// result is diagnostic evidence and must not be treated as an exact branch
+  /// price by route planning.
+  final String? sourceAdapter;
+  final bool regionalOnly;
+  final String? brochureId;
+  final int? brochurePage;
+  final String? publisherId;
+
+  /// Time at which this individual source record was captured. Older feeds
+  /// may only carry the feed-level timestamp.
+  final DateTime? capturedAt;
 
   /// Source-provided branch context. These fields are provenance only; they
   /// never make two differently labelled products the same identity.
@@ -104,6 +133,32 @@ bool hasTrustedOfferProofReference(String? value) {
   return false;
 }
 
+/// Returns whether an offer may be used as current price evidence.
+///
+/// Manual offers are explicit user input and therefore do not need an
+/// external reference. All other sources need a browsable or verified
+/// internal proof reference before they can affect shopping-price surfaces or
+/// route planning.
+bool hasTrustedOfferEvidence(Offer offer) {
+  if (offer.source.trim().toLowerCase() == 'manual') return true;
+  return hasTrustedOfferProofReference(offer.proofRef);
+}
+
+/// KaufDA search results are publisher-level evidence unless the adapter
+/// supplied an explicit branch assertion. This also protects legacy persisted
+/// Offers created before `regionalOnly` was enforced at import time.
+bool hasExactOfferBranch(Offer offer) {
+  if (offer.sourceAdapter?.trim().toLowerCase() != 'kaufda') return true;
+  return offer.locationId?.trim().isNotEmpty == true;
+}
+
+/// Repeat the branch assertion at the record boundary so a changed or legacy
+/// `regionalOnly: false` flag cannot promote a publisher-level KaufDA result.
+bool hasExactOfferRecordBranch(OfferImportRecord record) {
+  if (record.sourceAdapter?.trim().toLowerCase() != 'kaufda') return true;
+  return record.branchId?.trim().isNotEmpty == true;
+}
+
 class OfferImportResolution {
   const OfferImportResolution({
     required this.record,
@@ -124,6 +179,13 @@ OfferImportResolution resolveOfferImport(
   OfferImportRecord record,
   Iterable<Product> catalogProducts,
 ) {
+  // A publisher-level KaufDA result is useful for discovery, but without an
+  // explicit branch assertion it must never become an Offer. Keeping this
+  // gate here closes direct callers that do not pass through the prospect
+  // tile builder's regional filter.
+  if (record.regionalOnly || !hasExactOfferRecordBranch(record)) {
+    return OfferImportResolution(record: record, reason: 'regional_only');
+  }
   if (!_validPrices(record)) {
     return OfferImportResolution(record: record, reason: 'invalid_price');
   }
@@ -169,10 +231,23 @@ OfferImportResolution resolveOfferImport(
     product = compatible.single;
   }
 
-  if (record.source != 'manual' &&
+  if (!_matchesRecordPackage(record, product)) {
+    return OfferImportResolution(record: record, reason: 'package_mismatch');
+  }
+
+  if (record.source.trim().toLowerCase() != 'manual' &&
       !hasTrustedOfferProofReference(record.proofRef)) {
     return OfferImportResolution(record: record, reason: 'missing_proof');
   }
+
+  final package = _offerPackage(record, product);
+  final packagePrice = package == null
+      ? null
+      : normalizedUnitPrice(
+          price: record.offerPrice,
+          amount: package.amount,
+          unit: package.unit,
+        );
 
   final offer = Offer(
     id: 'import|${record.source}|${record.sourceId}|${product.id}',
@@ -184,8 +259,13 @@ OfferImportResolution resolveOfferImport(
     validFrom: record.validFrom,
     validUntil: record.validUntil,
     source: record.source,
+    sourceAdapter: record.sourceAdapter,
+    capturedAt: record.capturedAt,
     proofRef: record.proofRef,
     imageUrl: record.imageUrl,
+    packageAmount: package?.amount,
+    packageUnit: package?.unit,
+    unitPrice: packagePrice,
     locationId: record.branchId,
     region: record.location,
     address: record.address,
@@ -199,5 +279,34 @@ bool _validPrices(OfferImportRecord record) {
       record.offerPrice > 0 &&
       (regular == null ||
           (regular.isFinite && regular > 0 && record.offerPrice <= regular));
+}
+
+bool _matchesRecordPackage(OfferImportRecord record, Product product) {
+  final packageText = record.packageSize?.trim().isNotEmpty == true
+      ? record.packageSize!.trim()
+      : record.productLabel;
+  if (!_containsPackageEvidence(packageText)) return true;
+
+  final observed = prospectPackage(packageText);
+  if (observed == null) return false;
+  final expected = product.packageAmount != null && product.packageUnit != null
+      ? (amount: product.packageAmount!, unit: product.packageUnit!)
+      : prospectPackage(product.unit);
+  return expected != null && sameProspectPackage(observed, expected);
+}
+
+bool _containsPackageEvidence(String value) => RegExp(
+      r'(?:\d+(?:[,.]\d+)?\s*(?:kg|g|mg|ml|cl|l|stk\.?|st\.?|stück|stueck)\b|'
+      r'\d+\s*er\s*[- ]?(?:schale|pack(?:ung)?|becher|dose|flasche)\b)',
+      caseSensitive: false,
+    ).hasMatch(value);
+
+ProspectPackage? _offerPackage(OfferImportRecord record, Product product) {
+  final fromRecord = prospectPackage(record.packageSize ?? record.productLabel);
+  if (fromRecord != null) return fromRecord;
+  if (product.packageAmount != null && product.packageUnit != null) {
+    return (amount: product.packageAmount!, unit: product.packageUnit!);
+  }
+  return prospectPackage(product.unit);
 }
 

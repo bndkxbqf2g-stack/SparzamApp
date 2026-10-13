@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/services/recent_purchase_store.dart';
 
 void main() {
@@ -41,5 +42,21 @@ void main() {
     final loaded = await RecentPurchaseStore().load();
     expect(loaded, hasLength(1));
     expect(loaded.single.id, 'good');
+  });
+
+  test('ein paralleler Read wartet auf einen laufenden Wiederkauf-Write', () async {
+    final store = RecentPurchaseStore();
+    final reader = RecentPurchaseStore();
+    const product = Product(
+      id: 'parallel',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'milch',
+    );
+    final writing = store.add(product, 1, const []);
+    final reading = reader.load();
+
+    await writing;
+    expect((await reading).single.id, 'parallel');
   });
 }

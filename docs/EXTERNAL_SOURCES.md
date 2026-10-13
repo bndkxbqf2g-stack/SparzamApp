@@ -1,14 +1,91 @@
 # Externe Datenquellen und Lizenzgrenzen
 
-Stand: 2026-10-12
+Stand: 2026-10-13
 
 SparzamApp verwendet externe Quellen nur über kleine, austauschbare Adapter.
 Antworten werden lokal zwischengespeichert, können über den jeweiligen
 Adapter deaktiviert werden und werden vor der Routenplanung erneut auf
 Identität, Filiale, Aktualität und Vergleichbarkeit geprüft. Es werden keine
 privaten Belege, Konten oder Zugangsdaten an diese Quellen übertragen.
+HTTP-403-Antworten werden als Quellenfehler behandelt und nicht mit einem
+anderen User-Agent wiederholt.
+
+Der zuletzt geprüfte öffentliche Prospektfeed liegt zusätzlich als
+versioniertes App-Asset vor. Er ist ausschließlich ein datierter Offline-/Kalt-
+Fallback; seine Angebote werden vor Anzeige und Planung weiterhin auf den
+Gültigkeitszeitraum geprüft und niemals als frischer Live-Abruf ausgegeben.
+Der Refresh-Workflow bewahrt bei einem vollständigen Quellfehler außerdem den
+ursprünglichen `generatedAt`-Zeitpunkt. Ein fehlgeschlagener Abruf verjüngt
+übernommene, noch gültige Vorperiodendaten damit nicht künstlich.
+Händlerfeeds werden vor der Speicherung außerdem auf den Sparzam-Lebensmittel-
+vertrag begrenzt; Haushalts-, Körperpflege-, Kleidungs-, Pflanzen- und
+Spielzeugkampagnen bleiben als Rohquellen nicht routenfähig. Der App-Parser
+wiederholt diese Sperre für ältere Cache-/Asset-Stände.
 
 ## Tatsächlich integrierte Adapter
+
+### Netto-Filialprospekt
+
+- Der bestehende offizielle Netto-Adapter liest zusätzlich den öffentlichen
+  Wochenprospekt-Link der exakt konfigurierten Filiale und dessen
+  `Filial-Angebote`-Cover.
+- Das Cover wird als eine nachweisbare Prospektseite mit URL, Bildreferenz,
+  Gültigkeitszeitraum und Filialkontext gespeichert. Der HTML-Parser und der
+  begrenzte Jina-Reader-Fallback akzeptieren nur dieses konkrete Merkmal; Shop-
+  und allgemeine Kampagnenbilder werden nicht als Prospekt übernommen.
+- Der versionierte Offline-Stand enthält eine am 12.10.2026 verifizierte
+  Coverreferenz für die Filiale 4371; der reguläre Refresh ersetzt sie bei
+  erfolgreicher Händlerantwort. Eine nicht belegte Coverseite bleibt sichtbar
+  unbekannt.
+
+### ALDI-Süd-Prospekt
+
+- Der strukturierte ALDI-Refresh liest den aktuellen öffentlichen
+  Prospektlink und die zugehörige Coverreferenz aus der offiziellen
+  ALDI-Süd-Startseite; die Kalenderwoche wird in den deutschen Zeitraum
+  Montag bis Samstag aufgelöst.
+- Es wird nur die verifizierte Seite 1 als `thumbnailUrl` und
+  `pageSamples[0]` übernommen. Der eigentliche Preisimport bleibt an die
+  strukturierte, filialbezogene Produktquelle gebunden.
+- Der versionierte Offline-Stand enthält die am 12.10.2026 verifizierte
+  Coverreferenz für B384 in Zellingen. Die externe Bild-URL wird nicht in das
+  Repository kopiert; bei einer Seitenänderung bleibt der Preisimport
+  unabhängig nutzbar.
+
+### PENNY-Prospekt
+
+- Der strukturierte PENNY-Adapter liest den aktuellen Handout-Bereich der
+  offiziellen Angebotsseite und akzeptiert nur den Wrapper
+  `handout-current-week` mit ausgewiesenem Zeitraum und CMS-Bild.
+- Das aktuelle Cover wird als `thumbnailUrl` und `pageSamples[0]` für den
+  konfigurierten Markt 230061 gespeichert; Kategorieangebote und Cover bleiben
+  getrennte Datenpfade.
+- Der versionierte Offline-Stand enthält die am 12.10.2026 verifizierte
+  Coverreferenz für Zellingen. Die externe Bilddatei wird nicht kopiert und
+  ein fehlender Handout-Abruf lässt den Preisimport weiterlaufen.
+
+### EDEKA-Filialprospekt
+
+- Der EDEKA-Adapter liest aus der Marktseite 023738 nur den branchenspezifischen
+  Prospektlink, den ausgewiesenen Zeitraum und die öffentliche
+  Blätterkatalog-Seite `bk_1.jpg`.
+- Die Coverreferenz wird als `thumbnailUrl` und `pageSamples[0]` gespeichert;
+  Bilder aus dem allgemeinen Seitenaufbau oder andere Märkte werden nicht
+  übernommen.
+- Der versionierte Offline-Stand enthält die am 12.10.2026 verifizierte
+  Titelseite für Zellingen. Bei geändertem Markup bleibt der API-Preisimport
+  unabhängig nutzbar.
+
+### Kaufland-Filialprospekt
+
+- Der strukturierte Kaufland-Adapter liest für die Filiale DE5103 die aktuelle
+  öffentliche Leaflet-Verknüpfung und deren Laufzeit.
+- Aus dem öffentlichen Viewer wird ausschließlich die nachweisbare Coverseite
+  als `thumbnailUrl` und `pageSamples[0]` übernommen. Viewerfehler lassen den
+  bereits validierten Angebotsimport weiterlaufen.
+- Der versionierte Offline-Stand enthält die am 12.10.2026 verifizierte Seite
+  1 für Würzburg-Grombühl. Die Bildreferenz bleibt eine externe Quelle und
+  wird nicht in das Repository kopiert.
 
 ### Open Food Facts
 
@@ -38,6 +115,10 @@ privaten Belege, Konten oder Zugangsdaten an diese Quellen übertragen.
 - EAN, EUR, Normalpreis, Datum, Produkt-Typ, Duplikatstatus und
   `UNIT`-Basis werden geprüft. Ein konfigurierter Open-Prices-Standort bzw.
   dessen ID bleibt am `MarketPrice` und an der `PriceObservation` erhalten.
+- Bei einem bekannten Katalogprodukt werden Packungsmenge/-einheit und der
+  daraus berechnete Grundpreis ebenfalls am Preisbeleg erhalten. So kann eine
+  abweichende oder unbekannte Packung an der gemeinsamen Vergleichbarkeits-
+  grenze als Datenlücke behandelt werden.
 - Ein lokaler Rohantwort-Cache dient nur dem Offline-Fallback. Solche Daten
   können als veraltet sichtbar bleiben, qualifizieren sich aber über die
   zentrale Altersprüfung nicht als aktueller Routenpreis.
@@ -97,8 +178,69 @@ privaten Belege, Konten oder Zugangsdaten an diese Quellen übertragen.
   und formatinstabile App-Endpunkte. SparzamApp übernimmt weder Endpunkte noch
   Login-, Loyalty-, Coupon- oder Zahlungsfunktionen. Die bestehende
   validierte Prospektquelle bleibt führend.
-- **mreimbold/kaufda-cli**: nur Recherche; keine belastbare, dauerhafte
-  öffentliche Händler-API für die App.
+- **mreimbold/kaufda-cli**: Der technische Ansatz ist als eigener, kleiner
+  Parser in `tool/kaufda_prospects.py` nachvollzogen. Der Adapter liest nur
+  öffentlich eingebettete `__NEXT_DATA__`-Suchdaten, begrenzt Suchbegriffe und
+  Anfragen, speichert Antworten lokal zwischen und überführt aktuelle
+  Lebensmittelangebote in das bestehende Prospektformat. Das aktuelle
+  `parentContent.page.number`-Format, ausgewiesene reguläre Preise und
+  Kategoriepfade werden berücksichtigt; UVP-Werte und explizite
+  Nicht-Lebensmittel-Taxonomien werden nicht als Normalpreis bzw. Lebensmittel
+  übernommen. Er ist ausschließlich ein opt-in, read-only
+  Refresh-/Diagnoseadapter und läuft nicht als Flutter-Laufzeitquelle.
+
+  Der Adapter bleibt standardmäßig deaktiviert. Für eine Aktivierung müssen
+  `SPARZAM_KAUFDA_ENABLED`, eine begrenzte Suchliste und eine separat geprüfte
+  Zuordnung von Händler zu exakter Filiale gesetzt werden. Treffer ohne diese
+  Filialassertion bleiben `regional_only`, werden für Suche und Nachweis im
+  Feed sichtbar gehalten, aber nicht routenfähig. Ablauf, Quelle,
+  Prospekt-ID/-seite, Preis und Erfassungszeit bleiben am Datensatz
+  nachvollziehbar; Cache- und Parserfehler isolieren die Quelle vom übrigen
+  Feed. Die bestehenden autoritativen Händler-/Bring-Quellen werden weder
+  ersetzt noch überschrieben.
+
+  Der gemeinsame Refresh wählt bei konkurrierenden aktuell gültigen
+  Zeiträumen zuerst einen Zeitraum mit mindestens einem offiziellen
+  Händlernachweis. Ein größerer KaufDA-Trefferbestand kann dadurch keine
+  offizielle Periode verdrängen; KaufDA ergänzt nur den ausgewählten Zeitraum
+  oder bleibt bei fehlender offizieller Periode ein regionaler Nachweis.
+
+  Ein kontrollierter Lauf verwendet beispielsweise ausschließlich öffentliche
+  Suchseiten und eine bekannte Filiale:
+
+  ```text
+  SPARZAM_KAUFDA_ENABLED=1
+  SPARZAM_KAUFDA_CITY=Wuerzburg
+  SPARZAM_KAUFDA_QUERIES="Butter,Milch,Kaffee,Nudeln,Tomaten"
+  SPARZAM_KAUFDA_BRANCHES='{"Lidl":{"branchId":"lidl_zellingen","location":"Zellingen"}}'
+  ```
+
+  Ohne `SPARZAM_KAUFDA_ENABLED=1` wird keine Anfrage ausgeführt.
+  `SPARZAM_KAUFDA_MAX_QUERIES=0` ist zusätzlich eine harte Nullgrenze und
+  verhindert jeden Abruf auch dann, wenn das Feature-Flag und Suchbegriffe
+  gesetzt sind.
+
+  Die Abfrage bleibt zusätzlich auf eine kleine Zahl von Suchbegriffen, eine
+  4-MB-Antwortgröße, einen Timeout und einen lokalen Cache begrenzt. Wiederholte
+  Treffer mit anderer transienter kaufDA-ID werden nur dann zusammengeführt,
+  wenn Händler, Label, Preis, Zeitraum und Prospektseite identisch sind;
+  unterschiedliche Seiten oder Zeiträume bleiben getrennt.
+
+  Der Parser kennt neben dem aktuellen Pfad auch eine begrenzte, feldgeprüfte
+  Suche nach umbenannten Ergebniscontainern in `__NEXT_DATA__`. Beliebige
+  verschachtelte JSON-Listen werden nicht als Angebote übernommen.
+
+  Ein Treffer aus einem zulässigen kaufDA-Cache trägt zusätzlich seinen
+  tatsächlichen Abrufzeitpunkt am einzelnen Angebot. Der Preislern-Pfad
+  verwendet diesen Zeitpunkt vor dem zusammengeführten Feedzeitpunkt, damit
+  ein anderer, später aktualisierter Händlerfeed die kaufDA-Evidenz nicht
+  künstlich verjüngt.
+
+  Die MIT-Lizenz des GitHub-Projekts betrifft dessen Quelltext, nicht die
+  Angebotsdaten oder die Nutzungsbedingungen von kaufDA. Eine produktive,
+  automatisierte Nutzung fremder kaufDA-Daten braucht daher weiterhin eine
+  gesonderte rechtliche Freigabe. Es werden keine Logos, Grafiken, Login-,
+  Coupon- oder Zahlungsfunktionen und kein fremder Quelltext übernommen.
 - **knipknap/receiptparser** und
   **ReceiptManager/receipt-parser-legacy**: Parser-/Fixture-Ideen wurden
   geprüft. ReceiptManager weist Apache-2.0 aus; der Code wird nicht

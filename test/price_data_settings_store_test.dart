@@ -37,4 +37,23 @@ void main() {
     expect(loaded.openPricesMaxAgeDays, 60);
     expect(loaded.autoSyncOnCatalogOpen, isFalse);
   });
+
+  test('ein paralleler Read wartet auf einen laufenden Preisquellen-Write',
+      () async {
+    final store = PriceDataSettingsStore();
+    final reader = PriceDataSettingsStore();
+    const settings = PriceDataSettings(
+      openPricesEnabled: false,
+      openPricesMaxAgeDays: 14,
+      autoSyncOnCatalogOpen: true,
+    );
+
+    final writing = store.save(settings);
+    final reading = reader.load();
+
+    await writing;
+    expect((await reading).openPricesEnabled, isFalse);
+    expect((await reading).openPricesMaxAgeDays, 14);
+    expect((await reading).autoSyncOnCatalogOpen, isTrue);
+  });
 }

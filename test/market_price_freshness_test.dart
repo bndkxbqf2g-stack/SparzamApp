@@ -119,6 +119,56 @@ void main() {
     expect(coverage.last.storeName, 'Netto');
     expect(coverage.last.products, 0);
   });
+
+  test('Coverage ignoriert Preise für eine abweichende Packungsgröße', () {
+    const products = [
+      Product(
+        id: 'coffee',
+        name: 'Kaffee',
+        unit: '500 g',
+        group: 'Kaffee',
+      ),
+    ];
+    final prices = [
+      MarketPrice(
+        productId: 'coffee',
+        storeName: 'Lidl',
+        price: 8.99,
+        updatedAt: now,
+        source: MarketPriceSource.openPrices,
+        quantity: 1,
+        unit: 'kg',
+      ),
+      MarketPrice(
+        productId: 'coffee',
+        storeName: 'Lidl',
+        price: 4.99,
+        updatedAt: now,
+        source: MarketPriceSource.receipt,
+        quantity: 500,
+        unit: 'g',
+      ),
+    ];
+
+    final coverage = calculatePriceCoverage(
+      products,
+      prices,
+      openPricesMaxAgeDays: 60,
+      now: now,
+    );
+    final storeCoverage = calculateStorePriceCoverage(
+      prices,
+      products: products,
+    );
+
+    expect(coverage.openPrices, 0);
+    expect(coverage.manualPrices, 1);
+    expect(coverage.incompatiblePrices, 1);
+    expect(storeCoverage.single.products, 1);
+    expect(storeCoverage.single.openPrices, 0);
+    expect(storeCoverage.single.receiptPrices, 1);
+    expect(storeCoverage.single.incompatiblePrices, 1);
+  });
   test('older receipts are historical and excluded from current prices', () {
     final receipt = MarketPrice(
       productId: 'bread',

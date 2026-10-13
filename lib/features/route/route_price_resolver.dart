@@ -4,8 +4,12 @@ import '../../models/offer.dart';
 import '../../models/store.dart';
 import '../../models/product.dart';
 import '../offers/effective_price.dart';
+import '../offers/offer_import.dart';
 import '../offers/offer_filter.dart';
 import '../shopping_list/shopping_intent.dart';
+import '../../services/branch_identity.dart';
+import '../../services/market_price_comparability.dart';
+import 'market_price_quality.dart';
 import 'market_price_selection.dart';
 
 class RoutePriceQuote {
@@ -45,17 +49,23 @@ class RoutePriceResolver {
          marketPrices,
          now ?? DateTime.now(),
          openPricesMaxAgeDays: openPricesMaxAgeDays,
+       ),
+       _marketPriceCandidates = _usableMarketPriceCandidates(
+         marketPrices,
+         now ?? DateTime.now(),
+         openPricesMaxAgeDays,
        );
 
   final List<Offer> offers;
   final DateTime? now;
   final int openPricesMaxAgeDays;
   final Map<String, MarketPrice> marketPrices;
+  final List<MarketPrice> _marketPriceCandidates;
 
   RoutePriceQuote? quote(Store store, ListItem item) {
     if (isGenericShoppingIntent(item.product)) return null;
     final offer = _bestOffer(store, item.product, item.quantity);
-    final customPrice = marketPrices['${store.name}|${item.product.id}'];
+    final customPrice = _bestMarketPrice(store, item.product);
     final catalogPrice = store.prices[item.product.id];
     final observed =
         customPrice?.price ??
@@ -114,6 +124,10 @@ class RoutePriceResolver {
       (offer) =>
           offer.productId == product.id &&
           offer.storeName == store.name &&
+          offerMatchesProduct(offer, product) &&
+          _offerBelongsToStore(offer, store) &&
+          hasExactOfferBranch(offer) &&
+          hasTrustedOfferEvidence(offer) &&
           !isSampleOffer(offer) &&
           (offer.validFrom == null ||
               !DateTime(today.year, today.month, today.day).isBefore(
@@ -133,7 +147,9 @@ class RoutePriceResolver {
     for (final offer in matches) {
       final price =
           effectivePrice(offer).finalPrice * _paidUnits(quantity, offer);
-      if (price < bestPrice) {
+      if (price < bestPrice ||
+          (price == bestPrice &&
+              (best == null || _compareOfferTie(offer, best!) < 0))) {
         best = offer;
         bestPrice = price;
       }
@@ -149,4 +165,89 @@ class RoutePriceResolver {
     }
     return (quantity ~/ buy) * pay + quantity % buy;
   }
+
+  MarketPrice? _bestMarketPrice(Store store, Product product) {
+    final candidates = _marketPriceCandidates.where(
+      (price) =>
+          price.productId == product.id &&
+          price.storeName == store.name &&
+          marketPriceMatchesProduct(price, product),
+    );
+    final branchId = canonicalBranchId(store.branchId);
+    final exact = branchId == null
+        ? candidates.where((price) => !_hasSourceLocation(price))
+        : candidates.where(
+            (price) => canonicalBranchId(price.sourceLocationId) == branchId,
+          );
+    final scoped = exact.isNotEmpty
+        ? exact
+        : candidates.where((price) => !_hasSourceLocation(price));
+    MarketPrice? best;
+    var bestScore = double.infinity;
+    for (final price in scoped) {
+      final score = price.price *
+          (1 + marketPriceQuality(price, now ?? DateTime.now()).uncertaintyRate);
+      if (score < bestScore ||
+          (score == bestScore &&
+              (best == null ||
+                  price.updatedAt.isAfter(best!.updatedAt) ||
+                  (price.updatedAt.isAtSameMomentAs(best!.updatedAt) &&
+                      compareMarketPriceTieBreakers(price, best!) < 0)))) {
+        best = price;
+        bestScore = score;
+      }
+    }
+    return best;
+  }
 }
+
+List<MarketPrice> _usableMarketPriceCandidates(
+  Iterable<MarketPrice> prices,
+  DateTime now,
+  int openPricesMaxAgeDays,
+) => prices
+    .where(
+      (price) =>
+          price.price.isFinite &&
+          price.price > 0 &&
+          price.isUsable(
+            now: now,
+            openPricesMaxAgeDays: openPricesMaxAgeDays,
+          ),
+    )
+    .toList(growable: false);
+
+bool _hasSourceLocation(MarketPrice price) =>
+    canonicalBranchId(price.sourceLocationId) != null;
+
+bool _offerBelongsToStore(Offer offer, Store store) {
+  final offerBranch = canonicalBranchId(offer.locationId);
+  if (offerBranch == null) return true;
+  final storeBranch = canonicalBranchId(store.branchId);
+  return storeBranch != null && offerBranch == storeBranch;
+}
+
+int _compareOfferTie(Offer candidate, Offer previous) {
+  final candidateVerification = candidate.originalPriceVerified ? 0 : 1;
+  final previousVerification = previous.originalPriceVerified ? 0 : 1;
+  final verification = candidateVerification.compareTo(previousVerification);
+  if (verification != 0) return verification;
+
+  for (final comparison in [
+    _compareOfferText(candidate.sourceAdapter, previous.sourceAdapter),
+    _compareOfferText(candidate.source, previous.source),
+    _compareOfferText(candidate.proofRef, previous.proofRef),
+    candidate.id.compareTo(previous.id),
+  ]) {
+    if (comparison != 0) return comparison;
+  }
+  return 0;
+}
+
+int _compareOfferText(String? candidate, String? previous) {
+  if (candidate == null && previous == null) return 0;
+  if (candidate == null) return 1;
+  if (previous == null) return -1;
+  return candidate.trim().toLowerCase().compareTo(previous.trim().toLowerCase());
+}
+

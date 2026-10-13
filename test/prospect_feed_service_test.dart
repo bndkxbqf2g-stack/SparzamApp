@@ -23,6 +23,13 @@ void main() {
       "storeName": "ALDI Süd",
       "offerPrice": 0.69,
       "category": "Milchprodukte",
+      "packageSize": "200 g",
+      "priceByBaseUnit": "3,45 €/kg",
+      "sourceAdapter": "kaufda",
+      "regionalOnly": "false",
+      "brochureId": "brochure-1",
+      "brochurePage": "4",
+      "publisherId": "lidl",
       "originalPrice": 0.89,
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
@@ -47,6 +54,13 @@ void main() {
     expect(result.refreshedStores, ['ALDI Süd']);
     expect(result.records.first.originalPrice, 0.89);
     expect(result.records.first.category, 'Milchprodukte');
+    expect(result.records.first.packageSize, '200 g');
+    expect(result.records.first.priceByBaseUnit, '3,45 €/kg');
+    expect(result.records.first.sourceAdapter, 'kaufda');
+    expect(result.records.first.regionalOnly, isFalse);
+    expect(result.records.first.brochureId, 'brochure-1');
+    expect(result.records.first.brochurePage, 4);
+    expect(result.records.first.publisherId, 'lidl');
     expect(result.records.first.branchId, 'B384');
     expect(result.records.first.location, 'Zellingen');
     expect(result.records.first.address, contains('Würzburger Str. 74'));
@@ -151,6 +165,113 @@ void main() {
     expect(result.records.single.originalPrice, 0.89);
     expect(result.records.single.imageUrl, 'https://cdn.example/schmand.png');
     expect(result.records.single.proofRef, contains('offersbrochure:218970'));
+  });
+
+  test('uses the first validated page as a legacy cover fallback', () {
+    final result = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-10-01T04:15:00Z",
+  "sources": [
+    {
+      "storeName": "ALDI Süd",
+      "status": "metadata_only",
+      "prospects": [
+        {
+          "title": "ALDI Prospekt",
+          "pageSamples": [
+            {
+              "number": 1,
+              "image": "https://cdn.example/aldi-cover.jpg"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "offers": []
+}
+''');
+
+    final aldi = result.prospects.firstWhere(
+      (item) => item.storeName == 'ALDI Süd',
+    );
+    expect(aldi.pages, hasLength(1));
+    expect(aldi.thumbnailUrl, 'https://cdn.example/aldi-cover.jpg');
+  });
+
+  test('deduplicates and sorts valid prospect pages', () {
+    final result = parseProspectFeed(r'''
+{
+  "sources": [
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "prospects": [
+        {
+          "pageSamples": [
+            {"number": 3, "image": "https://cdn.example/page-3.jpg"},
+            {"number": 1, "image": "https://cdn.example/page-1.jpg"},
+            {"number": 3, "image": "https://cdn.example/page-3-duplicate.jpg"},
+            {"number": 0, "image": "https://cdn.example/invalid.jpg"}
+          ]
+        }
+      ]
+    }
+  ],
+  "offers": []
+}
+''');
+
+    final pages = result.prospects
+        .firstWhere((item) => item.storeName == 'Lidl')
+        .pages;
+    expect(pages.map((page) => page.number), [1, 3]);
+    expect(pages.map((page) => page.imageUrl), [
+      'https://cdn.example/page-1.jpg',
+      'https://cdn.example/page-3.jpg',
+    ]);
+  });
+
+  test('tolerates string metadata numbers without relaxing price validation', () {
+    final result = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-10-01T04:15:00Z",
+  "sources": [
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "recordCount": "2",
+      "prospects": [
+        {
+          "title": "Lidl Wochenprospekt",
+          "offerStartDate": "2026-09-28",
+          "offerEndDate": "2026-10-03",
+          "pageSamples": [
+            {"number": "1", "image": "https://example.test/page.jpg"}
+          ]
+        }
+      ]
+    }
+  ],
+  "offers": [
+    {
+      "sourceId": "string-price",
+      "productLabel": "Milch 1 l",
+      "storeName": "Lidl",
+      "offerPrice": "0.99",
+      "validUntil": "2026-10-03",
+      "proofRef": "https://example.test/string-price"
+    }
+  ]
+}
+''');
+
+    final prospect = result.prospects.singleWhere(
+      (item) => item.storeName == 'Lidl',
+    );
+    expect(prospect.recordCount, 2);
+    expect(prospect.pages.single.number, 1);
+    expect(result.records, isEmpty);
   });
 
   test('keeps prospect validity and link when page images are missing', () {
@@ -294,6 +415,130 @@ void main() {
     expect(result.records.single.sourceId, 'valid');
     expect(result.records.single.validFrom, DateTime(2026, 9, 28));
     expect(result.records.single.originalPrice, 0.89);
+  });
+
+  test('unknown regional flags stay non-routeable', () {
+    final result = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-10-01T04:15:00Z",
+  "sources": [
+    {"storeName": "Lidl", "branchId": "lidl_zellingen", "location": "Zellingen", "address": "Am Güßgraben 2"}
+  ],
+  "offers": [
+    {
+      "sourceId": "regional-unknown",
+      "productLabel": "Butter 250 g",
+      "storeName": "Lidl",
+      "offerPrice": 1.49,
+      "validUntil": "2026-10-03",
+      "source": "retailerWebsite",
+      "proofRef": "https://www.kaufda.de/Wuerzburg/Angebote/Butter",
+      "regionalOnly": "changed-format"
+    }
+  ]
+}
+''');
+
+    expect(result.records, hasLength(1));
+    expect(result.records.single.regionalOnly, isTrue);
+    expect(result.records.single.branchId, isNull);
+    expect(result.records.single.location, isNull);
+    expect(result.records.single.address, isNull);
+  });
+
+  test('legacy KaufDA records without a branch stay regional', () {
+    final result = parseProspectFeed(r'''
+{
+  "sources": [
+    {"storeName": "Lidl", "branchId": "lidl_zellingen", "location": "Zellingen"}
+  ],
+  "offers": [
+    {
+      "sourceId": "legacy-kaufda",
+      "productLabel": "Butter 250 g",
+      "storeName": "Lidl",
+      "offerPrice": 1.29,
+      "validUntil": "2026-10-17",
+      "sourceAdapter": "kaufda",
+      "proofRef": "https://www.kaufda.de/Wuerzburg/Angebote/Butter"
+    }
+  ]
+}
+''');
+
+    expect(result.records.single.regionalOnly, isTrue);
+    expect(result.records.single.branchId, isNull);
+    expect(result.records.single.location, isNull);
+  });
+
+  test('KaufDA cannot become routeable through a false regional flag', () {
+    final result = parseProspectFeed(r'''
+{
+  "sources": [
+    {"storeName": "Lidl", "branchId": "lidl_zellingen", "location": "Zellingen"}
+  ],
+  "offers": [
+    {
+      "sourceId": "false-regional-flag",
+      "productLabel": "Butter 250 g",
+      "storeName": "Lidl",
+      "offerPrice": 1.29,
+      "validUntil": "2026-10-17",
+      "source": "retailerWebsite",
+      "sourceAdapter": "kaufda",
+      "regionalOnly": false,
+      "branchId": null,
+      "proofRef": "https://www.kaufda.de/Wuerzburg/Angebote/Butter"
+    }
+  ]
+}
+''');
+
+    expect(result.records.single.regionalOnly, isTrue);
+    expect(result.records.single.branchId, isNull);
+    expect(result.records.single.location, isNull);
+  });
+
+  test('invalid image references are dropped before the scroll UI', () {
+    final result = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-10-01T04:15:00Z",
+  "sources": [
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "prospects": [
+        {
+          "title": "Lidl Wochenprospekt",
+          "thumbnailUrl": "javascript:alert(1)",
+          "pageSamples": [
+            {
+              "number": 1,
+              "image": "not-a-url",
+              "zoom": "https://example.test/page-large.jpg"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "offers": [
+    {
+      "sourceId": "invalid-image",
+      "productLabel": "Butter 250 g",
+      "storeName": "Lidl",
+      "offerPrice": 1.49,
+      "validUntil": "2026-10-03",
+      "proofRef": "https://example.test/offer",
+      "imageUrl": "data:image/png;base64,invalid"
+    }
+  ]
+}
+''');
+
+    expect(result.prospects.single.thumbnailUrl, isNull);
+    expect(result.prospects.single.pages, isEmpty);
+    expect(result.records.single.imageUrl, isNull);
   });
 
 }

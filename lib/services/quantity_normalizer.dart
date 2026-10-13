@@ -35,6 +35,15 @@ NormalizedQuantity? normalizeQuantity(double? amount, String? unit) {
         dimension: QuantityDimension.volume,
         baseUnit: 'l',
       ),
+    'cl' ||
+    'centiliter' ||
+    'centilitre' ||
+    'centiliters' ||
+    'centilitres' => NormalizedQuantity(
+        amount: amount / 100,
+        dimension: QuantityDimension.volume,
+        baseUnit: 'l',
+      ),
     'l' || 'liter' || 'litre' || 'liters' || 'litres' => NormalizedQuantity(
         amount: amount,
         dimension: QuantityDimension.volume,

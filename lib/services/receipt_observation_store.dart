@@ -3,12 +3,16 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/receipt_observation.dart';
+import 'sequential_operation_queue.dart';
 
 class ReceiptObservationStore {
   static const _key = 'receipt_observations_v1';
+  static final _queue = SequentialOperationQueue();
   final SharedPreferencesAsync _preferences = SharedPreferencesAsync();
 
-  Future<List<ReceiptObservation>> load() async {
+  Future<List<ReceiptObservation>> load() => _queue.schedule(_loadNow);
+
+  Future<List<ReceiptObservation>> _loadNow() async {
     final values = await _preferences.getStringList(_key);
     if (values == null) return <ReceiptObservation>[];
     final result = <ReceiptObservation>[];
@@ -27,44 +31,51 @@ class ReceiptObservationStore {
       ..sort((a, b) => b.observedAt.compareTo(a.observedAt));
   }
 
-  Future<int> addMany(Iterable<ReceiptObservation> observations) async {
-    final current = await load();
-    final byKey = _canonicalize(current);
-    var changedCount = 0;
-    var changed = false;
-    for (final entry in _canonicalize(observations).entries) {
-      final previous = byKey[entry.key];
-      final observation = previous == null
-          ? entry.value
-          : _mergeObservation(previous, entry.value);
-      if (previous == null) {
-        changedCount++;
-        changed = true;
-      } else if (jsonEncode(previous.toJson()) !=
-          jsonEncode(observation.toJson())) {
-        changedCount++;
-        changed = true;
+  Future<int> addMany(Iterable<ReceiptObservation> observations) {
+    final incoming = observations.toList(growable: false);
+    return _queue.schedule(() async {
+      final current = await _loadNow();
+      final byKey = _canonicalize(current);
+      var changedCount = 0;
+      var changed = false;
+      for (final entry in _canonicalize(incoming).entries) {
+        final previous = byKey[entry.key];
+        final observation = previous == null
+            ? entry.value
+            : _mergeObservation(previous, entry.value);
+        if (previous == null) {
+          changedCount++;
+          changed = true;
+        } else if (jsonEncode(previous.toJson()) !=
+            jsonEncode(observation.toJson())) {
+          changedCount++;
+          changed = true;
+        }
+        byKey[entry.key] = observation;
       }
-      byKey[entry.key] = observation;
-    }
-    if (!changed) return 0;
-    final next = byKey.values.toList()
-      ..sort((a, b) => b.observedAt.compareTo(a.observedAt));
-    await _preferences.setStringList(
-      _key,
-      next.map((item) => jsonEncode(item.toJson())).toList(),
-    );
-    // The import dialog uses this value to decide whether an import changed
-    // anything. Count updates as well as first-time inserts so a corrected
-    // identity is not reported as an empty save.
-    return changedCount;
+      if (!changed) return 0;
+      final next = byKey.values.toList()
+        ..sort((a, b) => b.observedAt.compareTo(a.observedAt));
+      await _preferences.setStringList(
+        _key,
+        next.map((item) => jsonEncode(item.toJson())).toList(),
+      );
+      // The import dialog uses this value to decide whether an import changed
+      // anything. Count updates as well as first-time inserts so a corrected
+      // identity is not reported as an empty save.
+      return changedCount;
+    });
   }
 
-  Future<void> replaceAll(List<ReceiptObservation> observations) =>
-      _preferences.setStringList(
+  Future<void> replaceAll(List<ReceiptObservation> observations) {
+    final snapshot = observations.toList(growable: false);
+    return _queue.schedule(() async {
+      await _preferences.setStringList(
         _key,
-        observations.map((item) => jsonEncode(item.toJson())).toList(),
+        snapshot.map((item) => jsonEncode(item.toJson())).toList(),
       );
+    });
+  }
 
   /// The source line number is useful evidence but is not stable across OCR
   /// engines and PDF text extraction. Group rows by their receipt fingerprint

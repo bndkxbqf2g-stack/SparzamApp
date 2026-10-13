@@ -76,6 +76,34 @@ void main() {
     );
   });
 
+  test('shopping evidence names KaufDA when the adapter is present', () {
+    final sourcedOffer = Offer(
+      id: 'kaufda_offer',
+      productId: milk.id,
+      storeName: 'Lidl',
+      originalPrice: 1.29,
+      offerPrice: 0.89,
+      source: 'retailerWebsite',
+      sourceAdapter: 'kaufda',
+      capturedAt: DateTime(2026, 9, 23, 6, 45),
+      proofRef: 'https://www.kaufda.de/example',
+      locationId: 'lidl_zellingen',
+      validUntil: DateTime(2026, 9, 30),
+    );
+
+    final quote = shoppingQuotes(
+      item,
+      prices: const [],
+      offers: [sourcedOffer],
+      now: DateTime(2026, 9, 24),
+    ).single;
+
+    expect(
+      quote.evidenceLabel,
+      'KaufDA · Nachweis vorhanden · Angebot bis 30.09.2026 · erfasst 23.09.2026 06:45 Uhr',
+    );
+  });
+
   test('missing offer proof remains explicit', () {
     final quote = shoppingQuotes(
       item,
@@ -85,6 +113,78 @@ void main() {
     ).single;
 
     expect(quote.evidenceLabel, startsWith('Manuell · Nachweis fehlt · '));
+  });
+
+  test('unproven external offers stay out of current price quotes', () {
+    final unproven = Offer(
+      id: 'unproven-leaflet',
+      productId: milk.id,
+      storeName: 'Lidl',
+      originalPrice: 1.29,
+      offerPrice: 0.59,
+      source: 'leaflet',
+      validUntil: DateTime(2026, 9, 30),
+    );
+
+    expect(
+      shoppingQuotes(
+        item,
+        prices: const [],
+        offers: [unproven],
+        now: DateTime(2026, 9, 24),
+      ),
+      isEmpty,
+    );
+  });
+
+  test('offers with an incompatible explicit package stay out of quotes', () {
+    final wrongPackage = Offer(
+      id: 'wrong-package-offer',
+      productId: milk.id,
+      storeName: 'Lidl',
+      originalPrice: 1.29,
+      offerPrice: 0.59,
+      source: 'retailerWebsite',
+      proofRef: 'https://example.test/wrong-package',
+      validUntil: DateTime(2026, 9, 30),
+      packageAmount: 500,
+      packageUnit: 'ml',
+      unitPrice: 1.18,
+    );
+
+    expect(
+      shoppingQuotes(
+        item,
+        prices: const [],
+        offers: [wrongPackage],
+        now: DateTime(2026, 9, 24),
+      ),
+      isEmpty,
+    );
+  });
+
+  test('legacy regional KaufDA offers stay out of current quotes', () {
+    final regional = Offer(
+      id: 'legacy-regional-kaufda',
+      productId: milk.id,
+      storeName: 'Lidl',
+      originalPrice: 1.29,
+      offerPrice: 0.59,
+      source: 'retailerWebsite',
+      sourceAdapter: 'kaufda',
+      proofRef: 'https://www.kaufda.de/Wuerzburg/Angebote/Milch',
+      validUntil: DateTime(2026, 9, 30),
+    );
+
+    expect(
+      shoppingQuotes(
+        item,
+        prices: const [],
+        offers: [regional],
+        now: DateTime(2026, 9, 24),
+      ),
+      isEmpty,
+    );
   });
 
   test('cashback is shown as the effective shopping-list price', () {
@@ -177,6 +277,88 @@ void main() {
         now: DateTime(2026, 9, 24),
       ),
       isEmpty,
+    );
+  });
+
+  test('uncertain market prices stay out of exact shopping quotes', () {
+    final uncertain = MarketPrice(
+      productId: milk.id,
+      storeName: 'Lidl',
+      price: 0.79,
+      updatedAt: DateTime(2026, 9, 24),
+      source: MarketPriceSource.receipt,
+      identityConfidence: 0.8,
+    );
+
+    expect(
+      shoppingQuotes(
+        item,
+        prices: [uncertain],
+        offers: const [],
+        now: DateTime(2026, 9, 24),
+      ),
+      isEmpty,
+    );
+  });
+
+  test('invalid explicit market package basis stays out of quotes', () {
+    final invalidBasis = MarketPrice(
+      productId: milk.id,
+      storeName: 'Lidl',
+      price: 0.79,
+      updatedAt: DateTime(2026, 9, 24),
+      source: MarketPriceSource.manual,
+      quantity: 0,
+      unit: 'l',
+      unitPrice: 0,
+    );
+
+    expect(
+      shoppingQuotes(
+        item,
+        prices: [invalidBasis],
+        offers: const [],
+        now: DateTime(2026, 9, 24),
+      ),
+      isEmpty,
+    );
+  });
+
+  test('shopping quotes ignore prices from another configured branch', () {
+    final wrongBranch = MarketPrice(
+      productId: milk.id,
+      storeName: 'Lidl',
+      price: 0.49,
+      updatedAt: DateTime(2026, 9, 24),
+      sourceLocationId: 'lidl-wuerzburg',
+    );
+    final exactBranch = MarketPrice(
+      productId: milk.id,
+      storeName: 'Lidl',
+      price: 0.79,
+      updatedAt: DateTime(2026, 9, 24),
+      sourceLocationId: 'lidl_zellingen',
+    );
+
+    expect(
+      shoppingQuotes(
+        item,
+        prices: [wrongBranch],
+        offers: const [],
+        enabledStores: const ['Lidl'],
+        now: DateTime(2026, 9, 24),
+      ),
+      isEmpty,
+    );
+    expect(
+      shoppingQuotes(
+        item,
+        prices: [exactBranch],
+        offers: const [],
+        enabledStores: const ['Lidl'],
+        now: DateTime(2026, 9, 24),
+      ).single.unitPrice,
+      0.79,
     );
   });
 

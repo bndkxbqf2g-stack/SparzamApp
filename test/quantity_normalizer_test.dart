@@ -19,6 +19,19 @@ void main() {
         closeTo(1.98, 0.0001));
   });
 
+  test('centilitres normalize to litres and compare with millilitres', () {
+    expect(quantitiesComparable(
+      leftAmount: 20,
+      leftUnit: 'cl',
+      rightAmount: 200,
+      rightUnit: 'ml',
+    ), isTrue);
+    expect(
+      normalizedUnitPrice(price: 1.20, amount: 20, unit: 'cl'),
+      closeTo(6, 0.0001),
+    );
+  });
+
   test('metric unit spellings normalize to the same package basis', () {
     expect(quantitiesComparable(
       leftAmount: 1000, leftUnit: ' Gramm ',

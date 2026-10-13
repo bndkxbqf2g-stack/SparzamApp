@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/offers/offer_import.dart';
+import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/models/product.dart';
 
 void main() {
@@ -55,6 +58,9 @@ void main() {
     expect(result.offer!.locationId, 'L-42');
     expect(result.offer!.region, 'Zellingen');
     expect(result.offer!.address, 'Hauptstraße 1, 97225 Zellingen');
+    expect(result.offer!.packageAmount, 1);
+    expect(result.offer!.packageUnit, 'l');
+    expect(result.offer!.unitPrice, closeTo(0.99, 0.00001));
   });
 
   test('offer without stated regular price stays usable without inventing one', () {
@@ -77,6 +83,123 @@ void main() {
     expect(result.offer!.originalPriceVerified, isFalse);
   });
 
+  test('does not resolve a catalog variant with a different package size', () {
+    final result = resolveOfferImport(
+      OfferImportRecord(
+        sourceId: 'wrong-package',
+        productLabel: 'Schmand',
+        packageSize: '400 g',
+        storeName: 'Lidl',
+        offerPrice: 1.49,
+        validUntil: DateTime(2026, 9, 30),
+        source: 'retailerWebsite',
+        proofRef: 'https://example.test/lidl/schmand',
+      ),
+      catalog,
+    );
+
+    expect(result.isResolved, isFalse);
+    expect(result.reason, 'package_mismatch');
+  });
+
+  test('compares centiliter prospect packages with milliliter catalog units', () {
+    const product = Product(
+      id: 'sahne',
+      name: 'Sahne',
+      unit: '200 ml',
+      group: 'milch',
+    );
+    final result = resolveOfferImport(
+      OfferImportRecord(
+        sourceId: 'cl-package',
+        productLabel: 'Sahne 20 cl',
+        storeName: 'Lidl',
+        offerPrice: 0.99,
+        validUntil: DateTime(2026, 9, 30),
+        source: 'retailerWebsite',
+        proofRef: 'https://example.test/lidl/sahne',
+      ),
+      const [product],
+    );
+
+    expect(result.isResolved, isTrue);
+    expect(result.product!.id, 'sahne');
+  });
+
+  test('keeps ambiguous package ranges unresolved', () {
+    final result = resolveOfferImport(
+      OfferImportRecord(
+        sourceId: 'range-package',
+        productLabel: 'Schmand 200/180 g',
+        storeName: 'Lidl',
+        offerPrice: 1.49,
+        validUntil: DateTime(2026, 9, 30),
+        source: 'retailerWebsite',
+        proofRef: 'https://example.test/lidl/schmand-range',
+      ),
+      catalog,
+    );
+
+    expect(result.isResolved, isFalse);
+    expect(result.reason, 'package_mismatch');
+  });
+
+  test('keeps the KaufDA adapter identity through offer persistence', () {
+    final result = resolveOfferImport(
+      OfferImportRecord(
+        sourceId: 'kaufda-1',
+        productLabel: 'Schmand 200 g',
+        storeName: 'Lidl',
+        originalPrice: 1.29,
+        offerPrice: 0.89,
+        validUntil: DateTime(2026, 9, 30),
+        source: 'retailerWebsite',
+        sourceAdapter: 'kaufda',
+        capturedAt: DateTime(2026, 9, 24, 8, 30),
+        proofRef: 'https://www.kaufda.de/Wuerzburg/Angebote/Schmand',
+        branchId: 'lidl_zellingen',
+      ),
+      catalog,
+    );
+
+    expect(result.isResolved, isTrue);
+    expect(result.offer!.source, 'retailerWebsite');
+    expect(result.offer!.sourceAdapter, 'kaufda');
+    expect(result.offer!.capturedAt, DateTime(2026, 9, 24, 8, 30));
+    expect(result.offer!.packageAmount, 200);
+    expect(result.offer!.packageUnit, 'g');
+    expect(result.offer!.unitPrice, closeTo(4.45, 0.00001));
+
+    final restored = Offer.fromJson(result.offer!.toJson());
+    expect(restored.source, 'retailerWebsite');
+    expect(restored.sourceAdapter, 'kaufda');
+    expect(restored.capturedAt, DateTime(2026, 9, 24, 8, 30));
+    expect(restored.packageAmount, 200);
+    expect(restored.packageUnit, 'g');
+    expect(restored.unitPrice, closeTo(4.45, 0.00001));
+  });
+
+  test('regional KaufDA discovery cannot be imported as an exact offer', () {
+    final result = resolveOfferImport(
+      OfferImportRecord(
+        sourceId: 'regional-kaufda',
+        productLabel: 'Schmand 200 g',
+        storeName: 'Lidl',
+        offerPrice: 0.89,
+        validUntil: DateTime(2026, 9, 30),
+        source: 'retailerWebsite',
+        sourceAdapter: 'kaufda',
+        regionalOnly: false,
+        proofRef: 'https://www.kaufda.de/Wuerzburg/Angebote/Schmand',
+      ),
+      catalog,
+    );
+
+    expect(result.isResolved, isFalse);
+    expect(result.offer, isNull);
+    expect(result.reason, 'regional_only');
+  });
+
   test('resolved external offer without proof stays untrusted', () {
     final result = resolveOfferImport(
       OfferImportRecord(
@@ -93,6 +216,40 @@ void main() {
 
     expect(result.isResolved, isFalse);
     expect(result.reason, 'missing_proof');
+  });
+
+  test('manual import source is case-insensitive and needs no proof', () {
+    final result = resolveOfferImport(
+      OfferImportRecord(
+        sourceId: 'manual-case',
+        productLabel: 'Schmand',
+        storeName: 'Lidl',
+        offerPrice: 0.69,
+        validUntil: DateTime(2026, 9, 26),
+        source: 'MANUAL',
+      ),
+      catalog,
+    );
+
+    expect(result.isResolved, isTrue);
+    expect(result.offer!.source, 'MANUAL');
+  });
+
+  test('legacy offers without package fields remain readable', () {
+    final offer = Offer.fromJson(
+      jsonEncode({
+        'id': 'legacy-offer',
+        'productId': 'schmand',
+        'storeName': 'Lidl',
+        'originalPrice': 0.89,
+        'offerPrice': 0.69,
+        'validUntil': '2026-09-30T00:00:00.000',
+      }),
+    );
+
+    expect(offer.packageAmount, isNull);
+    expect(offer.packageUnit, isNull);
+    expect(offer.unitPrice, isNull);
   });
 
   test('unsafe external proof stays untrusted', () {

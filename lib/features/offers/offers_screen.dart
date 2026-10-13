@@ -278,10 +278,20 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     final visible = <String, ProspectIssue>{};
     for (final issue in widget.issues) {
       final count = currentCounts[issue.storeName] ?? 0;
+      final regionalCount = widget.records
+          .where(
+            (record) =>
+                record.storeName == issue.storeName && record.regionalOnly,
+          )
+          .length;
       final usesCurrentFallback = issue.sourceStatus == 'error' && count > 0;
-      if (count > 0 && !usesCurrentFallback) continue;
+      final needsRegionalNotice = issue.sourceStatus == 'regional_only' ||
+          (count > 0 && regionalCount == count);
+      if (count > 0 && !usesCurrentFallback && !needsRegionalNotice) continue;
       final String status;
-      if (issue.sourceStatus == 'ok') {
+      if (needsRegionalNotice) {
+        status = 'regional_only';
+      } else if (issue.sourceStatus == 'ok') {
         status = 'no_current_offers';
       } else if (usesCurrentFallback) {
         status = 'current_fallback';
@@ -333,9 +343,13 @@ class _OfferSourceNotice extends StatelessWidget {
       'error' =>
         'Automatischer Abruf aktuell nicht verfügbar. '
             'Der offizielle Prospekt bleibt direkt erreichbar.',
+      'regional_only' =>
+        'Angebote sind nur regional erkannt; eine exakte Filiale ist noch '
+            'nicht bestätigt und die Artikel bleiben für die Route gesperrt.',
       _ => 'Für diesen Markt sind aktuell keine Angebotsdaten verfügbar.',
     };
     final location = issue.location?.trim();
+    final issueUri = _safeProspectUri(issue.url);
     return Card(
       color: Colors.orange.shade50,
       child: Padding(
@@ -357,12 +371,12 @@ class _OfferSourceNotice extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(message),
-                  if (issue.url?.trim().isNotEmpty == true)
+                  if (issueUri != null)
                     Align(
                       alignment: Alignment.centerLeft,
                       child: TextButton.icon(
                         onPressed: () => launchUrl(
-                          Uri.parse(issue.url!),
+                          issueUri,
                           mode: LaunchMode.externalApplication,
                         ),
                         icon: const Icon(Icons.open_in_new, size: 18),
@@ -377,6 +391,19 @@ class _OfferSourceNotice extends StatelessWidget {
       ),
     );
   }
+}
+
+Uri? _safeProspectUri(String? value) {
+  final raw = value?.trim();
+  if (raw == null || raw.isEmpty) return null;
+  final uri = Uri.tryParse(raw);
+  final scheme = uri?.scheme.toLowerCase();
+  if (uri == null ||
+      uri.host.trim().isEmpty ||
+      (scheme != 'http' && scheme != 'https')) {
+    return null;
+  }
+  return uri;
 }
 
 Map<String, List<OfferImportRecord>> _grouped(List<OfferImportRecord> records) {

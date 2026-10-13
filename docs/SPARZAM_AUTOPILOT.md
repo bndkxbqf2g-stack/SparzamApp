@@ -78,7 +78,7 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [ ] Bon-OCR robuster gegen Händlerlayouts machen
 - [ ] Produktzeilen automatisch erkennen/zuordnen
 - [ ] erkannte Produkte automatisch als Beobachtungen aufnehmen
-- [ ] Dubletten-/Receipt-Fingerprint-Härtung
+- [x] Dubletten-/Receipt-Fingerprint-Härtung
 - [ ] Open Prices als optionale Ergänzung optimieren
 - [x] manuelle Preisbestätigung aus der Datenlückenkarte vereinfachen
 - [ ] spätere Video-/Regalerfassung nur nach stabiler Foto/OCR-Basis prüfen

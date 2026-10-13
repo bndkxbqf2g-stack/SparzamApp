@@ -54,4 +54,42 @@ void main() {
     expect(saved?.packageAmount, 500);
     expect(saved?.packageUnit, 'ml');
   });
+
+  testWidgets('EAN wird normalisiert und ungültige Zeichen werden abgelehnt', (
+    tester,
+  ) async {
+    Product? saved;
+    await openEditor(tester, (product) => saved = product);
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Produktname'),
+      'UPC-Produkt',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'EAN / Barcode'),
+      '123-456789012',
+    );
+    await tester.ensureVisible(find.text('Produkt speichern'));
+    await tester.tap(find.text('Produkt speichern'));
+    await tester.pumpAndSettle();
+
+    expect(saved?.ean, '0123456789012');
+
+    await tester.tap(find.text('Öffnen'));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Produktname'),
+      'Ungültig',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'EAN / Barcode'),
+      'ABC-123',
+    );
+    await tester.ensureVisible(find.text('Produkt speichern'));
+    await tester.tap(find.text('Produkt speichern'));
+    await tester.pump();
+    expect(
+      find.text('Nur Ziffern, Leerzeichen oder Bindestriche eingeben'),
+      findsOneWidget,
+    );
+  });
 }

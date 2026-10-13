@@ -98,4 +98,80 @@ void main() {
     expect(prices, isEmpty);
   });
 
+  test('planning preserves separate exact branch observations', () {
+    final prices = planningMarketPrices(
+      exactPrices: [
+        MarketPrice(
+          productId: 'milk',
+          storeName: 'Lidl',
+          price: 0.79,
+          updatedAt: DateTime(2026, 10, 12),
+          sourceLocationId: 'lidl-zellingen',
+        ),
+        MarketPrice(
+          productId: 'milk',
+          storeName: 'Lidl',
+          price: 0.49,
+          updatedAt: DateTime(2026, 10, 12),
+          sourceLocationId: 'lidl-wuerzburg',
+        ),
+      ],
+      familyPrices: const [],
+      now: DateTime(2026, 10, 12),
+    );
+
+    expect(prices, hasLength(2));
+    expect(prices.map((price) => price.sourceLocationId), containsAll([
+      'lidl-zellingen',
+      'lidl-wuerzburg',
+    ]));
+  });
+
+  test('planning and route selection break exact ties independently of input order', () {
+    final first = MarketPrice(
+      productId: 'milk',
+      storeName: 'Lidl',
+      price: 0.79,
+      updatedAt: DateTime(2026, 10, 12),
+      sourceAdapter: 'z-source',
+    );
+    final second = MarketPrice(
+      productId: 'milk',
+      storeName: 'Lidl',
+      price: 0.79,
+      updatedAt: DateTime(2026, 10, 12),
+      sourceAdapter: 'a-source',
+    );
+    const store = Store(
+      name: 'Lidl',
+      location: 'Ort',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    const product = Product(
+      id: 'milk',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'milch',
+    );
+
+    for (final order in [
+      [first, second],
+      [second, first],
+    ]) {
+      final prices = planningMarketPrices(
+        exactPrices: order,
+        familyPrices: const [],
+        now: DateTime(2026, 10, 12),
+      );
+      expect(prices.single.sourceAdapter, 'a-source');
+      final quote = RoutePriceResolver(
+        const [],
+        marketPrices: order,
+        now: DateTime(2026, 10, 12),
+      ).quote(store, ListItem(product: product));
+      expect(quote?.observation?.sourceAdapter, 'a-source');
+    }
+  });
+
 }

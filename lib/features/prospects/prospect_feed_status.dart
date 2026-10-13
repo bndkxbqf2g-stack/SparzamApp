@@ -114,6 +114,7 @@ class ProspectCoverage {
     required this.storeName,
     required this.sourceStatus,
     required this.structuredOfferCount,
+    required this.regionalOnlyCount,
     required this.pageCount,
     required this.offerImageCount,
     required this.offerCategoryCount,
@@ -127,6 +128,7 @@ class ProspectCoverage {
   final String storeName;
   final String sourceStatus;
   final int structuredOfferCount;
+  final int regionalOnlyCount;
   final int pageCount;
   final int offerImageCount;
   final int offerCategoryCount;
@@ -137,6 +139,10 @@ class ProspectCoverage {
   final bool hasValidity;
 
   bool get hasStructuredOffers => structuredOfferCount > 0;
+  int get routeableOfferCount =>
+      (structuredOfferCount - regionalOnlyCount)
+          .clamp(0, structuredOfferCount)
+          .toInt();
   bool get hasPageImages => pageCount > 0;
 
   int get availableStoreSignals => [
@@ -197,11 +203,13 @@ ProspectCoverage _coverageForStore(
   final offerProofCount = records
       .where((record) => hasTrustedOfferProofReference(record.proofRef))
       .length;
+  final regionalOnlyCount = records.where((record) => record.regionalOnly).length;
   return ProspectCoverage(
     storeName: storeName,
     sourceStatus: issue?.sourceStatus ?? 'unavailable',
     structuredOfferCount: records.length,
-    pageCount: issue?.pages.length ?? 0,
+    regionalOnlyCount: regionalOnlyCount,
+    pageCount: _prospectPageCount(issue),
     offerImageCount: offerImageCount,
     offerCategoryCount: offerCategoryCount,
     offerProofCount: offerProofCount,
@@ -210,6 +218,20 @@ ProspectCoverage _coverageForStore(
     hasAddress: issue?.address?.trim().isNotEmpty == true,
     hasValidity: issue?.validFrom != null && issue?.validUntil != null,
   );
+}
+
+int _prospectPageCount(ProspectIssue? issue) {
+  if (issue == null) return 0;
+  if (issue.pages.isNotEmpty) return issue.pages.length;
+  final raw = issue.thumbnailUrl?.trim();
+  if (raw == null || raw.isEmpty) return 0;
+  final uri = Uri.tryParse(raw);
+  final scheme = uri?.scheme.toLowerCase();
+  return uri != null &&
+          uri.host.trim().isNotEmpty &&
+          (scheme == 'http' || scheme == 'https')
+      ? 1
+      : 0;
 }
 
 /// Makes missing prospect evidence explicit without changing offer selection.
@@ -233,6 +255,10 @@ class ProspectCoverageCard extends StatelessWidget {
     final marketsWithProof = coverage
         .where((entry) => entry.offerProofCount > 0)
         .length;
+    final regionalOffers = coverage.fold<int>(
+      0,
+      (sum, entry) => sum + entry.regionalOnlyCount,
+    );
 
     return Card(
       child: ExpansionTile(
@@ -242,7 +268,8 @@ class ProspectCoverageCard extends StatelessWidget {
           '${coverage.length} Märkte · $marketsWithOffers mit strukturierten '
           'Angeboten · $marketsWithPages mit Bildseiten · '
           '$marketsWithValidity mit Gültigkeitszeitraum · '
-          '$marketsWithProof mit Originalnachweis',
+          '$marketsWithProof mit Originalnachweis'
+          '${regionalOffers == 0 ? '' : ' · $regionalOffers nur regional'}',
         ),
         children: [
           for (final entry in coverage)
@@ -268,6 +295,9 @@ class ProspectCoverageCard extends StatelessWidget {
 
 IconData _coverageIcon(ProspectCoverage coverage) {
   if (coverage.sourceStatus == 'error') return Icons.warning_amber_outlined;
+  if (coverage.sourceStatus == 'regional_only') {
+    return Icons.location_searching_outlined;
+  }
   if (coverage.hasStructuredOffers || coverage.hasPageImages) {
     return Icons.check_circle_outline;
   }
@@ -276,6 +306,7 @@ IconData _coverageIcon(ProspectCoverage coverage) {
 
 Color _coverageColor(BuildContext context, ProspectCoverage coverage) {
   if (coverage.sourceStatus == 'error') return Colors.orange.shade800;
+  if (coverage.sourceStatus == 'regional_only') return Colors.deepOrange;
   if (coverage.hasStructuredOffers || coverage.hasPageImages) {
     return Theme.of(context).colorScheme.primary;
   }
@@ -290,7 +321,11 @@ String _coverageDetails(ProspectCoverage coverage) {
   final proofs =
       '${coverage.offerProofCount}/${coverage.structuredOfferCount} Nachweise';
   final storeSignals = '${coverage.availableStoreSignals}/4 Filialdaten';
-  return '${coverage.structuredOfferCount} strukturierte Angebote · '
+  final regional = coverage.regionalOnlyCount == 0
+      ? ''
+      : ' · ${coverage.regionalOnlyCount} nur regional';
+  return '${coverage.structuredOfferCount} strukturierte Angebote'
+      '$regional · '
       '${coverage.pageCount} Bildseiten · $productImages · $categories · '
       '$proofs · '
       '$storeSignals';
@@ -304,6 +339,8 @@ String _sourceStatusLabel(String status) {
       return 'Fallback';
     case 'metadata_only':
       return 'Metadaten';
+    case 'regional_only':
+      return 'nur regional';
     case 'error':
       return 'Fehler';
     case 'no_current_offers':

@@ -23,8 +23,12 @@ String routePriceEvidenceLabel(RoutePriceQuote quote, {required DateTime now}) {
     final proofLabel = proof == null || proof.isEmpty
         ? 'Nachweis fehlt'
         : 'Nachweis vorhanden';
-    return '$effective · ${_offerSourceLabel(offer.source)} · '
-        '$proofLabel · ${_offerValidityLabel(offer)}';
+    final captured = offer.capturedAt;
+    final capturedLabel = captured == null
+        ? ''
+        : ' · erfasst ${_dateTime(captured)}';
+    return '$effective · ${_offerSourceLabel(offer.sourceAdapter ?? offer.source)} · '
+        '$proofLabel · ${_offerValidityLabel(offer)}$capturedLabel';
   }
 
   final observation = quote.observation;
@@ -121,6 +125,7 @@ class RoutePriceEvidenceSummary {
 String _offerSourceLabel(String source) =>
     switch (source.trim().toLowerCase()) {
       'leaflet' => 'Prospekt',
+      'kaufda' => 'KaufDA',
       'retailer' => 'Händler',
       'retailerwebsite' || 'retailer_website' => 'Händler-Website',
       'receipt' => 'Kassenbon',
@@ -149,3 +154,8 @@ int _dayDifference(DateTime now, DateTime observed) {
 
 String _date(DateTime value) =>
     '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.${value.year}';
+
+String _dateTime(DateTime value) {
+  final local = value.toLocal();
+  return '${_date(local)} · ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')} Uhr';
+}

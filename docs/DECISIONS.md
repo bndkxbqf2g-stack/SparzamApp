@@ -689,11 +689,12 @@ Eine Bonpreisstatistik gilt nur dann als grundpreisbasiert vergleichbar, wenn
 alle Beobachtungen einen gültigen positiven Einzelpreis besitzen und ihre
 Mengenmetadaten dieselbe Einheitendimension (Masse, Volumen oder Stück)
 belegen. Unterschiedliche Packungsmengen innerhalb derselben Dimension dürfen
-weiter über den Grundpreis zusammengefasst werden. Gemischte Dimensionen,
-ungültige Mengen oder nur teilweise vorhandene Mengenmetadaten fallen auf den
-historischen Packungspreis zurück. Alte Beobachtungen ohne Mengenmetadaten
-bleiben aus Kompatibilitätsgründen lesbar und vergleichbar, sofern ihre
-Einzelpreise gültig sind.
+weiter über den Grundpreis zusammengefasst werden; bekannte g/kg- und
+ml/cl/l-Einheiten werden dafür zuerst auf kg bzw. l normiert. Gemischte
+Dimensionen, ungültige Mengen oder nur teilweise vorhandene Mengenmetadaten
+fallen auf den historischen Packungspreis zurück. Alte Beobachtungen ohne
+Mengenmetadaten bleiben aus Kompatibilitätsgründen lesbar und vergleichbar,
+sofern ihre Einzelpreise gültig sind.
 
 ## D102 – Die iOS-Kamerafreigabe erklärt beide lokalen Kamerawege
 Die iOS-Kamera-Berechtigungsbeschreibung nennt sowohl das Scannen von
@@ -742,3 +743,586 @@ Marktidentität verwendet, sofern sie eindeutig erkannt wird; bestehende
 unbekannte Händlerlabels bleiben unverändert. So verbindet die Lernhistorie
 „ALDI SUED“ mit „ALDI Süd“ und „Lidl · Zellingen“ mit „Lidl“, ohne Preise
 einem beliebigen Händler per Teilstring zuzuordnen.
+
+## D108 – Preisabdeckung zählt nur vergleichbare Produktpackungen
+Katalog- und Filialabdeckung verwenden dieselbe zentrale Mengen-/Einheitsprüfung
+wie Einkaufspreisfenster, Beobachtungsprojektion und Routenauflösung. Ein
+bekannter Preis mit abweichender Packungsgröße erhöht keine Abdeckung und wird
+als eigene Datenlücke sichtbar gemacht. Aufrufe ohne Produktkatalog dürfen für
+Diagnosezwecke weiterhin die vorhandene quellenbasierte Zählung verwenden.
+
+## D109 – Produktquellen normalisieren Einheiten an der Grenze
+Open-Food-Facts-Mengen werden vor dem Speichern in die unterstützten internen
+Einheiten überführt. Eine strukturierte Angabe wie `20 cl` wird zu `200 ml`;
+unbekannte Einheiten bleiben ohne Packungsbasis. Dadurch teilen Adapter,
+Preisvergleich und Routenauflösung dieselbe vergleichbare Mengensemantik.
+
+## D110 – Zentiliter sind eine unterstützte Volumen-Schreibweise
+Die gemeinsame Mengen-Normalisierung behandelt `cl`/`centiliter` als
+Volumenangabe und vergleicht sie mit Millilitern und Litern. Produkt-,
+Prospekt- und Preisparser dürfen deshalb `20 cl` als 200 ml vergleichbar
+machen; eine unbekannte oder mehrdeutige Schreibweise bleibt weiterhin offen.
+## D111 – Externe Angebote benötigen einen Nachweis für die direkte Route
+
+`Offer`-Einträge aus Händler-, Prospekt- oder anderen externen Quellen dürfen
+den `RoutePriceResolver` nur mit einer vertrauenswürdigen `proofRef` erreichen.
+Manuelle Nutzerangebote bleiben ohne externe Referenz zulässig. Damit sind
+gespeicherte, unvollständige oder nachträglich veränderte Importdatensätze
+keine stillschweigenden Preisbelege. Die Prüfung nutzt dieselbe
+`hasTrustedOfferProofReference`-Regel wie der Import- und Beobachtungspfad.
+
+## D112 – Konkrete Adapterherkunft bleibt neben der Quellenklasse erhalten
+
+`PriceObservation` und die daraus projizierte `MarketPrice` speichern
+`sourceAdapter` optional zusätzlich zur stabilen Quellenklasse. Damit bleibt
+eine Herkunft wie KaufDA in Historie und Preisfenster nachvollziehbar, ohne
+alte JSON-Formate oder die fachliche Quellenbewertung umzudeuten.
+
+## D113 – Externe Angebotsnachweise gelten für jede aktuelle Preiswahl
+
+Die für `RoutePriceResolver` eingeführte Nachweisgrenze wird auch in
+Preisfenster, Suchvorschlägen und Kandidatenkarten verwendet. Ein externes
+Angebot ohne vertrauenswürdige `proofRef` darf dort nicht als aktueller Preis
+gerankt werden. Manuelle Nutzereingaben bleiben ohne externe Referenz zulässig;
+die Angebotsübersicht kann unvollständige Datensätze weiterhin als Prüfhinweis
+anzeigen.
+
+## D114 – Bekannte Filialen werden vor jeder lokalen Preiswahl abgeglichen
+
+Preisfenster, Suchkandidaten und Vorschläge verwenden neben der Route dieselbe
+kanonische Filialprüfung. Ein `sourceLocationId` oder `Offer.locationId`, das
+nachweislich zu einer anderen konfigurierten Filiale derselben Kette gehört,
+bleibt aus der lokalen Preiswahl heraus. Fehlende Quellfilialen bleiben als
+Legacy-Fallback sichtbar, weil daraus keine eindeutige Gegenentscheidung folgt.
+
+## D115 – Evidenzprüfung bleibt im Beobachtungsadapter identisch
+
+Die Vertrauensentscheidung wird im Offer-zu-`PriceObservation`-Adapter
+wiederverwendet. Dadurch bleibt manuelle Eingabe auch bei einer abweichenden
+Groß-/Kleinschreibung als bestätigte Nutzerquelle erhalten.
+
+Die Importgrenze verwendet dieselbe Fallnormalisierung für `manual`; dadurch
+entsteht zwischen manuell erfassten Importen und gespeicherten Angeboten keine
+abweichende Nachweispflicht.
+
+## D116 – Bon-Dubletten vergleichen Inhaltsmetadaten ohne alte IDs zu ändern
+
+Die Importprüfung verwendet zusätzlich zum historischen, layoutstabilen
+Bon-Fingerprint einen Inhaltsfingerprint. Mengen, Einheit, Einzelpreis,
+Rabattverknüpfung und der berechnete Betrag werden berücksichtigt; Zahlungszeilen
+und physische OCR-/PDF-Zeilennummern bleiben ausgeschlossen. Der bestehende
+Fingerprint bleibt unverändert, damit gespeicherte Beobachtungs- und Preis-IDs
+bei einer erneuten App-Version stabil bleiben.
+
+## D117 – Angebots-Packungsbasis bleibt bis zur Preisbeobachtung erhalten
+
+Wenn ein Prospektdatensatz eine eindeutig parsebare Packungsmenge liefert,
+speichert das daraus erzeugte `Offer` Menge, Einheit und normalisierten
+Grundpreis. Der Rabatt- und der ausgewiesene Normalpreis übernehmen diese
+Basis getrennt in `PriceObservation`. Legacy-Angebote ohne Mengenangabe bleiben
+lesbar, werden aber nicht durch eine angenommene Packungsgröße vergleichbar.
+
+## D118 – Explizit falsche Angebots-Packungen bleiben außerhalb der Preiswahl
+
+Angebote mit gespeicherter Packungsmenge werden vor Route, Preisfenster,
+Suchkandidaten und Vorschlägen gegen die angefragte Produktpackung geprüft.
+Eine bekannte Abweichung wird wie eine Datenlücke behandelt; ältere Angebote
+ohne Mengenmetadaten bleiben als rückwärtskompatible Legacy-Evidenz zulässig.
+
+## D119 – Regionale KaufDA-Treffer bleiben auch an der Importgrenze unroutebar
+
+Ein `OfferImportRecord` mit `regionalOnly` darf unabhängig vom aufrufenden UI-
+Pfad kein gespeichertes `Offer` erzeugen. Der regionale Treffer bleibt im
+Prospektfeed als Recherche- und Nachweistext sichtbar; für Filialpreis,
+Preisbeobachtung und Route ist eine eigene Branch-Assertion erforderlich.
+
+## D120 – Alte regionale KaufDA-Angebote werden nachträglich abgewiesen
+
+Bereits gespeicherte `Offer`-Einträge können aus einer Version stammen, die
+`regionalOnly` noch nicht bis zur Importgrenze geführt hat. Für
+`sourceAdapter == kaufda` gilt deshalb zusätzlich eine vorhandene
+`locationId` als notwendige Branch-Assertion. Ohne diese ID bleibt der
+Datensatz lesbar, wird aber aus Route, Preisfenster, Kandidaten und
+Vorschlägen ausgeschlossen; seine Beobachtungs-Confidence bleibt `0`.
+Dasselbe Branch-Erfordernis gilt am `OfferImportRecord`- und Lernpfad, auch
+wenn ein eingehendes Regionalflag manipuliert oder weggelassen wurde.
+
+## D121 – Append-only Preisbeobachtungen werden bei parallelen Reads vereinigt
+
+Bon-, Prospekt- und allgemeine Beobachtungs-Ladevorgänge dürfen beim
+App-Start parallel laufen. Jeder Shell-State-Update vereinigt deshalb den
+geladenen Stand nach stabiler Beobachtungs-ID mit dem bereits im Speicher
+vorhandenen Stand. Ein später beendeter, älterer Read kann dadurch keine
+zwischenzeitlich gelernte Beobachtung aus der sichtbaren Preisbasis entfernen.
+
+## D122 – Backup-Importe invalidieren verspätete Start-Reads
+
+Ein lokales Backup schreibt mehrere voneinander unabhängige Speicherbereiche.
+Vor dem ersten asynchronen Write erhöht die Shell deshalb eine interne
+Datenrevision. Start-, Prospekt- und Bon-Ladevorgänge prüfen diese Revision vor
+jeder sichtbaren Projektion und werden bei einem inzwischen begonnenen Import
+verworfen. Angebots- und Listen-Backups laufen zusätzlich hinter den jeweiligen
+Schreibwarteschlangen; Beleg-Import und vollständige Beleg-Ersetzung teilen
+eine Queue. So kann ein älterer Callback ein erfolgreich importiertes Backup
+nicht wieder mit alten Daten überdecken.
+
+## D123 – Preisoberflächen verwenden dieselbe Verwendbarkeitsgrenze
+
+Die Einkaufsliste darf einen `MarketPrice` nicht als exakte Quote anzeigen,
+wenn seine zentrale `identityConfidence` unter `1` liegt oder eine explizit
+gespeicherte Mengenbasis ungültig ist. Für manuelle und Open-Prices-Preise gilt
+außerdem dieselbe Aktualitätsprüfung wie in der Route. Alte, aber sicher
+identifizierte Bonpreise bleiben ausschließlich als historische Hinweise
+sichtbar. Damit kann die Listenmatrix keine Preisqualität behaupten, die der
+Routenresolver bereits ablehnt.
+
+## D124 – Prospekt-Übernahmen prüfen den Widget-Lebenszyklus
+
+Ein Prospektkarten-Callback darf nach einer synchronen Elternänderung kein
+bereits entferntes Karten-Widget mehr aktualisieren. Ebenso darf die manuelle
+Seitenübernahme nach dem asynchronen Speichern keinen Callback in einen
+unmounted Screen ausführen. Beide Stellen prüfen deshalb `mounted` direkt vor
+dem lokalen State-Update beziehungsweise vor dem Listen-Callback.
+
+## D125 – Persistente Preis- und Backup-Mutationen laufen geordnet
+
+Backup, manuelle Marktpreise, Open Prices, Angebots-Historie, Katalog-, Kauf-
+und Einstellungsänderungen sowie die betroffenen Listen-/Prospektpfade
+verwenden in der Shell dieselbe lokale Schreibwarteschlange. Ein bereits
+überholter Vorgang prüft seine Datenrevision vor dem Start und verwirft sein
+Ergebnis vor dem sichtbaren State-Update. Der Backup-Write selbst wird als
+zusammenhängender Vorgang in dieser Queue ausgeführt, damit ein verspäteter
+lokaler Callback keine importierten Daten nachträglich überschreibt.
+
+## D126 – Prospektbestände bleiben an Refresh- und App-Grenze lebensmittelrein
+
+Die sichtbare Angebots- und Preisroute verarbeitet ausschließlich aktuelle
+Lebensmittelangebote. Der Refresh-Filter verwirft klar erkennbare Haushalts-,
+Kosmetik-, Medizin-, Tierfutter- und saisonale Non-Food-Artikel; die Flutter-
+Feedgrenze wiederholt dieselbe Prüfung für ältere oder manuell bereitgestellte
+Feedstände. Händlerkategorien werden nur als zusätzliche starke Evidenz für
+Tierbedarf verwendet, damit Lebensmittel wie Proteinriegel oder Shakes aus
+fehlerhaft gruppierten Händlerkategorien nicht verloren gehen. Ein vorhandener
+Nachweis, Preis oder ein Bild hebt die Non-Food-Sperre nicht auf.
+
+## D127 – Straßenstreckenabrufe dürfen keinen veralteten UI-Zustand projizieren
+
+Routen- und Filialansichten versehen Laden und Aktualisieren der
+Entfernungsmatrix mit einer Anfrage-Revision. Ein Abruf, der nach einem
+Adresswechsel, einer neuen Aktualisierung oder dem Entfernen des Widgets
+zurückkehrt, wird verworfen. Fehler beim Routing oder lokalen Cache beenden den
+Ladezustand und zeigen einen verständlichen Hinweis; vorhandene manuelle bzw.
+gecachte Entfernungen bleiben dabei erhalten.
+
+## D128 – Belegimporte aktualisieren keinen entfernten Dialog
+
+Nach asynchronem OCR-, Alias- oder Preisspeichern prüft der Belegdialog seinen
+Widget-Lebenszyklus, bevor ein Fehlerzustand gesetzt oder das Ergebnis
+angezeigt wird. Ein bereits geschlossener Dialog verwirft den verspäteten
+Rückweg; die persistierten Beobachtungen bleiben davon unberührt.
+
+## D129 – Datumsdialoge prüfen den Widget-Lebenszyklus
+
+Angebots- und manuelle Prospektseiten übernehmen ein gewähltes Datum erst,
+wenn der aufrufende Editor noch montiert ist. Wird der Editor während des
+DatePickers geschlossen, wird die Antwort ohne State-Update verworfen.
+
+## D130 – KaufDA-Next-Daten bleiben bei optionalem Script-Typ stabil
+
+Der optionale KaufDA-Adapter akzeptiert `__NEXT_DATA__` weiterhin nur anhand
+der exakten Script-ID und gültigem JSON. Das optionale HTML-Attribut `type` darf
+fehlen oder `application/json` lauten; andere Script-IDs und nicht parsebares
+JSON bleiben Fehler. Damit übersteht der Diagnosepfad eine harmlose
+Markupänderung, ohne fremde Seiteninhalte einzulesen.
+
+## D131 – Manuelle Angebotsmutationen respektieren die Datenrevision
+
+Auch das Speichern und Löschen eines manuell geprüften Angebots erfasst die
+aktuelle Shell-Datenrevision. Beginnt vorher ein Backup-Import, wird der alte
+Callback innerhalb der gemeinsamen Schreibwarteschlange verworfen und nicht
+nachträglich in den importierten Angebotsbestand geschrieben.
+
+## D132 – Offline-Strecken werden je Startadresse versioniert gespeichert
+
+Entfernungen und Straßenmatrizen werden in lokalen Mehrfach-Cache-Einträgen
+pro normalisierter Startadresse gespeichert. Der bisherige Einzelwert bleibt
+über einen Legacy-Fallback lesbar. Read-Modify-Write-Vorgänge laufen
+serialisiert, damit ein Wechsel zwischen Thüngersheim, Zellingen und Würzburg
+keine bereits ermittelte Offline-Strecke verliert.
+
+## D133 – Externe Prospekt- und Produkt-Discovery ist abschaltbar
+
+`ProspectFeedService` und `ProspectImportModule` können Netzwerkzugriffe per
+Feature-Flag deaktivieren und verwenden dann ausschließlich lokalen Cache oder
+das gebündelte Asset. Die optionale Open-Food-Facts-Discovery besitzt dieselbe
+Grenze. Ein deaktivierter Dienst erzeugt keinen Request und liefert keine
+erfundene Identität oder Preisbasis.
+
+## D134 – EAN-Discovery braucht Token- und Variantenverträglichkeit
+
+Fehlt ein EAN, akzeptiert die Open-Food-Facts-Discovery nur Treffer mit
+vollständigen Namens-Tokens und kompatibler Produktidentität. Reine
+Teilstrings sowie abweichende Varianten wie Milch mit 1,5 % und 3,5 % Fett
+werden nicht als dieselbe konkrete Produktvariante vorgeschlagen.
+
+## D135 – Externe EAN-Preise tragen die bekannte Packungsbasis
+
+Liefert Open Prices eine bekannte Produkt-Packungsgröße, übernimmt der Adapter
+Menge, Einheit und den daraus normalisierten Grundpreis in `MarketPrice`.
+Damit bleiben zentrale Packungs- und Einheitenprüfungen aktiv; fehlende oder
+nicht vergleichbare Daten bleiben unbekannt.
+
+## D136 – Evidenzspeicher liefern den abgeschlossenen Schreibstand
+
+Lesen aus dem Preis- oder Bon-Evidenzspeicher wartet auf die gemeinsame lokale
+Schreibwarteschlange. Queue-interne Operationen lesen weiterhin direkt, damit
+kein Deadlock entsteht. Ein paralleles Lesen kann dadurch keinen veralteten
+Stand vor einer abgeschlossenen Append-Operation zurückgeben.
+
+## D137 – Kontrollierte KaufDA-Branchdaten bleiben vollständig
+
+Wenn eine separat verifizierte KaufDA-Branch-Assertion neben der ID auch Ort
+und Adresse enthält, übernimmt der Parser alle gelieferten Filialfelder in den
+Angebotsnachweis. Ohne diese Assertion bleibt derselbe Treffer regional-only;
+der Parser leitet keine Filiale aus dem Händlernamen ab.
+
+## D138 – Unabhängige Start-Reads laufen parallel
+
+Die lokalen Initialdaten werden vor `runApp` gemeinsam gestartet und danach
+alle abgewartet. So bleibt der erste `SparzamApp`-Snapshot vollständig und
+konsistent, ohne unabhängige Speicherzugriffe künstlich zu serialisieren.
+
+## D139 – Cache-Schlüssel und Inhaltsprüfung normalisieren Startadressen gleich
+
+Distanz- und Straßenmatrixspeicher vergleichen gespeicherte und angefragte
+Startadressen über dieselbe trim-/casefold-/whitespace-normalisierte Form wie
+ihre Cache-Schlüssel. So bleiben Schreib- und Lesevorgänge bei harmlosen
+Eingabeformatänderungen verbunden, während unterschiedliche Orte getrennt
+bleiben.
+
+## D140 – Zukünftige Bonbeobachtungen beeinflussen keine Preisstatistik
+
+`buildReceiptPriceStats` verwirft Beobachtungen nach dem Prüfzeitpunkt vor der
+Gruppierung. Dadurch bleiben Median, letzter Preis und Beobachtungsanzahl auf
+bereits eingetretene Belege beschränkt; die Bon-Routenprojektion verwendet
+dieselbe Zeitgrenze bereits. Historische Belege innerhalb des konfigurierten
+Fensters bleiben unverändert verfügbar.
+
+## D141 – Prospekthistorie prüft den Erfassungstag
+
+Historische Prospekt-Mediane akzeptieren nur Beobachtungen bis zum aktuellen
+Kalendertag. Ein zukünftiger `observedAt`-Wert bleibt auch dann ausgeschlossen,
+wenn das Prospekt selbst bereits abgelaufen ist; so kann eine fehlerhafte oder
+manipulierte Zeitangabe keine Preisorientierung vorwegnehmen.
+
+## D142 – Optionale KaufDA-Daten verdrängen keine offiziellen Zeiträume
+
+Der gemeinsame Prospekt-Refresh wählt je Händler den aktuell gültigen Zeitraum
+mit mindestens einem offiziellen Quellenrecord vor einem ausschließlich aus
+KaufDA stammenden Zeitraum. Die Anzahl der KaufDA-Treffer darf diese Priorität
+nicht überstimmen. KaufDA bleibt als optionale Ergänzung im ausgewählten
+Zeitraum nutzbar und kann bei fehlender offizieller Periode weiterhin alleinige
+regionale Treffer liefern.
+
+Damit bleiben bestehende autoritative Händlerquellen führend, während der
+inoffizielle Adapter die Angebotsabdeckung verbessert, ohne einen anderen
+Gültigkeitszeitraum einzuschleusen.
+
+## D143 – Zukunftsbelege werden vor der Marktpreisprojektion ausgeschlossen
+
+`marketPricesFromObservations` akzeptiert eine Preisbeobachtung nur bis zum
+Prüfdatum. Ein zukünftiger `observedAt`-Zeitpunkt bleibt damit bereits aus dem
+gespeicherten `MarketPrice`-Bestand heraus; die spätere Routenprüfung muss ihn
+nicht erst nachträglich aussondern. Gültigkeitszeitraum und Quellen-Altersfenster
+bleiben zusätzliche, unabhängige Grenzen.
+
+## D144 – Validierte Prospectseiten dürfen als Cover zurückfallen
+
+Wenn ein älteres Feedformat kein eigenes `thumbnailUrl` liefert, darf der
+Parser das erste bereits HTTP-validierte `pageSamples`-Bild als Cover
+verwenden. Der Fallback nutzt nur vorhandene Quelldaten; ungültige URLs und
+fehlende Seiten bleiben ohne Bild und werden nicht durch Produktbilder ersetzt.
+
+## D145 – Prospektseiten werden nach Seitennummer dedupliziert
+
+Der Feedparser akzeptiert nur positive Seitennummern, behält bei Duplikaten den
+ersten validierten Quelldatensatz und sortiert die Seiten numerisch. So bleibt
+der Viewer bei wechselnden oder wiederholten öffentlichen `pageSamples`
+deterministisch, ohne Bilder aus fremden Seiten zu kombinieren.
+
+## D146 – Aktive Prospektansichten wählen die stärkste verfügbare Evidenz
+
+Wenn ein Händler mehrere aktuell gültige Prospektmetadaten liefert, wird nicht
+die Feed-Reihenfolge als fachliche Auswahl verwendet. Status, Seitennachweis,
+Cover, Angebotsanzahl, Gültigkeitsende und stabile Quellenfelder bilden einen
+deterministischen Tie-Breaker. Ein abgelaufener Datensatz kann die aktuelle
+Ansicht nicht verdrängen.
+
+## D147 – Abdeckung und Viewer teilen die Cover-Fallback-Regel
+
+Ein einzelnes validiertes HTTP(S)-`thumbnailUrl` zählt als eine Bildseite, wenn
+keine detaillierten `pageSamples` vorhanden sind. Damit beschreibt die
+Datenabdeckung denselben sichtbaren Nachweis wie der Viewer; ungültige Links
+bleiben ohne Bildsignal.
+
+## D148 – Exakte Marktpreisgleichstände bleiben reproduzierbar
+
+Wenn zwei nutzbare `MarketPrice`-Belege denselben qualitätsbereinigten Preis
+und denselben Beobachtungszeitpunkt haben, entscheidet eine gemeinsame stabile
+Tie-Break-Regel in Planung und `RoutePriceResolver`. Quellenart, Adapter,
+Filialkennung, externe ID, Nachweis und Packungsmetadaten werden nur für diesen
+Gleichstand verglichen. So kann die Reihenfolge eines append-only Imports keine
+abweichende Routenquote erzeugen; Gültigkeits- und Altersprüfungen bleiben
+vorgelagert.
+
+Die Bon-Familienprojektion verwendet denselben Comparator bereits beim
+Zusammenführen ihrer Kandidaten; dadurch wird die Regel nicht erst nach einer
+potenziell reihenfolgeabhängigen Vorselektion wirksam.
+
+## D149 – KaufDA-Cache wird atomar ersetzt
+
+Der optionale KaufDA-JSON-Cache wird in derselben Verzeichnisstruktur zunächst
+vollständig in eine temporäre Datei geschrieben und danach per atomarem Replace
+übernommen. Schlägt der Ersatz fehl, bleibt der vorherige Cache für den
+Offline-Fallback erhalten; temporäre Reste werden entfernt. Der Adapter bleibt
+read-only gegenüber KaufDA und ändert weder Datenmodell noch Abrufhäufigkeit.
+
+Ein beschädigtes Cache-Root-Dokument oder ein nicht objektförmiger Eintrag
+wird als Cache-Miss behandelt. Der optionale Refresh darf dadurch weder einen
+ungefangenen Parserfehler erzeugen noch unprüfbare Daten als Offlinebeleg
+verwenden.
+
+## D150 – Gleiche Artikelpreise verwenden einen stabilen Filialschlüssel
+
+Bei der Artikelzuweisung in `RouteOptimizer.buildPlan` entscheidet bei exakt
+gleichem qualitätsbereinigtem Preis ein normalisierter Schlüssel aus Händler,
+Filial-ID, Ort und Adresse. Damit bleiben Warenkorbzuweisung und daraus
+abgeleitete Teilrouten unabhängig von der Reihenfolge, in der Stores an den
+Optimizer übergeben werden.
+
+Bei aktiven Angeboten mit identischem effektivem Gesamtpreis wird zusätzlich
+der belegte Normalpreisstatus und danach die konkrete Quellen-/Nachweiskennung
+verglichen. So bleibt die gewählte Angebotsquelle unabhängig von der
+Reihenfolge eines Feed-Imports reproduzierbar.
+
+## D151 – Startup-Listenstände werden gegen Nutzermutationen geschützt
+
+Der asynchrone Ladevorgang benannter Einkaufslisten merkt sich eine eigene
+Mutationsrevision. Nach einer sichtbaren Listenänderung verwirft er einen
+verzögert eintreffenden älteren Snapshot, statt die aktuelle Eingabe zu
+überschreiben. Backup-Revisionen bleiben davon getrennt und invalidieren den
+gesamten Shell-Stand weiterhin über `_dataRevision`.
+
+## D152 – ShoppingListStore serialisiert lokale Zugriffe
+
+Der lokale Listenstore führt einen gemeinsamen, fehlerisolierten Scheduler für
+Reads und Writes über alle Instanzen. Reads werden selbst in diese Reihenfolge
+eingereiht und sehen dadurch genau den abgeschlossenen Stand vor ihnen;
+Read-Modify-Write-Aktionen wie bekannte Produkte und bevorzugte Varianten
+laufen ebenfalls innerhalb derselben Queue. Dadurch können UI, Backup und
+Startup keine veralteten Listenwerte gegeneinander schreiben.
+
+## D153 – Lokale Evidenz- und Streckenstores verwenden denselben Operation-Scheduler
+
+Preisbeobachtungen, Bonbeobachtungen, gelernte Bon-Aliase,
+Straßenentfernungen und Routenmatrizen reihen Reads und Writes jetzt über einen gemeinsamen
+fehlerisolierten Operationstyp ein. Ein öffentlicher Read wird dadurch selbst
+Teil der Reihenfolge und kann nicht zwischen zwei Read-Modify-Write-Schritten
+einen älteren Zwischenstand liefern. Der bestehende fachliche Fallback und die
+Legacy-Cacheformate bleiben unverändert.
+
+## D154 – Marktstopp-Aufwand bleibt ein reiner Planungswert
+
+Nutzer können optional einen persönlichen Kostenwert für jeden Markt nach dem
+ersten hinterlegen. Der Optimierer berechnet daraus
+`(Anzahl Märkte - 1) * Kosten je zusätzlichem Markt` und addiert ihn nur zum
+`RoutePlan.planningScore`. `RoutePlan.total` bleibt der erwartete Betrag aus
+Warenkorb und Fahrt; dadurch wird der persönliche Aufwand weder als Preisquelle
+noch als Kassenbetrag ausgegeben.
+
+Der Wert ist begrenzt, lokal serialisiert und standardmäßig null. Die Auswahl
+berücksichtigt ihn gemeinsam mit Preisunsicherheit, Zeitwert, Fahrtkosten,
+Preisabdeckung, Mindestvorteil und der maximalen Marktanzahl. Die UI zeigt den
+Aufwand getrennt an, damit die Empfehlung nachvollziehbar bleibt.
+
+## D155 – Preisverlauf und aktuelle Marktpreise teilen ihre lokale Reihenfolge
+
+`PriceHistoryStore` und `MarketPriceStore` verwenden für Reads, vollständige
+Ersetzungen und Upserts jeweils einen statischen, fehlerisolierten
+`SequentialOperationQueue`. Queue-interne Speicherzugriffe bleiben privat, um
+Deadlocks beim Initialisieren oder Bereinigen alter Einträge zu vermeiden.
+
+Die fachlichen Regeln ändern sich dadurch nicht: Demo-Historie wird weiterhin
+nur beim Laden entfernt, Branch-spezifische Marktpreise bleiben getrennte Slots,
+und manuelle Preise behalten ihre bestehende Priorität gegenüber externen
+Quellen. Die Queue schützt ausschließlich die lokale zeitliche Reihenfolge.
+
+## D156 – Kaufhistorie und Wiederkäufe teilen ihre lokale Reihenfolge
+
+`PurchaseStore` und `RecentPurchaseStore` verwenden für Reads, vollständige
+Ersetzungen und Read-Modify-Write-Aktionen jeweils einen statischen,
+fehlerisolierten `SequentialOperationQueue`. Die Operation liest den
+gespeicherten Stand innerhalb derselben Queue und legt erst danach den
+zusammengeführten Snapshot ab. So kann ein paralleler UI-Read keinen älteren
+Kaufstand zwischen einer laufenden Änderung und deren Persistierung liefern.
+
+Die fachlichen Regeln bleiben unverändert: Kaufhistorien werden weiterhin per
+ID ersetzt und chronologisch sortiert, Wiederkäufe behalten ihre bisherigen
+Zähler und die lokale Begrenzung auf 30 Einträge. Die Queue ändert nur die
+zeitliche Reihenfolge lokaler Speicherzugriffe.
+
+## D157 – Angebotsimports teilen ihre lokale Reihenfolge
+
+`OfferStore` verwendet für Reads, vollständige Ersetzungen und Upserts einen
+statischen, fehlerisolierten `SequentialOperationQueue`. Read-Modify-Write-
+Aktionen führen die Zusammenführung mit dem gespeicherten Stand innerhalb
+derselben Queue aus. Ein paralleler Prospekt- oder KaufDA-Import kann dadurch
+keinen älteren Snapshot zwischen Persistierung und UI-Projektion ablegen.
+
+Die fachlichen Regeln bleiben unverändert: bekannte Demoangebote werden beim
+Laden entfernt, IDs ersetzen bestehende Angebote und Quellen-, Nachweis- sowie
+Gültigkeitsfelder werden vollständig aus dem importierten `Offer` bewahrt.
+
+## D158 – Eigene Produktkataloge teilen ihre lokale Reihenfolge
+
+`ProductCatalogStore` verwendet für Reads, vollständige Ersetzungen und
+Read-Modify-Write-Aktionen einen statischen, fehlerisolierten
+`SequentialOperationQueue`. Der gespeicherte Stand wird innerhalb derselben
+Queue mit einem laufenden Scanner- oder Stammdatenimport zusammengeführt.
+Dadurch kann ein paralleler Read keinen älteren Produktkatalog zwischen
+Persistierung und UI-Projektion sichtbar machen.
+
+Die fachlichen Daten bleiben unverändert: EAN, Varianten, Aliase, Favoriten,
+Stammdateneigenschaften und die alphabetische Sortierung werden weiter aus dem
+jeweiligen `Product` übernommen.
+
+## D159 – Budgetfelder teilen ihre lokale Reihenfolge
+
+`BudgetStore` verwendet für Reads und vollständige Writes einen statischen,
+fehlerisolierten `SequentialOperationQueue`. Monatsbudget,
+Lebensmittelbudget und Ausgaben werden innerhalb eines abgeschlossenen
+Storesnapshots gelesen oder geschrieben; ein Einkaufsabschluss kann dadurch
+keinen gemischten Zwischenstand aus den drei Schlüsseln liefern.
+
+Die bestehende Validierung endlicher, nichtnegativer Beträge und der Null-
+Fallback bei fehlenden Werten bleiben unverändert. Die Queue ändert nur die
+zeitliche Reihenfolge lokaler Budgetzugriffe.
+
+## D160 – Routen- und Preisquelleneinstellungen teilen ihre lokale Reihenfolge
+
+`MobilitySettingsStore` und `PriceDataSettingsStore` verwenden für Reads und
+Writes jeweils einen statischen, fehlerisolierten `SequentialOperationQueue`.
+So sehen Startup, Backup und UI nach einem abgeschlossenen Einstellungswechsel
+denselben vollständigen JSON-Snapshot.
+
+Die fachlichen Defaults, Mobilitätsvalidierung und der abschaltbare
+Preisquellen-Schalter bleiben unverändert. Die Queue schützt nur die lokale
+zeitliche Reihenfolge und aktiviert keine externe Datenquelle.
+
+## D161 – Diagnoseeinträge teilen ihre lokale Reihenfolge
+
+`DiagnosticLogService` verwendet für Reads, Einträge und Löschen einen
+statischen, fehlerisolierten `SequentialOperationQueue`. Ein Diagnoseeintrag
+liest und schreibt den lokalen Bestand innerhalb derselben Queue; parallele
+Feed-, OCR- oder Persistenzfehler können dadurch keinen anderen Eintrag
+überschreiben.
+
+Das Protokoll bleibt lokal, auf 100 Einträge begrenzt und behandelt eigene
+Speicherfehler weiterhin still, damit die Fehlerdiagnose den ursprünglichen
+App-Fehler nicht verschärft.
+
+## D162 – Prospektfavoriten teilen ihre lokale Reihenfolge
+
+`ProspectFavoritesStore` verwendet für Reads und Writes einen statischen,
+fehlerisolierten `SequentialOperationQueue`. Die normalisierte, sortierte
+Favoritenmenge wird vor dem Einreihen als Snapshot erstellt; dadurch kann ein
+schnelles Herz-Umschalten keinen älteren Stand nachträglich schreiben.
+
+Die bestehende `null`-Semantik bei nicht verfügbarer Plattformpersistenz und
+die Fehlerisolation des Prospektfeeds bleiben unverändert.
+
+## D163 – Externe Fallback-Caches teilen ihre lokale Reihenfolge
+
+Die lokalen Shared-Preferences-Adapter für Open Prices, Open Food Facts und
+den öffentlichen Prospektfeed verwenden je Cachetyp einen statischen,
+fehlerisolierten `SequentialOperationQueue`. Normalisierte Cache-Schlüssel und
+vollständige Rohantworten werden innerhalb dieser Reihenfolge gelesen und
+geschrieben; ein paralleler Refresh kann dadurch keinen älteren Stand nach
+einem frischeren Wert persistieren.
+
+Die Adapter bleiben best effort. Cachefehler blockieren weder Liveantworten
+noch den Offline-Fallback, und der Cache erzeugt weiterhin keine Preis- oder
+Identitätsbestätigung.
+
+## D164 – Gleichzeitige Prospekt-Loads teilen eine laufende Future
+
+`ProspectFeedService` hält während eines laufenden `load()`-Vorgangs dessen
+Future. Weitere Aufrufer erhalten dieselbe Future, statt parallel dieselbe
+öffentliche Feedquelle abzufragen. Nach Erfolg oder Fehler wird der Zustand
+freigegeben, sodass ein späterer manueller Refresh wieder starten kann.
+
+Die Feed-Reihenfolge bleibt unverändert: aktuelle Antwort, lokaler Cache und
+versioniertes Asset werden weiterhin im bestehenden Fallbackpfad geprüft.
+
+## D165 – Versionierte Prospekt-Assets müssen Cover und Filiale belegen
+
+Der versionierte Prospektfeed darf für jede konfigurierte Quelle nur dann als
+auslieferbarer Fallback gelten, wenn mindestens ein aktuell gültiger Zeitraum,
+eine konkrete Filial-ID mit Ort und Adresse sowie eine HTTPS-Coverseite für
+Seite 1 vorhanden sind. Die Regression verwendet den im Asset gespeicherten
+Referenztag aus `generatedAt` und führt keine Live-Abfrage aus.
+
+Damit bleibt ein fehlendes Cover, eine verlorene Filialzuordnung oder ein alter
+Prospekt in der Datenbasis sichtbar, ohne historische Preisbeobachtungen oder
+die optionale Live-Quelle zu verändern.
+
+## D166 – Cover-Invarianten werden auch nach dem App-Parsing geprüft
+
+Die Asset-Regression wird durch eine Flutter-Matrix ergänzt, die den tatsächlich
+geparsten `ProspectIssue` prüft. Für jeden konfigurierten Markt müssen am im
+Asset gespeicherten Referenztag Zeitraum, Filial-ID, Ort, Adresse und eine
+HTTPS-Coverseite als Seite 1 erhalten bleiben.
+
+So schützt die Prüfung sowohl die versionierte JSON-Datei als auch die
+Übersetzung in das UI-Modell; Live-Quellen und historische Preisbeobachtungen
+werden dadurch nicht aktiviert oder verändert.
+
+## D167 – Große Prospektlisten bleiben lazy und ohne unnötige Keep-Alives
+
+Cover-, Such-, Seiten- und Artikel-Sliver verwenden weiterhin Builder und
+Repaint-Grenzen, deaktivieren aber automatische Keep-Alive-Wrapper für entfernte
+Karten. Dadurch kann Flutter bei großen Händlerbeständen Renderobjekte früher
+freigeben, ohne Daten, Reihenfolge oder Nutzeraktionen zu verändern.
+
+## D168 – KaufDA-Cache wird erst nach erfolgreichem Parsing ersetzt
+
+Der optionale KaufDA-Adapter schreibt einen Liveantwort-Body erst nach
+erfolgreichem `__NEXT_DATA__`-Parsing in den lokalen Cache. Bei einer
+Formatänderung trotz HTTP 200 wird der noch gültige vorherige Body erneut
+geparst und mit seinem ursprünglichen `capturedAt` verwendet.
+
+So bleibt eine Parserstörung sichtbar, ohne den letzten verwertbaren Nachweis
+zu löschen oder künstlich zu verjüngen.
+
+## D169 – HTTP-403 beendet den öffentlichen Quellenversuch
+
+Der gemeinsame Refresh-Helper behandelt HTTP 403 als Zugriffsentscheidung der
+Quelle und versucht keinen zweiten Abruf mit verändertem User-Agent. Cache,
+versionierter Asset-Fallback und die isolierte Fehlerdiagnose bleiben die
+einzigen Folgeschritte.
+
+## D170 – Der offizielle Refresh aktiviert KaufDA nie implizit
+
+Der GitHub-Workflow setzt `SPARZAM_KAUFDA_ENABLED` ausdrücklich auf `0`.
+Eine produktive Aktivierung muss deshalb als bewusste Workflow-Änderung nach
+der rechtlichen Prüfung erfolgen; der normale offizielle Refresh bleibt bei
+den autoritativen Händlerquellen.
+
+## D171 – KaufDA-Query-Limit Null bleibt eine harte Abschaltung
+
+`SPARZAM_KAUFDA_MAX_QUERIES=0` wird im Umgebungsadapter als gültige
+Nullgrenze gelesen. Der Wert führt zusammen mit der bestehenden begrenzten
+Query-Auflösung zu keinem Abruf und wird nicht still auf den Defaultwert
+angehoben. Negative oder syntaktisch ungültige Werte bleiben beim sicheren
+Default.
+

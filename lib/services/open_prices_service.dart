@@ -5,9 +5,12 @@ import 'package:http/http.dart' as http;
 import '../models/market_price.dart';
 import '../models/product.dart';
 import '../models/store.dart';
+import 'barcode_normalizer.dart';
 import 'open_prices_cache.dart';
+import 'branch_identity.dart';
 import 'price_source.dart';
 import 'store_identity.dart';
+import 'quantity_normalizer.dart';
 
 /// Read-only adapter for the documented Open Prices API.
 ///
@@ -37,8 +40,10 @@ class OpenPricesSource implements PriceSource {
   }) async {
     if (!enabled) return const <MarketPrice>[];
 
-    final ean = product.ean?.trim();
-    if (ean == null || ean.isEmpty) return const <MarketPrice>[];
+    final ean = product.ean == null
+        ? null
+        : normalizeBarcode(product.ean!);
+    if (ean == null) return const <MarketPrice>[];
 
     final today = now ?? DateTime.now();
     final earliest = today.subtract(maxAge);
@@ -88,6 +93,7 @@ class OpenPricesSource implements PriceSource {
     try {
       return _parse(
         body,
+        ean: ean,
         product: product,
         stores: stores,
         today: today,
@@ -102,6 +108,7 @@ class OpenPricesSource implements PriceSource {
           try {
             return _parse(
               cached,
+              ean: ean,
               product: product,
               stores: stores,
               today: today,
@@ -119,6 +126,7 @@ class OpenPricesSource implements PriceSource {
 
   List<MarketPrice> _parse(
     String body, {
+    required String ean,
     required Product product,
     required List<Store> stores,
     required DateTime today,
@@ -131,7 +139,7 @@ class OpenPricesSource implements PriceSource {
 
     for (final raw in items) {
       if (raw is! Map<String, dynamic>) continue;
-      if (raw['product_code']?.toString() != product.ean?.trim() ||
+      if (normalizeBarcode(raw['product_code']?.toString() ?? '') != ean ||
           raw['currency'] != 'EUR' ||
           raw['price_is_discounted'] != false ||
           raw['price_per'] != 'UNIT' ||
@@ -175,6 +183,22 @@ class OpenPricesSource implements PriceSource {
         continue;
       }
 
+      // Open Prices marks `price_per=UNIT`, so the value describes the
+      // product unit queried by EAN. Preserve the catalog package basis at
+      // the adapter boundary; this lets the shared comparability gate reject
+      // a known package mismatch and expose a trustworthy base price.
+      final packageAmount = product.packageAmount;
+      final packageUnit = product.packageUnit?.trim();
+      final unitPrice = packageAmount == null ||
+              packageUnit == null ||
+              packageUnit.isEmpty
+          ? null
+          : normalizedUnitPrice(
+              price: price,
+              amount: packageAmount,
+              unit: packageUnit,
+            );
+
       byStore[store.name] = MarketPrice(
         productId: product.id,
         storeName: store.name,
@@ -184,6 +208,9 @@ class OpenPricesSource implements PriceSource {
         externalId: (raw['id'] as num?)?.toInt(),
         sourceLocationId: _locationId(location),
         sourceLocationName: _locationLabel(location),
+        quantity: packageAmount,
+        unit: packageUnit,
+        unitPrice: unitPrice,
       );
     }
 
@@ -197,7 +224,9 @@ class OpenPricesSource implements PriceSource {
     final locationId = _locationId(location);
     if (locationId != null) {
       for (final store in stores) {
-        if (store.branchId?.trim() == locationId) return store;
+        if (canonicalBranchId(store.branchId) == canonicalBranchId(locationId)) {
+          return store;
+        }
       }
     }
 

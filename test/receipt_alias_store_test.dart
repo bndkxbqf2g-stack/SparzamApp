@@ -154,6 +154,29 @@ void main() {
     );
   });
 
+  test('parallele Alias-Bestätigungen verlieren keinen Eintrag', () async {
+    final first = ReceiptAliasStore();
+    final second = ReceiptAliasStore();
+
+    await Future.wait([
+      first.confirm(
+        storeName: 'Lidl',
+        rawLabel: 'Butter',
+        productId: 'butter-250',
+        now: DateTime(2026, 9, 24),
+      ),
+      second.confirm(
+        storeName: 'Lidl',
+        rawLabel: 'Milch',
+        productId: 'milch-15',
+        now: DateTime(2026, 9, 24),
+      ),
+    ]);
+
+    expect((await first.load()).map((item) => item.productId),
+        containsAll(<String>['butter-250', 'milch-15']));
+  });
+
   test('unknown receipt market labels remain reviewable', () {
     expect(canonicalReceiptAliasStoreName('Mein Hofladen'), 'Mein Hofladen');
   });

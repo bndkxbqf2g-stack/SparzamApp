@@ -436,6 +436,114 @@ void main() {
     expect(quote.savings, isNull);
   });
 
+  test('unproven external offers stay out of candidate prices', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda],
+      offers: [
+        Offer(
+          id: 'unproven-leaflet',
+          productId: gouda.id,
+          storeName: 'ALDI Süd',
+          originalPrice: 2,
+          offerPrice: 0.99,
+          source: 'leaflet',
+          validUntil: DateTime(2026, 9, 30),
+        ),
+      ],
+      marketPrices: const [],
+      receiptPriceStats: const [],
+      now: now,
+    );
+
+    expect(candidates.single.quotes, isEmpty);
+  });
+
+  test('candidate prices ignore another configured branch', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda],
+      offers: [
+        Offer(
+          id: 'wrong-branch-offer',
+          productId: gouda.id,
+          storeName: 'Lidl',
+          originalPrice: 2,
+          offerPrice: 0.49,
+          source: 'leaflet',
+          proofRef: 'https://example.test/lidl/wrong-branch',
+          locationId: 'lidl-wuerzburg',
+          validUntil: DateTime(2026, 9, 30),
+        ),
+      ],
+      marketPrices: [
+        MarketPrice(
+          productId: gouda.id,
+          storeName: 'Lidl',
+          price: 0.39,
+          sourceLocationId: 'lidl-wuerzburg',
+          updatedAt: now,
+        ),
+      ],
+      receiptPriceStats: const [],
+      now: now,
+    );
+
+    expect(candidates.single.quotes, isEmpty);
+  });
+
+  test('candidate prices ignore an incompatible explicit offer package', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda],
+      offers: [
+        Offer(
+          id: 'wrong-package-offer',
+          productId: gouda.id,
+          storeName: 'Lidl',
+          originalPrice: 4,
+          offerPrice: 0.49,
+          source: 'leaflet',
+          proofRef: 'https://example.test/lidl/wrong-package',
+          packageAmount: 500,
+          packageUnit: 'g',
+          unitPrice: 0.98,
+          validUntil: DateTime(2026, 9, 30),
+        ),
+      ],
+      marketPrices: const [],
+      receiptPriceStats: const [],
+      now: now,
+    );
+
+    expect(candidates.single.quotes, isEmpty);
+  });
+
+  test('candidate prices ignore legacy regional KaufDA offers', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda],
+      offers: [
+        Offer(
+          id: 'legacy-regional-kaufda',
+          productId: gouda.id,
+          storeName: 'Lidl',
+          originalPrice: 4,
+          offerPrice: 0.49,
+          source: 'retailerWebsite',
+          sourceAdapter: 'kaufda',
+          proofRef: 'https://www.kaufda.de/Wuerzburg/Angebote/Kaese',
+          validUntil: DateTime(2026, 9, 30),
+        ),
+      ],
+      marketPrices: const [],
+      receiptPriceStats: const [],
+      now: now,
+    );
+
+    expect(candidates.single.quotes, isEmpty);
+  });
+
   test('cashback offers hide a duplicate historical quote for that market', () {
     final candidates = buildShoppingCandidates(
       request: 'Käse',

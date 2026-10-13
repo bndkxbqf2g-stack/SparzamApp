@@ -5,6 +5,7 @@ import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/offer.dart';
 import '../../models/price_observation.dart';
+import '../../services/safe_external_url.dart';
 import '../offers/prospect_price_statistics.dart';
 import 'shopping_price_history.dart';
 import 'shopping_price_quotes.dart';
@@ -123,6 +124,7 @@ class ShoppingPriceBadge extends StatelessWidget {
       product: item.product,
       observations: historicalPriceObservations,
     );
+    final productImageUrl = safeExternalHttpUrl(item.product.imageUrl);
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -138,12 +140,12 @@ class ShoppingPriceBadge extends StatelessWidget {
                 item.product.name,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              if (item.product.imageUrl?.trim().isNotEmpty == true) ...[
+              if (productImageUrl != null) ...[
                 const SizedBox(height: 10),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.network(
-                    item.product.imageUrl!,
+                    productImageUrl,
                     height: 130,
                     width: double.infinity,
                     fit: BoxFit.contain,
@@ -215,13 +217,14 @@ class ShoppingPriceBadge extends StatelessWidget {
                         ),
                       );
                     }
+                    final offerImageUrl = safeExternalHttpUrl(quote.offer?.imageUrl);
                     return ListTile(
                       contentPadding: EdgeInsets.zero,
-                      leading: quote.offer?.imageUrl?.trim().isNotEmpty == true
+                      leading: offerImageUrl != null
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(8),
                               child: Image.network(
-                                quote.offer!.imageUrl!,
+                                offerImageUrl,
                                 width: 54,
                                 height: 54,
                                 fit: BoxFit.contain,

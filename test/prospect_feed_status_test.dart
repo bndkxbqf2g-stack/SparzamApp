@@ -95,6 +95,7 @@ void main() {
           offerPrice: 1.99,
           validUntil: DateTime(2026, 10, 7),
           category: 'Milchprodukte',
+          regionalOnly: true,
         ),
         OfferImportRecord(
           sourceId: 'netto-1',
@@ -129,6 +130,8 @@ void main() {
 
     final edeka = coverage.firstWhere((entry) => entry.storeName == 'EDEKA');
     expect(edeka.structuredOfferCount, 1);
+    expect(edeka.regionalOnlyCount, 1);
+    expect(edeka.routeableOfferCount, 0);
     expect(edeka.offerProofCount, 0);
     expect(edeka.pageCount, 0);
     expect(edeka.sourceStatus, 'metadata_only');
@@ -143,6 +146,35 @@ void main() {
     );
     expect(kaufland.structuredOfferCount, 1);
     expect(kaufland.offerProofCount, 1);
+  });
+
+  test('counts a validated cover fallback as one image page', () {
+    final coverage = calculateProspectCoverage(
+      issues: const [
+        ProspectIssue(
+          storeName: 'Netto',
+          title: 'Wochenprospekt',
+          pages: [],
+          thumbnailUrl: 'https://cdn.example/netto-cover.jpg',
+        ),
+        ProspectIssue(
+          storeName: 'PENNY',
+          title: 'Ungültiger Coverlink',
+          pages: [],
+          thumbnailUrl: 'javascript:alert(1)',
+        ),
+      ],
+      records: const [],
+    );
+
+    expect(
+      coverage.firstWhere((entry) => entry.storeName == 'Netto').pageCount,
+      1,
+    );
+    expect(
+      coverage.firstWhere((entry) => entry.storeName == 'PENNY').pageCount,
+      0,
+    );
   });
 
   testWidgets('shows per-market prospect coverage details when expanded', (
@@ -189,6 +221,49 @@ void main() {
     expect(find.textContaining('0/1 Nachweise'), findsOneWidget);
     expect(find.text('aktuell'), findsOneWidget);
   });
+
+  testWidgets(
+    'marks regional-only prospect coverage separately',
+    (tester) async {
+      final coverage = calculateProspectCoverage(
+        issues: [
+          ProspectIssue(
+            storeName: 'Lidl',
+            title: 'KaufDA regional',
+            pages: const [],
+            sourceStatus: 'regional_only',
+          ),
+        ],
+        records: [
+          OfferImportRecord(
+            sourceId: 'regional-1',
+            productLabel: 'Butter 250 g',
+            storeName: 'Lidl',
+            offerPrice: 1.29,
+            validUntil: DateTime(2026, 10, 17),
+            sourceAdapter: 'kaufda',
+            regionalOnly: true,
+            proofRef: 'https://www.kaufda.de/Wuerzburg/Angebote/Butter',
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ListView(children: [ProspectCoverageCard(coverage: coverage)]),
+        ),
+      );
+
+      expect(find.textContaining('1 nur regional'), findsOneWidget);
+      await tester.tap(find.text('Datenabdeckung der aktuellen Prospekte'));
+      await tester.pumpAndSettle();
+      expect(find.text('nur regional'), findsOneWidget);
+      expect(
+        find.textContaining('1 strukturierte Angebote · 1 nur regional'),
+        findsOneWidget,
+      );
+    },
+  );
 
   test('uses a deterministic age threshold for the feed status', () {
     final generatedAt = DateTime(2026, 10, 1, 12, 2);

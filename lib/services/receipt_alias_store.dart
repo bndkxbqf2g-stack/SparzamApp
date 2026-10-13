@@ -4,13 +4,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/stores.dart';
 import '../models/receipt_alias.dart';
+import 'sequential_operation_queue.dart';
 import 'store_identity.dart';
 
 class ReceiptAliasStore {
   static const _key = 'receipt_aliases_v1';
+  static final _queue = SequentialOperationQueue();
   final SharedPreferencesAsync _preferences = SharedPreferencesAsync();
 
-  Future<List<ReceiptAlias>> load() async {
+  Future<List<ReceiptAlias>> load() => _queue.schedule(_loadNow);
+
+  Future<List<ReceiptAlias>> _loadNow() async {
     final values = await _preferences.getStringList(_key);
     if (values == null) return <ReceiptAlias>[];
     return values
@@ -32,11 +36,11 @@ class ReceiptAliasStore {
     required String rawLabel,
     required String productId,
     required DateTime now,
-  }) async {
+  }) => _queue.schedule(() async {
     final normalized = normalizeReceiptAlias(rawLabel);
     if (normalized.isEmpty) return;
     final canonicalStore = canonicalReceiptAliasStoreName(storeName);
-    final current = await load();
+    final current = await _loadNow();
     final byKey = <String, ReceiptAlias>{
       for (final item in current) item.key: item,
     };
@@ -59,11 +63,8 @@ class ReceiptAliasStore {
       updatedAt: now,
     );
     byKey[next.key] = next;
-    await _preferences.setStringList(
-      _key,
-      byKey.values.map((item) => jsonEncode(item.toJson())).toList(),
-    );
-  }
+    await _saveNow(byKey.values);
+  });
 
   Future<String?> learnedProductId({
     required String storeName,
@@ -91,10 +92,16 @@ class ReceiptAliasStore {
     return null;
   }
 
-  Future<void> save(List<ReceiptAlias> aliases) => _preferences.setStringList(
-    _key,
-    aliases.map((item) => jsonEncode(item.toJson())).toList(),
-  );
+  Future<void> save(List<ReceiptAlias> aliases) {
+    final snapshot = List<ReceiptAlias>.of(aliases, growable: false);
+    return _queue.schedule(() => _saveNow(snapshot));
+  }
+
+  Future<void> _saveNow(Iterable<ReceiptAlias> aliases) =>
+      _preferences.setStringList(
+        _key,
+        aliases.map((item) => jsonEncode(item.toJson())).toList(),
+      );
 }
 
 String normalizeReceiptAlias(String value) => value

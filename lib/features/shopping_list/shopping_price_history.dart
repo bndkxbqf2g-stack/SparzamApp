@@ -53,7 +53,10 @@ List<ShoppingPriceHistoryEntry> shoppingPriceHistory({
               storeName: observation.storeName,
               price: observation.price,
               observedAt: observation.observedAt,
-              sourceLabel: _sourceLabel(observation.source),
+              sourceLabel: _sourceLabel(
+                observation.source,
+                sourceAdapter: observation.sourceAdapter,
+              ),
               kindLabel: _kindLabel(observation.kind),
               quantity: observation.quantity,
               unit: observation.unit,
@@ -84,18 +87,24 @@ bool _isEligible(
     observation.storeName.trim().isNotEmpty &&
     !observation.observedAt.isAfter(current);
 
-String _sourceLabel(PriceObservationSource source) => switch (source) {
-  PriceObservationSource.receipt => 'Kassenbon',
-  PriceObservationSource.manual => 'Eigener Preis',
-  PriceObservationSource.openPrices => 'Open Prices',
-  PriceObservationSource.retailer => 'Händler',
-  PriceObservationSource.retailerWebsite => 'Händler-Website',
-  PriceObservationSource.leaflet => 'Prospekt',
-  PriceObservationSource.shelfImage => 'Regalfoto',
-  PriceObservationSource.shelfVideo => 'Regalvideo',
-  PriceObservationSource.community => 'Community',
-  PriceObservationSource.estimate => 'Schätzung',
-};
+String _sourceLabel(
+  PriceObservationSource source, {
+  String? sourceAdapter,
+}) {
+  if (sourceAdapter?.trim().toLowerCase() == 'kaufda') return 'KaufDA';
+  return switch (source) {
+    PriceObservationSource.receipt => 'Kassenbon',
+    PriceObservationSource.manual => 'Eigener Preis',
+    PriceObservationSource.openPrices => 'Open Prices',
+    PriceObservationSource.retailer => 'Händler',
+    PriceObservationSource.retailerWebsite => 'Händler-Website',
+    PriceObservationSource.leaflet => 'Prospekt',
+    PriceObservationSource.shelfImage => 'Regalfoto',
+    PriceObservationSource.shelfVideo => 'Regalvideo',
+    PriceObservationSource.community => 'Community',
+    PriceObservationSource.estimate => 'Schätzung',
+  };
+}
 
 String _kindLabel(PriceObservationKind kind) => switch (kind) {
   PriceObservationKind.offer => 'Angebot',

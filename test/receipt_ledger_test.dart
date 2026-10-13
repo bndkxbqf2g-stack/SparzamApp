@@ -142,7 +142,60 @@ Datum:23.07.26 Zeit: 10:00 Bon:1
     expect(first.retailer, 'Kaufland');
     expect(first.fingerprint, second.fingerprint);
     expect(first.fingerprint, isNot(third.fingerprint));
+    expect(first.duplicateFingerprint, second.duplicateFingerprint);
   });
+
+  test('duplicate fingerprint includes quantity basis omitted by legacy key', () {
+    ReceiptDraft draft({required int unitCents}) => ReceiptDraft(
+      rows: [
+        ReceiptRow(
+          line: 4,
+          label: 'Milch',
+          cents: 190,
+          kind: ReceiptRowKind.item,
+          quantity: 2,
+          quantityUnit: 'Stück',
+          unitCents: unitCents,
+        ),
+      ],
+      totalCents: 190,
+      calculatedCents: 190,
+      unresolvedLines: const [],
+      fingerprint: 'legacy-same',
+      receiptDate: DateTime(2026, 9, 24),
+      retailer: 'Lidl',
+    );
+
+    expect(
+      draft(unitCents: 95).duplicateFingerprint,
+      isNot(draft(unitCents: 100).duplicateFingerprint),
+    );
+  });
+
+  test('duplicate fingerprint ignores physical OCR line shifts', () {
+    ReceiptDraft draft({required int line}) => ReceiptDraft(
+      rows: [
+        ReceiptRow(
+          line: line,
+          label: 'Milch',
+          cents: 190,
+          kind: ReceiptRowKind.item,
+        ),
+      ],
+      totalCents: 190,
+      calculatedCents: 190,
+      unresolvedLines: const [],
+      fingerprint: 'legacy-same',
+      receiptDate: DateTime(2026, 9, 24),
+      retailer: 'Lidl',
+    );
+
+    expect(
+      draft(line: 4).duplicateFingerprint,
+      draft(line: 9).duplicateFingerprint,
+    );
+  });
+
   test('recognizes EDEKA Frischemarkt receipt and reconciles euro total', () {
     final draft = parseReceiptLedger('''
 Frischemarkt Trabold

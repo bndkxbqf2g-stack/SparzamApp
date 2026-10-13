@@ -6,6 +6,7 @@ import '../../models/price_observation.dart';
 import '../../models/market_price.dart';
 import '../../models/receipt_price_stat.dart';
 import '../offers/effective_price.dart';
+import '../offers/offer_import.dart';
 import '../offers/offer_filter.dart';
 import '../offers/prospect_price_statistics.dart';
 import '../catalog/product_identity.dart';
@@ -13,6 +14,8 @@ import '../catalog/product_hierarchy.dart';
 import '../route/market_price_quality.dart';
 import 'receipt_product_price_match.dart';
 import '../../services/quantity_normalizer.dart';
+import '../../services/market_price_comparability.dart';
+import '../../services/branch_identity.dart';
 
 class ShoppingSuggestionPrice {
   const ShoppingSuggestionPrice({
@@ -381,12 +384,16 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
 
   for (final offer in offers) {
     if (offer.productId != product.id ||
+        !offerMatchesProduct(offer, product) ||
         (enabled.isNotEmpty && !enabled.contains(offer.storeName)) ||
+        !matchesConfiguredBranch(offer.storeName, offer.locationId) ||
+        !hasExactOfferBranch(offer) ||
         !isOfferDateRangeActive(
           validFrom: offer.validFrom,
           validUntil: offer.validUntil,
           now: current,
         ) ||
+        !hasTrustedOfferEvidence(offer) ||
         isSampleOffer(offer)) {
       continue;
     }
@@ -405,7 +412,9 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
 
   for (final price in marketPrices) {
     if (price.productId != product.id ||
+        !marketPriceMatchesProduct(price, product) ||
         (enabled.isNotEmpty && !enabled.contains(price.storeName)) ||
+        !matchesConfiguredBranch(price.storeName, price.sourceLocationId) ||
         !price.price.isFinite ||
         price.price <= 0 ||
         !price.isUsable(

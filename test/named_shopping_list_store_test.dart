@@ -52,6 +52,46 @@ void main() {
     expect(loaded.last.items, isEmpty);
   });
 
+  test('ein paralleler Listen-Read wartet auf den vorherigen Schreibstand', () async {
+    const product = Product(
+      id: 'milk',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'milch',
+    );
+    final store = ShoppingListStore();
+    final reader = ShoppingListStore();
+    final writing = store.saveNamedLists([
+      NamedShoppingList(
+        id: 'weekly',
+        name: 'Wocheneinkauf',
+        items: [ListItem(product: product)],
+      ),
+    ]);
+    final reading = reader.loadNamedLists();
+
+    expect((await reading).single.items.single.product.id, 'milk');
+    await writing;
+  });
+
+  test('ungültige gespeicherte Mengen werden nicht wieder in die Liste geladen', () async {
+    const product = Product(
+      id: 'milk',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'milch',
+    );
+    final store = ShoppingListStore();
+    await store.save([
+      ListItem(product: product, quantity: 0),
+      ListItem(product: product, quantity: 2),
+    ]);
+
+    final loaded = await store.load();
+    expect(loaded, hasLength(1));
+    expect(loaded.single.quantity, 2);
+  });
+
   test('Marktreihenfolge und Ansichtsmodus bleiben gespeichert', () async {
     final store = ShoppingListStore();
 

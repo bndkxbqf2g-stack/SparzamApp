@@ -63,6 +63,9 @@ void main() {
         source: 'retailerWebsite',
         proofRef: 'https://example.test/milk',
         address: 'Hauptstraße 1, 97225 Zellingen',
+        packageAmount: 1,
+        packageUnit: 'l',
+        unitPrice: 0.89,
       ),
     ],
     marketPrices: [
@@ -150,6 +153,9 @@ void main() {
     expect(decoded.namedLists.single.name, 'Woche');
     expect(decoded.offers.single.proofRef, 'https://example.test/milk');
     expect(decoded.offers.single.address, 'Hauptstraße 1, 97225 Zellingen');
+    expect(decoded.offers.single.packageAmount, 1);
+    expect(decoded.offers.single.packageUnit, 'l');
+    expect(decoded.offers.single.unitPrice, 0.89);
     expect(decoded.marketPrices.single.source, MarketPriceSource.receipt);
     expect(decoded.priceHistory.single.source, PricePointSource.receipt);
     expect(decoded.receiptObservations.single.identityConfirmed, isTrue);

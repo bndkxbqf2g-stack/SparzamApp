@@ -11,10 +11,12 @@ void main() {
         'euroPerKm': double.nan,
         'timeValuePerHour': double.infinity,
         'minExtraStoreSavings': double.infinity,
+        'additionalStoreCost': double.infinity,
       });
       expect(settings.euroPerKm, 0.22);
       expect(settings.timeValuePerHour, 0);
       expect(settings.minExtraStoreSavings, 0.50);
+      expect(settings.additionalStoreCost, 0);
     },
   );
 

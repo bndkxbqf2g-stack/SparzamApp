@@ -39,6 +39,29 @@ void main() {
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
   });
 
+  testWidgets('blendet ungültige Prospektlink-Schemata aus', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: OffersScreen(
+          catalogProducts: const <Product>[],
+          prospectIssues: [
+            ProspectIssue(
+              storeName: 'KaufDA',
+              title: 'Regionaler Treffer',
+              pages: const <ProspectPage>[],
+              sourceStatus: 'error',
+              url: 'javascript:alert(1)',
+            ),
+          ],
+          now: DateTime(2026, 10, 1),
+        ),
+      ),
+    );
+
+    expect(find.text('KaufDA'), findsOneWidget);
+    expect(find.text('Offiziellen Prospekt öffnen'), findsNothing);
+  });
+
   testWidgets('kennzeichnet gültige Angebote aus einem Feed-Fallback', (
     tester,
   ) async {
@@ -257,6 +280,78 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Kaffee & Snacks'), findsOneWidget);
     expect(find.text('Getränke'), findsNothing);
+  });
+
+  testWidgets('zeigt den Regionalhinweis auch bei vorhandenen Treffern', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: OffersScreen(
+          catalogProducts: const <Product>[],
+          now: DateTime(2026, 10, 12),
+          prospectRecords: [
+            OfferImportRecord(
+              sourceId: 'regional-offer',
+              productLabel: 'Butter 250 g',
+              storeName: 'Lidl',
+              offerPrice: 1.29,
+              validUntil: DateTime(2026, 10, 17),
+              sourceAdapter: 'kaufda',
+              regionalOnly: true,
+              proofRef: 'https://www.kaufda.de/Wuerzburg/Angebote/Butter',
+            ),
+          ],
+          prospectIssues: const [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'KaufDA regional',
+              pages: const <ProspectPage>[],
+              sourceStatus: 'regional_only',
+              recordCount: 1,
+            ),
+          ],
+        ),
+      ),
+    );
+
+    expect(find.textContaining('nur regional erkannt'), findsOneWidget);
+    expect(find.textContaining('für die Route gesperrt'), findsOneWidget);
+  });
+
+  testWidgets('leitet Regionalhinweis aus den Datensätzen ab', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: OffersScreen(
+          catalogProducts: const <Product>[],
+          now: DateTime(2026, 10, 12),
+          prospectRecords: [
+            OfferImportRecord(
+              sourceId: 'regional-with-ok-source',
+              productLabel: 'Butter 250 g',
+              storeName: 'Lidl',
+              offerPrice: 1.29,
+              validUntil: DateTime(2026, 10, 17),
+              sourceAdapter: 'kaufda',
+              regionalOnly: true,
+              proofRef: 'https://www.kaufda.de/Wuerzburg/Angebote/Butter',
+            ),
+          ],
+          prospectIssues: const [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Offizieller Prospekt',
+              pages: const <ProspectPage>[],
+              sourceStatus: 'ok',
+              recordCount: 1,
+            ),
+          ],
+        ),
+      ),
+    );
+
+    expect(find.textContaining('nur regional erkannt'), findsOneWidget);
+    expect(find.textContaining('für die Route gesperrt'), findsOneWidget);
   });
 }
 

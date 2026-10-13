@@ -60,4 +60,27 @@ void main() {
     expect(loaded, hasLength(1));
     expect(loaded.single.id, 'good');
   });
+
+  test('ein paralleler Read wartet auf einen laufenden Angebotsimport', () async {
+    SharedPreferences.setMockInitialValues({});
+    final store = OfferStore();
+    final reader = OfferStore();
+    final offer = Offer(
+      id: 'parallel-offer',
+      productId: 'milk',
+      storeName: 'Lidl',
+      originalPrice: 2,
+      offerPrice: 1,
+      validUntil: DateTime(2026, 10, 17),
+      source: 'kaufda',
+      sourceAdapter: 'kaufda',
+      proofRef: 'https://www.kaufda.de/test',
+    );
+
+    final writing = store.upsert(offer, const []);
+    final reading = reader.load();
+
+    await writing;
+    expect((await reading).single.id, 'parallel-offer');
+  });
 }

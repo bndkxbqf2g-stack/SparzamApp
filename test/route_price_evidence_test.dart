@@ -17,6 +17,7 @@ void main() {
     location: 'Zellingen',
     distanceKm: 1,
     prices: {},
+    branchId: 'lidl_zellingen',
   );
   const pricedStore = Store(
     name: 'Lidl',
@@ -74,6 +75,35 @@ void main() {
     expect(
       routePriceEvidenceLabel(quote, now: today),
       'Angebot · Händler-Website · Nachweis vorhanden · gültig bis 03.10.2026',
+    );
+  });
+
+  test('kennzeichnet KaufDA getrennt von der technischen Website-Quelle', () {
+    const product = Product(
+      id: 'kaufda-coffee',
+      name: 'KaufDA Kaffee',
+      unit: '500 g',
+      group: 'kaffee',
+    );
+    final quote = RoutePriceResolver([
+      Offer(
+        id: 'kaufda-coffee-offer',
+        productId: product.id,
+        storeName: store.name,
+        originalPrice: 8,
+        offerPrice: 5,
+        validUntil: DateTime(2026, 10, 3),
+        source: 'retailerWebsite',
+        sourceAdapter: 'kaufda',
+        capturedAt: DateTime(2026, 9, 30, 7, 5),
+        proofRef: 'https://www.kaufda.de/example',
+        locationId: 'lidl_zellingen',
+      ),
+    ], now: today).quote(store, ListItem(product: product))!;
+
+    expect(
+      routePriceEvidenceLabel(quote, now: today),
+      'Angebot · KaufDA · Nachweis vorhanden · gültig bis 03.10.2026 · erfasst 30.09.2026 · 07:05 Uhr',
     );
   });
 

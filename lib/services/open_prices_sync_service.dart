@@ -1,6 +1,7 @@
 import '../data/stores.dart';
 import '../models/market_price.dart';
 import '../models/product.dart';
+import 'barcode_normalizer.dart';
 import 'open_prices_cache.dart';
 import 'open_prices_service.dart';
 import 'open_food_facts_product_discovery.dart';
@@ -61,7 +62,7 @@ class OpenPricesSyncService {
     final candidates = <Product>[];
     final discoveredIds = <String>{};
     for (final product in products) {
-      if ((product.ean ?? '').trim().isNotEmpty) {
+      if (product.ean != null && normalizeBarcode(product.ean!) != null) {
         candidates.add(product);
         continue;
       }
@@ -71,7 +72,9 @@ class OpenPricesSyncService {
             : customFetcher == null
                 ? await discovery!.discover(product)
                 : null;
-        if (resolved != null && (resolved.ean ?? '').trim().isNotEmpty) {
+        if (resolved != null &&
+            resolved.ean != null &&
+            normalizeBarcode(resolved.ean!) != null) {
           candidates.add(resolved);
           discoveredIds.add(resolved.id);
         }
