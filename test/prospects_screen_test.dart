@@ -953,7 +953,7 @@ void main() {
     await tester.scrollUntilVisible(
       find.text('Aktueller Kaffee'),
       500,
-      scrollable: find.byKey(const ValueKey('prospect-viewer-scroll')),
+      scrollable: find.byType(Scrollable).first,
     );
     expect(find.text('Aktueller Kaffee'), findsOneWidget);
     expect(find.text('Alter Kaffee'), findsNothing);
