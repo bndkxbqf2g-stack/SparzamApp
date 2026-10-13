@@ -1,3 +1,7 @@
+## Update 13.10.2026 – Prospekt-Cover-Scroll stabilisieren
+- [x] Coverkarten im Überblick auf Canvas-only umstellen, damit Flutter Web beim schnellen Scrollen keine Plattform-Views pro CDN-Bild anlegt.
+- [x] Detailviewer-Fallback für einzelne Bilder und Test für die Renderer-Grenze beibehalten.
+
 ## Update 13.10.2026 – Shell-Routing-Snapshot
 - [x] Dashboard, Kaufabschluss und Seitensammlung teilen je Build einen
   aktuellen und regulären RouteOptimizer für identische Eingaben.

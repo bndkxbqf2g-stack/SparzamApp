@@ -1,3 +1,8 @@
+## Update 13.10.2026 – Prospekt-Cover ohne Plattform-Views im Scrollweg
+- Coverkarten im Angebote- und Prospekte-Reiter erzwingen jetzt den Canvas-Renderer; Browser-Plattform-Views werden im Überblick nicht mehr pro Händlerbild erzeugt.
+- Der vollständige Prospektviewer behält seinen expliziten Fallback für einzelne Bilder, damit die Coverübersicht stabil bleibt und der Detailpfad erreichbar bleibt.
+- Ein Widget-Test schützt die Renderer-Entscheidung; Datenquellen, Gültigkeit und manuelle Artikelübernahme bleiben unverändert.
+
 ## Update 13.10.2026 – Shell-Routing pro Build wiederverwenden
 - Dashboard, Einkaufsabschluss und Seitensammlung verwenden je Build denselben Routing-Snapshot mit einem aktuellen und einem regulären Optimizer.
 - Die teure Preis-/Alternativenaufbereitung wird dadurch nicht mehrfach für identische Eingaben gestartet; Preisabdeckung, Filialschlüssel und Tie-Breaker bleiben unverändert.

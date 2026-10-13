@@ -917,11 +917,11 @@ class _ProspectCard extends StatelessWidget {
             cacheWidth: compact ? 480 : 640,
             cacheHeight: compact ? 400 : 480,
             filterQuality: FilterQuality.low,
-            // A single cover per market is cheap enough to use the browser
-            // fallback when a retailer CDN omits Canvas-CORS headers. The
-            // long page viewer below stays Canvas-only, so this does not
-            // create one platform view per prospect page while scrolling.
-            webHtmlElementStrategy: WebHtmlElementStrategy.fallback,
+            // Overview covers stay on the Canvas renderer. A browser
+            // platform view for every retailer CDN image can make fast
+            // vertical and horizontal scrolling unstable on Flutter web.
+            // The full viewer keeps its explicit fallback boundary.
+            webHtmlElementStrategy: WebHtmlElementStrategy.never,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) =>
                 _bringCoverPlaceholder(),

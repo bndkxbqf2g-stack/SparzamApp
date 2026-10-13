@@ -226,7 +226,7 @@ void main() {
     expect(find.text('Markt 23'), findsWidgets);
   });
 
-  testWidgets('keeps cross-origin cover cards on the browser fallback', (
+  testWidgets('keeps cross-origin cover cards visible', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -1176,6 +1176,7 @@ void main() {
       '0,99',
     );
   });
+
 }
 
 Future<void> _scrollProspects(
