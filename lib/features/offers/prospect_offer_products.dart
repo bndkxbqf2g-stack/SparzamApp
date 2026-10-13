@@ -1,5 +1,6 @@
 import '../../models/offer.dart';
 import '../../models/product.dart';
+import '../../services/quantity_normalizer.dart';
 import '../catalog/product_identity.dart';
 import 'offer_import.dart';
 import 'offer_filter.dart';
@@ -257,4 +258,5 @@ Offer? _offerForProduct(
     address: record.address,
   );
 }
+
 
