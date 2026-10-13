@@ -29,6 +29,7 @@ PriceObservation observationFromMarketPrice(MarketPrice price) =>
         MarketPriceSource.manual => PriceObservationSource.manual,
         MarketPriceSource.receipt => PriceObservationSource.receipt,
         MarketPriceSource.openPrices => PriceObservationSource.openPrices,
+        MarketPriceSource.prospect => PriceObservationSource.leaflet,
       },
       sourceAdapter: price.sourceAdapter,
       kind: price.kind == PriceObservationKind.unknown && price.discounted
