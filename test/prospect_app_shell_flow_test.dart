@@ -306,8 +306,10 @@ void main() {
 
       final addButton = find.byTooltip('Zur Einkaufsliste');
       expect(addButton, findsOneWidget);
+      await tester.ensureVisible(addButton);
       await tester.tap(addButton);
       await tester.pump(const Duration(milliseconds: 500));
+      expect(find.byTooltip('Noch einmal zur Einkaufsliste'), findsOneWidget);
       await tester.runAsync(() async {
         for (var attempt = 0; attempt < 200; attempt++) {
           final items = await stores.shoppingList.load();
@@ -413,7 +415,8 @@ void main() {
           find.byKey(const ValueKey('prospect-open-favorite-Netto'));
       expect(favoriteCard, findsOneWidget);
       await tester.ensureVisible(favoriteCard);
-      await tester.tap(favoriteCard);
+      final favoriteRect = tester.getRect(favoriteCard);
+      await tester.tapAt(favoriteRect.topLeft + const Offset(36, 36));
       await tester.pump(const Duration(milliseconds: 500));
       expect(find.text('Prospektseiten (1)'), findsOneWidget);
       expect(find.text('Thüngersheim'), findsOneWidget);
