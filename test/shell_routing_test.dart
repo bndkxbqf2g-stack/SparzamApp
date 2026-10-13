@@ -6,18 +6,19 @@ import 'package:sparzamapp/models/mobility_settings.dart';
 
 void main() {
   test('leere Einkaufsliste erzeugt keine Routenberechnung', () {
-    const routing = ShellRouting(
-      items: [],
-      offers: [],
-      mobility: MobilitySettings(),
-      marketPrices: [],
-      roadDistances: {},
+    final routing = ShellRouting(
+      items: const [],
+      offers: const [],
+      mobility: const MobilitySettings(),
+      marketPrices: const [],
+      roadDistances: const {},
       roadMatrix: null,
     );
 
     expect(routing.current, isNull);
     expect(routing.regular, isNull);
   });
+
   test('reuses optimizers for one routing snapshot', () {
     final routing = ShellRouting(
       items: [
@@ -46,5 +47,4 @@ void main() {
     expect(identical(firstCurrent, secondCurrent), isTrue);
     expect(identical(firstRegular, secondRegular), isTrue);
   });
-
 }
