@@ -197,7 +197,7 @@ class ProspectFeedService {
       (_) {
         if (identical(_inFlight, started)) _inFlight = null;
       },
-      onError: (Object _, StackTrace __) {
+      onError: (Object _, StackTrace _) {
         if (identical(_inFlight, started)) _inFlight = null;
       },
     );
@@ -574,3 +574,4 @@ bool? _boolValue(Object? value) {
       return null;
   }
 }
+
