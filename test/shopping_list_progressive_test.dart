@@ -16,7 +16,7 @@ void main() {
 
   tearDown(() => SharedPreferencesAsyncPlatform.instance = null);
 
-  testWidgets('lädt Warengruppen im Preise-listenpfad schrittweise', (
+  testWidgets('lädt Warengruppen im Einkaufslistenpfad schrittweise', (
     tester,
   ) async {
     final products = List<Product>.generate(
