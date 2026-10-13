@@ -723,6 +723,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                     ),
                                   ],
                                 ),
+                              ),
 
                             ExpansionTile(
                               initiallyExpanded: true,
