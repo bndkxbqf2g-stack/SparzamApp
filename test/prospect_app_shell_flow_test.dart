@@ -50,15 +50,73 @@ class _DelayedNamedListStore extends ShoppingListStore {
   Future<List<NamedShoppingList>> loadNamedLists() => result;
 }
 
+class _InMemoryShoppingListStore extends ShoppingListStore {
+  List<ListItem> items = const <ListItem>[];
+  List<NamedShoppingList> namedLists = const <NamedShoppingList>[];
+
+  @override
+  Future<List<ListItem>> load() async => List<ListItem>.of(items);
+
+  @override
+  Future<void> save(List<ListItem> next) async {
+    items = List<ListItem>.of(next);
+  }
+
+  @override
+  Future<List<NamedShoppingList>> loadNamedLists() async =>
+      List<NamedShoppingList>.of(namedLists);
+
+  @override
+  Future<void> saveNamedLists(List<NamedShoppingList> next) async {
+    namedLists = List<NamedShoppingList>.of(next);
+  }
+
+  @override
+  Future<void> saveKnownItem(Product product) async {}
+}
+
+class _InMemoryOfferStore extends OfferStore {
+  List<Offer> offers = const <Offer>[];
+
+  @override
+  Future<List<Offer>> load() async => List<Offer>.of(offers);
+
+  @override
+  Future<void> save(List<Offer> next) async {
+    offers = List<Offer>.of(next);
+  }
+}
+
+class _InMemoryProductCatalogStore extends ProductCatalogStore {
+  List<Product> products = const <Product>[];
+
+  @override
+  Future<List<Product>> load() async => List<Product>.of(products);
+
+  @override
+  Future<List<Product>> upsert(Product product, List<Product> current) async {
+    products = [
+      product,
+      ...current.where((item) => item.id != product.id),
+    ];
+    return List<Product>.of(products);
+  }
+}
+
 class _Stores {
-  _Stores({ShoppingListStore? shoppingListStore})
-    : shoppingList = shoppingListStore ?? ShoppingListStore();
+  _Stores({
+    ShoppingListStore? shoppingListStore,
+    OfferStore? offerStore,
+    ProductCatalogStore? productCatalogStore,
+  })  : shoppingList = shoppingListStore ?? ShoppingListStore(),
+        offers = offerStore ?? OfferStore(),
+        products = productCatalogStore ?? ProductCatalogStore();
 
   final budget = BudgetStore();
-  final offers = OfferStore();
+  final OfferStore offers;
   final mobility = MobilitySettingsStore();
   final marketPrices = MarketPriceStore();
-  final products = ProductCatalogStore();
+  final ProductCatalogStore products;
   final priceData = PriceDataSettingsStore();
   final priceHistory = PriceHistoryStore();
   final recentPurchases = RecentPurchaseStore();
@@ -209,7 +267,11 @@ void main() {
           ],
         ),
       );
-      final stores = _Stores();
+      final stores = _Stores(
+        shoppingListStore: _InMemoryShoppingListStore(),
+        offerStore: _InMemoryOfferStore(),
+        productCatalogStore: _InMemoryProductCatalogStore(),
+      );
 
       await tester.pumpWidget(_app(stores, module));
       await tester.pump(const Duration(milliseconds: 500));
