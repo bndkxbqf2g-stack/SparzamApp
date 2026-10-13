@@ -634,6 +634,7 @@ class _AppShellState extends State<AppShell> {
   }
 
   void addProduct(Product product) {
+    debugPrint('APP_SHELL_ADD_PRODUCT ${product.id}');
     setState(() => shoppingList = addShoppingProduct(shoppingList, product));
     persistShoppingListWithFeedback();
     _saveKnownItem(product);
