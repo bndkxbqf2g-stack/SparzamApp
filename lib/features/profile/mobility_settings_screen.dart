@@ -202,6 +202,7 @@ class _MobilitySettingsScreenState extends State<MobilitySettingsScreen> {
           ),
           const SizedBox(height: 16),
           TextFormField(
+            key: const ValueKey('mobility-time-value'),
             controller: timeValueController,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             decoration: InputDecoration(
@@ -234,3 +235,4 @@ class _MobilitySettingsScreenState extends State<MobilitySettingsScreen> {
     ),
   );
 }
+
