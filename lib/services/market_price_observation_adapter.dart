@@ -82,6 +82,9 @@ List<MarketPrice> marketPricesFromObservations(
           source: switch (entry.source) {
             PriceObservationSource.receipt => MarketPriceSource.receipt,
             PriceObservationSource.openPrices => MarketPriceSource.openPrices,
+            PriceObservationSource.retailer ||
+            PriceObservationSource.retailerWebsite ||
+            PriceObservationSource.leaflet => MarketPriceSource.prospect,
             _ => MarketPriceSource.manual,
           },
           externalId: _openPricesId(entry.proofRef),
