@@ -582,6 +582,54 @@ void main() {
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
   });
 
+  testWidgets('hides expired prospect covers from the current card', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Abgelaufte Woche',
+              pages: const [
+                ProspectPage(
+                  number: 1,
+                  imageUrl: 'https://example.test/expired-cover.jpg',
+                ),
+              ],
+              thumbnailUrl: 'https://example.test/expired-cover.jpg',
+              url: 'https://example.test/official-prospect',
+              sourceStatus: 'ok',
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+            ),
+          ],
+          now: DateTime(2026, 10, 13),
+        ),
+      ),
+    );
+
+    expect(
+      find.byKey(
+        const ValueKey('prospect-cover-image-grid-Lidl'),
+      ),
+      findsNothing,
+    );
+    expect(
+      find.text('Keine aktuell gültigen Angebotsdaten geladen.'),
+      findsOneWidget,
+    );
+
+    await _scrollProspects(tester);
+    await tester.tap(find.text('Lidl').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Prospektseiten (1)'), findsNothing);
+    expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
+  });
+
   testWidgets('shows a source thumbnail as the cover page in the viewer', (
     tester,
   ) async {

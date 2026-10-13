@@ -1,3 +1,13 @@
+## Update 13.10.2026 – Abgelaufene Prospektcover bleiben aus der aktuellen Anzeige
+- Die sichtbare Prospektkarte übernimmt Seiten und Cover jetzt ausschließlich aus
+  einem aktuell gültigen Zeitraum.
+- Abgelaufene oder zeitlich unbekannte Seiten bleiben als veraltete Evidenz nicht
+  in der aktuellen Coveransicht; die Karte zeigt stattdessen den verständlichen
+  Hinweis „Keine aktuell gültigen Angebotsdaten geladen“ und behält den offiziellen
+  Händlerlink sowie den Filialkontext.
+- Eine Widget-Regression schützt diesen Filter, während aktuelle Coverseiten und
+  der manuelle Artikelübernahmepfad unverändert bleiben.
+
 ## Update 13.10.2026 – Angebote-Reiter mit begrenztem Renderdruck
 - Der Angebote-Reiter begrenzt den äußeren Scrollvorlauf auf den sichtbaren Bereich.
 - Beim Öffnen einer Händler-/Kategoriegruppe wird die konkrete Produktzuordnung pro Datensatz nur einmal berechnet; die bisherige Nachweis- und Listenlogik bleibt unverändert.

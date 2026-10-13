@@ -712,19 +712,28 @@ ProspectIssue _visibleIssue(
       ? null
       : _bestVisibleProspect(currentEntries);
   final selected = current ?? _bestVisibleProspect(entries);
+
+  // A stale issue may still carry a perfectly valid-looking cover image.
+  // Never expose that image as the current prospect once its period ended:
+  // the card remains useful as a source/status entry, while the old pages
+  // are removed from the visible evidence path.
   final String sourceStatus;
   if (currentRecordCount > 0 &&
       currentRegionalRecordCount == currentRecordCount &&
       selected.sourceStatus != 'error') {
     sourceStatus = 'regional_only';
   } else if (currentRecordCount == 0 &&
-      (current?.sourceStatus ?? selected.sourceStatus) == 'ok') {
+      selected.sourceStatus != 'error' &&
+      selected.sourceStatus != 'regional_only') {
+    // A current metadata-only prospect is still a valid source card, but
+    // it has no structured items to display as current offers.
     sourceStatus = 'no_current_offers';
   } else if (selected.sourceStatus == 'error' && currentRecordCount > 0) {
     sourceStatus = 'current_fallback';
   } else {
     sourceStatus = selected.sourceStatus;
   }
+
   return ProspectIssue(
     storeName: selected.storeName,
     title: current?.title ?? 'Aktionsprospekt',
