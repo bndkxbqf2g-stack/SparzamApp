@@ -9,7 +9,7 @@ import '../offers/prospect_price_statistics.dart';
 import '../price_gaps/price_gap_priority.dart';
 import '../shopping_list/shopping_price_quotes.dart';
 
-class PricesHubScreen extends StatelessWidget {
+class PricesHubScreen extends StatefulWidget {
   const PricesHubScreen({
     super.key,
     required this.onOpenCatalog,
@@ -41,22 +41,89 @@ class PricesHubScreen extends StatelessWidget {
   final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
   final DateTime? now;
 
+class _PricesHubScreenState extends State<PricesHubScreen> {
+  int? _snapshotSignatureValue;
+  List<_PriceSnapshot>? _snapshotCache;
+
+  int _snapshotSignature() {
+    var hash = 17;
+    void add(Object? value) {
+      hash = (hash * 31 + (value?.hashCode ?? 0)) & 0x3fffffff;
+    }
+
+    add(widget.shoppingList.length);
+    for (final item in widget.shoppingList) {
+      add(item.product.id);
+      add(item.quantity);
+    }
+    add(widget.marketPrices.length);
+    for (final price in widget.marketPrices) {
+      add(price.productId);
+      add(price.storeName);
+      add(price.source.name);
+      add(price.price);
+      add(price.updatedAt.millisecondsSinceEpoch);
+      add(price.sourceLocationId);
+      add(price.quantity);
+      add(price.unit);
+      add(price.unitPrice);
+    }
+    add(widget.offers.length);
+    for (final offer in widget.offers) {
+      add(offer.id);
+      add(offer.productId);
+      add(offer.storeName);
+      add(offer.offerPrice);
+      add(offer.originalPrice);
+      add(offer.validFrom?.millisecondsSinceEpoch);
+      add(offer.validUntil.millisecondsSinceEpoch);
+      add(offer.locationId);
+      add(offer.packageAmount);
+      add(offer.packageUnit);
+    }
+    final history = widget.prospectPriceHistory.entries.toList()
+      ..sort((a, b) => a.key.compareTo(b.key));
+    for (final entry in history) {
+      add(entry.key);
+      for (final summary in entry.value.allSummaries) {
+        add(summary.storeName);
+        add(summary.kind.name);
+        add(summary.medianPrice);
+        add(summary.latestValidUntil.millisecondsSinceEpoch);
+        add(summary.observationCount);
+      }
+    }
+    add(widget.enabledStoreNames.join('|'));
+    add(widget.openPricesMaxAgeDays);
+    final reference = widget.now ?? DateTime.now();
+    add(DateTime(reference.year, reference.month, reference.day)
+        .millisecondsSinceEpoch);
+    return hash;
+  }
+
   List<_PriceSnapshot> _snapshots() {
-    return [
-      for (final item in shoppingList)
+    final signature = _snapshotSignature();
+    if (_snapshotSignatureValue == signature && _snapshotCache != null) {
+      return _snapshotCache!;
+    }
+    final snapshots = [
+      for (final item in widget.shoppingList)
         _snapshotFor(item),
     ];
+    _snapshotSignatureValue = signature;
+    _snapshotCache = snapshots;
+    return snapshots;
   }
 
   _PriceSnapshot _snapshotFor(ListItem item) {
     final quotes = shoppingQuotes(
       item,
-      prices: marketPrices,
-      offers: offers,
-      prospectPriceHistory: prospectPriceHistory,
-      enabledStores: enabledStoreNames,
-      openPricesMaxAgeDays: openPricesMaxAgeDays,
-      now: now,
+      prices: widget.marketPrices,
+      offers: widget.offers,
+      prospectPriceHistory: widget.prospectPriceHistory,
+      enabledStores: widget.enabledStoreNames,
+      openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
+      now: widget.now,
     );
     ShoppingQuote? current;
     for (final quote in quotes) {
@@ -74,6 +141,7 @@ class PricesHubScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screen = widget;
     final snapshots = _snapshots();
     final current = snapshots.where((row) => row.quote != null).length;
     final historical = snapshots.where((row) => row.hasHistorical).length;
@@ -102,7 +170,7 @@ class PricesHubScreen extends StatelessWidget {
         const Center(child: Text('Transparenz schafft echte Ersparnis.')),
         const SizedBox(height: 20),
         if (snapshots.isEmpty)
-          _EmptyListCard(onOpenList: onOpenList)
+          _EmptyListCard(screen.onOpenList: screen.onOpenList)
         else
           _ListCoverageCard(
             current: current,
@@ -111,8 +179,8 @@ class PricesHubScreen extends StatelessWidget {
             missing: missing,
             coverage: coverage,
             orientingTotal: orientingTotal,
-            onOpenList: onOpenList,
-            onOpenRoute: onOpenRoute,
+            screen.onOpenList: screen.onOpenList,
+            screen.onOpenRoute: screen.onOpenRoute,
           ),
         if (snapshots.isNotEmpty && current > 0) ...[
           const SizedBox(height: 16),
@@ -149,14 +217,14 @@ class PricesHubScreen extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           _PriceComparisonList(
-            shoppingList: shoppingList,
-            prices: marketPrices,
-            offers: offers,
-            enabledStoreNames: enabledStoreNames,
-            openPricesMaxAgeDays: openPricesMaxAgeDays,
-            prospectPriceHistory: prospectPriceHistory,
-            onResolvePriceGap: onResolvePriceGap,
-            now: now,
+            screen.shoppingList: screen.shoppingList,
+            prices: screen.marketPrices,
+            screen.offers: screen.offers,
+            screen.enabledStoreNames: screen.enabledStoreNames,
+            screen.openPricesMaxAgeDays: screen.openPricesMaxAgeDays,
+            screen.prospectPriceHistory: screen.prospectPriceHistory,
+            screen.onResolvePriceGap: screen.onResolvePriceGap,
+            screen.now: screen.now,
           ),
         ],
         if (snapshots.isNotEmpty && missing > 0) ...[
@@ -174,10 +242,10 @@ class PricesHubScreen extends StatelessWidget {
                     ? 'Historische Hinweise bleiben sichtbar, werden aber nicht als aktuell gerechnet.'
                     : 'Ergänze einen Bonpreis, ein gültiges Angebot oder einen eigenen Marktpreis.',
               ),
-              trailing: onOpenList == null
+              trailing: screen.onOpenList == null
                   ? null
                   : const Icon(Icons.chevron_right),
-              onTap: onOpenList,
+              onTap: screen.onOpenList,
             ),
           ),
         ],
@@ -190,7 +258,7 @@ class PricesHubScreen extends StatelessWidget {
               'Produkt suchen, Marktpreise und Verlauf ansehen',
             ),
             trailing: const Icon(Icons.chevron_right),
-            onTap: onOpenCatalog,
+            onTap: screen.onOpenCatalog,
           ),
         ),
         const SizedBox(height: 12),
@@ -201,16 +269,15 @@ class PricesHubScreen extends StatelessWidget {
               color: SparzamTheme.deepGreen,
             ),
             title: const Text('Preisdaten'),
-            subtitle: Text(summary),
+            subtitle: Text(screen.summary),
             trailing: const Icon(Icons.chevron_right),
-            onTap: onOpenSettings,
+            onTap: screen.onOpenSettings,
           ),
         ),
       ],
     );
   }
 }
-
 class _ListCoverageCard extends StatelessWidget {
   const _ListCoverageCard({
     required this.current,
@@ -531,7 +598,7 @@ class _PriceMatrixRow extends StatelessWidget {
       );
     }
     final details = <String>[
-      quote.displayPrefix,
+      quote.sourceLabel,
       if (quote.packageLabel != null) 'Packung ${quote.packageLabel}',
       if (quote.baseUnitPriceLabel != null) quote.baseUnitPriceLabel!,
       quote.comparabilityLabel,
