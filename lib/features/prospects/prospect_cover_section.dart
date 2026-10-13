@@ -226,8 +226,6 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
                   ),
               ],
             );
-              },
-            );
           },
         ),
       ],
