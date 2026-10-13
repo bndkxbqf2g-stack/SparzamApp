@@ -1481,6 +1481,7 @@ class _ProspectViewer extends StatelessWidget {
     final header = <Widget>[
       if (issue.location?.trim().isNotEmpty == true)
         Card(
+          key: const ValueKey('prospect-viewer-location'),
           child: ListTile(
             dense: true,
             leading: const Icon(Icons.store_outlined),
