@@ -170,6 +170,13 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
           controller: _bringScrollController,
           key: const ValueKey('prospect-bring-scroll'),
           slivers: [
+            if (!hasSelection && visibleProspects.isNotEmpty)
+              const SliverToBoxAdapter(
+                child: SizedBox(
+                  key: ValueKey('prospect-grid'),
+                  height: 0,
+                ),
+              ),
             if (hasSelection)
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
@@ -326,7 +333,6 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 sliver: SliverLayoutBuilder(
-                  key: const ValueKey('prospect-grid'),
                   builder: (context, constraints) {
                     final columns =
                         constraints.crossAxisExtent >= 650 ? 3 : 2;
