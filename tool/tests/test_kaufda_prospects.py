@@ -169,6 +169,56 @@ class KaufdaProspectTest(unittest.TestCase):
         )
         self.assertNotIn("originalPrice", uvp_offers[0])
 
+    def test_parser_normalizes_named_nested_evidence_aliases(self):
+        payload = kaufda.extract_next_data(self.html)
+        item = payload["props"]["pageProps"]["pageInformation"]["offers"]["main"]["items"][0]
+        item.pop("offerImages", None)
+        item["productImage"] = {"src": "https://img.example.test/alias-butter.jpg"}
+        item["productCategory"] = {"title": "Milchprodukte"}
+        item["packaging"] = "250 g"
+        item["prices"].pop("priceByBaseUnit", None)
+        item["prices"]["baseUnitPrice"] = "5,16 €/kg"
+        item["prices"]["regularPrice"] = "1,79 €"
+        html = (
+            '<script id="__NEXT_DATA__" type="application/json">'
+            + kaufda.json.dumps(payload)
+            + "</script>"
+        )
+
+        offers, _ = kaufda.parse_kaufda_html(
+            html,
+            city="Wuerzburg",
+            query="Butter",
+            today=self.today,
+        )
+
+        offer = offers[0]
+        self.assertEqual(offer["imageUrl"], "https://img.example.test/alias-butter.jpg")
+        self.assertEqual(offer["category"], "Milchprodukte")
+        self.assertEqual(offer["packageSize"], "250 g")
+        self.assertEqual(offer["priceByBaseUnit"], "5,16 €/kg")
+        self.assertEqual(offer["originalPrice"], 1.79)
+
+    def test_parser_rejects_non_http_image_aliases(self):
+        payload = kaufda.extract_next_data(self.html)
+        item = payload["props"]["pageProps"]["pageInformation"]["offers"]["main"]["items"][0]
+        item.pop("offerImages", None)
+        item["productImage"] = {"src": "javascript:alert(1)"}
+        html = (
+            '<script id="__NEXT_DATA__" type="application/json">'
+            + kaufda.json.dumps(payload)
+            + "</script>"
+        )
+
+        offers, _ = kaufda.parse_kaufda_html(
+            html,
+            city="Wuerzburg",
+            query="Butter",
+            today=self.today,
+        )
+
+        self.assertNotIn("imageUrl", offers[0])
+
     def test_exact_branch_assertion_marks_records_routeable(self):
         offers, _ = kaufda.parse_kaufda_html(
             self.html,

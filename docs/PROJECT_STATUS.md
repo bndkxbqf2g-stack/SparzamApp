@@ -1,3 +1,9 @@
+## Update 14.10.2026 – kaufDA-Evidenzfelder tolerant normalisieren
+
+- [x] Der optionale kaufDA-Adapter akzeptiert bekannte, explizit benannte Varianten für Artikelbild, Kategorie, Packungsgröße, Grundpreis und Normalpreis.
+- [x] Verschachtelte Präsentationsfelder werden nur bis zu einer festen Tiefe und nur nach HTTP(S)-Prüfung übernommen; regionale Treffer bleiben regional.
+- [x] Fixture-Regressionen schützen die Aliasnormalisierung und blockieren nicht öffentliche/ungültige Bildwerte.
+
 ## Update 14.10.2026 – Prospekt-Evidenzfelder tolerant normalisieren
 
 - [x] Die App-Feedgrenze akzeptiert ausschließlich explizit benannte Varianten für Artikelbild, Kategorie, Packungsgröße und Grundpreis.
