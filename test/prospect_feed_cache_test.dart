@@ -142,6 +142,7 @@ void main() {
     final service = ProspectFeedService(
       client: client,
       cache: cache,
+      bundledLoader: () async => throw StateError('asset unavailable'),
     );
 
     final result = await service.load();
@@ -255,6 +256,7 @@ void main() {
     final service = ProspectFeedService(
       client: _FakeClient(error: http.ClientException('offline')),
       cache: cache,
+      bundledLoader: () async => throw StateError('asset unavailable'),
     );
 
     final result = await service.load();
@@ -269,6 +271,7 @@ void main() {
     final service = ProspectFeedService(
       client: _FakeClient(body: '{"should":"not be requested"}'),
       cache: cache,
+      bundledLoader: () async => throw StateError('asset unavailable'),
       networkEnabled: false,
     );
 
@@ -313,6 +316,7 @@ void main() {
     final service = ProspectFeedService(
       client: _FakeClient(statusCode: 503, body: 'unavailable'),
       cache: cache,
+      bundledLoader: () async => throw StateError('asset unavailable'),
     );
 
     final result = await service.load();
