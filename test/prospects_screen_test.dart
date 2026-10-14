@@ -229,7 +229,7 @@ void main() {
       MaterialApp(
         home: ProspectsScreen(
           records: records,
-          prospects: const [
+          prospects: [
             ProspectIssue(
               storeName: 'Lidl',
               title: 'Aktionsprospekt',
