@@ -508,6 +508,44 @@ class ProspectParserTest(unittest.TestCase):
             "https://images.example/scaleWidth/600/id/image.jpg",
         )
 
+    def test_explicit_regular_price_aliases_survive_source_adapters(self):
+        aldi_payload = """
+        {
+          "meta": {"pagination": {"totalCount": 1}},
+          "data": [{
+            "brandName": "MILSANI",
+            "name": "H-Milch 1 l",
+            "price": {
+              "amountRelevant": 99,
+              "regularPrice": "1,29 €"
+            }
+          }]
+        }
+        """
+        aldi_offers, _ = refresh.parse_aldi_api_page(
+            aldi_payload,
+            refresh.date(2026, 10, 12),
+        )
+        self.assertEqual(aldi_offers[0]["originalPrice"], 1.29)
+
+        edeka_payload = """
+        {
+          "gueltig_von": "2026-10-12",
+          "gueltig_bis": "2026-10-17",
+          "docs": [{
+            "angebotid": 77,
+            "titel": "H-Milch 1 l",
+            "preis": 0.99,
+            "price": {"oldPrice": "1,29 €"}
+          }]
+        }
+        """
+        edeka_offers, _ = refresh.parse_edeka_api(
+            edeka_payload,
+            "https://www.edeka.de/maerkte/023738/",
+        )
+        self.assertEqual(edeka_offers[0]["originalPrice"], 1.29)
+
     def test_aldi_public_prospect_parser_keeps_current_cover_and_period(self):
         html = """
         <a href="https://prospekt.aldi-sued.de/kw41-26-op-mp/page/10">Vorwoche</a>

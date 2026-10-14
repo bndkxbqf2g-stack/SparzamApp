@@ -558,7 +558,19 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
       continue;
     }
 
-    final originalPriceValue = value['originalPrice'];
+    // Public adapters normalize to originalPrice, but older/optional
+    // sources have used explicit regular-price aliases. Accept only these
+    // named fields; no discount, UVP or arbitrary numeric field is inferred.
+    final originalPriceValue = _firstNonNullValue(
+      value,
+      const [
+        'originalPrice',
+        'regularPrice',
+        'normalPrice',
+        'wasPrice',
+        'oldPrice',
+      ],
+    );
     final originalPrice = originalPriceValue is num
         ? originalPriceValue.toDouble()
         : null;
@@ -648,6 +660,17 @@ String _prospectRecordKey(OfferImportRecord record) {
   return fields
       .map((value) => value.trim().toLowerCase().replaceAll(RegExp(r'\s+'), ' '))
       .join('\u001f');
+}
+
+Object? _firstNonNullValue(
+  Map<String, dynamic> value,
+  Iterable<String> keys,
+) {
+  for (final key in keys) {
+    final candidate = value[key];
+    if (candidate != null) return candidate;
+  }
+  return null;
 }
 
 String? _stringValue(Object? value) => value is String ? value.trim() : null;

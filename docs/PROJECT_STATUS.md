@@ -1,3 +1,10 @@
+## Update 14.10.2026 – Reguläre Prospektpreise tolerant normalisieren
+
+- [x] Explizite Normalpreisfelder wie `originalPrice`, `regularPrice`, `normalPrice`, `wasPrice` und `oldPrice` werden an der Python- und Dart-Feedgrenze einheitlich gelesen.
+- [x] Rabattwerte, UVP-/Listenpreise und beliebige numerische Felder werden nicht als Normalpreis interpretiert.
+- [x] ALDI-/EDEKA-Varianten mit verschachtelten Preisobjekten behalten den belegten Normalpreis bis zur regulären PriceObservation.
+- [x] Parserregressionen decken Aliasfelder und die bestehende strikte Validierung ab.
+
 ## Update 14.10.2026 – Prospektfeed-Parsing im Prozess wiederverwenden
 
 - [x] Cache- und gebündelte Feedantworten werden pro Herkunft im laufenden Service nur einmal dekodiert.

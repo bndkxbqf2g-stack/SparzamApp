@@ -87,6 +87,41 @@ void main() {
     expect(aldi.address, contains('Würzburger Str. 74'));
   });
 
+  test('accepts explicit regular-price aliases from feed adapters', () {
+    final result = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-10-14T05:57:41Z",
+  "sources": [
+    {"storeName": "ALDI Süd", "status": "ok", "branchId": "B384"}
+  ],
+  "offers": [
+    {
+      "sourceId": "regular-alias-1",
+      "productLabel": "H-Milch 1 l",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.99,
+      "regularPrice": 1.29,
+      "validUntil": "2026-10-17",
+      "proofRef": "https://example.test/aldi/milch"
+    },
+    {
+      "sourceId": "regular-alias-2",
+      "productLabel": "Butter 250 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.49,
+      "normalPrice": 1.99,
+      "validUntil": "2026-10-17",
+      "proofRef": "https://example.test/aldi/butter"
+    }
+  ]
+}
+''');
+
+    expect(result.records, hasLength(2));
+    expect(result.records[0].originalPrice, 1.29);
+    expect(result.records[1].originalPrice, 1.99);
+  });
+
   test(
     'keeps all six configured retailers visible when a source has no data',
     () {
