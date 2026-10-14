@@ -296,6 +296,9 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                       generatedAt: widget.generatedAt,
                       now: widget.now,
                       fromCache: widget.fromCache,
+                      regularPriceCount: currentRecords
+                          .where(hasLearnableProspectRegularPrice)
+                          .length,
                       onRefresh: widget.onRefreshProspects,
                       refreshing: widget.prospectsRefreshing,
                     ),
