@@ -2619,7 +2619,9 @@ def _source_image(raw, *keys):
     )
 
     def values(value, depth=0):
-        if depth > 2:
+        # One extra level covers list -> rendition -> thumbnail -> URL
+        # while keeping source traversal explicitly bounded.
+        if depth > 3:
             return
         if isinstance(value, list):
             for item in value:
