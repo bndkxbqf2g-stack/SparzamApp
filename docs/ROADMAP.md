@@ -492,3 +492,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Der Angebotstab verwendet für den Hinweis „als Preisbasis gespeichert“ ausschließlich die vom lokalen Preisbeobachtungslauf bestätigte Anzahl.
 - [x] Ein fehlgeschlagener oder noch nicht abgeschlossener Speichervorgang erzeugt keinen falschen Bestätigungsstatus, obwohl der Feed einen ausdrücklich ausgewiesenen Normalpreis enthält.
 - [x] Die Standalone-Ansicht behält ihren konservativen Feed-Fallback, wenn kein Shell-Persistenzwert übergeben wird.
+
+
+## Update 14.10.2026 – Reguläre Preisbasis je Händler nachvollziehbar
+- [x] Der Prospektfeed führt die Anzahl ausdrücklich ausgewiesener Normalpreise je Händler bis in die Abdeckungskarte.
+- [x] Die Anzeige trennt feed-seitig lernbare Normalpreise von den tatsächlich in `PriceObservationStore` gespeicherten Beobachtungen.
+- [x] Bei einem fehlgeschlagenen Persistenzlauf bleibt der Speicherstatus unbekannt beziehungsweise null; ein Angebotspreis wird niemals als regulärer Preis gezählt.

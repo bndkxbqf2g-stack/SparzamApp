@@ -16,6 +16,7 @@ class ProspectFeedStatusCard extends StatelessWidget {
     this.onRefresh,
     this.refreshing = false,
     this.regularPriceCount = 0,
+    this.persistedRegularPriceCount,
   });
 
   final DateTime? generatedAt;
@@ -25,6 +26,9 @@ class ProspectFeedStatusCard extends StatelessWidget {
   final bool refreshing;
   /// Current, branch-specific regular prices that can be saved as price basis.
   final int regularPriceCount;
+  /// Count confirmed by the local price-observation persistence. Null means
+  /// that this standalone card did not receive a persistence snapshot.
+  final int? persistedRegularPriceCount;
 
   @override
   Widget build(BuildContext context) {
@@ -174,6 +178,7 @@ List<ProspectCoverage> calculateProspectCoverage({
   required Iterable<ProspectIssue> issues,
   required Iterable<OfferImportRecord> records,
   DateTime? now,
+  Map<String, int>? persistedRegularPriceCounts,
 }) {
   final currentRecords = now == null
       ? records.toList(growable: false)
@@ -210,6 +215,7 @@ List<ProspectCoverage> calculateProspectCoverage({
         storeName,
         issuesByStore[storeName],
         recordsByStore[storeName] ?? const <OfferImportRecord>[],
+        persistedRegularPriceCounts?[storeName],
       ),
   ];
 }
@@ -232,6 +238,7 @@ ProspectCoverage _coverageForStore(
   String storeName,
   ProspectIssue? issue,
   List<OfferImportRecord> records,
+  int? persistedRegularPriceCount,
 ) {
   final offerImageCount = records
       .where((record) => record.imageUrl?.trim().isNotEmpty == true)
@@ -244,6 +251,7 @@ ProspectCoverage _coverageForStore(
       .length;
   final regularPriceCount = records.where(hasLearnableProspectRegularPrice).length;
   final regionalOnlyCount = records.where((record) => record.regionalOnly).length;
+  final storedRegularPriceCount = persistedRegularPriceCount?.clamp(0, regularPriceCount).toInt();
   return ProspectCoverage(
     storeName: storeName,
     sourceStatus: issue?.sourceStatus ?? 'unavailable',
@@ -254,6 +262,7 @@ ProspectCoverage _coverageForStore(
     offerCategoryCount: offerCategoryCount,
     offerProofCount: offerProofCount,
     regularPriceCount: regularPriceCount,
+    persistedRegularPriceCount: storedRegularPriceCount,
     hasBranch: issue?.branchId?.trim().isNotEmpty == true,
     hasLocation: issue?.location?.trim().isNotEmpty == true,
     hasAddress: issue?.address?.trim().isNotEmpty == true,
@@ -323,6 +332,15 @@ class _ProspectCoverageCardState extends State<ProspectCoverageCard> {
     final marketsWithRegularPrices = coverage
         .where((entry) => entry.regularPriceCount > 0)
         .length;
+    final hasPersistenceCoverage = coverage.any(
+        (entry) => entry.persistedRegularPriceCount != null,
+    );
+    final marketsWithStoredRegularPrices = coverage
+        .where((entry) => (entry.persistedRegularPriceCount ?? 0) > 0)
+        .length;
+    final storageSummary = hasPersistenceCoverage
+        ? '$marketsWithStoredRegularPrices mit gespeichertem Normalpreis'
+        : 'Speicherstatus nicht übergeben';
     final regionalOffers = coverage.fold<int>(
       0,
       (sum, entry) => sum + entry.regionalOnlyCount,
@@ -355,6 +373,7 @@ class _ProspectCoverageCardState extends State<ProspectCoverageCard> {
           '$offersWithCategories/$totalStructuredOffers mit Kategorien · '
           '$marketsWithValidity mit Gültigkeitszeitraum · '
           '$marketsWithRegularPrices mit Normalpreis · '
+          '$storageSummary · '
           '$marketsWithProof mit Originalnachweis'
           '${regionalOffers == 0 ? '' : ' · $regionalOffers nur regional'}',
         ),
@@ -411,6 +430,9 @@ String _coverageDetails(ProspectCoverage coverage) {
       '${coverage.offerProofCount}/${coverage.structuredOfferCount} Nachweise';
   final regularPrices =
       '${coverage.regularPriceCount}/${coverage.structuredOfferCount} Normalpreise';
+  final storedRegularPrices = coverage.persistedRegularPriceCount == null
+      ? 'Speicherstatus unbekannt'
+      : '${coverage.persistedRegularPriceCount}/${coverage.structuredOfferCount} gespeichert';
   final storeSignals = '${coverage.availableStoreSignals}/4 Filialdaten';
   final regional = coverage.regionalOnlyCount == 0
       ? ''
@@ -420,6 +442,7 @@ String _coverageDetails(ProspectCoverage coverage) {
       '${coverage.pageCount} Bildseiten · $productImages · $categories · '
       '$proofs · '
       '$regularPrices · '
+      '$storedRegularPrices · '
       '$storeSignals';
 }
 
