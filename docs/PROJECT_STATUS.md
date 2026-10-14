@@ -1,3 +1,9 @@
+## Update 14.10.2026 – Gemeinsame Preis- und Routensnapshots
+- [x] Der App-Shell-Build verwendet den bestehenden Routing-Snapshot-Cache; Mengenänderungen und Änderungen an Preisen, Angeboten, Filialen, Mobilität, Entfernungsmatrix oder Gültigkeitsgrenze invalidieren ihn deterministisch.
+- [x] Der Preise-Reiter löst Produkt×Markt-Quotes einmal pro Eingabestand auf und teilt den Snapshot zwischen Abdeckung, Hervorhebungen und Marktvergleich.
+- [x] Die lokale Preisbeobachtung bewahrt reguläre Prospektpreise getrennt von Angebotspreisen; wiederholte Refreshes bleiben über stabile IDs dedupliziert.
+- [x] PR-CI für alle drei Arbeitspakete war mit Analyse, vollständiger Testsuite und Web-Build grün; es wurden keine Laufzeit-Benchmarks behauptet.
+
 ## Update 14.10.2026 – Reguläre Prospektpreise erreichen Vergleich und Route
 - [x] Aktuelle reguläre Prospektbeobachtungen werden als eigene Prospektquelle in die bestehende MarketPrice-Projektion übernommen.
 - [x] Angebotspreise bleiben im OfferStore und werden nicht als reguläre Prospekt-MarketPrices dupliziert.
