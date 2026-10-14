@@ -1,3 +1,15 @@
+## Update 14.10.2026 – KaufDA-EAN bleibt an exakte Varianten gebunden
+
+- Der optionale KaufDA-Adapter übernimmt explizit benannte EAN/GTIN-Felder
+  normalisiert in den bestehenden Prospektdatensatz; fehlende oder ungültige
+  Codes bleiben ohne Identitätsbehauptung.
+- Ein Prospektlabel darf jetzt über genau eine übereinstimmende Katalog-EAN
+  einer konkreten Variante zugeordnet werden, auch wenn der angezeigte Name
+  verkürzt ist. Mehrdeutige oder nicht im Katalog belegte Codes bleiben im
+  Review und fallen nicht auf eine ähnlich benannte Produktfamilie zurück.
+- Feed-, Offer- und PriceObservation-Tests schützen die EAN-Herkunft,
+  Packungsprüfung und den Mismatch-Fall.
+
 ## Update 14.10.2026 – EAN in Prospekt-Preisbeobachtungen
 
 - Exakt aufgelöste Prospektprodukte führen ihre bereits bekannte Katalog-EAN jetzt in Angebot- und regulärer Preisbeobachtung mit.

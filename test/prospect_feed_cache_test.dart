@@ -151,6 +151,24 @@ void main() {
     );
   });
 
+  test('preserves only valid source EAN evidence', () {
+    final parsed = parseProspectFeed(
+      _feed(validUntil: '2026-10-03').replaceFirst(
+        '"offerPrice": 0.99,',
+        '"offerPrice": 0.99,\n    "gtin": "04012345678905",',
+      ),
+    );
+    expect(parsed.records.single.ean, '04012345678905');
+
+    final rejected = parseProspectFeed(
+      _feed(validUntil: '2026-10-03').replaceFirst(
+        '"offerPrice": 0.99,',
+        '"offerPrice": 0.99,\n    "gtin": "not-an-ean",',
+      ),
+    );
+    expect(rejected.records, isEmpty);
+  });
+
   test('successful live feed is written to the public cache', () async {
     final cache = _MemoryProspectFeedCache();
     final client = _FakeClient(body: _feed(validUntil: '2026-10-03'));

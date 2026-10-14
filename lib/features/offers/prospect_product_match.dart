@@ -1,8 +1,31 @@
 import '../../models/product.dart';
 import '../../services/quantity_normalizer.dart';
+import '../../services/barcode_normalizer.dart';
 import '../catalog/product_identity.dart';
 
 typedef ProspectPackage = ({double amount, String unit});
+
+/// Returns catalog products carrying the exact normalized GTIN/EAN.
+List<Product> prospectProductsByEan(
+  String? ean,
+  Iterable<Product> catalogProducts,
+) {
+  final code = normalizeBarcode(ean?.trim() ?? '');
+  if (code == null) return const <Product>[];
+  return catalogProducts
+      .where((product) => normalizeBarcode(product.ean ?? '') == code)
+      .toList(growable: false);
+}
+
+/// A source code may resolve one concrete variant only. Multiple catalog
+/// entries with the same code remain ambiguous rather than being guessed.
+Product? exactProspectProductByEan(
+  String? ean,
+  Iterable<Product> catalogProducts,
+) {
+  final matches = prospectProductsByEan(ean, catalogProducts);
+  return matches.length == 1 ? matches.single : null;
+}
 
 /// Family similarity alone is not exact price identity. A prospect label may
 /// reuse a catalog ID only when its canonical name and package basis are both

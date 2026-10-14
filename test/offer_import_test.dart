@@ -63,6 +63,64 @@ void main() {
     expect(result.offer!.unitPrice, closeTo(0.99, 0.00001));
   });
 
+  test('uses a matching source EAN for a generic KaufDA label', () {
+    const product = Product(
+      id: 'coffee-ean',
+      name: 'Jacobs Kaffee Crema',
+      unit: '500 g',
+      group: 'kaffee',
+      ean: '04012345678905',
+    );
+    final result = resolveOfferImport(
+      OfferImportRecord(
+        sourceId: 'kaufda-ean',
+        productLabel: 'Kaffee',
+        packageSize: '500 g',
+        ean: '04012345678905',
+        storeName: 'Lidl',
+        offerPrice: 4.99,
+        validUntil: DateTime(2026, 10, 17),
+        source: 'retailerWebsite',
+        sourceAdapter: 'kaufda',
+        proofRef: 'https://www.kaufda.de/Wuerzburg/Angebote/Kaffee',
+        branchId: 'lidl_zellingen',
+      ),
+      [product],
+    );
+
+    expect(result.isResolved, isTrue);
+    expect(result.product!.id, product.id);
+  });
+
+  test('keeps a source EAN mismatch in review', () {
+    final result = resolveOfferImport(
+      OfferImportRecord(
+        sourceId: 'kaufda-ean-mismatch',
+        productLabel: 'Jacobs Kaffee Crema',
+        ean: '04012345678906',
+        storeName: 'Lidl',
+        offerPrice: 4.99,
+        validUntil: DateTime(2026, 10, 17),
+        source: 'retailerWebsite',
+        sourceAdapter: 'kaufda',
+        proofRef: 'https://www.kaufda.de/Wuerzburg/Angebote/Kaffee',
+        branchId: 'lidl_zellingen',
+      ),
+      const [
+        Product(
+          id: 'coffee-ean-mismatch-catalog',
+          name: 'Jacobs Kaffee Crema',
+          unit: '500 g',
+          group: 'kaffee',
+          ean: '04012345678905',
+        ),
+      ],
+    );
+
+    expect(result.isResolved, isFalse);
+    expect(result.reason, 'ean_mismatch');
+  });
+
   test('matches a package-suffixed canonical name for KaufDA evidence', () {
     const product = Product(
       id: 'coffee-core-500',

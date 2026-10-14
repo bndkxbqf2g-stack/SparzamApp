@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import '../features/offers/offer_import.dart';
+import 'barcode_normalizer.dart';
 import 'prospect_feed_cache.dart';
 
 class ProspectFeedLoadResult {
@@ -561,6 +562,14 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     final hasMalformedCapturedAt = capturedAtValue != null &&
         (capturedAtText == null ||
             (capturedAtText.isNotEmpty && capturedAt == null));
+    final rawEan = _firstNonNullValue(
+      value,
+      const ['ean', 'gtin', 'barcode', 'productCode', 'product_code'],
+    );
+    final eanText = _sourceLabelValue(rawEan) ??
+        (rawEan is num && !rawEan.isNaN ? rawEan.toString() : null);
+    final ean = eanText == null ? null : normalizeBarcode(eanText);
+    final hasMalformedEan = eanText != null && ean == null;
     if (sourceId == null ||
         sourceId.trim().isEmpty ||
         productLabel == null ||
@@ -570,7 +579,8 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         offerPrice == null ||
         !offerPrice.isFinite ||
         offerPrice <= 0 ||
-        validUntil == null) {
+        validUntil == null ||
+        hasMalformedEan) {
       continue;
     }
     final category = _firstSourceLabel(
@@ -654,6 +664,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         sourceId: sourceId,
         productLabel: productLabel,
         storeName: storeName,
+        ean: ean,
         originalPrice: originalPrice,
         offerPrice: offerPrice,
         validFrom: validFrom,
@@ -764,6 +775,7 @@ String _prospectRecordKey(OfferImportRecord record) {
     record.sourceAdapter ?? '',
     record.sourceId,
     record.productLabel,
+    record.ean ?? '',
     record.packageSize ?? '',
     record.offerPrice.toStringAsFixed(4),
     record.originalPrice?.toStringAsFixed(4) ?? '',

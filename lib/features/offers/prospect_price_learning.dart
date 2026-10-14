@@ -1,6 +1,7 @@
 import '../../models/price_observation.dart';
 import '../../models/product.dart';
 import '../../services/quantity_normalizer.dart';
+import '../../services/barcode_normalizer.dart';
 import '../catalog/product_identity.dart';
 import 'offer_import.dart';
 import 'prospect_product_match.dart';
@@ -82,6 +83,8 @@ List<PriceObservation> prospectPriceObservations({
         record.storeName.trim().isEmpty ||
         record.productLabel.trim().isEmpty ||
         record.regionalOnly ||
+        (record.ean?.trim().isNotEmpty == true &&
+            normalizeBarcode(record.ean!.trim()) == null) ||
         !hasExactOfferRecordBranch(record) ||
         !hasTrustedOfferProofReference(record.proofRef) ||
         !record.offerPrice.isFinite ||
@@ -104,7 +107,8 @@ List<PriceObservation> prospectPriceObservations({
     // historical fallback evidence unless their full catalog identity is
     // explicit.
     final exactProduct =
-        (record.packageSize != null && _isKaufdaEvidence(record))
+        (record.ean?.trim().isNotEmpty == true ||
+            (record.packageSize != null && _isKaufdaEvidence(record)))
         ? resolveOfferImport(record, catalog).product
         : exactProspectProduct(
             record.productLabel,
@@ -135,7 +139,7 @@ List<PriceObservation> prospectPriceObservations({
         productId: productId,
         familyKey: identity.familyKey,
         variant: identity.variantKey,
-        ean: exactProduct?.ean,
+        ean: exactProduct?.ean ?? record.ean,
         storeName: record.storeName,
         price: record.offerPrice,
         quantity: package?.amount,
@@ -166,7 +170,7 @@ List<PriceObservation> prospectPriceObservations({
           productId: productId,
           familyKey: identity.familyKey,
           variant: identity.variantKey,
-          ean: exactProduct?.ean,
+          ean: exactProduct?.ean ?? record.ean,
           storeName: record.storeName,
           price: regular,
           quantity: package?.amount,

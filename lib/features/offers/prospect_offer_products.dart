@@ -1,6 +1,7 @@
 import '../../models/offer.dart';
 import '../../models/product.dart';
 import '../../services/quantity_normalizer.dart';
+import '../../services/barcode_normalizer.dart';
 import '../catalog/product_identity.dart';
 import 'offer_import.dart';
 import 'offer_filter.dart';
@@ -34,6 +35,16 @@ Product productForProspectOffer(
   OfferImportRecord record,
   Iterable<Product> catalogProducts,
 ) {
+  final sourceEanText = record.ean?.trim() ?? '';
+  final sourceEan = sourceEanText.isEmpty
+      ? null
+      : normalizeBarcode(sourceEanText);
+  if (sourceEan != null) {
+    // Do not let a conflicting source code fall back to a similarly named
+    // catalog product. It remains an exact-label review item instead.
+    return exactProspectProductByEan(record.ean, catalogProducts) ??
+        _offerBackedProduct(record);
+  }
   return exactProspectProduct(
         record.productLabel,
         catalogProducts,
@@ -78,6 +89,8 @@ bool _hasVerifiedOfferEvidence(OfferImportRecord record) {
           (original.isFinite &&
               original > 0 &&
               record.offerPrice <= original)) &&
+      (record.ean?.trim().isEmpty ?? true ||
+          normalizeBarcode(record.ean!.trim()) != null) &&
       (record.validFrom == null ||
           !record.validUntil.isBefore(record.validFrom!)) &&
       (record.source == 'manual' ||

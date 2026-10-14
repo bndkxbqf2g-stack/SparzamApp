@@ -5,6 +5,7 @@ import 'offer_filter.dart';
 import 'prospect_product_match.dart';
 import '../../services/prospect_branch_resolver.dart';
 import '../../services/quantity_normalizer.dart';
+import '../../services/barcode_normalizer.dart';
 
 class OfferImportRecord {
   const OfferImportRecord({
@@ -18,6 +19,7 @@ class OfferImportRecord {
     this.source = 'leaflet',
     this.proofRef,
     this.imageUrl,
+    this.ean,
     this.category,
     this.packageSize,
     this.priceByBaseUnit,
@@ -42,6 +44,10 @@ class OfferImportRecord {
   final String source;
   final String? proofRef;
   final String? imageUrl;
+
+  /// Optional source-provided GTIN/EAN. It is only used for exact catalog
+  /// matching; a missing or conflicting code never creates a new identity.
+  final String? ean;
 
   /// Category supplied by the retailer feed, when the source exposes one.
   /// The UI may fall back to its conservative label classifier when absent;
@@ -90,6 +96,7 @@ String prospectOfferRecordKey(OfferImportRecord record) {
     record.storeName.trim(),
     record.branchId?.trim() ?? '',
     record.productLabel.trim(),
+    record.ean?.trim() ?? '',
     record.offerPrice.toStringAsFixed(2),
     record.originalPrice?.toStringAsFixed(2) ?? '',
     record.validFrom?.toIso8601String() ?? '',
@@ -219,47 +226,71 @@ OfferImportResolution resolveOfferImport(
 
   final normalizedLabel = normalizeIdentityText(record.productLabel);
   final products = catalogProducts.toList(growable: false);
+  final sourceEanText = record.ean?.trim() ?? '';
+  final sourceEan = sourceEanText.isEmpty
+      ? null
+      : normalizeBarcode(sourceEanText);
+  if (sourceEanText.isNotEmpty && sourceEan == null) {
+    return OfferImportResolution(record: record, reason: 'invalid_ean');
+  }
 
-  // Only the canonical product name may short-circuit identity resolution.
-  // Generic aliases such as "Milch" can intentionally belong to multiple
-  // variants and must therefore remain ambiguous.
-  final exact = products
-      .where((product) =>
-          normalizeIdentityText(product.name) == normalizedLabel)
-      .toList();
-
-  final strictExact = exactProspectProduct(
-    record.productLabel,
-    products,
-    packageSize: record.packageSize,
-  );
   final Product? product;
-  if (strictExact != null) {
-    product = strictExact;
-  } else if (exact.length == 1) {
-    product = exact.single;
-  } else if (exact.length > 1) {
-    return OfferImportResolution(record: record, reason: 'ambiguous_identity');
-  } else {
-    final request = identifyProduct(record.productLabel);
-    if (!request.isKnown) {
-      return OfferImportResolution(record: record, reason: 'unknown_identity');
-    }
-    final compatible = products.where((candidate) {
-      final identities = [candidate.name, ...candidate.aliases]
-          .map(identifyProduct)
-          .where((identity) => identity.isKnown);
-      return identities.any(
-        (identity) => compatibleProductIdentity(request, identity),
-      );
-    }).toList();
-    if (compatible.length != 1) {
+  if (sourceEan != null) {
+    // A source-provided GTIN is stronger than a display label, but only one
+    // catalog product may carry it. Conflicts and missing codes stay reviewable.
+    final eanMatches = products
+        .where(
+          (candidate) => normalizeBarcode(candidate.ean ?? '') == sourceEan,
+        )
+        .toList(growable: false);
+    if (eanMatches.length != 1) {
       return OfferImportResolution(
         record: record,
-        reason: compatible.isEmpty ? 'unknown_identity' : 'ambiguous_identity',
+        reason: eanMatches.isEmpty ? 'ean_mismatch' : 'ambiguous_identity',
       );
     }
-    product = compatible.single;
+    product = eanMatches.single;
+  } else {
+    // Only the canonical product name may short-circuit identity resolution.
+    // Generic aliases such as "Milch" can intentionally belong to multiple
+    // variants and must therefore remain ambiguous.
+    final exact = products
+        .where((product) =>
+            normalizeIdentityText(product.name) == normalizedLabel)
+        .toList();
+
+    final strictExact = exactProspectProduct(
+      record.productLabel,
+      products,
+      packageSize: record.packageSize,
+    );
+    if (strictExact != null) {
+      product = strictExact;
+    } else if (exact.length == 1) {
+      product = exact.single;
+    } else if (exact.length > 1) {
+      return OfferImportResolution(record: record, reason: 'ambiguous_identity');
+    } else {
+      final request = identifyProduct(record.productLabel);
+      if (!request.isKnown) {
+        return OfferImportResolution(record: record, reason: 'unknown_identity');
+      }
+      final compatible = products.where((candidate) {
+        final identities = [candidate.name, ...candidate.aliases]
+            .map(identifyProduct)
+            .where((identity) => identity.isKnown);
+        return identities.any(
+          (identity) => compatibleProductIdentity(request, identity),
+        );
+      }).toList();
+      if (compatible.length != 1) {
+        return OfferImportResolution(
+          record: record,
+          reason: compatible.isEmpty ? 'unknown_identity' : 'ambiguous_identity',
+        );
+      }
+      product = compatible.single;
+    }
   }
 
   if (!_matchesRecordPackage(record, product)) {
