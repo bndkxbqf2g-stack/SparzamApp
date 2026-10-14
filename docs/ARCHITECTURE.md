@@ -287,4 +287,12 @@ Beobachtungen erhalten, insgesamt höchstens 2.000 automatische Einträge. Bei
 einem Browser-Quota-Fehler erfolgt ein kleinerer Wiederherstellungsversuch.
 Bon-, manuelle, Bild- und sonstige nutzernahe Belege werden nicht durch diese
 Verdichtung entfernt.
-\r\n\r\n### Lifecycle-Refresh des Prospektfeeds\r\n\r\n`AppShell` beobachtet das Fortsetzen der Anwendung. Wenn der letzte validierte\r\nProspektstand älter als sechs Stunden ist oder kein Erfassungszeitpunkt vorliegt,\r\nstartet ein Hintergrund-Refresh über denselben `ProspectImportModule`- und\r\n`PriceObservation`-Pfad wie der Kaltstart. Der vorhandene Feed bleibt während\r\ndes Abrufs sichtbar; die kurze Ereignisdrossel verhindert doppelte Requests.\r\n
+
+
+### Lifecycle-Refresh des Prospektfeeds
+
+`AppShell` beobachtet das Fortsetzen der Anwendung. Wenn der letzte validierte
+Prospektstand älter als sechs Stunden ist oder kein Erfassungszeitpunkt vorliegt,
+startet ein Hintergrund-Refresh über denselben `ProspectImportModule`- und
+`PriceObservation`-Pfad wie der Kaltstart. Der vorhandene Feed bleibt während
+des Abrufs sichtbar; die kurze Ereignisdrossel verhindert doppelte Requests.
