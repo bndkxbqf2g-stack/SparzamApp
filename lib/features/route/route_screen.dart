@@ -20,6 +20,7 @@ import 'route_cost_breakdown_card.dart';
 import 'route_recommendation.dart';
 import 'route_recommendation_card.dart';
 import 'route_optimizer.dart';
+import 'route_travel_distance.dart';
 import 'route_price_evidence.dart';
 import 'route_price_evidence_card.dart';
 import 'route_savings.dart';
@@ -75,6 +76,14 @@ class _RouteScreenState extends State<RouteScreen> {
   MobilitySettings? _optimizerMobility;
   int _optimizerOpenPricesMaxAgeDays = -1;
   int _optimizerDayKey = -1;
+
+  _RouteComputation? _routeComputationCache;
+  RouteOptimizer? _routeComputationOptimizer;
+  List<RecentPurchase>? _routeComputationRecentPurchases;
+  List<PriceObservation>? _routeComputationHistory;
+  MobilitySettings? _routeComputationMobility;
+  Map<String, double>? _routeComputationRoadDistances;
+  RoadRouteMatrix? _routeComputationRoadMatrix;
 
   @override
   void initState() {
@@ -243,11 +252,26 @@ class _RouteScreenState extends State<RouteScreen> {
     return next;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (widget.items.isEmpty) return const _EmptyRoute();
+  _RouteComputation _routeComputationForCurrentInputs(
+    RouteOptimizer optimizer,
+  ) {
+    final cached = _routeComputationCache;
+    if (cached != null &&
+        identical(_routeComputationOptimizer, optimizer) &&
+        identical(
+          _routeComputationRecentPurchases,
+          widget.recentPurchases,
+        ) &&
+        identical(
+          _routeComputationHistory,
+          widget.historicalPriceObservations,
+        ) &&
+        identical(_routeComputationMobility, widget.mobility) &&
+        identical(_routeComputationRoadDistances, roadDistances) &&
+        identical(_routeComputationRoadMatrix, roadMatrix)) {
+      return cached;
+    }
 
-    final optimizer = _optimizerForCurrentInputs();
     final best = optimizer.bestPlan();
     final priceGaps = _buildPriceGaps(
       optimizer,
@@ -255,38 +279,81 @@ class _RouteScreenState extends State<RouteScreen> {
       recentPurchases: widget.recentPurchases,
       historicalPriceObservations: widget.historicalPriceObservations,
     );
+
+    late final _RouteComputation next;
+    if (best == null) {
+      next = _RouteComputation(
+        best: null,
+        priceGaps: priceGaps,
+      );
+    } else {
+      final alternatives = optimizer.alternatives();
+      final cheapest = alternatives.first;
+      final single = optimizer.bestSingleStorePlan();
+      final optimizedTravel = optimizer.travelRoute(best.stores);
+      next = _RouteComputation(
+        best: best,
+        priceGaps: priceGaps,
+        priceEvidence: summarizeRoutePriceEvidence(best, optimizer.prices),
+        single: single,
+        savings: single == null
+            ? 0.0
+            : single.planningScore - best.planningScore,
+        offerSavings: routeOfferSavings(best, optimizer.prices),
+        visibleAlternatives: _uniqueAlternatives(alternatives),
+        cheapest: cheapest,
+        travel: estimateRoundTrips(
+          best.stores,
+          mobility: widget.mobility,
+          roadDistances: roadDistances,
+          roadMatrix: widget.mobility.mode == MobilityMode.car
+              ? roadMatrix
+              : null,
+        ),
+        recommendation: buildRouteRecommendationInfo(
+          recommended: best,
+          cheapest: cheapest,
+          singleStore: single,
+          mobility: widget.mobility,
+        ),
+        optimizedTravel: optimizedTravel,
+        realCount: roadDistances.entries
+            .where((entry) => widget.mobility.isStoreEnabled(entry.key))
+            .length,
+      );
+    }
+
+    _routeComputationCache = next;
+    _routeComputationOptimizer = optimizer;
+    _routeComputationRecentPurchases = widget.recentPurchases;
+    _routeComputationHistory = widget.historicalPriceObservations;
+    _routeComputationMobility = widget.mobility;
+    _routeComputationRoadDistances = roadDistances;
+    _routeComputationRoadMatrix = roadMatrix;
+    return next;
+  }
+  @override
+  Widget build(BuildContext context) {
+    if (widget.items.isEmpty) return const _EmptyRoute();
+
+    final optimizer = _optimizerForCurrentInputs();
+    final computation = _routeComputationForCurrentInputs(optimizer);
+    final best = computation.best;
+    final priceGaps = computation.priceGaps;
     if (best == null) {
       return _MissingPrices(
         gaps: priceGaps,
         onResolvePriceGap: widget.onResolvePriceGap,
       );
     }
-    final priceEvidence = summarizeRoutePriceEvidence(best, optimizer.prices);
-
-    final single = optimizer.bestSingleStorePlan();
-    final savings = single == null
-        ? 0.0
-        : single.planningScore - best.planningScore;
-    final offerSavings = routeOfferSavings(best, optimizer.prices);
-    final alternatives = optimizer.alternatives();
-    final visibleAlternatives = _uniqueAlternatives(alternatives);
-    final cheapest = alternatives.first;
-    final travel = estimateRoundTrips(
-      best.stores,
-      mobility: widget.mobility,
-      roadDistances: roadDistances,
-      roadMatrix: widget.mobility.mode == MobilityMode.car ? roadMatrix : null,
-    );
-    final recommendation = buildRouteRecommendationInfo(
-      recommended: best,
-      cheapest: cheapest,
-      singleStore: single,
-      mobility: widget.mobility,
-    );
-    final optimizedTravel = optimizer.travelRoute(best.stores);
-    final realCount = roadDistances.entries
-        .where((entry) => widget.mobility.isStoreEnabled(entry.key))
-        .length;
+    final priceEvidence = computation.priceEvidence!;
+    final savings = computation.savings;
+    final offerSavings = computation.offerSavings;
+    final visibleAlternatives = computation.visibleAlternatives;
+    final travel = computation.travel!;
+    final recommendation = computation.recommendation!;
+    final optimizedTravel = computation.optimizedTravel!;
+    final realCount = computation.realCount;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 28),
@@ -429,6 +496,36 @@ class _RouteScreenState extends State<RouteScreen> {
       ],
     );
   }
+}
+
+class _RouteComputation {
+  const _RouteComputation({
+    required this.best,
+    required this.priceGaps,
+    this.priceEvidence,
+    this.single,
+    this.savings = 0,
+    this.offerSavings = 0,
+    this.visibleAlternatives = const <RoutePlan>[],
+    this.cheapest,
+    this.travel,
+    this.recommendation,
+    this.optimizedTravel,
+    this.realCount = 0,
+  });
+
+  final RoutePlan? best;
+  final List<PriceGapPriority> priceGaps;
+  final RoutePriceEvidenceSummary? priceEvidence;
+  final RoutePlan? single;
+  final double savings;
+  final double offerSavings;
+  final List<RoutePlan> visibleAlternatives;
+  final RoutePlan? cheapest;
+  final TravelEstimate? travel;
+  final RouteRecommendationInfo? recommendation;
+  final OptimizedTravelRoute? optimizedTravel;
+  final int realCount;
 }
 
 List<PriceGapPriority> _buildPriceGaps(
