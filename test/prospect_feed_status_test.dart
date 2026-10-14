@@ -21,6 +21,7 @@ void main() {
             ProspectFeedStatusCard(
               generatedAt: DateTime(2026, 10, 1, 12, 2),
               now: DateTime(2026, 10, 1, 12, 3),
+              regularPriceCount: 2,
             ),
             ProspectFeedStatusCard(fromCache: true),
           ],
@@ -31,6 +32,7 @@ void main() {
     expect(find.text('Aktueller Prospektstand'), findsOneWidget);
     expect(find.text('Letzter geprüfter Prospektstand'), findsOneWidget);
     expect(find.textContaining('01.10.2026 · 12:02 Uhr'), findsOneWidget);
+    expect(find.textContaining('2 reguläre Normalpreise als Preisbasis gespeichert.'), findsOneWidget);
     expect(
       find.textContaining('abgelaufene Angebote bleiben ausgeblendet'),
       findsOneWidget,
