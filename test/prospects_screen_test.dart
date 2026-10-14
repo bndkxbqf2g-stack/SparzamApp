@@ -137,9 +137,11 @@ void main() {
     );
 
     await _scrollProspects(tester);
-    await tester.tap(
-      find.byKey(const ValueKey('prospect-open-grid-Lidl')),
+    final open = find.byKey(
+      const ValueKey('prospect-open-grid-Lidl'),
     );
+    await tester.ensureVisible(open);
+    await tester.tap(open);
     await tester.pumpAndSettle();
 
     expect(find.text('Kaffee Crema 500 g'), findsOneWidget);
