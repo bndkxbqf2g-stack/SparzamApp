@@ -544,3 +544,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Offizielle Prospektadapter akzeptieren zusätzliche ausdrücklich benannte Bildfelder und flache beziehungsweise verschachtelte Renditions, wenn die Quelle eine gültige HTTP(S)-URL liefert.
 - [x] Zusätzliche sichtbare Kategoriebezeichnungen werden als Quellenmetadatum übernommen; IDs, URLs und beliebige nicht-textuelle Werte bleiben ausgeschlossen.
 - [x] Die Erweiterung ändert weder Produktidentität noch Preis-/Gültigkeitslogik und ist mit Parser-Fixtures abgesichert.
+
+## Update 15.10.2026 – Aktuelle reguläre Prospektpreise nach Refresh-Provenienz projizieren
+
+- [x] Append-only Normalpreisbeobachtungen bleiben vollständig historisch gespeichert.
+- [x] Für dieselbe Produkt-/Filial-/Gültigkeitskombination ersetzt ein neuerer regulärer Prospektnachweis die ältere aktuelle Projektion auch dann, wenn sich die Prospektseite oder `proofRef` geändert hat.
+- [x] Die aktuelle Preisprojektion und Route verwenden dadurch keinen niedrigeren, veralteten Normalpreis aus einer früheren Feedfassung; Nachweis und Historie bleiben sichtbar.
+- [x] Eine Regression deckt den Wechsel des Prospektnachweises bei identischer Produkt-/Filial-/Gültigkeitsidentität ab.
