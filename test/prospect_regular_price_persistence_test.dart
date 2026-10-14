@@ -154,6 +154,30 @@ void main() {
     expect(second.stored.single.price, 7.99);
   });
 
+  test('refreshes the observation timestamp on repeated evidence', () async {
+    final store = memoryStore();
+    final first = await persistCurrentProspectRegularPrices(
+      store: store,
+      records: [current],
+      catalogProducts: const [coffee],
+      observedAt: now,
+      now: now,
+    );
+    final later = now.add(const Duration(hours: 6));
+    final refreshed = await persistCurrentProspectRegularPrices(
+      store: store,
+      records: [current.copyWith(capturedAt: later)],
+      catalogProducts: const [coffee],
+      observedAt: later,
+      now: later,
+    );
+
+    expect(refreshed.learned, hasLength(1));
+    expect(refreshed.stored, hasLength(1));
+    expect(refreshed.stored.single.id, first.stored.single.id);
+    expect(refreshed.stored.single.observedAt, later);
+  });
+
   test('does not persist without a feed timestamp', () async {
     final store = memoryStore();
     final result = await persistCurrentProspectRegularPrices(
@@ -174,6 +198,7 @@ extension on OfferImportRecord {
     String? sourceId,
     DateTime? validFrom,
     DateTime? validUntil,
+    DateTime? capturedAt,
   }) =>
       OfferImportRecord(
         sourceId: sourceId ?? this.sourceId,
@@ -191,7 +216,7 @@ extension on OfferImportRecord {
         brochureId: brochureId,
         brochurePage: brochurePage,
         publisherId: publisherId,
-        capturedAt: capturedAt,
+        capturedAt: capturedAt ?? this.capturedAt,
         branchId: branchId,
         location: location,
         address: address,

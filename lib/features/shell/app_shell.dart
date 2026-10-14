@@ -165,6 +165,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   bool _appIsResumed = true;
   DateTime? _lastProspectResumeRefreshAt;
   String? _prospectFeedFingerprint;
+  int prospectRegularPriceCount = 0;
   final priceObservationStore = PriceObservationStore();
   final receiptAliasStore = ReceiptAliasStore();
   late PriceDataSettings priceDataSettings;
@@ -620,6 +621,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
         now: refreshNow,
       );
       if (_prospectFeedFingerprint == feedFingerprint) return;
+      // A new feed starts with no confirmed count until its observations are
+      // written successfully; a failed write must remain retryable.
+      if (mounted) setState(() => prospectRegularPriceCount = 0);
 
       final currentRecords = currentProspectRecords(
         feed.records,
@@ -698,7 +702,18 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       final learnedPrices = persistence?.learned ?? const <PriceObservation>[];
       final historical =
           persistence?.stored ?? historicalPriceObservations;
+      final persistedRegularPriceIds = persistence?.stored
+          .where((entry) => entry.kind == PriceObservationKind.regular)
+          .map((entry) => entry.id)
+          .toSet() ??
+          const <String>{};
+      final persistedRegularPriceCount = learnedPrices
+          .where((entry) => persistedRegularPriceIds.contains(entry.id))
+          .length;
       setState(() {
+        prospectRegularPriceCount = pricePersistenceWarning == null
+            ? persistedRegularPriceCount
+            : 0;
         offers = offersById.values.toList(growable: false);
         prospectProducts = offerBackedProducts
             .map((entry) => entry.product)
@@ -708,7 +723,10 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
           historical,
         );
       });
-      _prospectFeedFingerprint = feedFingerprint;
+      // Do not suppress the next refresh after a failed price write.
+      if (pricePersistenceWarning == null) {
+        _prospectFeedFingerprint = feedFingerprint;
+      }
       final persistenceWarnings = <String>[
         if (offerPersistenceWarning != null)
           'Nutzerangebote lokal nicht gespeichert: $offerPersistenceWarning',
@@ -1990,6 +2008,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       prospectRecords: prospectRecords,
       prospectIssues: prospectIssues,
       prospectFeedFromCache: prospectFeedFromCache,
+      prospectRegularPriceCount: prospectRegularPriceCount,
       prospectFeedGeneratedAt: prospectFeedGeneratedAt,
       onRefreshProspects: () => _loadProspectOffers(preferCached: false),
       prospectsRefreshing: _prospectFeedRefreshing,

@@ -168,6 +168,32 @@ void main() {
     expect(kaufland.regularPriceCount, 1);
   });
 
+  test('does not count an equal offer amount as a regular price', () {
+    final coverage = calculateProspectCoverage(
+      issues: const <ProspectIssue>[],
+      records: [
+        OfferImportRecord(
+          sourceId: 'equal-regular',
+          productLabel: 'Butter 250 g',
+          storeName: 'Lidl',
+          originalPrice: 1.99,
+          offerPrice: 1.99,
+          validFrom: DateTime(2026, 10, 12),
+          validUntil: DateTime(2026, 10, 18),
+          source: 'retailerWebsite',
+          branchId: 'lidl-zellingen',
+          proofRef: 'https://example.test/lidl/equal-regular',
+        ),
+      ],
+      now: DateTime(2026, 10, 14),
+    );
+
+    expect(
+      coverage.firstWhere((entry) => entry.storeName == 'Lidl').regularPriceCount,
+      0,
+    );
+  });
+
   test('filters stale records and dated prospects at the coverage boundary', () {
     final coverage = calculateProspectCoverage(
       issues: [

@@ -1,3 +1,9 @@
+## Update 14.10.2026 – Reguläre Prospektpreise bleiben aktuell
+
+- Wiederholte Feed-Refreshes upserten dieselbe reguläre Beobachtung über ihre stabile ID und aktualisieren dadurch den Erfassungszeitpunkt, ohne Duplikate anzulegen.
+- Die sichtbare Normalpreiszahl stammt im Prospekt-Reiter aus der erfolgreich geschriebenen lokalen Preisbeobachtung; bei einem Schreibfehler wird der Feed beim nächsten Refresh erneut verarbeitet.
+- Ein gleicher Angebots- und Durchstreichpreis gilt weiterhin als Angebotsnachweis, wird aber nicht als regulärer Normalpreis gespeichert.
+
 ## Update 14.10.2026 – KaufDA-Non-Food-Grenze und Adapter-CI
 
 - Der optionale KaufDA-Parser verwirft jetzt klar erkennbare zusammengesetzte Non-Food-Bezeichnungen, auch wenn darin ein Lebensmittelwort vorkommt.

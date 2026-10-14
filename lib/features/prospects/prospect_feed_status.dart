@@ -271,7 +271,8 @@ bool hasLearnableProspectRegularPrice(OfferImportRecord record) {
       regular > 0 &&
       record.offerPrice.isFinite &&
       record.offerPrice > 0 &&
-      regular >= record.offerPrice &&
+      // Only a real crossed-out amount is persisted as regular-price history.
+      regular > record.offerPrice &&
       (record.validFrom == null ||
           !record.validUntil.isBefore(record.validFrom!));
 }
