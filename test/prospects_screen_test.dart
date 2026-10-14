@@ -149,7 +149,7 @@ void main() {
     await tester.tap(find.text('Zur Einkaufsliste').first);
     expect(added, 1);
   });
-  testWidgets('keeps viewer offers bound to the selected branch', (
+  // Same-chain offers stay scoped to the asserted branch.\n  testWidgets('keeps viewer offers bound to the selected branch', (
     tester,
   ) async {
     final records = [
