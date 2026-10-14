@@ -532,3 +532,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Der öffentliche Händlerfeed wird täglich um 04:15 Uhr Europe/Berlin-nah aktualisiert.
 - [x] Der bestehende Refresh bleibt auf die sechs konfigurierten offiziellen Filialquellen begrenzt; KaufDA bleibt opt-in und ersetzt keine exakte Filiale.
 - [x] Neue reguläre Normalpreise gelangen nach dem Feed-Refresh automatisch in den lokalen `PriceObservationStore`; Angebotspreise bleiben davon getrennt.
+
+
+## Update 14.10.2026 – Explizite Normalpreisfelder toleranter auslesen
+
+- [x] Händleradapter akzeptieren zusätzliche ausdrücklich benannte Vorher-/Streichpreisfelder (CamelCase und snake_case), ohne Rabattprozente, UVPs oder beliebige Zahlen als Normalpreis zu deuten.
+- [x] Die Alias-Auflösung bleibt vor dem Angebotspreisvergleich und speichert nur Werte, die mindestens so hoch wie der Angebotspreis sind.
+- [x] Parser-Fixtures decken die zusätzlichen Feldnamen ab; Datenmodell, Quellenpriorität und aktive Angebotspreise bleiben unverändert.
