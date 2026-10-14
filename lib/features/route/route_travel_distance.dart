@@ -159,7 +159,7 @@ double? _durationForOrder(RoadRouteMatrix matrix, List<Store> order) {
 String travelMatrixStoreKey(Store store) {
   final branchId = store.branchId?.trim();
   if (branchId == null || branchId.isEmpty) return store.name;
-  return store.name + '#' + branchId;
+  return '${store.name}#$branchId';
 }
 
 String _matrixStoreKey(RoadRouteMatrix matrix, Store store) {
@@ -168,7 +168,7 @@ String _matrixStoreKey(RoadRouteMatrix matrix, Store store) {
   final originPrefix = RoadRouteMatrix.origin + '|';
   final originSuffix = '|' + RoadRouteMatrix.origin;
   final hasBranchNode = matrix.distancesKm.keys.any(
-        (key) => key == originPrefix + branchKey || key == branchKey + originSuffix,
+        (key) => key == '$originPrefix$branchKey' || key == '$branchKey$originSuffix',
       ) ||
       matrix.durationsMinutes.keys.any(
         (key) => key == originPrefix + branchKey || key == branchKey + originSuffix,
