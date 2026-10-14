@@ -589,8 +589,11 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
       catalogProducts,
       resolvedProducts,
     );
+    final recordKey = record.sourceId.trim().isEmpty
+        ? prospectOfferRecordKey(record)
+        : record.sourceId.trim();
     return ProspectOfferCard(
-      key: ValueKey('prospect-search-offer-${prospectOfferRecordKey(record)}'),
+      key: ValueKey('prospect-search-offer-$recordKey'),
       record: record,
       product: product,
       compact: true,
