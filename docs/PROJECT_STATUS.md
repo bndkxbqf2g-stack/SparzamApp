@@ -1,3 +1,9 @@
+## Update 14.10.2026 – Bonpreise je Markt sichtbar, Zuordnung bleibt transparent
+- [x] Generische Einkaufslistenartikel zeigen bestätigte und automatische Bon-Hinweise je Markt, statt unbestätigte importierte Preise vollständig auszublenden.
+- [x] Automatische Zuordnungen sind in der Detailansicht als „Variante prüfen“ gekennzeichnet und bleiben aus routenfähigen Preisen ausgeschlossen.
+- [x] Konkrete Varianten übernehmen weiterhin nur ihre exakte Belegzuordnung; Familienpreise werden nicht still auf eine andere Variante übertragen.
+- [x] Widget- und Facht tests schützen Marktübersicht, Hinweisstatus und die Trennung zur Routenlogik.
+
 ## Update 14.10.2026 – Preise-Snapshot-Signatur
 - [x] Der Preise-Reiter merkt sich die Signatur seiner unveränderten Listen-, Marktpreis-, Angebots-, Historien- und Marktauswahl-Snapshots.
 - [x] Wiederholte Shell-Rebuilds iterieren nicht mehr über alle Preis- und Verlaufseinträge, solange derselbe immutable Eingabestand und derselbe Tag gelten.
