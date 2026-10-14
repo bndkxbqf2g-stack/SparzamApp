@@ -20,6 +20,8 @@ class ShoppingPriceBadge extends StatelessWidget {
     this.openPricesMaxAgeDays = 60,
     this.historicalPriceObservations = const <PriceObservation>[],
     this.prospectPriceHistory = const {},
+    this.resolvedQuotes,
+    this.resolvedMatrix,
     this.onOpenOffer,
   });
 
@@ -30,22 +32,27 @@ class ShoppingPriceBadge extends StatelessWidget {
   final int openPricesMaxAgeDays;
   final List<PriceObservation> historicalPriceObservations;
   final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
+  /// Optional render snapshot shared by the shopping-list screen.
+  final List<ShoppingQuote>? resolvedQuotes;
+  final List<ShoppingPriceMatrixEntry>? resolvedMatrix;
   final ValueChanged<Offer>? onOpenOffer;
 
   @override
   Widget build(BuildContext context) {
-    final quotes = shoppingQuotes(
-      item,
-      prices: prices,
-      offers: offers,
-      prospectPriceHistory: prospectPriceHistory,
-      enabledStores: enabledStores,
-      openPricesMaxAgeDays: openPricesMaxAgeDays,
-    );
-    final matrix = shoppingPriceMatrixFromQuotes(
-      quotes,
-      enabledStores: enabledStores,
-    );
+    final quotes = resolvedQuotes ??
+        shoppingQuotes(
+          item,
+          prices: prices,
+          offers: offers,
+          prospectPriceHistory: prospectPriceHistory,
+          enabledStores: enabledStores,
+          openPricesMaxAgeDays: openPricesMaxAgeDays,
+        );
+    final matrix = resolvedMatrix ??
+        shoppingPriceMatrixFromQuotes(
+          quotes,
+          enabledStores: enabledStores,
+        );
     final pricedMarkets = matrix.where((entry) => entry.hasCurrentQuote).length;
     final historicalMarkets = matrix
         .where((entry) => entry.hasHistoricalQuote)

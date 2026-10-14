@@ -22,6 +22,7 @@ import '../receipt/receipt_import.dart';
 import '../receipt/receipt_price_statistics.dart';
 import 'shopping_group_card.dart';
 import 'shopping_grouping.dart';
+import 'shopping_price_quotes.dart';
 import 'replenishment_card.dart';
 
 import 'shopping_suggestions.dart';
@@ -479,6 +480,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   @override
   Widget build(BuildContext context) {
     final grouped = itemsByGroup;
+    final quoteSnapshot = shoppingPriceQuoteSnapshot(
+      widget.items,
+      prices: widget.marketPrices,
+      offers: widget.offers,
+      prospectPriceHistory: widget.prospectPriceHistory,
+      enabledStores: widget.mobility.enabledStoreNames,
+      openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
+    );
 
     return Column(
       children: [
@@ -511,6 +520,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 prospectPriceHistory: widget.prospectPriceHistory,
                 enabledStoreNames: widget.mobility.enabledStoreNames,
                 openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
+                quoteSnapshot: quoteSnapshot,
                 onOpenRoute: widget.onOpenRoute,
               ),
               if (widget.items.isNotEmpty && widget.onOpenRoute != null) ...[
@@ -618,6 +628,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                         widget.historicalPriceObservations,
                     prospectPriceHistory: widget.prospectPriceHistory,
                     receiptPriceStats: receiptPriceStats,
+                    quoteSnapshot: quoteSnapshot,
                     onToggle: toggleChecked,
                     onSelectFamily: widget.onSelectFamily,
                     onChangeQuantity: widget.onChangeQuantity,
