@@ -178,7 +178,46 @@ void main() {
     expect(refreshed.stored.single.observedAt, later);
   });
 
-  test('does not persist without a feed timestamp', () async {
+  test(
+    'removes legacy automatic prospect offer observations atomically',
+    () async {
+      final store = memoryStore();
+      final legacy = prospectPriceObservations(
+        records: [current],
+        catalogProducts: const [coffee],
+        observedAt: now,
+      );
+      expect(legacy, hasLength(2));
+      expect(
+        legacy.where((entry) => entry.kind == PriceObservationKind.offer),
+        hasLength(1),
+      );
+      await store.replaceAll(legacy);
+
+      final result = await persistCurrentProspectRegularPrices(
+        store: store,
+        records: [current],
+        catalogProducts: const [coffee],
+        observedAt: now,
+        now: now,
+      );
+
+      expect(
+        result.stored.where(
+          (entry) =>
+              entry.id.startsWith('prospect|') &&
+              entry.kind == PriceObservationKind.offer,
+        ),
+        isEmpty,
+      );
+      expect(
+        result.stored.where((entry) => entry.kind == PriceObservationKind.regular),
+        hasLength(1),
+      );
+    },
+  );
+
+  testMarker
     final store = memoryStore();
     final result = await persistCurrentProspectRegularPrices(
       store: store,
