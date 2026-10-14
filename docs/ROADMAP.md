@@ -526,3 +526,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Die Prospekt-Abdeckungskarte unterscheidet bestätigte Speicherung von laufender, fehlgeschlagener und nicht bestätigter Preisbeobachtung.
 - [x] Ein fehlgeschlagener Lauf zeigt keine `0 gespeichert`-Aussage und bleibt als unbekannt sichtbar.
 - [x] Die Einzelmarkt-Details verwenden denselben Status wie die Kopfzeile.
+
+
+## Update 14.10.2026 – Tägliche Prospektaktualisierung
+- [x] Der öffentliche Händlerfeed wird täglich um 04:15 Uhr Europe/Berlin-nah aktualisiert.
+- [x] Der bestehende Refresh bleibt auf die sechs konfigurierten offiziellen Filialquellen begrenzt; KaufDA bleibt opt-in und ersetzt keine exakte Filiale.
+- [x] Neue reguläre Normalpreise gelangen nach dem Feed-Refresh automatisch in den lokalen `PriceObservationStore`; Angebotspreise bleiben davon getrennt.
