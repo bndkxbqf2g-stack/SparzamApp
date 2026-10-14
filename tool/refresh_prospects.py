@@ -741,6 +741,21 @@ def _explicit_regular_price(raw, sale):
         "normalPrice",
         "alterPreis",
         "oldPrice",
+        # Public retailer payloads use these names for the value printed
+        # beside the sale price. They remain explicit regular-price evidence;
+        # discount percentages, UVPs and arbitrary numeric fields stay out.
+        "priceBefore",
+        "previousPrice",
+        "crossedOutPrice",
+        "strikethroughPrice",
+        "wasPriceNumeric",
+        "original_price",
+        "regular_price",
+        "normal_price",
+        "old_price",
+        "previous_price",
+        "crossed_out_price",
+        "strikethrough_price",
     ):
         candidate = _json_money(raw.get(key))
         if candidate is not None and candidate >= sale:
