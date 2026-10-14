@@ -355,7 +355,12 @@ class ProspectParserTest(unittest.TestCase):
         payload = refresh.json.loads(FEED.read_text(encoding="utf-8"))
         offers = payload.get("offers", [])
         self.assertTrue(offers)
-        self.assertTrue(all(refresh.is_food_offer(item) for item in offers))
+        invalid = [
+            item["productLabel"]
+            for item in offers
+            if not refresh.is_food_offer(item)
+        ]
+        self.assertEqual(invalid, [])
         self.assertTrue(all(float(item["offerPrice"]) > 0 for item in offers))
         self.assertTrue(all(item.get("proofRef") for item in offers))
 
