@@ -27,6 +27,7 @@ class ProspectsScreen extends StatefulWidget {
     this.generatedAt,
     this.onRefreshProspects,
     this.prospectsRefreshing = false,
+    this.regularPriceCount,
     this.onSaveOffer,
     this.favoriteStore,
   });
@@ -40,6 +41,9 @@ class ProspectsScreen extends StatefulWidget {
   final DateTime? generatedAt;
   final Future<void> Function()? onRefreshProspects;
   final bool prospectsRefreshing;
+  /// Count confirmed by the shell's local price-observation persistence.
+  /// Null keeps standalone screens on their feed-derived fallback.
+  final int? regularPriceCount;
   final Future<List<Offer>> Function(Offer offer)? onSaveOffer;
   final ProspectFavoritesStore? favoriteStore;
 
@@ -314,7 +318,8 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                       generatedAt: widget.generatedAt,
                       now: widget.now,
                       fromCache: widget.fromCache,
-                      regularPriceCount: currentRecords
+                      regularPriceCount: widget.regularPriceCount ??
+                          currentRecords
                           .where(hasLearnableProspectRegularPrice)
                           .length,
                       onRefresh: widget.onRefreshProspects,

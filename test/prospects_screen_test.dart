@@ -92,6 +92,45 @@ void main() {
     expect(added, isTrue);
   });
 
+  testWidgets('uses the persistence-confirmed regular price count', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ProspectsScreen(
+            records: [
+              OfferImportRecord(
+                sourceId: 'stored-count',
+                productLabel: 'Butter 250 g',
+                storeName: 'Lidl',
+                originalPrice: 2.49,
+                offerPrice: 1.99,
+                validFrom: DateTime(2026, 10, 12),
+                validUntil: DateTime(2026, 10, 18),
+                branchId: 'lidl-zellingen',
+                proofRef: 'https://example.test/lidl/stored-count',
+              ),
+            ],
+            prospects: const [
+              ProspectIssue(
+                storeName: 'Lidl',
+                title: 'Aktionsprospekt',
+                pages: [],
+              ),
+            ],
+            generatedAt: DateTime(2026, 10, 14, 12),
+            now: DateTime(2026, 10, 14, 13),
+            regularPriceCount: 0,
+          ),
+        ),
+      ),
+    );
+
+    expect(find.textContaining('als Preisbasis gespeichert.'), findsNothing);
+  });
+
+  testWidgets('keeps viewer offer keys unique without source ids'
   testWidgets('keeps viewer offer keys unique without source ids', (
     tester,
   ) async {

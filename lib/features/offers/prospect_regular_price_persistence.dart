@@ -22,8 +22,8 @@ class ProspectRegularPricePersistenceResult {
 /// Persists the current regular prospect prices and returns the complete local
 /// observation snapshot.
 ///
-/// The store deduplicates by the stable observation id and keeps its existing
-/// compaction rules. A missing feed timestamp, an expired/future record, an
+/// The store upserts by the stable observation id, refreshing capture metadata
+/// while keeping its existing compaction rules. A missing feed timestamp, an expired/future record, an
 /// offer-only record, an unproven record, or a record without an exact branch
 /// therefore cannot be promoted by this helper.
 Future<ProspectRegularPricePersistenceResult>
@@ -44,7 +44,7 @@ Future<ProspectRegularPricePersistenceResult>
   );
   final stored = learned.isEmpty
       ? await store.load()
-      : await store.append(learned);
+      : await store.upsertById(learned);
   return ProspectRegularPricePersistenceResult(
     learned: learned,
     stored: stored,
