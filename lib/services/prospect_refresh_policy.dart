@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 /// Maximum age of a validated prospect snapshot before an app-resume refresh.
 const prospectResumeRefreshInterval = Duration(hours: 6);
 
@@ -9,7 +7,6 @@ const prospectResumeRefreshInterval = Duration(hours: 6);
 /// visible until they age past the normal interval instead of causing a
 /// refresh loop. A missing timestamp always refreshes because freshness is
 /// unknown.
-@visibleForTesting
 bool shouldRefreshProspectsOnResume({
   required DateTime? generatedAt,
   required DateTime now,
