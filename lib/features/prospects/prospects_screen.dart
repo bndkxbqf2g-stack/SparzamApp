@@ -77,6 +77,23 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
   List<ProspectIssue>? _derivedProspectsInput;
   DateTime? _derivedNow;
   _ProspectDerivedData? _derivedData;
+  List<OfferImportRecord>? _searchIndexInput;
+  Map<OfferImportRecord, String>? _searchIndexCache;
+
+  Map<OfferImportRecord, String> _searchIndexFor(
+    List<OfferImportRecord> records,
+  ) {
+    if (identical(_searchIndexInput, records)) {
+      return _searchIndexCache ?? const <OfferImportRecord, String>{};
+    }
+    final index = <OfferImportRecord, String>{};
+    for (final record in records) {
+      index[record] = _prospectSearchText(record);
+    }
+    _searchIndexInput = records;
+    _searchIndexCache = index;
+    return index;
+  }
 
   @override
   void initState() {
@@ -198,6 +215,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
       query,
       category: activeCategory,
       storeName: activeStore,
+      searchIndex: _searchIndexFor(currentRecords),
     );
     final visibleProspects = derived.visibleProspects;
     final hasSelection = query.trim().isNotEmpty ||
@@ -654,6 +672,7 @@ List<OfferImportRecord> _matchingProspectRecords(
   String query, {
   String? category,
   String? storeName,
+  Map<OfferImportRecord, String>? searchIndex,
 }) {
   final normalized = query.trim().toLowerCase();
   return records
@@ -665,17 +684,22 @@ List<OfferImportRecord> _matchingProspectRecords(
           return false;
         }
         if (normalized.isEmpty) return true;
-        final sourceCategory = record.category?.trim() ?? '';
-        final searchable = [
-          record.productLabel,
-          record.storeName,
-          sourceCategory,
-          presentProspectCategory(sourceCategory),
-          fallbackProspectCategory(record.productLabel),
-        ].join(' ').toLowerCase();
+        final searchable =
+            searchIndex?[record] ?? _prospectSearchText(record);
         return searchable.contains(normalized);
       })
       .toList(growable: false);
+}
+
+String _prospectSearchText(OfferImportRecord record) {
+  final sourceCategory = record.category?.trim() ?? '';
+  return [
+    record.productLabel,
+    record.storeName,
+    sourceCategory,
+    presentProspectCategory(sourceCategory),
+    fallbackProspectCategory(record.productLabel),
+  ].join(' ').toLowerCase();
 }
 
 List<String> _prospectCategories(Iterable<OfferImportRecord> records) {
