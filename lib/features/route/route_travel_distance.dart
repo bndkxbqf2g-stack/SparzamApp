@@ -171,7 +171,7 @@ String _matrixStoreKey(RoadRouteMatrix matrix, Store store) {
         (key) => key == '$originPrefix$branchKey' || key == '$branchKey$originSuffix',
       ) ||
       matrix.durationsMinutes.keys.any(
-        (key) => key == originPrefix + branchKey || key == branchKey + originSuffix,
+        (key) => key == '$originPrefix$branchKey' || key == '$branchKey$originSuffix',
       );
   return hasBranchNode ? branchKey : store.name;
 }
