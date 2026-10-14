@@ -137,4 +137,50 @@ void main() {
     expect(route.usesRoadMatrix, isFalse);
     expect(route.distanceKm, 10);
   });
+  test('branch-stabile Matrixschlüssel trennen gleichnamige Filialen', () {
+    const branchA = Store(
+      name: 'Lidl',
+      branchId: 'lidl-a',
+      location: 'Ort A',
+      distanceKm: 1,
+      prices: {},
+    );
+    const branchB = Store(
+      name: 'Lidl',
+      branchId: 'lidl-b',
+      location: 'Ort B',
+      distanceKm: 9,
+      prices: {},
+    );
+    const matrix = RoadRouteMatrix(
+      originAddress: 'Start',
+      distancesKm: {
+        '@origin|Lidl#lidl-a': 1,
+        'Lidl#lidl-a|@origin': 1,
+        '@origin|Lidl#lidl-b': 5,
+        'Lidl#lidl-b|@origin': 5,
+        'Lidl#lidl-a|Lidl#lidl-b': 2,
+        'Lidl#lidl-b|Lidl#lidl-a': 3,
+      },
+      durationsMinutes: {
+        '@origin|Lidl#lidl-a': 4,
+        'Lidl#lidl-a|@origin': 4,
+        '@origin|Lidl#lidl-b': 8,
+        'Lidl#lidl-b|@origin': 8,
+        'Lidl#lidl-a|Lidl#lidl-b': 5,
+        'Lidl#lidl-b|Lidl#lidl-a': 6,
+      },
+    );
+
+    final route = optimizeTravelRoute(
+      [branchB, branchA],
+      roadMatrix: matrix,
+    );
+
+    expect(route.usesRoadMatrix, isTrue);
+    expect(route.distanceKm, 8);
+    expect(route.durationMinutes, 13);
+    expect(route.stores.map((store) => store.branchId), ['lidl-a', 'lidl-b']);
+  });
+
 }
