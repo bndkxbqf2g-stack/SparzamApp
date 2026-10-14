@@ -98,7 +98,7 @@ void main() {
         },
         durationsMinutes: const {
           '@origin|A': 40,
-          'A|@origin': 40,
+          'A|@origin': 5,
           '@origin|B': 5,
           'B|@origin': 5,
           'A|B': 5,
