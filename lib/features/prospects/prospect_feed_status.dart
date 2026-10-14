@@ -14,6 +14,7 @@ class ProspectFeedStatusCard extends StatelessWidget {
     this.fromCache = false,
     this.onRefresh,
     this.refreshing = false,
+    this.regularPriceCount = 0,
   });
 
   final DateTime? generatedAt;
@@ -21,6 +22,8 @@ class ProspectFeedStatusCard extends StatelessWidget {
   final bool fromCache;
   final Future<void> Function()? onRefresh;
   final bool refreshing;
+  /// Current, branch-specific regular prices that can be saved as price basis.
+  final int regularPriceCount;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +41,7 @@ class ProspectFeedStatusCard extends StatelessWidget {
         : stale
         ? 'Prospektstand veraltet'
         : 'Aktueller Prospektstand';
-    final subtitle = fromCache
+    final baseSubtitle = fromCache
         ? 'Stand $timestamp. Der Live-Abruf war nicht verfügbar; '
               'Gültigkeiten werden weiterhin geprüft, abgelaufene Angebote '
               'bleiben ausgeblendet.'
@@ -51,6 +54,10 @@ class ProspectFeedStatusCard extends StatelessWidget {
               'bevor du neue Angebote übernimmst.'
         : 'Stand $timestamp. Es werden nur aktuell gültige Angebote '
               'angezeigt.';
+    final subtitle = regularPriceCount <= 0
+        ? baseSubtitle
+        : '$baseSubtitle ${regularPriceCount == 1 ? '1 regulärer Normalpreis' : '$regularPriceCount reguläre Normalpreise'} '
+              'als Preisbasis gespeichert.';
     return Card(
       color: fromCache || stale
           ? theme.colorScheme.surfaceContainerHighest
@@ -207,7 +214,7 @@ ProspectCoverage _coverageForStore(
   final offerProofCount = records
       .where((record) => hasTrustedOfferProofReference(record.proofRef))
       .length;
-  final regularPriceCount = records.where(_hasLearnableRegularPrice).length;
+  final regularPriceCount = records.where(hasLearnableProspectRegularPrice).length;
   final regionalOnlyCount = records.where((record) => record.regionalOnly).length;
   return ProspectCoverage(
     storeName: storeName,
@@ -226,7 +233,7 @@ ProspectCoverage _coverageForStore(
   );
 }
 
-bool _hasLearnableRegularPrice(OfferImportRecord record) {
+bool hasLearnableProspectRegularPrice(OfferImportRecord record) {
   final regular = record.originalPrice;
   return !record.regionalOnly &&
       hasExactOfferRecordBranch(record) &&
