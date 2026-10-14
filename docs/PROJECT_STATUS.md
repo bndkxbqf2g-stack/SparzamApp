@@ -1,8 +1,17 @@
-## Update 14.10.2026 – Prospektviewer-Schlüssel stabilisiert
+## Update 14.10.2026 – Bonpreise je Markt sichtbar, Zuordnung bleibt transparent
 
-- [x] Artikelkarten im Prospektviewer verwenden jetzt denselben deterministischen Fallback-Schlüssel wie die Suche, auch wenn eine Quelle keine `sourceId` liefert.
-- [x] Dadurch bleiben mehrere Artikel einer geöffneten Prospektseite eindeutig, der Viewer stürzt beim Recycling/Scrollen nicht an doppelten Flutter-Keys ab und der Add-Button bleibt erreichbar.
-- [x] Eine Widgetregression öffnet einen Viewer mit zwei sourceId-losen Artikeln, prüft beide Karten und übernimmt einen Artikel in die Einkaufsliste.
+- [x] Generische Einkaufslistenartikel zeigen bestätigte und automatische Bon-Hinweise je Markt, statt unbestätigte importierte Preise vollständig auszublenden.
+- [x] Automatische Zuordnungen sind in der Detailansicht als „Variante prüfen“ gekennzeichnet und bleiben aus routenfähigen Preisen ausgeschlossen.
+- [x] Konkrete Varianten übernehmen weiterhin nur ihre exakte Belegzuordnung; Familienpreise werden nicht still auf eine andere Variante übertragen.
+- [x] Widget- und Fachtests schützen Marktübersicht, Hinweisstatus und die Trennung zur Routenlogik.
+
+## Update 14.10.2026 – Prospekt-Fallback und lokales Quota-Verhalten
+
+- [x] Cache und gebündelter Feed werden bei Offline-/Fehler-Fallbacks anhand von `generatedAt` verglichen; ein alter Gerätestand kann keinen neueren App-Stand mehr verdrängen.
+- [x] Ein erfolgreicher, aber älterer Netzwerkstand wird ebenfalls nicht vor einen neueren validierten lokalen Stand gesetzt.
+- [x] Automatisch importierte Prospektangebote bleiben flüchtig und werden beim Refresh nicht mehr als dauerhafte Nutzerangebote gespeichert; dadurch wächst der lokale OfferStore nicht mit jedem Abruf.
+- [x] Der Status kennzeichnet auch einen veralteten Cache sichtbar als veraltet. Gültigkeitsfilter und die Trennung von aktuellen Angeboten und historischen Preisbeobachtungen bleiben unverändert.
+
 ## Update 14.10.2026 – Routen-Snapshot wiederverwenden
 
 - RouteScreen cached jetzt die abgeleiteten Ergebnisse eines unveränderten Eingangs-Snapshots: Preisabdeckung, Preisnachweise, Mehrmarkt-Alternativen, Fahrzeit, Empfehlung und Straßenroute werden bei kleinen UI-Rebuilds wiederverwendet.
