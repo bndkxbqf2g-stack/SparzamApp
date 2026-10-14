@@ -34,7 +34,7 @@ import '../../services/prospect_feed_service.dart';
 import '../../services/prospect_import_module.dart';
 import '../offers/offer_import.dart';
 import '../offers/prospect_offer_products.dart';
-import '../offers/prospect_price_learning.dart';
+import '../offers/prospect_regular_price_persistence.dart';
 import '../offers/prospect_price_statistics.dart';
 import 'price_observation_merge.dart';
 import '../../services/market_price_observation_adapter.dart';
@@ -226,6 +226,17 @@ class _AppShellState extends State<AppShell> {
   int? _planningMarketPricesMaxAgeDays;
   DateTime? _planningMarketPricesDay;
 
+  List<ReplenishmentSuggestion>? _replenishmentSuggestionsCache;
+  List<PurchaseRecord>? _replenishmentSuggestionsHistorySource;
+  List<Product>? _replenishmentSuggestionsCatalogSource;
+  List<ReceiptObservation>? _replenishmentSuggestionsReceiptSource;
+  int? _replenishmentSuggestionsItemSignature;
+  DateTime? _replenishmentSuggestionsDay;
+
+  Map<String, ProspectPriceHistorySummary>? _prospectPriceHistoryCache;
+  List<PriceObservation>? _prospectPriceHistorySource;
+  int? _prospectPriceHistoryStoreSignature;
+  DateTime? _prospectPriceHistoryDay;
 
   void _selectTab(int index) {
     if (selectedIndex == index && _visitedTabs.contains(index)) return;
@@ -540,9 +551,10 @@ class _AppShellState extends State<AppShell> {
       _showProspectFeed(feed);
 
       final currentRecords = currentProspectRecords(feed.records);
+      final catalogForProspectPrices = buildCatalogProducts(customProducts);
       final offerBackedProducts = prospectOfferProducts(
         records: currentRecords,
-        catalogProducts: buildCatalogProducts(customProducts),
+        catalogProducts: catalogForProspectPrices,
       );
       // A verified offer with an unknown local catalog identity remains tied
       // to its exact retailer label. Keeping that offer routeable lets the
@@ -578,22 +590,20 @@ class _AppShellState extends State<AppShell> {
         for (final entry in offerBackedProducts) entry.offer.id: entry.offer,
       };
 
-      final learnedPrices = currentDatedProspectRegularPriceObservations(
-        records: feed.records,
-        catalogProducts: buildCatalogProducts(customProducts),
-        observedAt: feed.generatedAt,
-        refreshedStores: feed.refreshedStores,
-      );
-      if (learnedPrices.isNotEmpty) {
-        await _priceSaves.add(() async {
-          if (!_isCurrentDataRevision(revision)) return;
-          await priceObservationStore.append(learnedPrices);
-        });
+      late ProspectRegularPricePersistenceResult persistence;
+      await _priceSaves.add(() async {
         if (!_isCurrentDataRevision(revision)) return;
-      }
-
-      final historical = await priceObservationStore.load();
+        persistence = await persistCurrentProspectRegularPrices(
+          store: priceObservationStore,
+          records: feed.records,
+          catalogProducts: catalogForProspectPrices,
+          observedAt: feed.generatedAt,
+          refreshedStores: feed.refreshedStores,
+        );
+      });
       if (!_isCurrentDataRevision(revision)) return;
+      final learnedPrices = persistence.learned;
+      final historical = persistence.stored;
       setState(() {
         offers = offersById.values.toList(growable: false);
         prospectProducts = offerBackedProducts
@@ -667,15 +677,59 @@ class _AppShellState extends State<AppShell> {
   bool _isCurrentDataRevision(int revision) =>
       mounted && revision == _dataRevision;
 
-  List<ReplenishmentSuggestion> get replenishmentSuggestions =>
-      buildReplenishmentSuggestions(
-        history: purchaseHistory,
-        catalogProducts: catalogProducts,
-        currentListProductIds: shoppingList
-            .map((item) => item.product.id)
-            .toSet(),
-        receiptObservations: receiptObservations,
-      );
+  List<ReplenishmentSuggestion> get replenishmentSuggestions {
+    final now = DateTime.now();
+    final day = DateTime(now.year, now.month, now.day);
+    final itemSignature = _shoppingListSignature(includeQuantity: false);
+    final catalog = catalogProducts;
+    final cached = _replenishmentSuggestionsCache;
+    if (cached != null &&
+        identical(_replenishmentSuggestionsHistorySource, purchaseHistory) &&
+        identical(_replenishmentSuggestionsCatalogSource, catalog) &&
+        identical(_replenishmentSuggestionsReceiptSource, receiptObservations) &&
+        _replenishmentSuggestionsItemSignature == itemSignature &&
+        _replenishmentSuggestionsDay == day) {
+      return cached;
+    }
+    final next = buildReplenishmentSuggestions(
+      history: purchaseHistory,
+      catalogProducts: catalog,
+      currentListProductIds: shoppingList
+          .map((item) => item.product.id)
+          .toSet(),
+      receiptObservations: receiptObservations,
+    );
+    _replenishmentSuggestionsCache = next;
+    _replenishmentSuggestionsHistorySource = purchaseHistory;
+    _replenishmentSuggestionsCatalogSource = catalog;
+    _replenishmentSuggestionsReceiptSource = receiptObservations;
+    _replenishmentSuggestionsItemSignature = itemSignature;
+    _replenishmentSuggestionsDay = day;
+    return next;
+  }
+
+  Map<String, ProspectPriceHistorySummary> get prospectPriceHistory {
+    final now = DateTime.now();
+    final day = DateTime(now.year, now.month, now.day);
+    final storeNames = [...mobility.enabledStoreNames]..sort();
+    final storeSignature = Object.hashAll(storeNames);
+    final cached = _prospectPriceHistoryCache;
+    if (cached != null &&
+        identical(_prospectPriceHistorySource, historicalPriceObservations) &&
+        _prospectPriceHistoryStoreSignature == storeSignature &&
+        _prospectPriceHistoryDay == day) {
+      return cached;
+    }
+    final next = prospectPriceHistorySummaries(
+      historicalPriceObservations,
+      enabledStores: mobility.enabledStoreNames,
+    );
+    _prospectPriceHistoryCache = next;
+    _prospectPriceHistorySource = historicalPriceObservations;
+    _prospectPriceHistoryStoreSignature = storeSignature;
+    _prospectPriceHistoryDay = day;
+    return next;
+  }
 
   Future<void> persistShoppingList() {
     _shoppingListMutationRevision++;
@@ -831,10 +885,7 @@ class _AppShellState extends State<AppShell> {
         receiptObservations,
         maxAgeDays: 60,
       ),
-      prospectPriceHistory: prospectPriceHistorySummaries(
-        historicalPriceObservations,
-        enabledStores: mobility.enabledStoreNames,
-      ),
+      prospectPriceHistory: prospectPriceHistory,
       enabledStores: mobility.enabledStoreNames,
       openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
     );
@@ -1364,10 +1415,7 @@ class _AppShellState extends State<AppShell> {
           receiptObservations,
           maxAgeDays: 60,
         ),
-        prospectPriceHistory: prospectPriceHistorySummaries(
-          historicalPriceObservations,
-          enabledStores: mobility.enabledStoreNames,
-        ),
+        prospectPriceHistory: prospectPriceHistory,
         enabledStores: mobility.enabledStoreNames,
         openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
       );
@@ -1810,10 +1858,7 @@ class _AppShellState extends State<AppShell> {
     final currentPlan = currentRouteOptimizer?.bestPlan();
     final regularPlan = regularRouteOptimizer?.bestSingleStorePlan();
     final replenishment = replenishmentSuggestions;
-    final prospectHistory = prospectPriceHistorySummaries(
-      historicalPriceObservations,
-      enabledStores: mobility.enabledStoreNames,
-    );
+    final prospectHistory = prospectPriceHistory;
     final pages = buildShellPages(
       dashboard: dashboardData(routeSnapshot, replenishment),
       onOpenList: () => _selectTab(1),
