@@ -389,6 +389,12 @@ def _source_category(raw, *keys):
         "merchandising_category",
         "taxonomy",
         "taxonomyCategory",
+        "departmentLabel",
+        "categoryLabel",
+        "categoryText",
+        "productGroup",
+        "productGroupName",
+        "section",
     )
     for key in candidates:
         value = _source_category_value(raw.get(key))
@@ -2580,6 +2586,17 @@ def _source_image(raw, *keys):
         "bild_app",
         "bild_web130",
         "bild_web90",
+        "thumbnailUrl",
+        "thumbnailURL",
+        "thumbnail_url",
+        "imageLink",
+        "image_link",
+        "picture",
+        "pictureUrl",
+        "mainImage",
+        "main_image",
+        "images",
+        "pictures",
     )
     nested_keys = (
         "url",
@@ -2591,6 +2608,14 @@ def _source_image(raw, *keys):
         "large",
         "image",
         "media",
+        "thumbnail",
+        "thumbnailUrl",
+        "originalImage",
+        "original_image",
+        "main",
+        "rendition",
+        "renditions",
+        "variants",
     )
 
     def values(value, depth=0):
