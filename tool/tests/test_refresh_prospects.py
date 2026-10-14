@@ -330,6 +330,7 @@ class ProspectParserTest(unittest.TestCase):
             "JACK & JONES Herren-Hoodie",
             "KUSCHELWEICH Weichspüler 1 l",
             "K-CLASSIC Ultra-Klumpstreu 6 l",
+            "ALPINA Decken- und Wandweiß 10 l je 10-l-Eimer",
         ):
             self.assertFalse(refresh.is_food_offer({"productLabel": label}))
 

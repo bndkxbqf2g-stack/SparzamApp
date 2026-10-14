@@ -2650,7 +2650,7 @@ NON_FOOD_OFFER_RE = re.compile(
     r"tasse|kaffeemaschine|filterkaffeemaschine|kaffeepadmaschine|multizerkleinerer|kontaktgrill|"
     r"kochplatte|allesschneider|gemüseschneider|gemueseschneider|fleischwolf|"
     r"weichspüler|weichspueler|dampfbügelstation|dampfbuegelstation|"
-    r"sekundenkleber|alleskleber|wandweiß|wandweiss|filterkartuschen|"
+    r"sekundenkleber|alleskleber|wandweiß(?:\s|$)|wandweiss(?:\s|$)|filterkartuschen|"
     r"trinkflasche|brotkorb|brotbox|frühstücksbrett|fruehstuecksbrett|"
     r"deko|fenstersticker|spinnennetz|weihnachtsbeleuchtung|lichtergirlande|"
     r"mangoholz|grabstrauß|grabstrauss|grabkranz|grabschale|urnen|gesteck|"
