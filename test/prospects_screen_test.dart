@@ -92,6 +92,61 @@ void main() {
     expect(added, isTrue);
   });
 
+  testWidgets('keeps viewer offer keys unique without source ids', (
+    tester,
+  ) async {
+    var added = 0;
+    final records = [
+      OfferImportRecord(
+        sourceId: '',
+        productLabel: 'Kaffee Crema 500 g',
+        storeName: 'Lidl',
+        offerPrice: 4.99,
+        validFrom: DateTime(2026, 9, 28),
+        validUntil: DateTime(2026, 10, 3),
+        proofRef: 'https://example.test/lidl/coffee',
+      ),
+      OfferImportRecord(
+        sourceId: '',
+        productLabel: 'Milch 1 l',
+        storeName: 'Lidl',
+        offerPrice: 0.99,
+        validFrom: DateTime(2026, 9, 28),
+        validUntil: DateTime(2026, 10, 3),
+        proofRef: 'https://example.test/lidl/milk',
+      ),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: records,
+          prospects: const [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: [],
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+            ),
+          ],
+          now: DateTime(2026, 9, 30),
+          onAddProduct: (_) => added++,
+        ),
+      ),
+    );
+
+    await _scrollProspects(tester);
+    await tester.tap(
+      find.byKey(const ValueKey('prospect-open-grid-Lidl')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Kaffee Crema 500 g'), findsOneWidget);
+    expect(find.text('Milch 1 l'), findsOneWidget);
+    await tester.tap(find.text('Zur Einkaufsliste').first);
+    expect(added, 1);
+  });
   testWidgets('searches current prospect articles across markets', (
     tester,
   ) async {
