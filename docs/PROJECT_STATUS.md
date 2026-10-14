@@ -1,3 +1,9 @@
+## Update 14.10.2026 – Uneindeutige Prospektartikel manuell übernehmen
+
+- [x] Aktuelle, filialbezogene und belegte Artikel mit uneindeutiger Katalogidentität können nach ausdrücklicher Bestätigung als exakter eigener Listeneintrag übernommen werden.
+- [x] Die manuelle Übernahme erzeugt keine automatische Offer-/Routenpreisidentität; regionale, unbewiesene, abgelaufene und ungültige Datensätze bleiben gesperrt.
+- [x] Compact- und Viewer-Karten zeigen den Prüfschritt transparent; eine Widget- und eine Produktauflösungs-Regression schützen den Pfad.
+
 ## Update 14.10.2026 – Offizielle Prospektkategorien belastbar normalisieren
 
 - [x] Offizielle Quellen akzeptieren zusätzlich explizit benannte Unterkategorien, Abteilungen und begrenzte Kategoriepfade.

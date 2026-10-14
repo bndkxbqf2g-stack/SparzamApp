@@ -1,3 +1,9 @@
+## Update 14.10.2026 – Artikelübernahme bei uneindeutiger Identität
+
+- [x] Eindeutig belegte Prospektartikel bleiben direkt hinzufügbar; uneindeutige, aber gültige Datensätze erhalten einen sichtbaren Bestätigungsdialog.
+- [x] Der bestätigte Pfad übernimmt nur die exakte Quellbezeichnung als Listeneintrag und verändert keine Offer-/Routenpreisidentität.
+- [x] Regional-only, fehlende Nachweise, abgelaufene und ungültige Angebote bleiben deaktiviert.
+
 ## Update 14.10.2026 – Offizielle Prospektkategorien erweitern
 
 - [x] Unterkategorien, Abteilungen und begrenzte Kategoriepfade offizieller Quellen werden transparent übernommen.

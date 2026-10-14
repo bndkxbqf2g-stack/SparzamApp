@@ -476,13 +476,18 @@ class _ProspectOffersState extends State<_ProspectOffers> {
 
   Widget _buildProspectCard(OfferImportRecord record) {
     final product = _memoizedProduct(record);
+    final manualProduct =
+        product == null ? manualProductForProspectOffer(record) : null;
     final onAdd = widget.onAddToShoppingList;
+    final canAdd = onAdd != null &&
+        (product != null || manualProduct != null);
     return ProspectOfferCard(
       key: ValueKey('prospect-offer-${prospectOfferRecordKey(record)}'),
       record: record,
       product: product,
       compact: true,
-      onAdd: product == null || onAdd == null ? null : () => onAdd(product),
+      requiresManualConfirmation: product == null && manualProduct != null,
+      onAdd: !canAdd ? null : () => onAdd(product ?? manualProduct!),
     );
   }
 

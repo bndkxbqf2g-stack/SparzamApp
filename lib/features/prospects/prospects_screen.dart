@@ -608,6 +608,10 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
       catalogProducts,
       resolvedProducts,
     );
+    final manualProduct =
+        product == null ? manualProductForProspectOffer(record) : null;
+    final canAdd = onAddProduct != null &&
+        (product != null || manualProduct != null);
     final recordKey = record.sourceId.trim().isEmpty
         ? prospectOfferRecordKey(record)
         : record.sourceId.trim();
@@ -616,11 +620,8 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
       record: record,
       product: product,
       compact: true,
-      onAdd: onAddProduct == null || product == null
-          ? null
-          : () {
-              onAddProduct!(product);
-            },
+      requiresManualConfirmation: product == null && manualProduct != null,
+      onAdd: !canAdd ? null : () => onAddProduct!(product ?? manualProduct!),
     );
   }
 }
@@ -1819,13 +1820,20 @@ class ProspectViewerScreen extends StatelessWidget {
                         catalogProducts,
                         resolvedProducts,
                       );
+                      final manualProduct = product == null
+                          ? manualProductForProspectOffer(record)
+                          : null;
+                      final canAdd = onAddProduct != null &&
+                          (product != null || manualProduct != null);
                       return ProspectOfferCard(
                         key: ValueKey('prospect-offer-$recordKey'),
                         record: record,
                         product: product,
-                        onAdd: onAddProduct == null || product == null
+                        requiresManualConfirmation:
+                            product == null && manualProduct != null,
+                        onAdd: !canAdd
                             ? null
-                            : () => onAddProduct!(product),
+                            : () => onAddProduct!(product ?? manualProduct!),
                       );
                     },
                     childCount: groupedItems[category]!.length,

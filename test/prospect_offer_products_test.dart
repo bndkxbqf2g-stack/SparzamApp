@@ -8,6 +8,43 @@ import 'package:sparzamapp/models/product.dart';
 void main() {
   final current = DateTime(2026, 9, 30);
 
+  test('ambiguous verified offer gets an explicit-label review product', () {
+    final record = OfferImportRecord(
+      sourceId: 'ambiguous-1',
+      productLabel: 'Milch 1 l',
+      storeName: 'Lidl',
+      offerPrice: 0.99,
+      validUntil: DateTime(2026, 10, 2),
+      source: 'leaflet',
+      proofRef: 'https://example.test/lidl/ambiguous-1',
+    );
+
+    final product = addableProductForProspectOffer(
+      record,
+      const [
+        Product(
+          id: 'milk-a',
+          name: 'Milch 1 l',
+          unit: '1 l',
+          group: 'milch',
+        ),
+        Product(
+          id: 'milk-b',
+          name: 'Milch 1 l',
+          unit: '1 l',
+          group: 'milch',
+        ),
+      ],
+    );
+    final reviewProduct = manualProductForProspectOffer(record);
+
+    expect(product, isNull);
+    expect(reviewProduct, isNotNull);
+    expect(reviewProduct!.id, startsWith('prospect|'));
+    expect(reviewProduct.name, 'Milch 1 l');
+    expect(reviewProduct.unit, '1 l');
+  });
+
   test('verified unknown offer becomes searchable under its exact label', () {
     final entries = prospectOfferProducts(
       records: [
