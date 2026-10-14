@@ -337,8 +337,13 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
       final pagesByNumber = <int, ProspectPage>{};
       for (final page in (raw['pageSamples'] as List<dynamic>? ?? const [])) {
         if (page is! Map<String, dynamic>) continue;
-        final image = _httpUrlValue(page['image']);
-        final number = _intValue(page['number']);
+        final image = _firstHttpUrl([
+          page['image'],
+          page['imageUrl'],
+          page['thumbnailUrl'],
+          page['url'],
+        ]);
+        final number = _intValue(page['number'] ?? page['pageNumber']);
         if (image == null || number == null || number < 1) continue;
         // A few public feed variants repeat the same page or emit samples
         // out of order. Keep one source page per positive number and sort it
@@ -348,8 +353,16 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
           () => ProspectPage(
             number: number,
             imageUrl: image,
-            zoomUrl: _httpUrlValue(page['zoom']),
-            keyWords: _stringValue(page['keyWords']) ?? '',
+            zoomUrl: _firstHttpUrl([
+              page['zoom'],
+              page['zoomUrl'],
+              page['largeImageUrl'],
+              page['fullImageUrl'],
+            ]),
+            keyWords: _stringValue(page['keyWords']) ??
+                _stringValue(page['keywords']) ??
+                _stringValue(page['altText']) ??
+                '',
           ),
         );
       }
@@ -367,7 +380,13 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
           // Older source formats exposed only pageSamples. Reuse the first
           // already validated page as the cover instead of dropping a valid
           // image and rendering a misleading empty card.
-          thumbnailUrl: _httpUrlValue(raw['thumbnailUrl']) ??
+          thumbnailUrl: _firstHttpUrl([
+                raw['thumbnailUrl'],
+                raw['coverUrl'],
+                raw['coverImage'],
+                raw['imageUrl'],
+                raw['image'],
+              ]) ??
               (pages.isEmpty ? null : pages.first.imageUrl),
           branchId:
               _optionalNonEmptyString(raw['branchId']) ??
@@ -563,6 +582,14 @@ String _prospectRecordKey(OfferImportRecord record) {
 }
 
 String? _stringValue(Object? value) => value is String ? value.trim() : null;
+
+String? _firstHttpUrl(Iterable<Object?> values) {
+  for (final value in values) {
+    final url = _httpUrlValue(value);
+    if (url != null) return url;
+  }
+  return null;
+}
 
 String? _httpUrlValue(Object? value) {
   final raw = _stringValue(value);
