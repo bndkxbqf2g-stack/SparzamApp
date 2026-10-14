@@ -2,7 +2,9 @@ name: Refresh retailer prospects
 
 on:
   schedule:
-    - cron: '15 4 * * 1,4'
+    # Refresh every day so weekly validity windows and regular prices do not
+    # wait several days before entering the app's local persistence pass.
+    - cron: '15 4 * * *'
   workflow_dispatch:
   push:
     branches:
