@@ -1449,7 +1449,12 @@ bool _prospectRecordBelongsToIssue(
   if (record.storeName != issue.storeName) return false;
   final issueBranchId = issue.branchId?.trim();
   if (issueBranchId == null || issueBranchId.isEmpty) return true;
-  return record.branchId?.trim() == issueBranchId;
+  final recordBranchId = record.branchId?.trim();
+  // A record without branch context stays store-level evidence. Only an
+  // explicitly different branch is rejected at this UI boundary.
+  return recordBranchId == null ||
+      recordBranchId.isEmpty ||
+      recordBranchId == issueBranchId;
 }
 
 class ProspectViewerScreen extends StatelessWidget {
