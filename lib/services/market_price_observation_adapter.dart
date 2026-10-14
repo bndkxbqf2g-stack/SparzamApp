@@ -149,7 +149,11 @@ String _prospectRegularProjectionKey(PriceObservation entry) => [
       entry.unit?.trim().toLowerCase() ?? '',
       entry.validFrom?.toIso8601String() ?? '',
       entry.validUntil?.toIso8601String() ?? '',
-      entry.proofRef?.trim() ?? '',
+      // proofRef remains on the projected price for traceability, but it is
+      // not part of the current identity. A refreshed leaflet may use a new
+      // page/URL for the same product, branch and validity window; the latest
+      // captured regular claim must replace the older current claim instead
+      // of allowing both prices into route planning.
     ].join('\u001f');
 
 bool _isNewerPriceObservation(
