@@ -3,11 +3,13 @@ import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/offer.dart';
 import '../../models/price_observation.dart';
+import '../../models/product.dart';
 import '../offers/effective_price.dart';
 import '../offers/offer_import.dart';
 import '../offers/offer_filter.dart';
 import '../offers/prospect_price_statistics.dart';
 import '../catalog/product_family.dart';
+import '../receipt/receipt_observation_builder.dart';
 import '../route/market_price_quality.dart';
 import '../../services/branch_identity.dart';
 import '../../services/market_price_comparability.dart';
@@ -444,8 +446,8 @@ bool _offerMatchesShoppingItem(
   final candidate = catalogProducts
       .where((product) => product.id == offer.productId)
       .firstOrNull;
-  if (candidate == null ||
-      inferReceiptFamily(candidate.name) != inferReceiptFamily(item.name)) {
+  if (candidate == null) return false;
+  if (inferReceiptFamily(candidate.name) != inferReceiptFamily(item.name)) {
     return false;
   }
   return offerMatchesProduct(offer, candidate);
