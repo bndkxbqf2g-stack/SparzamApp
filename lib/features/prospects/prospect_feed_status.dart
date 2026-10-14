@@ -51,6 +51,10 @@ class ProspectFeedStatusCard extends StatelessWidget {
         : generatedAt == null
         ? 'Lade die aktuellen Prospekte, um neue Angebote und Preisbeobachtungen '
               'zu übernehmen.'
+        : stale
+        ? 'Stand $timestamp. Der Feed ist älter als '
+              '${prospectFeedStaleAfter.inHours} Stunden. Aktualisiere ihn, '
+              'bevor du neue Angebote übernimmst.'
         : 'Stand $timestamp. Es werden nur aktuell gültige Angebote '
               'angezeigt.';
     final subtitle = regularPriceCount <= 0
