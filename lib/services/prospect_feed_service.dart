@@ -207,18 +207,13 @@ class ProspectFeedService {
   /// Returns the newest locally available validated feed without any
   /// network request. The shell uses this for an immediate first render and
   /// follows it with the normal online refresh.
-  Future<ProspectFeedLoadResult?> loadCached() async {
-    final cached = await _loadCachedFeed();
-    if (cached != null) return cached;
-    return _loadBundledFeed();
-  }
+  Future<ProspectFeedLoadResult?> loadCached() =>
+      _loadNewestLocalFeed();
 
   Future<ProspectFeedLoadResult> _loadNow() async {
     if (!networkEnabled) {
-      final cached = await _loadCachedFeed();
-      if (cached != null) return cached;
-      final bundled = await _loadBundledFeed();
-      if (bundled != null) return bundled;
+      final local = await _loadNewestLocalFeed();
+      if (local != null) return local;
       throw StateError(
         'Prospektfeed ist deaktiviert und offline nicht verfügbar.',
       );
@@ -237,20 +232,54 @@ class ProspectFeedService {
         throw StateError('Prospektfeed HTTP ${response.statusCode}');
       }
       final result = parseProspectFeed(response.body);
-      // A cache failure must never hide a valid live feed.
-      try {
-        await _cache.save(response.body);
-      } catch (_) {
-        // The next online refresh can try to repair the cache.
+      // A CDN or a temporarily stale publisher response must not replace a
+      // newer validated local snapshot. Equal timestamps still prefer the
+      // successful live response.
+      final selected = _newestFeed(
+        result,
+        await _loadNewestLocalFeed(),
+      )!;
+      if (identical(selected, result)) {
+        // A cache failure must never hide a valid live feed.
+        try {
+          await _cache.save(response.body);
+        } catch (_) {
+          // The next online refresh can try to repair the cache.
+        }
       }
-      return result;
+      return selected;
     } catch (error, stackTrace) {
-      final cached = await _loadCachedFeed();
-      if (cached != null) return cached;
-      final bundled = await _loadBundledFeed();
-      if (bundled != null) return bundled;
+      final local = await _loadNewestLocalFeed();
+      if (local != null) return local;
       Error.throwWithStackTrace(error, stackTrace);
     }
+  }
+
+  /// Returns the newest validated snapshot available without the network.
+  ///
+  /// The cache can be older than the bundled asset after an app update. Read
+  /// both sources and compare their feed timestamps so an old device cache
+  /// cannot hide the newer asset.
+  Future<ProspectFeedLoadResult?> _loadNewestLocalFeed() async {
+    final local = await Future.wait<ProspectFeedLoadResult?>([
+      _loadCachedFeed(),
+      _loadBundledFeed(),
+    ]);
+    return _newestFeed(local[0], local[1]);
+  }
+
+  ProspectFeedLoadResult? _newestFeed(
+    ProspectFeedLoadResult? first,
+    ProspectFeedLoadResult? second,
+  ) {
+    if (first == null) return second;
+    if (second == null) return first;
+
+    final firstAt = first.generatedAt;
+    final secondAt = second.generatedAt;
+    if (firstAt == null) return secondAt == null ? first : second;
+    if (secondAt == null) return first;
+    return firstAt.isBefore(secondAt) ? second : first;
   }
 
   Future<ProspectFeedLoadResult?> _loadCachedFeed() async {
