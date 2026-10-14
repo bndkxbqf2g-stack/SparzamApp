@@ -206,10 +206,9 @@ class ShoppingPriceMatrixEntry {
 /// affect the route total, but not the market evidence shown for one product.
 class ShoppingPriceQuoteSnapshot {
   const ShoppingPriceQuoteSnapshot._({
-    required Map<String, List<ShoppingQuote>> quotesByProductId,
-    required Map<String, List<ShoppingPriceMatrixEntry>> matrixByProductId,
-  })  : _quotesByProductId = quotesByProductId,
-        _matrixByProductId = matrixByProductId;
+    required this._quotesByProductId,
+    required this._matrixByProductId,
+  });
 
   final Map<String, List<ShoppingQuote>> _quotesByProductId;
   final Map<String, List<ShoppingPriceMatrixEntry>> _matrixByProductId;
