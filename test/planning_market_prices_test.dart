@@ -4,6 +4,7 @@ import 'package:sparzamapp/features/shopping_list/shopping_price_quotes.dart';
 import 'package:sparzamapp/features/route/route_price_resolver.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
+import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/store.dart';
 
@@ -77,6 +78,48 @@ void main() {
 
     expect(quote, isNotNull);
     expect(quote!.total, 0.79);
+  });
+
+  test('planning keeps current prospect regular prices per exact branch', () {
+    final prices = planningMarketPrices(
+      exactPrices: [
+        MarketPrice(
+          productId: 'milk',
+          storeName: 'Lidl',
+          price: 1.29,
+          updatedAt: DateTime(2026, 10, 13),
+          source: MarketPriceSource.prospect,
+          sourceLocationId: 'lidl-thuengersheim',
+          sourceLocationName: 'Lidl Thüngersheim',
+          kind: PriceObservationKind.regular,
+          quantity: 1000,
+          unit: 'ml',
+          unitPrice: 1.29,
+        ),
+        MarketPrice(
+          productId: 'milk',
+          storeName: 'Lidl',
+          price: 1.19,
+          updatedAt: DateTime(2026, 10, 13),
+          source: MarketPriceSource.prospect,
+          sourceLocationId: 'lidl-wuerzburg',
+          sourceLocationName: 'Lidl Würzburg',
+          kind: PriceObservationKind.regular,
+          quantity: 1000,
+          unit: 'ml',
+          unitPrice: 1.19,
+        ),
+      ],
+      familyPrices: const [],
+      now: DateTime(2026, 10, 13),
+    );
+
+    expect(prices, hasLength(2));
+    expect(prices.every((price) => price.source == MarketPriceSource.prospect), isTrue);
+    expect(prices.map((price) => price.sourceLocationId), containsAll([
+      'lidl-thuengersheim',
+      'lidl-wuerzburg',
+    ]));
   });
 
   test('planning applies the configured Open Prices age', () {
