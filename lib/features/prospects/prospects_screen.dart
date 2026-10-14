@@ -1812,13 +1812,14 @@ class ProspectViewerScreen extends StatelessWidget {
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
                       final record = groupedItems[category]![index];
+                      final recordKey = prospectOfferRecordKey(record);
                       final product = _memoizedProspectProduct(
                         record,
                         catalogProducts,
                         resolvedProducts,
                       );
                       return ProspectOfferCard(
-                        key: ValueKey('prospect-offer-${record.sourceId}'),
+                        key: ValueKey('prospect-offer-$recordKey'),
                         record: record,
                         product: product,
                         onAdd: onAddProduct == null || product == null

@@ -1,3 +1,9 @@
+## Update 14.10.2026 – Prospektviewer-Schlüssel stabilisiert
+
+- [x] Artikelkarten im Prospektviewer verwenden jetzt denselben deterministischen Fallback-Schlüssel wie die Suche, auch wenn eine Quelle keine `sourceId` liefert.
+- [x] Dadurch bleiben mehrere Artikel einer geöffneten Prospektseite eindeutig, der Viewer stürzt beim Recycling/Scrollen nicht an doppelten Flutter-Keys ab und der Add-Button bleibt erreichbar.
+- [x] Eine Widgetregression öffnet einen Viewer mit zwei sourceId-losen Artikeln, prüft beide Karten und übernimmt einen Artikel in die Einkaufsliste.
+
 ## Update 14.10.2026 – Bonpreise je Markt sichtbar, Zuordnung bleibt transparent
 
 - [x] Generische Einkaufslistenartikel zeigen bestätigte und automatische Bon-Hinweise je Markt, statt unbestätigte importierte Preise vollständig auszublenden.
@@ -3257,3 +3263,4 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - [x] Besuchte Hauptreiter bleiben in einem `IndexedStack` gemountet; noch nicht besuchte Reiter werden weiterhin lazy als Platzhalter angelegt.
 - [x] Prospektsuche, Scrollposition und Routen-/Belegcontroller werden beim Wechsel zwischen Liste, Prospekte und Preise nicht mehr verworfen.
 - [x] Regression prüft, dass die Prospektsuche nach einem Wechsel in die Einkaufsliste erhalten bleibt.
+
