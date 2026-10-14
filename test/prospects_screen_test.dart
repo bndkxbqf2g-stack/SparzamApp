@@ -135,6 +135,14 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+    await tester.drag(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Scrollable && widget.axisDirection == AxisDirection.down,
+      ).first,
+      const Offset(0, -520),
+    );
+    await tester.pumpAndSettle();
 
     expect(find.text('Kaffee Crema 500 g'), findsOneWidget);
     expect(find.text('Milch 1 l'), findsOneWidget);
