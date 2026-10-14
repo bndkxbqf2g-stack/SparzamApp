@@ -5,7 +5,7 @@ löst einen begrenzten Hintergrund-Refresh aus. Der vorhandene lokale Stand blei
 währenddessen sichtbar; die Aktualisierung verwendet weiterhin nur die konfigurierten
 öffentlichen Quellen und den bestehenden Cache-/PriceObservation-Pfad. Fehlende oder
 zukünftige Zeitstempel werden konservativ behandelt, und doppelte Lifecycle-Ereignisse
-werden kurz gedrosselt, damit die App weder blockiert noch unnötige Abrufe erzeugt.
+werden kurz gedrosselt; während die App aktiv ist, läuft höchstens ein sechsstündiger Timer. Beim Pausieren wird er beendet, damit weder blockierende noch unnötige Abrufe entstehen.
 
 # SparzamApp – Architektur- und Produktentscheidungen
 

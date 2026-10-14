@@ -4,6 +4,7 @@
 - [x] Eine fehlende oder veraltete Zeitangabe löst einen Refresh aus; zukünftige Zeitstempel nach einer Geräteuhrkorrektur erzeugen keine Schleife.
 - [x] Der lokale Prospektstand bleibt während des Netzabrufs sichtbar, und die bestehende Speicherung regulärer Normalpreise läuft unverändert über den bestehenden PriceObservation-Pfad.
 - [x] Eine Policy-Regression deckt fehlende, frische, alte und zukünftige Zeitstempel ab.
+- [x] Solange die App aktiv ist, plant AppShell höchstens einen sechs-stündigen Hintergrund-Refresh; beim Pausieren wird der Timer beendet und beim Fortsetzen neu gesetzt.
 
 ## Update 14.10.2026 – Prospektviewer-Schlüssel stabilisiert
 

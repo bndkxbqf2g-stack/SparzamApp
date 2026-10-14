@@ -2,6 +2,7 @@
 - [x] Beim Fortsetzen der App wird ein validierter Prospektstand älter als sechs Stunden automatisch im Hintergrund aktualisiert.
 - [x] Der aktuelle Einkauf, die Route und die Prospektansicht bleiben während des Abrufs bedienbar; der lokale Cache wird sofort weiterverwendet.
 - [x] Die Prüfung ist timestamp-basiert, begrenzt doppelte Resume-Ereignisse und erzeugt keine zusätzliche dauerhafte Datenquelle.
+- [x] Während die App aktiv bleibt, plant sie höchstens einen sechsstündigen Refresh; bei Pause wird der Timer beendet.
 
 ## Update 13.10.2026 – Coverraster progressiv laden
 - [x] Große Prospekt-Coverlisten im Angebote-Reiter zunächst seitenweise rendern und weitere Karten ausdrücklich nachladen lassen.

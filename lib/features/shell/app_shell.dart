@@ -160,6 +160,8 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   DateTime? prospectFeedGeneratedAt;
   List<Product> prospectProducts = const <Product>[];
   bool _prospectFeedRefreshing = false;
+  Timer? _prospectRefreshTimer;
+  bool _appIsResumed = true;
   DateTime? _lastProspectResumeRefreshAt;
   String? _prospectFeedFingerprint;
   final priceObservationStore = PriceObservationStore();
@@ -257,6 +259,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _scheduleProspectRefreshTimer();
     budget = widget.initialBudget;
     mobility = widget.initialMobility;
     customProducts = [...widget.initialCustomProducts];
@@ -295,9 +298,35 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     _loadProspectOffers(preferCached: true);
   }
 
+  void _scheduleProspectRefreshTimer() {
+    _prospectRefreshTimer?.cancel();
+    if (!mounted || !_appIsResumed) return;
+    _prospectRefreshTimer = Timer(prospectResumeRefreshInterval, () {
+      _prospectRefreshTimer = null;
+      if (!mounted || !_appIsResumed) return;
+      final now = DateTime.now();
+      if (shouldRefreshProspectsOnResume(
+        generatedAt: prospectFeedGeneratedAt,
+        now: now,
+      )) {
+        _lastProspectResumeRefreshAt = now;
+        // Keep the active app fresh without blocking the current tab.
+        unawaited(_loadProspectOffers(preferCached: true));
+      }
+      _scheduleProspectRefreshTimer();
+    });
+  }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state != AppLifecycleState.resumed || !mounted) return;
+    _appIsResumed = state == AppLifecycleState.resumed;
+    if (!_appIsResumed) {
+      _prospectRefreshTimer?.cancel();
+      _prospectRefreshTimer = null;
+      return;
+    }
+    _scheduleProspectRefreshTimer();
+    if (!mounted) return;
     final now = DateTime.now();
     final lastAttempt = _lastProspectResumeRefreshAt;
     if (lastAttempt != null &&
@@ -319,6 +348,8 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _prospectRefreshTimer?.cancel();
+    _prospectRefreshTimer = null;
     // Invalidate startup/refresh callbacks before the state is torn down.
     _dataRevision++;
     super.dispose();
