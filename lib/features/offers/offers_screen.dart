@@ -170,13 +170,6 @@ class _OffersScreenState extends State<OffersScreen> {
             onRefresh: widget.onRefreshProspects,
             refreshing: widget.prospectsRefreshing,
           ),
-          if (currentProspectIssues.isNotEmpty || currentRecords.isNotEmpty)
-            ProspectCoverageCard(
-              coverage: calculateProspectCoverage(
-                issues: currentProspectIssues,
-                records: currentRecords,
-              ),
-            ),
           const SizedBox(height: 12),
           if (currentProspectIssues.isNotEmpty) ...[
             ProspectCoverSection(
@@ -201,13 +194,6 @@ class _OffersScreenState extends State<OffersScreen> {
             catalogProducts: widget.catalogProducts,
             onAddToShoppingList: widget.onAddToShoppingList,
           ),
-          if (currentProspectIssues.isNotEmpty || currentRecords.isNotEmpty)
-            ProspectCoverageCard(
-              coverage: calculateProspectCoverage(
-                issues: currentProspectIssues,
-                records: currentRecords,
-              ),
-            ),
         ],
       ),
     );

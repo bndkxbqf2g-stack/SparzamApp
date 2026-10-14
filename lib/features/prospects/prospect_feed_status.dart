@@ -301,6 +301,18 @@ class _ProspectCoverageCardState extends State<ProspectCoverageCard> {
       0,
       (sum, entry) => sum + entry.regionalOnlyCount,
     );
+    final totalStructuredOffers = coverage.fold<int>(
+      0,
+      (sum, entry) => sum + entry.structuredOfferCount,
+    );
+    final offersWithImages = coverage.fold<int>(
+      0,
+      (sum, entry) => sum + entry.offerImageCount,
+    );
+    final offersWithCategories = coverage.fold<int>(
+      0,
+      (sum, entry) => sum + entry.offerCategoryCount,
+    );
 
     return Card(
       child: ExpansionTile(
@@ -313,6 +325,8 @@ class _ProspectCoverageCardState extends State<ProspectCoverageCard> {
         subtitle: Text(
           '${coverage.length} Märkte · $marketsWithOffers mit strukturierten '
           'Angeboten · $marketsWithPages mit Bildseiten · '
+          '$offersWithImages/$totalStructuredOffers mit Artikelbildern · '
+          '$offersWithCategories/$totalStructuredOffers mit Kategorien · '
           '$marketsWithValidity mit Gültigkeitszeitraum · '
           '$marketsWithRegularPrices mit Normalpreis · '
           '$marketsWithProof mit Originalnachweis'
