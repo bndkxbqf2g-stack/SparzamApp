@@ -21,11 +21,13 @@ class RouteOptimizer {
     this.timeValuePerHour = 0,
     this.travelMinutesPerKm = 60 / 45,
     List<String>? enabledStoreNames,
+    List<Store>? storeCatalog,
     List<MarketPrice> marketPrices = const <MarketPrice>[],
     this.openPricesMaxAgeDays = 60,
     this.roadMatrix,
     DateTime? now,
   }) : roadDistances = roadDistances ?? const <String, double>{},
+       storeCatalog = storeCatalog ?? stores,
        today = now ?? DateTime.now(),
        enabledStoreNames = (enabledStoreNames ?? const <String>[]).toSet(),
        prices = RoutePriceResolver(
@@ -37,6 +39,10 @@ class RouteOptimizer {
 
   final List<ListItem> items;
   final RoutePriceResolver prices;
+  /// Exact branch catalog used for this calculation. The default remains the
+  /// configured project-market list; callers may provide a branch-resolved
+  /// snapshot without changing the global store registry.
+  final List<Store> storeCatalog;
   final Map<String, double> roadDistances;
   final RoadRouteMatrix? roadMatrix;
   final DateTime today;
@@ -68,7 +74,7 @@ class RouteOptimizer {
       enabledStoreNames.isEmpty || enabledStoreNames.contains(store.name);
 
   List<Store> get availableStores =>
-      stores.where(isStoreEnabled).toList(growable: false);
+      storeCatalog.where(isStoreEnabled).toList(growable: false);
 
   double basketCost(Store store, Iterable<ListItem> selectedItems) {
     return selectedItems.fold<double>(
@@ -282,6 +288,8 @@ class RouteOptimizer {
   /// Coverage remains the primary criterion, followed by the quality-adjusted
   /// planning score and fewer stores. Store names are the final tie-breaker so
   /// a price tie cannot depend on the order in which a source was assembled.
+  /// The branch ID and address are part of the final key so two same-named
+  /// branches remain deterministic and cannot be silently interchanged.
   int _comparePlans(RoutePlan a, RoutePlan b) {
     final coverage = b.priceCoverage.compareTo(a.priceCoverage);
     if (coverage != 0) return coverage;
@@ -289,9 +297,9 @@ class RouteOptimizer {
     if (planning != 0) return planning;
     final storeCount = a.stores.length.compareTo(b.stores.length);
     if (storeCount != 0) return storeCount;
-    final aNames = a.stores.map((store) => store.name).join('|');
-    final bNames = b.stores.map((store) => store.name).join('|');
-    return aNames.compareTo(bNames);
+    final aKey = a.stores.map(_storeTieKey).join('|');
+    final bKey = b.stores.map(_storeTieKey).join('|');
+    return aKey.compareTo(bKey);
   }
 }
 
