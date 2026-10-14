@@ -521,6 +521,28 @@ class ProspectParserTest(unittest.TestCase):
         )
         self.assertTrue(offers[0]["proofRef"].endswith("#offer-12345"))
 
+    def test_edeka_api_accepts_nested_image_fields(self):
+        payload = """
+        {
+          "docs": [
+            {
+              "titel": "Bio Äpfel",
+              "preis": "1,99 €",
+              "image": {"url": "https://cdn.edeka.example/apples.jpg"}
+            }
+          ]
+        }
+        """
+        offers, _ = refresh.parse_edeka_api(
+            payload,
+            "https://www.edeka.de/maerkte/023738/",
+        )
+        self.assertEqual(len(offers), 1)
+        self.assertEqual(
+            offers[0]["imageUrl"],
+            "https://cdn.edeka.example/apples.jpg",
+        )
+
     def test_edeka_public_prospect_parser_keeps_branch_cover_and_period(self):
         html = """
         <p>Gültig vom 12.10.2026 bis zum 17.10.2026.</p>
