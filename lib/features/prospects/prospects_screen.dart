@@ -460,6 +460,8 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                       persistedRegularPriceCounts:
                           widget.persistedRegularPriceCounts,
                     ),
+                    regularPricePersistenceStatus:
+                        widget.regularPricePersistenceStatus,
                   ),
                 ),
               ),

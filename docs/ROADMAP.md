@@ -520,3 +520,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Die Tabs unterscheiden Feed-Erkennung, laufende Speicherung, bestätigte Speicherung und unbekannten Speicherstatus.
 - [x] Eine bestätigte Nullspeicherung wird sichtbar als `0` ausgewiesen; ein Fehler wird nicht als `0 gespeichert` ausgegeben.
 - [x] Standalone-Ansichten behaupten keine lokale Speicherung ohne Shell-Nachweis.
+
+
+## Update 14.10.2026 – Abdeckungskarte mit Persistenzstatus
+- [x] Die Prospekt-Abdeckungskarte unterscheidet bestätigte Speicherung von laufender, fehlgeschlagener und nicht bestätigter Preisbeobachtung.
+- [x] Ein fehlgeschlagener Lauf zeigt keine `0 gespeichert`-Aussage und bleibt als unbekannt sichtbar.
+- [x] Die Einzelmarkt-Details verwenden denselben Status wie die Kopfzeile.
