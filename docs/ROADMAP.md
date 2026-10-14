@@ -514,3 +514,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Ein Feed-Refresh ordnet Händlernamen nur nach Groß-/Kleinschreibung und Rand-Whitespace zu; unterschiedliche Märkte bleiben getrennt.
 - [x] Die lokale Kompaktierung hält automatische Beobachtungen je Adapter getrennt, damit KaufDA- und Händlerdaten ihre Herkunft behalten.
 - [x] Regressionen sichern den Refresh-Filter und die Quota-Buckets ohne zusätzliche Netzwerkanfragen.
+
+
+## Update 14.10.2026 – Persistenzstatus in Angebote und Prospekte eindeutig
+- [x] Die Tabs unterscheiden Feed-Erkennung, laufende Speicherung, bestätigte Speicherung und unbekannten Speicherstatus.
+- [x] Eine bestätigte Nullspeicherung wird sichtbar als `0` ausgewiesen; ein Fehler wird nicht als `0 gespeichert` ausgegeben.
+- [x] Standalone-Ansichten behaupten keine lokale Speicherung ohne Shell-Nachweis.

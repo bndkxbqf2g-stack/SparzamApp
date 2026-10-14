@@ -4,6 +4,21 @@ import '../offers/offer_import.dart';
 import '../offers/offer_filter.dart';
 import '../../services/prospect_feed_service.dart';
 
+/// Describes whether the regular prices shown for the current prospect feed
+/// were merely detected, are being written, or were confirmed locally.
+enum ProspectRegularPricePersistenceStatus {
+  /// The screen has no shell persistence result and only shows feed evidence.
+  standalone,
+
+  /// A new feed is visible while the local persistence write is running.
+  pending,
+
+  /// The local persistence write completed successfully, including zero rows.
+  succeeded,
+
+  /// The write failed or its result is otherwise unavailable.
+  failed,
+}
 /// Makes the age and provenance of the public prospect feed visible wherever
 /// current offers are shown. The timestamp is informational; offer validity
 /// is still checked per record before it can be displayed or routed.
@@ -16,6 +31,8 @@ class ProspectFeedStatusCard extends StatelessWidget {
     this.onRefresh,
     this.refreshing = false,
     this.regularPriceCount = 0,
+    this.regularPricePersistenceStatus =
+        ProspectRegularPricePersistenceStatus.standalone,
   });
 
   final DateTime? generatedAt;
@@ -25,6 +42,7 @@ class ProspectFeedStatusCard extends StatelessWidget {
   final bool refreshing;
   /// Current, branch-specific regular prices that can be saved as price basis.
   final int regularPriceCount;
+  final ProspectRegularPricePersistenceStatus regularPricePersistenceStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -58,10 +76,26 @@ class ProspectFeedStatusCard extends StatelessWidget {
               'bevor du neue Angebote übernimmst.'
         : 'Stand $timestamp. Es werden nur aktuell gültige Angebote '
               'angezeigt.';
-    final subtitle = regularPriceCount <= 0
+    final regularPriceStatus = switch (regularPricePersistenceStatus) {
+      ProspectRegularPricePersistenceStatus.standalone =>
+        regularPriceCount <= 0
+            ? null
+            : regularPriceCount == 1
+            ? '1 regulärer Normalpreis im Feed erkannt; Speicherung nicht bestätigt.'
+            : '$regularPriceCount reguläre Normalpreise im Feed erkannt; '
+                  'Speicherung nicht bestätigt.',
+      ProspectRegularPricePersistenceStatus.pending =>
+        'Speicherstatus wird nach dem aktuellen Feed-Lauf geprüft.',
+      ProspectRegularPricePersistenceStatus.succeeded =>
+        '${regularPriceCount == 1 ? '1 regulärer Normalpreis' : '$regularPriceCount reguläre Normalpreise'} '
+            'als Preisbasis gespeichert.',
+      ProspectRegularPricePersistenceStatus.failed =>
+        'Speicherstatus unbekannt; reguläre Normalpreise wurden in diesem Lauf '
+            'nicht bestätigt.',
+    };
+    final subtitle = regularPriceStatus == null
         ? baseSubtitle
-        : '$baseSubtitle ${regularPriceCount == 1 ? '1 regulärer Normalpreis' : '$regularPriceCount reguläre Normalpreise'} '
-              'als Preisbasis gespeichert.';
+        : '$baseSubtitle $regularPriceStatus';
     return Card(
       color: fromCache || stale
           ? theme.colorScheme.surfaceContainerHighest

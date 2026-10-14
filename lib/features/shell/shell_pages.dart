@@ -18,6 +18,7 @@ import '../home/dashboard_data.dart';
 import '../home/home_screen.dart';
 import '../catalog/prices_hub_screen.dart';
 import '../prospects/prospects_screen.dart';
+import '../prospects/prospect_feed_status.dart';
 import '../../services/prospect_feed_service.dart';
 import 'more_screen.dart';
 import '../offers/offer_import.dart';
@@ -58,6 +59,8 @@ List<Widget> buildShellPages({
   DateTime? prospectFeedGeneratedAt,
   int prospectRegularPriceCount = 0,
   Map<String, int> prospectRegularPriceCountsByStore = const <String, int>{},
+  ProspectRegularPricePersistenceStatus prospectRegularPricePersistenceStatus =
+      ProspectRegularPricePersistenceStatus.standalone,
   Future<void> Function()? onRefreshProspects,
   bool prospectsRefreshing = false,
   required List<PricePoint> priceHistory,
@@ -148,6 +151,7 @@ List<Widget> buildShellPages({
     generatedAt: prospectFeedGeneratedAt,
     fromCache: prospectFeedFromCache,
     regularPriceCount: prospectRegularPriceCount,
+    regularPricePersistenceStatus: prospectRegularPricePersistenceStatus,
     onRefreshProspects: onRefreshProspects,
     prospectsRefreshing: prospectsRefreshing,
     priceHistory: priceHistory,
@@ -163,6 +167,7 @@ List<Widget> buildShellPages({
     generatedAt: prospectFeedGeneratedAt,
     regularPriceCount: prospectRegularPriceCount,
     persistedRegularPriceCounts: prospectRegularPriceCountsByStore,
+    regularPricePersistenceStatus: prospectRegularPricePersistenceStatus,
     onRefreshProspects: onRefreshProspects,
     prospectsRefreshing: prospectsRefreshing,
     catalogProducts: catalogProducts,
