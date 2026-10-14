@@ -140,12 +140,8 @@ void main() {
     final open = find.byKey(
       const ValueKey('prospect-open-grid-Lidl'),
     );
-    await tester.scrollUntilVisible(
-      open,
-      400,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.tap(open);
+    final openTopLeft = tester.getTopLeft(open);
+    await tester.tapAt(openTopLeft + const Offset(20, 20));
     await tester.pumpAndSettle();
 
     expect(find.text('Kaffee Crema 500 g'), findsOneWidget);
