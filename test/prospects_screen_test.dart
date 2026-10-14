@@ -119,29 +119,21 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
-        home: ProspectsScreen(
+        home: ProspectViewerScreen(
+          issue: ProspectIssue(
+            storeName: 'Lidl',
+            title: 'Aktionsprospekt',
+            pages: const [],
+            validFrom: DateTime(2026, 9, 28),
+            validUntil: DateTime(2026, 10, 3),
+          ),
           records: records,
-          prospects: [
-            ProspectIssue(
-              storeName: 'Lidl',
-              title: 'Aktionsprospekt',
-              pages: [],
-              validFrom: DateTime(2026, 9, 28),
-              validUntil: DateTime(2026, 10, 3),
-            ),
-          ],
+          catalogProducts: const [],
           now: DateTime(2026, 9, 30),
           onAddProduct: (_) => added++,
         ),
       ),
     );
-
-    await _scrollProspects(tester);
-    final open = find.byKey(
-      const ValueKey('prospect-open-grid-Lidl'),
-    );
-    final openTopLeft = tester.getTopLeft(open);
-    await tester.tapAt(openTopLeft + const Offset(20, 20));
     await tester.pumpAndSettle();
 
     expect(find.text('Kaffee Crema 500 g'), findsOneWidget);
