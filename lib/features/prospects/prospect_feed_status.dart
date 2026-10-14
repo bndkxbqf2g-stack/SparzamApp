@@ -224,7 +224,7 @@ bool _isCurrentProspectIssue(
   return isOfferDateRangeActive(
     validFrom: issue.validFrom,
     validUntil: issue.validUntil,
-    now: now,
+    now: now!,
   );
 }
 
