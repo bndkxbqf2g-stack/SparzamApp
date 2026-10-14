@@ -469,11 +469,13 @@ class ProspectParserTest(unittest.TestCase):
             "sourceAdapter": "kaufda",
             "proofRef": "https://www.kaufda.de/butter",
             "imageUrl": "https://img.example/butter.jpg",
+            "originalPrice": 1.79,
         }
         merged = refresh.dedupe([official, kaufda])
         self.assertEqual(len(merged), 1)
         self.assertEqual(merged[0]["proofRef"], "https://lidl.example/butter")
         self.assertEqual(merged[0]["imageUrl"], "https://img.example/butter.jpg")
+        self.assertEqual(merged[0]["originalPrice"], 1.79)
 
     def test_aldi_api_resolves_image_rendition_placeholders(self):
         payload = """
