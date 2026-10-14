@@ -3,6 +3,7 @@ import 'package:shared_preferences_platform_interface/in_memory_shared_preferenc
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/features/offers/prospect_regular_price_persistence.dart';
+import 'package:sparzamapp/features/offers/prospect_price_learning.dart';
 import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/price_observation.dart';
