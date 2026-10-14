@@ -926,8 +926,8 @@ def parse_edeka_prospects(html_text, base_url, *, today=None):
 
     page_images = {}
     page_pattern = re.compile(
-        r"https?://blaetterkatalog\.edeka\.de/[^"'<>\\s]+/bk_(?P<number>\d+)\.jpg"
-        r"(?:\?[^"'<>\\s]*)?",
+        r"https?://blaetterkatalog\.edeka\.de/[^"'<>\s]+/bk_(?P<number>\d+)\.jpg"
+        r"(?:\?[^"'<>\s]*)?",
         flags=re.I,
     )
     for match in page_pattern.finditer(html_text or ""):
