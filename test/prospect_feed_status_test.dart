@@ -39,6 +39,22 @@ void main() {
     );
   });
 
+  testWidgets('marks an old cached prospect feed as stale', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectFeedStatusCard(
+          generatedAt: DateTime(2026, 10, 1, 12, 2),
+          now: DateTime(2026, 10, 3, 12, 3),
+          fromCache: true,
+        ),
+      ),
+    );
+
+    expect(find.text('Prospektstand veraltet'), findsOneWidget);
+    expect(find.textContaining('älter als 48 Stunden'), findsOneWidget);
+    expect(find.byIcon(Icons.warning_amber_outlined), findsOneWidget);
+  });
+
   testWidgets('offers a manual refresh before and after the first feed load', (
     tester,
   ) async {
