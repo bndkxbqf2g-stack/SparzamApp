@@ -218,13 +218,13 @@ bool _isCurrentProspectIssue(
   ProspectIssue issue, {
   DateTime? now,
 }) {
-  if (now == null || (issue.validFrom == null && issue.validUntil == null)) {
-    return true;
-  }
+  final evaluationNow = now;
+  final validUntil = issue.validUntil;
+  if (evaluationNow == null || validUntil == null) return true;
   return isOfferDateRangeActive(
     validFrom: issue.validFrom,
-    validUntil: issue.validUntil,
-    now: now!,
+    validUntil: validUntil,
+    now: evaluationNow,
   );
 }
 
