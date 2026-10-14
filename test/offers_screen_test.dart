@@ -445,7 +445,10 @@ void main() {
     await tester.tap(find.text('Kühlregal'));
     await tester.pumpAndSettle();
 
-    expect(find.text('${prospectOfferPageSize + 1}'), findsNothing);
+    final lastCard = find.byKey(
+      const ValueKey('prospect-offer-Lidl|paged-25'),
+    );
+    expect(lastCard, findsNothing);
     final loadMore = find.byKey(
       const ValueKey('prospect-load-more-Lidl|Kühlregal'),
     );
@@ -453,7 +456,7 @@ void main() {
     await tester.tap(loadMore);
     await tester.pumpAndSettle();
 
-    expect(find.text('${prospectOfferPageSize + 1}'), findsOneWidget);
+    expect(lastCard, findsOneWidget);
   });
 
 }
