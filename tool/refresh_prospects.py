@@ -306,12 +306,63 @@ def stable_id(store, proof, text):
     raw = (store + "|" + proof + "|" + text).encode("utf-8")
     return hashlib.sha256(raw).hexdigest()[:20]
 
+def _source_text(value, depth=0):
+    """Read a bounded, explicitly named presentation value from a payload.
+
+    Retailer taxonomies are often objects rather than strings. Only the
+    documented presentation keys are followed, and recursion is capped so
+    arbitrary source objects never become a free-form identity lookup.
+    """
+
+    if depth > 2:
+        return None
+    if isinstance(value, str):
+        candidate = clean(value)
+        return candidate or None
+    if not isinstance(value, dict):
+        return None
+    for key in (
+        "name",
+        "title",
+        "label",
+        "displayName",
+        "display_name",
+        "text",
+        "value",
+    ):
+        if key not in value:
+            continue
+        candidate = _source_text(value.get(key), depth + 1)
+        if candidate:
+            return candidate
+    return None
+
+
+def _source_category_value(value, depth=0):
+    """Read one category segment, including a bounded named path."""
+
+    if depth > 2:
+        return None
+    candidate = _source_text(value, depth)
+    if candidate:
+        return candidate
+    if isinstance(value, list):
+        last = None
+        for item in value[:8]:
+            candidate = _source_category_value(item, depth + 1)
+            if candidate:
+                last = candidate
+        return last
+    return None
+
+
 def _source_category(raw, *keys):
-    """Return a category explicitly supplied by a retailer payload.
+    """Return an explicit retailer category without inventing identity.
 
     Categories are provenance only. The app may use them for presentation,
     but they never participate in product identity or price projection.
     """
+
     if not isinstance(raw, dict):
         return None
     candidates = keys or (
@@ -319,22 +370,30 @@ def _source_category(raw, *keys):
         "categoryName",
         "category_name",
         "productCategory",
+        "product_category",
+        "subcategory",
+        "subCategory",
+        "sub_category",
         "department",
+        "departmentName",
+        "department_name",
         "warengruppe",
         "sortiment",
+        "categoryPath",
+        "category_path",
+        "categoryHierarchy",
+        "category_hierarchy",
+        "categoryGroup",
+        "category_group",
+        "merchandisingCategory",
+        "merchandising_category",
+        "taxonomy",
+        "taxonomyCategory",
     )
     for key in candidates:
-        value = raw.get(key)
-        if isinstance(value, dict):
-            value = (
-                value.get("name")
-                or value.get("title")
-                or value.get("label")
-            )
-        if isinstance(value, str):
-            value = clean(value)
-            if value:
-                return value
+        value = _source_category_value(raw.get(key))
+        if value:
+            return value
     return None
 
 
