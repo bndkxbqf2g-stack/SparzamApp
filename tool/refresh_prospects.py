@@ -722,12 +722,15 @@ def parse_edeka_api(json_text, base_url):
 
         raw_id = clean(str(doc.get("angebotid") or doc.get("externeid") or index))
         proof = base_url + "#offer-" + raw_id
-        image = clean(str(
-            doc.get("bild_app")
-            or doc.get("bild_web130")
-            or doc.get("bild_web90")
-            or ""
-        ))
+        image = _source_image(
+            doc,
+            "bild_app",
+            "bild_web130",
+            "bild_web90",
+            "imageUrl",
+            "image",
+            "productImage",
+        )
         offers.append(record(
             "EDEKA",
             label,
