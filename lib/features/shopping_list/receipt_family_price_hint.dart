@@ -16,7 +16,7 @@ class ReceiptFamilyPriceHint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final matches = receiptStatsForProduct(product, stats);
+    final matches = receiptHintsForProduct(product, stats);
     if (matches.isEmpty) return const SizedBox.shrink();
     matches.sort((a, b) => a.storeName.compareTo(b.storeName));
 
@@ -38,26 +38,36 @@ class ReceiptFamilyPriceHint extends StatelessWidget {
   String _summary(List<ReceiptPriceStat> matches) {
     String price(ReceiptPriceStat stat) =>
         stat.medianPrice.toStringAsFixed(2).replaceAll('.', ',');
+    final confirmed = matches.where((stat) => stat.identityConfirmed).length;
+    final provisional = matches.length - confirmed;
+
     if (matches.length == 1) {
       final stat = matches.first;
-      final suffix = stat.comparable ? 'Median' : 'historisch, Packung prüfen';
       final date = _date(stat.latestAt);
-      return '${stat.storeName}: ${price(stat)} € · '
-          '${stat.comparable ? 'Bon-Median (historisch)' : suffix} · '
+      final label = stat.identityConfirmed
+          ? (stat.comparable ? 'Bon-Median (historisch)' : 'Bonpreis historisch')
+          : 'Bon-Hinweis · Variante prüfen';
+      return '${stat.storeName}: ${price(stat)} € · $label · '
           '${stat.observationCount}× · Stand $date';
     }
+
     final preview = matches
         .take(2)
         .map((stat) => '${stat.storeName} ${price(stat)} €')
         .join(' · ');
     final more = matches.length > 2 ? ' · +${matches.length - 2} Märkte' : '';
-    return '$preview · Bon-Mediane (historisch)$more ›';
+    final status = provisional == 0
+        ? 'Bon-Mediane (historisch)'
+        : '$confirmed bestätigt · $provisional Hinweis';
+    return '$preview · $status$more ›';
   }
 
   String _date(DateTime value) =>
       '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.${value.year}';
 
   void _showMarketPrices(BuildContext context, List<ReceiptPriceStat> matches) {
+    final confirmed = matches.where((stat) => stat.identityConfirmed).length;
+    final provisional = matches.length - confirmed;
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -70,8 +80,9 @@ class ReceiptFamilyPriceHint extends StatelessWidget {
             children: [
               Text(product.name, style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 4),
-              const Text(
-                'Belegte Preise aus deinen Kassenbons nach Markt. Nicht vergleichbare Packungen sind gekennzeichnet.',
+              Text(
+                '$confirmed bestätigt · $provisional unbestätigte Hinweise. '
+                'Unbestätigte Varianten werden nicht für die Route verwendet.',
               ),
               const SizedBox(height: 10),
               Flexible(
@@ -81,11 +92,18 @@ class ReceiptFamilyPriceHint extends StatelessWidget {
                     for (final stat in matches)
                       ListTile(
                         contentPadding: EdgeInsets.zero,
-                        title: Text(stat.storeName),
+                        title: Text(
+                          stat.identityConfirmed
+                              ? stat.storeName
+                              : '${stat.storeName} · Variante prüfen',
+                        ),
                         subtitle: Text(
-                          stat.comparable
-                              ? '${stat.observationCount} Bonbeobachtung(en) · ${stat.priceBasis}'
-                              : '${stat.observationCount} Bonbeobachtung(en) · Packung prüfen',
+                          stat.identityConfirmed
+                              ? (stat.comparable
+                                  ? '${stat.observationCount} Bonbeobachtung(en) · ${stat.priceBasis}'
+                                  : '${stat.observationCount} Bonbeobachtung(en) · Packung prüfen')
+                              : '${stat.observationCount} Bonbeobachtung(en) · '
+                                  'automatische Zuordnung, nicht routenfähig',
                         ),
                         trailing: Text(
                           '${stat.medianPrice.toStringAsFixed(2).replaceAll('.', ',')} €',
