@@ -5,6 +5,7 @@ import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/models/road_route_matrix.dart';
+import 'package:sparzamapp/models/store.dart';
 
 final _baselineDate = DateTime(2026, 9, 24);
 
