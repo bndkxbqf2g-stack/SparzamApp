@@ -1,3 +1,10 @@
+## Update 14.10.2026 – Bonpreise je Markt sichtbar, Zuordnung bleibt transparent
+
+- [x] Generische Einkaufslistenartikel zeigen bestätigte und automatische Bon-Hinweise je Markt, statt unbestätigte importierte Preise vollständig auszublenden.
+- [x] Automatische Zuordnungen sind in der Detailansicht als „Variante prüfen“ gekennzeichnet und bleiben aus routenfähigen Preisen ausgeschlossen.
+- [x] Konkrete Varianten übernehmen weiterhin nur ihre exakte Belegzuordnung; Familienpreise werden nicht still auf eine andere Variante übertragen.
+- [x] Widget- und Fachtests schützen Marktübersicht, Hinweisstatus und die Trennung zur Routenlogik.
+
 ## Update 14.10.2026 – Prospekt-Fallback und lokales Quota-Verhalten
 
 - [x] Cache und gebündelter Feed werden bei Offline-/Fehler-Fallbacks anhand von `generatedAt` verglichen; ein alter Gerätestand kann keinen neueren App-Stand mehr verdrängen.
