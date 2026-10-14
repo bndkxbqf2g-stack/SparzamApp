@@ -1334,6 +1334,36 @@ ab Montag, 28.09.26
         self.assertEqual(offers, [])
 
 
+    def test_capture_timestamp_fills_missing_without_overwriting_existing(self):
+        items = [
+            {"productLabel": "Butter"},
+            {
+                "productLabel": "Milch",
+                "capturedAt": "2026-10-14T04:00:00Z",
+            },
+            "ignore",
+        ]
+
+        stamped = refresh._attach_capture_timestamp(
+            items,
+            "2026-10-14T05:00:00Z",
+        )
+
+        self.assertEqual(
+            stamped,
+            [
+                {
+                    "productLabel": "Butter",
+                    "capturedAt": "2026-10-14T05:00:00Z",
+                },
+                {
+                    "productLabel": "Milch",
+                    "capturedAt": "2026-10-14T04:00:00Z",
+                },
+            ],
+        )
+        self.assertEqual(items[0], {"productLabel": "Butter"})
+
     def test_record_context_fills_missing_fields_without_overwriting_provider_values(self):
         offers = [
             {"productLabel": "Milch", "storeName": "EDEKA"},
