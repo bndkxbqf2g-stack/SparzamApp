@@ -485,7 +485,7 @@ class _AppShellState extends State<AppShell> {
         item.product.name,
         item.product.packageAmount,
         item.product.packageUnit,
-        if (includeQuantity) item.quantity,
+        includeQuantity ? item.quantity : null,
       ),
     ),
   );
