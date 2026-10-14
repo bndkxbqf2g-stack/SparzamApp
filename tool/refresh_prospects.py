@@ -2414,6 +2414,48 @@ def _rewe_price(value):
     return money(match.group(1)) if match else None
 
 
+def _source_image(raw, *keys):
+    """Return a source-provided HTTP(S) image without accepting markup or scripts."""
+    if not isinstance(raw, dict):
+        return None
+    candidates = keys or (
+        "imageUrl",
+        "imageURL",
+        "image_url",
+        "image",
+        "productImage",
+        "bild",
+        "bild_app",
+        "bild_web130",
+        "bild_web90",
+    )
+    nested_keys = ("url", "src", "href", "imageUrl", "image_url", "original", "large")
+    for key in candidates:
+        value = raw.get(key)
+        values = value if isinstance(value, list) else (value,)
+        for candidate in values:
+            if isinstance(candidate, dict):
+                candidate = next(
+                    (
+                        candidate.get(nested)
+                        for nested in nested_keys
+                        if candidate.get(nested) is not None
+                    ),
+                    None,
+                )
+            if not isinstance(candidate, str):
+                continue
+            candidate = clean(candidate)
+            parsed = urlsplit(candidate)
+            if (
+                candidate
+                and parsed.scheme.lower() in {"http", "https"}
+                and parsed.netloc.strip()
+            ):
+                return candidate
+    return None
+
+
 def parse_rewe_api(json_text, base_url):
     payload = json.loads(json_text)
     data = payload.get("data", {}) if isinstance(payload, dict) else {}
@@ -2443,6 +2485,11 @@ def parse_rewe_api(json_text, base_url):
                 regular = None
             raw_values = item.get("rawValues", {})
             article = raw_values.get("nan") if isinstance(raw_values, dict) else None
+            image = (
+                _source_image(item)
+                or _source_image(price_data)
+                or _source_image(raw_values)
+            )
             proof = (
                 "https://www.rewe.de/angebote/veitshoechheim/461683/"
                 "rewe-markt-pont-leveque-allee-1/"
@@ -2451,7 +2498,7 @@ def parse_rewe_api(json_text, base_url):
                 proof += "#article-" + str(article)
             offers.append(record(
                 "REWE", label, sale, valid_from, valid_until, proof, regular,
-                None, _source_category(category),
+                image, _source_category(category),
             ))
     return dedupe(offers), []
 
