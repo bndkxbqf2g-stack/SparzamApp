@@ -217,7 +217,7 @@ void main() {
     },
   );
 
-  testMarker
+  test('does not persist without a feed timestamp', () async {
     final store = memoryStore();
     final result = await persistCurrentProspectRegularPrices(
       store: store,
