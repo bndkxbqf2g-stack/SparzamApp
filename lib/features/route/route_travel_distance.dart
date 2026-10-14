@@ -165,8 +165,8 @@ String travelMatrixStoreKey(Store store) {
 String _matrixStoreKey(RoadRouteMatrix matrix, Store store) {
   final branchKey = travelMatrixStoreKey(store);
   if (branchKey == store.name) return branchKey;
-  final originPrefix = RoadRouteMatrix.origin + '|';
-  final originSuffix = '|' + RoadRouteMatrix.origin;
+  final originPrefix = '${RoadRouteMatrix.origin}|';
+  final originSuffix = '|${RoadRouteMatrix.origin}';
   final hasBranchNode = matrix.distancesKm.keys.any(
         (key) => key == '$originPrefix$branchKey' || key == '$branchKey$originSuffix',
       ) ||
