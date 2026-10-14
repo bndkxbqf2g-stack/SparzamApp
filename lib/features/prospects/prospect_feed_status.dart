@@ -216,9 +216,11 @@ List<ProspectCoverage> calculateProspectCoverage({
 
 bool _isCurrentProspectIssue(
   ProspectIssue issue, {
-  required DateTime now,
+  DateTime? now,
 }) {
-  if (issue.validFrom == null && issue.validUntil == null) return true;
+  if (now == null || (issue.validFrom == null && issue.validUntil == null)) {
+    return true;
+  }
   return isOfferDateRangeActive(
     validFrom: issue.validFrom,
     validUntil: issue.validUntil,
