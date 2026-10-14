@@ -1373,3 +1373,21 @@ Quelle, Filiale, Packungsgröße, Nachweis und Gültigkeit getrennt sichtbar,
 während Preise-Reiter und Route denselben aktuellen Normalpreis verwenden.
 Die Quelle erhält eigene Frische-/Qualitäts- und Anzeigeetiketten; sie wird
 nicht als eigener Preis oder Open Prices ausgegeben.
+
+## D176 – Generische Einkaufslisten zeigen aktuelle Prospektpreise als Variantenhinweis
+
+Ein generischer Listeneintrag wie „Milch“ darf ein aktuelles, belegtes Prospektangebot
+für eine bekannte passende Familienvariante in der Marktmatrix anzeigen, sofern
+Marktfiliale, Angebotszeitraum, Nachweis und Packungsbasis gültig sind. Die Anzeige
+kennzeichnet die konkrete Variante weiterhin über die Angebotsdetails. Konkrete
+Varianten bleiben bei ihrer exakten Produkt-ID; die Routenberechnung übernimmt die
+familienweite Anzeige nicht automatisch. So gehen aktuelle Prospektdaten nicht
+verloren, ohne Produktvarianten still gleichzusetzen.
+
+## D177 – Automatische Bonpreise sind sichtbare Hinweise, aber keine Routenfreigabe
+
+Bonstatistiken für generische Wünsche umfassen auch automatische Zuordnungen und
+zeigen deren Markt, Preis und Status als „Variante prüfen“. Bestätigte Preise
+bleiben davon getrennt; nur die bestätigte Sicht darf in die routenfähige
+Preisprojektion gelangen. Konkrete Varianten sehen ausschließlich ihre exakte
+Belegzuordnung.
