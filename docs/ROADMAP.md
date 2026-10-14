@@ -1,3 +1,10 @@
+## Update 15.10.2026 – Exakte Filialkataloge in der Routenplanung
+
+- [x] RouteOptimizer akzeptiert für einen Rechenlauf einen explizit aufgelösten Filialkatalog; der bisherige Projektkatalog bleibt der Standard.
+- [x] Preisgleiche Routen unterscheiden gleiche Händlernamen über Branch-ID, Ort und Adresse, damit eine exakte Filiale deterministisch erhalten bleibt.
+- [x] OSRM-Reihenfolgen verwenden dieselben Filialmerkmale als letzten Tie-Breaker; Preis-, Quellen- und Fahrtkostenlogik bleiben unverändert.
+- [x] Eine Regression prüft zwei gleichnamige Lidl-Filialen mit unterschiedlichen Marktpreisen und stellt die Branch-ID im Ergebnis sicher.
+
 ## Update 14.10.2026 – Artikelbilder aus belegten Prospektseiten
 
 - [x] Strukturierte Angebote können bei fehlendem Artikelbild das bereits validierte Bild derselben Prospektseite verwenden.
