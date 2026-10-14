@@ -7,6 +7,7 @@ import '../offers/effective_price.dart';
 import '../offers/offer_import.dart';
 import '../offers/offer_filter.dart';
 import '../offers/prospect_price_statistics.dart';
+import '../catalog/product_family.dart';
 import '../route/market_price_quality.dart';
 import '../../services/branch_identity.dart';
 import '../../services/market_price_comparability.dart';
@@ -230,6 +231,7 @@ ShoppingPriceQuoteSnapshot shoppingPriceQuoteSnapshot(
   Iterable<ListItem> items, {
   required List<MarketPrice> prices,
   required List<Offer> offers,
+  List<Product> catalogProducts = const <Product>[],
   Map<String, ProspectPriceHistorySummary> prospectPriceHistory = const {},
   List<String> enabledStores = const [],
   int openPricesMaxAgeDays = 60,
@@ -247,6 +249,7 @@ ShoppingPriceQuoteSnapshot shoppingPriceQuoteSnapshot(
       entry.value,
       prices: prices,
       offers: offers,
+      catalogProducts: catalogProducts,
       prospectPriceHistory: prospectPriceHistory,
       enabledStores: enabledStores,
       openPricesMaxAgeDays: openPricesMaxAgeDays,
@@ -279,6 +282,7 @@ List<ShoppingQuote> shoppingQuotes(
   ListItem item, {
   required List<MarketPrice> prices,
   required List<Offer> offers,
+  List<Product> catalogProducts = const <Product>[],
   Map<String, ProspectPriceHistorySummary> prospectPriceHistory = const {},
   List<String> enabledStores = const [],
   int openPricesMaxAgeDays = 60,
@@ -328,8 +332,11 @@ List<ShoppingQuote> shoppingQuotes(
   }
 
   for (final offer in offers) {
-    if (offer.productId != item.product.id ||
-        !offerMatchesProduct(offer, item.product) ||
+    if (!_offerMatchesShoppingItem(
+          offer,
+          item.product,
+          catalogProducts,
+        ) ||
         !matchesConfiguredBranch(offer.storeName, offer.locationId) ||
         !hasExactOfferBranch(offer) ||
         (enabledStores.isNotEmpty &&
@@ -421,6 +428,33 @@ List<ShoppingQuote> shoppingQuotes(
   return candidates;
 }
 
+bool _offerMatchesShoppingItem(
+  Offer offer,
+  Product item,
+  List<Product> catalogProducts,
+) {
+  if (offer.productId == item.id) {
+    return offerMatchesProduct(offer, item);
+  }
+
+  // Generic requests such as "Milch" may show a current, exact-package
+  // prospect offer for a known family member. This is display evidence only;
+  // route resolution keeps its exact product-ID rule.
+  if (!isGenericFamilyRequest(item.name)) return false;
+  final candidate = catalogProducts
+      .where((product) => product.id == offer.productId)
+      .firstOrNull;
+  if (candidate == null ||
+      inferReceiptFamily(candidate.name) != inferReceiptFamily(item.name)) {
+    return false;
+  }
+  return offerMatchesProduct(offer, candidate);
+}
+
+extension<T> on Iterable<T> {
+  T? get firstOrNull => isEmpty ? null : first;
+}
+
 bool _isFutureObservation(DateTime observedAt, DateTime now) {
   final observed = DateTime(
     observedAt.year,
@@ -439,6 +473,7 @@ List<ShoppingPriceMatrixEntry> shoppingPriceMatrix(
   ListItem item, {
   required List<MarketPrice> prices,
   required List<Offer> offers,
+  List<Product> catalogProducts = const <Product>[],
   Map<String, ProspectPriceHistorySummary> prospectPriceHistory = const {},
   List<String> enabledStores = const [],
   int openPricesMaxAgeDays = 60,
@@ -448,6 +483,7 @@ List<ShoppingPriceMatrixEntry> shoppingPriceMatrix(
     item,
     prices: prices,
     offers: offers,
+    catalogProducts: catalogProducts,
     prospectPriceHistory: prospectPriceHistory,
     enabledStores: enabledStores,
     openPricesMaxAgeDays: openPricesMaxAgeDays,
