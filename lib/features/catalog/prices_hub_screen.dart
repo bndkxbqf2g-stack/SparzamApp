@@ -48,6 +48,7 @@ class PricesHubScreen extends StatefulWidget {
 class _PricesHubScreenState extends State<PricesHubScreen> {
   int? _snapshotSignatureValue;
   List<_PriceSnapshot>? _snapshotCache;
+  ShoppingPriceQuoteSnapshot? _quoteSnapshotCache;
 
   int _snapshotSignature() {
     var hash = 17;
@@ -105,23 +106,14 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
     return hash;
   }
 
-  List<_PriceSnapshot> _snapshots() {
+  ShoppingPriceQuoteSnapshot _quoteSnapshot() {
     final signature = _snapshotSignature();
-    if (_snapshotSignatureValue == signature && _snapshotCache != null) {
-      return _snapshotCache!;
+    final cached = _quoteSnapshotCache;
+    if (cached != null && _snapshotSignatureValue == signature) {
+      return cached;
     }
-    final snapshots = [
-      for (final item in widget.shoppingList)
-        _snapshotFor(item),
-    ];
-    _snapshotSignatureValue = signature;
-    _snapshotCache = snapshots;
-    return snapshots;
-  }
-
-  _PriceSnapshot _snapshotFor(ListItem item) {
-    final quotes = shoppingQuotes(
-      item,
+    final next = shoppingPriceQuoteSnapshot(
+      widget.shoppingList,
       prices: widget.marketPrices,
       offers: widget.offers,
       prospectPriceHistory: widget.prospectPriceHistory,
@@ -129,6 +121,30 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
       openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
       now: widget.now,
     );
+    _snapshotSignatureValue = signature;
+    _quoteSnapshotCache = next;
+    _snapshotCache = null;
+    return next;
+  }
+
+  List<_PriceSnapshot> _snapshots(
+    ShoppingPriceQuoteSnapshot quoteSnapshot,
+  ) {
+    final cached = _snapshotCache;
+    if (cached != null) return cached;
+    final snapshots = [
+      for (final item in widget.shoppingList)
+        _snapshotFor(item, quoteSnapshot),
+    ];
+    _snapshotCache = snapshots;
+    return snapshots;
+  }
+
+  _PriceSnapshot _snapshotFor(
+    ListItem item,
+    ShoppingPriceQuoteSnapshot quoteSnapshot,
+  ) {
+    final quotes = quoteSnapshot.quotesFor(item);
     ShoppingQuote? current;
     for (final quote in quotes) {
       if (!quote.isHistorical) {
@@ -146,7 +162,8 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
   @override
   Widget build(BuildContext context) {
     final screen = widget;
-    final snapshots = _snapshots();
+    final quoteSnapshot = _quoteSnapshot();
+    final snapshots = _snapshots(quoteSnapshot);
     final current = snapshots.where((row) => row.quote != null).length;
     final historical = snapshots.where((row) => row.hasHistorical).length;
     final missing = snapshots.length - current;
@@ -222,11 +239,7 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
           const SizedBox(height: 10),
           _PriceComparisonList(
             shoppingList: screen.shoppingList,
-            prices: screen.marketPrices,
-            offers: screen.offers,
-            enabledStoreNames: screen.enabledStoreNames,
-            openPricesMaxAgeDays: screen.openPricesMaxAgeDays,
-            prospectPriceHistory: screen.prospectPriceHistory,
+            quoteSnapshot: quoteSnapshot,
             onResolvePriceGap: screen.onResolvePriceGap,
             now: screen.now,
           ),
@@ -421,11 +434,7 @@ class _PriceSnapshotTile extends StatelessWidget {
 class _PriceComparisonList extends StatefulWidget {
   const _PriceComparisonList({
     required this.shoppingList,
-    required this.prices,
-    required this.offers,
-    required this.enabledStoreNames,
-    required this.openPricesMaxAgeDays,
-    required this.prospectPriceHistory,
+    required this.quoteSnapshot,
     required this.onResolvePriceGap,
     this.now,
   });
@@ -433,11 +442,7 @@ class _PriceComparisonList extends StatefulWidget {
   static const pageSize = 12;
 
   final List<ListItem> shoppingList;
-  final List<MarketPrice> prices;
-  final List<Offer> offers;
-  final List<String> enabledStoreNames;
-  final int openPricesMaxAgeDays;
-  final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
+  final ShoppingPriceQuoteSnapshot quoteSnapshot;
   final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
   final DateTime? now;
 
@@ -468,11 +473,7 @@ class _PriceComparisonListState extends State<_PriceComparisonList> {
             child: _PriceComparisonCard(
               key: ValueKey('price-comparison-${item.product.id}'),
               item: item,
-              prices: widget.prices,
-              offers: widget.offers,
-              enabledStoreNames: widget.enabledStoreNames,
-              openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
-              prospectPriceHistory: widget.prospectPriceHistory,
+              quoteSnapshot: widget.quoteSnapshot,
               onResolvePriceGap: widget.onResolvePriceGap,
               now: widget.now,
             ),
@@ -499,21 +500,13 @@ class _PriceComparisonCard extends StatefulWidget {
   const _PriceComparisonCard({
     super.key,
     required this.item,
-    required this.prices,
-    required this.offers,
-    required this.enabledStoreNames,
-    required this.openPricesMaxAgeDays,
-    required this.prospectPriceHistory,
+    required this.quoteSnapshot,
     required this.onResolvePriceGap,
     this.now,
   });
 
   final ListItem item;
-  final List<MarketPrice> prices;
-  final List<Offer> offers;
-  final List<String> enabledStoreNames;
-  final int openPricesMaxAgeDays;
-  final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
+  final ShoppingPriceQuoteSnapshot quoteSnapshot;
   final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
   final DateTime? now;
 
@@ -526,15 +519,7 @@ class _PriceComparisonCardState extends State<_PriceComparisonCard> {
 
   @override
   Widget build(BuildContext context) {
-    final matrix = shoppingPriceMatrix(
-      widget.item,
-      prices: widget.prices,
-      offers: widget.offers,
-      enabledStores: widget.enabledStoreNames,
-      openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
-      prospectPriceHistory: widget.prospectPriceHistory,
-      now: widget.now,
-    );
+    final matrix = widget.quoteSnapshot.matrixFor(widget.item);
     final current = matrix.where((entry) => entry.hasCurrentQuote).length;
     final historical = matrix.where((entry) => entry.hasHistoricalQuote).length;
     final missing = matrix.length - current;
