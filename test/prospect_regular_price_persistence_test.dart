@@ -70,9 +70,18 @@ void main() {
 
   test('filters offers and invalid periods and deduplicates refreshes', () async {
     final store = memoryStore();
-    final offerOnly = current.copyWith(
+    final offerOnly = OfferImportRecord(
       sourceId: 'offer-only',
-      originalPrice: null,
+      productLabel: current.productLabel,
+      storeName: current.storeName,
+      offerPrice: current.offerPrice,
+      validFrom: current.validFrom,
+      validUntil: current.validUntil,
+      source: current.source,
+      sourceAdapter: current.sourceAdapter,
+      branchId: current.branchId,
+      proofRef: current.proofRef,
+      capturedAt: current.capturedAt,
     );
     final expired = current.copyWith(
       sourceId: 'expired',
