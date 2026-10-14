@@ -64,6 +64,32 @@ void main() {
     expect(quote.packageLabel, '500 g');
     expect(quote.baseUnitPriceLabel, 'Grundpreis 4,98 €/kg');
   });
+  test('kennzeichnet einen gespeicherten regulären Prospektpreis', () {
+    final quote = shoppingQuotes(
+      item,
+      prices: [
+        MarketPrice(
+          productId: milk.id,
+          storeName: 'Lidl',
+          price: 1.29,
+          updatedAt: DateTime(2026, 9, 24),
+          source: MarketPriceSource.prospect,
+          kind: PriceObservationKind.regular,
+        ),
+      ],
+      offers: const [],
+      enabledStores: const ['Lidl'],
+      now: DateTime(2026, 9, 24),
+    ).single;
+
+    expect(quote.isRegularProspectPrice, isTrue);
+    expect(quote.displayPrefix, 'Prospektpreis · Normalpreis');
+    expect(
+      quote.sourceLabel,
+      'Prospektpreis vom 24.09.2026 · regulärer Normalpreis',
+    );
+  });
+
   test('older receipts remain dated observations alongside current offers', () {
     final quotes = shoppingQuotes(
       item,

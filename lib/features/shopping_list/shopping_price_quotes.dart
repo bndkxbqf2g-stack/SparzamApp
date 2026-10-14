@@ -35,6 +35,7 @@ class ShoppingQuote {
     this.quantity,
     this.unit,
     this.baseUnitPrice,
+    this.evidenceKind = PriceObservationKind.unknown,
     this.historical = false,
   });
 
@@ -51,6 +52,10 @@ class ShoppingQuote {
   final String? unit;
   /// Normalized price for [unit], for example €/kg or €/l.
   final double? baseUnitPrice;
+  /// Evidence kind retained from the central price observation. A regular
+  /// prospect observation is the explicitly crossed-out normal price and is
+  /// displayed separately from the active offer.
+  final PriceObservationKind evidenceKind;
   final bool historical;
 
   double get rankingPrice => comparisonPrice ?? unitPrice;
@@ -115,7 +120,9 @@ class ShoppingQuote {
     ShoppingQuoteKind.receipt =>
       '${isHistorical ? 'Historischer ' : ''}Bonpreis vom ${_date(observedAt!)}',
     ShoppingQuoteKind.ownPrice => 'Eigener Preis vom ${_date(observedAt!)}',
-    ShoppingQuoteKind.prospect => 'Prospektpreis vom ${_date(observedAt!)}',
+    ShoppingQuoteKind.prospect =>
+      'Prospektpreis vom ${_date(observedAt!)}'
+          '${isRegularProspectPrice ? ' · regulärer Normalpreis' : ''}',
     ShoppingQuoteKind.openPrices =>
       'Open-Prices-Preis vom ${_date(observedAt!)}',
     ShoppingQuoteKind.offer =>
@@ -136,7 +143,8 @@ class ShoppingQuote {
     ShoppingQuoteKind.receipt =>
       isHistorical ? 'Historischer Bonpreis' : 'Bonpreis',
     ShoppingQuoteKind.ownPrice => 'Eigener Preis',
-    ShoppingQuoteKind.prospect => 'Prospektpreis',
+    ShoppingQuoteKind.prospect =>
+      'Prospektpreis${isRegularProspectPrice ? ' · Normalpreis' : ''}',
     ShoppingQuoteKind.openPrices => 'Open Prices',
     ShoppingQuoteKind.offer =>
       'Angebot${(offer!.hasCoupon || offer!.hasCashback) ? ', effektiv' : ''}',
@@ -145,6 +153,13 @@ class ShoppingQuote {
 
   bool get isHistorical =>
       historical || kind == ShoppingQuoteKind.prospectHistory;
+
+  /// True only for a current route/UI quote projected from the explicitly
+  /// stated regular amount of a dated prospect observation.
+  bool get isRegularProspectPrice =>
+      kind == ShoppingQuoteKind.prospect &&
+      evidenceKind == PriceObservationKind.regular &&
+      !isHistorical;
 
   String get amountLabel =>
       '${unitPrice.toStringAsFixed(2).replaceAll('.', ',')} €';
@@ -326,6 +341,7 @@ List<ShoppingQuote> shoppingQuotes(
         quantity: price.quantity,
         unit: price.unit,
         baseUnitPrice: price.unitPrice,
+        evidenceKind: price.kind,
         comparisonPrice: price.price *
             (1 + marketPriceQuality(price, today).uncertaintyRate),
         historical: price.source == MarketPriceSource.receipt && !usable,
