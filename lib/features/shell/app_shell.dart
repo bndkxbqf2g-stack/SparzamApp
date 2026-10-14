@@ -166,6 +166,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   DateTime? _lastProspectResumeRefreshAt;
   String? _prospectFeedFingerprint;
   int prospectRegularPriceCount = 0;
+  Map<String, int> prospectRegularPriceCountsByStore = const <String, int>{};
   final priceObservationStore = PriceObservationStore();
   final receiptAliasStore = ReceiptAliasStore();
   late PriceDataSettings priceDataSettings;
@@ -623,7 +624,12 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       if (_prospectFeedFingerprint == feedFingerprint) return;
       // A new feed starts with no confirmed count until its observations are
       // written successfully; a failed write must remain retryable.
-      if (mounted) setState(() => prospectRegularPriceCount = 0);
+      if (mounted) {
+        setState(() {
+          prospectRegularPriceCount = 0;
+          prospectRegularPriceCountsByStore = const <String, int>{};
+        });
+      }
 
       final currentRecords = currentProspectRecords(
         feed.records,
@@ -710,10 +716,25 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       final persistedRegularPriceCount = learnedPrices
           .where((entry) => persistedRegularPriceIds.contains(entry.id))
           .length;
+      final persistedRegularPriceCountsByStore = <String, int>{};
+      if (pricePersistenceWarning == null) {
+        for (final entry in learnedPrices) {
+          if (!persistedRegularPriceIds.contains(entry.id)) continue;
+          persistedRegularPriceCountsByStore.update(
+            entry.storeName,
+            (count) => count + 1,
+            ifAbsent: () => 1,
+          );
+        }
+      }
       setState(() {
         prospectRegularPriceCount = pricePersistenceWarning == null
             ? persistedRegularPriceCount
             : 0;
+        prospectRegularPriceCountsByStore =
+            pricePersistenceWarning == null
+                ? Map.unmodifiable(persistedRegularPriceCountsByStore)
+                : const <String, int>{};
         offers = offersById.values.toList(growable: false);
         prospectProducts = offerBackedProducts
             .map((entry) => entry.product)
@@ -2009,6 +2030,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       prospectIssues: prospectIssues,
       prospectFeedFromCache: prospectFeedFromCache,
       prospectRegularPriceCount: prospectRegularPriceCount,
+      prospectRegularPriceCountsByStore: prospectRegularPriceCountsByStore,
       prospectFeedGeneratedAt: prospectFeedGeneratedAt,
       onRefreshProspects: () => _loadProspectOffers(preferCached: false),
       prospectsRefreshing: _prospectFeedRefreshing,

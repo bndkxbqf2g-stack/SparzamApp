@@ -95,6 +95,7 @@ void main() {
           sourceStatus: 'metadata_only',
         ),
       ],
+      persistedRegularPriceCounts: const {'Kaufland': 1},
       records: [
         OfferImportRecord(
           sourceId: 'aldi-1',
@@ -166,6 +167,7 @@ void main() {
     expect(kaufland.structuredOfferCount, 1);
     expect(kaufland.offerProofCount, 1);
     expect(kaufland.regularPriceCount, 1);
+    expect(kaufland.persistedRegularPriceCount, 1);
   });
 
   test('does not count an equal offer amount as a regular price', () {
@@ -265,6 +267,7 @@ void main() {
     tester,
   ) async {
     final coverage = calculateProspectCoverage(
+      persistedRegularPriceCounts: const {'ALDI Süd': 1},
       issues: [
         ProspectIssue(
           storeName: 'ALDI Süd',
@@ -282,8 +285,11 @@ void main() {
           sourceId: 'aldi-1',
           productLabel: 'Milch',
           storeName: 'ALDI Süd',
+          originalPrice: 1.19,
           offerPrice: 0.95,
           validUntil: DateTime(2026, 10, 7),
+          branchId: 'B1',
+          proofRef: 'https://example.test/aldi/milch',
           category: 'Milchprodukte',
         ),
       ],
@@ -296,7 +302,7 @@ void main() {
     );
 
     expect(find.text('Datenabdeckung der aktuellen Prospekte'), findsOneWidget);
-    expect(find.textContaining('0 mit Originalnachweis'), findsOneWidget);
+    expect(find.textContaining('1 mit Originalnachweis'), findsOneWidget);
     expect(find.textContaining('0/1 mit Artikelbildern'), findsOneWidget);
     expect(find.textContaining('1/1 mit Kategorien'), findsOneWidget);
     expect(find.text('ALDI Süd'), findsNothing);
@@ -304,8 +310,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('ALDI Süd'), findsOneWidget);
     expect(find.textContaining('1 strukturierte Angebote'), findsOneWidget);
-    expect(find.textContaining('0/1 Nachweise'), findsOneWidget);
-    expect(find.textContaining('0/1 Normalpreise'), findsOneWidget);
+    expect(find.textContaining('1/1 Nachweise'), findsOneWidget);
+    expect(find.textContaining('1/1 Normalpreise'), findsOneWidget);
+    expect(find.textContaining('1 mit gespeichertem Normalpreis'), findsOneWidget);
+    expect(find.textContaining('1/1 gespeichert'), findsOneWidget);
     expect(find.text('aktuell'), findsOneWidget);
   });
 
