@@ -51,6 +51,43 @@ void main() {
     expect(find.text('Hinzugefügt'), findsOneWidget);
   });
 
+  testWidgets('asks before adding an unresolved prospect identity', (
+    tester,
+  ) async {
+    var added = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ProspectOfferCard(
+            record: OfferImportRecord(
+              sourceId: 'ambiguous-card',
+              productLabel: 'Milch 1 l',
+              storeName: 'Lidl',
+              offerPrice: 0.99,
+              validUntil: DateTime(2026, 10, 2),
+              proofRef: 'https://example.test/lidl/ambiguous-card',
+            ),
+            requiresManualConfirmation: true,
+            onAdd: () => added = true,
+          ),
+        ),
+      ),
+    );
+
+    final button = find.byTooltip('Bezeichnung prüfen und als Artikel übernehmen');
+    expect(button, findsOneWidget);
+    await tester.tap(button);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Artikelidentität prüfen'), findsOneWidget);
+    expect(added, isFalse);
+    await tester.tap(find.text('Als Artikel übernehmen'));
+    await tester.pumpAndSettle();
+
+    expect(added, isTrue);
+    expect(find.text('Hinzugefügt'), findsOneWidget);
+  });
+
   testWidgets('shows a comparable base price when package data is known', (
     tester,
   ) async {

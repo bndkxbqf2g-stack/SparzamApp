@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -14,12 +16,14 @@ class ProspectOfferCard extends StatefulWidget {
     required this.record,
     this.product,
     this.onAdd,
+    this.requiresManualConfirmation = false,
     this.compact = false,
   });
 
   final OfferImportRecord record;
   final Product? product;
   final VoidCallback? onAdd;
+  final bool requiresManualConfirmation;
   final bool compact;
 
   @override
@@ -30,12 +34,44 @@ class _ProspectOfferCardState extends State<ProspectOfferCard> {
   bool added = false;
 
   void _add() {
+    unawaited(_addAfterConfirmation());
+  }
+
+  Future<void> _addAfterConfirmation() async {
     final callback = widget.onAdd;
     if (callback == null) return;
+    if (widget.requiresManualConfirmation) {
+      final accepted = await _confirmManualAdd();
+      if (!accepted || !mounted) return;
+    }
     callback();
     if (!mounted) return;
     setState(() => added = true);
   }
+
+  Future<bool> _confirmManualAdd() async =>
+      await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Artikelidentität prüfen'),
+          content: Text(
+            'Die Prospektquelle lässt für „${widget.record.productLabel}“ '
+            'keine eindeutige Katalogvariante zu. Als eigener Artikel mit '
+            'der exakten Bezeichnung in die Einkaufsliste übernehmen?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Abbrechen'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Als Artikel übernehmen'),
+            ),
+          ],
+        ),
+      ) ??
+      false;
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +107,8 @@ class _ProspectOfferCardState extends State<ProspectOfferCard> {
             IconButton(
               tooltip: widget.onAdd == null
                   ? 'Artikel noch nicht eindeutig zugeordnet'
+                  : widget.requiresManualConfirmation
+                  ? 'Bezeichnung prüfen und als Artikel übernehmen'
                   : added
                   ? 'Noch einmal zur Einkaufsliste'
                   : 'Zur Einkaufsliste',
@@ -114,7 +152,13 @@ class _ProspectOfferCardState extends State<ProspectOfferCard> {
                   child: FilledButton.icon(
                     onPressed: widget.onAdd == null ? null : _add,
                     icon: Icon(added ? Icons.check : Icons.add_shopping_cart),
-                    label: Text(added ? 'Hinzugefügt' : 'Zur Einkaufsliste'),
+                    label: Text(
+                      added
+                          ? 'Hinzugefügt'
+                          : widget.requiresManualConfirmation
+                          ? 'Prüfen & übernehmen'
+                          : 'Zur Einkaufsliste',
+                    ),
                   ),
                 ),
               ],

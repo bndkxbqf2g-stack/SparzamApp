@@ -56,6 +56,16 @@ Product? addableProductForProspectOffer(
   return productForProspectOffer(record, catalogProducts);
 }
 
+/// Returns an exact-label product for an explicit user review when a
+/// current, branch-specific offer cannot be mapped to one catalog identity.
+///
+/// The returned product is list-only until the caller confirms it. This path
+/// never creates an Offer or route price from an ambiguous identity.
+Product? manualProductForProspectOffer(OfferImportRecord record) {
+  if (!_hasVerifiedOfferEvidence(record)) return null;
+  return _offerBackedProduct(record);
+}
+
 bool _hasVerifiedOfferEvidence(OfferImportRecord record) {
   final original = record.originalPrice;
   return record.productLabel.trim().isNotEmpty &&

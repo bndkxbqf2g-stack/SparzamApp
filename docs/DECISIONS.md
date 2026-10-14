@@ -1,3 +1,12 @@
+## D183 – Manuelle Prospektübernahme bleibt ein bestätigter Listenpfad
+
+Wenn eine aktuelle, filialbezogene und belegte Prospektzeile wegen mehrerer möglicher
+Katalogvarianten nicht automatisch aufgelöst werden kann, darf die UI die exakte
+Quellbezeichnung als eigenen Listeneintrag anbieten. Das benötigt eine ausdrückliche
+Bestätigung und erzeugt keine automatisch zugeordnete Offer-, Preis- oder Routenidentität.
+Regional-only-, unbewiesene, abgelaufene oder preislich ungültige Datensätze bleiben
+vollständig gesperrt.
+
 ## D182 – Offizielle Prospektkategorien bleiben begrenzt und präsentationsbezogen
 
 Die offiziellen Prospektadapter dürfen bekannte Kategorievarianten wie Unterkategorie,
