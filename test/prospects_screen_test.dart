@@ -149,6 +149,114 @@ void main() {
     await tester.tap(find.text('Zur Einkaufsliste').first);
     expect(added, 1);
   });
+  testWidgets('keeps viewer offers bound to the selected branch', (
+    tester,
+  ) async {
+    final records = [
+      OfferImportRecord(
+        sourceId: 'branch-a',
+        productLabel: 'Butter Filiale A',
+        storeName: 'Lidl',
+        offerPrice: 1.29,
+        validFrom: DateTime(2026, 9, 28),
+        validUntil: DateTime(2026, 10, 3),
+        branchId: 'lidl-zellingen',
+        proofRef: 'https://example.test/lidl/zellingen/butter',
+      ),
+      OfferImportRecord(
+        sourceId: 'branch-b',
+        productLabel: 'Butter Filiale B',
+        storeName: 'Lidl',
+        offerPrice: 1.39,
+        validFrom: DateTime(2026, 9, 28),
+        validUntil: DateTime(2026, 10, 3),
+        branchId: 'lidl-wuerzburg',
+        proofRef: 'https://example.test/lidl/wuerzburg/butter',
+      ),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectViewerScreen(
+          issue: ProspectIssue(
+            storeName: 'Lidl',
+            title: 'Aktionsprospekt',
+            pages: const [],
+            branchId: 'lidl-zellingen',
+            validFrom: DateTime(2026, 9, 28),
+            validUntil: DateTime(2026, 10, 3),
+          ),
+          records: records,
+          catalogProducts: const [],
+          now: DateTime(2026, 9, 30),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final scrollable = find.byType(Scrollable).first;
+    await tester.drag(scrollable, const Offset(0, -900));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Butter Filiale A'), findsOneWidget);
+    expect(find.text('Butter Filiale B'), findsNothing);
+  });
+
+  testWidgets('search excludes offers from another branch', (tester) async {
+    final records = [
+      OfferImportRecord(
+        sourceId: 'branch-a-search',
+        productLabel: 'Milch Filiale A',
+        storeName: 'Lidl',
+        offerPrice: 0.99,
+        validFrom: DateTime(2026, 9, 28),
+        validUntil: DateTime(2026, 10, 3),
+        branchId: 'lidl-zellingen',
+        proofRef: 'https://example.test/lidl/zellingen/milk',
+      ),
+      OfferImportRecord(
+        sourceId: 'branch-b-search',
+        productLabel: 'Milch Filiale B',
+        storeName: 'Lidl',
+        offerPrice: 1.09,
+        validFrom: DateTime(2026, 9, 28),
+        validUntil: DateTime(2026, 10, 3),
+        branchId: 'lidl-wuerzburg',
+        proofRef: 'https://example.test/lidl/wuerzburg/milk',
+      ),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: records,
+          prospects: const [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: [],
+              branchId: 'lidl-zellingen',
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+            ),
+          ],
+          now: DateTime(2026, 9, 30),
+        ),
+      ),
+    );
+
+    final search = find.byWidgetPredicate(
+      (widget) =>
+          widget is TextField &&
+          widget.decoration?.hintText == 'Prospekte und Artikel durchsuchen',
+    );
+    await tester.enterText(search, 'Milch');
+    await tester.pump();
+
+    expect(find.text('1 passende Prospektartikel'), findsOneWidget);
+    expect(find.text('Milch Filiale A'), findsOneWidget);
+    expect(find.text('Milch Filiale B'), findsNothing);
+  });
+
   testWidgets('searches current prospect articles across markets', (
     tester,
   ) async {
