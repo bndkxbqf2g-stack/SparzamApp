@@ -197,6 +197,35 @@ class _AppShellState extends State<AppShell> {
   SequentialWriteQueue get _offerSaves => _offerPersistence;
   SequentialWriteQueue get _priceSaves => _persistenceSaves;
   bool _purchaseInProgress = false;
+  final _routingSnapshotCache = ShellRoutingSnapshotCache();
+
+  List<Product>? _catalogProductsCache;
+  List<Product>? _catalogProductsCustomSource;
+  List<Product>? _catalogProductsProspectSource;
+
+  List<MarketPrice>? _activeMarketPricesCache;
+  List<MarketPrice>? _activeMarketPricesSource;
+  PriceDataSettings? _activeMarketPricesSettings;
+  DateTime? _activeMarketPricesDay;
+
+  List<MarketPrice>? _historicalMarketPricesCache;
+  List<PriceObservation>? _historicalMarketPricesSource;
+  List<Product>? _historicalMarketPricesCatalogSource;
+  PriceDataSettings? _historicalMarketPricesSettings;
+  DateTime? _historicalMarketPricesDay;
+
+  List<MarketPrice>? _receiptFamilyPricesCache;
+  List<ReceiptObservation>? _receiptFamilyPricesObservationsSource;
+  int? _receiptFamilyPricesItemSignature;
+  DateTime? _receiptFamilyPricesDay;
+
+  List<MarketPrice>? _planningMarketPricesCache;
+  List<MarketPrice>? _planningMarketPricesActiveSource;
+  List<MarketPrice>? _planningMarketPricesHistoricalSource;
+  List<MarketPrice>? _planningMarketPricesFamilySource;
+  int? _planningMarketPricesMaxAgeDays;
+  DateTime? _planningMarketPricesDay;
+
 
   void _selectTab(int index) {
     if (selectedIndex == index && _visitedTabs.contains(index)) return;
@@ -333,34 +362,133 @@ class _AppShellState extends State<AppShell> {
   }
 
   List<Product> get catalogProducts {
+    final cached = _catalogProductsCache;
+    if (cached != null &&
+        identical(_catalogProductsCustomSource, customProducts) &&
+        identical(_catalogProductsProspectSource, prospectProducts)) {
+      return cached;
+    }
     final seen = <String>{};
-    return buildCatalogProducts([...customProducts, ...prospectProducts])
+    final next = buildCatalogProducts([...customProducts, ...prospectProducts])
         .where((product) => seen.add(product.id))
         .toList(growable: false);
+    _catalogProductsCache = next;
+    _catalogProductsCustomSource = customProducts;
+    _catalogProductsProspectSource = prospectProducts;
+    return next;
   }
 
   bool isBaseProduct(String id) => isBaseCatalogProduct(id);
 
-  List<MarketPrice> get activeMarketPrices =>
-      activePrices(marketPrices, priceDataSettings);
+  List<MarketPrice> get activeMarketPrices {
+    final now = DateTime.now();
+    final day = DateTime(now.year, now.month, now.day);
+    final cached = _activeMarketPricesCache;
+    if (cached != null &&
+        identical(_activeMarketPricesSource, marketPrices) &&
+        identical(_activeMarketPricesSettings, priceDataSettings) &&
+        _activeMarketPricesDay == day) {
+      return cached;
+    }
+    final next = activePrices(marketPrices, priceDataSettings);
+    _activeMarketPricesCache = next;
+    _activeMarketPricesSource = marketPrices;
+    _activeMarketPricesSettings = priceDataSettings;
+    _activeMarketPricesDay = day;
+    return next;
+  }
 
-  List<MarketPrice> get historicalMarketPrices => marketPricesFromObservations(
-    historicalPriceObservations,
-    products: catalogProducts,
-    settings: priceDataSettings,
+  List<MarketPrice> get historicalMarketPrices {
+    final now = DateTime.now();
+    final day = DateTime(now.year, now.month, now.day);
+    final catalog = catalogProducts;
+    final cached = _historicalMarketPricesCache;
+    if (cached != null &&
+        identical(_historicalMarketPricesSource, historicalPriceObservations) &&
+        identical(_historicalMarketPricesCatalogSource, catalog) &&
+        identical(_historicalMarketPricesSettings, priceDataSettings) &&
+        _historicalMarketPricesDay == day) {
+      return cached;
+    }
+    final next = marketPricesFromObservations(
+      historicalPriceObservations,
+      products: catalog,
+      settings: priceDataSettings,
+    );
+    _historicalMarketPricesCache = next;
+    _historicalMarketPricesSource = historicalPriceObservations;
+    _historicalMarketPricesCatalogSource = catalog;
+    _historicalMarketPricesSettings = priceDataSettings;
+    _historicalMarketPricesDay = day;
+    return next;
+  }
+
+  List<MarketPrice> get receiptFamilyPrices {
+    final now = DateTime.now();
+    final day = DateTime(now.year, now.month, now.day);
+    final itemSignature = _shoppingListSignature(includeQuantity: false);
+    final cached = _receiptFamilyPricesCache;
+    if (cached != null &&
+        identical(
+          _receiptFamilyPricesObservationsSource,
+          receiptObservations,
+        ) &&
+        _receiptFamilyPricesItemSignature == itemSignature &&
+        _receiptFamilyPricesDay == day) {
+      return cached;
+    }
+    final next = receiptFamilyMarketPrices(
+      items: shoppingList,
+      observations: receiptObservations,
+    );
+    _receiptFamilyPricesCache = next;
+    _receiptFamilyPricesObservationsSource = receiptObservations;
+    _receiptFamilyPricesItemSignature = itemSignature;
+    _receiptFamilyPricesDay = day;
+    return next;
+  }
+
+  List<MarketPrice> get planningMarketPrices {
+    final now = DateTime.now();
+    final day = DateTime(now.year, now.month, now.day);
+    final active = activeMarketPrices;
+    final historical = historicalMarketPrices;
+    final family = receiptFamilyPrices;
+    final cached = _planningMarketPricesCache;
+    if (cached != null &&
+        identical(_planningMarketPricesActiveSource, active) &&
+        identical(_planningMarketPricesHistoricalSource, historical) &&
+        identical(_planningMarketPricesFamilySource, family) &&
+        _planningMarketPricesMaxAgeDays ==
+            priceDataSettings.openPricesMaxAgeDays &&
+        _planningMarketPricesDay == day) {
+      return cached;
+    }
+    final next = planning_prices.planningMarketPrices(
+      exactPrices: [...active, ...historical],
+      familyPrices: family,
+      openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
+    );
+    _planningMarketPricesCache = next;
+    _planningMarketPricesActiveSource = active;
+    _planningMarketPricesHistoricalSource = historical;
+    _planningMarketPricesFamilySource = family;
+    _planningMarketPricesMaxAgeDays = priceDataSettings.openPricesMaxAgeDays;
+    _planningMarketPricesDay = day;
+    return next;
+  }
+
+  int _shoppingListSignature({required bool includeQuantity}) => Object.hashAll(
+    shoppingList.map(
+      (item) => Object.hash(
+        item.product.id,
+        item.product.name,
+        item.product.packageAmount,
+        item.product.packageUnit,
+        if (includeQuantity) item.quantity,
+      ),
+    ),
   );
-
-  List<MarketPrice> get receiptFamilyPrices => receiptFamilyMarketPrices(
-    items: shoppingList,
-    observations: receiptObservations,
-  );
-
-  List<MarketPrice> get planningMarketPrices =>
-      planning_prices.planningMarketPrices(
-        exactPrices: [...activeMarketPrices, ...historicalMarketPrices],
-        familyPrices: receiptFamilyPrices,
-        openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
-      );
 
   Future<void> _loadPriceObservations() async {
     final revision = _dataRevision;
@@ -824,7 +952,7 @@ class _AppShellState extends State<AppShell> {
     persistShoppingListWithFeedback();
   }
 
-  ShellRouting get routing => ShellRouting(
+  ShellRouting get routing => _routingSnapshotCache.resolve(
     items: shoppingList,
     offers: offers,
     mobility: mobility,
