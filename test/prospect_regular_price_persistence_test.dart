@@ -131,32 +131,3 @@ void main() {
   });
 }
 
-extension on OfferImportRecord {
-  OfferImportRecord copyWith({
-    String? sourceId,
-    double? originalPrice,
-    DateTime? validFrom,
-    DateTime? validUntil,
-  }) =>
-      OfferImportRecord(
-        sourceId: sourceId ?? this.sourceId,
-        productLabel: productLabel,
-        storeName: storeName,
-        originalPrice: originalPrice ?? this.originalPrice,
-        offerPrice: offerPrice,
-        validUntil: validUntil ?? this.validUntil,
-        validFrom: validFrom ?? this.validFrom,
-        source: source,
-        proofRef: proofRef,
-        packageSize: packageSize,
-        sourceAdapter: sourceAdapter,
-        regionalOnly: regionalOnly,
-        brochureId: brochureId,
-        brochurePage: brochurePage,
-        publisherId: publisherId,
-        capturedAt: capturedAt,
-        branchId: branchId,
-        location: location,
-        address: address,
-      );
-}
