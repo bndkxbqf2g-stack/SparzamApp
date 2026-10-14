@@ -2,7 +2,25 @@
 
 Diese Datei hält Entscheidungen fest, damit sie in neuen Chats oder Work-Läufen nicht erneut erraten werden.
 
-## D176 – Prospekt-Fallback wählt den neuesten validierten Stand
+## D176 – Generische Einkaufslisten zeigen aktuelle Prospektpreise als Variantenhinweis
+
+Ein generischer Listeneintrag wie „Milch“ darf ein aktuelles, belegtes Prospektangebot
+für eine bekannte passende Familienvariante in der Marktmatrix anzeigen, sofern
+Marktfiliale, Angebotszeitraum, Nachweis und Packungsbasis gültig sind. Die Anzeige
+kennzeichnet die konkrete Variante weiterhin über die Angebotsdetails. Konkrete
+Varianten bleiben bei ihrer exakten Produkt-ID; die Routenberechnung übernimmt die
+familienweite Anzeige nicht automatisch. So gehen aktuelle Prospektdaten nicht
+verloren, ohne Produktvarianten still gleichzusetzen.
+
+## D177 – Automatische Bonpreise sind sichtbare Hinweise, aber keine Routenfreigabe
+
+Bonstatistiken für generische Wünsche umfassen auch automatische Zuordnungen und
+zeigen deren Markt, Preis und Status als „Variante prüfen“. Bestätigte Preise
+bleiben davon getrennt; nur die bestätigte Sicht darf in die routenfähige
+Preisprojektion gelangen. Konkrete Varianten sehen ausschließlich ihre exakte
+Belegzuordnung.
+
+## D178 – Prospekt-Fallback wählt den neuesten validierten Stand
 
 Wenn Netzwerk, Cache und gebündeltes App-Asset unterschiedliche Prospektstände
 liefern, entscheidet `generatedAt` deterministisch. Ein älterer lokaler Cache
