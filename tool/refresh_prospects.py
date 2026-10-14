@@ -522,7 +522,14 @@ def parse_aldi_api_page(json_text, promotion_day):
             for asset in assets:
                 if not isinstance(asset, dict):
                     continue
-                candidate = clean(str(asset.get("url") or ""))
+                candidate = _source_image(
+                    asset,
+                    "url",
+                    "src",
+                    "href",
+                    "image",
+                    "imageUrl",
+                )
                 if candidate:
                     # ALDI returns rendition templates. Persisting {slug}
                     # leaves a broken/non-deterministic image source in the app.
@@ -1165,7 +1172,13 @@ def parse_kaufland_api(html_text, base_url, available_ids=None, today=None):
                 if regular is not None and regular < sale:
                     regular = None
 
-                image = clean(str(raw.get("listImage") or ""))
+                image = _source_image(
+                    raw,
+                    "listImage",
+                    "image",
+                    "imageUrl",
+                    "productImage",
+                )
                 proof = base_url
                 if offer_id:
                     proof += "#offer-" + offer_id
@@ -1438,7 +1451,12 @@ def parse_lidl_store_offers(json_text, proof_url=LIDL_ZELLINGEN_STORE_PAGE):
         proof = proof_url
         if raw_id:
             proof += "#offer-" + raw_id
-        image = clean(str(raw.get("imageUrl") or ""))
+        image = _source_image(
+            raw,
+            "imageUrl",
+            "image",
+            "productImage",
+        )
         offers.append(record(
             "Lidl",
             label,
@@ -1815,13 +1833,23 @@ def parse_penny_api(json_text, base_url, valid_from, valid_until, category=None)
                 break
 
         rendition = tile.get("imageRendition", {})
-        image = ""
-        if isinstance(rendition, dict):
-            for key in ("tileXl", "tileLg", "tileMd", "tileSm", "tileXs"):
-                candidate = clean(str(rendition.get(key) or ""))
-                if candidate:
-                    image = candidate
-                    break
+        image = _source_image(
+            rendition,
+            "tileXl",
+            "tileLg",
+            "tileMd",
+            "tileSm",
+            "tileXs",
+            "image",
+            "imageUrl",
+        )
+        if image is None:
+            image = _source_image(
+                tile,
+                "image",
+                "imageUrl",
+                "productImage",
+            )
 
         raw_id = clean(str(tile.get("uuid") or index))
         proof = base_url + "#offer-" + raw_id
@@ -2419,7 +2447,12 @@ def _rewe_price(value):
 
 
 def _source_image(raw, *keys):
-    """Return a source-provided HTTP(S) image without accepting markup or scripts."""
+    """Return a source-provided HTTP(S) image without accepting markup or scripts.
+
+    Retailer payloads use both flat URLs and nested image/media objects. Walk
+    only the known presentation keys and keep the recursion shallow so source
+    metadata never becomes an arbitrary URL traversal.
+    """
     if not isinstance(raw, dict):
         return None
     candidates = keys or (
@@ -2433,22 +2466,35 @@ def _source_image(raw, *keys):
         "bild_web130",
         "bild_web90",
     )
-    nested_keys = ("url", "src", "href", "imageUrl", "image_url", "original", "large")
+    nested_keys = (
+        "url",
+        "src",
+        "href",
+        "imageUrl",
+        "image_url",
+        "original",
+        "large",
+        "image",
+        "media",
+    )
+
+    def values(value, depth=0):
+        if depth > 2:
+            return
+        if isinstance(value, list):
+            for item in value:
+                yield from values(item, depth + 1)
+            return
+        if isinstance(value, dict):
+            for nested in nested_keys:
+                if nested in value:
+                    yield from values(value[nested], depth + 1)
+            return
+        if isinstance(value, str):
+            yield value
+
     for key in candidates:
-        value = raw.get(key)
-        values = value if isinstance(value, list) else (value,)
-        for candidate in values:
-            if isinstance(candidate, dict):
-                candidate = next(
-                    (
-                        candidate.get(nested)
-                        for nested in nested_keys
-                        if candidate.get(nested) is not None
-                    ),
-                    None,
-                )
-            if not isinstance(candidate, str):
-                continue
+        for candidate in values(raw.get(key)):
             candidate = clean(candidate)
             parsed = urlsplit(candidate)
             if (

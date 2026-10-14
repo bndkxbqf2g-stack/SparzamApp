@@ -785,7 +785,7 @@ class ProspectParserTest(unittest.TestCase):
               "id": "fe494b54",
               "offerType": "StoreSpecialPriceDiscount",
               "redemptionChannel": "Store",
-              "imageUrl": "https://static-coupons.lidlplus.com/thunfisch.jpg",
+              "image": {"url": "https://static-coupons.lidlplus.com/thunfisch.jpg"},
               "category": "Vorrat & Konserven",
               "priceBox": {
                 "strikethrough": true,
@@ -933,7 +933,7 @@ class ProspectParserTest(unittest.TestCase):
               "crossOutPrice": "0.79",
               "uuid": "43a5c357-b337-48e2-8a9c-c1f4fa6a86f8",
               "imageRendition": {
-                "tileLg": "https://cdn.penny.de/schmand.png"
+                "tileLg": {"url": "https://cdn.penny.de/schmand.png"}
               }
             }
           ]
@@ -1240,7 +1240,7 @@ ab Montag, 28.09.26
                                             "unit": "je 250-g-Packung",
                                             "formattedPrice": "1,99",
                                             "formattedOldPrice": "2,49",
-                                            "listImage": "https://example.test/butter.jpg"
+                                            "listImage": {"image": {"url": "https://example.test/butter.jpg"}}
                                         },
                                         {
                                             "offerId": "offer-xtra-only",
