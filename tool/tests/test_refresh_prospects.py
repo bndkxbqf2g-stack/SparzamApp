@@ -735,6 +735,37 @@ class ProspectParserTest(unittest.TestCase):
             "https://blaetterkatalog.edeka.de/NORDBAYERN/8002976/blaetterkatalog/normal/bk_1.jpg",
         )
 
+    def test_edeka_public_prospect_parser_keeps_all_explicit_pages_in_order(self):
+        html = """
+        <p>Gültig vom 12.10.2026 bis zum 17.10.2026.</p>
+        <a href="/maerkte/023738/prospekte/#prospekt-abc">Prospekt ansehen</a>
+        <img src="https://blaetterkatalog.edeka.de/NORDBAYERN/8002976/blaetterkatalog/normal/bk_3.jpg">
+        <img src="https://blaetterkatalog.edeka.de/NORDBAYERN/8002976/blaetterkatalog/normal/bk_1.jpg">
+        <img src="https://blaetterkatalog.edeka.de/NORDBAYERN/8002976/blaetterkatalog/normal/bk_2.jpg">
+        <img src="https://blaetterkatalog.edeka.de/NORDBAYERN/8002976/blaetterkatalog/normal/bk_2.jpg">
+        """
+        prospects = refresh.parse_edeka_prospects(
+            html,
+            "https://www.edeka.de/maerkte/023738/",
+            today=refresh.date(2026, 10, 12),
+        )
+
+        self.assertEqual(len(prospects), 1)
+        prospect = prospects[0]
+        self.assertEqual(prospect["pageCount"], 3)
+        self.assertEqual(
+            [page["number"] for page in prospect["pageSamples"]],
+            [1, 2, 3],
+        )
+        self.assertEqual(
+            prospect["thumbnailUrl"],
+            "https://blaetterkatalog.edeka.de/NORDBAYERN/8002976/blaetterkatalog/normal/bk_1.jpg",
+        )
+        self.assertEqual(
+            prospect["pageSamples"][2]["image"],
+            "https://blaetterkatalog.edeka.de/NORDBAYERN/8002976/blaetterkatalog/normal/bk_3.jpg",
+        )
+
     def test_edeka_api_does_not_invent_regular_price_from_discount(self):
         payload = """
         {

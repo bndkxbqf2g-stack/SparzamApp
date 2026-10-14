@@ -875,11 +875,12 @@ def parse_edeka_api(json_text, base_url):
 
 
 def parse_edeka_prospects(html_text, base_url, *, today=None):
-    """Extract the current branch-linked EDEKA leaflet cover.
+    """Extract all explicit branch-linked EDEKA leaflet pages.
 
-    EDEKA's market page exposes both the exact market prospect link and the
-    public page-1 image from its leaflets catalog. Keep those two signals
-    together so a generic campaign image cannot become a branch prospect.
+    EDEKA's market page exposes both the exact market prospect link and public
+    leaflets-catalog images. Keep those two signals together so a generic
+    campaign image cannot become a branch prospect. Page numbers are taken
+    only from explicit bk_<number>.jpg URLs; no page URL is inferred.
     """
     market_match = re.search(r"/maerkte/(\d+)/", base_url)
     if market_match is None:
@@ -923,18 +924,32 @@ def parse_edeka_prospects(html_text, base_url, *, today=None):
     if valid_until < reference or valid_from > reference + timedelta(days=14):
         return []
 
-    images = []
-    for raw_image in re.findall(
-        r"https?://blaetterkatalog\.edeka\.de/[^\"'<>\s]+/bk_1\.jpg(?:\?[^\"'<>\s]*)?",
-        html_text or "",
+    page_images = {}
+    page_pattern = re.compile(
+        r"https?://blaetterkatalog\.edeka\.de/[^\"'<>\s]+/bk_(?P<number>\d+)\.jpg"
+        r"(?:\?[^\"'<>\s]*)?",
         flags=re.I,
-    ):
-        image = html.unescape(raw_image).rstrip(".,)")
-        if image not in images:
-            images.append(image)
-    if not images:
+    )
+    for match in page_pattern.finditer(html_text or ""):
+        try:
+            number = int(match.group("number"))
+        except (TypeError, ValueError):
+            continue
+        if number < 1 or number in page_images:
+            continue
+        image = html.unescape(match.group(0)).rstrip(".,)")
+        page_images[number] = image
+    if not page_images:
         return []
-
+    page_samples = [
+        {
+            "number": number,
+            "altText": f"Seite {number} des aktuellen EDEKA-Prospekts",
+            "keyWords": "",
+            "image": image,
+        }
+        for number, image in sorted(page_images.items())
+    ]
     title = f"EDEKA Prospekt {valid_from:%d.%m.%Y} – {valid_until:%d.%m.%Y}"
     return [{
         "id": stable_id("EDEKA", prospect_url, title),
@@ -944,14 +959,9 @@ def parse_edeka_prospects(html_text, base_url, *, today=None):
         "offerEndDate": valid_until.isoformat(),
         "status": "current",
         "productCount": 0,
-        "pageCount": 1,
-        "thumbnailUrl": images[0],
-        "pageSamples": [{
-            "number": 1,
-            "altText": "Titelseite des aktuellen EDEKA-Prospekts",
-            "keyWords": "",
-            "image": images[0],
-        }],
+        "pageCount": len(page_samples),
+        "thumbnailUrl": page_samples[0]["image"],
+        "pageSamples": page_samples,
     }]
 
 
