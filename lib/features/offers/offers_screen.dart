@@ -268,6 +268,8 @@ class _ProspectOffersState extends State<_ProspectOffers> {
   final expandedCategories = <String>{};
   final _visibleCategoryCounts = <String, int>{};
   final _resolvedProducts = <String, Product?>{};
+  List<OfferImportRecord>? _searchIndexInput;
+  Map<OfferImportRecord, String>? _searchIndexCache;
   List<OfferImportRecord>? _filteredInput;
   String? _filteredQuery;
   Map<String, List<OfferImportRecord>>? _filteredByStore;
@@ -287,6 +289,24 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     }
   }
 
+  Map<OfferImportRecord, String> _searchIndex() {
+    if (identical(_searchIndexInput, widget.records)) {
+      return _searchIndexCache ?? const <OfferImportRecord, String>{};
+    }
+    final index = <OfferImportRecord, String>{};
+    for (final record in widget.records) {
+      final sourceCategory = record.category?.trim() ?? '';
+      index[record] = [
+        record.productLabel,
+        record.storeName,
+        sourceCategory,
+        presentProspectCategory(sourceCategory),
+      ].join(' ').toLowerCase();
+    }
+    _searchIndexInput = widget.records;
+    _searchIndexCache = index;
+    return index;
+  }
   Map<String, List<OfferImportRecord>> _filteredRecordsByStore(
     String normalizedQuery,
   ) {
@@ -296,14 +316,10 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     }
 
     final byStore = <String, List<OfferImportRecord>>{};
+    final searchIndex = _searchIndex();
     for (final record in widget.records) {
-      final searchable = [
-        record.storeName,
-        record.category ?? '',
-        presentProspectCategory(record.category),
-        record.productLabel,
-      ].join(' ').toLowerCase();
-      if (normalizedQuery.isNotEmpty && !searchable.contains(normalizedQuery)) {
+      if (normalizedQuery.isNotEmpty &&
+          !(searchIndex[record] ?? '').contains(normalizedQuery)) {
         continue;
       }
       byStore.putIfAbsent(record.storeName, () => []).add(record);
