@@ -841,4 +841,46 @@ void main() {
       direct.map((entry) => entry.quote?.unitPrice),
     );
   });
+
+  test('snapshot resolves each product once and matches direct matrix values', () {
+    const secondProduct = Product(
+      id: 'butter-250',
+      name: 'Butter 250 g',
+      unit: '250 g',
+      group: 'butter',
+      packageAmount: 250,
+      packageUnit: 'g',
+    );
+    final snapshot = shoppingPriceQuoteSnapshot(
+      [item, ListItem(product: milk), ListItem(product: secondProduct)],
+      prices: [
+        MarketPrice(
+          productId: milk.id,
+          storeName: 'Lidl',
+          price: 1.09,
+          updatedAt: DateTime(2026, 9, 24),
+          source: MarketPriceSource.prospect,
+        ),
+        MarketPrice(
+          productId: secondProduct.id,
+          storeName: 'PENNY',
+          price: 1.79,
+          updatedAt: DateTime(2026, 9, 24),
+          source: MarketPriceSource.prospect,
+          quantity: 250,
+          unit: 'g',
+          unitPrice: 7.16,
+        ),
+      ],
+      offers: const [],
+      enabledStores: const ['Lidl', 'PENNY'],
+      now: DateTime(2026, 9, 24),
+    );
+
+    expect(snapshot.quotesFor(item), hasLength(1));
+    expect(snapshot.quotesFor(item).single.unitPrice, 1.09);
+    expect(snapshot.matrixFor(item), hasLength(2));
+    expect(snapshot.matrixFor(item)[0].quote?.unitPrice, 1.09);
+    expect(snapshot.matrixFor(ListItem(product: secondProduct))[1].quote?.unitPrice, 1.79);
+  });
 }
