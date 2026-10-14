@@ -1,3 +1,8 @@
+## Update 14.10.2026 – Unveränderte Prospekt-Refreshes überspringen
+- [x] Der Prospekt-Refresh bildet aus allen preis-, gültigkeits-, quellen-, filial- und coverrelevanten Feldern einen stabilen Fingerabdruck.
+- [x] Bei identischem Feed werden Angebot-Normalisierung, OfferStore-Schreibvorgang und reguläre Preisbeobachtungs-Persistenz übersprungen; der sichtbare Cache-/Zeitstatus wird weiterhin aktualisiert.
+- [x] Ein Backup-Import setzt den Fingerabdruck zurück, damit die regulären Prospektpreise danach erneut vollständig aus dem Feed aufgebaut werden.
+- [x] Der Fingerabdruck umfasst auch `capturedAt`, Seitenbilder, Zoomnachweise und Keywords; Änderungen an Herkunft oder Beleg führen daher nicht zu einem unbemerkten Skip.
 ## Update 14.10.2026 – Alternative Prospekt-Coverfelder
 - [x] Der validierte Prospektimport akzeptiert neben `pageSamples.image` auch die dokumentierten Varianten `imageUrl`, `thumbnailUrl` und `url` sowie alternative Zoom- und Keywordfelder.
 - [x] Covermetadaten können aus `coverUrl`, `coverImage`, `imageUrl` oder `image` übernommen werden; jede URL wird weiterhin strikt auf HTTP(S) geprüft.
