@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Routenplanung bleibt filialgenau
+
+- Der RouteOptimizer kann neben dem bestehenden Standardkatalog einen immutable Filial-Snapshot erhalten. Das unterstützt spätere Quellenadapter, ohne die globale Marktstammdatenliste zu verändern.
+- Bei identischer Preisabdeckung und identischem Planungswert entscheidet die Route jetzt über Branch-ID, Ort und Adresse statt nur über den sichtbaren Händlernamen.
+- Die Regression deckt gleiche Händlernamen, getrennte sourceLocationId-Preise und stabile Auswahl unabhängig von der Eingangsreihenfolge ab.
+
 ## Update 14.10.2026 – OSRM-Reihenfolge nach Gesamtwegekosten
 
 - Eine vollständige OSRM-Dauermatrix kann die Marktfolge jetzt anhand von Fahrtkosten und persönlichem Zeitwert bewerten.
