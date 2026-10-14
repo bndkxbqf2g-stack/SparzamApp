@@ -528,7 +528,8 @@ class _RouteComputation {
   final RouteRecommendationInfo? recommendation;
   final OptimizedTravelRoute? optimizedTravel;
   final int realCount;
-};
+}
+
 List<PriceGapPriority> _buildPriceGaps(
   RouteOptimizer optimizer,
   Iterable<ListItem> items, {
