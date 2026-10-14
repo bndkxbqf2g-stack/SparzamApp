@@ -558,8 +558,8 @@ String _prospectRecordKey(OfferImportRecord record) {
     record.validUntil.toIso8601String(),
   ];
   return fields
-      .map((value) => value.trim().toLowerCase().replaceAll(RegExp(r'\\s+'), ' '))
-      .join('\\u001f');
+      .map((value) => value.trim().toLowerCase().replaceAll(RegExp(r'\s+'), ' '))
+      .join('\u001f');
 }
 
 String? _stringValue(Object? value) => value is String ? value.trim() : null;
