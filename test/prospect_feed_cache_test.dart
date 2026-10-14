@@ -134,6 +134,7 @@ void main() {
       'JACK & JONES Herren-Hoodie',
       'KUSCHELWEICH Weichspüler 1 l',
       'K-CLASSIC Ultra-Klumpstreu 6 l',
+      'ALPINA Decken- und Wandweiß 10 l je 10-l-Eimer',
     ]) {
       expect(isFoodProspectLabel(label), isFalse, reason: label);
     }
