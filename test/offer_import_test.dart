@@ -63,6 +63,36 @@ void main() {
     expect(result.offer!.unitPrice, closeTo(0.99, 0.00001));
   });
 
+  test('matches a package-suffixed canonical name for KaufDA evidence', () {
+    const product = Product(
+      id: 'coffee-core-500',
+      name: 'Jacobs Kaffee Crema',
+      unit: '500 g',
+      group: 'kaffee',
+    );
+    final result = resolveOfferImport(
+      OfferImportRecord(
+        sourceId: 'kaufda-core-package',
+        productLabel: 'Jacobs Kaffee Crema 500 g',
+        packageSize: '500 g',
+        storeName: 'Lidl',
+        originalPrice: 6.99,
+        offerPrice: 4.99,
+        validUntil: DateTime(2026, 10, 17),
+        source: 'retailerWebsite',
+        sourceAdapter: 'kaufda',
+        proofRef: 'https://www.kaufda.de/Wuerzburg/Angebote/Kaffee',
+        branchId: 'lidl_zellingen',
+      ),
+      const [product],
+    );
+
+    expect(result.isResolved, isTrue);
+    expect(result.product!.id, product.id);
+    expect(result.offer!.packageAmount, 500);
+    expect(result.offer!.packageUnit, 'g');
+  });
+
   test('offer without stated regular price stays usable without inventing one', () {
     final result = resolveOfferImport(
       OfferImportRecord(

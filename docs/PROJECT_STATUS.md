@@ -1,3 +1,10 @@
+## Update 14.10.2026 – Prospekt-Packungen exakt normalisieren
+
+- Automatische Prospektpreise werden bei einer expliziten Packungsangabe jetzt auch dann exakt einer Katalogidentität zugeordnet, wenn der Katalogname die Packung als separates `unit`-Feld führt.
+- Die Zuordnung vergleicht nur den kanonischen Produktkern und die normalisierte Packungsmenge; Varianten, Familien und unterschiedliche Größen bleiben getrennt oder unbekannt.
+- Milligramm werden in Produktmatching und Grundpreisberechnung als Masseeinheit unterstützt.
+- Die KaufDA-Importauflösung nutzt dieselbe strenge Packungskern-Regel; Alias- und Teilstring-Treffer werden dadurch nicht automatisch erweitert.
+
 ## Update 14.10.2026 – Reguläre Prospektpreise bleiben aktuell
 
 - Wiederholte Feed-Refreshes upserten dieselbe reguläre Beobachtung über ihre stabile ID und aktualisieren dadurch den Erfassungszeitpunkt, ohne Duplikate anzulegen.

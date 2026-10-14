@@ -12,6 +12,22 @@ void main() {
       leftAmount: 200, leftUnit: 'g', rightAmount: 500, rightUnit: 'g'), isTrue);
   });
 
+  test('milligrams normalize to kilograms and compare with grams', () {
+    final milligrams = normalizeQuantity(250, 'mg');
+    expect(milligrams?.amount, closeTo(0.00025, 0.00000001));
+    expect(milligrams?.dimension, QuantityDimension.mass);
+    expect(quantitiesComparable(
+      leftAmount: 250,
+      leftUnit: 'mg',
+      rightAmount: 0.25,
+      rightUnit: 'g',
+    ), isTrue);
+    expect(
+      normalizedUnitPrice(price: 1, amount: 250, unit: 'mg'),
+      closeTo(4000, 0.0001),
+    );
+  });
+
   test('millilitres and litres are comparable', () {
     expect(quantitiesComparable(
       leftAmount: 500, leftUnit: 'ml', rightAmount: 1, rightUnit: 'l'), isTrue);

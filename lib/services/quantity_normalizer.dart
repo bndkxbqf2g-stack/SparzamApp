@@ -16,6 +16,14 @@ NormalizedQuantity? normalizeQuantity(double? amount, String? unit) {
   if (amount == null || !amount.isFinite || amount <= 0) return null;
   final normalized = _normalizeUnit(unit);
   return switch (normalized) {
+    'mg' ||
+    'milligram' ||
+    'milligrams' ||
+    'milligramm' => NormalizedQuantity(
+        amount: amount / 1000000,
+        dimension: QuantityDimension.mass,
+        baseUnit: 'kg',
+      ),
     'g' || 'gram' || 'grams' || 'gramm' => NormalizedQuantity(
         amount: amount / 1000,
         dimension: QuantityDimension.mass,

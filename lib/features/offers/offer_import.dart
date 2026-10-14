@@ -228,8 +228,15 @@ OfferImportResolution resolveOfferImport(
           normalizeIdentityText(product.name) == normalizedLabel)
       .toList();
 
+  final strictExact = exactProspectProduct(
+    record.productLabel,
+    products,
+    packageSize: record.packageSize,
+  );
   final Product? product;
-  if (exact.length == 1) {
+  if (strictExact != null) {
+    product = strictExact;
+  } else if (exact.length == 1) {
     product = exact.single;
   } else if (exact.length > 1) {
     return OfferImportResolution(record: record, reason: 'ambiguous_identity');
