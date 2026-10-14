@@ -347,11 +347,9 @@ class _RouteScreenState extends State<RouteScreen> {
       );
     }
     final priceEvidence = computation.priceEvidence!;
-    final single = computation.single;
     final savings = computation.savings;
     final offerSavings = computation.offerSavings;
     final visibleAlternatives = computation.visibleAlternatives;
-    final cheapest = computation.cheapest!;
     final travel = computation.travel!;
     final recommendation = computation.recommendation!;
     final optimizedTravel = computation.optimizedTravel!;
