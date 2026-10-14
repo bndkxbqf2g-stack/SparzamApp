@@ -135,7 +135,7 @@ void main() {
       'KUSCHELWEICH Weichspüler 1 l',
       'K-CLASSIC Ultra-Klumpstreu 6 l',
     ]) {
-      expect(isFoodProspectLabel(label), isFalse);
+      expect(isFoodProspectLabel(label), isFalse, reason: label);
     }
     expect(
       isFoodProspectLabel('WINTERTRAUM Tassenhänger Knuspermännchen 170 g'),
