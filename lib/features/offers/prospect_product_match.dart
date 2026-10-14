@@ -5,7 +5,9 @@ import '../catalog/product_identity.dart';
 typedef ProspectPackage = ({double amount, String unit});
 
 /// Family similarity alone is not exact price identity. A prospect label may
-/// reuse a catalog ID only when name and package basis are both explicit.
+/// reuse a catalog ID only when its canonical name and package basis are both
+/// explicit. A package suffix may be omitted from the catalog name, but it is
+/// still compared exactly after being removed from both sides.
 Product? exactProspectProduct(
   String label,
   Iterable<Product> catalogProducts, {
@@ -14,10 +16,16 @@ Product? exactProspectProduct(
   final normalized = normalizeIdentityText(label);
   final observedPackage = prospectPackage(packageSize ?? label);
   if (normalized.isEmpty || observedPackage == null) return null;
-  final exactNames = catalogProducts
-      .where((product) => normalizeIdentityText(product.name) == normalized)
-      .toList(growable: false);
+
+  final normalizedCore = _withoutPackageSuffix(normalized);
+  final exactNames = catalogProducts.where((product) {
+    final productName = normalizeIdentityText(product.name);
+    final productCore = _withoutPackageSuffix(productName);
+    return productName == normalized ||
+        (normalizedCore.isNotEmpty && productCore == normalizedCore);
+  }).toList(growable: false);
   if (exactNames.length != 1) return null;
+
   final product = exactNames.single;
   final expectedPackage =
       product.packageAmount != null && product.packageUnit != null
@@ -36,7 +44,7 @@ ProspectPackage? prospectPackage(String label) {
 
   final multi = RegExp(
     r'(\d+)\s*[x×]\s*(\d+(?:[,.]\d+)?)\s*-?\s*'
-    r'(kg|g|ml|cl|l|stk|st|stück|stueck)\b',
+    r'(mg|kg|g|ml|cl|l|stk|st|stück|stueck)\b',
   ).firstMatch(text);
   if (multi != null) {
     final count = double.tryParse(multi.group(1)!);
@@ -56,8 +64,9 @@ ProspectPackage? prospectPackage(String label) {
     }
   }
 
-  final match = RegExp(r'(\d+(?:[,.]\d+)?)\s*(kg|g|ml|cl|l|stk|st|stück|stueck)\b')
-      .firstMatch(text);
+  final match = RegExp(
+    r'(\d+(?:[,.]\d+)?)\s*(mg|kg|g|ml|cl|l|stk|st|stück|stueck)\b',
+  ).firstMatch(text);
   if (match == null) return null;
   final amount = double.tryParse(match.group(1)!.replaceAll(',', '.'));
   if (amount == null || amount <= 0) return null;
@@ -68,14 +77,14 @@ bool _hasAmbiguousPackage(String text) {
   // A slash or a numeric range describes several possible variants. Picking
   // one of them would create a false unit price and could merge identities.
   if (RegExp(
-    r'\d+(?:[,.]\d+)?\s*(?:kg|g|ml|cl|l)\s*(?:/|-|–)\s*'
-    r'\d+(?:[,.]\d+)?\s*(?:kg|g|ml|cl|l)?\b',
+    r'\d+(?:[,.]\d+)?\s*(?:mg|kg|g|ml|cl|l)\s*(?:/|-|–)\s*'
+    r'\d+(?:[,.]\d+)?\s*(?:mg|kg|g|ml|cl|l)?\b',
   ).hasMatch(text)) {
     return true;
   }
   if (RegExp(
     r'\d+(?:[,.]\d+)?\s*/\s*\d+(?:[,.]\d+)?\s*'
-    r'(?:kg|g|ml|cl|l)\b',
+    r'(?:mg|kg|g|ml|cl|l)\b',
   ).hasMatch(text)) {
     return true;
   }
@@ -89,4 +98,27 @@ bool sameProspectPackage(ProspectPackage left, ProspectPackage right) {
       normalizedRight != null &&
       normalizedLeft.dimension == normalizedRight.dimension &&
       (normalizedLeft.amount - normalizedRight.amount).abs() < 0.000001;
+}
+
+String _withoutPackageSuffix(String value) {
+  final normalized = normalizeIdentityText(value);
+  if (normalized.isEmpty) return normalized;
+
+  final quantitySuffix = RegExp(
+    r'(?:^|\s)(?:je\s+)?'
+    r'(?:\d+(?:[,.]\d+)?\s*[x×]\s*)?'
+    r'\d+(?:[,.]\d+)?\s*'
+    r'(?:mg|kg|g|ml|cl|l|stk|st|stück|stueck)'
+    r'(?:\s*(?:packg|pack|packung|schale|becher|dose|flasche)\.?)?\s*$',
+    caseSensitive: false,
+  );
+  final withoutQuantity = normalized.replaceFirst(quantitySuffix, '').trim();
+  if (withoutQuantity != normalized) return withoutQuantity;
+
+  final countSuffix = RegExp(
+    r'(?:^|\s)\d+\s*er\s*'
+    r'(?:schale|packg|pack|packung|becher|dose|flasche)\.?\s*$',
+    caseSensitive: false,
+  );
+  return normalized.replaceFirst(countSuffix, '').trim();
 }

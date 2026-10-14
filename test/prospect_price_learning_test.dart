@@ -140,6 +140,36 @@ void main() {
   );
   final observedAt = DateTime(2026, 9, 30, 15);
 
+  test('matches a canonical product core with an explicit package suffix', () {
+    const coreCoffee = Product(
+      id: 'coffee-core-500',
+      name: 'Jacobs Kaffee Crema',
+      unit: '500 g',
+      group: 'kaffee',
+    );
+    final evidence = prospectPriceObservations(
+      records: [
+        OfferImportRecord(
+          sourceId: 'core-package',
+          productLabel: 'Jacobs Kaffee Crema 500g',
+          storeName: 'Lidl',
+          originalPrice: 6.99,
+          offerPrice: 4.99,
+          validUntil: DateTime(2026, 10, 17),
+          proofRef: 'https://example.test/lidl/core-package',
+        ),
+      ],
+      catalogProducts: const [coreCoffee],
+      observedAt: observedAt,
+    );
+
+    expect(evidence, hasLength(2));
+    expect(evidence.every((entry) => entry.productId == coreCoffee.id), isTrue);
+    expect(evidence.every((entry) => entry.identityConfidence == 1), isTrue);
+    expect(evidence.every((entry) => entry.quantity == 500), isTrue);
+    expect(evidence.every((entry) => entry.unit == 'g'), isTrue);
+  });
+
   test('automatic regular learning ignores expired and future periods', () {
     final records = [
       OfferImportRecord(
@@ -264,6 +294,28 @@ void main() {
     expect(evidence.single.quantity, 150);
     expect(evidence.single.unit, 'g');
     expect(evidence.single.unitPrice, closeTo(16.6, 0.0001));
+  });
+
+  test('milligram package labels keep quantity and base price', () {
+    final evidence = prospectPriceObservations(
+      records: [
+        OfferImportRecord(
+          sourceId: 'vitamin-mg',
+          productLabel: 'Vitamin C 250 mg',
+          storeName: 'Lidl',
+          offerPrice: 1,
+          validUntil: DateTime(2026, 10, 17),
+          proofRef: 'https://example.test/lidl/vitamin-mg',
+        ),
+      ],
+      catalogProducts: const [],
+      observedAt: observedAt,
+    );
+
+    expect(evidence, hasLength(1));
+    expect(evidence.single.quantity, 250);
+    expect(evidence.single.unit, 'mg');
+    expect(evidence.single.unitPrice, closeTo(4000, 0.0001));
   });
 
   test('KaufDA package metadata supplies quantity when the label omits it', () {
