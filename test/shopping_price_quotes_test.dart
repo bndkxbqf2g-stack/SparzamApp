@@ -883,4 +883,36 @@ void main() {
     expect(snapshot.matrixFor(item)[0].quote?.unitPrice, 1.09);
     expect(snapshot.matrixFor(ListItem(product: secondProduct))[1].quote?.unitPrice, 1.79);
   });
+
+  test('generic item shows a current matching prospect offer by market', () {
+    const genericMilk = Product(
+      id: 'milch',
+      name: 'Milch',
+      unit: 'Packung',
+      group: 'milch',
+    );
+    final quote = shoppingQuotes(
+      ListItem(product: genericMilk),
+      prices: const [],
+      offers: [
+        Offer(
+          id: 'current-milk-offer',
+          productId: milk.id,
+          storeName: 'Lidl',
+          originalPrice: 1.29,
+          offerPrice: 0.89,
+          validUntil: DateTime(2026, 9, 30),
+          packageAmount: 1,
+          packageUnit: 'l',
+        ),
+      ],
+      catalogProducts: const [milk],
+      enabledStores: const ['Lidl'],
+      now: DateTime(2026, 9, 24),
+    );
+
+    expect(quote, hasLength(1));
+    expect(quote.single.kind, ShoppingQuoteKind.offer);
+    expect(quote.single.unitPrice, 0.89);
+  });
 }
