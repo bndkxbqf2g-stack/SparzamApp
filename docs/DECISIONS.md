@@ -1,3 +1,11 @@
+## D180 – Prospekt-Evidenzfelder bleiben explizit und getrennt
+
+Die Feedgrenze darf bekannte öffentliche Feldvarianten für Artikelbilder, Kategorien,
+Packungsgrößen und Grundpreise tolerieren. Sie liest verschachtelte Werte nur aus
+benannten Präsentationsfeldern und verwirft ungültige URLs oder nicht-textuelle
+Identitätsannahmen. Fehlende Bilder, Kategorien, Filialdaten oder Gültigkeitsangaben
+bleiben als Datenlücke sichtbar; kein Feld ersetzt einen anderen Nachweis.
+
 ## D179 – Prospektfeed beim App-Fortsetzen im Hintergrund aktualisieren
 
 Ein validierter Prospektstand, der beim Fortsetzen der App älter als sechs Stunden ist,

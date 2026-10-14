@@ -541,11 +541,30 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         validUntil == null) {
       continue;
     }
+    final category = _firstSourceLabel(
+      value,
+      const [
+        'category',
+        'categoryName',
+        'category_name',
+        'productCategory',
+        'warengruppe',
+        'sortiment',
+      ],
+    );
+    final subcategory = _firstSourceLabel(
+      value,
+      const ['subcategory', 'subCategory', 'sub_category'],
+    );
+    final department = _firstSourceLabel(
+      value,
+      const ['department', 'departmentName', 'abteilung'],
+    );
     if (!isFoodProspectRecord(
       label: productLabel,
-      category: _stringValue(value['category']),
-      subcategory: _stringValue(value['subcategory']),
-      department: _stringValue(value['department']),
+      category: category,
+      subcategory: subcategory,
+      department: department,
     )) {
       continue;
     }
@@ -565,9 +584,12 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
       value,
       const [
         'originalPrice',
+        'streichpreis',
         'regularPrice',
         'normalPrice',
         'wasPrice',
+        'wasPriceDisplay',
+        'alterPreis',
         'oldPrice',
       ],
     );
@@ -602,10 +624,27 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         validUntil: validUntil,
         source: _stringValue(value['source']) ?? 'retailerWebsite',
         proofRef: _stringValue(value['proofRef']),
-        imageUrl: _httpUrlValue(value['imageUrl']),
-        category: _stringValue(value['category']),
-        packageSize: _stringValue(value['packageSize']),
-        priceByBaseUnit: _stringValue(value['priceByBaseUnit']),
+        imageUrl: _firstHttpUrl([
+          value['imageUrl'],
+          value['imageURL'],
+          value['image_url'],
+          value['image'],
+          value['productImage'],
+          value['product_image'],
+          value['bild'],
+          value['bild_app'],
+          value['bild_web130'],
+          value['bild_web90'],
+        ]),
+        category: category,
+        packageSize: _firstSourceLabel(
+          value,
+          const ['packageSize', 'package', 'packaging', 'quantityLabel'],
+        ),
+        priceByBaseUnit: _firstSourceLabel(
+          value,
+          const ['priceByBaseUnit', 'unitPrice', 'baseUnitPrice'],
+        ),
         sourceAdapter: sourceAdapter,
         // An unknown explicit regional flag is treated conservatively. It
         // remains visible as diagnostic evidence but cannot become routeable.
@@ -675,10 +714,57 @@ Object? _firstNonNullValue(
 
 String? _stringValue(Object? value) => value is String ? value.trim() : null;
 
-String? _firstHttpUrl(Iterable<Object?> values) {
+String? _firstHttpUrl(
+  Iterable<Object?> values, {
+  int depth = 0,
+}) {
+  if (depth > 2) return null;
   for (final value in values) {
     final url = _httpUrlValue(value);
     if (url != null) return url;
+    if (value is Map) {
+      final nested = _firstHttpUrl(
+        [
+          value['url'],
+          value['src'],
+          value['href'],
+          value['imageUrl'],
+          value['imageURL'],
+          value['image_url'],
+          value['image'],
+          value['original'],
+          value['large'],
+        ],
+        depth: depth + 1,
+      );
+      if (nested != null) return nested;
+    }
+  }
+  return null;
+}
+
+String? _firstSourceLabel(
+  Map<String, dynamic> value,
+  Iterable<String> keys,
+) {
+  for (final key in keys) {
+    final label = _sourceLabelValue(value[key]);
+    if (label != null) return label;
+  }
+  return null;
+}
+
+String? _sourceLabelValue(Object? value, {int depth = 0}) {
+  if (depth > 2) return null;
+  if (value is String) {
+    final trimmed = value.trim();
+    return trimmed.isEmpty ? null : trimmed;
+  }
+  if (value is Map) {
+    for (final key in const ['name', 'title', 'label', 'value']) {
+      final nested = _sourceLabelValue(value[key], depth: depth + 1);
+      if (nested != null) return nested;
+    }
   }
   return null;
 }
