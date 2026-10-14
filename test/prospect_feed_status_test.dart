@@ -22,6 +22,8 @@ void main() {
               generatedAt: DateTime(2026, 10, 1, 12, 2),
               now: DateTime(2026, 10, 1, 12, 3),
               regularPriceCount: 2,
+              regularPricePersistenceStatus:
+                  ProspectRegularPricePersistenceStatus.succeeded,
             ),
             ProspectFeedStatusCard(fromCache: true),
           ],
@@ -399,6 +401,80 @@ void main() {
     expect(find.text('Prospektstand veraltet'), findsOneWidget);
     expect(find.textContaining('älter als 48 Stunden'), findsOneWidget);
     expect(find.text('Aktueller Prospektstand'), findsNothing);
+  });
+
+  testWidgets('unterscheidet bestätigte Nullspeicherung vom Feed-Fallback',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectFeedStatusCard(
+          generatedAt: DateTime(2026, 10, 14, 12),
+          regularPriceCount: 0,
+          regularPricePersistenceStatus:
+              ProspectRegularPricePersistenceStatus.succeeded,
+        ),
+      ),
+    );
+
+    expect(
+      find.textContaining('0 reguläre Normalpreise als Preisbasis gespeichert.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('zeigt einen fehlgeschlagenen Persistenzlauf als unbekannt',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectFeedStatusCard(
+          generatedAt: DateTime(2026, 10, 14, 12),
+          regularPriceCount: 2,
+          regularPricePersistenceStatus:
+              ProspectRegularPricePersistenceStatus.failed,
+        ),
+      ),
+    );
+
+    expect(find.textContaining('Speicherstatus unbekannt'), findsOneWidget);
+    expect(find.textContaining('als Preisbasis gespeichert.'), findsNothing);
+  });
+
+  testWidgets('kennzeichnet einen laufenden Persistenzlauf', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectFeedStatusCard(
+          generatedAt: DateTime(2026, 10, 14, 12),
+          regularPriceCount: 2,
+          regularPricePersistenceStatus:
+              ProspectRegularPricePersistenceStatus.pending,
+        ),
+      ),
+    );
+
+    expect(
+      find.textContaining('Speicherstatus wird nach dem aktuellen Feed-Lauf geprüft.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('trennt Standalone-Feedpreise von bestätigter Speicherung',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectFeedStatusCard(
+          generatedAt: DateTime(2026, 10, 14, 12),
+          regularPriceCount: 1,
+        ),
+      ),
+    );
+
+    expect(
+      find.textContaining(
+        '1 regulärer Normalpreis im Feed erkannt; Speicherung nicht bestätigt.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.textContaining('als Preisbasis gespeichert.'), findsNothing);
   });
 
 }

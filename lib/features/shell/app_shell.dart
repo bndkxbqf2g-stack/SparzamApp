@@ -38,6 +38,7 @@ import '../offers/prospect_offer_products.dart';
 import '../../services/prospect_feed_fingerprint.dart';
 import '../offers/prospect_regular_price_persistence.dart';
 import '../offers/prospect_price_statistics.dart';
+import '../prospects/prospect_feed_status.dart';
 import 'price_observation_merge.dart';
 import '../../services/market_price_observation_adapter.dart';
 import '../../services/recent_purchase_store.dart';
@@ -167,6 +168,8 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   String? _prospectFeedFingerprint;
   int prospectRegularPriceCount = 0;
   Map<String, int> prospectRegularPriceCountsByStore = const <String, int>{};
+  ProspectRegularPricePersistenceStatus prospectRegularPricePersistenceStatus =
+      ProspectRegularPricePersistenceStatus.standalone;
   final priceObservationStore = PriceObservationStore();
   final receiptAliasStore = ReceiptAliasStore();
   late PriceDataSettings priceDataSettings;
@@ -628,6 +631,8 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
         setState(() {
           prospectRegularPriceCount = 0;
           prospectRegularPriceCountsByStore = const <String, int>{};
+          prospectRegularPricePersistenceStatus =
+              ProspectRegularPricePersistenceStatus.pending;
         });
       }
 
@@ -735,6 +740,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
             pricePersistenceWarning == null
                 ? Map.unmodifiable(persistedRegularPriceCountsByStore)
                 : const <String, int>{};
+        prospectRegularPricePersistenceStatus = pricePersistenceWarning == null
+            ? ProspectRegularPricePersistenceStatus.succeeded
+            : ProspectRegularPricePersistenceStatus.failed;
         offers = offersById.values.toList(growable: false);
         prospectProducts = offerBackedProducts
             .map((entry) => entry.product)
@@ -2031,6 +2039,8 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       prospectFeedFromCache: prospectFeedFromCache,
       prospectRegularPriceCount: prospectRegularPriceCount,
       prospectRegularPriceCountsByStore: prospectRegularPriceCountsByStore,
+      prospectRegularPricePersistenceStatus:
+          prospectRegularPricePersistenceStatus,
       prospectFeedGeneratedAt: prospectFeedGeneratedAt,
       onRefreshProspects: () => _loadProspectOffers(preferCached: false),
       prospectsRefreshing: _prospectFeedRefreshing,

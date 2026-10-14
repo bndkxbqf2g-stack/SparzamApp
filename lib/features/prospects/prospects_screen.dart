@@ -28,6 +28,8 @@ class ProspectsScreen extends StatefulWidget {
     this.onRefreshProspects,
     this.prospectsRefreshing = false,
     this.regularPriceCount,
+    this.regularPricePersistenceStatus =
+        ProspectRegularPricePersistenceStatus.standalone,
     this.persistedRegularPriceCounts,
     this.onSaveOffer,
     this.favoriteStore,
@@ -45,6 +47,7 @@ class ProspectsScreen extends StatefulWidget {
   /// Count confirmed by the shell's local price-observation persistence.
   /// Null keeps standalone screens on their feed-derived fallback.
   final int? regularPriceCount;
+  final ProspectRegularPricePersistenceStatus regularPricePersistenceStatus;
   /// Per-store counts confirmed by the local price-observation persistence.
   /// Null keeps standalone coverage on an explicitly unknown status.
   final Map<String, int>? persistedRegularPriceCounts;
@@ -326,6 +329,8 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                           currentRecords
                           .where(hasLearnableProspectRegularPrice)
                           .length,
+                      regularPricePersistenceStatus:
+                          widget.regularPricePersistenceStatus,
                       onRefresh: widget.onRefreshProspects,
                       refreshing: widget.prospectsRefreshing,
                     ),
