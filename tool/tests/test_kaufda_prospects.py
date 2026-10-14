@@ -64,6 +64,20 @@ class KaufdaProspectTest(unittest.TestCase):
             kaufda._is_food({}, "Bepflanztes Holzgefäß")
         )
 
+    def test_food_compound_words_do_not_leak_non_food_items(self):
+        for label in (
+            "Kaffeemaschine 1 Stück",
+            "Kaffeevollautomat",
+            "Küchenmaschine",
+            "Milchaufschäumer",
+            "Tomatenpflanze",
+            "Salatschleuder",
+            "Fleischwolf",
+            "Pizzaschneider",
+        ):
+            with self.subTest(label=label):
+                self.assertFalse(kaufda._is_food({}, label))
+
     def test_parse_next_data_supports_multiline_json(self):
         payload = kaufda.extract_next_data(self.html)
         items = kaufda._items_from_payload(payload)
