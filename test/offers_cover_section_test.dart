@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:sparzamapp/features/offers/offers_screen.dart';
+import 'package:sparzamapp/features/prospects/prospect_cover_section.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/services/prospect_feed_service.dart';
 
@@ -41,6 +42,9 @@ void main() {
 
     expect(find.text('Deine Favoriten'), findsOneWidget);
     expect(find.text('Weitere Prospekte'), findsOneWidget);
+    // Both the favorite rail and the grid use the bounded adaptive image;
+    // only failed Canvas decodes may opt into the HTML fallback.
+    expect(find.byType(ProspectAdaptiveImage), findsNWidgets(2));
     expect(
       find.byKey(const ValueKey('offer-cover-open-grid-Lidl')),
       findsOneWidget,

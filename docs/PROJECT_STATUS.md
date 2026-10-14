@@ -3385,3 +3385,11 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - [x] Prospektsuche, Scrollposition und Routen-/Belegcontroller werden beim Wechsel zwischen Liste, Prospekte und Preise nicht mehr verworfen.
 - [x] Regression prüft, dass die Prospektsuche nach einem Wechsel in die Einkaufsliste erhalten bleibt.
 
+
+
+## Update 15.10.2026 – Selektiver Cover-Fallback bei Canvas-/CORS-Problemen
+
+- [x] Coverkarten verwenden weiterhin den Canvas-first-Pfad mit begrenzter Decode-Größe, damit schnelles Scrollen keine Plattform-Views pro Karte erzeugt.
+- [x] Nur ein Bild, dessen Canvas-Decodierung tatsächlich fehlschlägt, wechselt einmalig auf den HTML-Fallback; erfolgreiche Cover bleiben im schnellen Pfad.
+- [x] Favoritenrail und Coverraster teilen dieselbe begrenzte Decode-Größe und vermeiden dadurch doppelte Bildcache-Einträge.
+- [x] Der Angebote-Widgettest schützt Coverdarstellung und Seitenansicht.

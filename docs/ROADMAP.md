@@ -551,3 +551,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Für dieselbe Produkt-/Filial-/Gültigkeitskombination ersetzt ein neuerer regulärer Prospektnachweis die ältere aktuelle Projektion auch dann, wenn sich die Prospektseite oder `proofRef` geändert hat.
 - [x] Die aktuelle Preisprojektion und Route verwenden dadurch keinen niedrigeren, veralteten Normalpreis aus einer früheren Feedfassung; Nachweis und Historie bleiben sichtbar.
 - [x] Eine Regression deckt den Wechsel des Prospektnachweises bei identischer Produkt-/Filial-/Gültigkeitsidentität ab.
+
+## Update 15.10.2026 – Selektiver Cover-Fallback bei Canvas-/CORS-Problemen
+
+- [x] Coverkarten verwenden weiterhin den Canvas-first-Pfad mit begrenzter Decode-Größe, damit schnelles Scrollen keine Plattform-Views pro Karte erzeugt.
+- [x] Nur ein Bild, dessen Canvas-Decodierung tatsächlich fehlschlägt, wechselt einmalig auf den HTML-Fallback; erfolgreiche Cover bleiben im schnellen Pfad.
+- [x] Favoritenrail und Coverraster teilen dieselbe begrenzte Decode-Größe und vermeiden dadurch doppelte Bildcache-Einträge.
+- [x] Der Angebote-Widgettest schützt Coverdarstellung und Seitenansicht.

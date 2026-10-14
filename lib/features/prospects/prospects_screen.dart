@@ -6,6 +6,7 @@ import '../../models/offer.dart';
 import '../offers/offer_import.dart';
 import '../offers/prospect_offer_products.dart';
 import 'prospect_category_presentation.dart';
+import 'prospect_cover_section.dart';
 import '../../models/product.dart';
 import '../../services/prospect_feed_service.dart';
 import '../offers/offer_filter.dart';
@@ -968,26 +969,19 @@ class _ProspectCard extends StatelessWidget {
     }
     final imageHeight = compact ? 168.0 : 181.0;
     final validity = _prospectValidityLabel(issue);
-    final cover = previewUrl == null || previewUrl.isEmpty
+    final cover = previewUrl == null
         ? _bringCoverPlaceholder()
-        : Image.network(
-            previewUrl,
+        : ProspectAdaptiveImage(
             key: ValueKey(
               'prospect-cover-image-${compact ? "grid" : "favorite"}-${issue.storeName}',
             ),
-            // Keep the overview cheap: a platform view for every cover makes
-            // the horizontal rail and grid jank on Flutter web.
-            cacheWidth: compact ? 480 : 640,
-            cacheHeight: compact ? 400 : 480,
-            filterQuality: FilterQuality.low,
-            // Overview covers stay on the Canvas renderer. A browser
-            // platform view for every retailer CDN image can make fast
-            // vertical and horizontal scrolling unstable on Flutter web.
-            // The full viewer keeps its explicit fallback boundary.
-            webHtmlElementStrategy: WebHtmlElementStrategy.never,
+            url: previewUrl,
+            // Use one bounded decode size for both cover layouts to avoid
+            // duplicate decoded images while the user scrolls quickly.
+            cacheWidth: 480,
+            cacheHeight: 400,
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) =>
-                _bringCoverPlaceholder(),
+            placeholder: _bringCoverPlaceholder(),
           );
 
     return RepaintBoundary(
