@@ -285,6 +285,60 @@ void main() {
     expect(issue.pages.single.zoomUrl, 'https://cdn.example/page-2-large.jpg');
     expect(issue.pages.single.keyWords, 'Butter 250 g');
   });
+  test('normalizes explicit article evidence aliases', () {
+    final result = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-10-14T05:57:41Z",
+  "sources": [
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "branchId": "lidl_zellingen",
+      "location": "Zellingen",
+      "prospects": [
+        {
+          "title": "Lidl Wochenprospekt",
+          "pageSamples": [
+            {
+              "number": 1,
+              "image": {"url": "https://cdn.example/lidl-cover.jpg"}
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "offers": [
+    {
+      "sourceId": "evidence-alias-1",
+      "productLabel": "Butter 250 g",
+      "storeName": "Lidl",
+      "offerPrice": 1.49,
+      "streichpreis": 1.99,
+      "validFrom": "2026-10-12",
+      "validUntil": "2026-10-17",
+      "proofRef": "https://example.test/lidl/butter",
+      "productImage": {"src": "https://cdn.example/lidl-butter.jpg"},
+      "productCategory": {"title": "Milchprodukte"},
+      "packaging": "250 g",
+      "baseUnitPrice": "5,96 €/kg"
+    }
+  ]
+}
+''');
+
+    final record = result.records.single;
+    expect(record.originalPrice, 1.99);
+    expect(record.imageUrl, 'https://cdn.example/lidl-butter.jpg');
+    expect(record.category, 'Milchprodukte');
+    expect(record.packageSize, '250 g');
+    expect(record.priceByBaseUnit, '5,96 €/kg');
+    final issue = result.prospects.singleWhere(
+      (item) => item.storeName == 'Lidl',
+    );
+    expect(issue.pages.single.imageUrl, 'https://cdn.example/lidl-cover.jpg');
+  });
+
   test('deduplicates and sorts valid prospect pages', () {
     final result = parseProspectFeed(r'''
 {

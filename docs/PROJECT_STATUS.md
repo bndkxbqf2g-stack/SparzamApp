@@ -1,3 +1,10 @@
+## Update 14.10.2026 – Prospekt-Evidenzfelder tolerant normalisieren
+
+- [x] Die App-Feedgrenze akzeptiert ausschließlich explizit benannte Varianten für Artikelbild, Kategorie, Packungsgröße und Grundpreis.
+- [x] Verschachtelte öffentliche Felder wie `productImage.url` und `productCategory.title` werden validiert übernommen; beliebige URLs, Rabattwerte und Identitätsraten bleiben ausgeschlossen.
+- [x] Coverseiten, Artikelbilder, Filialdaten, Gültigkeit, Nachweis und reguläre Normalpreise bleiben getrennte Evidenzsignale und werden nicht gegenseitig ergänzt.
+- [x] Eine Fixture-Regression schützt die Aliasfelder und die bestehende Lebensmittel-/Filial-/Gültigkeitsprüfung.
+
 ## Update 14.10.2026 – Reguläre Prospektpreise tolerant normalisieren
 
 - [x] Explizite Normalpreisfelder wie `originalPrice`, `regularPrice`, `normalPrice`, `wasPrice` und `oldPrice` werden an der Python- und Dart-Feedgrenze einheitlich gelesen.

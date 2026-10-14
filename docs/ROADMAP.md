@@ -1,3 +1,9 @@
+## Update 14.10.2026 – Prospekt-Evidenzfelder an der App-Grenze
+
+- [x] Explizite Bild-, Kategorie-, Packungs- und Grundpreisvarianten werden an der Dart-Feedgrenze einheitlich und nachvollziehbar normalisiert.
+- [x] Verschachtelte Quellobjekte werden nur über benannte Präsentationsfelder gelesen; fehlende Daten bleiben sichtbar und werden nicht geraten.
+- [x] Der bestehende Filial-, Gültigkeits-, Nachweis- und Lebensmittel-Filter bleibt vor jeder Anzeige und Preisprojektion aktiv.
+
 ## Update 14.10.2026 – Prospektpreise beim App-Fortsetzen aktualisieren
 - [x] Beim Fortsetzen der App wird ein validierter Prospektstand älter als sechs Stunden automatisch im Hintergrund aktualisiert.
 - [x] Der aktuelle Einkauf, die Route und die Prospektansicht bleiben während des Abrufs bedienbar; der lokale Cache wird sofort weiterverwendet.
