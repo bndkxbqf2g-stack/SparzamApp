@@ -31,8 +31,11 @@ TravelEstimate estimateRoundTrips(
     roadMatrix: roadMatrix,
     fallbackDistances: roadDistances,
   );
-  final minutes =
-      ((route.distanceKm / mobility.mode.averageSpeedKmh) * 60).round();
+  final minutes = route.durationMinutes != null &&
+          route.durationMinutes!.isFinite &&
+          route.durationMinutes! >= 0
+      ? route.durationMinutes!.round()
+      : ((route.distanceKm / mobility.mode.averageSpeedKmh) * 60).round();
 
   return TravelEstimate(
     distanceKm: route.distanceKm,

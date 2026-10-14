@@ -132,7 +132,7 @@ class RoadDistanceService implements TravelMatrixProvider {
       final uri = _osrmUri(
         'table',
         coordinateText,
-        {'annotations': 'distance'},
+        {'annotations': 'distance,duration'},
       );
       final response = await _client
           .get(uri, headers: const {'Accept': 'application/json'})
@@ -155,9 +155,29 @@ class RoadDistanceService implements TravelMatrixProvider {
         }
       }
 
+      // Duration data is useful for time-value planning but remains optional:
+      // older/self-hosted OSRM responses may publish distances only.
+      final durations = <String, double>{};
+      final durationRows = json['durations'] as List<dynamic>?;
+      if (durationRows != null && durationRows.length == coordinates.length) {
+        for (var from = 0; from < durationRows.length; from++) {
+          final row = durationRows[from];
+          if (row is! List<dynamic> || row.length != coordinates.length) {
+            continue;
+          }
+          for (var to = 0; to < row.length; to++) {
+            if (from == to) continue;
+            final seconds = (row[to] as num?)?.toDouble();
+            if (seconds == null || !seconds.isFinite || seconds < 0) continue;
+            durations['${names[from]}|${names[to]}'] = seconds / 60;
+          }
+        }
+      }
+
       final matrix = RoadRouteMatrix(
         originAddress: originAddress,
         distancesKm: distances,
+        durationsMinutes: durations,
         fetchedAt: DateTime.now(),
       );
       if (cache != null) {

@@ -31,6 +31,11 @@ void main() {
               [0, 5000, 6000],
               [5100, 0, 1200],
               [6200, 1300, 0]
+            ],
+            "durations": [
+              [0, 420, 540],
+              [430, 0, 180],
+              [550, 195, 0]
             ]
           }
           ''',
@@ -55,7 +60,11 @@ void main() {
     expect(matrix!.distance(RoadRouteMatrix.origin, 'A'), 5);
     expect(matrix.distance('A', 'B'), 1.2);
     expect(matrix.distance('B', RoadRouteMatrix.origin), 6.2);
+    expect(matrix.durationMinutes(RoadRouteMatrix.origin, 'A'), 7);
+    expect(matrix.durationMinutes('A', 'B'), 3);
+    expect(matrix.durationMinutes('B', RoadRouteMatrix.origin), closeTo(9.1667, 0.0001));
     expect(matrix.covers(['A', 'B']), isTrue);
+    expect(matrix.coversDurations(['A', 'B']), isTrue);
 
     service.close();
   });

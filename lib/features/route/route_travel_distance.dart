@@ -6,11 +6,16 @@ class OptimizedTravelRoute {
     required this.stores,
     required this.distanceKm,
     required this.usesRoadMatrix,
+    this.durationMinutes,
   });
 
   final List<Store> stores;
   final double distanceKm;
   final bool usesRoadMatrix;
+
+  /// OSRM travel time for the chosen round trip, when the source returned a
+  /// complete duration matrix. Null keeps the configured speed fallback.
+  final double? durationMinutes;
 }
 
 OptimizedTravelRoute optimizeTravelRoute(
@@ -24,6 +29,7 @@ OptimizedTravelRoute optimizeTravelRoute(
       stores: [],
       distanceKm: 0,
       usesRoadMatrix: false,
+      durationMinutes: 0,
     );
   }
 
@@ -31,6 +37,7 @@ OptimizedTravelRoute optimizeTravelRoute(
       roadMatrix.covers(stores.map((store) => store.name))) {
     List<Store>? bestOrder;
     var bestDistance = double.infinity;
+    double? bestDuration;
 
     for (final order in _permutations(stores)) {
       var distance = 0.0;
@@ -47,6 +54,7 @@ OptimizedTravelRoute optimizeTravelRoute(
       if (distance < bestDistance) {
         bestDistance = distance;
         bestOrder = order;
+        bestDuration = _durationForOrder(roadMatrix, order);
       }
     }
 
@@ -54,6 +62,7 @@ OptimizedTravelRoute optimizeTravelRoute(
       stores: bestOrder!,
       distanceKm: bestDistance,
       usesRoadMatrix: true,
+      durationMinutes: bestDuration,
     );
   }
 
@@ -83,4 +92,26 @@ Iterable<List<T>> _permutations<T>(List<T> items) sync* {
       yield [first, ...tail];
     }
   }
+}
+
+
+double? _durationForOrder(RoadRouteMatrix matrix, List<Store> order) {
+  var total = 0.0;
+  var previous = RoadRouteMatrix.origin;
+  for (final store in order) {
+    final duration = matrix.durationMinutes(previous, store.name);
+    if (duration == null || !duration.isFinite || duration < 0) return null;
+    total += duration;
+    previous = store.name;
+  }
+  final returnDuration = matrix.durationMinutes(
+    previous,
+    RoadRouteMatrix.origin,
+  );
+  if (returnDuration == null ||
+      !returnDuration.isFinite ||
+      returnDuration < 0) {
+    return null;
+  }
+  return total + returnDuration;
 }
