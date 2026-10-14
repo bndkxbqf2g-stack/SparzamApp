@@ -31,6 +31,7 @@ class OffersScreen extends StatefulWidget {
     this.fromCache = false,
     this.onRefreshProspects,
     this.prospectsRefreshing = false,
+    this.regularPriceCount,
   });
 
   // Kept for the shell/route data contract. The Angebote tab deliberately
@@ -49,6 +50,9 @@ class OffersScreen extends StatefulWidget {
   final bool fromCache;
   final Future<void> Function()? onRefreshProspects;
   final bool prospectsRefreshing;
+  /// Count confirmed by the shell's local price-observation persistence.
+  /// Null keeps standalone screens on their feed-derived fallback.
+  final int? regularPriceCount;
 
   @override
   State<OffersScreen> createState() => _OffersScreenState();
@@ -164,9 +168,8 @@ class _OffersScreenState extends State<OffersScreen> {
             generatedAt: widget.generatedAt,
             now: widget.now,
             fromCache: widget.fromCache,
-            regularPriceCount: currentRecords
-                .where(hasLearnableProspectRegularPrice)
-                .length,
+            regularPriceCount: widget.regularPriceCount ??
+                currentRecords.where(hasLearnableProspectRegularPrice).length,
             onRefresh: widget.onRefreshProspects,
             refreshing: widget.prospectsRefreshing,
           ),

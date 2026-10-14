@@ -24,6 +24,35 @@ void main() {
     );
   });
 
+  testWidgets(
+    'zeigt im Angebotstab nur bestätigte Normalpreisspeicherung an',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: OffersScreen(
+            catalogProducts: const <Product>[],
+            generatedAt: DateTime(2026, 10, 14, 12),
+            now: DateTime(2026, 10, 14, 12, 1),
+            regularPriceCount: 0,
+            prospectRecords: [
+              OfferImportRecord(
+                sourceId: 'regular-but-not-stored',
+                productLabel: 'Butter 250 g',
+                storeName: 'Lidl',
+                originalPrice: 2.49,
+                offerPrice: 1.99,
+                validUntil: DateTime(2026, 10, 18),
+                branchId: 'lidl-zellingen',
+                proofRef: 'https://example.test/lidl/butter',
+              ),
+            ],
+          ),
+        ),
+      );
+
+      expect(find.textContaining('als Preisbasis gespeichert.'), findsNothing);
+    },
+  );
   testWidgets('zeigt einen nicht verfügbaren Angebotsfeed transparent an', (
     tester,
   ) async {
