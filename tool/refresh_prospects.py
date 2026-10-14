@@ -2597,6 +2597,17 @@ def dedupe(offers):
         for field in ("imageUrl", "category", "packageSize", "priceByBaseUnit", "brochureId", "brochurePage", "publisherId"):
             if not clean(merged.get(field)) and clean(supplement.get(field)):
                 merged[field] = supplement[field]
+        # Keep a verified struck-through price when only the duplicate carries
+        # it; the official record remains the authoritative proof.
+        regular_price = supplement.get("originalPrice")
+        offer_price = merged.get("offerPrice")
+        if (
+            merged.get("originalPrice") is None
+            and isinstance(regular_price, (int, float))
+            and isinstance(offer_price, (int, float))
+            and regular_price >= offer_price
+        ):
+            merged["originalPrice"] = regular_price
         unique[key] = merged
     return list(unique.values())
 
