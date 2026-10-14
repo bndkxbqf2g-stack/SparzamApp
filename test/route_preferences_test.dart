@@ -5,6 +5,7 @@ import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/models/road_route_matrix.dart';
+import 'package:sparzamapp/models/store.dart';
 
 final _baselineDate = DateTime(2026, 9, 24);
 
@@ -429,6 +430,62 @@ void main() {
     final plan = optimizer.buildPlan([store]);
     expect(plan.travelMinutes, 20);
     expect(plan.timeCost, closeTo(10 / 3, 0.0001));
+  });
+
+  test('gleiche Filialnamen werden über den exakten Branch deterministisch entschieden', () {
+    const branchA = Store(
+      name: 'Lidl',
+      branchId: 'lidl-a',
+      location: 'Ort A',
+      address: 'A-Straße 1',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    const branchB = Store(
+      name: 'Lidl',
+      branchId: 'lidl-b',
+      location: 'Ort B',
+      address: 'B-Straße 1',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    const product = Product(
+      id: 'same-branch-price',
+      name: 'Gleiches Produkt',
+      unit: 'Stück',
+      group: 'test',
+    );
+    final optimizer = RouteOptimizer(
+      [ListItem(product: product)],
+      const [],
+      storeCatalog: const [branchB, branchA],
+      enabledStoreNames: const ['Lidl'],
+      maxStores: 1,
+      euroPerKm: 0,
+      marketPrices: [
+        MarketPrice(
+          productId: product.id,
+          storeName: 'Lidl',
+          sourceLocationId: 'lidl-a',
+          price: 1,
+          updatedAt: _baselineDate,
+        ),
+        MarketPrice(
+          productId: product.id,
+          storeName: 'Lidl',
+          sourceLocationId: 'lidl-b',
+          price: 1,
+          updatedAt: _baselineDate,
+        ),
+      ],
+    );
+
+    expect(optimizer.availableStores.map((store) => store.branchId), [
+      'lidl-b',
+      'lidl-a',
+    ]);
+    expect(optimizer.bestSingleStorePlan()!.stores.single.branchId, 'lidl-a');
+    expect(optimizer.alternatives().first.stores.single.branchId, 'lidl-a');
   });
 
   test('gleiche Planwerte werden über den Marktnamen entschieden', () {

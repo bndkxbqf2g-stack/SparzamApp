@@ -69,7 +69,7 @@ OptimizedTravelRoute optimizeTravelRoute(
       final score = duration == null
           ? distance
           : distance * fuelCostPerKm + duration / 60 * timeValue;
-      final orderKey = order.map((store) => store.name).join('|');
+      final orderKey = order.map(_travelStoreTieKey).join('|');
       final candidateDuration = duration ?? double.infinity;
       final previousDuration = bestDuration ?? double.infinity;
       final isBetter = score < bestScore ||
@@ -146,3 +146,11 @@ double? _durationForOrder(RoadRouteMatrix matrix, List<Store> order) {
   }
   return total + returnDuration;
 }
+
+
+String _travelStoreTieKey(Store store) => [
+  store.name,
+  store.branchId ?? '',
+  store.location,
+  store.address,
+].map((value) => value.trim().toLowerCase()).join('|');
