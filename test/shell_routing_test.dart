@@ -47,4 +47,54 @@ void main() {
     expect(identical(firstCurrent, secondCurrent), isTrue);
     expect(identical(firstRegular, secondRegular), isTrue);
   });
+
+  test('routing snapshot invalidiert sich bei geänderter Menge', () {
+    final items = [
+      ListItem(
+        product: const Product(
+          id: 'milk',
+          name: 'Milch 1 l',
+          unit: '1 l',
+          group: 'milch',
+        ),
+      ),
+    ];
+    const mobility = MobilitySettings();
+    final cache = ShellRoutingSnapshotCache();
+
+    final first = cache.resolve(
+      items: items,
+      offers: const [],
+      mobility: mobility,
+      marketPrices: const [],
+      openPricesMaxAgeDays: 60,
+      roadDistances: const {},
+      roadMatrix: null,
+    );
+    final reused = cache.resolve(
+      items: items,
+      offers: const [],
+      mobility: mobility,
+      marketPrices: const [],
+      openPricesMaxAgeDays: 60,
+      roadDistances: const {},
+      roadMatrix: null,
+    );
+
+    expect(identical(first, reused), isTrue);
+
+    items.single.quantity = 2;
+    final changed = cache.resolve(
+      items: items,
+      offers: const [],
+      mobility: mobility,
+      marketPrices: const [],
+      openPricesMaxAgeDays: 60,
+      roadDistances: const {},
+      roadMatrix: null,
+    );
+
+    expect(identical(first, changed), isFalse);
+  });
+
 }
