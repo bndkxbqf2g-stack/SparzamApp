@@ -7,6 +7,7 @@ import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/store.dart';
+import 'package:sparzamapp/services/market_price_observation_adapter.dart';
 
 void main() {
   for (final name in ['Schmand', 'Joghurt']) {
@@ -217,4 +218,47 @@ void main() {
     }
   });
 
+  test('current prospect projection prefers the newest correction for one proof', () {
+    final oldObservation = PriceObservation(
+      id: 'prospect-old',
+      productId: 'milk',
+      storeName: 'Lidl',
+      price: 1.29,
+      observedAt: DateTime(2026, 10, 12, 8),
+      source: PriceObservationSource.leaflet,
+      kind: PriceObservationKind.regular,
+      validFrom: DateTime(2026, 10, 12),
+      validUntil: DateTime(2026, 10, 17),
+      locationId: 'lidl-zellingen',
+      quantity: 1000,
+      unit: 'ml',
+      unitPrice: 1.29,
+      proofRef: 'https://example.test/lidl/milk',
+    );
+    final correctedObservation = PriceObservation(
+      id: 'prospect-corrected',
+      productId: 'milk',
+      storeName: 'Lidl',
+      price: 1.49,
+      observedAt: DateTime(2026, 10, 13, 8),
+      source: PriceObservationSource.leaflet,
+      kind: PriceObservationKind.regular,
+      validFrom: DateTime(2026, 10, 12),
+      validUntil: DateTime(2026, 10, 17),
+      locationId: 'lidl-zellingen',
+      quantity: 1000,
+      unit: 'ml',
+      unitPrice: 1.49,
+      proofRef: 'https://example.test/lidl/milk',
+    );
+
+    final prices = marketPricesFromObservations(
+      [oldObservation, correctedObservation],
+      now: DateTime(2026, 10, 13),
+    );
+
+    expect(prices, hasLength(1));
+    expect(prices.single.price, 1.49);
+    expect(prices.single.updatedAt, correctedObservation.observedAt);
+  });
 }
