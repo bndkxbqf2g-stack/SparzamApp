@@ -172,6 +172,30 @@ void main() {
     expect(evidence.every((entry) => entry.unit == 'g'), isTrue);
   });
 
+  test('keeps an unmatched source EAN on uncertain evidence', () {
+    final evidence = prospectPriceObservations(
+      records: [
+        OfferImportRecord(
+          sourceId: 'ean-mismatch',
+          productLabel: 'Jacobs Kaffee Crema 500 g',
+          ean: '04012345678906',
+          storeName: 'Lidl',
+          originalPrice: 6.99,
+          offerPrice: 4.99,
+          validUntil: DateTime(2026, 10, 17),
+          proofRef: 'https://example.test/lidl/ean-mismatch',
+        ),
+      ],
+      catalogProducts: const [coffee],
+      observedAt: observedAt,
+    );
+
+    expect(evidence, hasLength(2));
+    expect(evidence.every((entry) => entry.identityConfidence == 0), isTrue);
+    expect(evidence.every((entry) => entry.ean == '04012345678906'), isTrue);
+    expect(evidence.every((entry) => entry.productId!.startsWith('prospect|')), isTrue);
+  });
+
   test('automatic regular learning ignores expired and future periods', () {
     final records = [
       OfferImportRecord(

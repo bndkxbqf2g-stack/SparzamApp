@@ -468,6 +468,30 @@ def _parse_price(value: object) -> float | None:
     return number if number > 0 else None
 
 
+def _barcode_value(*values: object) -> str | None:
+    """Normalize only explicitly named source barcode fields."""
+
+    for value in values:
+        candidate = value
+        if isinstance(candidate, Mapping):
+            for key in ("ean", "gtin", "barcode", "productCode", "product_code", "code", "value"):
+                nested = candidate.get(key)
+                if nested is not None:
+                    candidate = nested
+                    break
+        if isinstance(candidate, bool) or candidate is None:
+            continue
+        text = clean(candidate)
+        compact = re.sub(r"[\s-]+", "", text)
+        if not re.fullmatch(r"\d+", compact):
+            continue
+        if len(compact) == 12:
+            compact = "0" + compact
+        if len(compact) in {8, 13, 14}:
+            return compact
+    return None
+
+
 def _regular_price_value(value: object) -> float | None:
     if isinstance(value, Mapping):
         for key in ("amount", "value", "price", "formatted", "text"):
@@ -867,6 +891,13 @@ def parse_kaufda_html(
             )
         )
         category = _category_label(raw)
+        ean = _barcode_value(
+            raw.get("ean"),
+            raw.get("gtin"),
+            raw.get("barcode"),
+            raw.get("productCode"),
+            raw.get("product_code"),
+        )
         record = {
             "sourceId": source_id,
             "productLabel": label,
@@ -907,6 +938,8 @@ def parse_kaufda_html(
             record["imageUrl"] = image
         if category:
             record["category"] = category
+        if ean:
+            record["ean"] = ean
         package = _package_hint(
             raw.get("title"),
             raw.get("description"),
@@ -1019,6 +1052,7 @@ def dedupe_kaufda(offers: Iterable[dict]) -> list[dict]:
             clean(offer.get("validFrom")),
             clean(offer.get("validUntil")),
             clean(offer.get("offerPrice")),
+            clean(offer.get("ean")),
             clean(offer.get("brochureId")),
             clean(offer.get("brochurePage")),
             # Without leaflet context, retain a source identity because two

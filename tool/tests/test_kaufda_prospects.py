@@ -189,6 +189,7 @@ class KaufdaProspectTest(unittest.TestCase):
         item.pop("offerImages", None)
         item["productImage"] = {"src": "https://img.example.test/alias-butter.jpg"}
         item["productCategory"] = {"title": "Milchprodukte"}
+        item["gtin"] = "04012345678905"
         item["packaging"] = "250 g"
         item["prices"].pop("priceByBaseUnit", None)
         item["prices"]["baseUnitPrice"] = "5,16 €/kg"
@@ -209,6 +210,7 @@ class KaufdaProspectTest(unittest.TestCase):
         offer = offers[0]
         self.assertEqual(offer["imageUrl"], "https://img.example.test/alias-butter.jpg")
         self.assertEqual(offer["category"], "Milchprodukte")
+        self.assertEqual(offer["ean"], "04012345678905")
         self.assertEqual(offer["packageSize"], "250 g")
         self.assertEqual(offer["priceByBaseUnit"], "5,16 €/kg")
         self.assertEqual(offer["originalPrice"], 1.79)
