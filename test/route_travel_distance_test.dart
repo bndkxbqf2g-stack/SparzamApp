@@ -119,7 +119,7 @@ void main() {
     },
   );
 
-  testMarker
+  test('unvollständige Matrix fällt auf bisherige Distanzen zurück', () {
     const matrix = RoadRouteMatrix(
       originAddress: 'Start',
       distancesKm: {
