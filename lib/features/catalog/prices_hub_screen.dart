@@ -49,8 +49,28 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
   int? _snapshotSignatureValue;
   List<_PriceSnapshot>? _snapshotCache;
   ShoppingPriceQuoteSnapshot? _quoteSnapshotCache;
+  List<ListItem>? _signatureShoppingListInput;
+  List<MarketPrice>? _signatureMarketPricesInput;
+  List<Offer>? _signatureOffersInput;
+  Map<String, ProspectPriceHistorySummary>? _signatureHistoryInput;
+  List<String>? _signatureEnabledStoresInput;
+  int? _signatureMaxAgeDays;
+  DateTime? _signatureDay;
 
   int _snapshotSignature() {
+    final reference = widget.now ?? DateTime.now();
+    final day = DateTime(reference.year, reference.month, reference.day);
+    if (_snapshotSignatureValue != null &&
+        identical(_signatureShoppingListInput, widget.shoppingList) &&
+        identical(_signatureMarketPricesInput, widget.marketPrices) &&
+        identical(_signatureOffersInput, widget.offers) &&
+        identical(_signatureHistoryInput, widget.prospectPriceHistory) &&
+        identical(_signatureEnabledStoresInput, widget.enabledStoreNames) &&
+        _signatureMaxAgeDays == widget.openPricesMaxAgeDays &&
+        _signatureDay == day) {
+      return _snapshotSignatureValue!;
+    }
+
     var hash = 17;
     void add(Object? value) {
       hash = (hash * 31 + (value?.hashCode ?? 0)) & 0x3fffffff;
@@ -100,9 +120,16 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
     }
     add(widget.enabledStoreNames.join('|'));
     add(widget.openPricesMaxAgeDays);
-    final reference = widget.now ?? DateTime.now();
-    add(DateTime(reference.year, reference.month, reference.day)
-        .millisecondsSinceEpoch);
+    add(day.millisecondsSinceEpoch);
+
+    _signatureShoppingListInput = widget.shoppingList;
+    _signatureMarketPricesInput = widget.marketPrices;
+    _signatureOffersInput = widget.offers;
+    _signatureHistoryInput = widget.prospectPriceHistory;
+    _signatureEnabledStoresInput = widget.enabledStoreNames;
+    _signatureMaxAgeDays = widget.openPricesMaxAgeDays;
+    _signatureDay = day;
+    _snapshotSignatureValue = hash;
     return hash;
   }
 
