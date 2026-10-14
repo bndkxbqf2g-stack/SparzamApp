@@ -261,21 +261,17 @@ class ProspectCoverCard extends StatelessWidget {
     final scope = compact ? 'grid' : 'favorite';
     final image = previewUrl == null
         ? _coverPlaceholder()
-        : Image.network(
-            previewUrl,
+        : ProspectAdaptiveImage(
             key: ValueKey(
               'offer-cover-image-$scope-${issue.storeName}',
             ),
-            cacheWidth: compact ? 480 : 640,
-            cacheHeight: compact ? 400 : 480,
-            filterQuality: FilterQuality.low,
-            // Overview covers stay on the Canvas renderer. A browser
-            // platform view for every retailer CDN image can make fast
-            // vertical and horizontal scrolling unstable on Flutter web;
-            // the full viewer keeps its explicit fallback boundary.
-            webHtmlElementStrategy: WebHtmlElementStrategy.never,
+            url: previewUrl,
+            // Use one bounded decode size for favorites and the grid so the
+            // same cover does not occupy two decoded browser-cache entries.
+            cacheWidth: 480,
+            cacheHeight: 400,
             fit: BoxFit.cover,
-            errorBuilder: (_, error, stackTrace) => _coverPlaceholder(),
+            placeholder: _coverPlaceholder(),
           );
 
     final validity = _validity(issue);
@@ -382,6 +378,71 @@ class ProspectCoverCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Displays a prospect cover on the cheap Canvas path and retries only
+/// failed decodes with a single HTML image element. This keeps CORS-sensitive
+/// retailer covers visible without creating platform views for every card.
+class ProspectAdaptiveImage extends StatefulWidget {
+  const ProspectAdaptiveImage({
+    super.key,
+    required this.url,
+    required this.cacheWidth,
+    required this.cacheHeight,
+    required this.fit,
+    required this.placeholder,
+  });
+
+  final String url;
+  final int cacheWidth;
+  final int cacheHeight;
+  final BoxFit fit;
+  final Widget placeholder;
+
+  @override
+  State<ProspectAdaptiveImage> createState() => _ProspectAdaptiveImageState();
+}
+
+class _ProspectAdaptiveImageState extends State<ProspectAdaptiveImage> {
+  bool _useHtmlFallback = false;
+
+  @override
+  void didUpdateWidget(covariant ProspectAdaptiveImage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.url != widget.url) {
+      _useHtmlFallback = false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Image.network(
+      widget.url,
+      key: ValueKey('prospect-adaptive-image-\${widget.url}'),
+      cacheWidth: widget.cacheWidth,
+      cacheHeight: widget.cacheHeight,
+      filterQuality: FilterQuality.low,
+      fit: widget.fit,
+      // Successful images stay on Canvas. A browser platform view is created
+      // only after this exact URL failed to decode there.
+      webHtmlElementStrategy: _useHtmlFallback
+          ? WebHtmlElementStrategy.fallback
+          : WebHtmlElementStrategy.never,
+      frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+        if (wasSynchronouslyLoaded || frame != null) return child;
+        return widget.placeholder;
+      },
+      errorBuilder: (context, error, stackTrace) {
+        if (!_useHtmlFallback) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted || _useHtmlFallback) return;
+            setState(() => _useHtmlFallback = true);
+          });
+        }
+        return widget.placeholder;
+      },
     );
   }
 }
