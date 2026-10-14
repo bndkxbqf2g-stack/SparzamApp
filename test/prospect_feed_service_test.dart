@@ -200,6 +200,43 @@ void main() {
     expect(aldi.thumbnailUrl, 'https://cdn.example/aldi-cover.jpg');
   });
 
+  test('accepts alternate cover and page image fields', () {
+    final result = parseProspectFeed(r'''
+{
+  "sources": [
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "prospects": [
+        {
+          "title": "Lidl Wochenprospekt",
+          "coverUrl": "https://cdn.example/cover-alt.jpg",
+          "pageSamples": [
+            {
+              "pageNumber": "2",
+              "imageUrl": "https://cdn.example/page-2.jpg",
+              "zoomUrl": "https://cdn.example/page-2-large.jpg",
+              "keywords": "Butter 250 g"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "offers": []
+}
+''');
+
+    final issue = result.prospects.firstWhere(
+      (item) => item.storeName == 'Lidl',
+    );
+    expect(issue.thumbnailUrl, 'https://cdn.example/cover-alt.jpg');
+    expect(issue.pages, hasLength(1));
+    expect(issue.pages.single.number, 2);
+    expect(issue.pages.single.imageUrl, 'https://cdn.example/page-2.jpg');
+    expect(issue.pages.single.zoomUrl, 'https://cdn.example/page-2-large.jpg');
+    expect(issue.pages.single.keyWords, 'Butter 250 g');
+  });
   test('deduplicates and sorts valid prospect pages', () {
     final result = parseProspectFeed(r'''
 {
