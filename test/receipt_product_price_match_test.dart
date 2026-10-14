@@ -17,6 +17,7 @@ void main() {
     required double price,
     required DateTime date,
     bool comparable = false,
+    bool identityConfirmed = true,
   }) =>
       ReceiptPriceStat(
         familyKey: family,
@@ -28,6 +29,7 @@ void main() {
         medianPrice: price,
         comparable: comparable,
         priceBasis: comparable ? 'kg' : 'Packung',
+        identityConfirmed: identityConfirmed,
       );
 
   test('specific variant does not inherit sibling family history', () {
@@ -120,37 +122,65 @@ void main() {
 
     expect(result?.medianPrice, 9.99);
   });
-  test('generic family includes exact and provisional receipt identities', () {
+
+  test('generic family exposes unconfirmed prices as non-routing hints', () {
     const eggs = Product(
       id: 'eggs',
       name: 'Eier',
       unit: 'Artikel',
       group: 'eier',
     );
-    final result = receiptStatsForProduct(eggs, [
+    final result = receiptHintsForProduct(eggs, [
+      stat(
+        family: 'eier',
+        productId: 'receipt_auto_bodenhaltung',
+        price: 2.29,
+        date: DateTime(2026, 9, 21),
+        identityConfirmed: false,
+      ),
       stat(
         family: 'eier',
         productId: 'eggs',
         price: 2.49,
         date: DateTime(2026, 9, 20),
       ),
+    ]);
+
+    expect(result, hasLength(2));
+    expect(result.where((item) => !item.identityConfirmed), hasLength(1));
+    expect(
+      receiptStatsForProduct(eggs, [
+        stat(
+          family: 'eier',
+          productId: 'receipt_auto_bodenhaltung',
+          price: 2.29,
+          date: DateTime(2026, 9, 21),
+          identityConfirmed: false,
+        ),
+      ]),
+      isEmpty,
+    );
+  });
+
+  test('specific variant exposes its exact unconfirmed receipt hint only', () {
+    final result = receiptHintsForProduct(mixedMince, [
       stat(
-        family: 'eier',
-        productId: 'receipt_auto_bodenhaltung',
-        price: 2.29,
-        date: DateTime(2026, 9, 21),
+        family: 'hackfleisch',
+        productId: 'receipt_auto_old',
+        price: 4.79,
+        date: DateTime(2026, 7, 23),
+        identityConfirmed: false,
       ),
       stat(
-        family: 'eier',
-        productId: null,
-        price: 2.19,
-        date: DateTime(2026, 9, 22),
+        family: 'hackfleisch',
+        productId: 'hackfleisch_gemischt',
+        price: 4.99,
+        date: DateTime(2026, 8, 1),
+        identityConfirmed: false,
       ),
     ]);
 
-    expect(result, hasLength(3));
-    expect(result.map((item) => item.medianPrice).toSet(), {2.49, 2.29, 2.19});
+    expect(result, hasLength(1));
+    expect(result.single.productId, mixedMince.id);
   });
-
-
 }
