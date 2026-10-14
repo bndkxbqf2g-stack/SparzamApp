@@ -327,7 +327,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     }
   }
 
-  final records = <OfferImportRecord>[];
+  final recordsByKey = <String, OfferImportRecord>{};
   final prospects = <ProspectIssue>[];
   for (final source in (json['sources'] as List<dynamic>? ?? const [])) {
     if (source is! Map<String, dynamic>) continue;
@@ -492,8 +492,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     final regionalOnly = isKaufdaWithoutBranch
         ? true
         : (parsedRegionalOnly ?? (regionalOnlyValue != null));
-    records.add(
-      OfferImportRecord(
+    final record = OfferImportRecord(
         sourceId: sourceId,
         productLabel: productLabel,
         storeName: storeName,
@@ -526,9 +525,12 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
             ? _optionalNonEmptyString(value['address'])
             : (_optionalNonEmptyString(value['address']) ??
                 sourceAddresses[storeName]),
-      ),
-    );
+      );
+    final key = _prospectRecordKey(record);
+    recordsByKey.putIfAbsent(key, () => record);
   }
+
+  final records = recordsByKey.values.toList(growable: false);
 
   return ProspectFeedLoadResult(
     records: records,
@@ -537,6 +539,27 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     prospects: prospects,
     fromCache: fromCache,
   );
+}
+
+String _prospectRecordKey(OfferImportRecord record) {
+  // Feed publishers occasionally repeat the same article on multiple
+  // brochure pages. Keep the key conservative: a changed branch, package,
+  // amount, regular price or validity is a distinct observation.
+  final fields = <String>[
+    record.storeName,
+    record.branchId ?? '',
+    record.sourceAdapter ?? '',
+    record.sourceId,
+    record.productLabel,
+    record.packageSize ?? '',
+    record.offerPrice.toStringAsFixed(4),
+    record.originalPrice?.toStringAsFixed(4) ?? '',
+    record.validFrom?.toIso8601String() ?? '',
+    record.validUntil.toIso8601String(),
+  ];
+  return fields
+      .map((value) => value.trim().toLowerCase().replaceAll(RegExp(r'\s+'), ' '))
+      .join('\u001f');
 }
 
 String? _stringValue(Object? value) => value is String ? value.trim() : null;
