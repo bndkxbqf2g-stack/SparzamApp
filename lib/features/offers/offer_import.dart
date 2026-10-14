@@ -76,6 +76,30 @@ class OfferImportRecord {
   final String? address;
 }
 
+/// Stable widget identity for an imported prospect record.
+///
+/// Source IDs are preferred when available. Legacy and image-only feeds may
+/// omit them, so the visible fields form a deterministic fallback key instead
+/// of producing duplicate empty keys while cards are recycled during scrolling.
+String prospectOfferRecordKey(OfferImportRecord record) {
+  final sourceId = record.sourceId.trim();
+  if (sourceId.isNotEmpty) {
+    return [record.storeName.trim(), sourceId].join('|');
+  }
+  return [
+    record.storeName.trim(),
+    record.branchId?.trim() ?? '',
+    record.productLabel.trim(),
+    record.offerPrice.toStringAsFixed(2),
+    record.originalPrice?.toStringAsFixed(2) ?? '',
+    record.validFrom?.toIso8601String() ?? '',
+    record.validUntil.toIso8601String(),
+    record.brochureId?.trim() ?? '',
+    record.brochurePage?.toString() ?? '',
+    record.imageUrl?.trim() ?? '',
+  ].join('|');
+}
+
 String prospectRecordLocationLabel(
   String storeName,
   Iterable<OfferImportRecord> records, {

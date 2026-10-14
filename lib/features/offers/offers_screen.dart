@@ -261,9 +261,12 @@ class _ProspectOffers extends StatefulWidget {
   State<_ProspectOffers> createState() => _ProspectOffersState();
 }
 
+const prospectOfferPageSize = 24;
+
 class _ProspectOffersState extends State<_ProspectOffers> {
   final expandedStores = <String>{};
   final expandedCategories = <String>{};
+  final _visibleCategoryCounts = <String, int>{};
   final _resolvedProducts = <String, Product?>{};
   List<OfferImportRecord>? _filteredInput;
   String? _filteredQuery;
@@ -277,6 +280,10 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     super.didUpdateWidget(oldWidget);
     if (!identical(oldWidget.catalogProducts, widget.catalogProducts)) {
       _resolvedProducts.clear();
+    }
+    if (!identical(oldWidget.records, widget.records) ||
+        oldWidget.query != widget.query) {
+      _visibleCategoryCounts.clear();
     }
   }
 
@@ -399,15 +406,11 @@ class _ProspectOffersState extends State<_ProspectOffers> {
                             expandedCategories.remove(key);
                           }
                         }),
-                        children:
-                            expandedCategories.contains(
-                              '${entry.key}|${category.key}',
-                            )
-                            ? [
-                                for (final record in category.value)
-                                  _buildProspectCard(record),
-                              ]
-                            : const [],
+                        children: _categoryChildren(
+                          storeName: entry.key,
+                          categoryName: category.key,
+                          records: category.value,
+                        ),
                       ),
                   ]
                 : const [],
@@ -416,11 +419,50 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     );
   }
 
+  List<Widget> _categoryChildren({
+    required String storeName,
+    required String categoryName,
+    required List<OfferImportRecord> records,
+  }) {
+    final key = '$storeName|$categoryName';
+    if (!expandedCategories.contains(key)) return const <Widget>[];
+
+    final visibleCount = (_visibleCategoryCounts[key] ?? prospectOfferPageSize)
+        .clamp(0, records.length)
+        .toInt();
+    final children = <Widget>[
+      for (final record in records.take(visibleCount)) _buildProspectCard(record),
+    ];
+    if (visibleCount < records.length) {
+      children.add(
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: OutlinedButton.icon(
+              key: ValueKey('prospect-load-more-$key'),
+              onPressed: () => setState(() {
+                final next = visibleCount + prospectOfferPageSize;
+                _visibleCategoryCounts[key] =
+                    next > records.length ? records.length : next;
+              }),
+              icon: const Icon(Icons.expand_more),
+              label: Text(
+                'Weitere Artikel laden (${records.length - visibleCount})',
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    return children;
+  }
+
   Widget _buildProspectCard(OfferImportRecord record) {
     final product = _memoizedProduct(record);
     final onAdd = widget.onAddToShoppingList;
     return ProspectOfferCard(
-      key: ValueKey('prospect-offer-${record.sourceId}'),
+      key: ValueKey('prospect-offer-${prospectOfferRecordKey(record)}'),
       record: record,
       product: product,
       compact: true,

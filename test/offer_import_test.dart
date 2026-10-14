@@ -320,5 +320,50 @@ void main() {
 
     expect(result.reason, 'invalid_price');
   });
+  test('keeps source-backed prospect widget keys unique per market', () {
+    final lidl = OfferImportRecord(
+      sourceId: 'shared-source-id',
+      productLabel: 'Butter 250 g',
+      storeName: 'Lidl',
+      offerPrice: 1.29,
+      validUntil: DateTime(2026, 10, 17),
+    );
+    final netto = OfferImportRecord(
+      sourceId: 'shared-source-id',
+      productLabel: 'Butter 250 g',
+      storeName: 'Netto',
+      offerPrice: 1.29,
+      validUntil: DateTime(2026, 10, 17),
+    );
+
+    expect(prospectOfferRecordKey(lidl), isNot(prospectOfferRecordKey(netto)));
+  });
+
+  test('fallback prospect widget keys distinguish source-id-free records', () {
+    final first = OfferImportRecord(
+      sourceId: '',
+      productLabel: 'Milch 1 l',
+      storeName: 'Lidl',
+      offerPrice: 0.99,
+      validFrom: DateTime(2026, 10, 12),
+      validUntil: DateTime(2026, 10, 17),
+      brochureId: 'kw42',
+      brochurePage: 3,
+    );
+    final second = OfferImportRecord(
+      sourceId: '',
+      productLabel: 'Milch 1 l',
+      storeName: 'Lidl',
+      offerPrice: 1.09,
+      validFrom: DateTime(2026, 10, 12),
+      validUntil: DateTime(2026, 10, 17),
+      brochureId: 'kw42',
+      brochurePage: 3,
+    );
+
+    expect(prospectOfferRecordKey(first), isNot(prospectOfferRecordKey(second)));
+    expect(prospectOfferRecordKey(first), isNotEmpty);
+  });
+
 }
 

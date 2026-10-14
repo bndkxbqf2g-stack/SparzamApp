@@ -413,6 +413,52 @@ void main() {
     );
   });
 
+  testWidgets('lädt Artikelkarten innerhalb einer Kategorie seitenweise', (
+    tester,
+  ) async {
+    final records = [
+      for (var index = 1; index <= prospectOfferPageSize + 1; index++)
+        OfferImportRecord(
+          sourceId: 'paged-$index',
+          productLabel: 'Joghurt $index',
+          storeName: 'Lidl',
+          offerPrice: 0.49,
+          validFrom: DateTime(2026, 10, 12),
+          validUntil: DateTime(2026, 10, 17),
+          proofRef: 'https://example.test/paged-$index',
+          category: 'Kühlregal',
+        ),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: OffersScreen(
+          catalogProducts: const <Product>[],
+          prospectRecords: records,
+          now: DateTime(2026, 10, 13),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Lidl'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Kühlregal'));
+    await tester.pumpAndSettle();
+
+    final lastCard = find.byKey(
+      const ValueKey('prospect-offer-Lidl|paged-25'),
+    );
+    expect(lastCard, findsNothing);
+    final loadMore = find.byKey(
+      const ValueKey('prospect-load-more-Lidl|Kühlregal'),
+    );
+    expect(loadMore, findsOneWidget);
+    tester.widget<OutlinedButton>(loadMore).onPressed!.call();
+    await tester.pump();
+
+    expect(lastCard, findsOneWidget);
+  });
+
 }
 
 
