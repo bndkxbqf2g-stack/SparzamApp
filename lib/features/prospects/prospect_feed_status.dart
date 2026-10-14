@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../offers/offer_import.dart';
+import '../offers/offer_filter.dart';
 import '../../services/prospect_feed_service.dart';
 
 /// Makes the age and provenance of the public prospect feed visible wherever
@@ -172,14 +173,24 @@ class ProspectCoverage {
 List<ProspectCoverage> calculateProspectCoverage({
   required Iterable<ProspectIssue> issues,
   required Iterable<OfferImportRecord> records,
+  DateTime? now,
 }) {
+  final currentRecords = now == null
+      ? records.toList(growable: false)
+      : currentProspectRecords(records, now: now);
+  final currentIssues = now == null
+      ? issues.toList(growable: false)
+      : issues
+            .where((issue) => _isCurrentProspectIssue(issue, now: now))
+            .toList(growable: false);
+
   final issuesByStore = <String, ProspectIssue>{};
-  for (final issue in issues) {
+  for (final issue in currentIssues) {
     issuesByStore.putIfAbsent(issue.storeName, () => issue);
   }
 
   final recordsByStore = <String, List<OfferImportRecord>>{};
-  for (final record in records) {
+  for (final record in currentRecords) {
     recordsByStore.putIfAbsent(record.storeName, () => []).add(record);
   }
 
@@ -201,6 +212,20 @@ List<ProspectCoverage> calculateProspectCoverage({
         recordsByStore[storeName] ?? const <OfferImportRecord>[],
       ),
   ];
+}
+
+bool _isCurrentProspectIssue(
+  ProspectIssue issue, {
+  DateTime? now,
+}) {
+  final evaluationNow = now;
+  final validUntil = issue.validUntil;
+  if (evaluationNow == null || validUntil == null) return true;
+  return isOfferDateRangeActive(
+    validFrom: issue.validFrom,
+    validUntil: validUntil,
+    now: evaluationNow,
+  );
 }
 
 ProspectCoverage _coverageForStore(

@@ -168,6 +168,44 @@ void main() {
     expect(kaufland.regularPriceCount, 1);
   });
 
+  test('filters stale records and dated prospects at the coverage boundary', () {
+    final coverage = calculateProspectCoverage(
+      issues: [
+        ProspectIssue(
+          storeName: 'Lidl',
+          title: 'Alter Prospekt',
+          pages: const [
+            ProspectPage(
+              number: 1,
+              imageUrl: 'https://example.test/old-cover.jpg',
+            ),
+          ],
+          validFrom: DateTime(2026, 9, 1),
+          validUntil: DateTime(2026, 9, 7),
+        ),
+      ],
+      records: [
+        OfferImportRecord(
+          sourceId: 'old-offer',
+          productLabel: 'Butter 250 g',
+          storeName: 'Lidl',
+          offerPrice: 1.29,
+          validFrom: DateTime(2026, 9, 1),
+          validUntil: DateTime(2026, 9, 7),
+          imageUrl: 'https://example.test/old-offer.jpg',
+          category: 'Milchprodukte',
+        ),
+      ],
+      now: DateTime(2026, 10, 14),
+    );
+
+    final lidl = coverage.firstWhere((entry) => entry.storeName == 'Lidl');
+    expect(lidl.structuredOfferCount, 0);
+    expect(lidl.pageCount, 0);
+    expect(lidl.offerImageCount, 0);
+    expect(lidl.offerCategoryCount, 0);
+  });
+
   test('counts a validated cover fallback as one image page', () {
     final coverage = calculateProspectCoverage(
       issues: const [

@@ -442,6 +442,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                     coverage: calculateProspectCoverage(
                       issues: visibleProspects,
                       records: currentRecords,
+                      now: widget.now,
                     ),
                   ),
                 ),
