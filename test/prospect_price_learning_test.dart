@@ -58,6 +58,29 @@ void main() {
     },
   );
 
+  test('matches refreshed stores case-insensitively and around whitespace', () {
+    final evidence = datedProspectRegularPriceObservations(
+      records: [
+        OfferImportRecord(
+          sourceId: 'trimmed-store',
+          productLabel: 'Kaffee 500 g',
+          storeName: ' Kaufland ',
+          originalPrice: 6.99,
+          offerPrice: 4.99,
+          validUntil: DateTime(2026, 10, 17),
+          proofRef: 'https://example.test/kaufland/coffee',
+        ),
+      ],
+      catalogProducts: const [],
+      observedAt: DateTime(2026, 10, 12, 8),
+      refreshedStores: const ['KAUFLAND'],
+    );
+
+    expect(evidence, hasLength(1));
+    expect(evidence.single.storeName, ' Kaufland ');
+    expect(evidence.single.kind, PriceObservationKind.regular);
+  });
+
   test('does not learn an equal original amount as a crossed-out price', () {
     final allEvidence = prospectPriceObservations(
       records: [
