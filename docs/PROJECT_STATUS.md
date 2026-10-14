@@ -1,3 +1,9 @@
+## Update 14.10.2026 – KaufDA-Non-Food-Grenze und Adapter-CI
+
+- Der optionale KaufDA-Parser verwirft jetzt klar erkennbare zusammengesetzte Non-Food-Bezeichnungen, auch wenn darin ein Lebensmittelwort vorkommt.
+- Die vorhandene Kategoriepfad-Prüfung bleibt vorrangig; die neue Grenze ergänzt nur eng gefasste Produktklassen wie Kaffeemaschinen, Küchenmaschinen, Tomatenpflanzen und Fleischwölfe.
+- Die anonymisierten Python-Fixtures für KaufDA, Bring und den Refresh-Adapter laufen jetzt als eigener Schritt in der normalen Flutter-CI.
+
 ## Update 14.10.2026 – Prospektseiten ohne progressive Lade-Rebuilds
 
 - Der Prospektviewer zeigt bis zum ersten dekodierten Bildframe einen stabilen Platzhalter.

@@ -19,6 +19,8 @@ jobs:
           cache: true
       - name: Install dependencies
         run: flutter pub get
+      - name: Run Python source adapter tests
+        run: python -m unittest discover -s tool/tests -p 'test_*.py' --buffer
       - name: Analyze
         run: flutter analyze
       - name: Run tests

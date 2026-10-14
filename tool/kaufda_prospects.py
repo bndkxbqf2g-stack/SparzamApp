@@ -139,6 +139,24 @@ NON_FOOD_MARKERS = (
     "holzgefäß",
     "holzgefaess",
     "drucker",
+    # Composite labels that otherwise inherit a food marker (for example
+    # “Kaffee” in “Kaffeemaschine”). These are high-confidence product
+    # classes, not a general-purpose identity alias list.
+    "kaffeemaschine",
+    "kaffeevollautomat",
+    "espressomaschine",
+    "espresso maschine",
+    "küchenmaschine",
+    "kuechenmaschine",
+    "milchaufschäumer",
+    "milchaufschaeumer",
+    "tomatenpflanze",
+    "tomatenpflanzen",
+    "salatschleuder",
+    "brotbackautomat",
+    "brotbackmaschine",
+    "pizzaschneider",
+    "fleischwolf",
 )
 
 _PACKAGE_RE = re.compile(
