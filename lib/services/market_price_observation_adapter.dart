@@ -211,6 +211,11 @@ bool _projectsToLegacyMarketPrice(PriceObservationSource source) =>
       _ => false,
     };
 
+bool _isProspectSource(PriceObservationSource source) =>
+    source == PriceObservationSource.retailer ||
+    source == PriceObservationSource.retailerWebsite ||
+    source == PriceObservationSource.leaflet;
+
 bool _hasProspectValidity(PriceObservation observation) {
   if (observation.kind != PriceObservationKind.regular) return true;
   final isProspect = switch (observation.source) {
