@@ -522,12 +522,10 @@ def parse_aldi_api_page(json_text, promotion_day):
         if len(label) < 2:
             continue
 
-        regular = None
-        was_price = price.get("wasPriceDisplay")
-        if isinstance(was_price, str):
-            match = re.search(r"(\d+[,.]\d{2})", was_price)
-            if match:
-                regular = money(match.group(1))
+        sale = float(cents) / 100
+        regular = _explicit_regular_price(price, sale)
+        if regular is None:
+            regular = _explicit_regular_price(item, sale)
 
         sku = clean(str(item.get("sku") or ""))
         slug = clean(str(item.get("urlSlugText") or "")).strip("/")
@@ -563,7 +561,7 @@ def parse_aldi_api_page(json_text, promotion_day):
         offers.append(record(
             "ALDI Süd",
             label,
-            float(cents) / 100,
+            sale,
             promotion_day,
             valid_until,
             proof,
@@ -666,6 +664,31 @@ def _json_money(value):
     return money(match.group(1)) if match else None
 
 
+def _explicit_regular_price(raw, sale):
+    """Read only an explicitly named regular-price field.
+
+    These keys describe a stated crossed-out/previous price. Discount rates,
+    UVP/list prices and arbitrary numeric fields stay outside this helper so a
+    source format change cannot invent a comparable regular price.
+    """
+    if not isinstance(raw, dict):
+        return None
+    for key in (
+        "streichpreis",
+        "wasPriceDisplay",
+        "wasPrice",
+        "originalPrice",
+        "regularPrice",
+        "normalPrice",
+        "alterPreis",
+        "oldPrice",
+    ):
+        candidate = _json_money(raw.get(key))
+        if candidate is not None and candidate >= sale:
+            return candidate
+    return None
+
+
 def _edeka_date(value):
     if isinstance(value, (int, float)):
         timestamp = float(value)
@@ -736,16 +759,14 @@ def parse_edeka_api(json_text, base_url):
             valid_from, valid_until = current_week()
 
         regular = None
-        for key in (
-            "streichpreis",
-            "originalPrice",
-            "regularPrice",
-            "alterPreis",
-            "oldPrice",
+        for candidate_source in (
+            doc,
+            doc.get("price"),
+            doc.get("prices"),
+            doc.get("pricing"),
         ):
-            candidate = _json_money(doc.get(key))
-            if candidate is not None and candidate >= sale:
-                regular = candidate
+            regular = _explicit_regular_price(candidate_source, sale)
+            if regular is not None:
                 break
 
         raw_id = clean(str(doc.get("angebotid") or doc.get("externeid") or index))
