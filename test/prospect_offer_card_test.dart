@@ -74,7 +74,7 @@ void main() {
       ),
     );
 
-    final button = find.byTooltip('Bezeichnung prüfen und als Artikel übernehmen');
+    final button = find.text('Prüfen & übernehmen');
     expect(button, findsOneWidget);
     await tester.tap(button);
     await tester.pumpAndSettle();
