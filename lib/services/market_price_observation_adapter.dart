@@ -58,7 +58,7 @@ List<MarketPrice> marketPricesFromObservations(
   final today = now ?? DateTime.now();
   final currentDay = DateTime(today.year, today.month, today.day);
   final productsById = {for (final product in products) product.id: product};
-  return observations
+  final eligible = observations
       .where(
         (entry) =>
             entry.isValid &&
@@ -75,6 +75,9 @@ List<MarketPrice> marketPricesFromObservations(
             _projectsToLegacyMarketPrice(entry.source) &&
             !_isProspectOffer(entry),
       )
+      .toList(growable: false);
+  final selected = _latestCurrentProspectRegular(eligible);
+  return selected
       .map(
         (entry) => MarketPrice(
           productId: entry.productId!,
@@ -106,6 +109,55 @@ List<MarketPrice> marketPricesFromObservations(
       .toList();
 }
 
+List<PriceObservation> _latestCurrentProspectRegular(
+  List<PriceObservation> input,
+) {
+  final result = <PriceObservation>[];
+  final indexByKey = <String, int>{};
+  for (final entry in input) {
+    final isProspectRegular =
+        entry.kind == PriceObservationKind.regular &&
+        _isProspectSource(entry.source);
+    if (!isProspectRegular) {
+      result.add(entry);
+      continue;
+    }
+    final key = _prospectRegularProjectionKey(entry);
+    final previousIndex = indexByKey[key];
+    if (previousIndex == null) {
+      indexByKey[key] = result.length;
+      result.add(entry);
+      continue;
+    }
+    final previous = result[previousIndex];
+    if (_isNewerPriceObservation(entry, previous)) {
+      result[previousIndex] = entry;
+    }
+  }
+  return result;
+}
+
+String _prospectRegularProjectionKey(PriceObservation entry) => [
+      entry.source.name,
+      entry.sourceAdapter?.trim().toLowerCase() ?? '',
+      entry.storeName.trim().toLowerCase(),
+      entry.locationId?.trim().toLowerCase() ?? '',
+      entry.productId?.trim() ?? '',
+      entry.familyKey?.trim().toLowerCase() ?? '',
+      entry.variant?.trim().toLowerCase() ?? '',
+      entry.quantity?.toStringAsFixed(6) ?? '',
+      entry.unit?.trim().toLowerCase() ?? '',
+      entry.validFrom?.toIso8601String() ?? '',
+      entry.validUntil?.toIso8601String() ?? '',
+      entry.proofRef?.trim() ?? '',
+    ].join('\u001f');
+
+bool _isNewerPriceObservation(
+  PriceObservation candidate,
+  PriceObservation previous,
+) => candidate.observedAt.isAfter(previous.observedAt) ||
+    (candidate.observedAt.isAtSameMomentAs(previous.observedAt) &&
+        candidate.id.compareTo(previous.id) > 0);
 DateTime _day(DateTime value) => DateTime(value.year, value.month, value.day);
 
 bool _matchesProductPackage(PriceObservation observation, Product? product) {
