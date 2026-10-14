@@ -3,6 +3,7 @@ import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/features/offers/prospect_regular_price_persistence.dart';
 import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/product.dart';
+import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/services/market_price_observation_adapter.dart';
 import 'package:sparzamapp/services/price_observation_store.dart';
 
