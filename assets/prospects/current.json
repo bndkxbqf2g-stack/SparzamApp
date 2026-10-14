@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-14T04:52:53.425184Z",
+  "generatedAt": "2026-10-14T05:00:19.579273Z",
   "sources": [
     {
       "id": "aldi_sued",
@@ -36,7 +36,7 @@
       "branchId": "B384",
       "location": "Zellingen",
       "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "rawRecordCount": 247
+      "rawRecordCount": 169
     },
     {
       "id": "edeka_zellingen",
