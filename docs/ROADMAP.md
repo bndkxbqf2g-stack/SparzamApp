@@ -486,3 +486,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Warengruppen werden im Einkaufsliste-Reiter seitenweise aufgebaut; zusätzliche Gruppen bleiben über „Weitere Warengruppen laden“ erreichbar.
 - [x] Der bestehende Preis-, Angebots- und Kaufaktionsfluss wird unverändert an jede Gruppe weitergegeben.
 - [x] Die neue Begrenzung ist lokal und reversibel und erzeugt keine zusätzlichen Datenabrufe.
+
+
+## Update 14.10.2026 – Bestätigte Normalpreisspeicherung in den Prospektansichten
+- [x] Der Angebotstab verwendet für den Hinweis „als Preisbasis gespeichert“ ausschließlich die vom lokalen Preisbeobachtungslauf bestätigte Anzahl.
+- [x] Ein fehlgeschlagener oder noch nicht abgeschlossener Speichervorgang erzeugt keinen falschen Bestätigungsstatus, obwohl der Feed einen ausdrücklich ausgewiesenen Normalpreis enthält.
+- [x] Die Standalone-Ansicht behält ihren konservativen Feed-Fallback, wenn kein Shell-Persistenzwert übergeben wird.

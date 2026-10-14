@@ -146,6 +146,7 @@ List<Widget> buildShellPages({
     prospectIssues: prospectIssues,
     generatedAt: prospectFeedGeneratedAt,
     fromCache: prospectFeedFromCache,
+    regularPriceCount: prospectRegularPriceCount,
     onRefreshProspects: onRefreshProspects,
     prospectsRefreshing: prospectsRefreshing,
     priceHistory: priceHistory,
