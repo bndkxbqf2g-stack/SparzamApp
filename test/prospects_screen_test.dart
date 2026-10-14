@@ -140,7 +140,11 @@ void main() {
     final open = find.byKey(
       const ValueKey('prospect-open-grid-Lidl'),
     );
-    await tester.ensureVisible(open);
+    await tester.scrollUntilVisible(
+      open,
+      400,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(open);
     await tester.pumpAndSettle();
 
