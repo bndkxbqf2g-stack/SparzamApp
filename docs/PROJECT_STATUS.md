@@ -1,3 +1,9 @@
+## Update 14.10.2026 – Automatische Prospektpreise bereinigen
+
+- Der reguläre Prospektpreis wird weiterhin atomar per stabiler Beobachtungs-ID gespeichert.
+- Alte automatisch erzeugte Prospekt-Angebotsbeobachtungen werden beim nächsten datierten Feedlauf gezielt entfernt; reguläre Historie und manuell bestätigte Angebotsverläufe bleiben erhalten.
+- Der Marktpreis-Projektor erhält damit aus dem Prospektpfad ausschließlich reguläre Preisbelege.
+
 ## Update 14.10.2026 – OSRM liefert Fahrzeit für die Routenplanung
 
 - Die optionale OSRM-Matrix übernimmt neben Straßenentfernungen jetzt auch explizite Fahrzeiten aus den öffentlichen `duration`-Antwortfeldern.

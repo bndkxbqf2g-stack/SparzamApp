@@ -42,11 +42,18 @@ Future<ProspectRegularPricePersistenceResult>
     now: now,
     refreshedStores: refreshedStores,
   );
-  final stored = learned.isEmpty
+  final stored = observedAt == null
       ? await store.load()
-      : await store.upsertById(learned);
+      : await store.upsertById(
+          learned,
+          removeWhere: _isAutomaticProspectOfferObservation,
+        );
   return ProspectRegularPricePersistenceResult(
     learned: learned,
     stored: stored,
   );
 }
+
+bool _isAutomaticProspectOfferObservation(PriceObservation observation) =>
+    observation.kind == PriceObservationKind.offer &&
+    observation.id.startsWith('prospect|');

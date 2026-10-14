@@ -140,16 +140,20 @@ class PriceObservationStore {
   /// Replaces evidence with the same stable ID. This is reserved for
   /// deterministic derived observations (for example reinterpreted receipts),
   /// so identity improvements do not leave stale projections behind.
+  /// Replaces matching IDs and can remove a narrowly scoped obsolete
+  /// projection in the same serialized read/modify/write operation.
   Future<List<PriceObservation>> upsertById(
-    Iterable<PriceObservation> incoming,
-  ) {
+    Iterable<PriceObservation> incoming, {
+    bool Function(PriceObservation observation)? removeWhere,
+  }) {
     final valid = incoming.where((entry) => entry.isValid).toList();
     return _queue.schedule(() async {
       final existing = await _loadNow();
       final byId = <String, PriceObservation>{
-        for (final entry in existing) entry.id: entry,
+        for (final entry in existing)
+          if (!(removeWhere?.call(entry) ?? false)) entry.id: entry,
       };
-      var changed = false;
+      var changed = byId.length != existing.length;
       for (final entry in valid) {
         final previous = byId[entry.id];
         final previousJson = previous == null
