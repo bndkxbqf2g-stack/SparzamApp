@@ -1,3 +1,9 @@
+## Update 14.10.2026 – Prospektfeed-Parsing im Prozess wiederverwenden
+
+- [x] Cache- und gebündelte Feedantworten werden pro Herkunft im laufenden Service nur einmal dekodiert.
+- [x] Wiederholte lokale Reads beim Start und beim App-Fortsetzen verwenden dasselbe validierte Ergebnisobjekt, ohne Aktualitäts- oder Quellenregeln zu ändern.
+- [x] Liveantworten bleiben separat memoisiert; ein lokaler Fallback kann daher keine Live-Herkunft überschreiben.
+
 ## Update 14.10.2026 – Prospektpreise beim App-Fortsetzen aktualisieren
 
 - [x] AppShell registriert einen Lifecycle-Observer und startet beim Fortsetzen einen Hintergrund-Refresh, sobald der letzte validierte Feedstand älter als sechs Stunden ist.

@@ -1,5 +1,18 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/services/prospect_feed_service.dart';
+import 'package:sparzamapp/services/prospect_feed_cache.dart';
+
+class _MemoryProspectFeedCache implements ProspectFeedCache {
+  _MemoryProspectFeedCache(this.value);
+
+  final String? value;
+
+  @override
+  Future<String?> load() async => value;
+
+  @override
+  Future<void> save(String raw) async {}
+}
 
 void main() {
   test('feed parser keeps verified regular price optional', () {
@@ -629,5 +642,30 @@ void main() {
     expect(result.records, hasLength(2));
     expect(result.records.map((record) => record.offerPrice), [1.49, 1.39]);
   });
+  test('reuses parsed local feed snapshots across cached reads', () async {
+    final raw = r'''
+{
+  "generatedAt": "2026-10-14T05:57:41Z",
+  "sources": [
+    {"storeName": "Lidl", "status": "ok"}
+  ],
+  "offers": []
+}
+''';
+    final cache = _MemoryProspectFeedCache(raw);
+    final service = ProspectFeedService(
+      cache: cache,
+      bundledLoader: () async => raw,
+      networkEnabled: false,
+    );
+
+    final first = await service.loadCached();
+    final second = await service.loadCached();
+
+    expect(first, isNotNull);
+    expect(identical(first, second), isTrue);
+    service.close();
+  });
+
 }
 

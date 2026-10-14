@@ -192,6 +192,37 @@ class ProspectFeedService {
   final bool networkEnabled;
   Future<ProspectFeedLoadResult>? _inFlight;
 
+  // The shell can read cache and bundled data more than once during startup
+  // and resume. Keep one parsed snapshot for each provenance so the same JSON
+  // is not decoded repeatedly on the UI isolate.
+  String? _memoizedLiveRaw;
+  ProspectFeedLoadResult? _memoizedLiveResult;
+  String? _memoizedLocalRaw;
+  ProspectFeedLoadResult? _memoizedLocalResult;
+
+  ProspectFeedLoadResult _parse(
+    String raw, {
+    required bool fromCache,
+  }) {
+    final cachedRaw = fromCache ? _memoizedLocalRaw : _memoizedLiveRaw;
+    final cachedResult = fromCache
+        ? _memoizedLocalResult
+        : _memoizedLiveResult;
+    if (cachedResult != null && cachedRaw == raw) {
+      return cachedResult;
+    }
+
+    final parsed = parseProspectFeed(raw, fromCache: fromCache);
+    if (fromCache) {
+      _memoizedLocalRaw = raw;
+      _memoizedLocalResult = parsed;
+    } else {
+      _memoizedLiveRaw = raw;
+      _memoizedLiveResult = parsed;
+    }
+    return parsed;
+  }
+
   /// Closes the client created by this service. Callers that inject a client
   /// retain ownership of that client and may close it themselves.
   void close() => _client.close();
@@ -240,7 +271,7 @@ class ProspectFeedService {
       if (response.statusCode < 200 || response.statusCode >= 300) {
         throw StateError('Prospektfeed HTTP ${response.statusCode}');
       }
-      final result = parseProspectFeed(response.body);
+      final result = _parse(response.body, fromCache: false);
       // A CDN or a temporarily stale publisher response must not replace a
       // newer validated local snapshot. Equal timestamps still prefer the
       // successful live response.
@@ -300,7 +331,7 @@ class ProspectFeedService {
     }
     if (raw == null || raw.trim().isEmpty) return null;
     try {
-      return parseProspectFeed(raw, fromCache: true);
+      return _parse(raw, fromCache: true);
     } catch (_) {
       return null;
     }
@@ -310,7 +341,7 @@ class ProspectFeedService {
     try {
       final raw = await _bundledLoader();
       if (raw.trim().isEmpty) return null;
-      return parseProspectFeed(raw, fromCache: true);
+      return _parse(raw, fromCache: true);
     } catch (_) {
       return null;
     }
