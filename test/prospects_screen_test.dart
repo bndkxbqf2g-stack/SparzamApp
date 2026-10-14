@@ -108,12 +108,12 @@ void main() {
       ),
       OfferImportRecord(
         sourceId: '',
-        productLabel: 'Milch 1 l',
+        productLabel: 'Kaffee Filter 500 g',
         storeName: 'Lidl',
-        offerPrice: 0.99,
+        offerPrice: 3.49,
         validFrom: DateTime(2026, 9, 28),
         validUntil: DateTime(2026, 10, 3),
-        proofRef: 'https://example.test/lidl/milk',
+        proofRef: 'https://example.test/lidl/filter-coffee',
       ),
     ];
 
@@ -140,7 +140,7 @@ void main() {
         (widget) =>
             widget is Scrollable && widget.axisDirection == AxisDirection.down,
       ).first,
-      const Offset(0, -520),
+      const Offset(0, -300),
     );
     await tester.pumpAndSettle();
 
