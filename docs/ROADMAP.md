@@ -1,3 +1,9 @@
+## Update 14.10.2026 – Offizielle Prospektkategorien erweitern
+
+- [x] Unterkategorien, Abteilungen und begrenzte Kategoriepfade offizieller Quellen werden transparent übernommen.
+- [x] Die Normalisierung bleibt auf benannte Präsentationsfelder beschränkt und erzeugt keine Produkt- oder Preisidentität.
+- [x] Nicht-textuelle oder nur technische Kategoriewerte bleiben als sichtbare Datenlücke bestehen.
+
 ## Update 14.10.2026 – Prospekt-Evidenzfelder an der App-Grenze
 
 - [x] Explizite Bild-, Kategorie-, Packungs- und Grundpreisvarianten werden an der Dart-Feedgrenze einheitlich und nachvollziehbar normalisiert.

@@ -1,3 +1,12 @@
+## D182 – Offizielle Prospektkategorien bleiben begrenzt und präsentationsbezogen
+
+Die offiziellen Prospektadapter dürfen bekannte Kategorievarianten wie Unterkategorie,
+Abteilung, Kategoriegruppe und einen begrenzten Kategoriepfad übernehmen. Verschachtelte
+Objekte werden nur über benannte Präsentationsfelder bis zu einer festen Tiefe gelesen;
+IDs, URLs, beliebige Arrays und Quellobjekte werden nicht als Kategorie verwendet. Die
+Kategorie bleibt Herkunfts- und Anzeigeinformation und darf keine Produktidentität,
+Preisbeobachtung, Gültigkeit oder Routenentscheidung ersetzen.
+
 ## D181 – kaufDA-Evidenzfelder bleiben explizit und regional
 
 Der opt-in-kaufDA-Adapter darf bekannte öffentliche Feldvarianten für Bilder, Kategorien, Packungen, Grundpreise und ausdrücklich benannte Normalpreise tolerieren. Verschachtelte Werte werden nur über benannte Präsentationsfelder mit begrenzter Tiefe gelesen; Bildwerte müssen HTTP(S) sein. Eine solche Normalisierung ändert weder die Filialzuordnung noch die regionale-only-Grenze und erzeugt keine fehlenden Identitäts- oder Gültigkeitsnachweise.

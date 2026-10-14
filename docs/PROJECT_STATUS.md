@@ -1,3 +1,10 @@
+## Update 14.10.2026 – Offizielle Prospektkategorien belastbar normalisieren
+
+- [x] Offizielle Quellen akzeptieren zusätzlich explizit benannte Unterkategorien, Abteilungen und begrenzte Kategoriepfade.
+- [x] Verschachtelte Kategorieobjekte werden nur über bekannte Präsentationsfelder bis zu einer festen Tiefe gelesen; IDs, URLs und beliebige Objekte bleiben ausgeschlossen.
+- [x] Kategorien bleiben reine Herkunfts-/Anzeigeinformation und verändern weder Produktidentität noch Preis- oder Routenentscheidungen.
+- [x] Python-Fixtures schützen positive Aliasfälle und die Ablehnung nicht-textueller Kategorien.
+
 ## Update 14.10.2026 – kaufDA-Evidenzfelder tolerant normalisieren
 
 - [x] Der optionale kaufDA-Adapter akzeptiert bekannte, explizit benannte Varianten für Artikelbild, Kategorie, Packungsgröße, Grundpreis und Normalpreis.

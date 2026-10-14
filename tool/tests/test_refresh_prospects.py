@@ -18,6 +18,45 @@ refresh = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(refresh)
 
 class ProspectParserTest(unittest.TestCase):
+    def test_source_category_accepts_named_taxonomy_aliases(self):
+        self.assertEqual(
+            refresh._source_category({"departmentName": "Molkerei"}),
+            "Molkerei",
+        )
+        self.assertEqual(
+            refresh._source_category(
+                {
+                    "productCategory": {
+                        "displayName": "Tiefkühlkost",
+                    }
+                }
+            ),
+            "Tiefkühlkost",
+        )
+        self.assertEqual(
+            refresh._source_category(
+                {
+                    "categoryPath": [
+                        {"name": "Lebensmittel"},
+                        {"displayName": "Molkerei"},
+                    ]
+                }
+            ),
+            "Molkerei",
+        )
+
+    def test_source_category_ignores_untrusted_or_non_text_values(self):
+        self.assertIsNone(
+            refresh._source_category(
+                {"category": {"id": "123", "url": "https://example.test/category"}}
+            )
+        )
+        self.assertIsNone(
+            refresh._source_category(
+                {"categoryPath": [{"id": "123"}, {"href": "https://example.test"}]}
+            )
+        )
+
     def test_default_refresh_day_uses_berlin_calendar(self):
         expected = datetime.now(ZoneInfo("Europe/Berlin")).date()
         self.assertEqual(refresh.local_today(), expected)
