@@ -1,3 +1,8 @@
+## Update 14.10.2026 – Routen-Snapshot wiederverwenden
+
+- RouteScreen cached jetzt die abgeleiteten Ergebnisse eines unveränderten Eingangs-Snapshots: Preisabdeckung, Preisnachweise, Mehrmarkt-Alternativen, Fahrzeit, Empfehlung und Straßenroute werden bei kleinen UI-Rebuilds wiederverwendet.
+- Der Cache wird bei geänderten Listen-, Preis-, Angebots-, Mobilitäts-, Entfernungs- oder historischen Kaufdaten über die bestehende RouteOptimizer-Identität und Referenzen invalidiert.
+- Die fachliche Optimierung und die bestehende Behandlung fehlender oder historischer Preise bleiben unverändert; der Block reduziert nur wiederholte Berechnungen im Routenreiter.
 ## Update 14.10.2026 – Preise-Snapshot-Signatur
 - [x] Der Preise-Reiter merkt sich die Signatur seiner unveränderten Listen-, Marktpreis-, Angebots-, Historien- und Marktauswahl-Snapshots.
 - [x] Wiederholte Shell-Rebuilds iterieren nicht mehr über alle Preis- und Verlaufseinträge, solange derselbe immutable Eingabestand und derselbe Tag gelten.
