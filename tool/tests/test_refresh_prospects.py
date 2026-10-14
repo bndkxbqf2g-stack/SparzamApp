@@ -1085,6 +1085,7 @@ ab Montag, 28.09.26
                     "offers": [
                       {
                         "title": "Dr. Oetker Ristorante Pizza Salame",
+                        "imageUrl": "https://cdn.rewe.example/pizza-salame.jpg",
                         "priceData": {
                           "price": "1,79 €",
                           "regularPrice": "2,99 €"
@@ -1114,7 +1115,12 @@ ab Montag, 28.09.26
         self.assertEqual(len(offers), 2)
         self.assertEqual(offers[0]["offerPrice"], 1.79)
         self.assertEqual(offers[0]["originalPrice"], 2.99)
+        self.assertEqual(
+            offers[0]["imageUrl"],
+            "https://cdn.rewe.example/pizza-salame.jpg",
+        )
         self.assertNotIn("originalPrice", offers[1])
+        self.assertNotIn("imageUrl", offers[1])
         self.assertEqual(offers[0]["validFrom"], "2026-09-21")
         self.assertEqual(offers[0]["validUntil"], "2026-09-27")
 
