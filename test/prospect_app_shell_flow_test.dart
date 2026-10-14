@@ -313,6 +313,10 @@ void main() {
       );
       await tester.pump(const Duration(milliseconds: 500));
 
+      // Automatic feed imports are rebuilt in memory and must not fill the
+      // durable user-offer store. Only the later explicit add action persists.
+      expect(await stores.offers.load(), isEmpty);
+
       await tester.tap(find.text('Prospekte'));
       // The shell refreshes and persists the feed in the background. Waiting
       // for animation quiescence would also wait on the feed status spinner;
