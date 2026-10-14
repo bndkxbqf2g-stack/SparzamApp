@@ -219,6 +219,51 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         priceFor: suggestionPriceFor,
       );
 
+  ShoppingPriceQuoteSnapshot? _quoteSnapshot;
+  List<ListItem>? _quoteSnapshotItems;
+  List<MarketPrice>? _quoteSnapshotPrices;
+  List<Offer>? _quoteSnapshotOffers;
+  Map<String, ProspectPriceHistorySummary>? _quoteSnapshotHistory;
+  List<String>? _quoteSnapshotStores;
+  int? _quoteSnapshotMaxAgeDays;
+  DateTime? _quoteSnapshotDay;
+
+  ShoppingPriceQuoteSnapshot get quoteSnapshot {
+    final now = DateTime.now();
+    final day = DateTime(now.year, now.month, now.day);
+    final stores = widget.mobility.enabledStoreNames;
+    final cached = _quoteSnapshot;
+    if (cached != null &&
+        identical(_quoteSnapshotItems, widget.items) &&
+        identical(_quoteSnapshotPrices, widget.marketPrices) &&
+        identical(_quoteSnapshotOffers, widget.offers) &&
+        identical(_quoteSnapshotHistory, widget.prospectPriceHistory) &&
+        identical(_quoteSnapshotStores, stores) &&
+        _quoteSnapshotMaxAgeDays == widget.openPricesMaxAgeDays &&
+        _quoteSnapshotDay == day) {
+      return cached;
+    }
+
+    final next = shoppingPriceQuoteSnapshot(
+      widget.items,
+      prices: widget.marketPrices,
+      offers: widget.offers,
+      prospectPriceHistory: widget.prospectPriceHistory,
+      enabledStores: stores,
+      openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
+      now: now,
+    );
+    _quoteSnapshot = next;
+    _quoteSnapshotItems = widget.items;
+    _quoteSnapshotPrices = widget.marketPrices;
+    _quoteSnapshotOffers = widget.offers;
+    _quoteSnapshotHistory = widget.prospectPriceHistory;
+    _quoteSnapshotStores = stores;
+    _quoteSnapshotMaxAgeDays = widget.openPricesMaxAgeDays;
+    _quoteSnapshotDay = day;
+    return next;
+  }
+
   List<Product> get quickProducts => buildQuickProducts(
     widget.preferredProductByGroup,
     catalogProducts: widget.catalogProducts,
@@ -480,14 +525,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   @override
   Widget build(BuildContext context) {
     final grouped = itemsByGroup;
-    final quoteSnapshot = shoppingPriceQuoteSnapshot(
-      widget.items,
-      prices: widget.marketPrices,
-      offers: widget.offers,
-      prospectPriceHistory: widget.prospectPriceHistory,
-      enabledStores: widget.mobility.enabledStoreNames,
-      openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
-    );
+    final snapshot = quoteSnapshot;
 
     return Column(
       children: [
@@ -520,7 +558,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 prospectPriceHistory: widget.prospectPriceHistory,
                 enabledStoreNames: widget.mobility.enabledStoreNames,
                 openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
-                quoteSnapshot: quoteSnapshot,
+                quoteSnapshot: snapshot,
                 onOpenRoute: widget.onOpenRoute,
               ),
               if (widget.items.isNotEmpty && widget.onOpenRoute != null) ...[
