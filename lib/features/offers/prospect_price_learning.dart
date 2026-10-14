@@ -155,7 +155,10 @@ List<PriceObservation> prospectPriceObservations({
     );
 
     final regular = record.originalPrice;
-    if (regular != null) {
+    // Only a strictly higher original amount is a crossed-out regular price.
+    // Equal amounts are still valid offer evidence, but they must never be
+    // promoted into automatic regular-price history.
+    if (regular != null && regular > record.offerPrice) {
       observations.add(
         PriceObservation(
           id: '$prefix|regular|${regular.toStringAsFixed(4)}',
