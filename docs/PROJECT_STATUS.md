@@ -1,3 +1,7 @@
+## Update 14.10.2026 – Preise-Snapshot-Signatur
+- [x] Der Preise-Reiter merkt sich die Signatur seiner unveränderten Listen-, Marktpreis-, Angebots-, Historien- und Marktauswahl-Snapshots.
+- [x] Wiederholte Shell-Rebuilds iterieren nicht mehr über alle Preis- und Verlaufseinträge, solange derselbe immutable Eingabestand und derselbe Tag gelten.
+- [x] Bei einer Snapshot- oder Tagesänderung wird die bestehende vollständige Signaturberechnung ausgeführt; Quote-, Abdeckungs- und Vergleichscaches bleiben weiterhin gekoppelt.
 ## Update 14.10.2026 – Unveränderte Prospekt-Refreshes überspringen
 - [x] Der Prospekt-Refresh bildet aus allen preis-, gültigkeits-, quellen-, filial- und coverrelevanten Feldern einen stabilen Fingerabdruck.
 - [x] Bei identischem Feed werden Angebot-Normalisierung, OfferStore-Schreibvorgang und reguläre Preisbeobachtungs-Persistenz übersprungen; der sichtbare Cache-/Zeitstatus wird weiterhin aktualisiert.
