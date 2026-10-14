@@ -214,7 +214,9 @@ List<ProspectCoverage> calculateProspectCoverage({
         storeName,
         issuesByStore[storeName],
         recordsByStore[storeName] ?? const <OfferImportRecord>[],
-        persistedRegularPriceCounts?[storeName],
+        persistedRegularPriceCounts == null
+            ? null
+            : (persistedRegularPriceCounts[storeName] ?? 0),
       ),
   ];
 }
