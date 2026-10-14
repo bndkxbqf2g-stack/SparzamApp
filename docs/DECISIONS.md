@@ -1,3 +1,7 @@
+## D181 – kaufDA-Evidenzfelder bleiben explizit und regional
+
+Der opt-in-kaufDA-Adapter darf bekannte öffentliche Feldvarianten für Bilder, Kategorien, Packungen, Grundpreise und ausdrücklich benannte Normalpreise tolerieren. Verschachtelte Werte werden nur über benannte Präsentationsfelder mit begrenzter Tiefe gelesen; Bildwerte müssen HTTP(S) sein. Eine solche Normalisierung ändert weder die Filialzuordnung noch die regionale-only-Grenze und erzeugt keine fehlenden Identitäts- oder Gültigkeitsnachweise.
+
 ## D180 – Prospekt-Evidenzfelder bleiben explizit und getrennt
 
 Die Feedgrenze darf bekannte öffentliche Feldvarianten für Artikelbilder, Kategorien,

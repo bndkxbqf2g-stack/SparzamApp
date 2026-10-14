@@ -25,7 +25,7 @@ from datetime import date, datetime, timedelta, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Callable, Iterable, Mapping
-from urllib.parse import quote
+from urllib.parse import quote, urlsplit
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
 
@@ -450,6 +450,44 @@ def _parse_price(value: object) -> float | None:
     return number if number > 0 else None
 
 
+def _regular_price_value(value: object) -> float | None:
+    if isinstance(value, Mapping):
+        for key in ("amount", "value", "price", "formatted", "text"):
+            parsed = _parse_price(value.get(key))
+            if parsed is not None:
+                return parsed
+        return None
+    return _parse_price(value)
+
+
+def _explicit_regular_price(
+    raw: Mapping[str, object] | None,
+    sale: float,
+) -> float | None:
+    """Read only explicitly named previous/regular price fields.
+
+    Discount rates, UVP/list prices and arbitrary numeric fields remain
+    outside this helper.  A source format change therefore cannot invent a
+    comparable regular price.
+    """
+    if not isinstance(raw, Mapping):
+        return None
+    for key in (
+        "streichpreis",
+        "wasPriceDisplay",
+        "wasPrice",
+        "originalPrice",
+        "regularPrice",
+        "normalPrice",
+        "alterPreis",
+        "oldPrice",
+    ):
+        candidate = _regular_price_value(raw.get(key))
+        if candidate is not None and candidate >= sale:
+            return candidate
+    return None
+
+
 def canonical_publisher(value: object) -> str | None:
     normalized = re.sub(r"[^\wäöüß-]+", " ", clean(value).casefold())
     normalized = re.sub(r"\s+", " ", normalized).strip()
@@ -465,9 +503,93 @@ def _nested(raw: Mapping[str, object], *keys: str) -> object:
     return current
 
 
+def _source_text(value: object, *, depth: int = 0) -> str:
+    """Read bounded, named presentation labels from public source objects."""
+    if depth > 2:
+        return ""
+    if isinstance(value, str):
+        return clean(value)
+    if isinstance(value, Mapping):
+        for key in ("name", "title", "label", "value", "text", "formatted"):
+            nested = _source_text(value.get(key), depth=depth + 1)
+            if nested:
+                return nested
+    return ""
+
+
+def _first_source_text(
+    raw: Mapping[str, object] | None,
+    keys: Iterable[str],
+) -> str:
+    if not isinstance(raw, Mapping):
+        return ""
+    for key in keys:
+        value = _source_text(raw.get(key))
+        if value:
+            return value
+    return ""
+
+
+def _http_url(value: object) -> str:
+    if not isinstance(value, str):
+        return ""
+    candidate = clean(value)
+    parsed = urlsplit(candidate)
+    if parsed.scheme.casefold() not in {"http", "https"} or not parsed.netloc:
+        return ""
+    return candidate
+
+
+def _first_http_url(
+    values: Iterable[object],
+    *,
+    depth: int = 0,
+) -> str:
+    """Accept only bounded, named URL fields from public source objects."""
+    if depth > 2:
+        return ""
+    for value in values:
+        direct = _http_url(value)
+        if direct:
+            return direct
+        if isinstance(value, Mapping):
+            for key in (
+                "url",
+                "src",
+                "href",
+                "imageUrl",
+                "imageURL",
+                "image_url",
+                "image",
+                "normal",
+                "original",
+                "large",
+            ):
+                nested = _first_http_url(
+                    (value.get(key),),
+                    depth=depth + 1,
+                )
+                if nested:
+                    return nested
+    return ""
+
+
 def _package_hint(*values: object) -> str | None:
-    text = clean(" ".join(clean(value) for value in values if value is not None))
-    match = _PACKAGE_RE.search(text)
+    parts: list[str] = []
+    for value in values:
+        if isinstance(value, (list, tuple)):
+            parts.extend(
+                rendered
+                for item in value
+                if (rendered := _source_text(item))
+            )
+            continue
+        rendered = _source_text(value)
+        if not rendered and not isinstance(value, Mapping):
+            rendered = clean(value)
+        if rendered:
+            parts.append(rendered)
+    match = _PACKAGE_RE.search(clean(" ".join(parts)))
     return match.group(0) if match else None
 
 
@@ -492,36 +614,60 @@ def _page_number(value: object) -> int | None:
 
 def _category_text(raw: Mapping[str, object]) -> str:
     values: list[str] = []
-    for key in ("category", "categoryName", "department"):
-        value = clean(raw.get(key))
+    for key in (
+        "category",
+        "categoryName",
+        "productCategory",
+        "subcategory",
+        "subCategory",
+        "sub_category",
+        "department",
+        "departmentName",
+        "warengruppe",
+        "sortiment",
+    ):
+        value = _source_text(raw.get(key))
         if value:
             values.append(value)
     categories = raw.get("categories")
     if isinstance(categories, (list, tuple)):
-        values.extend(clean(value) for value in categories if clean(value))
+        for entry in categories:
+            value = _source_text(entry) or clean(entry)
+            if value:
+                values.append(value)
     paths = raw.get("categoryPaths")
     if isinstance(paths, (list, tuple)):
         for path in paths:
             if not isinstance(path, (list, tuple)):
                 continue
             for entry in path:
-                if isinstance(entry, Mapping):
-                    value = clean(entry.get("name") or entry.get("label"))
-                else:
-                    value = clean(entry)
+                value = _source_text(entry) or clean(entry)
                 if value:
                     values.append(value)
     return clean(" ".join(values))
 
 
 def _category_label(raw: Mapping[str, object]) -> str:
-    for key in ("category", "categoryName", "department"):
-        value = clean(raw.get(key))
+    keys = (
+        "category",
+        "categoryName",
+        "productCategory",
+        "subcategory",
+        "subCategory",
+        "sub_category",
+        "department",
+        "departmentName",
+        "warengruppe",
+        "sortiment",
+    )
+    for key in keys:
+        value = _source_text(raw.get(key))
         if value:
             return value
     categories = raw.get("categories")
     if isinstance(categories, (list, tuple)):
-        values = [clean(value) for value in categories if clean(value)]
+        values = [_source_text(value) or clean(value) for value in categories]
+        values = [value for value in values if value]
         if values:
             return values[-1]
     paths = raw.get("categoryPaths")
@@ -530,10 +676,7 @@ def _category_label(raw: Mapping[str, object]) -> str:
             if not isinstance(path, (list, tuple)):
                 continue
             for entry in reversed(path):
-                if isinstance(entry, Mapping):
-                    value = clean(entry.get("name") or entry.get("label"))
-                else:
-                    value = clean(entry)
+                value = _source_text(entry) or clean(entry)
                 if value:
                     return value
     return ""
@@ -689,10 +832,21 @@ def parse_kaufda_html(
             page=page,
         )
         proof = f"{search_url}#offer-{quote(item_id, safe='')}"
-        image = clean(
-            _nested(raw, "offerImages", "url", "normal")
-            or raw.get("imageUrl")
-            or ""
+        image = _first_http_url(
+            (
+                _nested(raw, "offerImages", "url", "normal"),
+                _nested(raw, "offerImages", "url"),
+                raw.get("imageUrl"),
+                raw.get("imageURL"),
+                raw.get("image_url"),
+                raw.get("image"),
+                raw.get("productImage"),
+                raw.get("product_image"),
+                raw.get("bild"),
+                raw.get("bild_app"),
+                raw.get("bild_web130"),
+                raw.get("bild_web90"),
+            )
         )
         category = _category_label(raw)
         record = {
@@ -707,14 +861,27 @@ def parse_kaufda_html(
             "proofRef": proof,
             "regionalOnly": not exact_branch,
         }
+        regular_price = None
+        for price_source in (
+            raw,
+            prices,
+            raw.get("price"),
+            raw.get("pricing"),
+        ):
+            regular_price = _explicit_regular_price(price_source, offer_price)
+            if regular_price is not None:
+                break
         secondary_price = _parse_price(prices.get("secondaryPrice"))
         secondary_is_uvp = bool(prices.get("secondaryPriceIsUVP"))
         if (
-            secondary_price is not None
+            regular_price is None
+            and secondary_price is not None
             and secondary_price > offer_price
             and not secondary_is_uvp
         ):
-            record["originalPrice"] = round(secondary_price, 2)
+            regular_price = secondary_price
+        if regular_price is not None:
+            record["originalPrice"] = round(regular_price, 2)
         publisher_id = clean(raw.get("publisherId"))
         if publisher_id:
             record["publisherId"] = publisher_id
@@ -722,13 +889,30 @@ def parse_kaufda_html(
             record["imageUrl"] = image
         if category:
             record["category"] = category
-        package = _package_hint(raw.get("title"), raw.get("description"), raw.get("quantity"))
+        package = _package_hint(
+            raw.get("title"),
+            raw.get("description"),
+            raw.get("quantity"),
+            raw.get("packageSize"),
+            raw.get("package"),
+            raw.get("packaging"),
+            raw.get("quantityLabel"),
+        )
         if package:
             record["packageSize"] = package
-        base_unit = clean(
-            prices.get("priceByBaseUnit")
-            or raw.get("priceByBaseUnit")
-            or ""
+        base_unit = (
+            _first_source_text(
+                prices,
+                ("priceByBaseUnit", "unitPrice", "baseUnitPrice"),
+            )
+            or _first_source_text(
+                raw,
+                ("priceByBaseUnit", "unitPrice", "baseUnitPrice"),
+            )
+            or _first_source_text(
+                raw.get("pricing"),
+                ("priceByBaseUnit", "unitPrice", "baseUnitPrice"),
+            )
         )
         if base_unit:
             record["priceByBaseUnit"] = base_unit
