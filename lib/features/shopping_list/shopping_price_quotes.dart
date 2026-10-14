@@ -199,6 +199,81 @@ class ShoppingPriceMatrixEntry {
   bool get hasHistoricalQuote => quote?.isHistorical == true;
 }
 
+/// Reuses one resolved quote/matrix snapshot for all widgets that render the
+/// same shopping-list products during a build.
+///
+/// The snapshot is deliberately keyed by product identity. Quantity changes
+/// affect the route total, but not the market evidence shown for one product.
+class ShoppingPriceQuoteSnapshot {
+  const ShoppingPriceQuoteSnapshot._({
+    required Map<String, List<ShoppingQuote>> quotesByProductId,
+    required Map<String, List<ShoppingPriceMatrixEntry>> matrixByProductId,
+  })  : _quotesByProductId = quotesByProductId,
+        _matrixByProductId = matrixByProductId;
+
+  final Map<String, List<ShoppingQuote>> _quotesByProductId;
+  final Map<String, List<ShoppingPriceMatrixEntry>> _matrixByProductId;
+
+  List<ShoppingQuote> quotesFor(ListItem item) =>
+      _quotesByProductId[item.product.id] ?? const <ShoppingQuote>[];
+
+  List<ShoppingPriceMatrixEntry> matrixFor(ListItem item) =>
+      _matrixByProductId[item.product.id] ??
+      const <ShoppingPriceMatrixEntry>[];
+}
+
+/// Resolves each distinct product at most once for a shopping-list render.
+///
+/// This keeps the existing [shoppingQuotes] and matrix rules as the single
+/// source of truth while avoiding duplicate scans from the summary card and
+/// each product row.
+ShoppingPriceQuoteSnapshot shoppingPriceQuoteSnapshot(
+  Iterable<ListItem> items, {
+  required List<MarketPrice> prices,
+  required List<Offer> offers,
+  Map<String, ProspectPriceHistorySummary> prospectPriceHistory = const {},
+  List<String> enabledStores = const [],
+  int openPricesMaxAgeDays = 60,
+  DateTime? now,
+}) {
+  final uniqueItems = <String, ListItem>{};
+  for (final item in items) {
+    uniqueItems.putIfAbsent(item.product.id, () => item);
+  }
+
+  final quotesByProductId = <String, List<ShoppingQuote>>{};
+  final matrixByProductId = <String, List<ShoppingPriceMatrixEntry>>{};
+  for (final entry in uniqueItems.entries) {
+    final quotes = shoppingQuotes(
+      entry.value,
+      prices: prices,
+      offers: offers,
+      prospectPriceHistory: prospectPriceHistory,
+      enabledStores: enabledStores,
+      openPricesMaxAgeDays: openPricesMaxAgeDays,
+      now: now,
+    );
+    quotesByProductId[entry.key] = List<ShoppingQuote>.unmodifiable(quotes);
+    matrixByProductId[entry.key] =
+        List<ShoppingPriceMatrixEntry>.unmodifiable(
+          shoppingPriceMatrixFromQuotes(
+            quotes,
+            enabledStores: enabledStores,
+          ),
+        );
+  }
+
+  return ShoppingPriceQuoteSnapshot._(
+    quotesByProductId: Map<String, List<ShoppingQuote>>.unmodifiable(
+      quotesByProductId,
+    ),
+    matrixByProductId:
+        Map<String, List<ShoppingPriceMatrixEntry>>.unmodifiable(
+          matrixByProductId,
+        ),
+  );
+}
+
 /// Exact product identity only. Receipts are observations of a purchase,
 /// never a guarantee that a shelf price still applies today.
 List<ShoppingQuote> shoppingQuotes(
