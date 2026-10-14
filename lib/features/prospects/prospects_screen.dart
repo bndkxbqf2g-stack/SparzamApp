@@ -1929,10 +1929,18 @@ class _ProspectPageImageState extends State<_ProspectPageImage> {
       // after this exact image failed to decode (usually because the retailer
       // CDN omitted Canvas-CORS headers).
       webHtmlElementStrategy: strategy,
-      loadingBuilder: (context, child, progress) =>
-          progress == null
-              ? child
-              : const Center(child: CircularProgressIndicator()),
+      // Use one stable placeholder until the first decoded frame is
+      // available. A loadingBuilder reacts to every network chunk and can
+      // trigger repeated rebuilds while a long page list is being scrolled.
+      frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+        if (wasSynchronouslyLoaded || frame != null) return child;
+        return const ColoredBox(
+          color: Color(0xFFEAF0F1),
+          child: Center(
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+        );
+      },
       errorBuilder: (context, error, stackTrace) {
         if (!_useHtmlFallback) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
