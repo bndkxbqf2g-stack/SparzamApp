@@ -320,14 +320,6 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                       onRefresh: widget.onRefreshProspects,
                       refreshing: widget.prospectsRefreshing,
                     ),
-                  if (!hasSelection &&
-                      (visibleProspects.isNotEmpty || currentRecords.isNotEmpty))
-                    ProspectCoverageCard(
-                      coverage: calculateProspectCoverage(
-                        issues: visibleProspects,
-                        records: currentRecords,
-                      ),
-                    ),
                   const SizedBox(height: 18),
                   if (!hasSelection && visibleProspects.isEmpty)
                     const Card(

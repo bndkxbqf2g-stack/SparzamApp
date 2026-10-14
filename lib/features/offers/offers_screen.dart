@@ -201,6 +201,13 @@ class _OffersScreenState extends State<OffersScreen> {
             catalogProducts: widget.catalogProducts,
             onAddToShoppingList: widget.onAddToShoppingList,
           ),
+          if (currentProspectIssues.isNotEmpty || currentRecords.isNotEmpty)
+            ProspectCoverageCard(
+              coverage: calculateProspectCoverage(
+                issues: currentProspectIssues,
+                records: currentRecords,
+              ),
+            ),
         ],
       ),
     );
