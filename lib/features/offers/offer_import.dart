@@ -341,4 +341,3 @@ ProspectPackage? _offerPackage(OfferImportRecord record, Product product) {
   return prospectPackage(product.unit);
 }
 
-
