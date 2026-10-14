@@ -545,5 +545,52 @@ void main() {
     expect(result.records.single.imageUrl, isNull);
   });
 
+  test('deduplicates identical offer records but keeps changed prices', () {
+    final result = parseProspectFeed(r'''
+{
+  "sources": [
+    {"storeName": "Lidl", "status": "ok", "branchId": "lidl-zellingen"}
+  ],
+  "offers": [
+    {
+      "sourceId": "duplicate",
+      "productLabel": "Butter 250 g",
+      "storeName": "Lidl",
+      "offerPrice": 1.49,
+      "originalPrice": 1.99,
+      "packageSize": "250 g",
+      "validUntil": "2026-10-17",
+      "source": "leaflet",
+      "proofRef": "https://example.test/duplicate?page=1"
+    },
+    {
+      "sourceId": "duplicate",
+      "productLabel": "Butter 250 g",
+      "storeName": "Lidl",
+      "offerPrice": 1.49,
+      "originalPrice": 1.99,
+      "packageSize": "250 g",
+      "validUntil": "2026-10-17",
+      "source": "leaflet",
+      "proofRef": "https://example.test/duplicate?page=2"
+    },
+    {
+      "sourceId": "duplicate",
+      "productLabel": "Butter 250 g",
+      "storeName": "Lidl",
+      "offerPrice": 1.39,
+      "originalPrice": 1.99,
+      "packageSize": "250 g",
+      "validUntil": "2026-10-17",
+      "source": "leaflet",
+      "proofRef": "https://example.test/duplicate?page=3"
+    }
+  ]
+}
+''');
+
+    expect(result.records, hasLength(2));
+    expect(result.records.map((record) => record.offerPrice), [1.49, 1.39]);
+  });
 }
 
