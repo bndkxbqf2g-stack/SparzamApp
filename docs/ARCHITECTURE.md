@@ -295,4 +295,4 @@ Verdichtung entfernt.
 Prospektstand älter als sechs Stunden ist oder kein Erfassungszeitpunkt vorliegt,
 startet ein Hintergrund-Refresh über denselben `ProspectImportModule`- und
 `PriceObservation`-Pfad wie der Kaltstart. Der vorhandene Feed bleibt während
-des Abrufs sichtbar; die kurze Ereignisdrossel verhindert doppelte Requests.
+des Abrufs sichtbar; die kurze Ereignisdrossel verhindert doppelte Requests. Im aktiven Lebenszyklus plant AppShell höchstens einen sechsstündigen Timer und beendet ihn beim Pausieren.
