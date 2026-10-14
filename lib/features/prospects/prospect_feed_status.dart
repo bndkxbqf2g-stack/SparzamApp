@@ -376,7 +376,7 @@ class _ProspectCoverageCardState extends State<ProspectCoverageCard> {
     final marketsWithStoredRegularPrices = coverage
         .where((entry) => (entry.persistedRegularPriceCount ?? 0) > 0)
         .length;
-    final storageSummary = switch (regularPricePersistenceStatus) {
+    final storageSummary = switch (widget.regularPricePersistenceStatus) {
       ProspectRegularPricePersistenceStatus.standalone =>
         'Speicherstatus nicht bestätigt',
       ProspectRegularPricePersistenceStatus.pending => 'Speicherung läuft',
@@ -431,7 +431,7 @@ class _ProspectCoverageCardState extends State<ProspectCoverageCard> {
                     ),
                     title: Text(entry.storeName),
                     subtitle: Text(
-                      _coverageDetails(entry, regularPricePersistenceStatus),
+                      _coverageDetails(entry, widget.regularPricePersistenceStatus),
                     ),
                     trailing: Text(
                       _sourceStatusLabel(entry.sourceStatus),
