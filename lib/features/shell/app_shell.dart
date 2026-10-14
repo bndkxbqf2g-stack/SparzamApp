@@ -575,42 +575,57 @@ class _AppShellState extends State<AppShell> {
       // whole automatic feed makes local preferences grow until browser
       // storage rejects the next refresh with QuotaExceededError.
       var persistedOffers = retained;
-      await _offerSaves.add(() async {
-        if (!_isCurrentDataRevision(revision)) {
-          persistedOffers = [...offers];
-          return;
-        }
-        // Feed refresh and user-reviewed page claims share one preference key.
-        // Read inside the queue so an in-flight manual save cannot be lost.
-        final stored = await widget.offerStore.load();
-        final retainedById = <String, Offer>{
-          for (final offer in retained) offer.id: offer,
-          for (final offer in stored)
-            if (!offer.id.startsWith('import|')) offer.id: offer,
-        };
-        persistedOffers = retainedById.values.toList(growable: false);
-        await widget.offerStore.save(persistedOffers);
-      });
+      String? offerPersistenceWarning;
+      try {
+        await _offerSaves.add(() async {
+          if (!_isCurrentDataRevision(revision)) {
+            persistedOffers = [...offers];
+            return;
+          }
+          // Feed refresh and user-reviewed page claims share one preference key.
+          // Read inside the queue so an in-flight manual save cannot be lost.
+          final stored = await widget.offerStore.load();
+          final retainedById = <String, Offer>{
+            for (final offer in retained) offer.id: offer,
+            for (final offer in stored)
+              if (!offer.id.startsWith('import|')) offer.id: offer,
+          };
+          persistedOffers = retainedById.values.toList(growable: false);
+          await widget.offerStore.save(persistedOffers);
+        });
+      } catch (error) {
+        // A full browser store must not hide the live in-memory feed or stop
+        // the independent regular-price persistence pass.
+        offerPersistenceWarning = error.toString();
+      }
       if (!_isCurrentDataRevision(revision)) return;
       final offersById = <String, Offer>{
         for (final offer in persistedOffers) offer.id: offer,
         for (final entry in offerBackedProducts) entry.offer.id: entry.offer,
       };
 
-      late ProspectRegularPricePersistenceResult persistence;
-      await _priceSaves.add(() async {
-        if (!_isCurrentDataRevision(revision)) return;
-        persistence = await persistCurrentProspectRegularPrices(
-          store: priceObservationStore,
-          records: feed.records,
-          catalogProducts: catalogForProspectPrices,
-          observedAt: feed.generatedAt,
-          refreshedStores: feed.refreshedStores,
-        );
-      });
+      ProspectRegularPricePersistenceResult? persistence;
+      String? pricePersistenceWarning;
+      try {
+        await _priceSaves.add(() async {
+          if (!_isCurrentDataRevision(revision)) return;
+          persistence = await persistCurrentProspectRegularPrices(
+            store: priceObservationStore,
+            records: feed.records,
+            catalogProducts: catalogForProspectPrices,
+            observedAt: feed.generatedAt,
+            refreshedStores: feed.refreshedStores,
+          );
+        });
+      } catch (error) {
+        // PriceObservationStore already compacts quota-exhausted data, but
+        // other storage failures must still leave the current feed visible.
+        pricePersistenceWarning = error.toString();
+      }
       if (!_isCurrentDataRevision(revision)) return;
-      final learnedPrices = persistence.learned;
-      final historical = persistence.stored;
+      final learnedPrices = persistence?.learned ?? const <PriceObservation>[];
+      final historical =
+          persistence?.stored ?? historicalPriceObservations;
       setState(() {
         offers = offersById.values.toList(growable: false);
         prospectProducts = offerBackedProducts
@@ -622,13 +637,22 @@ class _AppShellState extends State<AppShell> {
         );
       });
       _prospectFeedFingerprint = feedFingerprint;
+      final persistenceWarnings = <String>[
+        if (offerPersistenceWarning != null)
+          'Nutzerangebote lokal nicht gespeichert: $offerPersistenceWarning',
+        if (pricePersistenceWarning != null)
+          'Preisbeobachtungen lokal nicht gespeichert: $pricePersistenceWarning',
+      ];
       widget.diagnosticLogService.record(
         category: 'Prospekte',
-        message: 'Prospektdatenbank aktualisiert.',
+        message: persistenceWarnings.isEmpty
+            ? 'Prospektdatenbank aktualisiert.'
+            : 'Prospektdatenbank aktualisiert; lokale Speicherung teilweise fehlgeschlagen.',
         details:
             '${feed.records.length} Rohangebote · '
             '${resolved.length} importiert · '
-            '${learnedPrices.length} datierte Preise gelernt',
+            '${learnedPrices.length} datierte Preise gelernt'
+            '${persistenceWarnings.isEmpty ? '' : ' · ${persistenceWarnings.join(' · ')}'}',
       );
     } catch (error) {
       widget.diagnosticLogService.record(
