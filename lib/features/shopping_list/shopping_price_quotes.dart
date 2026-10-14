@@ -379,6 +379,22 @@ List<ShoppingPriceMatrixEntry> shoppingPriceMatrix(
     openPricesMaxAgeDays: openPricesMaxAgeDays,
     now: now,
   );
+  return shoppingPriceMatrixFromQuotes(
+    quotes,
+    enabledStores: enabledStores,
+  );
+}
+
+/// Builds the product × market matrix from an already resolved quote list.
+///
+/// Shopping list rows often need both a highlighted quote and the complete
+/// market matrix. Keeping this second step separate prevents resolving the
+/// same prices and offers twice during one widget build.
+List<ShoppingPriceMatrixEntry> shoppingPriceMatrixFromQuotes(
+  Iterable<ShoppingQuote> inputQuotes, {
+  List<String> enabledStores = const [],
+}) {
+  final quotes = inputQuotes.toList(growable: false);
   final configuredNames = enabledStores.isEmpty
       ? stores.map((store) => store.name).toList(growable: false)
       : enabledStores;
@@ -414,7 +430,6 @@ List<ShoppingPriceMatrixEntry> shoppingPriceMatrix(
   });
   return result;
 }
-
 int _compareMatrixQuotes(ShoppingQuote a, ShoppingQuote b) {
   if (a.isHistorical != b.isHistorical) {
     return a.isHistorical ? 1 : -1;
