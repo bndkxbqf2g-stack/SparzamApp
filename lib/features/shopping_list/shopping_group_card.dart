@@ -8,6 +8,7 @@ import '../../models/price_observation.dart';
 import '../../models/product.dart';
 import '../../models/receipt_price_stat.dart';
 import 'shopping_price_badge.dart';
+import 'shopping_price_quotes.dart';
 import 'receipt_family_price_hint.dart';
 import '../catalog/product_identity.dart';
 import '../offers/prospect_price_statistics.dart';
