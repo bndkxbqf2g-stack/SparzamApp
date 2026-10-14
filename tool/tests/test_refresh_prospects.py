@@ -323,6 +323,22 @@ class ProspectParserTest(unittest.TestCase):
             )
         )
 
+        for label in (
+            "CROFTON Halloween Tasse, Fledermaus",
+            "MELITTA Filterkaffeemaschine Easy Therm",
+            "Deko-Figur Halloween",
+            "JACK & JONES Herren-Hoodie",
+            "KUSCHELWEICH Weichspüler 1 l",
+            "K-CLASSIC Ultra-Klumpstreu 6 l",
+        ):
+            self.assertFalse(refresh.is_food_offer({"productLabel": label}))
+
+        self.assertTrue(
+            refresh.is_food_offer(
+                {"productLabel": "WINTERTRAUM Tassenhänger Knuspermännchen 170 g"}
+            )
+        )
+
     def test_source_counts_report_filtered_food_and_keep_provider_count(self):
         sources = [{"storeName": "Kaufland", "recordCount": 3}]
         offers = [
