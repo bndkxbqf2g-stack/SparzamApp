@@ -42,13 +42,9 @@ class ShoppingPriceBadge extends StatelessWidget {
       enabledStores: enabledStores,
       openPricesMaxAgeDays: openPricesMaxAgeDays,
     );
-    final matrix = shoppingPriceMatrix(
-      item,
-      prices: prices,
-      offers: offers,
-      prospectPriceHistory: prospectPriceHistory,
+    final matrix = shoppingPriceMatrixFromQuotes(
+      quotes,
       enabledStores: enabledStores,
-      openPricesMaxAgeDays: openPricesMaxAgeDays,
     );
     final pricedMarkets = matrix.where((entry) => entry.hasCurrentQuote).length;
     final historicalMarkets = matrix

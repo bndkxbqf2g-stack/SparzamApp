@@ -812,4 +812,33 @@ void main() {
     );
   });
 
+  test('matrix can reuse the already resolved quote snapshot', () {
+    final quotes = shoppingQuotes(
+      item,
+      prices: const [],
+      offers: [offer],
+      enabledStores: const ['Lidl', 'ALDI Süd'],
+      now: DateTime(2026, 9, 24),
+    );
+    final direct = shoppingPriceMatrix(
+      item,
+      prices: const [],
+      offers: [offer],
+      enabledStores: const ['Lidl', 'ALDI Süd'],
+      now: DateTime(2026, 9, 24),
+    );
+    final reused = shoppingPriceMatrixFromQuotes(
+      quotes,
+      enabledStores: const ['Lidl', 'ALDI Süd'],
+    );
+
+    expect(
+      reused.map((entry) => entry.storeName),
+      direct.map((entry) => entry.storeName),
+    );
+    expect(
+      reused.map((entry) => entry.quote?.unitPrice),
+      direct.map((entry) => entry.quote?.unitPrice),
+    );
+  });
 }
