@@ -1,3 +1,9 @@
+## Update 14.10.2026 – Artikelbilder aus belegten Prospektseiten
+
+- [x] Strukturierte Angebote können bei fehlendem Artikelbild das bereits validierte Bild derselben Prospektseite verwenden.
+- [x] Store, Seitennummer und überschneidender Gültigkeitszeitraum sind Pflicht für den Fallback; alte oder uneindeutige Seiten bleiben ohne Bild.
+- [x] Der Nachweis bleibt unverändert am Angebot, und eigene Quellbilder werden nie überschrieben.
+
 ## Update 14.10.2026 – Artikelübernahme bei uneindeutiger Identität
 
 - [x] Eindeutig belegte Prospektartikel bleiben direkt hinzufügbar; uneindeutige, aber gültige Datensätze erhalten einen sichtbaren Bestätigungsdialog.

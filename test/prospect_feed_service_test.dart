@@ -339,6 +339,43 @@ void main() {
     expect(issue.pages.single.imageUrl, 'https://cdn.example/lidl-cover.jpg');
   });
 
+  test('uses a validated prospect page as the article image fallback', () {
+    final result = parseProspectFeed(r'''
+{
+  "sources": [
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "prospects": [
+        {
+          "title": "Lidl Wochenprospekt",
+          "offerStartDate": "2026-10-12",
+          "offerEndDate": "2026-10-17",
+          "pageSamples": [
+            {"number": 3, "image": "https://cdn.example/lidl/page-3.jpg"}
+          ]
+        }
+      ]
+    }
+  ],
+  "offers": [
+    {
+      "sourceId": "lidl-page-3",
+      "productLabel": "Butter 250 g",
+      "storeName": "Lidl",
+      "offerPrice": 1.49,
+      "validFrom": "2026-10-12",
+      "validUntil": "2026-10-17",
+      "brochurePage": 3,
+      "proofRef": "https://example.test/lidl-page-3"
+    }
+  ]
+}
+''');
+
+    expect(result.records.single.imageUrl, 'https://cdn.example/lidl/page-3.jpg');
+  });
+
   test('deduplicates and sorts valid prospect pages', () {
     final result = parseProspectFeed(r'''
 {
