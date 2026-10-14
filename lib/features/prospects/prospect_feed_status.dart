@@ -337,9 +337,15 @@ int _prospectPageCount(ProspectIssue? issue) {
 
 /// Makes missing prospect evidence explicit without changing offer selection.
 class ProspectCoverageCard extends StatefulWidget {
-  const ProspectCoverageCard({super.key, required this.coverage});
+  const ProspectCoverageCard({
+    super.key,
+    required this.coverage,
+    this.regularPricePersistenceStatus =
+        ProspectRegularPricePersistenceStatus.standalone,
+  });
 
   final List<ProspectCoverage> coverage;
+  final ProspectRegularPricePersistenceStatus regularPricePersistenceStatus;
 
   @override
   State<ProspectCoverageCard> createState() => _ProspectCoverageCardState();
@@ -367,15 +373,17 @@ class _ProspectCoverageCardState extends State<ProspectCoverageCard> {
     final marketsWithRegularPrices = coverage
         .where((entry) => entry.regularPriceCount > 0)
         .length;
-    final hasPersistenceCoverage = coverage.any(
-        (entry) => entry.persistedRegularPriceCount != null,
-    );
     final marketsWithStoredRegularPrices = coverage
         .where((entry) => (entry.persistedRegularPriceCount ?? 0) > 0)
         .length;
-    final storageSummary = hasPersistenceCoverage
-        ? '$marketsWithStoredRegularPrices mit gespeichertem Normalpreis'
-        : 'Speicherstatus nicht übergeben';
+    final storageSummary = switch (regularPricePersistenceStatus) {
+      ProspectRegularPricePersistenceStatus.standalone =>
+        'Speicherstatus nicht bestätigt',
+      ProspectRegularPricePersistenceStatus.pending => 'Speicherung läuft',
+      ProspectRegularPricePersistenceStatus.succeeded =>
+        '$marketsWithStoredRegularPrices mit gespeichertem Normalpreis',
+      ProspectRegularPricePersistenceStatus.failed => 'Speicherstatus unbekannt',
+    };
     final regionalOffers = coverage.fold<int>(
       0,
       (sum, entry) => sum + entry.regionalOnlyCount,
@@ -422,7 +430,9 @@ class _ProspectCoverageCardState extends State<ProspectCoverageCard> {
                       color: _coverageColor(context, entry),
                     ),
                     title: Text(entry.storeName),
-                    subtitle: Text(_coverageDetails(entry)),
+                    subtitle: Text(
+                      _coverageDetails(entry, regularPricePersistenceStatus),
+                    ),
                     trailing: Text(
                       _sourceStatusLabel(entry.sourceStatus),
                       textAlign: TextAlign.end,
@@ -456,7 +466,10 @@ Color _coverageColor(BuildContext context, ProspectCoverage coverage) {
   return Theme.of(context).colorScheme.onSurfaceVariant;
 }
 
-String _coverageDetails(ProspectCoverage coverage) {
+String _coverageDetails(
+  ProspectCoverage coverage,
+  ProspectRegularPricePersistenceStatus persistenceStatus,
+) {
   final productImages =
       '${coverage.offerImageCount}/${coverage.structuredOfferCount} Produktbilder';
   final categories =
@@ -465,9 +478,14 @@ String _coverageDetails(ProspectCoverage coverage) {
       '${coverage.offerProofCount}/${coverage.structuredOfferCount} Nachweise';
   final regularPrices =
       '${coverage.regularPriceCount}/${coverage.structuredOfferCount} Normalpreise';
-  final storedRegularPrices = coverage.persistedRegularPriceCount == null
-      ? 'Speicherstatus unbekannt'
-      : '${coverage.persistedRegularPriceCount}/${coverage.structuredOfferCount} gespeichert';
+  final storedRegularPrices = switch (persistenceStatus) {
+    ProspectRegularPricePersistenceStatus.standalone =>
+      'Speicherung nicht bestätigt',
+    ProspectRegularPricePersistenceStatus.pending => 'Speicherung läuft',
+    ProspectRegularPricePersistenceStatus.succeeded =>
+      '${coverage.persistedRegularPriceCount ?? 0}/${coverage.structuredOfferCount} gespeichert',
+    ProspectRegularPricePersistenceStatus.failed => 'Speicherstatus unbekannt',
+  };
   final storeSignals = '${coverage.availableStoreSignals}/4 Filialdaten';
   final regional = coverage.regionalOnlyCount == 0
       ? ''

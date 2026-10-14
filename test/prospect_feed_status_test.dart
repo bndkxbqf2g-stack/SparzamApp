@@ -300,7 +300,15 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
-        home: ListView(children: [ProspectCoverageCard(coverage: coverage)]),
+        home: ListView(
+          children: [
+            ProspectCoverageCard(
+              coverage: coverage,
+              regularPricePersistenceStatus:
+                  ProspectRegularPricePersistenceStatus.succeeded,
+            ),
+          ],
+        ),
       ),
     );
 
@@ -477,4 +485,75 @@ void main() {
     expect(find.textContaining('als Preisbasis gespeichert.'), findsNothing);
   });
 
+  testWidgets('zeigt fehlgeschlagene Abdeckung als unbekannt', (tester) async {
+    const coverage = [
+  ProspectCoverage(
+    storeName: 'Lidl',
+    sourceStatus: 'ok',
+    structuredOfferCount: 0,
+    regionalOnlyCount: 0,
+    pageCount: 0,
+    offerImageCount: 0,
+    offerCategoryCount: 0,
+    offerProofCount: 0,
+    hasBranch: false,
+    hasLocation: false,
+    hasAddress: false,
+    hasValidity: false,
+  ),
+];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ListView(
+          children: [
+            ProspectCoverageCard(
+              coverage: coverage,
+              regularPricePersistenceStatus:
+                  ProspectRegularPricePersistenceStatus.failed,
+            ),
+          ],
+        ),
+      ),
+    );
+
+    expect(find.textContaining('Speicherstatus unbekannt'), findsOneWidget);
+    expect(find.textContaining('gespeichert'), findsNothing);
+  });
+
+  testWidgets('zeigt laufende Abdeckung nicht als bestätigt', (tester) async {
+    const coverage = [
+  ProspectCoverage(
+    storeName: 'Lidl',
+    sourceStatus: 'ok',
+    structuredOfferCount: 0,
+    regionalOnlyCount: 0,
+    pageCount: 0,
+    offerImageCount: 0,
+    offerCategoryCount: 0,
+    offerProofCount: 0,
+    hasBranch: false,
+    hasLocation: false,
+    hasAddress: false,
+    hasValidity: false,
+  ),
+];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ListView(
+          children: [
+            ProspectCoverageCard(
+              coverage: coverage,
+              regularPricePersistenceStatus:
+                  ProspectRegularPricePersistenceStatus.pending,
+            ),
+          ],
+        ),
+      ),
+    );
+
+    expect(find.textContaining('Speicherung läuft'), findsOneWidget);
+    expect(find.textContaining('gespeichert'), findsNothing);
+  });
 }
