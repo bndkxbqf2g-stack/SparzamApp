@@ -99,6 +99,26 @@ def _attach_source_branch_metadata(items, source_id):
         enriched.append(record)
     return enriched
 
+def _attach_capture_timestamp(items, captured_at):
+    """Stamp newly fetched records while preserving provider timestamps."""
+    timestamp = captured_at.strip() if isinstance(captured_at, str) else ""
+    if not timestamp:
+        return [
+            dict(item)
+            for item in (items or [])
+            if isinstance(item, dict)
+        ]
+    enriched = []
+    for item in items or []:
+        if not isinstance(item, dict):
+            continue
+        record = dict(item)
+        existing = record.get("capturedAt")
+        if not isinstance(existing, str) or not existing.strip():
+            record["capturedAt"] = timestamp
+        enriched.append(record)
+    return enriched
+
 class VisibleTextParser(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
@@ -2864,6 +2884,8 @@ def main(selected_source_ids=None):
     previous = load_previous()
     all_offers, sources = [], []
     refreshed_source_count = 0
+    captured_now = datetime.now(timezone.utc)
+    captured_at = captured_now.isoformat().replace("+00:00", "Z")
     try:
         bring_by_store = fetch_current_bring_prospects()
     except Exception:
@@ -2982,6 +3004,7 @@ def main(selected_source_ids=None):
             # Keep branch provenance at record level as well as on the source
             # node. Provider-specific values remain authoritative.
             prospects = _merge_previous_prospects(previous, store, prospects)
+            offers = _attach_capture_timestamp(offers, captured_at)
             offers = _attach_source_branch_metadata(offers, source_id)
             prospects = _attach_source_branch_metadata(prospects, source_id)
 
@@ -2998,12 +3021,16 @@ def main(selected_source_ids=None):
                 raise ValueError("keine sicher extrahierbaren Angebote gefunden; " + diagnostics)
             all_offers.extend(offers)
             refreshed_source_count += 1
-            sources.append({"id": source_id, "storeName": store, "url": url, "status": "metadata_only" if metadata_only else "ok", "recordCount": len(offers), "mode": source_mode, "prospects": prospects, **source_branch_metadata(source_id)})
+            sources.append({"id": source_id, "storeName": store, "url": url, "status": "metadata_only" if metadata_only else "ok", "recordCount": len(offers), "mode": source_mode, "capturedAt": captured_at, "prospects": prospects, **source_branch_metadata(source_id)})
         except Exception as error:
             bring_data = bring_by_store.get(store)
             if bring_data:
-                bring_offers = _attach_source_branch_metadata(
+                bring_offers = _attach_capture_timestamp(
                     dedupe(bring_data.get("offers", [])),
+                    captured_at,
+                )
+                bring_offers = _attach_source_branch_metadata(
+                    bring_offers,
                     source_id,
                 )
                 bring_prospect = bring_data.get("prospect")
@@ -3053,6 +3080,16 @@ def main(selected_source_ids=None):
             kaufda_offers = data.get("offers", [])
             if not isinstance(kaufda_offers, list):
                 kaufda_offers = []
+            kaufda_capture_value = data.get("capturedAt")
+            kaufda_capture = (
+                kaufda_capture_value.strip()
+                if isinstance(kaufda_capture_value, str) and kaufda_capture_value.strip()
+                else captured_at
+            )
+            kaufda_offers = _attach_capture_timestamp(
+                kaufda_offers,
+                kaufda_capture,
+            )
             all_offers.extend(kaufda_offers)
             branch = data.get("branch")
             if not isinstance(branch, dict):
@@ -3092,7 +3129,7 @@ def main(selected_source_ids=None):
                     refreshed_source_count += 1
     all_offers = current_prospect_offers(all_offers)
     update_source_record_counts(sources, all_offers)
-    payload = {"schemaVersion": 1, "generatedAt": feed_generated_at(previous, refreshed_source_count), "sources": sources, "offers": all_offers}
+    payload = {"schemaVersion": 1, "generatedAt": feed_generated_at(previous, refreshed_source_count, now=captured_now), "sources": sources, "offers": all_offers}
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("Prospektfeed:", len(payload["offers"]), "Angebote")
