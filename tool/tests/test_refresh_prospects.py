@@ -585,6 +585,27 @@ class ProspectParserTest(unittest.TestCase):
         )
         self.assertEqual(edeka_offers[0]["originalPrice"], 1.29)
 
+        alias_values = {
+            "priceBefore": "1,29 €",
+            "previousPrice": "1,29 €",
+            "crossedOutPrice": "1,29 €",
+            "strikethroughPrice": "1,29 €",
+            "wasPriceNumeric": 1.29,
+            "original_price": "1,29 €",
+            "regular_price": "1,29 €",
+            "normal_price": "1,29 €",
+            "old_price": "1,29 €",
+            "previous_price": "1,29 €",
+            "crossed_out_price": "1,29 €",
+            "strikethrough_price": "1,29 €",
+        }
+        for key, value in alias_values.items():
+            with self.subTest(key=key):
+                self.assertEqual(
+                    refresh._explicit_regular_price({key: value}, 0.99),
+                    1.29,
+                )
+
     def test_aldi_public_prospect_parser_keeps_current_cover_and_period(self):
         html = """
         <a href="https://prospekt.aldi-sued.de/kw41-26-op-mp/page/10">Vorwoche</a>
