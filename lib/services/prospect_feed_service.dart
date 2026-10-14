@@ -66,6 +66,18 @@ class ProspectPage {
   final String keyWords;
 }
 
+class _ProspectPageImageCandidate {
+  const _ProspectPageImageCandidate({
+    required this.imageUrl,
+    required this.validFrom,
+    required this.validUntil,
+  });
+
+  final String imageUrl;
+  final DateTime? validFrom;
+  final DateTime? validUntil;
+}
+
 // Retailer feeds can contain household and seasonal campaign articles next to
 // food. Keep the app-side boundary defensive even when an older public feed
 // was generated before the refresh workflow applied its food-only filter.
@@ -398,6 +410,8 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
 
   final recordsByKey = <String, OfferImportRecord>{};
   final prospects = <ProspectIssue>[];
+  final pageImagesByStoreAndNumber =
+      <String, List<_ProspectPageImageCandidate>>{};
   for (final source in (json['sources'] as List<dynamic>? ?? const [])) {
     if (source is! Map<String, dynamic>) continue;
     final storeName = _stringValue(source['storeName']);
@@ -440,46 +454,61 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
       // Keep metadata-only prospect entries as well. Some retailers publish
       // dates, branch context and an official link before they provide page
       // images; dropping those fields makes a current source look unknown.
-      prospects.add(
-        ProspectIssue(
-          storeName: storeName,
-          title: _stringValue(raw['title']) ?? 'Prospekt',
-          pages: pages,
-          url: _httpUrlValue(raw['url']),
-          // Older source formats exposed only pageSamples. Reuse the first
-          // already validated page as the cover instead of dropping a valid
-          // image and rendering a misleading empty card.
-          thumbnailUrl: _firstHttpUrl([
-                raw['thumbnailUrl'],
-                raw['coverUrl'],
-                raw['coverImage'],
-                raw['imageUrl'],
-                raw['image'],
-              ]) ??
-              (pages.isEmpty ? null : pages.first.imageUrl),
-          branchId:
-              _optionalNonEmptyString(raw['branchId']) ??
-              sourceBranchIds[storeName],
-          location:
-              _optionalNonEmptyString(raw['location']) ??
-              sourceLocations[storeName],
-          address:
-              _optionalNonEmptyString(raw['address']) ??
-              sourceAddresses[storeName],
-          sourceStatus: sourceStatuses[storeName] ?? 'unknown',
-          recordCount: sourceRecordCounts[storeName] ?? 0,
-          validFrom: DateTime.tryParse(
-            _stringValue(raw['offerStartDate']) ??
-                _stringValue(raw['startDate']) ??
-                '',
-          ),
-          validUntil: DateTime.tryParse(
-            _stringValue(raw['offerEndDate']) ??
-                _stringValue(raw['endDate']) ??
-                '',
-          ),
-        ),
+      final issueValidFrom = DateTime.tryParse(
+        _stringValue(raw['offerStartDate']) ??
+            _stringValue(raw['startDate']) ??
+            '',
       );
+      final issueValidUntil = DateTime.tryParse(
+        _stringValue(raw['offerEndDate']) ??
+            _stringValue(raw['endDate']) ??
+            '',
+      );
+      final issue = ProspectIssue(
+        storeName: storeName,
+        title: _stringValue(raw['title']) ?? 'Prospekt',
+        pages: pages,
+        url: _httpUrlValue(raw['url']),
+        // Older source formats exposed only pageSamples. Reuse the first
+        // already validated page as the cover instead of dropping a valid
+        // image and rendering a misleading empty card.
+        thumbnailUrl: _firstHttpUrl([
+              raw['thumbnailUrl'],
+              raw['coverUrl'],
+              raw['coverImage'],
+              raw['imageUrl'],
+              raw['image'],
+            ]) ??
+            (pages.isEmpty ? null : pages.first.imageUrl),
+        branchId:
+            _optionalNonEmptyString(raw['branchId']) ??
+            sourceBranchIds[storeName],
+        location:
+            _optionalNonEmptyString(raw['location']) ??
+            sourceLocations[storeName],
+        address:
+            _optionalNonEmptyString(raw['address']) ??
+            sourceAddresses[storeName],
+        sourceStatus: sourceStatuses[storeName] ?? 'unknown',
+        recordCount: sourceRecordCounts[storeName] ?? 0,
+        validFrom: issueValidFrom,
+        validUntil: issueValidUntil,
+      );
+      prospects.add(issue);
+      for (final page in pages) {
+        pageImagesByStoreAndNumber
+            .putIfAbsent(
+              _prospectPageImageKey(storeName, page.number),
+              () => <_ProspectPageImageCandidate>[],
+            )
+            .add(
+              _ProspectPageImageCandidate(
+                imageUrl: page.imageUrl,
+                validFrom: issueValidFrom,
+                validUntil: issueValidUntil,
+              ),
+            );
+      }
     }
   }
   // Jeder konfigurierte Markt bleibt in der Prospektansicht sichtbar.
@@ -604,6 +633,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     final regionalOnlyValue = value['regionalOnly'];
     final parsedRegionalOnly = _boolValue(regionalOnlyValue);
     final sourceAdapter = _stringValue(value['sourceAdapter']);
+    final brochurePage = _intValue(value['brochurePage']);
     final explicitBranchId = _optionalNonEmptyString(value['branchId']);
     final isKaufdaWithoutBranch =
         sourceAdapter?.trim().toLowerCase() == 'kaufda' &&
@@ -625,17 +655,24 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         source: _stringValue(value['source']) ?? 'retailerWebsite',
         proofRef: _stringValue(value['proofRef']),
         imageUrl: _firstHttpUrl([
-          value['imageUrl'],
-          value['imageURL'],
-          value['image_url'],
-          value['image'],
-          value['productImage'],
-          value['product_image'],
-          value['bild'],
-          value['bild_app'],
-          value['bild_web130'],
-          value['bild_web90'],
-        ]),
+              value['imageUrl'],
+              value['imageURL'],
+              value['image_url'],
+              value['image'],
+              value['productImage'],
+              value['product_image'],
+              value['bild'],
+              value['bild_app'],
+              value['bild_web130'],
+              value['bild_web90'],
+            ]) ??
+            _prospectPageImageForOffer(
+              pageImagesByStoreAndNumber,
+              storeName: storeName,
+              pageNumber: brochurePage,
+              validFrom: validFrom,
+              validUntil: validUntil,
+            ),
         category: category,
         packageSize: _firstSourceLabel(
           value,
@@ -650,7 +687,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         // remains visible as diagnostic evidence but cannot become routeable.
         regionalOnly: regionalOnly,
         brochureId: _stringValue(value['brochureId']),
-        brochurePage: _intValue(value['brochurePage']),
+        brochurePage: brochurePage,
         publisherId: _stringValue(value['publisherId']),
         capturedAt: capturedAt,
         branchId: regionalOnly
@@ -678,6 +715,34 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     prospects: prospects,
     fromCache: fromCache,
   );
+}
+
+String _prospectPageImageKey(String storeName, int pageNumber) =>
+    '${storeName.trim().toLowerCase()}\\u001f$pageNumber';
+
+String? _prospectPageImageForOffer(
+  Map<String, List<_ProspectPageImageCandidate>> pagesByStoreAndNumber, {
+  required String storeName,
+  required int? pageNumber,
+  required DateTime? validFrom,
+  required DateTime validUntil,
+}) {
+  if (pageNumber == null) return null;
+  final candidates =
+      pagesByStoreAndNumber[_prospectPageImageKey(storeName, pageNumber)];
+  if (candidates == null || candidates.isEmpty) return null;
+  for (final candidate in candidates) {
+    final startsAfterOffer =
+        candidate.validFrom != null && candidate.validFrom!.isAfter(validUntil);
+    final endsBeforeOffer =
+        candidate.validUntil != null &&
+        validFrom != null &&
+        candidate.validUntil!.isBefore(validFrom);
+    if (!startsAfterOffer && !endsBeforeOffer) return candidate.imageUrl;
+  }
+  // If the feed supplied one page image without dates, it is still a
+  // validated page-level source for this exact store/page pair.
+  return candidates.length == 1 ? candidates.single.imageUrl : null;
 }
 
 String _prospectRecordKey(OfferImportRecord record) {

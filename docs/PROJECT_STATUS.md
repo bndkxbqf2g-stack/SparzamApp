@@ -1,3 +1,9 @@
+## Update 14.10.2026 – Artikelbilder aus belegten Prospektseiten ergänzen
+
+- [x] Fehlt einem strukturierten Lebensmittelangebot ein eigenes Produktbild, übernimmt die Feedgrenze nur bei exakt gleicher Filiale und Prospektseite ein bereits validiertes Seitenbild.
+- [x] Gültigkeitszeiträume werden beim Seitenfallback überschneidungssicher geprüft; alte oder mehrdeutige Seitenbilder bleiben leer.
+- [x] Ein vorhandenes Artikelbild hat Vorrang. Der Fallback erfindet weder URLs noch Produktdaten und ist durch eine Parserregression geschützt.
+
 ## Update 14.10.2026 – Prospekt-Refresh berücksichtigt Tagesgrenzen
 
 - [x] Der Fingerabdruck enthält neben den validierten Feedfeldern auch den aktuellen Kalendertag.
