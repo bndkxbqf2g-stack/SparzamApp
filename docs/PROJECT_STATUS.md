@@ -1,3 +1,10 @@
+## Update 14.10.2026 – Prospekt-Fallback und lokales Quota-Verhalten
+
+- [x] Cache und gebündelter Feed werden bei Offline-/Fehler-Fallbacks anhand von `generatedAt` verglichen; ein alter Gerätestand kann keinen neueren App-Stand mehr verdrängen.
+- [x] Ein erfolgreicher, aber älterer Netzwerkstand wird ebenfalls nicht vor einen neueren validierten lokalen Stand gesetzt.
+- [x] Automatisch importierte Prospektangebote bleiben flüchtig und werden beim Refresh nicht mehr als dauerhafte Nutzerangebote gespeichert; dadurch wächst der lokale OfferStore nicht mit jedem Abruf.
+- [x] Der Status kennzeichnet auch einen veralteten Cache sichtbar als veraltet. Gültigkeitsfilter und die Trennung von aktuellen Angeboten und historischen Preisbeobachtungen bleiben unverändert.
+
 ## Update 14.10.2026 – Routen-Snapshot wiederverwenden
 
 - RouteScreen cached jetzt die abgeleiteten Ergebnisse eines unveränderten Eingangs-Snapshots: Preisabdeckung, Preisnachweise, Mehrmarkt-Alternativen, Fahrzeit, Empfehlung und Straßenroute werden bei kleinen UI-Rebuilds wiederverwendet.
