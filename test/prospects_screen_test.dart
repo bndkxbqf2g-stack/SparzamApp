@@ -869,6 +869,8 @@ void main() {
     final resized = provider as ResizeImage;
     expect(resized.width, 720);
     expect(resized.height, 480);
+    expect(preview.loadingBuilder, isNull);
+    expect(preview.frameBuilder, isNotNull);
   });
 
   testWidgets('builds long prospect page lists lazily', (tester) async {

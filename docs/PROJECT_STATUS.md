@@ -1,3 +1,9 @@
+## Update 14.10.2026 – Prospektseiten ohne progressive Lade-Rebuilds
+
+- Der Prospektviewer zeigt bis zum ersten dekodierten Bildframe einen stabilen Platzhalter.
+- Chunkweise Lade-Callbacks werden nicht mehr für jede Netzwerkantwort neu aufgebaut; das reduziert Rebuild- und Animationsdruck beim schnellen Scrollen.
+- Die Canvas-first-Strategie, begrenzte Decode-Größen und der gezielte HTML-Fallback bleiben unverändert.
+
 ## Update 14.10.2026 – Artikelbilder aus belegten Prospektseiten ergänzen
 
 - [x] Fehlt einem strukturierten Lebensmittelangebot ein eigenes Produktbild, übernimmt die Feedgrenze nur bei exakt gleicher Filiale und Prospektseite ein bereits validiertes Seitenbild.
