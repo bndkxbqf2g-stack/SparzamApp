@@ -1,3 +1,12 @@
+## D179 – Prospektfeed beim App-Fortsetzen im Hintergrund aktualisieren
+
+Ein validierter Prospektstand, der beim Fortsetzen der App älter als sechs Stunden ist,
+löst einen begrenzten Hintergrund-Refresh aus. Der vorhandene lokale Stand bleibt
+währenddessen sichtbar; die Aktualisierung verwendet weiterhin nur die konfigurierten
+öffentlichen Quellen und den bestehenden Cache-/PriceObservation-Pfad. Fehlende oder
+zukünftige Zeitstempel werden konservativ behandelt, und doppelte Lifecycle-Ereignisse
+werden kurz gedrosselt, damit die App weder blockiert noch unnötige Abrufe erzeugt.
+
 # SparzamApp – Architektur- und Produktentscheidungen
 
 Diese Datei hält Entscheidungen fest, damit sie in neuen Chats oder Work-Läufen nicht erneut erraten werden.

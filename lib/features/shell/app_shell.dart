@@ -31,6 +31,7 @@ import '../../services/price_history_store.dart';
 import '../../services/price_observation_store.dart';
 import '../../services/price_observation_adapters.dart';
 import '../../services/prospect_feed_service.dart';
+import '../../services/prospect_refresh_policy.dart';
 import '../../services/prospect_import_module.dart';
 import '../offers/offer_import.dart';
 import '../offers/prospect_offer_products.dart';
@@ -135,7 +136,7 @@ class AppShell extends StatefulWidget {
   State<AppShell> createState() => _AppShellState();
 }
 
-class _AppShellState extends State<AppShell> {
+class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   // The primary task is adding items. Open the app on the list, like Bring.
   int selectedIndex = 1;
   // Keep visited tabs mounted so scrolling state and controllers survive tab switches.
@@ -159,6 +160,7 @@ class _AppShellState extends State<AppShell> {
   DateTime? prospectFeedGeneratedAt;
   List<Product> prospectProducts = const <Product>[];
   bool _prospectFeedRefreshing = false;
+  DateTime? _lastProspectResumeRefreshAt;
   String? _prospectFeedFingerprint;
   final priceObservationStore = PriceObservationStore();
   final receiptAliasStore = ReceiptAliasStore();
@@ -254,6 +256,7 @@ class _AppShellState extends State<AppShell> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     budget = widget.initialBudget;
     mobility = widget.initialMobility;
     customProducts = [...widget.initialCustomProducts];
@@ -290,6 +293,35 @@ class _AppShellState extends State<AppShell> {
     _loadReceiptObservations();
     _loadPriceObservations();
     _loadProspectOffers(preferCached: true);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed || !mounted) return;
+    final now = DateTime.now();
+    final lastAttempt = _lastProspectResumeRefreshAt;
+    if (lastAttempt != null &&
+        now.isBefore(lastAttempt.add(const Duration(minutes: 1)))) {
+      return;
+    }
+    if (!shouldRefreshProspectsOnResume(
+      generatedAt: prospectFeedGeneratedAt,
+      now: now,
+    )) {
+      return;
+    }
+    _lastProspectResumeRefreshAt = now;
+    // Refresh in the background so returning to the app never blocks the
+    // current list, route, or prospect scroll position.
+    unawaited(_loadProspectOffers(preferCached: true));
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    // Invalidate startup/refresh callbacks before the state is torn down.
+    _dataRevision++;
+    super.dispose();
   }
 
   List<ListItem> _copyItems(List<ListItem> items) => items
