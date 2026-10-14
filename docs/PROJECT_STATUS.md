@@ -1,3 +1,8 @@
+## Update 14.10.2026 – Alternative Prospekt-Coverfelder
+- [x] Der validierte Prospektimport akzeptiert neben `pageSamples.image` auch die dokumentierten Varianten `imageUrl`, `thumbnailUrl` und `url` sowie alternative Zoom- und Keywordfelder.
+- [x] Covermetadaten können aus `coverUrl`, `coverImage`, `imageUrl` oder `image` übernommen werden; jede URL wird weiterhin strikt auf HTTP(S) geprüft.
+- [x] Die bestehende Reihenfolge, Seitendeduplizierung, Gültigkeitsprüfung und Quellenherkunft bleiben unverändert; ein fehlendes Bild bleibt ein fehlendes Bild.
+- [x] Eine Fixture-Regression deckt alternative Feldnamen, Seitennummern, Zoomnachweis und Coverdarstellung ab.
 ## Update 14.10.2026 – Gemeinsame Preis- und Routensnapshots
 - [x] Der App-Shell-Build verwendet den bestehenden Routing-Snapshot-Cache; Mengenänderungen und Änderungen an Preisen, Angeboten, Filialen, Mobilität, Entfernungsmatrix oder Gültigkeitsgrenze invalidieren ihn deterministisch.
 - [x] Der Preise-Reiter löst Produkt×Markt-Quotes einmal pro Eingabestand auf und teilt den Snapshot zwischen Abdeckung, Hervorhebungen und Marktvergleich.
