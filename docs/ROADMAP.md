@@ -1,3 +1,8 @@
+## Update 14.10.2026 – Prospektpreise beim App-Fortsetzen aktualisieren
+- [x] Beim Fortsetzen der App wird ein validierter Prospektstand älter als sechs Stunden automatisch im Hintergrund aktualisiert.
+- [x] Der aktuelle Einkauf, die Route und die Prospektansicht bleiben während des Abrufs bedienbar; der lokale Cache wird sofort weiterverwendet.
+- [x] Die Prüfung ist timestamp-basiert, begrenzt doppelte Resume-Ereignisse und erzeugt keine zusätzliche dauerhafte Datenquelle.
+
 ## Update 13.10.2026 – Coverraster progressiv laden
 - [x] Große Prospekt-Coverlisten im Angebote-Reiter zunächst seitenweise rendern und weitere Karten ausdrücklich nachladen lassen.
 - [x] Den bestehenden Detailviewer, die Quellenbelege und die aktuelle Gültigkeitsprüfung unverändert weiterverwenden.

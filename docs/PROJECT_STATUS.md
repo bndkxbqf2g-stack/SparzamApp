@@ -1,3 +1,10 @@
+## Update 14.10.2026 – Prospektpreise beim App-Fortsetzen aktualisieren
+
+- [x] AppShell registriert einen Lifecycle-Observer und startet beim Fortsetzen einen Hintergrund-Refresh, sobald der letzte validierte Feedstand älter als sechs Stunden ist.
+- [x] Eine fehlende oder veraltete Zeitangabe löst einen Refresh aus; zukünftige Zeitstempel nach einer Geräteuhrkorrektur erzeugen keine Schleife.
+- [x] Der lokale Prospektstand bleibt während des Netzabrufs sichtbar, und die bestehende Speicherung regulärer Normalpreise läuft unverändert über den bestehenden PriceObservation-Pfad.
+- [x] Eine Policy-Regression deckt fehlende, frische, alte und zukünftige Zeitstempel ab.
+
 ## Update 14.10.2026 – Prospektviewer-Schlüssel stabilisiert
 
 - [x] Artikelkarten im Prospektviewer verwenden jetzt denselben deterministischen Fallback-Schlüssel wie die Suche, auch wenn eine Quelle keine `sourceId` liefert.
