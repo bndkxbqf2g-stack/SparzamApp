@@ -72,6 +72,29 @@ class ProspectParserTest(unittest.TestCase):
             [],
         )
 
+    def test_record_accepts_only_http_images(self):
+        invalid = refresh.record(
+            "Lidl",
+            "Butter 250 g",
+            1.99,
+            refresh.date(2026, 10, 12),
+            refresh.date(2026, 10, 17),
+            "https://example.test/butter",
+            image="javascript:alert(1)",
+        )
+        self.assertNotIn("imageUrl", invalid)
+
+        valid = refresh.record(
+            "Lidl",
+            "Butter 250 g",
+            1.99,
+            refresh.date(2026, 10, 12),
+            refresh.date(2026, 10, 17),
+            "https://example.test/butter",
+            image="https://cdn.example/butter.jpg",
+        )
+        self.assertEqual(valid["imageUrl"], "https://cdn.example/butter.jpg")
+
     def test_record_preserves_single_package_and_base_price(self):
         item = refresh.record(
             "Lidl",

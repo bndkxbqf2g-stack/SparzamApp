@@ -341,8 +341,9 @@ def record(
     }
     if original is not None and original >= offer_price:
         result["originalPrice"] = round(float(original), 2)
-    if image:
-        result["imageUrl"] = image
+    validated_image = _source_image({"image": image}) if image else None
+    if validated_image:
+        result["imageUrl"] = validated_image
     category = clean(category or "")
     if category:
         result["category"] = category
