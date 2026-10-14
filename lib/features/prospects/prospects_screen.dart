@@ -491,7 +491,22 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (records.isEmpty) {
+    final issueByStore = <String, ProspectIssue>{};
+    for (final issue in prospects) {
+      issueByStore.putIfAbsent(issue.storeName, () => issue);
+    }
+
+    // A store can have multiple branch-specific records in the shared feed.
+    // Once the visible prospect asserts a branch, keep search results on that
+    // exact branch; otherwise prices and images from a neighbouring store can
+    // leak into the selected prospect.
+    final matchingRecords = records
+        .where((record) {
+          final issue = issueByStore[record.storeName];
+          return issue == null || _prospectRecordBelongsToIssue(record, issue);
+        })
+        .toList(growable: false);
+    if (matchingRecords.isEmpty) {
       final trimmedQuery = query.trim();
       return SliverToBoxAdapter(
         child: Card(
@@ -509,12 +524,8 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
     }
 
     final byStore = <String, List<OfferImportRecord>>{};
-    for (final record in records) {
+    for (final record in matchingRecords) {
       byStore.putIfAbsent(record.storeName, () => []).add(record);
-    }
-    final issueByStore = <String, ProspectIssue>{};
-    for (final issue in prospects) {
-      issueByStore.putIfAbsent(issue.storeName, () => issue);
     }
 
     // Keep product identity resolution out of repeated sliver child builds. The
@@ -524,7 +535,9 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
     final resolvedProducts = <String, Product?>{};
 
     final rows = <_ProspectSearchRow>[
-      _ProspectSearchRow.heading('${records.length} passende Prospektartikel'),
+      _ProspectSearchRow.heading(
+        '${matchingRecords.length} passende Prospektartikel',
+      ),
       const _ProspectSearchRow.description(
         'Artikel werden nur mit ihrem vorhandenen Händlernachweis und '
         'aktuellen Gültigkeitszeitraum angeboten.',
@@ -1426,6 +1439,24 @@ String _sourceStatusLabel(ProspectIssue issue) {
   return 'Offizielle Prospektquelle verfügbar.';
 }
 
+/// Keeps a record on the selected prospect's exact branch when the
+/// source supplied that branch. If the issue has no branch assertion, retain
+/// the legacy store-level view without inventing one.
+bool _prospectRecordBelongsToIssue(
+  OfferImportRecord record,
+  ProspectIssue issue,
+) {
+  if (record.storeName != issue.storeName) return false;
+  final issueBranchId = issue.branchId?.trim();
+  if (issueBranchId == null || issueBranchId.isEmpty) return true;
+  final recordBranchId = record.branchId?.trim();
+  // A record without branch context stays store-level evidence. Only an
+  // explicitly different branch is rejected at this UI boundary.
+  return recordBranchId == null ||
+      recordBranchId.isEmpty ||
+      recordBranchId == issueBranchId;
+}
+
 class ProspectViewerScreen extends StatelessWidget {
   const ProspectViewerScreen({
     super.key,
@@ -1678,7 +1709,7 @@ class ProspectViewerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final pages = _viewerPages(issue);
     final items = records
-        .where((record) => record.storeName == issue.storeName)
+        .where((record) => _prospectRecordBelongsToIssue(record, issue))
         .toList(growable: false);
     final groupedItems = <String, List<OfferImportRecord>>{};
     for (final record in items) {
