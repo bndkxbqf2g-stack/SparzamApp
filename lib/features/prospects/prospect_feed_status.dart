@@ -56,7 +56,7 @@ class ProspectFeedStatusCard extends StatelessWidget {
               'angezeigt.';
     final subtitle = regularPriceCount <= 0
         ? baseSubtitle
-        : '$baseSubtitle ${regularPriceCount == 1 ? '1 regulärer Normalpreis' : '${regularPriceCount} reguläre Normalpreise'} '
+        : '$baseSubtitle ${regularPriceCount == 1 ? '1 regulärer Normalpreis' : '$regularPriceCount reguläre Normalpreise'} '
               'als Preisbasis gespeichert.';
     return Card(
       color: fromCache || stale
