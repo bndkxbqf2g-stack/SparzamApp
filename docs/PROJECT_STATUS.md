@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Branch-stabile Fahrmatrizen
+
+- Neue OSRM-Matrizen verwenden bei vorhandener Branch-ID stabile Filialschlüssel; identische Händlernamen können dadurch getrennte Distanz- und Fahrzeitwerte tragen.
+- Ältere Matrizen mit sichtbaren Händlernamen sowie bestehende Distanz-Caches bleiben als Fallback lesbar.
+- Die Regression deckt die exakte Filialreihenfolge, branch-getrennte Fahrtkosten und Fahrzeiten ab.
+
 ## Update 15.10.2026 – Routenplanung bleibt filialgenau
 
 - Der RouteOptimizer kann neben dem bestehenden Standardkatalog einen immutable Filial-Snapshot erhalten. Das unterstützt spätere Quellenadapter, ohne die globale Marktstammdatenliste zu verändern.

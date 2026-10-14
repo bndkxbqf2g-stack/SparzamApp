@@ -1,3 +1,10 @@
+## Update 15.10.2026 – Branch-stabile Fahrmatrizen
+
+- [x] Neue OSRM-Matrizen verwenden bei vorhandener Branch-ID einen stabilen Filialschlüssel; gleichnamige Märkte bleiben im Matrixknoten getrennt.
+- [x] Ältere Matrizen mit sichtbaren Händlernamen bleiben über einen deterministischen Fallback lesbar.
+- [x] Fallback-Distanzen und die Anzeige der real geladenen Märkte akzeptieren beide Schlüsselvarianten.
+- [x] Eine Fixture-Regression prüft getrennte Distanzen und Fahrzeiten für zwei gleichnamige Filialen.
+
 ## Update 15.10.2026 – Exakte Filialkataloge in der Routenplanung
 
 - [x] RouteOptimizer akzeptiert für einen Rechenlauf einen explizit aufgelösten Filialkatalog; der bisherige Projektkatalog bleibt der Standard.

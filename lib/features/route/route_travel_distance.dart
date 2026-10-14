@@ -35,10 +35,11 @@ OptimizedTravelRoute optimizeTravelRoute(
     );
   }
 
-  if (roadMatrix != null &&
-      roadMatrix.covers(stores.map((store) => store.name))) {
-    final durationMatrixComplete =
-        roadMatrix.coversDurations(stores.map((store) => store.name));
+  final matrixKeys = roadMatrix == null
+      ? const <String>[]
+      : stores.map((store) => _matrixStoreKey(roadMatrix, store)).toList();
+  if (roadMatrix != null && roadMatrix.covers(matrixKeys)) {
+    final durationMatrixComplete = roadMatrix.coversDurations(matrixKeys);
     final fuelCostPerKm =
         euroPerKm.isFinite && euroPerKm >= 0 ? euroPerKm : 0;
     final timeValue =
@@ -55,8 +56,9 @@ OptimizedTravelRoute optimizeTravelRoute(
       var distance = 0.0;
       var previous = RoadRouteMatrix.origin;
       for (final store in order) {
-        distance += roadMatrix.distance(previous, store.name)!;
-        previous = store.name;
+        final key = _matrixStoreKey(roadMatrix, store);
+        distance += roadMatrix.distance(previous, key)!;
+        previous = key;
       }
       distance += roadMatrix.distance(
         previous,
@@ -100,7 +102,11 @@ OptimizedTravelRoute optimizeTravelRoute(
   final distance = stores.fold<double>(
     0,
     (sum, store) =>
-        sum + (fallbackDistances[store.name] ?? store.distanceKm) * 2,
+        sum +
+        (fallbackDistances[travelMatrixStoreKey(store)] ??
+                fallbackDistances[store.name] ??
+                store.distanceKm) *
+            2,
   );
 
   return OptimizedTravelRoute(
@@ -130,10 +136,11 @@ double? _durationForOrder(RoadRouteMatrix matrix, List<Store> order) {
   var total = 0.0;
   var previous = RoadRouteMatrix.origin;
   for (final store in order) {
-    final duration = matrix.durationMinutes(previous, store.name);
+    final key = _matrixStoreKey(matrix, store);
+    final duration = matrix.durationMinutes(previous, key);
     if (duration == null || !duration.isFinite || duration < 0) return null;
     total += duration;
-    previous = store.name;
+    previous = key;
   }
   final returnDuration = matrix.durationMinutes(
     previous,
@@ -147,6 +154,27 @@ double? _durationForOrder(RoadRouteMatrix matrix, List<Store> order) {
   return total + returnDuration;
 }
 
+/// Stable key for new routing matrices. Legacy matrices can still use the
+/// visible store name when no branch-specific node is present.
+String travelMatrixStoreKey(Store store) {
+  final branchId = store.branchId?.trim();
+  if (branchId == null || branchId.isEmpty) return store.name;
+  return '${store.name}#$branchId';
+}
+
+String _matrixStoreKey(RoadRouteMatrix matrix, Store store) {
+  final branchKey = travelMatrixStoreKey(store);
+  if (branchKey == store.name) return branchKey;
+  final originPrefix = '${RoadRouteMatrix.origin}|';
+  final originSuffix = '|${RoadRouteMatrix.origin}';
+  final hasBranchNode = matrix.distancesKm.keys.any(
+        (key) => key == '$originPrefix$branchKey' || key == '$branchKey$originSuffix',
+      ) ||
+      matrix.durationsMinutes.keys.any(
+        (key) => key == '$originPrefix$branchKey' || key == '$branchKey$originSuffix',
+      );
+  return hasBranchNode ? branchKey : store.name;
+}
 
 String _travelStoreTieKey(Store store) => [
   store.name,
