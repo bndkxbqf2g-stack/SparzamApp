@@ -26,6 +26,7 @@ class ShoppingGroupCard extends StatelessWidget {
     this.historicalPriceObservations = const <PriceObservation>[],
     required this.prospectPriceHistory,
     this.receiptPriceStats = const <ReceiptPriceStat>[],
+    this.quoteSnapshot,
     required this.onToggle,
     this.onSelectFamily,
     required this.onChangeQuantity,
@@ -45,6 +46,7 @@ class ShoppingGroupCard extends StatelessWidget {
   final List<PriceObservation> historicalPriceObservations;
   final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
   final List<ReceiptPriceStat> receiptPriceStats;
+  final ShoppingPriceQuoteSnapshot? quoteSnapshot;
   final ValueChanged<Product> onToggle;
   final ValueChanged<ListItem>? onSelectFamily;
   final void Function(String productId, int delta) onChangeQuantity;
@@ -85,6 +87,7 @@ class ShoppingGroupCard extends StatelessWidget {
                       historicalPriceObservations: historicalPriceObservations,
                       prospectPriceHistory: prospectPriceHistory,
                       receiptPriceStats: receiptPriceStats,
+                      quoteSnapshot: quoteSnapshot,
                       enabledStoreNames: enabledStoreNames,
                       onOpenOffer: onOpenOffer,
                       checked: checkedProductIds.contains(item.product.id),
@@ -115,6 +118,7 @@ class ShoppingGroupCard extends StatelessWidget {
                   historicalPriceObservations: historicalPriceObservations,
                   prospectPriceHistory: prospectPriceHistory,
                   receiptPriceStats: receiptPriceStats,
+                  quoteSnapshot: quoteSnapshot,
                   onToggle: onToggle,
                   onSelectFamily: onSelectFamily,
                   onChangeQuantity: onChangeQuantity,
@@ -142,6 +146,7 @@ class _ShoppingItemCard extends StatelessWidget {
     this.historicalPriceObservations = const <PriceObservation>[],
     required this.prospectPriceHistory,
     required this.receiptPriceStats,
+    this.quoteSnapshot,
     required this.enabledStoreNames,
     required this.onOpenOffer,
     required this.onToggle,
@@ -159,6 +164,7 @@ class _ShoppingItemCard extends StatelessWidget {
   final List<PriceObservation> historicalPriceObservations;
   final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
   final List<ReceiptPriceStat> receiptPriceStats;
+  final ShoppingPriceQuoteSnapshot? quoteSnapshot;
   final List<String> enabledStoreNames;
   final ValueChanged<Offer> onOpenOffer;
   final ValueChanged<Product> onToggle;
@@ -217,6 +223,8 @@ class _ShoppingItemCard extends StatelessWidget {
               prospectPriceHistory: prospectPriceHistory,
               historicalPriceObservations: historicalPriceObservations,
               enabledStores: enabledStoreNames,
+              resolvedQuotes: quoteSnapshot?.quotesFor(item),
+              resolvedMatrix: quoteSnapshot?.matrixFor(item),
               onOpenOffer: onOpenOffer,
             ),
             const SizedBox(height: 10),
@@ -259,6 +267,7 @@ class _ShoppingItemTile extends StatelessWidget {
     this.historicalPriceObservations = const <PriceObservation>[],
     required this.prospectPriceHistory,
     required this.receiptPriceStats,
+    this.quoteSnapshot,
     required this.onToggle,
     this.onSelectFamily,
     required this.onChangeQuantity,
@@ -276,6 +285,7 @@ class _ShoppingItemTile extends StatelessWidget {
   final List<PriceObservation> historicalPriceObservations;
   final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
   final List<ReceiptPriceStat> receiptPriceStats;
+  final ShoppingPriceQuoteSnapshot? quoteSnapshot;
   final ValueChanged<Product> onToggle;
   final ValueChanged<ListItem>? onSelectFamily;
   final void Function(String productId, int delta) onChangeQuantity;
@@ -338,6 +348,8 @@ class _ShoppingItemTile extends StatelessWidget {
             prospectPriceHistory: prospectPriceHistory,
             historicalPriceObservations: historicalPriceObservations,
             enabledStores: enabledStoreNames,
+            resolvedQuotes: quoteSnapshot?.quotesFor(item),
+            resolvedMatrix: quoteSnapshot?.matrixFor(item),
             onOpenOffer: onOpenOffer,
           ),
         ],
