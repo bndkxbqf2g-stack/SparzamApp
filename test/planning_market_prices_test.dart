@@ -261,4 +261,51 @@ void main() {
     expect(prices.single.price, 1.49);
     expect(prices.single.updatedAt, correctedObservation.observedAt);
   });
+
+  test(
+    'current prospect projection replaces an older claim when proof changes',
+    () {
+      final older = PriceObservation(
+        id: 'prospect-old-proof',
+        productId: 'milk',
+        storeName: 'Lidl',
+        price: 1.29,
+        observedAt: DateTime(2026, 10, 12, 8),
+        source: PriceObservationSource.leaflet,
+        kind: PriceObservationKind.regular,
+        validFrom: DateTime(2026, 10, 12),
+        validUntil: DateTime(2026, 10, 17),
+        locationId: 'lidl-zellingen',
+        quantity: 1000,
+        unit: 'ml',
+        unitPrice: 1.29,
+        proofRef: 'https://example.test/lidl/old-page',
+      );
+      final refreshed = PriceObservation(
+        id: 'prospect-new-proof',
+        productId: 'milk',
+        storeName: 'Lidl',
+        price: 1.49,
+        observedAt: DateTime(2026, 10, 13, 8),
+        source: PriceObservationSource.leaflet,
+        kind: PriceObservationKind.regular,
+        validFrom: DateTime(2026, 10, 12),
+        validUntil: DateTime(2026, 10, 17),
+        locationId: 'lidl-zellingen',
+        quantity: 1000,
+        unit: 'ml',
+        unitPrice: 1.49,
+        proofRef: 'https://example.test/lidl/new-page',
+      );
+
+      final projected = marketPricesFromObservations(
+        [older, refreshed],
+        now: DateTime(2026, 10, 13),
+      );
+
+      expect(projected, hasLength(1));
+      expect(projected.single.price, 1.49);
+      expect(projected.single.proofRef, refreshed.proofRef);
+    },
+  );
 }
