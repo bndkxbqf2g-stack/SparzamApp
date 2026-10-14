@@ -16,7 +16,6 @@ class ProspectFeedStatusCard extends StatelessWidget {
     this.onRefresh,
     this.refreshing = false,
     this.regularPriceCount = 0,
-    this.persistedRegularPriceCount,
   });
 
   final DateTime? generatedAt;
@@ -26,9 +25,6 @@ class ProspectFeedStatusCard extends StatelessWidget {
   final bool refreshing;
   /// Current, branch-specific regular prices that can be saved as price basis.
   final int regularPriceCount;
-  /// Count confirmed by the local price-observation persistence. Null means
-  /// that this standalone card did not receive a persistence snapshot.
-  final int? persistedRegularPriceCount;
 
   @override
   Widget build(BuildContext context) {
@@ -135,6 +131,7 @@ class ProspectCoverage {
     required this.offerCategoryCount,
     required this.offerProofCount,
     this.regularPriceCount = 0,
+    this.persistedRegularPriceCount,
     required this.hasBranch,
     required this.hasLocation,
     required this.hasAddress,
@@ -152,6 +149,8 @@ class ProspectCoverage {
   /// Count of explicitly stated, valid regular prices that can be learned
   /// without promoting an offer amount into the regular-price history.
   final int regularPriceCount;
+  /// Count confirmed by the local price-observation persistence.
+  final int? persistedRegularPriceCount;
   final bool hasBranch;
   final bool hasLocation;
   final bool hasAddress;
