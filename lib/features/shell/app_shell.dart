@@ -35,6 +35,7 @@ import '../../services/prospect_refresh_policy.dart';
 import '../../services/prospect_import_module.dart';
 import '../offers/offer_import.dart';
 import '../offers/prospect_offer_products.dart';
+import '../../services/prospect_feed_fingerprint.dart';
 import '../offers/prospect_regular_price_persistence.dart';
 import '../offers/prospect_price_statistics.dart';
 import 'price_observation_merge.dart';
@@ -613,10 +614,17 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       networkFeedShown = true;
       if (!_isCurrentDataRevision(revision)) return;
       _showProspectFeed(feed);
-      final feedFingerprint = _prospectFeedFingerprintFor(feed);
+      final refreshNow = DateTime.now();
+      final feedFingerprint = prospectFeedFingerprintFor(
+        feed,
+        now: refreshNow,
+      );
       if (_prospectFeedFingerprint == feedFingerprint) return;
 
-      final currentRecords = currentProspectRecords(feed.records);
+      final currentRecords = currentProspectRecords(
+        feed.records,
+        now: refreshNow,
+      );
       final catalogForProspectPrices = buildCatalogProducts(customProducts);
       final offerBackedProducts = prospectOfferProducts(
         records: currentRecords,
@@ -677,6 +685,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
             records: feed.records,
             catalogProducts: catalogForProspectPrices,
             observedAt: feed.generatedAt,
+            now: refreshNow,
             refreshedStores: feed.refreshedStores,
           );
         });
@@ -728,53 +737,6 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       _prospectFeedRefreshing = false;
       if (mounted) setState(() {});
     }
-  }
-
-  String _prospectFeedFingerprintFor(ProspectFeedLoadResult feed) {
-    final values = <Object?>[
-      for (final record in feed.records)
-        ...[
-          record.sourceId,
-          record.productLabel,
-          record.storeName,
-          record.originalPrice,
-          record.offerPrice,
-          record.validFrom?.toIso8601String(),
-          record.validUntil.toIso8601String(),
-          record.source,
-          record.proofRef,
-          record.imageUrl,
-          record.category,
-          record.packageSize,
-          record.priceByBaseUnit,
-          record.sourceAdapter,
-          record.regionalOnly,
-          record.brochureId,
-          record.brochurePage,
-          record.publisherId,
-          record.capturedAt?.toIso8601String(),
-          record.branchId,
-          record.location,
-          record.address,
-        ],
-      for (final issue in feed.prospects)
-        ...[
-          issue.storeName,
-          issue.title,
-          issue.url,
-          issue.thumbnailUrl,
-          issue.branchId,
-          issue.location,
-          issue.address,
-          issue.sourceStatus,
-          issue.recordCount,
-          issue.validFrom?.toIso8601String(),
-          issue.validUntil?.toIso8601String(),
-          for (final page in issue.pages)
-            ...[page.number, page.imageUrl, page.zoomUrl, page.keyWords],
-        ],
-    ];
-    return jsonEncode(values);
   }
 
   void _showProspectFeed(ProspectFeedLoadResult feed) {

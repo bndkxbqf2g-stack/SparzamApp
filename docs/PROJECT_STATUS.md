@@ -1,3 +1,9 @@
+## Update 14.10.2026 – Prospekt-Refresh berücksichtigt Tagesgrenzen
+
+- [x] Der Fingerabdruck enthält neben den validierten Feedfeldern auch den aktuellen Kalendertag.
+- [x] Ein unveränderter Feed wird beim Wechsel des Gültigkeitstages erneut normalisiert; neu gültige und abgelaufene Angebote erreichen dadurch dieselbe Filter-, Offer- und Preisbeobachtungspipeline.
+- [x] Filterung und Persistenz verwenden denselben Zeitstempel, damit ein Tageswechsel keine gemischten Datenstände erzeugt.
+
 ## Update 14.10.2026 – Uneindeutige Prospektartikel manuell übernehmen
 
 - [x] Aktuelle, filialbezogene und belegte Artikel mit uneindeutiger Katalogidentität können nach ausdrücklicher Bestätigung als exakter eigener Listeneintrag übernommen werden.
