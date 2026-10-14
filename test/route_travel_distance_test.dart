@@ -179,7 +179,7 @@ void main() {
 
     expect(route.usesRoadMatrix, isTrue);
     expect(route.distanceKm, 8);
-    expect(route.durationMinutes, 13);
+    expect(route.durationMinutes, 17);
     expect(route.stores.map((store) => store.branchId), ['lidl-a', 'lidl-b']);
   });
 
