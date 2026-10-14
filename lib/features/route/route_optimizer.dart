@@ -88,7 +88,7 @@ class RouteOptimizer {
       travelRoute(selectedStores).distanceKm * euroPerKm;
 
   int travelTimeMinutes(Iterable<Store> selectedStores) =>
-      _travelMinutesForDistance(travelRoute(selectedStores).distanceKm);
+      _travelMinutesForRoute(travelRoute(selectedStores));
 
   double timeCost(Iterable<Store> selectedStores) =>
       travelTimeMinutes(selectedStores) / 60 * timeValuePerHour;
@@ -137,7 +137,7 @@ class RouteOptimizer {
     );
     final optimizedTravel = travelRoute(assignments.keys);
     final travel = optimizedTravel.distanceKm * euroPerKm;
-    final travelMinutes = _travelMinutesForDistance(optimizedTravel.distanceKm);
+    final travelMinutes = _travelMinutesForRoute(optimizedTravel);
     final timeCost = travelMinutes / 60 * timeValuePerHour;
     final additionalStoreCost =
         (optimizedTravel.stores.length - 1).clamp(0, maxStores).toDouble() *
@@ -155,6 +155,16 @@ class RouteOptimizer {
       timeCost: timeCost,
       additionalStoreCost: additionalStoreCost,
     );
+  }
+
+  int _travelMinutesForRoute(OptimizedTravelRoute route) {
+    final durationMinutes = route.durationMinutes;
+    if (durationMinutes != null &&
+        durationMinutes.isFinite &&
+        durationMinutes >= 0) {
+      return durationMinutes.round();
+    }
+    return _travelMinutesForDistance(route.distanceKm);
   }
 
   int _travelMinutesForDistance(double distanceKm) {

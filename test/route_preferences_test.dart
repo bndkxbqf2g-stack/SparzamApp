@@ -4,6 +4,7 @@ import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/offer.dart';
+import 'package:sparzamapp/models/road_route_matrix.dart';
 
 final _baselineDate = DateTime(2026, 9, 24);
 
@@ -386,6 +387,48 @@ void main() {
 
     expect(optimizer.bestPlan()!.priceCoverage, 1);
     expect(optimizer.bestPlan()!.priceCoverage, 1);
+  });
+
+  test('OSRM-Dauer ersetzt die Geschwindigkeitsheuristik für die Zeitkosten', () {
+    const product = Product(
+      id: 'duration-product',
+      name: 'Dauerprodukt',
+      unit: 'Stück',
+      group: 'test',
+    );
+    final optimizer = RouteOptimizer(
+      [ListItem(product: product)],
+      const [],
+      enabledStoreNames: const ['Lidl'],
+      euroPerKm: 0,
+      timeValuePerHour: 10,
+      travelMinutesPerKm: 60,
+      marketPrices: [
+        MarketPrice(
+          productId: product.id,
+          storeName: 'Lidl',
+          price: 1,
+          updatedAt: _baselineDate,
+        ),
+      ],
+      roadMatrix: const RoadRouteMatrix(
+        originAddress: 'Start',
+        distancesKm: {
+          '@origin|Lidl': 1,
+          'Lidl|@origin': 1,
+        },
+        durationsMinutes: {
+          '@origin|Lidl': 9,
+          'Lidl|@origin': 11,
+        },
+      ),
+    );
+    final store = optimizer.availableStores.single;
+
+    expect(optimizer.travelTimeMinutes([store]), 20);
+    final plan = optimizer.buildPlan([store]);
+    expect(plan.travelMinutes, 20);
+    expect(plan.timeCost, closeTo(10 / 3, 0.0001));
   });
 
   test('gleiche Planwerte werden über den Marktnamen entschieden', () {

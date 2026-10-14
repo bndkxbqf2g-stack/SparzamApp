@@ -42,6 +42,12 @@
 - [x] Wiederholte Preis-/Alternativenaufbereitung wird damit aus demselben
   Build entfernt; ein neuer Datenstand erzeugt bewusst einen neuen Snapshot.
 
+## Update 14.10.2026 – OSRM-Fahrzeitmatrix für Planung
+
+- [x] OSRM-Tabellenantworten können neben Entfernungen auch explizite Fahrzeiten übernehmen.
+- [x] Alte lokale Matrizen ohne Fahrzeiten bleiben lesbar und fallen deterministisch auf die konfigurierte Mobilitätsgeschwindigkeit zurück.
+- [x] Zeitwert, TravelEstimate und Routenzusammenfassung verwenden die Fahrzeit nur bei vollständiger, gültiger Rundtour-Evidenz.
+
 # SparzamApp – Roadmap
 
 Diese Roadmap ist eine Prioritätenliste, kein starres Releaseversprechen.

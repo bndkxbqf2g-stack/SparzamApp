@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/route/travel_estimator.dart';
 import 'package:sparzamapp/models/mobility_settings.dart';
+import 'package:sparzamapp/models/road_route_matrix.dart';
 import 'package:sparzamapp/models/store.dart';
 
 void main() {
@@ -26,6 +27,27 @@ void main() {
     expect(car.distanceKm, 18);
     expect(car.minutes, 24);
     expect(bike.minutes, 60);
+  });
+
+  test('OSRM-Rundtourdauer hat Vorrang vor der Mobilitätsheuristik', () {
+    final estimate = estimateRoundTrips(
+      [store],
+      mobility: const MobilitySettings(mode: MobilityMode.car),
+      roadMatrix: const RoadRouteMatrix(
+        originAddress: 'Start',
+        distancesKm: {
+          '@origin|Markt': 9,
+          'Markt|@origin': 9,
+        },
+        durationsMinutes: {
+          '@origin|Markt': 17,
+          'Markt|@origin': 19,
+        },
+      ),
+    );
+
+    expect(estimate.distanceKm, 18);
+    expect(estimate.minutes, 36);
   });
 
   test('Fußweg wird lesbar als Stunden und Minuten formatiert', () {

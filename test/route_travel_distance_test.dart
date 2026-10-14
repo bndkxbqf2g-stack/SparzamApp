@@ -34,6 +34,14 @@ void main() {
         'A|B': 1,
         'B|A': 1.5,
       },
+      durationsMinutes: {
+        '@origin|A': 12,
+        'A|@origin': 13,
+        '@origin|B': 20,
+        'B|@origin': 14,
+        'A|B': 3,
+        'B|A': 4,
+      },
     );
 
     final route = optimizeTravelRoute(
@@ -43,6 +51,7 @@ void main() {
 
     expect(route.usesRoadMatrix, isTrue);
     expect(route.distanceKm, 12);
+    expect(route.durationMinutes, 29);
     expect(route.stores.map((store) => store.name), ['A', 'B']);
   });
 

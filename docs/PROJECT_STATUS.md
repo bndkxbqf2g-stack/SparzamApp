@@ -1,3 +1,10 @@
+## Update 14.10.2026 – OSRM liefert Fahrzeit für die Routenplanung
+
+- Die optionale OSRM-Matrix übernimmt neben Straßenentfernungen jetzt auch explizite Fahrzeiten aus den öffentlichen `duration`-Antwortfeldern.
+- Die Dauer bleibt separat von der Distanz gespeichert und wird nur verwendet, wenn die komplette Rundtour-Matrix dafür Werte enthält; ältere Caches und Offline-Fallbacks nutzen unverändert die konfigurierte Mobilitätsgeschwindigkeit.
+- RouteOptimizer, TravelEstimate und die Zeitkosten berücksichtigen damit reale Matrix-Fahrzeiten, ohne fehlende Daten als 0 Minuten zu erfinden.
+- Fixture-Regressionen schützen OSRM-Parsing, Cache-Kompatibilität und den Heuristik-Fallback.
+
 ## Update 14.10.2026 – KaufDA-EAN bleibt an exakte Varianten gebunden
 
 - Der optionale KaufDA-Adapter übernimmt explizit benannte EAN/GTIN-Felder
