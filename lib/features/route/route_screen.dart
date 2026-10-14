@@ -141,7 +141,7 @@ class _RouteScreenState extends State<RouteScreen> {
       for (final store in stores)
         if (widget.mobility.isStoreEnabled(store.name) &&
             store.address.isNotEmpty)
-          store.name: store.address,
+          travelMatrixStoreKey(store): store.address,
     };
     try {
       final matrix = await service.fetchMatrix(destinations);
@@ -154,9 +154,12 @@ class _RouteScreenState extends State<RouteScreen> {
       final next = {...roadDistances};
       if (matrix != null) {
         for (final store in stores) {
-          final distance = matrix.distance(RoadRouteMatrix.origin, store.name);
+          final matrixKey = travelMatrixStoreKey(store);
+          final distance =
+              matrix.distance(RoadRouteMatrix.origin, matrixKey) ??
+              matrix.distance(RoadRouteMatrix.origin, store.name);
           if (distance != null && distance > 0) {
-            next[store.name] = distance;
+            next[matrixKey] = distance;
           }
         }
         await matrixCache.save(matrix);
@@ -317,8 +320,13 @@ class _RouteScreenState extends State<RouteScreen> {
           mobility: widget.mobility,
         ),
         optimizedTravel: optimizedTravel,
-        realCount: roadDistances.entries
-            .where((entry) => widget.mobility.isStoreEnabled(entry.key))
+        realCount: stores
+            .where((store) => widget.mobility.isStoreEnabled(store.name))
+            .where(
+              (store) =>
+                  roadDistances.containsKey(travelMatrixStoreKey(store)) ||
+                  roadDistances.containsKey(store.name),
+            )
             .length,
       );
     }
