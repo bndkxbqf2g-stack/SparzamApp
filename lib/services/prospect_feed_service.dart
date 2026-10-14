@@ -98,7 +98,7 @@ final _nonFoodProspectLabel = RegExp(
   r'purina|gourmet\s+(?:perle|gold)|vitakraft|sheba|calgon|cosmea|'
   r'viss|wc-frisch|pampers|gillette|emyo|slipeinlagen|hundesnack|hundefutter|'
   r'katzenfutter|tiernahrung|'
-  r'tasse|kaffeemaschine|kaffeepadmaschine|multizerkleinerer|kontaktgrill|'
+  r'tasse|kaffeemaschine|filterkaffeemaschine|kaffeepadmaschine|multizerkleinerer|kontaktgrill|'
   r'kochplatte|allesschneider|gemüseschneider|gemueseschneider|fleischwolf|'
   r'weichspüler|weichspueler|dampfbügelstation|dampfbuegelstation|'
   r'sekundenkleber|alleskleber|wandweiß|wandweiss|filterkartuschen|'
