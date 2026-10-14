@@ -1,3 +1,8 @@
+## Update 14.10.2026 – Prospektviewer-Schlüssel stabilisiert
+
+- [x] Artikelkarten im Prospektviewer verwenden jetzt denselben deterministischen Fallback-Schlüssel wie die Suche, auch wenn eine Quelle keine `sourceId` liefert.
+- [x] Dadurch bleiben mehrere Artikel einer geöffneten Prospektseite eindeutig, der Viewer stürzt beim Recycling/Scrollen nicht an doppelten Flutter-Keys ab und der Add-Button bleibt erreichbar.
+- [x] Eine Widgetregression öffnet einen Viewer mit zwei sourceId-losen Artikeln, prüft beide Karten und übernimmt einen Artikel in die Einkaufsliste.
 ## Update 14.10.2026 – Routen-Snapshot wiederverwenden
 
 - RouteScreen cached jetzt die abgeleiteten Ergebnisse eines unveränderten Eingangs-Snapshots: Preisabdeckung, Preisnachweise, Mehrmarkt-Alternativen, Fahrzeit, Empfehlung und Straßenroute werden bei kleinen UI-Rebuilds wiederverwendet.
