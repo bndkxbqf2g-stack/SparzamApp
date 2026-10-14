@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-13T12:28:32.000282Z",
+  "generatedAt": "2026-10-14T04:41:14.757489Z",
   "sources": [
     {
       "id": "aldi_sued",
@@ -36,7 +36,7 @@
       "branchId": "B384",
       "location": "Zellingen",
       "address": "Würzburger Str. 74, 97225 Zellingen, Germany",
-      "rawRecordCount": 245
+      "rawRecordCount": 247
     },
     {
       "id": "edeka_zellingen",
@@ -579,7 +579,7 @@
       "branchId": "lidl_zellingen",
       "location": "Zellingen",
       "address": "Am Güßgraben 2, 97225 Zellingen, Germany",
-      "rawRecordCount": 72
+      "rawRecordCount": 87
     },
     {
       "id": "penny_retzbach",
@@ -3589,7 +3589,7 @@
       "source": "retailerWebsite",
       "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-week=current#offer-ART.835627_KAV.3693412",
       "originalPrice": 0.99,
-      "imageUrl": "https://media.kaufland.com/images/PPIM/Lago/c45744042_0.jpg",
+      "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/20674562b",
       "category": "06_Grundnahrungsmittel",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
@@ -6510,6 +6510,22 @@
       "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
     },
     {
+      "sourceId": "55a26e45a37d3b61a695",
+      "productLabel": "K-CLASSIC Schinkenspezialität je 80-g-Packg.",
+      "storeName": "Kaufland",
+      "offerPrice": 1.11,
+      "validFrom": "2026-10-11",
+      "validUntil": "2026-10-17",
+      "source": "retailerWebsite",
+      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-week=current#offer-ART.475474_KAV.3693412",
+      "originalPrice": 1.29,
+      "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/DE01541407-P-4034167713431",
+      "category": "766_K-Card_Xtra2",
+      "branchId": "DE5103",
+      "location": "Würzburg · Nürnberger Straße",
+      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
+    },
+    {
       "sourceId": "d23fcf393dcc6c779cf2",
       "productLabel": "K-CLASSIC Essigessenz je 400-g-Fl.",
       "storeName": "Kaufland",
@@ -7128,22 +7144,6 @@
       "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-week=current#offer-ART.351811_KAV.3693412",
       "originalPrice": 1.19,
       "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/4063367258626-P",
-      "category": "808_Eigenmarken2",
-      "branchId": "DE5103",
-      "location": "Würzburg · Nürnberger Straße",
-      "address": "Nürnberger Str. 12, 97076 Würzburg, Germany"
-    },
-    {
-      "sourceId": "55a26e45a37d3b61a695",
-      "productLabel": "K-CLASSIC Schinkenspezialität je 80-g-Packg.",
-      "storeName": "Kaufland",
-      "offerPrice": 1.11,
-      "validFrom": "2026-10-11",
-      "validUntil": "2026-10-17",
-      "source": "retailerWebsite",
-      "proofRef": "https://filiale.kaufland.de/angebote/uebersicht.html?kloffer-week=current#offer-ART.475474_KAV.3693412",
-      "originalPrice": 1.29,
-      "imageUrl": "https://kaufland.media.schwarz/is/image/schwarz/DE01541407-P-4034167713431",
       "category": "808_Eigenmarken2",
       "branchId": "DE5103",
       "location": "Würzburg · Nürnberger Straße",
@@ -11751,14 +11751,14 @@
       "address": "Am Güßgraben 1, 97225 Zellingen, Germany"
     },
     {
-      "sourceId": "4aa08449fe26a0e06f60",
+      "sourceId": "3fbba06e1e7290cfad80",
       "productLabel": "Haribo Fruchtgummi 160 g - 175 g",
       "storeName": "Netto",
       "offerPrice": 0.66,
       "validFrom": "2026-10-12",
-      "validUntil": "2026-10-20",
+      "validUntil": "2026-10-21",
       "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=443853&Name=Haribo+Fruchtgummi&ValidTo=2026-10-20T14%3A07%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F443853-450x450-Haribo-Goldbaeren-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
+      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=443853&Name=Haribo+Fruchtgummi&ValidTo=2026-10-21T06%3A41%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F443853-450x450-Haribo-Goldbaeren-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
       "originalPrice": 1.19,
       "imageUrl": "https://www.netto-online.de/media_nfs/images/2026-42/443853-450x450-Haribo-Goldbaeren-n.webp",
       "branchId": "4371",
@@ -11766,14 +11766,14 @@
       "address": "Am Straßacker 1, 97291 Thüngersheim, Germany"
     },
     {
-      "sourceId": "9f5defcb83d3b139f2db",
+      "sourceId": "d1d8097c92958e7f424e",
       "productLabel": "Trauben hell 500 g",
       "storeName": "Netto",
       "offerPrice": 1.39,
       "validFrom": "2026-10-12",
-      "validUntil": "2026-10-20",
+      "validUntil": "2026-10-21",
       "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=43103&Name=Trauben+hell&ValidTo=2026-10-20T14%3A07%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F43103-450x450-Trauben-hell-neu-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
+      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=43103&Name=Trauben+hell&ValidTo=2026-10-21T06%3A41%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F43103-450x450-Trauben-hell-neu-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
       "originalPrice": 1.69,
       "imageUrl": "https://www.netto-online.de/media_nfs/images/2026-42/43103-450x450-Trauben-hell-neu-n.webp",
       "packageSize": "500 g",
@@ -11783,14 +11783,14 @@
       "address": "Am Straßacker 1, 97291 Thüngersheim, Germany"
     },
     {
-      "sourceId": "346274047223fabcddbc",
+      "sourceId": "ff7532bff950af6b5d37",
       "productLabel": "Paulaner Cola 20 x 0,5 l",
       "storeName": "Netto",
       "offerPrice": 10.99,
       "validFrom": "2026-10-12",
-      "validUntil": "2026-10-20",
+      "validUntil": "2026-10-21",
       "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=454081&Name=Paulaner+Cola&ValidTo=2026-10-20T14%3A07%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F454081-450x450-Paulaner-Cola_Kiste-Flasche-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
+      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=454081&Name=Paulaner+Cola&ValidTo=2026-10-21T06%3A41%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F454081-450x450-Paulaner-Cola_Kiste-Flasche-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
       "originalPrice": 16.49,
       "imageUrl": "https://www.netto-online.de/media_nfs/images/2026-42/454081-450x450-Paulaner-Cola_Kiste-Flasche-n.webp",
       "packageSize": "20 x 0,5 l",
@@ -11800,14 +11800,14 @@
       "address": "Am Straßacker 1, 97291 Thüngersheim, Germany"
     },
     {
-      "sourceId": "1668c16c90dd56774269",
+      "sourceId": "c139f6a0643382663576",
       "productLabel": "Minipflaumen Tomaten 1 kg",
       "storeName": "Netto",
       "offerPrice": 3.49,
       "validFrom": "2026-10-12",
-      "validUntil": "2026-10-20",
+      "validUntil": "2026-10-21",
       "source": "retailerWebsite",
-      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=46812&Name=Minipflaumen+Tomaten&ValidTo=2026-10-20T14%3A07%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F46812-450x450-Minipflaumen-tomaten-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
+      "proofRef": "https://www.netto-online.de/INTERSHOP/web/WFS/Plus-NettoDE-Site/de_DE/-/EUR/ViewMMPWishlist-AddStoreArticle?SKU=46812&Name=Minipflaumen+Tomaten&ValidTo=2026-10-21T06%3A41%3A00&Image=https%3A%2F%2Fwww.netto-online.de%2Fmedia_nfs%2Fimages%2F2026-42%2F46812-450x450-Minipflaumen-tomaten-n.webp&AjaxRequestMarker=true&fromStoreProductTile=true",
       "originalPrice": 4.38,
       "imageUrl": "https://www.netto-online.de/media_nfs/images/2026-42/46812-450x450-Minipflaumen-tomaten-n.webp",
       "packageSize": "1 kg",
