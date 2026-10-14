@@ -44,6 +44,18 @@ class ProspectParserTest(unittest.TestCase):
             ),
             "Molkerei",
         )
+        self.assertEqual(
+            refresh._source_category({"departmentLabel": "Obst & Gemüse"}),
+            "Obst & Gemüse",
+        )
+        self.assertEqual(
+            refresh._source_category({"categoryLabel": "Tiefkühlkost"}),
+            "Tiefkühlkost",
+        )
+        self.assertEqual(
+            refresh._source_category({"productGroup": {"name": "Backwaren"}}),
+            "Backwaren",
+        )
 
     def test_source_category_ignores_untrusted_or_non_text_values(self):
         self.assertIsNone(
@@ -133,6 +145,21 @@ class ProspectParserTest(unittest.TestCase):
             image="https://cdn.example/butter.jpg",
         )
         self.assertEqual(valid["imageUrl"], "https://cdn.example/butter.jpg")
+
+    def test_source_image_accepts_bounded_nested_media_aliases(self):
+        image = refresh._source_image({
+            "images": [
+                {"thumbnail": {"url": "https://cdn.example/thumbnail.jpg"}},
+            ],
+        })
+        self.assertEqual(image, "https://cdn.example/thumbnail.jpg")
+
+        self.assertEqual(
+            refresh._source_image({
+                "pictureUrl": "https://cdn.example/picture.jpg",
+            }),
+            "https://cdn.example/picture.jpg",
+        )
 
     def test_record_preserves_single_package_and_base_price(self):
         item = refresh.record(

@@ -538,3 +538,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Händleradapter akzeptieren zusätzliche ausdrücklich benannte Vorher-/Streichpreisfelder (CamelCase und snake_case), ohne Rabattprozente, UVPs oder beliebige Zahlen als Normalpreis zu deuten.
 - [x] Die Alias-Auflösung bleibt vor dem Angebotspreisvergleich und speichert nur Werte, die mindestens so hoch wie der Angebotspreis sind.
 - [x] Parser-Fixtures decken die zusätzlichen Feldnamen ab; Datenmodell, Quellenpriorität und aktive Angebotspreise bleiben unverändert.
+
+## Update 14.10.2026 – Quellenmetadaten für Bilder und Kategorien erweitern
+
+- [x] Offizielle Prospektadapter akzeptieren zusätzliche ausdrücklich benannte Bildfelder und flache beziehungsweise verschachtelte Renditions, wenn die Quelle eine gültige HTTP(S)-URL liefert.
+- [x] Zusätzliche sichtbare Kategoriebezeichnungen werden als Quellenmetadatum übernommen; IDs, URLs und beliebige nicht-textuelle Werte bleiben ausgeschlossen.
+- [x] Die Erweiterung ändert weder Produktidentität noch Preis-/Gültigkeitslogik und ist mit Parser-Fixtures abgesichert.
