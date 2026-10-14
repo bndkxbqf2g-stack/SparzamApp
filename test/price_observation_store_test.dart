@@ -101,6 +101,32 @@ void main() {
     expect((await store.load()), hasLength(2));
   });
 
+  test('keeps independent automatic source adapters in separate quota buckets', () {
+    final observations = [
+      for (final adapter in ['kaufda', 'retailer'])
+        PriceObservation(
+          id: 'prospect|$adapter',
+          productId: 'coffee-500',
+          storeName: 'Lidl',
+          price: 7.99,
+          observedAt: DateTime(2026, 10, 12),
+          source: PriceObservationSource.retailerWebsite,
+          sourceAdapter: adapter,
+          kind: PriceObservationKind.regular,
+        ),
+    ];
+
+    final compacted = compactPriceObservationsForStorage(
+      observations,
+      maxAutomaticEntries: 10,
+      maxEntriesPerKey: 1,
+    );
+
+    expect(compacted, hasLength(2));
+    expect(compacted.map((entry) => entry.sourceAdapter),
+        containsAll(<String>['kaufda', 'retailer']));
+  });
+
   test('a parallel read waits for a pending price observation write', () async {
     final store = PriceObservationStore();
     final reader = PriceObservationStore();

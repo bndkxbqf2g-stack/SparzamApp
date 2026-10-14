@@ -63,8 +63,11 @@ bool _isAutomaticPriceObservation(PriceObservation observation) => switch (
       _ => false,
     };
 
+/// Adapter provenance stays in the compaction key so independent external
+/// sources do not evict one another from the bounded local history.
 String _automaticPriceObservationKey(PriceObservation observation) => [
       observation.source.name,
+      observation.sourceAdapter?.trim().toLowerCase() ?? '',
       observation.storeName.trim().toLowerCase(),
       observation.locationId?.trim().toLowerCase() ?? '',
       observation.region?.trim().toLowerCase() ?? '',

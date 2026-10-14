@@ -18,9 +18,20 @@ List<PriceObservation> datedProspectPriceObservations({
   Iterable<String>? refreshedStores,
 }) {
   if (observedAt == null) return const <PriceObservation>[];
-  final eligibleRecords = refreshedStores == null
+  // Feed adapters may differ only in whitespace or letter case. Normalize
+  // that presentation detail while keeping distinct store names and aliases
+  // separate; no fuzzy or cross-market matching is introduced here.
+  final refreshedStoreKeys = refreshedStores
+      ?.map(_prospectStoreKey)
+      .where((store) => store.isNotEmpty)
+      .toSet();
+  final eligibleRecords = refreshedStoreKeys == null
       ? records
-      : records.where((record) => refreshedStores.contains(record.storeName));
+      : records.where(
+          (record) => refreshedStoreKeys.contains(
+            _prospectStoreKey(record.storeName),
+          ),
+        );
   return prospectPriceObservations(
     records: eligibleRecords,
     catalogProducts: catalogProducts,
@@ -205,6 +216,8 @@ PriceObservationSource? _source(String source) => switch (source) {
   'retailerWebsite' => PriceObservationSource.retailerWebsite,
   _ => null,
 };
+
+String _prospectStoreKey(String value) => value.trim().toLowerCase();
 
 bool _isKaufdaEvidence(OfferImportRecord record) {
   if (record.sourceAdapter?.trim().toLowerCase() == 'kaufda') return true;

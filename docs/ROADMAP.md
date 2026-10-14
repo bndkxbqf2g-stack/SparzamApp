@@ -509,3 +509,8 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Ausdrücklich ausgewiesene Normalpreise werden als `Prospektpreis · Normalpreis` gekennzeichnet und bleiben vom aktiven Angebot getrennt.
 - [x] Widget- und Fachtests sichern die Kennzeichnung, ohne Legacy-Preise oder die Routenbewertung zu verändern.
 
+
+## Update 14.10.2026 – Quellen- und Refresh-Provenienz geschützt
+- [x] Ein Feed-Refresh ordnet Händlernamen nur nach Groß-/Kleinschreibung und Rand-Whitespace zu; unterschiedliche Märkte bleiben getrennt.
+- [x] Die lokale Kompaktierung hält automatische Beobachtungen je Adapter getrennt, damit KaufDA- und Händlerdaten ihre Herkunft behalten.
+- [x] Regressionen sichern den Refresh-Filter und die Quota-Buckets ohne zusätzliche Netzwerkanfragen.
