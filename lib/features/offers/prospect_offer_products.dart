@@ -89,7 +89,8 @@ bool _hasVerifiedOfferEvidence(OfferImportRecord record) {
           (original.isFinite &&
               original > 0 &&
               record.offerPrice <= original)) &&
-      (record.ean?.trim().isEmpty ?? true ||
+      (record.ean == null ||
+          record.ean!.trim().isEmpty ||
           normalizeBarcode(record.ean!.trim()) != null) &&
       (record.validFrom == null ||
           !record.validUntil.isBefore(record.validFrom!)) &&
