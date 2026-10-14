@@ -674,6 +674,7 @@ def _explicit_regular_price(raw, sale):
     if not isinstance(raw, dict):
         return None
     for key in (
+        "streichpreis",
         "wasPriceDisplay",
         "wasPrice",
         "originalPrice",
