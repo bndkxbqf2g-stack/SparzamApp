@@ -21,6 +21,7 @@ class ShoppingListCostSummaryCard extends StatelessWidget {
     this.enabledStoreNames = const <String>[],
     this.openPricesMaxAgeDays = 60,
     this.now,
+    this.quoteSnapshot,
     this.onOpenRoute,
   });
 
@@ -31,6 +32,7 @@ class ShoppingListCostSummaryCard extends StatelessWidget {
   final List<String> enabledStoreNames;
   final int openPricesMaxAgeDays;
   final DateTime? now;
+  final ShoppingPriceQuoteSnapshot? quoteSnapshot;
   final VoidCallback? onOpenRoute;
 
   @override
@@ -51,15 +53,16 @@ class ShoppingListCostSummaryCard extends StatelessWidget {
     var knownTotal = 0.0;
 
     for (final item in items) {
-      final quotes = shoppingQuotes(
-        item,
-        prices: marketPrices,
-        offers: offers,
-        prospectPriceHistory: prospectPriceHistory,
-        enabledStores: enabledStoreNames,
-        openPricesMaxAgeDays: openPricesMaxAgeDays,
-        now: now,
-      );
+      final quotes = quoteSnapshot?.quotesFor(item) ??
+          shoppingQuotes(
+            item,
+            prices: marketPrices,
+            offers: offers,
+            prospectPriceHistory: prospectPriceHistory,
+            enabledStores: enabledStoreNames,
+            openPricesMaxAgeDays: openPricesMaxAgeDays,
+            now: now,
+          );
       final current = quotes.where((quote) => !quote.isHistorical).toList()
         ..sort(compareShoppingQuotes);
       if (current.isNotEmpty) {
