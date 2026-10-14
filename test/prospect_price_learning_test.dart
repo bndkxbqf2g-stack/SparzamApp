@@ -58,6 +58,47 @@ void main() {
     },
   );
 
+  test('does not learn an equal original amount as a crossed-out price', () {
+    final allEvidence = prospectPriceObservations(
+      records: [
+        OfferImportRecord(
+          sourceId: 'equal-amount',
+          productLabel: 'Kaffee 500 g',
+          storeName: 'Lidl',
+          originalPrice: 4.99,
+          offerPrice: 4.99,
+          validFrom: DateTime(2026, 10, 12),
+          validUntil: DateTime(2026, 10, 17),
+          proofRef: 'https://example.test/lidl/equal-amount',
+        ),
+      ],
+      catalogProducts: const [],
+      observedAt: DateTime(2026, 10, 12, 8),
+    );
+
+    expect(allEvidence, hasLength(1));
+    expect(allEvidence.single.kind, PriceObservationKind.offer);
+    expect(
+      datedProspectRegularPriceObservations(
+        records: [
+          OfferImportRecord(
+            sourceId: 'equal-amount',
+            productLabel: 'Kaffee 500 g',
+            storeName: 'Lidl',
+            originalPrice: 4.99,
+            offerPrice: 4.99,
+            validFrom: DateTime(2026, 10, 12),
+            validUntil: DateTime(2026, 10, 17),
+            proofRef: 'https://example.test/lidl/equal-amount',
+          ),
+        ],
+        catalogProducts: const [],
+        observedAt: DateTime(2026, 10, 12, 8),
+      ),
+      isEmpty,
+    );
+  });
+
   test('automatic learning keeps only an explicitly stated regular price', () {
     final evidence = datedProspectRegularPriceObservations(
       records: [

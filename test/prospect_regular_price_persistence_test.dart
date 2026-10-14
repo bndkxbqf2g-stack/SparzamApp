@@ -76,6 +76,35 @@ void main() {
     expect(projected.single.kind, PriceObservationKind.regular);
   });
 
+  test('does not persist an equal original amount as regular history', () async {
+    final store = memoryStore();
+    final result = await persistCurrentProspectRegularPrices(
+      store: store,
+      records: [
+        OfferImportRecord(
+          sourceId: 'equal-amount',
+          productLabel: coffee.name,
+          storeName: 'Lidl',
+          originalPrice: 4.99,
+          offerPrice: 4.99,
+          validFrom: now.subtract(const Duration(days: 1)),
+          validUntil: now.add(const Duration(days: 5)),
+          source: 'retailerWebsite',
+          sourceAdapter: 'kaufda',
+          branchId: 'lidl-branch-1',
+          proofRef: 'https://example.test/kaufda/equal-amount',
+          capturedAt: now,
+        ),
+      ],
+      catalogProducts: const [coffee],
+      observedAt: now,
+      now: now,
+    );
+
+    expect(result.learned, isEmpty);
+    expect(result.stored, isEmpty);
+  });
+
   test('filters offers and invalid periods and deduplicates refreshes', () async {
     final store = memoryStore();
     final offerOnly = OfferImportRecord(
