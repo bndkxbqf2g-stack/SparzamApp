@@ -58,6 +58,7 @@ void main() {
     );
 
     expect(find.text('Prospekte'), findsOneWidget);
+    expect(find.text('Datenabdeckung der aktuellen Prospekte'), findsOneWidget);
     expect(find.text('Alle Märkte').first, findsOneWidget);
     expect(find.text('Zellingen'), findsOneWidget);
     expect(find.text('1 Angebote geladen'), findsOneWidget);
