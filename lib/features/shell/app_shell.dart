@@ -34,7 +34,6 @@ import '../../services/prospect_feed_service.dart';
 import '../../services/prospect_import_module.dart';
 import '../offers/offer_import.dart';
 import '../offers/prospect_offer_products.dart';
-import '../offers/prospect_price_learning.dart';
 import '../offers/prospect_regular_price_persistence.dart';
 import '../offers/prospect_price_statistics.dart';
 import 'price_observation_merge.dart';
