@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../offers/offer_import.dart';
+import '../offers/offer_filter.dart';
 import '../../services/prospect_feed_service.dart';
 
 /// Makes the age and provenance of the public prospect feed visible wherever
