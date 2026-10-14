@@ -22,6 +22,8 @@ OptimizedTravelRoute optimizeTravelRoute(
   Iterable<Store> selectedStores, {
   RoadRouteMatrix? roadMatrix,
   Map<String, double> fallbackDistances = const <String, double>{},
+  double euroPerKm = 0.22,
+  double timeValuePerHour = 0,
 }) {
   final stores = selectedStores.toList();
   if (stores.isEmpty) {
@@ -35,8 +37,18 @@ OptimizedTravelRoute optimizeTravelRoute(
 
   if (roadMatrix != null &&
       roadMatrix.covers(stores.map((store) => store.name))) {
+    final durationMatrixComplete =
+        roadMatrix.coversDurations(stores.map((store) => store.name));
+    final fuelCostPerKm =
+        euroPerKm.isFinite && euroPerKm >= 0 ? euroPerKm : 0;
+    final timeValue =
+        timeValuePerHour.isFinite && timeValuePerHour >= 0
+            ? timeValuePerHour
+            : 0;
     List<Store>? bestOrder;
     var bestDistance = double.infinity;
+    var bestScore = double.infinity;
+    var bestOrderKey = '';
     double? bestDuration;
 
     for (final order in _permutations(stores)) {
@@ -51,10 +63,29 @@ OptimizedTravelRoute optimizeTravelRoute(
         RoadRouteMatrix.origin,
       )!;
 
-      if (distance < bestDistance) {
+      final duration = durationMatrixComplete
+          ? _durationForOrder(roadMatrix, order)
+          : null;
+      final score = duration == null
+          ? distance
+          : distance * fuelCostPerKm + duration / 60 * timeValue;
+      final orderKey = order.map((store) => store.name).join('|');
+      final candidateDuration = duration ?? double.infinity;
+      final previousDuration = bestDuration ?? double.infinity;
+      final isBetter = score < bestScore ||
+          (score == bestScore &&
+              (distance < bestDistance ||
+                  (distance == bestDistance &&
+                      (candidateDuration < previousDuration ||
+                          (candidateDuration == previousDuration &&
+                              (bestOrderKey.isEmpty ||
+                                  orderKey.compareTo(bestOrderKey) < 0))))));
+      if (isBetter) {
+        bestScore = score;
         bestDistance = distance;
         bestOrder = order;
-        bestDuration = _durationForOrder(roadMatrix, order);
+        bestDuration = duration;
+        bestOrderKey = orderKey;
       }
     }
 
