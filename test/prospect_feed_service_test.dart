@@ -255,6 +255,7 @@ void main() {
     {
       "storeName": "Lidl",
       "status": "ok",
+      "branchId": "lidl-zellingen",
       "prospects": [
         {
           "title": "Lidl Wochenprospekt",
@@ -346,6 +347,7 @@ void main() {
     {
       "storeName": "Lidl",
       "status": "ok",
+      "branchId": "lidl-zellingen",
       "prospects": [
         {
           "title": "Lidl Wochenprospekt",
@@ -367,6 +369,7 @@ void main() {
       "validFrom": "2026-10-12",
       "validUntil": "2026-10-17",
       "brochurePage": 3,
+      "branchId": "lidl-zellingen",
       "proofRef": "https://example.test/lidl-page-3"
     }
   ]
@@ -374,6 +377,44 @@ void main() {
 ''');
 
     expect(result.records.single.imageUrl, 'https://cdn.example/lidl/page-3.jpg');
+  });
+
+  test('does not use a page image from another branch', () {
+    final result = parseProspectFeed(r'''
+{
+  "sources": [
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "branchId": "lidl-zellingen",
+      "prospects": [
+        {
+          "offerStartDate": "2026-10-12",
+          "offerEndDate": "2026-10-17",
+          "pageSamples": [
+            {"number": 3, "image": "https://cdn.example/lidl/page-3.jpg"}
+          ]
+        }
+      ]
+    }
+  ],
+  "offers": [
+    {
+      "sourceId": "other-branch",
+      "productLabel": "Butter 250 g",
+      "storeName": "Lidl",
+      "offerPrice": 1.49,
+      "validFrom": "2026-10-12",
+      "validUntil": "2026-10-17",
+      "brochurePage": 3,
+      "branchId": "lidl-wuerzburg",
+      "proofRef": "https://example.test/other-branch"
+    }
+  ]
+}
+''');
+
+    expect(result.records.single.imageUrl, isNull);
   });
 
   test('deduplicates and sorts valid prospect pages', () {

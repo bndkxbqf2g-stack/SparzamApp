@@ -69,11 +69,13 @@ class ProspectPage {
 class _ProspectPageImageCandidate {
   const _ProspectPageImageCandidate({
     required this.imageUrl,
+    required this.branchId,
     required this.validFrom,
     required this.validUntil,
   });
 
   final String imageUrl;
+  final String? branchId;
   final DateTime? validFrom;
   final DateTime? validUntil;
 }
@@ -504,6 +506,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
             .add(
               _ProspectPageImageCandidate(
                 imageUrl: page.imageUrl,
+                branchId: issue.branchId,
                 validFrom: issueValidFrom,
                 validUntil: issueValidUntil,
               ),
@@ -644,6 +647,9 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     final regionalOnly = isKaufdaWithoutBranch
         ? true
         : (parsedRegionalOnly ?? (regionalOnlyValue != null));
+    final recordBranchId = regionalOnly
+        ? explicitBranchId
+        : (explicitBranchId ?? sourceBranchIds[storeName]);
     final record = OfferImportRecord(
         sourceId: sourceId,
         productLabel: productLabel,
@@ -669,6 +675,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
             _prospectPageImageForOffer(
               pageImagesByStoreAndNumber,
               storeName: storeName,
+              branchId: recordBranchId,
               pageNumber: brochurePage,
               validFrom: validFrom,
               validUntil: validUntil,
@@ -690,9 +697,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         brochurePage: brochurePage,
         publisherId: _stringValue(value['publisherId']),
         capturedAt: capturedAt,
-        branchId: regionalOnly
-            ? explicitBranchId
-            : (explicitBranchId ?? sourceBranchIds[storeName]),
+        branchId: recordBranchId,
         location: regionalOnly
             ? _optionalNonEmptyString(value['location'])
             : (_optionalNonEmptyString(value['location']) ??
@@ -723,6 +728,7 @@ String _prospectPageImageKey(String storeName, int pageNumber) =>
 String? _prospectPageImageForOffer(
   Map<String, List<_ProspectPageImageCandidate>> pagesByStoreAndNumber, {
   required String storeName,
+  required String? branchId,
   required int? pageNumber,
   required DateTime? validFrom,
   required DateTime validUntil,
@@ -731,7 +737,10 @@ String? _prospectPageImageForOffer(
   final candidates =
       pagesByStoreAndNumber[_prospectPageImageKey(storeName, pageNumber)];
   if (candidates == null || candidates.isEmpty) return null;
+  final normalizedBranchId = branchId?.trim();
+  if (normalizedBranchId == null || normalizedBranchId.isEmpty) return null;
   for (final candidate in candidates) {
+    if (candidate.branchId?.trim() != normalizedBranchId) continue;
     final startsAfterOffer =
         candidate.validFrom != null && candidate.validFrom!.isAfter(validUntil);
     final endsBeforeOffer =
@@ -740,9 +749,9 @@ String? _prospectPageImageForOffer(
         candidate.validUntil!.isBefore(validFrom);
     if (!startsAfterOffer && !endsBeforeOffer) return candidate.imageUrl;
   }
-  // If the feed supplied one page image without dates, it is still a
-  // validated page-level source for this exact store/page pair.
-  return candidates.length == 1 ? candidates.single.imageUrl : null;
+  // A branch mismatch must stay unknown even when only one page candidate
+  // exists. Never fall back across an asserted store boundary.
+  return null;
 }
 
 String _prospectRecordKey(OfferImportRecord record) {
