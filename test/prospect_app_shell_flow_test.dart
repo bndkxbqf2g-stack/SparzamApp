@@ -368,8 +368,9 @@ void main() {
       final savedItems = await stores.shoppingList.load();
       final savedOffers = await stores.offers.load();
       expect(savedItems.single.product.name, 'Jacobs Kaffee Crema 500 g');
-      expect(savedOffers.single.proofRef, record.proofRef);
-      expect(savedOffers.single.address, record.address);
+      // Feed-derived offers are rebuilt from the prospect snapshot and are not
+      // written into the durable user-offer store.
+      expect(savedOffers, isEmpty);
 
       await tester.pumpWidget(
         _app(
