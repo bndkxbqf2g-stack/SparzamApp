@@ -127,6 +127,20 @@ void main() {
     expect(isFoodProspectLabel('HOME CREATION LED-Kerzen'), isFalse);
     expect(isFoodProspectLabel('DRESDNER ESSENZ Badesalz'), isFalse);
     expect(isFoodProspectLabel('Bepflanztes Holzgefäß'), isFalse);
+    for (final label in [
+      'CROFTON Halloween Tasse, Fledermaus',
+      'MELITTA Filterkaffeemaschine Easy Therm',
+      'Deko-Figur Halloween',
+      'JACK & JONES Herren-Hoodie',
+      'KUSCHELWEICH Weichspüler 1 l',
+      'K-CLASSIC Ultra-Klumpstreu 6 l',
+    ]) {
+      expect(isFoodProspectLabel(label), isFalse, reason: label);
+    }
+    expect(
+      isFoodProspectLabel('WINTERTRAUM Tassenhänger Knuspermännchen 170 g'),
+      isTrue,
+    );
     expect(
       isFoodProspectRecord(
         label: 'Gourmet Gold 24 x 85 g',

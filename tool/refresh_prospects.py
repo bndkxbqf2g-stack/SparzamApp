@@ -2636,6 +2636,15 @@ NON_FOOD_OFFER_RE = re.compile(
     r"purina|gourmet\s+(?:perle|gold)|vitakraft|sheba|calgon|cosmea|"
     r"viss|wc-frisch|pampers|gillette|emyo|slipeinlagen|hundesnack|hundefutter|"
     r"katzenfutter|tiernahrung|"
+    r"tasse|kaffeemaschine|filterkaffeemaschine|kaffeepadmaschine|multizerkleinerer|kontaktgrill|"
+    r"kochplatte|allesschneider|gemüseschneider|gemueseschneider|fleischwolf|"
+    r"weichspüler|weichspueler|dampfbügelstation|dampfbuegelstation|"
+    r"sekundenkleber|alleskleber|wandweiß|wandweiss|filterkartuschen|"
+    r"trinkflasche|brotkorb|brotbox|frühstücksbrett|fruehstuecksbrett|"
+    r"deko|fenstersticker|spinnennetz|weihnachtsbeleuchtung|lichtergirlande|"
+    r"mangoholz|grabstrauß|grabstrauss|grabkranz|grabschale|urnen|gesteck|"
+    r"hoodie|sweathose|retroshorts|loungewear|t-shirts|ballerinas|"
+    r"klumpstreu|wc-garnitur|zierpaprika|bubikopf|"
     r"tasche.{0,15}halloween"
     r")\b",
     re.IGNORECASE,
