@@ -14,7 +14,7 @@ String prospectFeedFingerprintFor(
   final day = now ?? DateTime.now();
   final currentDay = DateTime(day.year, day.month, day.day);
   final values = <Object?>[
-    'current-day:' + currentDay.toIso8601String(),
+    'current-day:${currentDay.toIso8601String()}',
     for (final record in feed.records)
       ...[
         record.sourceId,
