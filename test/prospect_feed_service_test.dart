@@ -347,6 +347,7 @@ void main() {
     {
       "storeName": "Lidl",
       "status": "ok",
+      "branchId": "lidl-zellingen",
       "prospects": [
         {
           "title": "Lidl Wochenprospekt",

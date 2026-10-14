@@ -749,9 +749,9 @@ String? _prospectPageImageForOffer(
         candidate.validUntil!.isBefore(validFrom);
     if (!startsAfterOffer && !endsBeforeOffer) return candidate.imageUrl;
   }
-  // If the feed supplied one page image without dates, it is still a
-  // validated page-level source for this exact store/page/branch tuple.
-  return candidates.length == 1 ? candidates.single.imageUrl : null;
+  // A branch mismatch must stay unknown even when only one page candidate
+  // exists. Never fall back across an asserted store boundary.
+  return null;
 }
 
 String _prospectRecordKey(OfferImportRecord record) {
