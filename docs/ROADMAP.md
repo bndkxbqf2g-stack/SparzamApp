@@ -503,3 +503,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Ein erfolgreicher Persistenzlauf wird je Händler mit `0 gespeichert` ausgewiesen, wenn der aktuelle Feed keinen belegten regulären Preis enthält.
 - [x] `null` bleibt dem nicht übergebenen oder fehlgeschlagenen Speicherstatus vorbehalten; der UI-Fallback erfindet keine Bestätigung.
 - [x] Die Statusprojektion wird mit einer Regression für leere Händlerkarten abgesichert.
+
+## Update 14.10.2026 – Regulärer Prospektpreis im Preisvergleich sichtbar
+- [x] Preisbeobachtungen behalten die Evidenzart `regular` bis in die Preisansicht.
+- [x] Ausdrücklich ausgewiesene Normalpreise werden als `Prospektpreis · Normalpreis` gekennzeichnet und bleiben vom aktiven Angebot getrennt.
+- [x] Widget- und Fachtests sichern die Kennzeichnung, ohne Legacy-Preise oder die Routenbewertung zu verändern.
+

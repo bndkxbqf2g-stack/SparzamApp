@@ -5,6 +5,7 @@ import 'package:sparzamapp/features/catalog/prices_hub_screen.dart';
 import 'package:sparzamapp/features/price_gaps/price_gap_priority.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
+import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/product.dart';
 
 void main() {
@@ -81,6 +82,7 @@ void main() {
                 price: 1.29,
                 updatedAt: DateTime(2026, 10, 13),
                 source: MarketPriceSource.prospect,
+                kind: PriceObservationKind.regular,
               ),
             ],
             enabledStoreNames: const ['Lidl'],
@@ -97,6 +99,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining('Prospektpreis vom 13.10.2026'), findsOneWidget);
+    expect(find.textContaining('regulärer Normalpreis'), findsOneWidget);
     expect(find.textContaining('Preisalter: heute'), findsOneWidget);
   });
 
