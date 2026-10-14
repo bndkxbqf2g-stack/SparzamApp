@@ -45,10 +45,13 @@ class _FakeClient extends http.BaseClient {
   }
 }
 
-String _feed({required String validUntil}) =>
+String _feed({
+  required String validUntil,
+  String generatedAt = '2026-09-30T04:15:00Z',
+}) =>
     '''
 {
-  "generatedAt": "2026-09-30T04:15:00Z",
+  "generatedAt": "$generatedAt",
   "sources": [{"storeName": "Lidl", "status": "ok"}],
   "offers": [{
     "sourceId": "cache-1",
@@ -139,6 +142,7 @@ void main() {
     final service = ProspectFeedService(
       client: client,
       cache: cache,
+      bundledLoader: () async => throw StateError('asset unavailable'),
     );
 
     final result = await service.load();
@@ -201,12 +205,58 @@ void main() {
     service.close();
   });
 
+  test('prefers a newer bundled feed over an old cached feed', () async {
+    final cache = _MemoryProspectFeedCache()
+      ..raw = _feed(
+        validUntil: '2026-10-10',
+        generatedAt: '2026-10-10T04:15:00Z',
+      );
+    final service = ProspectFeedService(
+      client: _FakeClient(error: http.ClientException('offline')),
+      cache: cache,
+      bundledLoader: () async => _feed(
+        validUntil: '2026-10-17',
+        generatedAt: '2026-10-13T04:15:00Z',
+      ),
+    );
+
+    final result = await service.load();
+
+    expect(result.fromCache, isTrue);
+    expect(result.generatedAt, DateTime.parse('2026-10-13T04:15:00Z'));
+    expect(result.records.single.validUntil, DateTime(2026, 10, 17));
+  });
+
+  test('does not let an older successful network response hide a newer local feed',
+      () async {
+    final service = ProspectFeedService(
+      client: _FakeClient(
+        body: _feed(
+          validUntil: '2026-10-10',
+          generatedAt: '2026-10-10T04:15:00Z',
+        ),
+      ),
+      cache: _MemoryProspectFeedCache(),
+      bundledLoader: () async => _feed(
+        validUntil: '2026-10-17',
+        generatedAt: '2026-10-13T04:15:00Z',
+      ),
+    );
+
+    final result = await service.load();
+
+    expect(result.fromCache, isTrue);
+    expect(result.generatedAt, DateTime.parse('2026-10-13T04:15:00Z'));
+    expect(result.records.single.validUntil, DateTime(2026, 10, 17));
+  });
+
   test('a valid cached feed is used when the live request fails', () async {
     final cache = _MemoryProspectFeedCache()
       ..raw = _feed(validUntil: '2026-10-03');
     final service = ProspectFeedService(
       client: _FakeClient(error: http.ClientException('offline')),
       cache: cache,
+      bundledLoader: () async => throw StateError('asset unavailable'),
     );
 
     final result = await service.load();
@@ -221,6 +271,7 @@ void main() {
     final service = ProspectFeedService(
       client: _FakeClient(body: '{"should":"not be requested"}'),
       cache: cache,
+      bundledLoader: () async => throw StateError('asset unavailable'),
       networkEnabled: false,
     );
 
@@ -265,6 +316,7 @@ void main() {
     final service = ProspectFeedService(
       client: _FakeClient(statusCode: 503, body: 'unavailable'),
       cache: cache,
+      bundledLoader: () async => throw StateError('asset unavailable'),
     );
 
     final result = await service.load();

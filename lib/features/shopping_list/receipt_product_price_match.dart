@@ -3,8 +3,9 @@ import '../../models/receipt_price_stat.dart';
 import '../receipt/receipt_observation_builder.dart';
 import '../catalog/product_family.dart';
 
-/// Finds receipt statistics for a shopping-list product while preserving the
-/// distinction between generic family requests and specific variants.
+/// Finds confirmed receipt statistics for a shopping-list product.
+///
+/// This is the strict view used by price selection and route-related callers.
 List<ReceiptPriceStat> receiptStatsForProduct(
   Product product,
   Iterable<ReceiptPriceStat> stats,
@@ -12,20 +13,34 @@ List<ReceiptPriceStat> receiptStatsForProduct(
   final family = inferReceiptFamily(product.name);
   final generic = family.isNotEmpty && isGenericFamilyRequest(product.name);
 
-  // A generic shopping request represents the whole product family. Do not
-  // stop at exact product IDs, otherwise older receipt rows that were assigned
-  // to provisional/sibling catalog IDs disappear from the family history.
   if (generic) {
     return stats
         .where((stat) => stat.familyKey == family && stat.identityConfirmed)
         .toList();
   }
 
-  // Specific variants may only use their exact assigned history. Falling back
-  // to a broad family here would let e.g. mixed mince satisfy beef mince.
   return stats
       .where((stat) => stat.productId == product.id && stat.identityConfirmed)
       .toList();
+}
+
+/// Returns all receipt history that can be shown as a transparent hint.
+///
+/// Unconfirmed automatic receipt assignments are deliberately visible here so
+/// users do not lose imported prices. They remain labelled as provisional and
+/// are never promoted to route prices by this view.
+List<ReceiptPriceStat> receiptHintsForProduct(
+  Product product,
+  Iterable<ReceiptPriceStat> stats,
+) {
+  final family = inferReceiptFamily(product.name);
+  final generic = family.isNotEmpty && isGenericFamilyRequest(product.name);
+
+  if (generic) {
+    return stats.where((stat) => stat.familyKey == family).toList();
+  }
+
+  return stats.where((stat) => stat.productId == product.id).toList();
 }
 
 ReceiptPriceStat? preferredReceiptStatForProduct(

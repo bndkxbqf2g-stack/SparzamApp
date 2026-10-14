@@ -31,17 +31,20 @@ class ProspectFeedStatusCard extends StatelessWidget {
       return const SizedBox.shrink();
     }
     final timestamp = formatProspectFeedTimestamp(generatedAt);
-    final stale = !fromCache &&
-        isProspectFeedStale(generatedAt, now: now);
+    final stale = isProspectFeedStale(generatedAt, now: now);
     final theme = Theme.of(context);
-    final title = fromCache
+    final title = stale
+        ? 'Prospektstand veraltet'
+        : fromCache
         ? 'Letzter geprüfter Prospektstand'
         : generatedAt == null
         ? 'Prospektstand noch nicht geladen'
-        : stale
-        ? 'Prospektstand veraltet'
         : 'Aktueller Prospektstand';
-    final baseSubtitle = fromCache
+    final baseSubtitle = fromCache && stale
+        ? 'Stand $timestamp. Der Live-Abruf war nicht verfügbar; dieser '
+              'lokale Stand ist älter als ${prospectFeedStaleAfter.inHours} '
+              'Stunden. Aktualisiere ihn, bevor du neue Angebote übernimmst.'
+        : fromCache
         ? 'Stand $timestamp. Der Live-Abruf war nicht verfügbar; '
               'Gültigkeiten werden weiterhin geprüft, abgelaufene Angebote '
               'bleiben ausgeblendet.'
@@ -64,10 +67,10 @@ class ProspectFeedStatusCard extends StatelessWidget {
           : null,
       child: ListTile(
         leading: Icon(
-          fromCache
-              ? Icons.cloud_off_outlined
-              : stale
+          stale
               ? Icons.warning_amber_outlined
+              : fromCache
+              ? Icons.cloud_off_outlined
               : Icons.verified_outlined,
         ),
         title: Text(title),

@@ -248,6 +248,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       widget.items,
       prices: widget.marketPrices,
       offers: widget.offers,
+      catalogProducts: widget.catalogProducts,
       prospectPriceHistory: widget.prospectPriceHistory,
       enabledStores: stores,
       openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
