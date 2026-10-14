@@ -239,11 +239,6 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
           const SizedBox(height: 10),
           _PriceComparisonList(
             shoppingList: screen.shoppingList,
-            prices: screen.marketPrices,
-            offers: screen.offers,
-            enabledStoreNames: screen.enabledStoreNames,
-            openPricesMaxAgeDays: screen.openPricesMaxAgeDays,
-            prospectPriceHistory: screen.prospectPriceHistory,
             quoteSnapshot: quoteSnapshot,
             onResolvePriceGap: screen.onResolvePriceGap,
             now: screen.now,
@@ -439,11 +434,6 @@ class _PriceSnapshotTile extends StatelessWidget {
 class _PriceComparisonList extends StatefulWidget {
   const _PriceComparisonList({
     required this.shoppingList,
-    required this.prices,
-    required this.offers,
-    required this.enabledStoreNames,
-    required this.openPricesMaxAgeDays,
-    required this.prospectPriceHistory,
     required this.quoteSnapshot,
     required this.onResolvePriceGap,
     this.now,
@@ -452,11 +442,6 @@ class _PriceComparisonList extends StatefulWidget {
   static const pageSize = 12;
 
   final List<ListItem> shoppingList;
-  final List<MarketPrice> prices;
-  final List<Offer> offers;
-  final List<String> enabledStoreNames;
-  final int openPricesMaxAgeDays;
-  final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
   final ShoppingPriceQuoteSnapshot quoteSnapshot;
   final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
   final DateTime? now;
@@ -488,11 +473,6 @@ class _PriceComparisonListState extends State<_PriceComparisonList> {
             child: _PriceComparisonCard(
               key: ValueKey('price-comparison-${item.product.id}'),
               item: item,
-              prices: widget.prices,
-              offers: widget.offers,
-              enabledStoreNames: widget.enabledStoreNames,
-              openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
-              prospectPriceHistory: widget.prospectPriceHistory,
               quoteSnapshot: widget.quoteSnapshot,
               onResolvePriceGap: widget.onResolvePriceGap,
               now: widget.now,
@@ -520,22 +500,12 @@ class _PriceComparisonCard extends StatefulWidget {
   const _PriceComparisonCard({
     super.key,
     required this.item,
-    required this.prices,
-    required this.offers,
-    required this.enabledStoreNames,
-    required this.openPricesMaxAgeDays,
-    required this.prospectPriceHistory,
     required this.quoteSnapshot,
     required this.onResolvePriceGap,
     this.now,
   });
 
   final ListItem item;
-  final List<MarketPrice> prices;
-  final List<Offer> offers;
-  final List<String> enabledStoreNames;
-  final int openPricesMaxAgeDays;
-  final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
   final ShoppingPriceQuoteSnapshot quoteSnapshot;
   final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
   final DateTime? now;
