@@ -172,14 +172,24 @@ class ProspectCoverage {
 List<ProspectCoverage> calculateProspectCoverage({
   required Iterable<ProspectIssue> issues,
   required Iterable<OfferImportRecord> records,
+  DateTime? now,
 }) {
+  final currentRecords = now == null
+      ? records.toList(growable: false)
+      : currentProspectRecords(records, now: now);
+  final currentIssues = now == null
+      ? issues.toList(growable: false)
+      : issues
+            .where((issue) => _isCurrentProspectIssue(issue, now: now))
+            .toList(growable: false);
+
   final issuesByStore = <String, ProspectIssue>{};
-  for (final issue in issues) {
+  for (final issue in currentIssues) {
     issuesByStore.putIfAbsent(issue.storeName, () => issue);
   }
 
   final recordsByStore = <String, List<OfferImportRecord>>{};
-  for (final record in records) {
+  for (final record in currentRecords) {
     recordsByStore.putIfAbsent(record.storeName, () => []).add(record);
   }
 
@@ -201,6 +211,18 @@ List<ProspectCoverage> calculateProspectCoverage({
         recordsByStore[storeName] ?? const <OfferImportRecord>[],
       ),
   ];
+}
+
+bool _isCurrentProspectIssue(
+  ProspectIssue issue, {
+  required DateTime now,
+}) {
+  if (issue.validFrom == null && issue.validUntil == null) return true;
+  return isOfferDateRangeActive(
+    validFrom: issue.validFrom,
+    validUntil: issue.validUntil,
+    now: now,
+  );
 }
 
 ProspectCoverage _coverageForStore(
