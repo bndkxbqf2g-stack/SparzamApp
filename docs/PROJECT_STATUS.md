@@ -1,3 +1,9 @@
+## Update 14.10.2026 – OSRM-Reihenfolge nach Gesamtwegekosten
+
+- Eine vollständige OSRM-Dauermatrix kann die Marktfolge jetzt anhand von Fahrtkosten und persönlichem Zeitwert bewerten.
+- Bei fehlenden oder alten Dauerwerten bleibt die bestehende Distanz- und Geschwindigkeitsheuristik aktiv.
+- Gleiche Ergebnisse bleiben über Distanz, Dauer und Marktnamen deterministisch.
+
 ## Update 14.10.2026 – Automatische Prospektpreise bereinigen
 
 - Der reguläre Prospektpreis wird weiterhin atomar per stabiler Beobachtungs-ID gespeichert.

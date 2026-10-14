@@ -83,6 +83,42 @@ void main() {
     expect(route.stores.map((store) => store.name), ['A', 'B', 'C']);
   });
 
+  test(
+    'wählt bei vollständiger OSRM-Matrix die günstigere Zeit-/Fahrkostenroute',
+    () {
+      const matrix = RoadRouteMatrix(
+        originAddress: 'Start',
+        distancesKm: {
+          '@origin|A': 1,
+          'A|@origin': 1,
+          '@origin|B': 4,
+          'B|@origin': 4,
+          'A|B': 1,
+          'B|A': 3,
+        },
+        durationsMinutes: {
+          '@origin|A': 40,
+          'A|@origin': 5,
+          '@origin|B': 5,
+          'B|@origin': 5,
+          'A|B': 5,
+          'B|A': 5,
+        },
+      );
+
+      final route = optimizeTravelRoute(
+        [a, b],
+        roadMatrix: matrix,
+        euroPerKm: 0,
+        timeValuePerHour: 60,
+      );
+
+      expect(route.stores.map((store) => store.name), ['B', 'A']);
+      expect(route.distanceKm, 8);
+      expect(route.durationMinutes, 15);
+    },
+  );
+
   test('unvollständige Matrix fällt auf bisherige Distanzen zurück', () {
     const matrix = RoadRouteMatrix(
       originAddress: 'Start',

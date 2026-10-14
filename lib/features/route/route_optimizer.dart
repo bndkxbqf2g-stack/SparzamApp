@@ -82,6 +82,8 @@ class RouteOptimizer {
         selectedStores,
         roadMatrix: roadMatrix,
         fallbackDistances: roadDistances,
+        euroPerKm: euroPerKm,
+        timeValuePerHour: timeValuePerHour,
       );
 
   double travelCost(Iterable<Store> selectedStores) =>
