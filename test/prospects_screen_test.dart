@@ -130,7 +130,6 @@ void main() {
     expect(find.textContaining('als Preisbasis gespeichert.'), findsNothing);
   });
 
-  testWidgets('keeps viewer offer keys unique without source ids'
   testWidgets('keeps viewer offer keys unique without source ids', (
     tester,
   ) async {

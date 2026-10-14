@@ -178,7 +178,6 @@ void main() {
     expect(refreshed.stored.single.observedAt, later);
   });
 
-  test('does not persist without a feed timestamp'
   test('does not persist without a feed timestamp', () async {
     final store = memoryStore();
     final result = await persistCurrentProspectRegularPrices(

@@ -194,7 +194,6 @@ void main() {
     );
   });
 
-  test('filters stale records and dated prospects at the coverage boundary'
   test('filters stale records and dated prospects at the coverage boundary', () {
     final coverage = calculateProspectCoverage(
       issues: [
