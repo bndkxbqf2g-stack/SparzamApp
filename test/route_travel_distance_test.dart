@@ -88,7 +88,7 @@ void main() {
     () {
       const matrix = RoadRouteMatrix(
         originAddress: 'Start',
-        distancesKm: const {
+        distancesKm: {
           '@origin|A': 1,
           'A|@origin': 1,
           '@origin|B': 4,
@@ -96,7 +96,7 @@ void main() {
           'A|B': 1,
           'B|A': 3,
         },
-        durationsMinutes: const {
+        durationsMinutes: {
           '@origin|A': 40,
           'A|@origin': 5,
           '@origin|B': 5,
