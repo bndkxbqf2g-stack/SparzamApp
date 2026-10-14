@@ -147,6 +147,7 @@ void main() {
     expect(aldi.hasLocation, isTrue);
     expect(aldi.hasAddress, isFalse);
     expect(aldi.hasValidity, isTrue);
+    expect(aldi.persistedRegularPriceCount, 0);
 
     final edeka = coverage.firstWhere((entry) => entry.storeName == 'EDEKA');
     expect(edeka.structuredOfferCount, 1);

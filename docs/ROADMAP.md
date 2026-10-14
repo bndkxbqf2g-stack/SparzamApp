@@ -498,3 +498,8 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Der Prospektfeed führt die Anzahl ausdrücklich ausgewiesener Normalpreise je Händler bis in die Abdeckungskarte.
 - [x] Die Anzeige trennt feed-seitig lernbare Normalpreise von den tatsächlich in `PriceObservationStore` gespeicherten Beobachtungen.
 - [x] Bei einem fehlgeschlagenen Persistenzlauf bleibt der Speicherstatus unbekannt beziehungsweise null; ein Angebotspreis wird niemals als regulärer Preis gezählt.
+
+## Update 14.10.2026 – Erfolgreiche Preisprüfung zeigt auch Nullspeicherung
+- [x] Ein erfolgreicher Persistenzlauf wird je Händler mit `0 gespeichert` ausgewiesen, wenn der aktuelle Feed keinen belegten regulären Preis enthält.
+- [x] `null` bleibt dem nicht übergebenen oder fehlgeschlagenen Speicherstatus vorbehalten; der UI-Fallback erfindet keine Bestätigung.
+- [x] Die Statusprojektion wird mit einer Regression für leere Händlerkarten abgesichert.
