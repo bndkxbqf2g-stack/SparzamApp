@@ -302,7 +302,7 @@ void main() {
     );
 
     expect(find.text('Datenabdeckung der aktuellen Prospekte'), findsOneWidget);
-    expect(find.textContaining('0 mit Originalnachweis'), findsOneWidget);
+    expect(find.textContaining('1 mit Originalnachweis'), findsOneWidget);
     expect(find.textContaining('0/1 mit Artikelbildern'), findsOneWidget);
     expect(find.textContaining('1/1 mit Kategorien'), findsOneWidget);
     expect(find.text('ALDI Süd'), findsNothing);
@@ -310,7 +310,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('ALDI Süd'), findsOneWidget);
     expect(find.textContaining('1 strukturierte Angebote'), findsOneWidget);
-    expect(find.textContaining('0/1 Nachweise'), findsOneWidget);
+    expect(find.textContaining('1/1 Nachweise'), findsOneWidget);
     expect(find.textContaining('1/1 Normalpreise'), findsOneWidget);
     expect(find.textContaining('1 mit gespeichertem Normalpreis'), findsOneWidget);
     expect(find.textContaining('1/1 gespeichert'), findsOneWidget);
