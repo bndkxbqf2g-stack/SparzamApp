@@ -570,7 +570,11 @@ class _AppShellState extends State<AppShell> {
       final retained = offers
           .where((offer) => !offer.id.startsWith('import|'))
           .toList(growable: false);
-      late List<Offer> persistedOffers;
+      // Imported offers are rebuilt from the validated feed on every
+      // startup. Persist only manual/user-reviewed offers here; storing the
+      // whole automatic feed makes local preferences grow until browser
+      // storage rejects the next refresh with QuotaExceededError.
+      var persistedOffers = retained;
       await _offerSaves.add(() async {
         if (!_isCurrentDataRevision(revision)) {
           persistedOffers = [...offers];
@@ -584,7 +588,7 @@ class _AppShellState extends State<AppShell> {
           for (final offer in stored)
             if (!offer.id.startsWith('import|')) offer.id: offer,
         };
-        persistedOffers = [...retainedById.values, ...resolved];
+        persistedOffers = retainedById.values.toList(growable: false);
         await widget.offerStore.save(persistedOffers);
       });
       if (!_isCurrentDataRevision(revision)) return;
