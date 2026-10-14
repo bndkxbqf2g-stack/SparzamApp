@@ -1098,3 +1098,845 @@ class _ProspectFavoriteButton extends StatelessWidget {
         width: compact ? 32 : 36,
         height: compact ? 32 : 36,
       ),
+      splashRadius: compact ? 17 : 19,
+      color: const Color(0xFFE96A73),
+      icon: Icon(
+        isFavorite ? Icons.favorite : Icons.favorite_border,
+        size: compact ? 20 : 22,
+      ),
+    );
+  }
+}
+
+class _EmptyFavoritesCard extends StatelessWidget {
+  const _EmptyFavoritesCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: _bringSurface,
+      child: const Padding(
+        padding: EdgeInsets.all(18),
+        child: Text(
+          'Noch keine Favoriten. Tippe auf das Herz, um einen Markt zu speichern.',
+          style: TextStyle(color: _bringMuted, height: 1.35),
+        ),
+      ),
+    );
+  }
+}
+
+Widget _bringCoverPlaceholder() {
+  return const ColoredBox(
+    color: Color(0xFF435A64),
+    child: Center(
+      child: Icon(
+        Icons.local_offer_outlined,
+        color: _bringAccent,
+        size: 52,
+      ),
+    ),
+  );
+}
+String? _prospectPostalCode(Iterable<ProspectIssue> issues) {
+  final pattern = RegExp(r'\b\d{5}\b');
+  for (final issue in issues) {
+    final address = issue.address?.trim();
+    if (address == null || address.isEmpty) continue;
+    final match = pattern.firstMatch(address);
+    if (match != null) return match.group(0);
+  }
+  return null;
+}
+
+String? _prospectValidityLabel(ProspectIssue issue) {
+  final from = issue.validFrom;
+  final until = issue.validUntil;
+  if (from == null || until == null) return null;
+  return '${_prospectDate(from)} – ${_prospectDate(until)}';
+}
+
+String _ocrCandidatePrice(double value) =>
+    '${value.toStringAsFixed(2).replaceAll('.', ',')} €';
+
+const _bringBackground = Color(0xFF283A44);
+const _bringSurface = Color(0xFF344953);
+const _bringAccent = Color(0xFF9DE5D8);
+const _bringMuted = Color(0xFFB7C5C8);
+const _bringWhite = Color(0xFFF7FBFA);
+
+ThemeData _bringTheme(BuildContext context) {
+  final base = Theme.of(context);
+  final scheme = ColorScheme.fromSeed(
+    seedColor: _bringAccent,
+    brightness: Brightness.dark,
+  ).copyWith(
+    primary: _bringAccent,
+    onPrimary: _bringBackground,
+    secondary: _bringAccent,
+    onSecondary: _bringBackground,
+    surface: _bringSurface,
+    onSurface: _bringWhite,
+    surfaceContainerHighest: const Color(0xFF405761),
+    onSurfaceVariant: _bringMuted,
+  );
+  return base.copyWith(
+    brightness: Brightness.dark,
+    colorScheme: scheme,
+    scaffoldBackgroundColor: _bringBackground,
+    textTheme: base.textTheme.apply(
+      bodyColor: _bringWhite,
+      displayColor: _bringWhite,
+    ),
+    cardTheme: const CardThemeData(
+      color: _bringSurface,
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(18)),
+      ),
+    ),
+    inputDecorationTheme: base.inputDecorationTheme.copyWith(
+      filled: true,
+      fillColor: _bringSurface,
+      hintStyle: const TextStyle(color: _bringMuted),
+      prefixIconColor: _bringMuted,
+      suffixIconColor: _bringMuted,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(18)),
+        borderSide: BorderSide.none,
+      ),
+    ),
+  );
+}
+
+class _BringHeader extends StatelessWidget {
+  const _BringHeader({this.location});
+
+  final String? location;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 102,
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Prospekte',
+                key: ValueKey('prospect-kicker'),
+                style: TextStyle(
+                  color: _bringMuted,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.6,
+                ),
+              ),
+              const SizedBox(height: 2),
+              const Text(
+                'Angebote',
+                style: TextStyle(
+                  color: _bringWhite,
+                  fontSize: 26,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'Aktuelle Prospekte. Produkte antippen und vormerken.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: _bringMuted, fontSize: 13),
+              ),
+            ],
+          ),
+          if (location != null)
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Container(
+                key: const ValueKey('prospect-location-pill'),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 11,
+                  vertical: 9,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E2D35),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: const Color(0xFF58727B)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.location_on,
+                      color: _bringWhite,
+                      size: 17,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      location!,
+                      style: const TextStyle(
+                        color: _bringWhite,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BringSectionTitle extends StatelessWidget {
+  const _BringSectionTitle({
+    super.key,
+    required this.title,
+    this.actionLabel,
+    this.onAction,
+    this.showFilter = false,
+    this.onFilter,
+  });
+
+  final String title;
+  final String? actionLabel;
+  final VoidCallback? onAction;
+  final bool showFilter;
+  final VoidCallback? onFilter;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Text(
+            title,
+            style: const TextStyle(
+              color: _bringWhite,
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ),
+        if (actionLabel != null)
+          TextButton(
+            onPressed: onAction,
+            style: TextButton.styleFrom(
+              foregroundColor: _bringMuted,
+              padding: EdgeInsets.zero,
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: Text(
+              actionLabel!,
+              style: const TextStyle(
+                color: _bringMuted,
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        if (showFilter)
+          IconButton(
+            key: const ValueKey('prospect-filter-button'),
+            tooltip: 'Prospektfilter',
+            onPressed: onFilter,
+            style: IconButton.styleFrom(
+              backgroundColor: const Color(0xFF1E2D35),
+              foregroundColor: _bringWhite,
+              padding: const EdgeInsets.all(10),
+            ),
+            icon: const Icon(Icons.tune, size: 20),
+          ),
+      ],
+    );
+  }
+}
+
+String _prospectCardSummary(ProspectIssue issue) {
+  if (issue.sourceStatus == 'current_fallback') {
+    return '${issue.recordCount} Angebote aus dem letzten geprüften '
+        'Prospektstand. Automatische Aktualisierung aktuell nicht verfügbar.';
+  }
+  if (issue.sourceStatus == 'regional_only') {
+    return 'Nur regional erkannt · Filiale noch nicht bestätigt.';
+  }
+  if (issue.recordCount > 0) return '${issue.recordCount} Angebote geladen';
+  return _sourceStatusLabel(issue);
+}
+
+String _sourceStatusLabel(ProspectIssue issue) {
+  if (issue.sourceStatus == 'no_current_offers') {
+    return 'Keine aktuell gültigen Angebotsdaten geladen.';
+  }
+  if (issue.sourceStatus == 'current_fallback') {
+    return 'Der letzte geprüfte Prospektstand wird verwendet; die automatische '
+        'Aktualisierung ist aktuell nicht verfügbar.';
+  }
+  if (issue.sourceStatus == 'error') {
+    return 'Automatischer Abruf aktuell nicht verfügbar. '
+        'Der offizielle Prospekt bleibt direkt erreichbar.';
+  }
+  if (issue.sourceStatus == 'regional_only') {
+    return 'Nur regional erkannt. Eine exakte Filiale ist noch nicht bestätigt.';
+  }
+  if (issue.sourceStatus == 'ok' && issue.recordCount > 0) {
+    return '${issue.recordCount} Angebote automatisch geladen. '
+        'Prospektseiten werden beim Händler geöffnet, wenn keine Bildseiten vorliegen.';
+  }
+  if (issue.sourceStatus == 'metadata_only') {
+    return 'Prospektquelle gefunden; strukturierte Produktdaten fehlen aktuell.';
+  }
+  return 'Offizielle Prospektquelle verfügbar.';
+}
+
+class ProspectViewerScreen extends StatelessWidget {
+  const ProspectViewerScreen({
+    super.key,
+    required this.issue,
+    required this.records,
+    required this.catalogProducts,
+    this.onAddProduct,
+    this.now,
+    this.onSaveOffer,
+    this.ocrRunner,
+  });
+
+  final ProspectIssue issue;
+  final List<OfferImportRecord> records;
+  final List<Product> catalogProducts;
+  final ValueChanged<Product>? onAddProduct;
+  final DateTime? now;
+  final Future<List<Offer>> Function(Offer offer)? onSaveOffer;
+  final Future<ProspectPageOcrResult> Function(ProspectPage page)? ocrRunner;
+
+  Future<void> _addPageOffer(
+    BuildContext context,
+    ProspectPage page, {
+    ProspectPageOcrCandidate? initialCandidate,
+  }) async {
+    final saveOffer = onSaveOffer;
+    final addProduct = onAddProduct;
+    if (saveOffer == null || addProduct == null) return;
+    final draft = await showProspectPageOfferDialog(
+      context,
+      initialValidUntil: issue.validUntil,
+      initialCandidate: initialCandidate,
+    );
+    if (draft == null || !context.mounted) return;
+
+    final record = OfferImportRecord(
+      sourceId:
+          'manual-page|${issue.storeName}|${page.number}|${DateTime.now().microsecondsSinceEpoch}',
+      productLabel: draft.productLabel,
+      storeName: issue.storeName,
+      originalPrice: draft.originalPrice,
+      offerPrice: draft.offerPrice,
+      validFrom: issue.validFrom,
+      validUntil: draft.validUntil,
+      source: 'leaflet',
+      proofRef: page.zoomUrl ?? page.imageUrl,
+      imageUrl: page.imageUrl,
+      branchId: issue.branchId,
+      location: issue.location,
+      address: issue.address,
+    );
+    final entries = prospectOfferProducts(
+      records: [record],
+      catalogProducts: catalogProducts,
+      now: now ?? DateTime.now(),
+    );
+    if (entries.length != 1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Artikel konnte mit diesen Angaben nicht als aktuelles Angebot '
+            'gespeichert werden.',
+          ),
+        ),
+      );
+      return;
+    }
+    final entry = entries.single;
+    // This is a user-reviewed page claim. Give it a stable non-import ID so
+    // the next automatic feed refresh cannot delete it as a transient feed
+    // projection.
+    final reviewedOffer = Offer(
+      id:
+          'manual-page|${issue.storeName}|${page.number}|${DateTime.now().microsecondsSinceEpoch}',
+      productId: entry.offer.productId,
+      storeName: entry.offer.storeName,
+      originalPrice: entry.offer.originalPrice,
+      originalPriceVerified: entry.offer.originalPriceVerified,
+      offerPrice: entry.offer.offerPrice,
+      validFrom: entry.offer.validFrom,
+      validUntil: entry.offer.validUntil,
+      source: entry.offer.source,
+      proofRef: entry.offer.proofRef,
+      imageUrl: entry.offer.imageUrl,
+      packageAmount: entry.offer.packageAmount,
+      packageUnit: entry.offer.packageUnit,
+      unitPrice: entry.offer.unitPrice,
+      locationId: entry.offer.locationId,
+      region: entry.offer.region,
+      address: entry.offer.address,
+    );
+    try {
+      await saveOffer(reviewedOffer);
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Angebot konnte nicht gespeichert werden.')),
+        );
+      }
+      return;
+    }
+    if (!context.mounted) return;
+    addProduct(entry.product);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('${entry.product.name} hinzugefügt')),
+    );
+  }
+
+  Future<ProspectPageOcrCandidate?> _selectOcrCandidate(
+    BuildContext context,
+    List<ProspectPageOcrCandidate> candidates,
+  ) async {
+    if (candidates.length == 1) return candidates.single;
+    return showDialog<ProspectPageOcrCandidate>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('OCR-Vorschlag auswählen'),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView.separated(
+            shrinkWrap: true,
+            itemCount: candidates.length,
+            separatorBuilder: (context, index) => const Divider(height: 1),
+            itemBuilder: (context, index) {
+              final candidate = candidates[index];
+              final offer = _ocrCandidatePrice(candidate.offerPrice);
+              final original = candidate.originalPrice == null
+                  ? null
+                  : _ocrCandidatePrice(candidate.originalPrice!);
+              final prices = original == null
+                  ? offer
+                  : '$offer · vorher $original';
+              return ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(candidate.productLabel),
+                subtitle: Text(
+                  '$prices\n${prospectPageOcrConfidenceLabel(candidate.confidence)}',
+                ),
+                isThreeLine: true,
+                onTap: () => Navigator.of(context).pop(candidate),
+              );
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Abbrechen'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _runPageOcr(
+    BuildContext context,
+    ProspectPage page,
+  ) async {
+    if (onSaveOffer == null || onAddProduct == null) return;
+    final messenger = ScaffoldMessenger.of(context);
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        const SnackBar(content: Text('Seite wird lokal geprüft …')),
+      );
+    final runner = ocrRunner ?? (value) => analyzeProspectPage(value);
+    try {
+      final result = await runner(page);
+      if (!context.mounted) return;
+      messenger.hideCurrentSnackBar();
+      if (!result.isReady) {
+        messenger.showSnackBar(SnackBar(content: Text(result.message)));
+        return;
+      }
+      final candidate = await _selectOcrCandidate(
+        context,
+        result.candidates,
+      );
+      if (!context.mounted || candidate == null) return;
+      await _addPageOffer(
+        context,
+        page,
+        initialCandidate: candidate,
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(
+            content: Text('Die lokale Seitenprüfung ist fehlgeschlagen.'),
+          ),
+        );
+    }
+  }
+
+  Widget _buildPageCard(BuildContext context, ProspectPage page) {
+    final pageUrl = _officialProspectUri(page.imageUrl)?.toString() ?? '';
+    final zoomUri = _officialProspectUri(page.zoomUrl);
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Column(
+        children: [
+          SizedBox(
+            width: double.infinity,
+            height: 240,
+            child: pageUrl.isEmpty
+                ? const Center(child: Icon(Icons.broken_image_outlined, size: 48))
+                : _ProspectPageImage(url: pageUrl, pageNumber: page.number),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text('Seite ${page.number}'),
+                if (zoomUri != null)
+                  TextButton.icon(
+                    onPressed: () => launchUrl(
+                      zoomUri,
+                      mode: LaunchMode.externalApplication,
+                    ),
+                    icon: const Icon(Icons.zoom_in),
+                    label: const Text('Großansicht öffnen'),
+                  ),
+                OutlinedButton.icon(
+                  onPressed: onSaveOffer == null || onAddProduct == null
+                      ? null
+                      : () => _addPageOffer(context, page),
+                  icon: const Icon(Icons.add_shopping_cart_outlined),
+                  label: const Text('Artikel von Seite hinzufügen'),
+                ),
+                OutlinedButton.icon(
+                  onPressed: onSaveOffer == null || onAddProduct == null
+                      ? null
+                      : () => _runPageOcr(context, page),
+                  icon: const Icon(Icons.document_scanner_outlined),
+                  label: const Text('Seite per OCR prüfen'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final pages = _viewerPages(issue);
+    final items = records
+        .where((record) => record.storeName == issue.storeName)
+        .toList(growable: false);
+    final groupedItems = <String, List<OfferImportRecord>>{};
+    for (final record in items) {
+      groupedItems
+          .putIfAbsent(_prospectCategoryForRecord(record), () => [])
+          .add(record);
+    }
+    final resolvedProducts = <String, Product?>{};
+    final categories = groupedItems.keys.toList()
+      ..sort(
+        (a, b) =>
+            _prospectCategoryOrder(a).compareTo(_prospectCategoryOrder(b)),
+      );
+
+    final header = <Widget>[
+      if (issue.location?.trim().isNotEmpty == true)
+        Card(
+          key: const ValueKey('prospect-viewer-location'),
+          child: ListTile(
+            dense: true,
+            leading: const Icon(Icons.store_outlined),
+            title: Text(issue.location!),
+            subtitle: issue.address?.trim().isNotEmpty == true
+                ? Text(issue.address!)
+                : null,
+          ),
+        ),
+      if (_officialProspectUri(issue.url) != null)
+        Align(
+          alignment: Alignment.centerLeft,
+          child: OutlinedButton.icon(
+            onPressed: () => launchUrl(
+              _officialProspectUri(issue.url)!,
+              mode: LaunchMode.externalApplication,
+            ),
+            icon: const Icon(Icons.open_in_new),
+            label: const Text('Offiziellen Prospekt öffnen'),
+          ),
+        ),
+      Text(issue.title, style: Theme.of(context).textTheme.titleLarge),
+      if (issue.validFrom != null && issue.validUntil != null)
+        Text(
+          '${_prospectDate(issue.validFrom!)} – ${_prospectDate(issue.validUntil!)}',
+          style: const TextStyle(color: Colors.black54),
+        ),
+      if (pages.isNotEmpty) ...[
+        const SizedBox(height: 14),
+        Text(
+          'Prospektseiten (${pages.length})',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+      ],
+      if (pages.isEmpty)
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Aktuelle Angebote dieses Marktes. Durchblättern und '
+                  'Produkte antippen, um sie zur Einkaufsliste hinzuzufügen.',
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  _sourceStatusLabel(issue),
+                  style: TextStyle(
+                    color: issue.sourceStatus == 'error'
+                        ? Colors.orange.shade900
+                        : Colors.black54,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+    ];
+
+    return Scaffold(
+      appBar: AppBar(title: Text(issue.storeName)),
+      body: CustomScrollView(
+        key: const ValueKey('prospect-viewer-scroll'),
+        // Do not prebuild network-heavy page cards beyond the viewport. The
+        // overview and viewer can contain dozens of retailer pages, and a
+        // zero scroll cache keeps image decoding bounded during fast swipes.
+        scrollCacheExtent: const ScrollCacheExtent.pixels(0),
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate(header),
+            ),
+          ),
+          if (pages.isNotEmpty)
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+              sliver: SliverList.builder(
+                itemCount: pages.length,
+                itemBuilder: (context, index) =>
+                    _buildPageCard(context, pages[index]),
+                addAutomaticKeepAlives: false,
+                addRepaintBoundaries: true,
+              ),
+            ),
+          if (items.isNotEmpty) ...[
+            const SliverPadding(
+              padding: EdgeInsets.fromLTRB(12, 12, 12, 4),
+              sliver: SliverToBoxAdapter(
+                child: Text(
+                  'Produkte antippen und zur Einkaufsliste hinzufügen',
+                  style: TextStyle(fontWeight: FontWeight.w700),
+                ),
+              ),
+            ),
+            for (final category in categories) ...[
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    category,
+                    key: ValueKey('prospect-category-$category'),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                sliver: SliverGrid(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final record = groupedItems[category]![index];
+                      final product = _memoizedProspectProduct(
+                        record,
+                        catalogProducts,
+                        resolvedProducts,
+                      );
+                      return ProspectOfferCard(
+                        key: ValueKey('prospect-offer-${record.sourceId}'),
+                        record: record,
+                        product: product,
+                        onAdd: onAddProduct == null || product == null
+                            ? null
+                            : () => onAddProduct!(product),
+                      );
+                    },
+                    childCount: groupedItems[category]!.length,
+                    addAutomaticKeepAlives: false,
+                    addRepaintBoundaries: true,
+                  ),
+                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 240,
+                    mainAxisExtent: 540,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 12,
+                  ),
+                ),
+              ),
+            ],
+          ],
+          const SliverToBoxAdapter(child: SizedBox(height: 24)),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProspectPageImage extends StatefulWidget {
+  const _ProspectPageImage({
+    required this.url,
+    required this.pageNumber,
+  });
+
+  final String url;
+  final int pageNumber;
+
+  @override
+  State<_ProspectPageImage> createState() => _ProspectPageImageState();
+}
+
+class _ProspectPageImageState extends State<_ProspectPageImage> {
+  bool _useHtmlFallback = false;
+
+  @override
+  void didUpdateWidget(covariant _ProspectPageImage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.url != widget.url) {
+      _useHtmlFallback = false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final strategy = _useHtmlFallback
+        ? WebHtmlElementStrategy.fallback
+        : WebHtmlElementStrategy.never;
+    return Image.network(
+      widget.url,
+      key: ValueKey('prospect-page-image-${widget.pageNumber}'),
+      // Keep decoded page previews bounded for the long scroll path.
+      cacheWidth: 720,
+      cacheHeight: 480,
+      fit: BoxFit.contain,
+      filterQuality: FilterQuality.low,
+      // Canvas is the cheap path. A platform-view fallback is created only
+      // after this exact image failed to decode (usually because the retailer
+      // CDN omitted Canvas-CORS headers).
+      webHtmlElementStrategy: strategy,
+      loadingBuilder: (context, child, progress) =>
+          progress == null
+              ? child
+              : const Center(child: CircularProgressIndicator()),
+      errorBuilder: (context, error, stackTrace) {
+        if (!_useHtmlFallback) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted || _useHtmlFallback) return;
+            setState(() => _useHtmlFallback = true);
+          });
+          return const Center(child: CircularProgressIndicator());
+        }
+        return const Center(
+          child: Icon(Icons.broken_image_outlined, size: 48),
+        );
+      },
+    );
+  }
+}
+List<ProspectPage> _viewerPages(ProspectIssue issue) {
+  if (issue.pages.isNotEmpty) return issue.pages;
+  final thumbnail = issue.thumbnailUrl?.trim();
+  if (thumbnail == null || thumbnail.isEmpty) {
+    return const <ProspectPage>[];
+  }
+  final uri = _officialProspectUri(thumbnail);
+  if (uri == null) return const <ProspectPage>[];
+  return [ProspectPage(number: 1, imageUrl: uri.toString())];
+}
+
+const _prospectCategoryRanks = <String, int>{
+  'Obst & Gemüse': 0,
+  'Milchprodukte': 1,
+  'Fleisch & Fisch': 2,
+  'Backwaren': 3,
+  'Kaffee & Snacks': 4,
+  'Getränke': 5,
+  'Vorrat & Konserven': 6,
+  'Tiefkühl': 7,
+  'Kühlregal': 8,
+  'Haushalt': 20,
+  'Drogerie': 21,
+  'Garten & Pflanzen': 22,
+  'Non-Food': 30,
+  'Dauerhaft günstiger': 39,
+  'Weitere Angebote': 40,
+};
+
+int _prospectCategoryOrder(String category) =>
+    _prospectCategoryRanks[category] ?? 50;
+
+String _prospectCategory(String label) {
+  return fallbackProspectCategory(label);
+}
+
+String _prospectCategoryForRecord(OfferImportRecord record) {
+  final sourceCategory = record.category?.trim();
+  return sourceCategory == null || sourceCategory.isEmpty
+      ? _prospectCategory(record.productLabel)
+      : presentProspectCategory(sourceCategory);
+}
+
+String _prospectDate(DateTime value) =>
+    '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.${value.year}';
+
+Uri? _officialProspectUri(String? value) {
+  final raw = value?.trim();
+  if (raw == null || raw.isEmpty) return null;
+  final uri = Uri.tryParse(raw);
+  final scheme = uri?.scheme.toLowerCase();
+  if (uri == null ||
+      (scheme != 'http' && scheme != 'https') ||
+      uri.host.isEmpty) {
+    return null;
+  }
+  return uri;
+}
+
+
