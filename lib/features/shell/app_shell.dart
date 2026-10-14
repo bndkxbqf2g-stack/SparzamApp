@@ -1844,7 +1844,7 @@ class _AppShellState extends State<AppShell> {
   Widget build(BuildContext context) {
     final catalog = catalogProducts;
     final plannedPrices = planningMarketPrices;
-    final routeSnapshot = ShellRouting(
+    final routeSnapshot = _routingSnapshotCache.resolve(
       items: shoppingList,
       offers: offers,
       mobility: mobility,
