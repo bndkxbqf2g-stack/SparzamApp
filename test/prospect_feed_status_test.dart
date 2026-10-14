@@ -77,7 +77,6 @@ void main() {
 
   test('reports prospect evidence without inferring missing fields', () {
     final coverage = calculateProspectCoverage(
-      persistedRegularPriceCounts: const {'ALDI Süd': 1},
       issues: [
         ProspectIssue(
           storeName: 'ALDI Süd',
@@ -268,6 +267,7 @@ void main() {
     tester,
   ) async {
     final coverage = calculateProspectCoverage(
+      persistedRegularPriceCounts: const {'ALDI Süd': 1},
       issues: [
         ProspectIssue(
           storeName: 'ALDI Süd',
