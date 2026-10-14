@@ -146,6 +146,7 @@ void main() {
       name: 'Jacobs Kaffee Crema',
       unit: '500 g',
       group: 'kaffee',
+      ean: '04012345678905',
     );
     final evidence = prospectPriceObservations(
       records: [
@@ -166,6 +167,7 @@ void main() {
     expect(evidence, hasLength(2));
     expect(evidence.every((entry) => entry.productId == coreCoffee.id), isTrue);
     expect(evidence.every((entry) => entry.identityConfidence == 1), isTrue);
+    expect(evidence.every((entry) => entry.ean == coreCoffee.ean), isTrue);
     expect(evidence.every((entry) => entry.quantity == 500), isTrue);
     expect(evidence.every((entry) => entry.unit == 'g'), isTrue);
   });

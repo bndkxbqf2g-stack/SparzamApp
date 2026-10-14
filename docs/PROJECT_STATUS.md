@@ -1,3 +1,9 @@
+## Update 14.10.2026 – EAN in Prospekt-Preisbeobachtungen
+
+- Exakt aufgelöste Prospektprodukte führen ihre bereits bekannte Katalog-EAN jetzt in Angebot- und regulärer Preisbeobachtung mit.
+- Unsichere, synthetische oder nicht aufgelöste Prospektlabels erhalten weiterhin keine EAN; es wird keine Identität aus dem Preislabel geraten.
+- Damit bleiben Barcode-, Open-Prices- und Produktvergleichsdaten entlang der bestehenden Beobachtungspipeline nachvollziehbar.
+
 ## Update 14.10.2026 – Prospekt-Packungen exakt normalisieren
 
 - Automatische Prospektpreise werden bei einer expliziten Packungsangabe jetzt auch dann exakt einer Katalogidentität zugeordnet, wenn der Katalogname die Packung als separates `unit`-Feld führt.
