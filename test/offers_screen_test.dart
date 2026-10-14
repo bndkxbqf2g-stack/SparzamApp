@@ -453,8 +453,8 @@ void main() {
       const ValueKey('prospect-load-more-Lidl|Kühlregal'),
     );
     expect(loadMore, findsOneWidget);
-    await tester.tap(loadMore);
-    await tester.pumpAndSettle();
+    tester.widget<OutlinedButton>(loadMore).onPressed!.call();
+    await tester.pump();
 
     expect(lastCard, findsOneWidget);
   });
