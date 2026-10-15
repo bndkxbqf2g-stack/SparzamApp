@@ -11,6 +11,7 @@ import 'store_shopping_summary.dart';
 import 'store_value.dart';
 import '../price_gaps/price_gap_card.dart';
 import '../price_gaps/price_gap_priority.dart';
+import '../route/route_travel_distance.dart';
 import '../route/travel_estimator.dart';
 
 class StoreScreen extends StatefulWidget {
@@ -99,7 +100,7 @@ class _StoreScreenState extends State<StoreScreen> {
 
       final next = {...roadDistances};
       if (distance != null && distance > 0) {
-        next[widget.store.name] = distance;
+        next[travelMatrixStoreKey(widget.store)] = distance;
         await cache.save(originAddress, next);
       }
 
@@ -151,7 +152,11 @@ class _StoreScreenState extends State<StoreScreen> {
       marketPrices: widget.marketPrices,
       openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
     );
-    final roadDistance = roadDistances[widget.store.name];
+    final storeDistanceKey = travelMatrixStoreKey(widget.store);
+    final roadDistance = roadDistances[storeDistanceKey] ??
+        (storeDistanceKey == widget.store.name
+            ? roadDistances[widget.store.name]
+            : null);
     final shownDistance = roadDistance ?? widget.store.distanceKm;
     final travel = estimateRoundTrips(
       [widget.store],
