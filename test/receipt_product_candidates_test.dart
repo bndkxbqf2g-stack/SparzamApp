@@ -43,7 +43,7 @@ void main() {
     final candidates = receiptProductCandidates(
       rawLabel: 'milch',
       products: const [
-        Product(id: 'milk', name: 'Milch', unit: '1 l', group: 'milch'),
+        Product(id: 'milk', name: 'Joghurt', unit: '1 l', group: 'milch'),
       ],
     );
 
