@@ -30,6 +30,7 @@ void main() {
       ),
     );
 
+    expect(find.text('PENNY · Zellingen'), findsOneWidget);
     expect(find.textContaining('Wegezeit 8 Min.'), findsOneWidget);
     expect(find.textContaining('Fahrt 0.96 €'), findsOneWidget);
     expect(find.textContaining('Preisabdeckung 0 %'), findsOneWidget);
