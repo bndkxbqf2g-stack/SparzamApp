@@ -132,7 +132,6 @@ void main() {
   });
   test('incomplete cached matrix is not reused for a new exact branch key',
       () async {
-    const oldBranch = 'Lidl|old';
     final cache = MemoryTravelMatrixCache(
       RoadRouteMatrix(
         originAddress: '97225 Zellingen, Germany',
@@ -159,7 +158,6 @@ void main() {
     });
 
     expect(result, isNull);
-    expect(oldBranch, isNotEmpty);
     service.close();
   });
 
