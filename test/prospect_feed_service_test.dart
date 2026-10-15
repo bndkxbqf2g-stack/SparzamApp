@@ -250,6 +250,32 @@ void main() {
     expect(result.records[1].originalPrice, 1.99);
   });
 
+  test('accepts strict formatted offer and nested regular prices', () {
+    final result = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-10-15T04:15:00Z",
+  "sources": [
+    {"storeName": "Lidl", "status": "ok", "branchId": "lidl-zellingen"}
+  ],
+  "offers": [
+    {
+      "sourceId": "formatted-money",
+      "productLabel": "Butter 250 g",
+      "storeName": "Lidl",
+      "offerPrice": "0,99 €",
+      "originalPrice": {"amount": "1,29", "currency": "EUR"},
+      "validUntil": "2026-10-17",
+      "proofRef": "https://example.test/lidl/formatted-money"
+    }
+  ]
+}
+''');
+
+    expect(result.records, hasLength(1));
+    expect(result.records.single.offerPrice, 0.99);
+    expect(result.records.single.originalPrice, 1.29);
+  });
+
   test(
     'keeps all six configured retailers visible when a source has no data',
     () {
