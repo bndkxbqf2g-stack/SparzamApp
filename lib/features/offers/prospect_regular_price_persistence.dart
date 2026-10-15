@@ -68,6 +68,8 @@ class ProspectRegularPricePersistenceResult {
 /// Persists the current regular prospect prices and returns the complete local
 /// observation snapshot.
 ///
+/// Only observations with an explicit exact branch are persisted; a source row
+/// without one remains review/history evidence and cannot become a current route price.
 /// The store upserts by the stable observation id, refreshing capture metadata
 /// while keeping its existing compaction rules. A missing feed timestamp, an expired/future record, an
 /// offer-only record, an unproven record, or a record without an exact branch
@@ -87,7 +89,9 @@ Future<ProspectRegularPricePersistenceResult>
     observedAt: observedAt,
     now: now,
     refreshedStores: refreshedStores,
-  );
+  ).where((entry) => entry.locationId?.trim().isNotEmpty == true).toList(
+        growable: false,
+      );
   final stored = await store.upsertById(
     learned,
     // Remove legacy automatic offer observations even when a cache lacks a

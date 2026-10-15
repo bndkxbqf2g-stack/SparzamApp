@@ -816,3 +816,12 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   `MANUELL_BESTÄTIGT` in Angebot, Preisbeobachtung und Marktpreis-Projektion
   erhalten; ältere Datensätze bleiben ohne diese optionale Metadaten-Spalte
   abwärtskompatibel lesbar.
+## Update 15.10.2026 – Exakte Filiale für automatische Normalpreise
+
+- [x] Der automatische Persistenzschritt speichert reguläre Prospektpreise nur
+  mit einem ausdrücklich gelieferten Filialschlüssel.
+- [x] Prospektzeilen ohne Filiale bleiben für sichtbare Prüfung und historische
+  Evidenz verfügbar, werden aber nicht als aktueller `MarketPrice` projiziert.
+- [x] Die bestehende Herkunfts-, Gültigkeits-, Nachweis- und
+  Packungsgrößenprüfung bleibt unverändert; eine Regression schützt die
+  fehlende-Filiale-Grenze.

@@ -330,6 +330,32 @@ void main() {
     expect(result.learned.single.price, 7.99);
     expect(result.learned.single.discounted, isFalse);
   });
+  test('does not persist a regular price without an exact branch', () async {
+    final store = memoryStore();
+    final noBranch = OfferImportRecord(
+      sourceId: 'leaflet-without-branch',
+      productLabel: coffee.name,
+      storeName: 'Lidl',
+      originalPrice: 7.99,
+      offerPrice: 4.99,
+      validFrom: DateTime(2026, 10, 10),
+      validUntil: DateTime(2026, 10, 17),
+      source: 'leaflet',
+      proofRef: 'https://example.test/lidl/coffee-no-branch',
+      capturedAt: now,
+    );
+
+    final result = await persistCurrentProspectRegularPrices(
+      store: store,
+      records: [noBranch],
+      catalogProducts: const [coffee],
+      observedAt: now,
+      now: now,
+    );
+
+    expect(result.learned, isEmpty);
+    expect(await store.load(), isEmpty);
+  });
 }
 
 
@@ -362,4 +388,5 @@ extension on OfferImportRecord {
         location: location,
         address: address,
       );
+
 }
