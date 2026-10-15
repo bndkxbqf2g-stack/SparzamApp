@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Prospekt-Cover bleiben beim Scrollen eindeutig
+
+- [x] Adaptive Coverbilder verwenden jetzt einen URL-spezifischen Widget-Schlüssel; zwei unterschiedliche Prospektbilder können beim Grid-/Favoriten-Recycling nicht denselben Image-State teilen.
+- [x] Der Canvas-Pfad und der begrenzte HTML-Fallback bleiben unverändert; es entstehen weiterhin keine zusätzlichen Plattformansichten für erfolgreiche Decodes.
+- [x] Eine Widgetregression schützt zwei unterschiedliche Cover-URLs und damit den schnellen Scrollpfad.
+
 ## Update 15.10.2026 – Prospekt-Normalpreise erreichen die Einkaufsliste
 
 - [x] Eine deterministische Regression deckt den vollständigen Pfad vom Speichern eines aktuellen regulären Prospektpreises über die Projektion bis zum Einkaufslisten-Zitat ab.
