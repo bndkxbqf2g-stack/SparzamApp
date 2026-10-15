@@ -7,6 +7,18 @@ import 'prospect_feed_service.dart';
 /// Feed content alone is not sufficient: an unchanged feed must be processed
 /// again when the calendar day changes because date-only offer validity can
 /// activate or expire records without any source-field change.
+/// Returns whether a validated feed should be processed again.
+///
+/// Background refreshes may reuse an unchanged fingerprint. A user-triggered
+/// refresh is an explicit repair action, so it can retry local regular-price
+/// persistence even when the feed payload itself did not change.
+bool shouldProcessProspectFeed({
+  required String? previousFingerprint,
+  required String currentFingerprint,
+  bool force = false,
+}) =>
+    force || previousFingerprint != currentFingerprint;
+
 String prospectFeedFingerprintFor(
   ProspectFeedLoadResult feed, {
   DateTime? now,
