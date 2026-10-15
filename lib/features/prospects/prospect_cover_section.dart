@@ -668,7 +668,11 @@ String? _pageCoverage(ProspectIssue issue) {
   final available = issue.availablePageCount;
   if (available != null && available > 0) {
     final missing = issue.missingPageNumbers.length;
-    final missingLabel = missing > 0 ? ' · $missing fehlen' : '';
+    final missingLabel = missing == 0
+        ? ''
+        : missing == 1
+            ? ' · 1 fehlt'
+            : ' · $missing fehlen';
     return '$loaded/$available Seiten geladen$missingLabel';
   }
   if (loaded > 0) return '$loaded Seiten geladen';
