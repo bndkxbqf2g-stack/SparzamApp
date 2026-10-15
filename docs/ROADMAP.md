@@ -1,4 +1,16 @@
 
+## Update 15.10.2026 – Einkaufsliste aktualisiert Quotes nach Katalog-Laden
+
+- [x] Der Einkaufslisten-Quote-Snapshot nimmt die Katalogreferenz in seinen
+  Cache-Vertrag auf; verspätet geladene Prospektvarianten erscheinen dadurch
+  sofort in Preisabdeckung und Marktmatrix.
+- [x] Die bestehende generische Familienauflösung bleibt unverändert und
+  verlangt weiterhin exakte Identität, Packungsbasis, Filiale, Gültigkeit und
+  Nachweis vor einer sichtbaren aktuellen Preiszeile.
+- [x] Eine Widgetregression prüft den Wechsel von „unbekannt“ zu einem
+  belegten aktuellen Prospektangebot nach dem Katalog-Update.
+
+
 ## Update 15.10.2026 – Generische Prospektangebote im Preise-Reiter
 
 - [x] Der Preise-Reiter reicht den vorhandenen Katalog in die gemeinsame
