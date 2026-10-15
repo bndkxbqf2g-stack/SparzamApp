@@ -73,6 +73,7 @@ List<MarketPrice> marketPricesFromObservations(
             _sourceAllowed(entry, settings, today) &&
             _matchesProductPackage(entry, productsById[entry.productId]) &&
             _hasProspectValidity(entry) &&
+            _hasExactProspectBranch(entry) &&
             _projectsToLegacyMarketPrice(entry.source) &&
             !_isProspectOffer(entry),
       )
@@ -221,6 +222,14 @@ bool _isProspectSource(PriceObservationSource source) =>
     source == PriceObservationSource.retailer ||
     source == PriceObservationSource.retailerWebsite ||
     source == PriceObservationSource.leaflet;
+
+/// A prospect price without an exact branch remains historical evidence.
+/// A visible city/store label is not a unique location and must never become
+/// a routeable MarketPrice slot.
+bool _hasExactProspectBranch(PriceObservation observation) {
+  if (!_isProspectSource(observation.source)) return true;
+  return observation.locationId?.trim().isNotEmpty == true;
+}
 
 bool _hasProspectValidity(PriceObservation observation) {
   if (observation.kind != PriceObservationKind.regular) return true;
