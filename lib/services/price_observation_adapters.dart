@@ -65,6 +65,7 @@ PriceObservation observationFromOffer(
   proofRef: offer.proofRef ?? 'offer:${offer.id}',
   discounted: true,
   identityConfidence: _offerIdentityConfidence(offer),
+  evidenceConfidence: offer.evidenceConfidence,
 );
 
 PriceObservation regularObservationFromOffer(
@@ -94,6 +95,7 @@ PriceObservation regularObservationFromOffer(
   identityConfidence: offer.originalPriceVerified
       ? _offerIdentityConfidence(offer)
       : 0,
+  evidenceConfidence: offer.evidenceConfidence,
 );
 
 Iterable<PriceObservation> observationsFromOffer(
