@@ -586,6 +586,33 @@ class ProspectParserTest(unittest.TestCase):
         self.assertEqual(sources[0]["recordCount"], 2)
         self.assertEqual(sources[0]["rawRecordCount"], 3)
 
+    def test_source_counts_keep_same_store_branches_separate(self):
+        sources = [
+            {
+                "storeName": "Lidl",
+                "branchId": "lidl-zellingen",
+                "location": "Zellingen",
+                "recordCount": 2,
+            },
+            {
+                "storeName": "Lidl",
+                "branchId": "lidl-wuerzburg",
+                "location": "Würzburg",
+                "recordCount": 2,
+            },
+        ]
+        offers = [
+            {"storeName": "Lidl", "branchId": "lidl-zellingen", "location": "Zellingen"},
+            {"storeName": "Lidl", "branchId": "lidl-zellingen", "location": "Zellingen"},
+            {"storeName": "Lidl", "branchId": "lidl-wuerzburg", "location": "Würzburg"},
+        ]
+
+        refresh.update_source_record_counts(sources, offers)
+
+        self.assertEqual(sources[0]["recordCount"], 2)
+        self.assertEqual(sources[1]["recordCount"], 1)
+        self.assertEqual(sources[1]["rawRecordCount"], 2)
+
     def test_versioned_feed_contains_only_proven_food_records(self):
         payload = refresh.json.loads(FEED.read_text(encoding="utf-8"))
         offers = payload.get("offers", [])

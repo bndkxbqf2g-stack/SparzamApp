@@ -3215,6 +3215,8 @@ def _branch_matches(item, expected):
     if not expected:
         return True
     expected_identity = _branch_identity(expected)
+    if not any(expected_identity):
+        return True
     actual_identity = _branch_identity(item)
     shared = [
         (expected_value, actual_value)
@@ -3354,18 +3356,26 @@ def is_food_offer(item):
 
 
 def update_source_record_counts(sources, offers):
-    """Expose filtered food counts while retaining the provider raw count."""
-    counts = {}
-    for item in offers:
-        store = clean(item.get("storeName", ""))
-        if store:
-            counts[store] = counts.get(store, 0) + 1
+    """Expose food counts for the exact source branch.
+
+    Retailer names are display labels, not store identities. Count records
+    against the source's shared branch evidence so two branches of the same
+    retailer do not display one combined total.
+    """
     for source in sources:
         if not isinstance(source, dict):
             continue
         store = clean(source.get("storeName", ""))
         raw_count = source.get("recordCount")
-        filtered_count = counts.get(store, 0)
+        filtered_count = sum(
+            1
+            for item in offers
+            if (
+                isinstance(item, dict)
+                and clean(item.get("storeName", "")) == store
+                and _branch_matches(item, source)
+            )
+        )
         if isinstance(raw_count, int) and raw_count != filtered_count:
             source.setdefault("rawRecordCount", raw_count)
         source["recordCount"] = filtered_count
