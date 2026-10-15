@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
+import '../../data/stores.dart';
 import '../../models/budget_plan.dart';
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
@@ -1969,6 +1970,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                 offers: offers,
                 mobility: mobility,
                 marketPrices: planningMarketPrices,
+                storeCatalog: stores,
                 openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
                 recentPurchases: recentPurchases,
                 historicalPriceObservations: historicalPriceObservations,
@@ -2001,6 +2003,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       offers: offers,
       mobility: mobility,
       marketPrices: plannedPrices,
+      storeCatalog: stores,
       openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
       roadDistances: roadDistances,
       roadMatrix: roadMatrix,
