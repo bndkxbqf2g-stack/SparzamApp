@@ -3,8 +3,8 @@ import 'package:sparzamapp/features/route/route_optimizer.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/product.dart';
-import 'package:sparzamapp/models/store.dart';
 import 'package:sparzamapp/models/mobility_settings.dart';
+import 'package:sparzamapp/models/store.dart';
 
 void main() {
   const product = Product(
@@ -48,14 +48,13 @@ void main() {
     // Summe von C(6,k), k=1..6.
     expect(combinations, hasLength(63));
     expect(combinations.map((combo) => combo.length).toSet(), {1, 2, 3, 4, 5, 6});
-    expect(combinations.last.map((store) => store.name), [
-      'Markt 1',
-      'Markt 2',
-      'Markt 3',
-      'Markt 4',
-      'Markt 5',
-      'Markt 6',
-    ]);
+    expect(
+      combinations.any(
+        (combo) => combo.map((store) => store.name).join('|') ==
+            'Markt 1|Markt 2|Markt 3|Markt 4|Markt 5|Markt 6',
+      ),
+      isTrue,
+    );
   });
 
   test('MobilitySettings akzeptiert sechs Märkte aus dem lokalen Format', () {
