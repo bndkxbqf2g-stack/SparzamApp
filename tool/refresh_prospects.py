@@ -3818,13 +3818,28 @@ def main(selected_source_ids=None):
                 })
                 refreshed_source_count += 1
                 continue
-            kept = active_previous(
+            branch = source_branch_metadata(source_id)
+            kept = active_previous(previous, store, branch)
+            # A source error must not erase a still-current, validated cover.
+            # Keep the exact branch metadata and let the normal merge helper
+            # drop expired pages before exposing the fallback.
+            fallback_prospects = _merge_previous_prospects(
                 previous,
                 store,
-                source_branch_metadata(source_id),
+                [],
+                branch=branch,
             )
             all_offers.extend(kept)
-            sources.append({"id": source_id, "storeName": store, "url": url, "status": "error", "recordCount": len(kept), "error": clean(str(error))[:240], **source_branch_metadata(source_id)})
+            sources.append({
+                "id": source_id,
+                "storeName": store,
+                "url": url,
+                "status": "error",
+                "recordCount": len(kept),
+                "error": clean(str(error))[:240],
+                "prospects": fallback_prospects,
+                **branch,
+            })
 
     # kaufDA is an explicitly opt-in discovery adapter. Its public search
     # pages identify publishers but do not reliably prove the exact branch;
