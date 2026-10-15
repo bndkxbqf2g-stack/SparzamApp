@@ -386,4 +386,75 @@ void main() {
     );
     service.close();
   });
+  test('bewahrt zwei gleichnamige Filialen mit eigener Open-Prices-ID', () async {
+    const branchStores = [
+      Store(
+        name: 'Lidl',
+        location: 'Zellingen',
+        branchId: 'branch-a',
+        distanceKm: 1,
+        prices: {},
+      ),
+      Store(
+        name: 'Lidl',
+        location: 'Zellingen',
+        branchId: 'branch-b',
+        distanceKm: 2,
+        prices: {},
+      ),
+    ];
+    final service = OpenPricesService(
+      client: MockClient((_) async => http.Response(
+        jsonEncode({
+          'items': [
+            {
+              'id': 31,
+              'product_code': product.ean,
+              'price': 1.49,
+              'currency': 'EUR',
+              'price_is_discounted': false,
+              'price_per': 'UNIT',
+              'date': '2026-09-21',
+              'location': {
+                'id': 'branch-a',
+                'osm_brand': 'Lidl',
+                'osm_name': 'Lidl',
+                'osm_address_city': 'Zellingen',
+              },
+            },
+            {
+              'id': 32,
+              'product_code': product.ean,
+              'price': 1.69,
+              'currency': 'EUR',
+              'price_is_discounted': false,
+              'price_per': 'UNIT',
+              'date': '2026-09-21',
+              'location': {
+                'id': 'branch-b',
+                'osm_brand': 'Lidl',
+                'osm_name': 'Lidl',
+                'osm_address_city': 'Zellingen',
+              },
+            },
+          ],
+        }),
+        200,
+      )),
+    );
+
+    final prices = await service.fetchRecentPrices(
+      product: product,
+      stores: branchStores,
+      now: DateTime(2026, 9, 22),
+    );
+    service.close();
+
+    expect(prices, hasLength(2));
+    final byBranch = <String, double>{
+      for (final price in prices) price.sourceLocationId!: price.price,
+    };
+    expect(byBranch, {'branch-a': 1.49, 'branch-b': 1.69});
+  });
+
 }
