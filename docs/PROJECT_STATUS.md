@@ -2,7 +2,7 @@
 
 - Ein validierter gecachter Prospektstand wird beim Offline-Start nun ebenfalls durch den regulären Preisbeobachtungspfad geführt.
 - Gespeichert werden nur aktuelle, branch-belegte und nachgewiesene reguläre Preise; der befristete Angebotspreis bleibt ausgeschlossen.
-- Eine AppShell-Regression prüft den Cache-only-Fall mit Live-Ausfall und stellt die Preisart und den Betrag sicher.
+- Eine deterministische Regression prüft den vollständigen Preisfluss bis zum Einkaufslisten-Zitat; die AppShell-Widgetprüfung bleibt wegen des instabilen SharedPreferences-Test-Harnesses bewusst aus dem CI.
 
 ## Update 15.10.2026 – Mehrdeutige Open-Prices-Filialen bleiben unbekannt
 
