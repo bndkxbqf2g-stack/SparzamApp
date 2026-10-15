@@ -7,6 +7,7 @@ import 'package:sparzamapp/features/prospects/prospect_feed_status.dart';
 import 'package:sparzamapp/features/price_gaps/price_gap_priority.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
+import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/product.dart';
 
@@ -538,6 +539,72 @@ void main() {
       expect(find.textContaining('Nachweis vorhanden'), findsOneWidget);
       expect(find.text('4,99 €'), findsNothing);
       expect(find.text('6,99 €'), findsNothing);
+    },
+  );
+
+  testWidgets(
+    'verwendet den Katalog für generische Prospektangebote im Preise-Reiter',
+    (tester) async {
+      const genericMilk = Product(
+        id: 'price-hub-generic-milk',
+        name: 'Milch',
+        unit: '1 l',
+        group: 'Milch',
+      );
+      const specificMilk = Product(
+        id: 'price-hub-specific-milk',
+        name: 'Milch 1,5 % 1 l',
+        unit: '1 l',
+        group: 'Milch',
+        packageAmount: 1,
+        packageUnit: 'l',
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: PricesHubScreen(
+              onOpenCatalog: () {},
+              onOpenSettings: () {},
+              summary: 'Prospektpreise',
+              shoppingList: [ListItem(product: genericMilk)],
+              catalogProducts: const [specificMilk],
+              offers: [
+                Offer(
+                  id: 'price-hub-generic-prospect-offer',
+                  productId: specificMilk.id,
+                  storeName: 'Lidl',
+                  originalPrice: 1.49,
+                  offerPrice: 0.99,
+                  validFrom: DateTime(2026, 10, 13),
+                  validUntil: DateTime(2026, 10, 19),
+                  source: 'retailerWebsite',
+                  proofRef: 'https://example.test/prospect/milk',
+                  locationId: 'lidl_zellingen',
+                  packageAmount: 1,
+                  packageUnit: 'l',
+                ),
+              ],
+              enabledStoreNames: const ['Lidl'],
+              now: DateTime(2026, 10, 15),
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        find.text('1 von 1 Positionen mit aktuellem Marktpreis'),
+        findsOneWidget,
+      );
+      final card = find.byKey(
+        const ValueKey('price-comparison-price-hub-generic-milk'),
+      );
+      await tester.tap(card);
+      await tester.pumpAndSettle();
+
+      expect(find.text('1/1 Märkte aktuell'), findsOneWidget);
+      expect(find.textContaining('Angebot bis 19.10.2026'), findsOneWidget);
+      expect(find.text('0,99 €'), findsNWidgets(2));
     },
   );
 

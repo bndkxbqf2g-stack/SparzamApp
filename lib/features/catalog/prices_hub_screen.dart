@@ -72,6 +72,7 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
   List<ListItem>? _signatureShoppingListInput;
   List<MarketPrice>? _signatureMarketPricesInput;
   List<Offer>? _signatureOffersInput;
+  List<Product>? _signatureCatalogProductsInput;
   Map<String, ProspectPriceHistorySummary>? _signatureHistoryInput;
   List<String>? _signatureEnabledStoresInput;
   int? _signatureMaxAgeDays;
@@ -90,6 +91,10 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
         identical(_signatureShoppingListInput, widget.shoppingList) &&
         identical(_signatureMarketPricesInput, widget.marketPrices) &&
         identical(_signatureOffersInput, widget.offers) &&
+        identical(
+          _signatureCatalogProductsInput,
+          widget.catalogProducts,
+        ) &&
         identical(_signatureHistoryInput, widget.prospectPriceHistory) &&
         identical(_signatureEnabledStoresInput, widget.enabledStoreNames) &&
         _signatureMaxAgeDays == widget.openPricesMaxAgeDays &&
@@ -142,6 +147,16 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
       add(offer.packageAmount);
       add(offer.packageUnit);
     }
+    add(widget.catalogProducts.length);
+    for (final product in widget.catalogProducts) {
+      add(product.id);
+      add(product.name);
+      add(product.unit);
+      add(product.packageAmount);
+      add(product.packageUnit);
+      add(product.ean);
+      add(product.brand);
+    }
     final history = widget.prospectPriceHistory.entries.toList()
       ..sort((a, b) => a.key.compareTo(b.key));
     for (final entry in history) {
@@ -172,6 +187,7 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
     _signatureShoppingListInput = widget.shoppingList;
     _signatureMarketPricesInput = widget.marketPrices;
     _signatureOffersInput = widget.offers;
+    _signatureCatalogProductsInput = widget.catalogProducts;
     _signatureHistoryInput = widget.prospectPriceHistory;
     _signatureEnabledStoresInput = widget.enabledStoreNames;
     _signatureMaxAgeDays = widget.openPricesMaxAgeDays;
@@ -197,6 +213,7 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
       widget.shoppingList,
       prices: widget.marketPrices,
       offers: widget.offers,
+      catalogProducts: widget.catalogProducts,
       prospectPriceHistory: widget.prospectPriceHistory,
       enabledStores: widget.enabledStoreNames,
       openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
