@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Prospektquellen tolerieren Händlername-Formatierung
+
+- Die Zuordnung von Angebotszeilen zu Quellenmetadaten normalisiert ausschließlich Groß-/Kleinschreibung und umgebende Leerzeichen des Händlernamens.
+- Filial-ID, Ort und Adresse bleiben aus der exakten Quellenmetadaten erhalten; mehrere gleichnamige Filialen ohne Zeilen-Filial-ID bleiben weiterhin unbekannt.
+- Regressionen prüfen den eindeutigen formatierten Treffer und den mehrdeutigen Mehrfilialfall.
+
 ## Update 15.10.2026 – Cache-Prospektpreise filialgenau ausweisen
 
 - Der Offline-/Cache-Pfad verwendet jetzt dieselbe Persistenz-Auswertung wie der Live-Refresh.

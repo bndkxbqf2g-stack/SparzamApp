@@ -87,6 +87,78 @@ void main() {
     expect(aldi.address, contains('Würzburger Str. 74'));
   });
 
+
+  test('matches source metadata despite store-name formatting', () {
+    final result = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-10-15T04:15:00Z",
+  "sources": [
+    {
+      "storeName": "LIDL",
+      "status": "ok",
+      "branchId": "lidl-zellingen",
+      "location": "Zellingen",
+      "address": "Branch street 1"
+    }
+  ],
+  "offers": [
+    {
+      "sourceId": "formatted-store",
+      "productLabel": "Butter 250 g",
+      "storeName": " lidl ",
+      "offerPrice": 1.99,
+      "validUntil": "2026-10-17",
+      "source": "retailerWebsite",
+      "proofRef": "https://example.test/lidl/butter"
+    }
+  ]
+}
+''');
+
+    expect(result.records, hasLength(1));
+    expect(result.records.single.branchId, 'lidl-zellingen');
+    expect(result.records.single.location, 'Zellingen');
+    expect(result.records.single.address, 'Branch street 1');
+  });
+
+  test('keeps formatted same-name branches ambiguous without a branch id', () {
+    final result = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-10-15T04:15:00Z",
+  "sources": [
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "branchId": "lidl-zellingen",
+      "location": "Zellingen"
+    },
+    {
+      "storeName": " lidl ",
+      "status": "ok",
+      "branchId": "lidl-wuerzburg",
+      "location": "Würzburg"
+    }
+  ],
+  "offers": [
+    {
+      "sourceId": "ambiguous-formatted-store",
+      "productLabel": "Butter 250 g",
+      "storeName": "LIDL",
+      "offerPrice": 1.99,
+      "validUntil": "2026-10-17",
+      "source": "retailerWebsite",
+      "proofRef": "https://example.test/lidl/butter"
+    }
+  ]
+}
+''');
+
+    expect(result.records, hasLength(1));
+    expect(result.records.single.branchId, isNull);
+    expect(result.records.single.location, isNull);
+    expect(result.records.single.address, isNull);
+  });
+
   test('accepts explicit regular-price aliases from feed adapters', () {
     final result = parseProspectFeed(r'''
 {
