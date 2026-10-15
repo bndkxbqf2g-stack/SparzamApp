@@ -1627,9 +1627,10 @@ class ProspectViewerScreen extends StatelessWidget {
     );
     if (draft == null || !context.mounted) return;
 
+    final capturedAt = DateTime.now();
     final record = OfferImportRecord(
       sourceId:
-          'manual-page|${issue.storeName}|${page.number}|${DateTime.now().microsecondsSinceEpoch}',
+          'manual-page|${issue.storeName}|${page.number}|${capturedAt.microsecondsSinceEpoch}',
       productLabel: draft.productLabel,
       storeName: issue.storeName,
       originalPrice: draft.originalPrice,
@@ -1639,6 +1640,7 @@ class ProspectViewerScreen extends StatelessWidget {
       source: 'leaflet',
       proofRef: page.zoomUrl ?? page.imageUrl,
       imageUrl: page.imageUrl,
+      capturedAt: capturedAt,
       branchId: issue.branchId,
       location: issue.location,
       address: issue.address,
@@ -1674,6 +1676,8 @@ class ProspectViewerScreen extends StatelessWidget {
       validFrom: entry.offer.validFrom,
       validUntil: entry.offer.validUntil,
       source: entry.offer.source,
+      sourceAdapter: entry.offer.sourceAdapter,
+      capturedAt: entry.offer.capturedAt,
       proofRef: entry.offer.proofRef,
       imageUrl: entry.offer.imageUrl,
       packageAmount: entry.offer.packageAmount,

@@ -1225,6 +1225,7 @@ void main() {
     expect(saved!.offerPrice, 4.99);
     expect(saved!.originalPrice, 5.99);
     expect(saved!.proofRef, 'https://example.test/lidl/page-4.png');
+    expect(saved!.capturedAt, isNotNull);
     expect(saved!.locationId, 'L-42');
     expect(saved!.region, 'Zellingen');
     expect(saved!.address, 'Hauptstraße 1, 97225 Zellingen');
