@@ -236,10 +236,6 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
             onOpenList: screen.onOpenList,
             onOpenRoute: screen.onOpenRoute,
           ),
-        if (quality.hasData) ...[
-          const SizedBox(height: 16),
-          _PriceDataQualityCard(quality: quality),
-        ],
         if (snapshots.isNotEmpty && current > 0) ...[
           const SizedBox(height: 16),
           Text(
@@ -302,6 +298,10 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
               onTap: screen.onOpenList,
             ),
           ),
+        ],
+        if (quality.hasData) ...[
+          const SizedBox(height: 16),
+          _PriceDataQualityCard(quality: quality),
         ],
         const SizedBox(height: 22),
         Card(
