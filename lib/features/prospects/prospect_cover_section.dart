@@ -241,7 +241,9 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
                   padding: EdgeInsets.zero,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: columns,
-                    mainAxisExtent: 300,
+                    // Leave room for source and page-completeness metadata
+                    // without allowing a card to overflow during grid layout.
+                    mainAxisExtent: 324,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 14,
                   ),
