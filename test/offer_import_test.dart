@@ -481,5 +481,27 @@ void main() {
     expect(prospectOfferRecordKey(first), isNotEmpty);
   });
 
+
+  test('canonicalizes known source variants for offer identity', () {
+    final result = resolveOfferImport(
+      OfferImportRecord(
+        sourceId: 'canonical-source',
+        productLabel: 'Schmand',
+        storeName: 'Lidl',
+        offerPrice: 0.69,
+        validUntil: DateTime(2026, 10, 17),
+        source: ' RETAILERWEBSITE ',
+        proofRef: 'https://example.test/lidl/canonical-source',
+      ),
+      catalog,
+    );
+
+    expect(result.isResolved, isTrue);
+    expect(result.offer!.source, 'retailerWebsite');
+    expect(
+      result.offer!.id,
+      'import|retailerWebsite|canonical-source|schmand',
+    );
+  });
 }
 
