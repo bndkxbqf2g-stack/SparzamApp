@@ -1,10 +1,10 @@
+import '../../data/stores.dart';
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/mobility_settings.dart';
 import '../../models/offer.dart';
 import '../../models/road_route_matrix.dart';
 import '../../models/store.dart';
-import '../../data/stores.dart';
 import '../route/route_optimizer.dart';
 
 class ShellRouting {
