@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 
 import '../../services/prospect_favorites_store.dart';
 import '../../services/prospect_feed_service.dart';
+import 'prospect_issue_identity.dart';
 
 /// A Bring-style overview of validated prospect covers.
 ///
