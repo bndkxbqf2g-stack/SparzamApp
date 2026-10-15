@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Einkaufs-Preis-Matrix zeigt exakte Filiale
+
+- [x] Preiszitate übernehmen Branch-ID sowie vorhandenen Standort, Ort und Adresse aus Marktpreis- und Angebotsbelegen.
+- [x] Preis-Matrix und Detailansichten zeigen die ausgewählte exakte Filiale; fehlende Standortdaten bleiben sichtbar unbekannt.
+- [x] Ein deterministischer Branch-Tiebreaker verhindert, dass gleich teure Belege vom Eingabearray abhängen.
+
 ## Update 15.10.2026 – Reguläre Prospektpreise vor Cache-Rennen schützen
 
 - [x] Ein später Cache-Lauf kann einen frischeren Live-Preis nicht mehr über denselben Beobachtungsbeleg überschreiben.
