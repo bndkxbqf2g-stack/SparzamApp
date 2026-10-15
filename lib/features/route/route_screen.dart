@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../data/stores.dart';
 import '../../models/store.dart';
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
