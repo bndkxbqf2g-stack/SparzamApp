@@ -70,7 +70,8 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(home: screen(const <Product>[])),
       );
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
 
       expect(find.text('Unbekannt 1'), findsOneWidget);
       expect(find.text('Aktuell 1'), findsNothing);
