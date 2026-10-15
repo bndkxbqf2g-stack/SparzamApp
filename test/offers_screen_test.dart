@@ -488,6 +488,40 @@ void main() {
     expect(lastCard, findsOneWidget);
   });
 
+  testWidgets(
+    'zeigt ein Prospekt mit zukünftigem Startdatum nicht als aktuell',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: OffersScreen(
+            catalogProducts: const <Product>[],
+            now: DateTime(2026, 10, 15),
+            prospectIssues: [
+              ProspectIssue(
+                storeName: 'Zukunftsmarkt',
+                title: 'Noch nicht gültig',
+                validFrom: DateTime(2026, 10, 16),
+                pages: [
+                  ProspectPage(
+                    number: 1,
+                    imageUrl: 'https://example.test/future-cover.jpg',
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+
+      expect(
+        find.byKey(
+          const ValueKey('offer-cover-open-grid-Zukunftsmarkt'),
+        ),
+        findsNothing,
+      );
+    },
+  );
+
 }
 
 

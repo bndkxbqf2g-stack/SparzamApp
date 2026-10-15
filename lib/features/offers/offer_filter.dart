@@ -64,17 +64,34 @@ List<Offer> filterOffers(
   return result;
 }
 
+/// Checks a date range when either boundary may be absent.
+///
+/// A missing end date does not make a future-starting offer current. Reversed
+/// ranges are rejected as malformed evidence.
+bool isOptionalOfferDateRangeActive({
+  DateTime? validFrom,
+  DateTime? validUntil,
+  DateTime? now,
+}) {
+  final today = _day(now ?? DateTime.now());
+  final start = validFrom == null ? null : _day(validFrom);
+  final end = validUntil == null ? null : _day(validUntil);
+  if (start != null && end != null && end.isBefore(start)) return false;
+  if (start != null && start.isAfter(today)) return false;
+  if (end != null && end.isBefore(today)) return false;
+  return true;
+}
+
 bool isOfferDateRangeActive({
   DateTime? validFrom,
   required DateTime validUntil,
   DateTime? now,
-}) {
-  final today = _day(now ?? DateTime.now());
-  final startsTodayOrEarlier =
-      validFrom == null || !_day(validFrom).isAfter(today);
-  final endsTodayOrLater = !_day(validUntil).isBefore(today);
-  return startsTodayOrEarlier && endsTodayOrLater;
-}
+}) =>
+    isOptionalOfferDateRangeActive(
+      validFrom: validFrom,
+      validUntil: validUntil,
+      now: now,
+    );
 
 /// Demo offers are seeded only for legacy installations and must never become
 /// route or shopping evidence. Keep this check next to the shared offer
