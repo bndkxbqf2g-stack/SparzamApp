@@ -4,6 +4,8 @@ import 'package:shared_preferences_platform_interface/shared_preferences_async_p
 import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/features/offers/prospect_regular_price_persistence.dart';
 import 'package:sparzamapp/features/offers/prospect_price_learning.dart';
+import 'package:sparzamapp/features/shopping_list/shopping_price_quotes.dart';
+import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/price_observation.dart';
@@ -75,6 +77,36 @@ void main() {
     expect(projected.single.source, MarketPriceSource.prospect);
     expect(projected.single.price, 7.99);
     expect(projected.single.kind, PriceObservationKind.regular);
+  });
+
+  test('projects the persisted regular price into the shopping-list quote', () async {
+    final store = memoryStore();
+    final result = await persistCurrentProspectRegularPrices(
+      store: store,
+      records: [current.copyWith(branchId: 'lidl_zellingen')],
+      catalogProducts: const [coffee],
+      observedAt: now,
+      now: now,
+    );
+
+    final projected = marketPricesFromObservations(
+      result.stored,
+      products: const [coffee],
+      now: now,
+    );
+    final quotes = shoppingQuotes(
+      ListItem(product: coffee),
+      prices: projected,
+      offers: const [],
+      enabledStores: const ['Lidl'],
+      now: now,
+    );
+
+    expect(quotes, hasLength(1));
+    expect(quotes.single.storeName, 'Lidl');
+    expect(quotes.single.unitPrice, 7.99);
+    expect(quotes.single.isRegularProspectPrice, isTrue);
+    expect(quotes.single.kind, ShoppingQuoteKind.prospect);
   });
 
   test('does not persist an equal original amount as regular history', () async {
