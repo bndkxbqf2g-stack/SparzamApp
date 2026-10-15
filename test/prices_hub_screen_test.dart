@@ -319,6 +319,30 @@ void main() {
     expect(quality.currentByStore['Lidl'], 2);
   });
 
+  test('excludes branchless prospect regular observations from current ledger', () {
+    final now = DateTime(2026, 10, 15, 12);
+    final branchless = PriceObservation(
+      id: 'branchless-ledger',
+      productId: 'milk',
+      storeName: 'Lidl',
+      price: 1.99,
+      observedAt: now,
+      source: PriceObservationSource.leaflet,
+      kind: PriceObservationKind.regular,
+      validFrom: DateTime(2026, 10, 13),
+      validUntil: DateTime(2026, 10, 19),
+      proofRef: 'https://example.test/branchless',
+    );
+
+    expect(
+      currentProspectRegularPriceObservations(
+        observations: [branchless],
+        now: now,
+      ),
+      isEmpty,
+    );
+  });
+
   testWidgets('zeigt Preisquellen und veraltete Belege im Preise-Reiter', (
     tester,
   ) async {
