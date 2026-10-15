@@ -414,12 +414,17 @@ int? _persistedCoverageCount(
 ) {
   final exact = counts[key];
   if (exact != null) return exact;
+  final branchKeys = branchKeysByStore[storeName] ?? const <String>{};
   // Legacy store-only maps remain safe when this feed has at most one exact
-  // branch for that retailer. With multiple branches, unknown is safer than
-  // copying one branch's count into another.
-  if ((branchKeysByStore[storeName]?.length ?? 0) <= 1) {
-    return counts[storeName];
+  // branch for that retailer. A successful persistence run has a complete
+  // count map, so a missing single-branch entry means zero.
+  if (branchKeys.length <= 1) {
+    return counts[storeName] ?? 0;
   }
+  // A branch-aware map can omit a zero-count branch. Once any exact key is
+  // present, an absent exact key is therefore a confirmed zero. A legacy
+  // store-only map with multiple branches remains unknown.
+  if (branchKeys.any(counts.containsKey)) return 0;
   return null;
 }
 
