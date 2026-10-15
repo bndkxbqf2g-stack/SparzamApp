@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Formatierten Händlerquellen ohne doppelte Karten
+
+- Quellen und konfigurierte Händlerkarten vergleichen Händlernamen jetzt mit derselben begrenzten Normalisierung aus Leerzeichen und Groß-/Kleinschreibung.
+- Eine Quelle wie `LIDL` erzeugt dadurch keine zusätzliche `Lidl`-Platzhalterkarte; Filial- und Branch-Schlüssel bleiben davon unberührt.
+- Die Parser-Regression prüft die eindeutige Anzeige und den weiterhin konservativen Mehrfilialfall.
+
 ## Update 15.10.2026 – Prospektquellen tolerieren Händlername-Formatierung
 
 - Die Zuordnung von Angebotszeilen zu Quellenmetadaten normalisiert ausschließlich Groß-/Kleinschreibung und umgebende Leerzeichen des Händlernamens.
