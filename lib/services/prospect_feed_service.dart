@@ -221,6 +221,8 @@ String? _optionalNonEmptyString(Object? value) {
   return trimmed.isEmpty ? null : trimmed;
 }
 
+String _prospectStoreMetadataKey(String value) => value.trim().toLowerCase();
+
 class ProspectFeedService {
   ProspectFeedService({
     http.Client? client,
@@ -444,7 +446,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     );
     sourceMetadataByIndex[sourceIndex] = metadata;
     sourceEntriesByStore
-        .putIfAbsent(storeName, () => <_ProspectSourceMetadata>[])
+        .putIfAbsent(_prospectStoreMetadataKey(storeName), () => <_ProspectSourceMetadata>[])
         .add(metadata);
     if (sourceUrl != null && sourceUrl.trim().isNotEmpty) {
       availableStoreUrls[storeName] = sourceUrl;
@@ -459,7 +461,8 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     String storeName,
     String? branchId,
   ) {
-    final entries = sourceEntriesByStore[storeName];
+    final entries =
+        sourceEntriesByStore[_prospectStoreMetadataKey(storeName)];
     if (entries == null || entries.isEmpty) return null;
     if (branchId != null) {
       final matches = entries
