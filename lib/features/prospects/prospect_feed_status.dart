@@ -272,6 +272,18 @@ List<ProspectCoverage> calculateProspectCoverage({
     }
   }
 
+  // A filialloser Legacy-Datensatz remains a safe fallback when exactly
+  // one exact branch exists. With multiple branches it stays separate and
+  // unknown so one location cannot inherit another location's evidence.
+  for (final entry in branchKeysByStore.entries) {
+    if (entry.value.length != 1) continue;
+    final legacyKey = prospectStoreBranchKey(storeName: entry.key);
+    final legacyRecords = recordsByKey.remove(legacyKey);
+    if (legacyRecords == null) continue;
+    final exactKey = entry.value.single;
+    recordsByKey.putIfAbsent(exactKey, () => []).addAll(legacyRecords);
+  }
+
   // Keep configured store placeholders for markets without a branch assertion,
   // but suppress the old store-only placeholder when exact branch cards exist.
   final stores = <String>[
