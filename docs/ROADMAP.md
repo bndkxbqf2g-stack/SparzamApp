@@ -1,3 +1,14 @@
+
+## Update 15.10.2026 – Generische Prospektangebote im Preise-Reiter
+
+- [x] Der Preise-Reiter reicht den vorhandenen Katalog in die gemeinsame
+  Angebotsauflösung durch; generische Listenfamilien können dadurch belegte
+  konkrete Varianten aus dem Prospekt anzeigen.
+- [x] Filial-, Gültigkeits-, Nachweis- und Identitätsprüfungen bleiben vor der
+  sichtbaren Preiszeile aktiv; es wird keine Produktidentität verschmolzen.
+- [x] Eine Widgetregression schützt den Weg vom generischen Listeneintrag über
+  die konkrete Katalogvariante bis zum aktuellen Prospektangebot.
+
 ## Update 15.10.2026 – Coverkarten zeigen exakte Filialherkunft
 
 - [x] Eine vorhandene Filial-ID wird neben der technischen Quellenkennung auf
