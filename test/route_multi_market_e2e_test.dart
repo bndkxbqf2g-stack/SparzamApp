@@ -155,4 +155,44 @@ void main() {
     expect(recommended.priceCoverage, 1);
     expect(recommended.hasDataGaps, isFalse);
   });
+
+  test('route alternative identity keeps same-name branches separate', () {
+    const branchA = Store(
+      name: 'Lidl',
+      location: 'Zellingen',
+      branchId: 'lidl_zellingen',
+      address: 'Am Güßgraben 2',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    const branchB = Store(
+      name: 'Lidl',
+      location: 'Würzburg',
+      branchId: 'lidl_wuerzburg',
+      address: 'Nürnberger Straße 12',
+      distanceKm: 25,
+      prices: <String, double>{},
+    );
+    final item = ListItem(product: _milk);
+    final planA = RoutePlan(
+      stores: const [branchA],
+      assignments: {branchA: [item]},
+      basket: 1,
+      travel: 1,
+      total: 2,
+      unassigned: const [],
+    );
+    final planB = RoutePlan(
+      stores: const [branchB],
+      assignments: {branchB: [item]},
+      basket: 1,
+      travel: 25,
+      total: 26,
+      unassigned: const [],
+    );
+
+    expect(routePlanIdentityKey(planA), isNot(routePlanIdentityKey(planB)));
+    expect(routeStoreIdentityKey(branchA), contains('lidl_zellingen'));
+    expect(routeStoreIdentityKey(branchB), contains('lidl_wuerzburg'));
+  });
 }

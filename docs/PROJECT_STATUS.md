@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Routenalternativen bleiben filialgenau
+
+- Die Alternativenliste unterschlägt gleichnamige Filialen nicht mehr: Branch-ID, Ort und Adresse fließen in den Routenschlüssel ein.
+- RouteScreen und RouteOptimizer verwenden jetzt denselben Identitätsvertrag; Reihenfolge und sichtbare Alternativen bleiben deterministisch.
+- Eine anonymisierte Regression trennt zwei Lidl-Filialen mit gleichem Händlernamen und unterschiedlichen Standorten.
+
 ## Update 15.10.2026 – Einkaufs-Preis-Matrix zeigt exakte Filiale
 
 - Preiszitate verlieren die Quellfiliale nicht mehr zwischen Filterung, Matrix und UI: Branch-ID und lesbare Standortdaten bleiben erhalten.
