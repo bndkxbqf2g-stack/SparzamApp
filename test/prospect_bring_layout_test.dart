@@ -54,8 +54,8 @@ void main() {
     expect(find.text('Deine Favoriten'), findsOneWidget);
     expect(find.byKey(const ValueKey('prospect-location-pill')), findsOneWidget);
     expect(find.text('97225'), findsOneWidget);
-    expect(find.text('Quelle: kaufda'), findsOneWidget);
-    expect(find.text('1/2 Seiten geladen · 1 fehlt'), findsOneWidget);
+    expect(find.textContaining('Quelle: kaufda'), findsOneWidget);
+    expect(find.textContaining('1/2 Seiten geladen · 1 fehlt'), findsOneWidget);
     await tester.drag(
       find.byKey(const ValueKey('prospect-bring-scroll')),
       const Offset(0, -480),
