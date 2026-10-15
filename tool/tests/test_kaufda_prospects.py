@@ -219,6 +219,27 @@ class KaufdaProspectTest(unittest.TestCase):
         )
         self.assertNotIn("originalPrice", uvp_offers[0])
 
+    def test_parser_rejects_named_uvp_label_without_boolean_flag(self):
+        payload = kaufda.extract_next_data(self.html)
+        item = payload["props"]["pageProps"]["pageInformation"]["offers"]["main"]["items"][0]
+        item["prices"]["secondaryPrice"] = "1,79 €"
+        item["prices"]["secondaryPriceLabel"] = "UVP"
+        item["prices"].pop("secondaryPriceIsUVP", None)
+        html = (
+            '<script id="__NEXT_DATA__" type="application/json">'
+            + kaufda.json.dumps(payload)
+            + "</script>"
+        )
+
+        offers, _ = kaufda.parse_kaufda_html(
+            html,
+            city="Wuerzburg",
+            query="Butter",
+            today=self.today,
+        )
+
+        self.assertNotIn("originalPrice", offers[0])
+
     def test_parser_normalizes_named_nested_evidence_aliases(self):
         payload = kaufda.extract_next_data(self.html)
         item = payload["props"]["pageProps"]["pageInformation"]["offers"]["main"]["items"][0]
