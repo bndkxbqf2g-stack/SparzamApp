@@ -672,9 +672,10 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     final productLabel = _stringValue(value['productLabel']);
     final storeName = _stringValue(value['storeName']);
     final offerPriceValue = value['offerPrice'];
-    final offerPrice = offerPriceValue is num
-        ? offerPriceValue.toDouble()
-        : null;
+    // Keep the source boundary strict: JSON numbers are accepted directly;
+    // formatted strings need an explicit EUR/€ marker so arbitrary text or
+    // locale-ambiguous numeric strings cannot become a price.
+    final offerPrice = _offerPriceValue(offerPriceValue);
     final validUntilValue = value['validUntil'];
     final validUntilText = _stringValue(validUntilValue);
     final validUntil = DateTime.tryParse(validUntilText ?? '');
@@ -943,6 +944,25 @@ double? _priceValue(Object? value) {
     final number = value.toDouble();
     return number.isFinite ? number : null;
   }
+  if (value is Map) {
+    // Follow only bounded, explicitly named price fields. IDs, URLs and
+    // arbitrary nested numbers are never interpreted as money.
+    for (final key in const [
+      'amount',
+      'value',
+      'numeric',
+      'number',
+      'price',
+      'formatted',
+      'formattedPrice',
+      'priceText',
+      'display',
+    ]) {
+      final parsed = _priceValue(value[key]);
+      if (parsed != null) return parsed;
+    }
+    return null;
+  }
   if (value is! String) return null;
   var compact = value
       .replaceAll('\u00a0', '')
@@ -970,6 +990,17 @@ double? _priceValue(Object? value) {
       : compact;
   final number = double.tryParse(normalized);
   return number != null && number.isFinite ? number : null;
+}
+
+bool _hasCurrencyMarker(String value) =>
+    RegExp(r'(?:€|\bEUR\b)', caseSensitive: false).hasMatch(value);
+
+/// Offer prices may arrive as a localized display string or a small named
+/// price object. A plain numeric string remains invalid by design.
+double? _offerPriceValue(Object? value) {
+  if (value is num || value is Map) return _priceValue(value);
+  if (value is! String || !_hasCurrencyMarker(value)) return null;
+  return _priceValue(value);
 }
 
 String? _firstHttpUrl(
