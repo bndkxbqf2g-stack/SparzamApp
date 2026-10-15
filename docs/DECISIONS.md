@@ -1467,3 +1467,20 @@ und lehnt Werte über 4 MiB ab. Ein unabhängiger Händler-Endpunktfehler darf
 noch gültige, mit ihrem ursprünglichen `capturedAt` gespeicherte
 Vorbeobachtungen nicht leeren; ein späterer erfolgreicher Refresh ersetzt sie
 idempotent.
+
+## D177 – Bonpreisauflösung nutzt gespeicherte Identität ohne Varianten-Bypass
+
+Die Übernahme von `ReceiptObservation` in die bestehende Familien-/Marktpreis-
+projektion prüft zuerst eine ausdrücklich bestätigte `productId`. Sie darf ein
+abweichendes oder unleserliches Rohlabel überbrücken, aber die vorhandene
+Packungs- und Mengengrundlage bleibt zwingend. Ohne bestätigte konkrete
+Produkt-ID darf ein gespeicherter `familyKey` nur dann einspringen, wenn der
+Rohtext selbst keine belastbare Identität liefert.
+
+Ein erkanntes, spezifischeres Rohlabel gewinnt gegen veraltete
+Familienmetadaten. So kann ein OCR-fehlerhafter Schmand-Label familienbezogen
+weitergenutzt werden, während `Tomatenmark` nie über ein altes `tomaten`-
+Familienfeld zu frischen Tomaten wird. Die resultierende Evidenz bleibt eine
+`MarketPriceSource.receipt` und läuft unverändert durch `planningMarketPrices`,
+`RoutePriceResolver` und `RouteOptimizer`; unbestätigte Bon-Produkt-IDs werden
+nicht zu exakten Routenpreisen.

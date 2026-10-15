@@ -333,3 +333,18 @@ Filial-Resolver kopiert sämtliche Abdeckungsdiagnostik, und der
 Feed-Fingerprint berücksichtigt sie, damit neue Seiten nach einem Refresh
 nicht vom bisherigen Tagesstand unterdrückt werden. `SharedPreferences` hält
 nur den einen austauschbaren Feed-Key und begrenzt dessen UTF-8-Größe.
+
+### Bonpreise: Hierarchie bis zur Routenplanung
+
+Die Bonpreisprojektion verwendet die vorhandene Identitätshierarchie in der
+Reihenfolge bestätigtes Händlerprodukt, konkrete Variante, Produktfamilie und
+Rohlabel. Eine bestätigte `productId` darf ein abweichendes oder unleserliches
+OCR-Label überbrücken, sofern die gewünschte Packungsbasis weiterhin
+vergleichbar ist. Ist keine konkrete Identität bestätigt, darf ein gespeicherter
+`familyKey` ein unleserliches Label nur als Familienpreis retten.
+
+Ein erkennbares, spezifischeres Rohlabel hat Vorrang vor veralteten
+Familienmetadaten. Dadurch bleibt etwa `Tomatenmark` von frischen Tomaten
+getrennt. Die resultierende `MarketPrice`-Projektion läuft weiterhin über
+`planningMarketPrices`, `RoutePriceResolver` und `RouteOptimizer`; unsichere
+Produkt-IDs werden nicht zu exakten Routenpreisen hochgestuft.

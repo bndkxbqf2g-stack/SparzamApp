@@ -7,6 +7,62 @@ import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/receipt_observation.dart';
 
 void main() {
+  test('confirmed receipt product flows from identity to route calculation', () {
+    const product = Product(
+      id: 'confirmed-schmand-200',
+      name: 'Schmand 200 g',
+      unit: '200 g',
+      group: 'milchprodukte',
+      packageAmount: 200,
+      packageUnit: 'g',
+    );
+    final item = ListItem(product: product);
+    final now = DateTime(2026, 9, 25);
+    final familyPrices = receiptFamilyMarketPrices(
+      items: [item],
+      now: now,
+      observations: [
+        ReceiptObservation(
+          id: 'confirmed-schmand-receipt',
+          receiptFingerprint: 'confirmed-schmand-receipt',
+          rowLine: 4,
+          rawLabel: 'OCR 4 ??',
+          familyKey: '',
+          storeName: 'Kaufland',
+          observedAt: now,
+          totalPrice: 0.99,
+          quantity: 200,
+          quantityUnit: 'g',
+          unitPrice: null,
+          discounted: false,
+          productId: product.id,
+          identityConfirmed: true,
+        ),
+      ],
+    );
+    final planning = planningMarketPrices(
+      exactPrices: const [],
+      familyPrices: familyPrices,
+      now: now,
+    );
+    final optimizer = RouteOptimizer(
+      [item],
+      const [],
+      marketPrices: planning,
+      enabledStoreNames: const ['Kaufland'],
+      maxStores: 1,
+      now: now,
+      euroPerKm: 0,
+    );
+
+    final route = optimizer.bestSingleStorePlan();
+    expect(familyPrices.single.productId, product.id);
+    expect(planning.single.price, closeTo(0.99, 0.0001));
+    expect(route, isNotNull);
+    expect(route!.unassigned, isEmpty);
+    expect(route.basket, closeTo(0.99, 0.0001));
+  });
+
   test('compatible receipt observations reach route optimization', () {
     const paprika = Product(
       id: 'shopping-paprika',

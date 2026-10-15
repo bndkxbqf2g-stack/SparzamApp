@@ -3437,3 +3437,15 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   oder Bundle-Feed funktionsfähig.
 - [x] Die Seitenmetadaten werden beim Filial-Resolver und im Feed-Fingerprint
   erhalten, damit ein vollständigerer Katalog erneut verarbeitet wird.
+
+## Update 15.10.2026 – Bonpreisauflösung bis zur Route verbessert
+- [x] Bestätigte Händlerprodukt-IDs überbrücken abweichende oder unleserliche
+  Bon-/OCR-Labels, ohne die Packungs- und Mengenumrechnung zu umgehen.
+- [x] Gespeicherte Familien-Identitäten werden bei unleserlichem Label als
+  Familienpreis verwendet; unsichere automatische Produkt-IDs bleiben aus der
+  Routenprojektion ausgeschlossen.
+- [x] Ein erkennbares spezifisches Label bleibt stärker als veraltete
+  Familienmetadaten, insbesondere bei der Trennung von Tomatenmark und frischen
+  Tomaten.
+- [x] Regressionen prüfen die Übernahme über `receiptFamilyMarketPrices`,
+  `planningMarketPrices` und `RouteOptimizer`.

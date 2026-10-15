@@ -38,6 +38,15 @@ List<MarketPrice> receiptFamilyMarketPrices({
         continue;
       }
       final candidate = identifyProduct(observation.rawLabel);
+      final confirmedProduct = observation.identityConfirmed &&
+          observation.productId?.trim() == item.product.id;
+      // Receipt imports retain the inferred family independently of the raw
+      // label. Use it only when the label resolver has no identity at all;
+      // this keeps an explicit "Tomatenmark" label from being widened into
+      // the fresh-tomato family by a stale legacy family key.
+      final candidateForMatching = candidate.isKnown
+          ? candidate
+          : _familyIdentityFallback(observation.familyKey, candidate);
       final normalizedCandidate = normalizeIdentityText(observation.rawLabel);
       final exact =
           normalizedRequest == normalizedCandidate ||
@@ -45,8 +54,11 @@ List<MarketPrice> receiptFamilyMarketPrices({
             (alias) => normalizeIdentityText(alias) == normalizedCandidate,
           );
       final compatible =
-          request.isKnown && compatibleProductIdentity(request, candidate);
-      if (!exact && !compatible) continue;
+          request.isKnown &&
+          compatibleProductIdentity(request, candidateForMatching);
+      // A confirmed concrete product assignment is stronger than receipt
+      // text. It is still checked against the requested package below.
+      if (!confirmedProduct && !exact && !compatible) continue;
 
       final price = _comparablePrice(item, observation);
       if (price == null || !price.isFinite || price <= 0) continue;
@@ -82,6 +94,22 @@ List<MarketPrice> receiptFamilyMarketPrices({
     }
   }
   return result.values.toList();
+}
+
+ProductIdentity _familyIdentityFallback(
+  String familyKey,
+  ProductIdentity unresolved,
+) {
+  final family = familyKey.trim();
+  if (family.isEmpty) return unresolved;
+
+  // Canonical family keys normally resolve back through the same hierarchy
+  // (including keys containing German umlauts). Keep the raw key as a final
+  // evidence-preserving fallback for older or newly introduced families.
+  final resolvedFamily = identifyProduct(family);
+  return resolvedFamily.isKnown
+      ? resolvedFamily
+      : ProductIdentity(familyKey: family);
 }
 
 bool _isBetterFamilyPrice(
