@@ -580,7 +580,7 @@ void main() {
                   validUntil: DateTime(2026, 10, 19),
                   source: 'retailerWebsite',
                   proofRef: 'https://example.test/prospect/milk',
-                  locationId: 'lidl-zellingen',
+                  locationId: 'lidl_zellingen',
                   packageAmount: 1,
                   packageUnit: 'l',
                 ),
