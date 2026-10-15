@@ -30,6 +30,7 @@ class ProspectIssue {
     required this.storeName,
     required this.title,
     required this.pages,
+    this.pageCount = 0,
     this.url,
     this.thumbnailUrl,
     this.branchId,
@@ -37,35 +38,24 @@ class ProspectIssue {
     this.address,
     this.sourceStatus = 'unknown',
     this.recordCount = 0,
-    this.availablePageCount,
-    this.loadedPageCount,
-    this.missingPageNumbers = const <int>[],
-    this.pageStatus = 'unknown',
-    this.pageCountKnown = false,
-    this.uncertainProductCount,
     this.validFrom,
     this.validUntil,
   });
   final String storeName;
   final String title;
   final List<ProspectPage> pages;
+  /// Number of pages explicitly reported by the source. It may exceed the
+  /// number of downloaded image samples kept for bounded scrolling.
+  final int pageCount;
   final String? url;
+
+  int get visiblePageCount => pageCount > pages.length ? pageCount : pages.length;
   final String? thumbnailUrl;
   final String? branchId;
   final String? location;
   final String? address;
   final String sourceStatus;
   final int recordCount;
-  /// Number of pages the publisher declared for this prospect, when known.
-  final int? availablePageCount;
-  /// Number of page images that were actually included in the feed.
-  final int? loadedPageCount;
-  final List<int> missingPageNumbers;
-  final String pageStatus;
-  final bool pageCountKnown;
-  /// A source-reported count of records that still need identity review.
-  /// Null means that the source did not publish this diagnostic.
-  final int? uncertainProductCount;
   final DateTime? validFrom;
   final DateTime? validUntil;
 }
@@ -470,6 +460,11 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
       }
       final pages = pagesByNumber.values.toList()
         ..sort((a, b) => a.number.compareTo(b.number));
+      final reportedPageCount = _intValue(raw['pageCount']);
+      final pageCount = reportedPageCount == null ||
+              reportedPageCount < pages.length
+          ? pages.length
+          : reportedPageCount;
       // Keep metadata-only prospect entries as well. Some retailers publish
       // dates, branch context and an official link before they provide page
       // images; dropping those fields makes a current source look unknown.
@@ -510,16 +505,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
             sourceAddresses[storeName],
         sourceStatus: sourceStatuses[storeName] ?? 'unknown',
         recordCount: sourceRecordCounts[storeName] ?? 0,
-        availablePageCount: _intValue(raw['availablePageCount']) ??
-            (_boolValue(raw['pageCountKnown']) == false
-                ? null
-                : _intValue(raw['pageCount'])),
-        loadedPageCount: _intValue(raw['loadedPageCount']) ?? pages.length,
-        missingPageNumbers: _intList(raw['missingPageNumbers']),
-        pageStatus: _stringValue(raw['pageStatus']) ?? 'unknown',
-        pageCountKnown: _boolValue(raw['pageCountKnown']) ??
-            raw['pageCount'] != null,
-        uncertainProductCount: _intValue(raw['uncertainProductCount']),
+        pageCount: pageCount,
         validFrom: issueValidFrom,
         validUntil: issueValidUntil,
       );
@@ -900,16 +886,6 @@ int? _intValue(Object? value) {
   final trimmed = value.trim();
   if (trimmed.isEmpty) return null;
   return int.tryParse(trimmed);
-}
-
-List<int> _intList(Object? value) {
-  if (value is! List) return const <int>[];
-  final result = <int>{};
-  for (final item in value) {
-    final number = _intValue(item);
-    if (number != null && number > 0) result.add(number);
-  }
-  return result.toList()..sort();
 }
 
 bool? _boolValue(Object? value) {
