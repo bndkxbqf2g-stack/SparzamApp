@@ -1,3 +1,10 @@
+## Update 15.10.2026 – Filialgenauer Distanz-Cache und Routenanzeige
+
+- [x] Einzelmarkt-Entfernungen werden bei vorhandener Branch-ID unter einem stabilen Filialschlüssel gespeichert.
+- [x] Legacy-Namensschlüssel werden bei identifizierten Filialen nicht mehr als fremde Filialdistanz verwendet.
+- [x] Routenalternativen zeigen Händler und Ort gemeinsam, damit gleichnamige Filialen sichtbar getrennt bleiben.
+- [x] Regressionen decken getrennte Fallback-Distanzen und die sichtbare Ortsbezeichnung ab.
+
 ## Update 15.10.2026 – Routenalternativen bleiben filialgenau
 
 - [x] Route-Alternativen werden nach Branch-ID, Ort und Adresse dedupliziert; gleichnamige Filialen bleiben eigenständige Stopps.
