@@ -63,6 +63,22 @@ bool _isAutomaticPriceObservation(PriceObservation observation) => switch (
       _ => false,
     };
 
+/// A delayed cache refresh must not overwrite newer automatic evidence that
+/// arrived from a live feed. Manual and receipt corrections retain the
+/// existing identity-reinterpretation semantics.
+bool _shouldReplaceObservation(
+  PriceObservation? previous,
+  PriceObservation incoming,
+) {
+  if (previous == null) return true;
+  if (_isAutomaticPriceObservation(previous) &&
+      _isAutomaticPriceObservation(incoming) &&
+      incoming.observedAt.isBefore(previous.observedAt)) {
+    return false;
+  }
+  return true;
+}
+
 /// Adapter provenance stays in the compaction key so independent external
 /// sources do not evict one another from the bounded local history.
 String _automaticPriceObservationKey(PriceObservation observation) => [
@@ -159,6 +175,7 @@ class PriceObservationStore {
       var changed = byId.length != existing.length;
       for (final entry in valid) {
         final previous = byId[entry.id];
+        if (!_shouldReplaceObservation(previous, entry)) continue;
         final previousJson = previous == null
             ? null
             : jsonEncode(previous.toJson());
