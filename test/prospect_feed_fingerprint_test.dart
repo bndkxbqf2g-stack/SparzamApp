@@ -34,6 +34,32 @@ void main() {
     expect(later, first);
   });
 
+  test('reprocesses when the refreshed store set changes', () {
+    final stale = ProspectFeedLoadResult(
+      records: feed.records,
+      refreshedStores: const [],
+      generatedAt: feed.generatedAt,
+    );
+    final refreshed = ProspectFeedLoadResult(
+      records: feed.records,
+      refreshedStores: const ['Lidl'],
+      generatedAt: feed.generatedAt,
+    );
+
+    expect(
+      prospectFeedFingerprintFor(
+        stale,
+        now: DateTime(2026, 10, 14),
+      ),
+      isNot(
+        prospectFeedFingerprintFor(
+          refreshed,
+          now: DateTime(2026, 10, 14),
+        ),
+      ),
+    );
+  });
+
   test('reprocesses an unchanged feed when the validity day changes', () {
     final before = prospectFeedFingerprintFor(
       feed,
