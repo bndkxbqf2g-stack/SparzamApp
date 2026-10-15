@@ -330,6 +330,35 @@ void main() {
     expect(result.learned.single.price, 7.99);
     expect(result.learned.single.discounted, isFalse);
   });
+  test('removes legacy imported offer observations but keeps regular evidence', () async {
+    final store = memoryStore();
+    final legacyOffer = PriceObservation(
+      id: 'offer|import|legacy',
+      productId: coffee.id,
+      storeName: 'Lidl',
+      price: 4.99,
+      observedAt: now,
+      source: PriceObservationSource.leaflet,
+      kind: PriceObservationKind.offer,
+      locationId: 'lidl-branch-1',
+      proofRef: 'https://example.test/lidl/legacy-offer',
+    );
+    await store.replaceAll([legacyOffer]);
+
+    final result = await persistCurrentProspectRegularPrices(
+      store: store,
+      records: [current],
+      catalogProducts: const [coffee],
+      observedAt: now,
+      now: now,
+    );
+
+    expect(result.stored.any((entry) => entry.id == legacyOffer.id), isFalse);
+    expect(
+      result.stored.where((entry) => entry.kind == PriceObservationKind.regular),
+      hasLength(1),
+    );
+  });
   test('does not persist a regular price without an exact branch', () async {
     final store = memoryStore();
     final noBranch = OfferImportRecord(
