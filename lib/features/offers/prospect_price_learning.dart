@@ -80,6 +80,43 @@ List<PriceObservation> currentDatedProspectRegularPriceObservations({
       refreshedStores: refreshedStores,
     );
 
+/// Shared feed boundary for automatic prospect price evidence.
+///
+/// The coverage UI and the persistence path must agree on the same basic
+/// provenance checks. Identity resolution is intentionally evaluated later;
+/// an unknown product may remain historical evidence, but malformed source
+/// rows must never be counted as learnable in the first place.
+bool isEligibleProspectPriceRecord(OfferImportRecord record) {
+  final source = _source(record.source);
+  return source != null &&
+      record.sourceId.trim().isNotEmpty &&
+      record.storeName.trim().isNotEmpty &&
+      record.productLabel.trim().isNotEmpty &&
+      !record.regionalOnly &&
+      (record.ean?.trim().isNotEmpty != true ||
+          normalizeBarcode(record.ean!.trim()) != null) &&
+      hasExactOfferRecordBranch(record) &&
+      hasTrustedOfferProofReference(record.proofRef) &&
+      record.offerPrice.isFinite &&
+      record.offerPrice > 0 &&
+      (record.originalPrice == null ||
+          (record.originalPrice!.isFinite &&
+              record.originalPrice! >= record.offerPrice)) &&
+      (record.validFrom == null ||
+          !record.validUntil.isBefore(record.validFrom!));
+}
+
+/// Returns true only for a crossed-out regular price that the persistence
+/// pipeline can actually accept. Offer-only rows and malformed evidence stay
+/// out of the regular-price count.
+bool isLearnableProspectRegularPrice(OfferImportRecord record) {
+  if (!isEligibleProspectPriceRecord(record)) return false;
+  final regular = record.originalPrice;
+  return regular != null &&
+      regular.isFinite &&
+      regular > record.offerPrice;
+}
+
 List<PriceObservation> prospectPriceObservations({
   required Iterable<OfferImportRecord> records,
   required Iterable<Product> catalogProducts,
@@ -89,22 +126,7 @@ List<PriceObservation> prospectPriceObservations({
   final observations = <PriceObservation>[];
   for (final record in records) {
     final source = _source(record.source);
-    if (source == null ||
-        record.sourceId.trim().isEmpty ||
-        record.storeName.trim().isEmpty ||
-        record.productLabel.trim().isEmpty ||
-        record.regionalOnly ||
-        (record.ean?.trim().isNotEmpty == true &&
-            normalizeBarcode(record.ean!.trim()) == null) ||
-        !hasExactOfferRecordBranch(record) ||
-        !hasTrustedOfferProofReference(record.proofRef) ||
-        !record.offerPrice.isFinite ||
-        record.offerPrice <= 0 ||
-        (record.originalPrice != null &&
-            (!record.originalPrice!.isFinite ||
-                record.originalPrice! < record.offerPrice)) ||
-        (record.validFrom != null &&
-            record.validUntil.isBefore(record.validFrom!))) {
+    if (!isEligibleProspectPriceRecord(record)) {
       continue;
     }
 
