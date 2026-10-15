@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Cache-Prospektpreise lokal sichern
+
+- Ein validierter gecachter Prospektstand wird beim Offline-Start nun ebenfalls durch den regulären Preisbeobachtungspfad geführt.
+- Gespeichert werden nur aktuelle, branch-belegte und nachgewiesene reguläre Preise; der befristete Angebotspreis bleibt ausgeschlossen.
+- Eine AppShell-Regression prüft den Cache-only-Fall mit Live-Ausfall und stellt die Preisart und den Betrag sicher.
+
 ## Update 15.10.2026 – Mehrdeutige Open-Prices-Filialen bleiben unbekannt
 
 - Der Preisadapter übernimmt einen standortlosen Open-Prices-Treffer nur bei genau einer passenden konfigurierten Filiale.
