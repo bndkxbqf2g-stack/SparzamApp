@@ -11,6 +11,7 @@ void main() {
       id: 'prospect|leaflet|lidl|coffee|regular',
       productId: 'coffee-500',
       storeName: 'Lidl',
+      locationId: 'lidl-branch-1',
       price: 6.99,
       observedAt: DateTime(2026, 10, 14, 8),
       source: PriceObservationSource.leaflet,
@@ -48,6 +49,23 @@ void main() {
 
     expect(marketPricesFromObservations([observation], now: now), isEmpty);
   });
+  test('keeps a branchless prospect regular price as history only', () {
+    final observation = PriceObservation(
+      id: 'prospect|leaflet|lidl|coffee|branchless',
+      productId: 'coffee-500',
+      storeName: 'Lidl',
+      price: 6.99,
+      observedAt: DateTime(2026, 10, 14, 8),
+      source: PriceObservationSource.leaflet,
+      kind: PriceObservationKind.regular,
+      validFrom: DateTime(2026, 10, 12),
+      validUntil: DateTime(2026, 10, 17),
+      proofRef: 'https://example.test/lidl/coffee',
+    );
+
+    expect(marketPricesFromObservations([observation], now: now), isEmpty);
+  });
+
   test(
     'keeps only the newest current regular claim for an exact branch slot',
     () {

@@ -3677,3 +3677,12 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
   Tomaten.
 - [x] Regressionen prüfen die Übernahme über `receiptFamilyMarketPrices`,
   `planningMarketPrices` und `RouteOptimizer`.
+
+## Update 15.10.2026 – Branchlose Prospektpreise bleiben historische Evidenz
+
+Der zentrale `PriceObservation → MarketPrice`-Adapter verwirft reguläre
+Prospektbeobachtungen ohne exakte Filial-ID bereits vor der Marktpreisprojektion.
+Damit können alte oder direkt importierte branchlose Datensätze weiterhin für
+Nachvollziehbarkeit und Statistik geladen werden, aber nicht als aktueller
+Routenpreis dienen. Nicht-prospektbezogene manuelle, Bon- und andere Quellen
+behalten ihre bisherigen Projektionsregeln.
