@@ -637,7 +637,9 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
   for (final storeName in availableStores) {
     if (sourceStoreNames.contains(
       _prospectStoreMetadataKey(storeName),
-    )) continue;
+    )) {
+      continue;
+    }
     prospects.add(
       ProspectIssue(
         storeName: storeName,
