@@ -48,4 +48,70 @@ void main() {
 
     expect(marketPricesFromObservations([observation], now: now), isEmpty);
   });
+  test(
+    'keeps only the newest current regular claim for an exact branch slot',
+    () {
+      final olderPeriod = PriceObservation(
+        id: 'prospect|leaflet|lidl|coffee|older-period',
+        productId: 'coffee-500',
+        storeName: 'Lidl',
+        locationId: 'lidl-branch-1',
+        price: 7.99,
+        observedAt: DateTime(2026, 10, 14, 8),
+        source: PriceObservationSource.leaflet,
+        sourceAdapter: 'kaufda',
+        kind: PriceObservationKind.regular,
+        validFrom: DateTime(2026, 10, 12),
+        validUntil: DateTime(2026, 10, 20),
+        proofRef: 'https://example.test/lidl/older',
+      );
+      final newerPeriod = PriceObservation(
+        id: 'prospect|leaflet|lidl|coffee|newer-period',
+        productId: 'coffee-500',
+        storeName: 'Lidl',
+        locationId: 'lidl-branch-1',
+        price: 8.49,
+        observedAt: DateTime(2026, 10, 15, 8),
+        source: PriceObservationSource.leaflet,
+        sourceAdapter: 'kaufda',
+        kind: PriceObservationKind.regular,
+        validFrom: DateTime(2026, 10, 15),
+        validUntil: DateTime(2026, 10, 22),
+        proofRef: 'https://example.test/lidl/newer',
+      );
+      final otherBranch = PriceObservation(
+        id: 'prospect|leaflet|lidl|coffee|other-branch',
+        productId: 'coffee-500',
+        storeName: 'Lidl',
+        locationId: 'lidl-branch-2',
+        price: 6.49,
+        observedAt: DateTime(2026, 10, 15, 8),
+        source: PriceObservationSource.leaflet,
+        sourceAdapter: 'kaufda',
+        kind: PriceObservationKind.regular,
+        validFrom: DateTime(2026, 10, 15),
+        validUntil: DateTime(2026, 10, 22),
+        proofRef: 'https://example.test/lidl/other',
+      );
+
+      final projected = marketPricesFromObservations(
+        [olderPeriod, newerPeriod, otherBranch],
+        now: DateTime(2026, 10, 16, 12),
+      );
+
+      expect(projected, hasLength(2));
+      final branchOne = projected.singleWhere(
+        (price) => price.sourceLocationId == 'lidl-branch-1',
+      );
+      expect(branchOne.price, 8.49);
+      expect(branchOne.proofRef, 'https://example.test/lidl/newer');
+      expect(
+        projected.where(
+          (price) => price.sourceLocationId == 'lidl-branch-2',
+        ),
+        hasLength(1),
+      );
+    },
+  );
+
 }
