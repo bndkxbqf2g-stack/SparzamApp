@@ -1,3 +1,9 @@
+## Update 15.10.2026 – KaufDA-UVP bleibt aus regulären Preisen
+
+- [x] Explizit als UVP oder Herstellerpreis beschriftete Vergleichswerte werden unabhängig von der Quellfeldform nicht als durchgestrichener Normalpreis übernommen.
+- [x] Ein ausgewiesener höherer Normalpreis ohne UVP-Kennzeichnung bleibt für die bestehende Preisbeobachtungspipeline verfügbar.
+- [x] Die KaufDA-Adaptertests decken die zusätzliche Label-Variante ab.
+
 ## Update 15.10.2026 – Adapterherkunft am Prospekt-Viewer
 
 - [x] Feed-Metadaten führen `sourceAdapter` bis zum `ProspectIssue`; sichtbare Issue-Rebuilds und der manuelle Seiten-/OCR-Pfad verlieren die Herkunft nicht.
