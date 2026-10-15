@@ -1,3 +1,7 @@
+## Update 15.10.2026 – Filialgenaue Prospektkarten beim Lazy-Scroll
+
+Die Prospektkarten verwenden für Cover, Öffnen und Favoriten jetzt denselben vollständigen Filialschlüssel wie die äußere Karte. Beim virtuellen Scrollen bleiben gleichnamige Filialen dadurch getrennt; Bild- und Aktionszustände können nicht zwischen zwei Märkten wiederverwendet werden. Eine Widgetregression prüft zwei Lidl-Filialen mit eigener Branch-ID.
+
 ## Update 15.10.2026 – Filialgenauer Distanz-Cache und Routenanzeige
 
 Die einzelne Marktansicht speichert Straßenentfernungen jetzt über denselben stabilen Filialschlüssel wie die Routenberechnung. Ein alter Cache-Eintrag nur mit Händlername wird für eine identifizierte Filiale nicht mehr als scheinbar exakte Entfernung wiederverwendet. Routenalternativen zeigen zusätzlich den Ort; dadurch bleiben gleichnamige Filialen im Vergleich erkennbar. Tests schützen getrennte Fallback-Distanzen und die sichtbare Filialbezeichnung.
