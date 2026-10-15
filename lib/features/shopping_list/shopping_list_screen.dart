@@ -223,6 +223,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   List<ListItem>? _quoteSnapshotItems;
   List<MarketPrice>? _quoteSnapshotPrices;
   List<Offer>? _quoteSnapshotOffers;
+  List<Product>? _quoteSnapshotCatalog;
   Map<String, ProspectPriceHistorySummary>? _quoteSnapshotHistory;
   List<String>? _quoteSnapshotStores;
   int? _quoteSnapshotMaxAgeDays;
@@ -237,6 +238,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         identical(_quoteSnapshotItems, widget.items) &&
         identical(_quoteSnapshotPrices, widget.marketPrices) &&
         identical(_quoteSnapshotOffers, widget.offers) &&
+        identical(_quoteSnapshotCatalog, widget.catalogProducts) &&
         identical(_quoteSnapshotHistory, widget.prospectPriceHistory) &&
         identical(_quoteSnapshotStores, stores) &&
         _quoteSnapshotMaxAgeDays == widget.openPricesMaxAgeDays &&
@@ -258,6 +260,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     _quoteSnapshotItems = widget.items;
     _quoteSnapshotPrices = widget.marketPrices;
     _quoteSnapshotOffers = widget.offers;
+    _quoteSnapshotCatalog = widget.catalogProducts;
     _quoteSnapshotHistory = widget.prospectPriceHistory;
     _quoteSnapshotStores = stores;
     _quoteSnapshotMaxAgeDays = widget.openPricesMaxAgeDays;
