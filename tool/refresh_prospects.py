@@ -3215,6 +3215,8 @@ def _branch_matches(item, expected):
     if not expected:
         return True
     expected_identity = _branch_identity(expected)
+    if not any(expected_identity):
+        return True
     actual_identity = _branch_identity(item)
     shared = [
         (expected_value, actual_value)
