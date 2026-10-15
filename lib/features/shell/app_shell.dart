@@ -40,7 +40,6 @@ import '../../services/prospect_feed_fingerprint.dart';
 import '../offers/prospect_regular_price_persistence.dart';
 import '../offers/prospect_price_statistics.dart';
 import '../prospects/prospect_feed_status.dart';
-import '../prospects/prospect_issue_identity.dart';
 import 'price_observation_merge.dart';
 import '../../services/market_price_observation_adapter.dart';
 import '../../services/recent_purchase_store.dart';
