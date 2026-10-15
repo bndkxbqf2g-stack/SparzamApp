@@ -136,4 +136,39 @@ void main() {
       ['current'],
     );
   });
+  test('offene Gültigkeit verwirft einen zukünftigen Start', () {
+    expect(
+      isOptionalOfferDateRangeActive(
+        validFrom: DateTime(2026, 9, 23),
+        now: now,
+      ),
+      isFalse,
+    );
+    expect(
+      isOptionalOfferDateRangeActive(
+        validFrom: DateTime(2026, 9, 21),
+        now: now,
+      ),
+      isTrue,
+    );
+  });
+
+  test('offene Gültigkeit verwirft einen abgelaufenen oder umgekehrten Zeitraum', () {
+    expect(
+      isOptionalOfferDateRangeActive(
+        validUntil: DateTime(2026, 9, 21),
+        now: now,
+      ),
+      isFalse,
+    );
+    expect(
+      isOptionalOfferDateRangeActive(
+        validFrom: DateTime(2026, 9, 24),
+        validUntil: DateTime(2026, 9, 23),
+        now: now,
+      ),
+      isFalse,
+    );
+  });
+
 }
