@@ -2039,8 +2039,16 @@ class _ProspectPageImageState extends State<_ProspectPageImage> {
       },
       errorBuilder: (context, error, stackTrace) {
         if (!_useHtmlFallback) {
+          final failedUrl = widget.url;
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!mounted || _useHtmlFallback) return;
+            if (!mounted ||
+                _useHtmlFallback ||
+                !prospectImageFallbackMatches(
+                  currentUrl: widget.url,
+                  failedUrl: failedUrl,
+                )) {
+              return;
+            }
             setState(() => _useHtmlFallback = true);
           });
           return const Center(child: CircularProgressIndicator());
