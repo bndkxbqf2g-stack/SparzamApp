@@ -584,7 +584,10 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     });
   }
 
-  Future<void> _loadProspectOffers({bool preferCached = false}) async {
+  Future<void> _loadProspectOffers({
+    bool preferCached = false,
+    bool force = false,
+  }) async {
     if (_prospectFeedRefreshing) return;
     final revision = _dataRevision;
     _prospectFeedRefreshing = true;
@@ -637,7 +640,13 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
         feed,
         now: refreshNow,
       );
-      if (_prospectFeedFingerprint == feedFingerprint) return;
+      if (!shouldProcessProspectFeed(
+        previousFingerprint: _prospectFeedFingerprint,
+        currentFingerprint: feedFingerprint,
+        force: force,
+      )) {
+        return;
+      }
       // A new feed starts with no confirmed count until its observations are
       // written successfully; a failed write must remain retryable.
       if (mounted) {
@@ -2097,7 +2106,10 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       prospectRegularPricePersistenceStatus:
           prospectRegularPricePersistenceStatus,
       prospectFeedGeneratedAt: prospectFeedGeneratedAt,
-      onRefreshProspects: () => _loadProspectOffers(preferCached: false),
+      onRefreshProspects: () => _loadProspectOffers(
+        preferCached: false,
+        force: true,
+      ),
       prospectsRefreshing: _prospectFeedRefreshing,
       priceHistory: priceHistory,
       mobility: mobility,
