@@ -5,6 +5,7 @@ import 'package:sparzamapp/features/route/route_price_resolver.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/offer.dart';
+import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/store.dart';
 
@@ -64,5 +65,44 @@ void main() {
     ]);
     expect(wholeBasket.bestPlan()!.stores.single.name, lidl.name);
     expect(wholeBasket.bestPlan()!.basket, closeTo(1.68, 0.00001));
+  });
+
+  test('uncertain market evidence is excluded from route prices', () {
+    final price = MarketPrice(
+      productId: 'schmand',
+      storeName: 'Lidl',
+      price: 0.59,
+      updatedAt: today,
+      source: MarketPriceSource.openPrices,
+      evidenceConfidence: EvidenceConfidence.uncertain,
+    );
+
+    expect(price.isUsable(now: today, openPricesMaxAgeDays: 60), isFalse);
+    expect(
+      RoutePriceResolver(const [], now: today, marketPrices: [price])
+          .quote(lidl, ListItem(product: schmand)),
+      isNull,
+    );
+  });
+
+  test('uncertain offer evidence is excluded from route offers', () {
+    final quote = RoutePriceResolver(
+      [
+        Offer(
+          id: 'uncertain-offer',
+          productId: 'schmand',
+          storeName: 'Lidl',
+          originalPrice: 0.89,
+          offerPrice: 0.59,
+          validUntil: DateTime(2026, 9, 25),
+          source: 'leaflet',
+          proofRef: 'leaflet:lidl:2026-09-24:p1',
+          evidenceConfidence: EvidenceConfidence.uncertain,
+        ),
+      ],
+      now: today,
+    ).quote(lidl, ListItem(product: schmand));
+
+    expect(quote, isNull);
   });
 }

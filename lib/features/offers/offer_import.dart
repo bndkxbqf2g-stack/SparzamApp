@@ -1,4 +1,5 @@
 import '../../models/offer.dart';
+import '../../models/price_observation.dart';
 import '../../models/product.dart';
 import '../catalog/product_identity.dart';
 import 'offer_filter.dart';
@@ -171,6 +172,11 @@ bool hasTrustedOfferProofReference(String? value) {
 /// internal proof reference before they can affect shopping-price surfaces or
 /// route planning.
 bool hasTrustedOfferEvidence(Offer offer) {
+  final confidence = offer.evidenceConfidence;
+  if (confidence == EvidenceConfidence.probable ||
+      confidence == EvidenceConfidence.uncertain) {
+    return false;
+  }
   if (offer.source.trim().toLowerCase() == 'manual') return true;
   return hasTrustedOfferProofReference(offer.proofRef);
 }
