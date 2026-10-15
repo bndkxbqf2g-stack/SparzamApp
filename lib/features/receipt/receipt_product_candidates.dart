@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../../models/product.dart';
 import '../catalog/product_match_candidates.dart';
 
@@ -23,4 +25,62 @@ List<ProductCandidate> receiptProductCandidates({
     // identity beside a concrete paid receipt line.
     return candidate.relation != CandidateRelation.categoryOnly;
   }).take(limit).toList(growable: false);
+}
+
+
+/// Presents the bounded candidate list used next to an unresolved receipt row.
+/// Selecting a chip only reports the user's explicit choice to the caller.
+class ReceiptProductSuggestionList extends StatelessWidget {
+  const ReceiptProductSuggestionList({
+    super.key,
+    required this.rawLabel,
+    required this.products,
+    required this.onSelected,
+    this.enabled = true,
+  });
+
+  final String rawLabel;
+  final List<Product> products;
+  final ValueChanged<Product> onSelected;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    final candidates = receiptProductCandidates(
+      rawLabel: rawLabel,
+      products: products,
+    );
+    if (candidates.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Mögliche Katalogtreffer – bitte ausdrücklich auswählen:',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 4),
+          Wrap(
+            spacing: 6,
+            runSpacing: 4,
+            children: [
+              for (final candidate in candidates)
+                ActionChip(
+                  label: Text(candidate.product.name),
+                  onPressed: enabled
+                      ? () => onSelected(candidate.product)
+                      : null,
+                ),
+            ],
+          ),
+          const Text(
+            'Die Auswahl bestätigt nur diese Bon-Zuordnung. Preis und Packungsgröße bleiben separat geprüft.',
+            style: TextStyle(fontSize: 12),
+          ),
+        ],
+      ),
+    );
+  }
 }
