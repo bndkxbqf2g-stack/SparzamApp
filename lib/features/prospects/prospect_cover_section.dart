@@ -12,6 +12,33 @@ bool prospectImageFallbackMatches({
   required String failedUrl,
 }) => currentUrl == failedUrl;
 
+/// Limits expensive HTML platform views created after a Canvas image fails.
+/// A recycled cover releases its slot when it leaves the tree, so a short
+/// scroll cannot accumulate one browser view per failed retailer image.
+class ProspectImageFallbackBudget {
+  ProspectImageFallbackBudget({this.maxActiveFallbacks = 4})
+      : assert(maxActiveFallbacks > 0);
+
+  final int maxActiveFallbacks;
+  var _activeFallbacks = 0;
+
+  int get activeFallbacks => _activeFallbacks;
+
+  bool tryAcquire() {
+    if (_activeFallbacks >= maxActiveFallbacks) return false;
+    _activeFallbacks++;
+    return true;
+  }
+
+  void release() {
+    if (_activeFallbacks == 0) return;
+    _activeFallbacks--;
+  }
+}
+
+/// Shared by the cover cards in the overview and the favorite rail.
+final prospectImageFallbackBudget = ProspectImageFallbackBudget();
+
 /// A Bring-style overview of validated prospect covers.
 ///
 /// The section deliberately receives already validated [ProspectIssue] data.
@@ -423,6 +450,7 @@ class ProspectAdaptiveImage extends StatefulWidget {
   final int cacheHeight;
   final BoxFit fit;
   final Widget placeholder;
+  final ProspectImageFallbackBudget? fallbackBudget;
 
   @override
   State<ProspectAdaptiveImage> createState() => _ProspectAdaptiveImageState();
@@ -430,13 +458,34 @@ class ProspectAdaptiveImage extends StatefulWidget {
 
 class _ProspectAdaptiveImageState extends State<ProspectAdaptiveImage> {
   bool _useHtmlFallback = false;
+  bool _fallbackDenied = false;
+  ProspectImageFallbackBudget? _reservedBudget;
+
+  ProspectImageFallbackBudget get _budget =>
+      widget.fallbackBudget ?? prospectImageFallbackBudget;
+
+  void _releaseFallbackSlot() {
+    final budget = _reservedBudget;
+    if (budget == null) return;
+    budget.release();
+    _reservedBudget = null;
+  }
 
   @override
   void didUpdateWidget(covariant ProspectAdaptiveImage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.url != widget.url) {
+    if (oldWidget.url != widget.url ||
+        oldWidget.fallbackBudget != widget.fallbackBudget) {
+      _releaseFallbackSlot();
       _useHtmlFallback = false;
+      _fallbackDenied = false;
     }
+  }
+
+  @override
+  void dispose() {
+    _releaseFallbackSlot();
+    super.dispose();
   }
 
   @override
@@ -458,7 +507,14 @@ class _ProspectAdaptiveImageState extends State<ProspectAdaptiveImage> {
         return widget.placeholder;
       },
       errorBuilder: (context, error, stackTrace) {
-        if (!_useHtmlFallback) {
+        if (!_useHtmlFallback &&
+            !_fallbackDenied &&
+            _reservedBudget == null) {
+          if (!_budget.tryAcquire()) {
+            _fallbackDenied = true;
+            return widget.placeholder;
+          }
+          _reservedBudget = _budget;
           final failedUrl = widget.url;
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!mounted ||
