@@ -1,3 +1,8 @@
+## Update 15.10.2026 – Provenienz für geprüfte Prospektseiten
+
+- [x] Manuelle Prospekt-/OCR-Übernahmen speichern `capturedAt` am Offer-Datensatz und behalten optionale Adapterherkunft.
+- [x] Die bestehende Review-Grenze bleibt aktiv: Ohne Bestätigung entstehen weder automatische Identität noch route-tauglicher Preis.
+
 ## Update 15.10.2026 – Seitenviewer begrenzt Plattform-Fallbacks
 
 - [x] Nur die ersten zwei sichtbaren Prospektseiten dürfen nach einem Canvas-Fehler auf einen HTML-Plattform-View wechseln.
