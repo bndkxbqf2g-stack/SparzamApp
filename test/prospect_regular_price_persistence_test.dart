@@ -271,6 +271,7 @@ extension on OfferImportRecord {
     DateTime? validFrom,
     DateTime? validUntil,
     DateTime? capturedAt,
+    String? branchId,
   }) =>
       OfferImportRecord(
         sourceId: sourceId ?? this.sourceId,
@@ -289,7 +290,7 @@ extension on OfferImportRecord {
         brochurePage: brochurePage,
         publisherId: publisherId,
         capturedAt: capturedAt ?? this.capturedAt,
-        branchId: branchId,
+        branchId: branchId ?? this.branchId,
         location: location,
         address: address,
       );
