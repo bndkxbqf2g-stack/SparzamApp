@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Reguläre Prospektpreise vor Cache-Rennen schützen
+
+- Ein langsamer Cache-Lauf wird nach einem erfolgreichen Live-Feed verworfen; zusätzlich schützt der lokale Beobachtungsspeicher frischere automatische Evidenz vor verspäteten älteren Writes.
+- Legacy-Angebotsbeobachtungen aus dem automatischen Prospektpfad werden auch ohne Feed-Zeitstempel entfernt. Sie gelangen weiterhin nicht in die Marktpreisprojektion.
+- Store- und Persistenzregressionen decken den Cache-/Live-Fall sowie den timestamplosen Bereinigungspfad ab.
+
 ## Update 15.10.2026 – Prospektartikel bleiben filialgenau
 
 - Aktuelle Prospektartikel werden nach Händler und vorhandener Branch-ID getrennt gruppiert; gleichnamige Filialen vermischen keine Artikel mehr.
