@@ -155,8 +155,9 @@ void main() {
       find.byKey(const ValueKey('offer-cover-open-grid-Lidl#lidl-wuerzburg')),
       findsOneWidget,
     );
-    expect(find.text('Zellingen'), findsOneWidget);
-    expect(find.text('Würzburg'), findsOneWidget);
+    // Each branch is rendered in both the favorite rail and the grid.
+    expect(find.text('Zellingen'), findsNWidgets(2));
+    expect(find.text('Würzburg'), findsNWidgets(2));
   });
 
 }
