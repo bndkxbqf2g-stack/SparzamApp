@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../data/stores.dart';
+import '../../models/store.dart';
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/mobility_settings.dart';
@@ -35,6 +35,7 @@ class RouteScreen extends StatefulWidget {
     required this.offers,
     required this.mobility,
     required this.marketPrices,
+    this.storeCatalog = stores,
     this.openPricesMaxAgeDays = 60,
     this.recentPurchases = const <RecentPurchase>[],
     this.historicalPriceObservations = const <PriceObservation>[],
@@ -47,6 +48,7 @@ class RouteScreen extends StatefulWidget {
   final List<Offer> offers;
   final MobilitySettings mobility;
   final List<MarketPrice> marketPrices;
+  final List<Store> storeCatalog;
   final int openPricesMaxAgeDays;
   final List<RecentPurchase> recentPurchases;
   final List<PriceObservation> historicalPriceObservations;
@@ -71,6 +73,7 @@ class _RouteScreenState extends State<RouteScreen> {
   List<ListItem>? _optimizerItems;
   List<Offer>? _optimizerOffers;
   List<MarketPrice>? _optimizerMarketPrices;
+  List<Store>? _optimizerStoreCatalog;
   Map<String, double>? _optimizerRoadDistances;
   RoadRouteMatrix? _optimizerRoadMatrix;
   MobilitySettings? _optimizerMobility;
@@ -138,7 +141,7 @@ class _RouteScreenState extends State<RouteScreen> {
     setState(() => loadingRoadDistances = true);
 
     final destinations = {
-      for (final store in stores)
+      for (final store in widget.storeCatalog)
         if (widget.mobility.isStoreEnabled(store.name) &&
             store.address.isNotEmpty)
           travelMatrixStoreKey(store): store.address,
@@ -153,7 +156,7 @@ class _RouteScreenState extends State<RouteScreen> {
 
       final next = {...roadDistances};
       if (matrix != null) {
-        for (final store in stores) {
+        for (final store in widget.storeCatalog) {
           final matrixKey = travelMatrixStoreKey(store);
           final distance =
               matrix.distance(RoadRouteMatrix.origin, matrixKey) ??
@@ -219,6 +222,7 @@ class _RouteScreenState extends State<RouteScreen> {
         _sameListReferences(_optimizerItems, widget.items) &&
         _sameListReferences(_optimizerOffers, widget.offers) &&
         _sameListReferences(_optimizerMarketPrices, widget.marketPrices) &&
+        _sameListReferences(_optimizerStoreCatalog, widget.storeCatalog) &&
         identical(_optimizerRoadDistances, roadDistances) &&
         identical(_optimizerRoadMatrix, roadMatrix) &&
         identical(_optimizerMobility, widget.mobility) &&
@@ -239,6 +243,7 @@ class _RouteScreenState extends State<RouteScreen> {
       travelMinutesPerKm: 60 / widget.mobility.mode.averageSpeedKmh,
       enabledStoreNames: widget.mobility.enabledStoreNames,
       marketPrices: widget.marketPrices,
+      storeCatalog: widget.storeCatalog,
       openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
       roadMatrix: widget.mobility.mode == MobilityMode.car ? roadMatrix : null,
       now: today,
@@ -247,6 +252,7 @@ class _RouteScreenState extends State<RouteScreen> {
     _optimizerItems = widget.items;
     _optimizerOffers = widget.offers;
     _optimizerMarketPrices = widget.marketPrices;
+    _optimizerStoreCatalog = widget.storeCatalog;
     _optimizerRoadDistances = roadDistances;
     _optimizerRoadMatrix = roadMatrix;
     _optimizerMobility = widget.mobility;
@@ -320,7 +326,7 @@ class _RouteScreenState extends State<RouteScreen> {
           mobility: widget.mobility,
         ),
         optimizedTravel: optimizedTravel,
-        realCount: stores
+        realCount: widget.storeCatalog
             .where((store) => widget.mobility.isStoreEnabled(store.name))
             .where(
               (store) =>
@@ -441,7 +447,7 @@ class _RouteScreenState extends State<RouteScreen> {
               title: Text(
                 [
                   'Start',
-                  ...best.stores.map((store) => store.name),
+                  ...best.stores.map(_routeStorePathLabel),
                   'Start',
                 ].join(' → '),
               ),
