@@ -420,7 +420,7 @@ class _ProspectAdaptiveImageState extends State<ProspectAdaptiveImage> {
   Widget build(BuildContext context) {
     return Image.network(
       widget.url,
-      key: ValueKey('prospect-adaptive-image-\${widget.url}'),
+      key: ValueKey('prospect-adaptive-image-${widget.url}'),
       cacheWidth: widget.cacheWidth,
       cacheHeight: widget.cacheHeight,
       filterQuality: FilterQuality.low,
