@@ -1,3 +1,14 @@
+## Update 15.10.2026 – Preisbeleg-Ledger im Preise-Reiter
+
+- [x] Aktuell gültige reguläre Prospektbeobachtungen werden mit Produkt,
+  exakter Filiale, Gültigkeit, Quelle und Nachweis sichtbar.
+- [x] Angebots- und abgelaufene Beobachtungen bleiben aus dem Ledger heraus;
+  die bestehende route-taugliche Preisprojektion bleibt unverändert.
+- [x] Der Shell-Pfad reicht die lokale Beobachtungshistorie und den Katalog ohne
+  neue Netzwerkanfragen in den Preise-Reiter durch.
+- [x] Widgetregressionen prüfen Filialnachweis, Gültigkeit und die Trennung vom
+  Angebotspreis.
+
 ## Update 15.10.2026 – Automatische Normalpreisspeicherung im Preise-Reiter
 
 - [x] Der Preise-Reiter zeigt Feed-Zeitpunkt, Cache-Herkunft und den bestätigten
