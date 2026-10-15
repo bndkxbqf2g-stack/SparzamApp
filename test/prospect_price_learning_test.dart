@@ -669,4 +669,31 @@ void main() {
     );
   });
 
+
+  test('canonicalizes source variants in automatic observation ids', () {
+    OfferImportRecord record(String source) => OfferImportRecord(
+          sourceId: 'same-source-id',
+          productLabel: 'Kaffee 500 g',
+          storeName: 'Lidl',
+          offerPrice: 4.99,
+          validUntil: DateTime(2026, 10, 17),
+          source: source,
+          proofRef: 'https://example.test/lidl/canonical-source',
+        );
+
+    final first = prospectPriceObservations(
+      records: [record('retailerWebsite')],
+      catalogProducts: const [],
+      observedAt: DateTime(2026, 10, 15, 8),
+    );
+    final second = prospectPriceObservations(
+      records: [record('retailer_website')],
+      catalogProducts: const [],
+      observedAt: DateTime(2026, 10, 15, 8),
+    );
+
+    expect(first.single.id, second.single.id);
+    expect(first.single.source, PriceObservationSource.retailerWebsite);
+    expect(second.single.source, PriceObservationSource.retailerWebsite);
+  });
 }
