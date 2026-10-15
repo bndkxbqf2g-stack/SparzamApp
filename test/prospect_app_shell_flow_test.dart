@@ -14,7 +14,6 @@ import 'package:sparzamapp/models/mobility_settings.dart';
 import 'package:sparzamapp/models/named_shopping_list.dart';
 import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/models/price_data_settings.dart';
-import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/price_point.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/purchase_record.dart';
@@ -32,7 +31,6 @@ import 'package:sparzamapp/services/prospect_feed_service.dart';
 import 'package:sparzamapp/services/purchase_store.dart';
 import 'package:sparzamapp/services/recent_purchase_store.dart';
 import 'package:sparzamapp/services/shopping_list_store.dart';
-import 'package:sparzamapp/services/price_observation_store.dart';
 
 class _FakeProspectImportModule extends ProspectImportModule {
   _FakeProspectImportModule(this.result);
