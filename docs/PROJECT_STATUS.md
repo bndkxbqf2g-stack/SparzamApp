@@ -1,3 +1,10 @@
+## Update 15.10.2026 – Prospekt-Herkunft bleibt beim Öffnen erhalten
+
+- `sourceAdapter` wird aus dem Feed-Metadatenknoten auch am `ProspectIssue` geführt und beim sichtbaren Issue-Rebuild erhalten.
+- Manuelle Seiten-/OCR-Übernahmen können dadurch die technische Herkunft, etwa `kaufda`, bis zum gespeicherten Offer behalten.
+- Der Adapter bleibt Provenienz; Filial-, Identitäts-, Gültigkeits- und Preisregeln ändern sich nicht.
+- Parser-, Fingerprint- und Widgetregressionen decken die Grenze ab.
+
 ## Update 15.10.2026 – Geprüfte Prospektseiten behalten den Erfassungszeitpunkt
 
 - Manuell bestätigte Angebote aus einer Prospektseite oder einem lokalen OCR-Vorschlag speichern jetzt den Zeitpunkt der Prüfung als `capturedAt`.

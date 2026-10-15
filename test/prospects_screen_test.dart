@@ -1189,6 +1189,7 @@ void main() {
                 ),
               ],
               branchId: 'L-42',
+              sourceAdapter: 'kaufda',
               location: 'Zellingen',
               address: 'Hauptstraße 1, 97225 Zellingen',
               validFrom: DateTime(2026, 9, 28),
@@ -1226,6 +1227,7 @@ void main() {
     expect(saved!.originalPrice, 5.99);
     expect(saved!.proofRef, 'https://example.test/lidl/page-4.png');
     expect(saved!.capturedAt, isNotNull);
+    expect(saved!.sourceAdapter, 'kaufda');
     expect(saved!.locationId, 'L-42');
     expect(saved!.region, 'Zellingen');
     expect(saved!.address, 'Hauptstraße 1, 97225 Zellingen');

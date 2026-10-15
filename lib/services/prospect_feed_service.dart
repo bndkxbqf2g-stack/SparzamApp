@@ -35,6 +35,7 @@ class ProspectIssue {
     this.branchId,
     this.location,
     this.address,
+    this.sourceAdapter,
     this.sourceStatus = 'unknown',
     this.recordCount = 0,
     this.availablePageCount,
@@ -54,6 +55,9 @@ class ProspectIssue {
   final String? branchId;
   final String? location;
   final String? address;
+  /// Technical adapter that supplied the prospect metadata, when known.
+  /// It is provenance only and never creates an offer or product identity.
+  final String? sourceAdapter;
   final String sourceStatus;
   final int recordCount;
   /// Number of pages the publisher declared for this prospect, when known.
@@ -578,6 +582,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
             (inheritsSourceContext ? sourceMetadata.location : null),
         address: rawAddress ??
             (inheritsSourceContext ? sourceMetadata.address : null),
+        sourceAdapter: sourceMetadata.sourceAdapter,
         sourceStatus: sourceMetadata.status,
         recordCount: sourceMetadata.recordCount,
         availablePageCount: _intValue(raw['availablePageCount']) ??
@@ -634,6 +639,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         branchId: metadata.branchId,
         location: metadata.location,
         address: metadata.address,
+        sourceAdapter: metadata.sourceAdapter,
         sourceStatus: metadata.status,
         recordCount: metadata.recordCount,
       ),

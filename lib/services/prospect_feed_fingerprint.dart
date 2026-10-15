@@ -61,6 +61,7 @@ String prospectFeedFingerprintFor(
         issue.branchId,
         issue.location,
         issue.address,
+        issue.sourceAdapter,
         issue.sourceStatus,
         issue.recordCount,
         issue.availablePageCount,
