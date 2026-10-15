@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/prospects/prospects_screen.dart';
+import 'package:sparzamapp/features/prospects/prospect_cover_section.dart';
 import 'package:sparzamapp/features/prospects/prospect_page_ocr.dart';
 import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/models/product.dart';
@@ -8,6 +9,22 @@ import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/services/prospect_feed_service.dart';
 
 void main() {
+  test('ignores delayed fallbacks from recycled prospect images', () {
+    expect(
+      prospectImageFallbackMatches(
+        currentUrl: 'https://example.test/new-cover.jpg',
+        failedUrl: 'https://example.test/old-cover.jpg',
+      ),
+      isFalse,
+    );
+    expect(
+      prospectImageFallbackMatches(
+        currentUrl: 'https://example.test/current-page.jpg',
+        failedUrl: 'https://example.test/current-page.jpg',
+      ),
+      isTrue,
+    );
+  });
   testWidgets('shows market prospect cards instead of raw article summary', (
     tester,
   ) async {

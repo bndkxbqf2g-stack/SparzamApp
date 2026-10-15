@@ -5,6 +5,13 @@ import '../../services/prospect_favorites_store.dart';
 import '../../services/prospect_feed_service.dart';
 import 'prospect_issue_identity.dart';
 
+/// Returns whether a delayed browser-image fallback still belongs to the
+/// image currently mounted in a recycled prospect card.
+bool prospectImageFallbackMatches({
+  required String currentUrl,
+  required String failedUrl,
+}) => currentUrl == failedUrl;
+
 /// A Bring-style overview of validated prospect covers.
 ///
 /// The section deliberately receives already validated [ProspectIssue] data.
@@ -437,8 +444,16 @@ class _ProspectAdaptiveImageState extends State<ProspectAdaptiveImage> {
       },
       errorBuilder: (context, error, stackTrace) {
         if (!_useHtmlFallback) {
+          final failedUrl = widget.url;
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!mounted || _useHtmlFallback) return;
+            if (!mounted ||
+                _useHtmlFallback ||
+                !prospectImageFallbackMatches(
+                  currentUrl: widget.url,
+                  failedUrl: failedUrl,
+                )) {
+              return;
+            }
             setState(() => _useHtmlFallback = true);
           });
         }
