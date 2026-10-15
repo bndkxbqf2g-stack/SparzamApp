@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Prospekt-Cover berücksichtigen offene Gültigkeitsgrenzen
+
+- [x] Ein Prospekt mit künftigem Startdatum wird im Angebote-Reiter nicht als aktuelles Cover angezeigt, auch wenn der Feed noch kein Enddatum liefert.
+- [x] Abgelaufene und widersprüchliche offene Zeiträume bleiben aus der aktuellen Coveransicht ausgeschlossen.
+- [x] Fach- und Widgetregressionen schützen die gemeinsame Datumsgrenze.
+
 ## Update 15.10.2026 – Bonzeilen erhalten explizite Katalogvorschläge
 
 - [x] Unklare Bonpositionen zeigen bis zu drei passende Namens-/Alias-Treffer aus dem vorhandenen Katalog.
