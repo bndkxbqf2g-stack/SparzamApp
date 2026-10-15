@@ -586,48 +586,18 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
   ) {
     final key = _rowKey(draft, row);
     if (assignedProducts.containsKey(key)) return const SizedBox.shrink();
-    final candidates = receiptProductCandidates(
+    return ReceiptProductSuggestionList(
       rawLabel: row.label,
       products: availableProducts,
-    );
-    if (candidates.isEmpty) return const SizedBox.shrink();
-
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Mögliche Katalogtreffer – bitte ausdrücklich auswählen:',
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 4),
-          Wrap(
-            spacing: 6,
-            runSpacing: 4,
-            children: [
-              for (final candidate in candidates)
-                ActionChip(
-                  label: Text(candidate.product.name),
-                  onPressed: saving
-                      ? null
-                      : () {
-                          setState(() {
-                            assignedProducts[key] = candidate.product.id;
-                            automaticProductAssignments.remove(key);
-                            learnedProductAssignments.remove(key);
-                            learnedAliasConfirmations.remove(key);
-                          });
-                        },
-                ),
-            ],
-          ),
-          const Text(
-            'Die Auswahl bestätigt nur diese Bon-Zuordnung. Preis und Packungsgröße bleiben separat geprüft.',
-            style: TextStyle(fontSize: 12),
-          ),
-        ],
-      ),
+      enabled: !saving,
+      onSelected: (product) {
+        setState(() {
+          assignedProducts[key] = product.id;
+          automaticProductAssignments.remove(key);
+          learnedProductAssignments.remove(key);
+          learnedAliasConfirmations.remove(key);
+        });
+      },
     );
   }
 
