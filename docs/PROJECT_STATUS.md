@@ -1,3 +1,7 @@
+## Update 15.10.2026 – Preisregel im Prospekt-Reiter sichtbar
+
+Die Prospektstatuskarte erklärt jetzt direkt die getrennte Preisrolle: Ein belegter, durchgestrichener Normalpreis kann als lokale Preisbasis gespeichert werden; der aktuelle Aktionspreis bleibt an den gültigen Prospektzeitraum gebunden und wird nicht als Normalpreis gespeichert. Die bestehende Speicherung und Routenlogik bleiben unverändert.
+
 ## Update 15.10.2026 – Preise-Reiter zeigt Herkunft und Route-Fähigkeit
 
 Der Preise-Reiter zeigt jetzt neben dem Listenvergleich eine lokale Qualitätsübersicht der gespeicherten Marktpreisbelege. Nur `MarketPrice.isUsable` zählt als aktuell und routenfähig; veraltete, zukünftige, unvollständige oder unsichere Belege bleiben als Datenlücke sichtbar. Prospekt-Normalpreise werden getrennt von Prospekt-Angebotsnachweisen gezählt. Die Übersicht zeigt zusätzlich die aktuelle Abdeckung je Markt, ohne Preisauflösung oder Optimierer zu verändern.

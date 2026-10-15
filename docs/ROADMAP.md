@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Preisregel im Prospekt-Reiter sichtbar
+
+- [x] Der Status weist ausdrücklich aus, dass nur belegte durchgestrichene Normalpreise lokal als Preisbasis gespeichert werden.
+- [x] Aktionspreise bleiben im aktuellen, datumsgebundenen Angebotsfluss und werden nicht als reguläre Preisbeobachtung gespeichert.
+- [x] Eine Widgetregression schützt die verständliche Trennung der beiden Preisrollen.
+
 ## Update 15.10.2026 – Preise-Reiter zeigt Herkunft und Route-Fähigkeit
 
 - [x] Aktuelle, veraltete und unvollständige gespeicherte Marktpreise werden in einer kompakten Qualitätsübersicht getrennt gezählt.
