@@ -1,3 +1,12 @@
+## Update 15.10.2026 – Coverkarten zeigen Quellen- und Seitenstatus
+
+- [x] `sourceAdapter` wird auf der Coverkarte als technische Feed-Herkunft
+  angezeigt, sofern die Quelle sie liefert.
+- [x] Bekannte Gesamtseiten, geladene Vorschauen und gemeldete fehlende Seiten
+  werden kompakt getrennt ausgewiesen; unbekannte Angaben werden nicht erfunden.
+- [x] Eine Widgetregression prüft Herkunft und partielle Seitenabdeckung im
+  bestehenden Cover-/Scrollpfad.
+
 ## Update 15.10.2026 – Zukunftszeitpunkte nicht als Preisbeleg übernehmen
 
 - [x] Aktuelle reguläre Prospektpreise mit einem individuellen zukünftigen
