@@ -33,6 +33,56 @@ void main() {
     validUntil: DateTime(2026, 9, 30),
   );
 
+
+  test('quote snapshot resolves a generic prospect item through the catalog', () {
+    const generic = Product(
+      id: 'custom_milk_request',
+      name: 'Milch',
+      unit: 'Artikel',
+      group: 'milch',
+    );
+    const variant = Product(
+      id: 'milk_15_catalog',
+      name: 'Milch 1,5 %',
+      unit: '1 l',
+      group: 'milch',
+      packageAmount: 1,
+      packageUnit: 'l',
+    );
+    final offer = Offer(
+      id: 'catalog_backed_milk_offer',
+      productId: variant.id,
+      storeName: 'Lidl',
+      originalPrice: 1.49,
+      originalPriceVerified: true,
+      offerPrice: 0.99,
+      validFrom: DateTime(2026, 9, 1),
+      validUntil: DateTime(2026, 10, 1),
+      source: 'retailerWebsite',
+      sourceAdapter: 'kaufda',
+      proofRef: 'https://example.test/prospect/milk',
+      locationId: 'lidl_zellingen',
+      packageAmount: 1,
+      packageUnit: 'l',
+      unitPrice: 0.99,
+    );
+
+    final item = ListItem(product: generic);
+    final snapshot = shoppingPriceQuoteSnapshot(
+      [item],
+      prices: const [],
+      offers: [offer],
+      catalogProducts: const [variant],
+      enabledStores: const ['Lidl'],
+      now: DateTime(2026, 9, 24),
+    );
+
+    final quote = snapshot.quotesFor(item).single;
+    expect(quote.storeName, 'Lidl');
+    expect(quote.unitPrice, 0.99);
+    expect(quote.kind, ShoppingQuoteKind.offer);
+  });
+
   test('shopping quotes retain package and base-unit price', () {
     const basisProduct = Product(
       id: 'basis-milk',
