@@ -135,6 +135,8 @@ class OpenPricesSource implements PriceSource {
   }) {
     final json = jsonDecode(body) as Map<String, dynamic>;
     final items = json['items'] as List<dynamic>? ?? const <dynamic>[];
+    // Keep exact source locations separate even when two configured
+    // branches share the same visible retailer name.
     final byStore = <String, MarketPrice>{};
 
     for (final raw in items) {
@@ -179,7 +181,9 @@ class OpenPricesSource implements PriceSource {
       }
 
       final externalId = _externalId(raw['id']);
-      final previous = byStore[store.name];
+      final sourceLocationId = _locationId(location);
+      final slotKey = _priceSlotKey(store, sourceLocationId);
+      final previous = byStore[slotKey];
       if (previous != null) {
         if (observedAt.isBefore(previous.updatedAt)) continue;
         if (observedAt.isAtSameMomentAs(previous.updatedAt)) {
@@ -210,14 +214,14 @@ class OpenPricesSource implements PriceSource {
               unit: packageUnit,
             );
 
-      byStore[store.name] = MarketPrice(
+      byStore[slotKey] = MarketPrice(
         productId: product.id,
         storeName: store.name,
         price: price,
         updatedAt: observedAt,
         source: MarketPriceSource.openPrices,
         externalId: externalId,
-        sourceLocationId: _locationId(location),
+        sourceLocationId: sourceLocationId,
         sourceLocationName: _locationLabel(location),
         quantity: packageAmount,
         unit: packageUnit,
@@ -329,6 +333,14 @@ class OpenPricesSource implements PriceSource {
     }
     return int.tryParse(value?.toString().trim() ?? '');
   }
+
+  String _priceSlotKey(Store store, String? sourceLocationId) =>
+      [
+        store.name,
+        canonicalBranchId(sourceLocationId) ??
+            canonicalBranchId(store.branchId) ??
+            '',
+      ].join('|');
 
   String? _locationId(Map<String, dynamic> location) {
     for (final key in const ['id', 'location_id', 'osm_id']) {

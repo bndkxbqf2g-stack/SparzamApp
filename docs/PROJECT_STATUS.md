@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Open Prices bleibt filialgenau
+
+- Der Open-Prices-Adapter gruppiert Beobachtungen jetzt nach Händler und Quellfiliale statt nur nach dem sichtbaren Händlernamen.
+- Zwei gleichnamige konfigurierte Filialen können dadurch ihre eigenen Preise, Standort-IDs und Aktualitätswerte behalten; unbekannte oder widersprüchliche Standorte werden weiterhin verworfen.
+- Eine Fixture-Regression schützt die getrennte Rückgabe und verändert weder Cache-, Frische- noch Routenregeln.
+
 ## Update 15.10.2026 – Prospekt-Cover respektieren offene Gültigkeitsgrenzen
 
 - Der Angebote-Reiter prüft jetzt auch ein allein geliefertes `validFrom` und blendet zukünftige Cover aus; ein fehlendes `validUntil` macht einen Datensatz nicht automatisch aktuell.
