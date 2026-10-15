@@ -1,3 +1,8 @@
+## Update 15.10.2026 – More-Routenansicht bleibt filialgenau
+
+- Der RouteScreen im More-/Shell-Seitenpfad erhält jetzt denselben exakten Filialkatalog wie die direkte Routenansicht und der ShellRouting-Snapshot.
+- Gleichnamige Märkte werden dadurch auch beim zweiten Einstieg mit Branch-ID, Ort und Adresse aufgelöst; Preis-, Quellen- und Offline-Fallback bleiben unverändert.
+
 ## Update 15.10.2026 – Route-UI bleibt filialgenau
 
 - RouteScreen reicht den exakten Filialkatalog jetzt an RouteOptimizer und OSRM weiter; die Distanzmatrix wird nicht mehr auf den globalen Namenkatalog begrenzt.

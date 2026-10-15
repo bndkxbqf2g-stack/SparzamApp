@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../data/stores.dart';
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/mobility_settings.dart';
@@ -13,6 +14,7 @@ import '../../models/recent_purchase.dart';
 import '../../models/replenishment_suggestion.dart';
 import '../../models/road_route_matrix.dart';
 import '../../models/route_plan.dart';
+import '../../models/store.dart';
 import '../../services/shopping_list_store.dart';
 import '../home/dashboard_data.dart';
 import '../home/home_screen.dart';
@@ -67,6 +69,7 @@ List<Widget> buildShellPages({
   required MobilitySettings mobility,
   required List<Product> catalogProducts,
   required List<MarketPrice> marketPrices,
+  List<Store> storeCatalog = stores,
   int openPricesMaxAgeDays = 60,
   required List<MarketPrice> priceObservations,
   required List<PriceObservation> historicalPriceObservations,
@@ -196,6 +199,7 @@ List<Widget> buildShellPages({
       offers: offers,
       mobility: mobility,
       marketPrices: marketPrices,
+      storeCatalog: storeCatalog,
       openPricesMaxAgeDays: openPricesMaxAgeDays,
       recentPurchases: recentPurchases,
       historicalPriceObservations: historicalPriceObservations,
