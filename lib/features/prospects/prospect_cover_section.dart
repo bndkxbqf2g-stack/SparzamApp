@@ -443,6 +443,7 @@ class ProspectAdaptiveImage extends StatefulWidget {
     required this.cacheHeight,
     required this.fit,
     required this.placeholder,
+    this.fallbackBudget,
   });
 
   final String url;
