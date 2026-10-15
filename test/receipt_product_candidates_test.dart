@@ -53,8 +53,16 @@ void main() {
   test('limits the visible suggestion set and keeps empty input safe', () {
     expect(
       receiptProductCandidates(
-        rawLabel: 'Brot',
-        products: catalog,
+        rawLabel: 'Milch',
+        products: [
+          ...catalog,
+          const Product(
+            id: 'bio-milk',
+            name: 'Bio Milch',
+            unit: '1 l',
+            group: 'milch',
+          ),
+        ],
         limit: 1,
       ),
       hasLength(1),
