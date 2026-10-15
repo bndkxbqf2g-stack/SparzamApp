@@ -31,6 +31,7 @@ import 'package:sparzamapp/services/prospect_feed_service.dart';
 import 'package:sparzamapp/services/purchase_store.dart';
 import 'package:sparzamapp/services/recent_purchase_store.dart';
 import 'package:sparzamapp/services/shopping_list_store.dart';
+import 'package:sparzamapp/services/price_observation_store.dart';
 
 class _FakeProspectImportModule extends ProspectImportModule {
   _FakeProspectImportModule(this.result);
@@ -403,6 +404,94 @@ void main() {
       // Route opening is covered by dedicated route flow tests. Keeping this
       // test focused on feed import and restart persistence avoids coupling it
       // to the route screen's background distance work.
+    },
+  );
+
+  testWidgets(
+    'Prospektrefresh speichert nur den regulären Normalpreis lokal',
+    (tester) async {
+      tester.view.physicalSize = const Size(800, 1000);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final now = DateTime(2026, 10, 15, 12);
+      const coffee = Product(
+        id: 'shell-coffee-500',
+        name: 'Jacobs Kaffee Crema 500 g',
+        unit: '500 g',
+        group: 'Kaffee & Snacks',
+      );
+      final record = OfferImportRecord(
+        sourceId: 'shell-regular-only',
+        productLabel: coffee.name,
+        storeName: 'Lidl',
+        originalPrice: 7.99,
+        offerPrice: 4.99,
+        validFrom: DateTime(2026, 10, 12),
+        validUntil: DateTime(2026, 10, 17),
+        source: 'retailerWebsite',
+        sourceAdapter: 'kaufda',
+        branchId: 'lidl-branch-1',
+        proofRef: 'https://example.test/lidl/coffee',
+        capturedAt: now,
+      );
+      final module = _FakeProspectImportModule(
+        ProspectFeedLoadResult(
+          records: [record],
+          refreshedStores: const ['Lidl'],
+          generatedAt: now,
+          prospects: const <ProspectIssue>[],
+        ),
+      );
+      final stores = _Stores(
+        shoppingListStore: _InMemoryShoppingListStore(),
+        offerStore: _InMemoryOfferStore(),
+        productCatalogStore: _InMemoryProductCatalogStore(),
+      );
+
+      await tester.pumpWidget(
+        _app(
+          stores,
+          module,
+          initialCustomProducts: const [coffee],
+        ),
+      );
+      await tester.runAsync(() async {
+        for (var attempt = 0; attempt < 200; attempt++) {
+          final observations = await PriceObservationStore().load();
+          if (observations.any(
+            (entry) =>
+                entry.kind == PriceObservationKind.regular &&
+                entry.price == 7.99,
+          )) {
+            return;
+          }
+          await Future<void>.delayed(const Duration(milliseconds: 25));
+        }
+      });
+      await tester.pump(const Duration(milliseconds: 300));
+
+      final observations = await PriceObservationStore().load();
+      expect(
+        observations.where(
+          (entry) =>
+              entry.sourceAdapter == 'kaufda' &&
+              entry.storeName == 'Lidl' &&
+              entry.locationId == 'lidl-branch-1',
+        ),
+        hasLength(1),
+      );
+      expect(observations.single.kind, PriceObservationKind.regular);
+      expect(observations.single.price, 7.99);
+      expect(observations.single.discounted, isFalse);
+
+      await tester.tap(find.text('Prospekte').last);
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(
+        find.textContaining('1 regulärer Normalpreis als Preisbasis gespeichert.'),
+        findsOneWidget,
+      );
     },
   );
 
