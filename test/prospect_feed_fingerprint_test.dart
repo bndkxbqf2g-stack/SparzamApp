@@ -80,7 +80,7 @@ void main() {
         ProspectIssue(
           storeName: 'Lidl',
           title: 'Prospekt',
-          pages: const [],
+          pages: [],
           sourceAdapter: 'structured_api',
         ),
       ],
@@ -92,7 +92,7 @@ void main() {
         ProspectIssue(
           storeName: 'Lidl',
           title: 'Prospekt',
-          pages: const [],
+          pages: [],
           sourceAdapter: 'kaufda_next_data',
         ),
       ],
