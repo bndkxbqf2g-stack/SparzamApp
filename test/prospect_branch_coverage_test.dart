@@ -84,7 +84,7 @@ void main() {
 
   test('does not copy a legacy store count across multiple branches', () {
     final coverage = calculateProspectCoverage(
-      issues: const [
+      issues: [
         ProspectIssue(
           storeName: 'Lidl',
           title: 'Zellingen',
