@@ -61,6 +61,7 @@ class ProspectImportModule {
                   branchId: issue.branchId,
                   location: issue.location,
                   address: issue.address,
+                  sourceAdapter: issue.sourceAdapter,
                   sourceStatus: issue.sourceStatus,
                   recordCount: issue.recordCount,
                   availablePageCount: issue.availablePageCount,
