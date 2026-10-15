@@ -177,6 +177,39 @@ void main() {
     expect(saved.single.familyKey, 'tomatenkonserve');
   });
 
+  test('keeps newer automatic evidence when a stale cache arrives', () async {
+    final store = PriceObservationStore();
+    final newer = PriceObservation(
+      id: 'prospect|same-id',
+      productId: 'coffee-500',
+      storeName: 'Lidl',
+      price: 7.99,
+      observedAt: DateTime(2026, 10, 15, 12),
+      source: PriceObservationSource.retailerWebsite,
+      sourceAdapter: 'kaufda',
+      kind: PriceObservationKind.regular,
+      identityConfidence: 1,
+    );
+    final stale = PriceObservation(
+      id: 'prospect|same-id',
+      productId: 'coffee-500',
+      storeName: 'Lidl',
+      price: 8.49,
+      observedAt: DateTime(2026, 10, 15, 8),
+      source: PriceObservationSource.retailerWebsite,
+      sourceAdapter: 'kaufda',
+      kind: PriceObservationKind.regular,
+      identityConfidence: 1,
+    );
+
+    await store.append([newer]);
+    final saved = await store.upsertById([stale]);
+
+    expect(saved, hasLength(1));
+    expect(saved.single.price, 7.99);
+    expect(saved.single.observedAt, newer.observedAt);
+  });
+
   test('market price evidence survives central observation projection', () {
     final price = MarketPrice(
       productId: 'milk-15',
