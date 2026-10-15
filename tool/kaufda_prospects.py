@@ -502,6 +502,24 @@ def _regular_price_value(value: object) -> float | None:
     return _parse_price(value)
 
 
+def _is_uvp_marker(value: object) -> bool:
+    """Return true for explicit UVP labels from a source price object."""
+
+    if isinstance(value, bool):
+        return value
+    if not isinstance(value, str):
+        return False
+    normalized = re.sub(r"[^a-zäöüß]+", " ", value.casefold()).strip()
+    return normalized in {
+        "uvp",
+        "u v p",
+        "unverbindliche preisempfehlung",
+        "unverbindliche preisempfehlung des herstellers",
+        "manufacturer suggested retail price",
+        "msrp",
+    }
+
+
 def _explicit_regular_price(
     raw: Mapping[str, object] | None,
     sale: float,
@@ -1041,7 +1059,15 @@ def parse_kaufda_html(
             if regular_price is not None:
                 break
         secondary_price = _parse_price(prices.get("secondaryPrice"))
-        secondary_is_uvp = bool(prices.get("secondaryPriceIsUVP"))
+        secondary_is_uvp = any(
+            _is_uvp_marker(prices.get(key))
+            for key in (
+                "secondaryPriceIsUVP",
+                "secondaryPriceLabel",
+                "secondaryPriceType",
+                "secondaryPriceKind",
+            )
+        )
         if (
             regular_price is None
             and secondary_price is not None
