@@ -450,6 +450,37 @@ void main() {
     ]);
   });
 
+  test('preserves source page count beyond bounded image samples', () {
+    final result = parseProspectFeed(r'''
+{
+  "sources": [
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "prospects": [
+        {
+          "title": "Lidl Wochenprospekt",
+          "pageCount": 73,
+          "pageSamples": [
+            {"number": 1, "image": "https://example.test/page-1.jpg"},
+            {"number": 5, "image": "https://example.test/page-5.jpg"}
+          ]
+        }
+      ]
+    }
+  ],
+  "offers": []
+}
+''');
+
+    final issue = result.prospects.singleWhere(
+      (item) => item.storeName == 'Lidl',
+    );
+    expect(issue.pages, hasLength(2));
+    expect(issue.pageCount, 73);
+    expect(issue.visiblePageCount, 73);
+  });
+
   test('tolerates string metadata numbers without relaxing price validation', () {
     final result = parseProspectFeed(r'''
 {
