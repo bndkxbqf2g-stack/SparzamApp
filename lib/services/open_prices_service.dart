@@ -268,6 +268,10 @@ class OpenPricesSource implements PriceSource {
     final labels = _locationLabels(location);
     if (labels.isEmpty) return null;
 
+    // Without a provider location ID, multiple matching branches are
+    // intentionally treated as unknown. Assigning the first branch would
+    // create a false route price for the wrong exact store.
+    final matches = <Store>[];
     for (final store in stores) {
       if (normalizeStoreIdentityText(store.location.split('·').first) !=
           normalizeStoreIdentityText(city)) {
@@ -277,9 +281,9 @@ class OpenPricesSource implements PriceSource {
       final matched = labels.any(
         (label) => canonicalStoreName(label, [store]) == store.name,
       );
-      if (matched) return store;
+      if (matched) matches.add(store);
     }
-    return null;
+    return matches.length == 1 ? matches.single : null;
   }
 
   bool _locationContextMatches(
