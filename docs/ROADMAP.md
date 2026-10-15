@@ -858,3 +858,11 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Reguläre Normalpreisbelege sowie manuelle und Bon-Evidenz bleiben bei Offline-/Feedfehlern erhalten.
 - [x] Eine Fixture-Regression schützt die Bereinigung ohne aktuellen Feed.
 
+## Update 15.10.2026 – EAN-Enrichment übernimmt konkrete Packungsgrößen
+
+- [x] Open Food Facts ersetzt den generischen lokalen Einheitstext `Artikel`
+  beim EAN-Abgleich durch eine verifizierte Menge, sofern die Quelle sie liefert.
+- [x] Eine ausdrücklich gesetzte lokale Einheit bleibt maßgeblich; strukturierte
+  `packageAmount`-/`packageUnit`-Daten werden trotzdem übernommen.
+- [x] Regressionen sichern lokale Produktidentität, Packungsgröße und die
+  Trennung zwischen Quellenmetadaten und manueller Einheit.
