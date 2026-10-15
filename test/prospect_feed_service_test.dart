@@ -119,6 +119,12 @@ void main() {
     expect(result.records.single.branchId, 'lidl-zellingen');
     expect(result.records.single.location, 'Zellingen');
     expect(result.records.single.address, 'Branch street 1');
+    expect(result.refreshedStores, ['LIDL']);
+    expect(
+      result.prospects
+          .where((item) => item.storeName.trim().toLowerCase() == 'lidl'),
+      hasLength(1),
+    );
   });
 
   test('keeps formatted same-name branches ambiguous without a branch id', () {
