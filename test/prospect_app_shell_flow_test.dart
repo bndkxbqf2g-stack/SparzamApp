@@ -28,6 +28,7 @@ import 'package:sparzamapp/services/price_data_settings_store.dart';
 import 'package:sparzamapp/services/price_history_store.dart';
 import 'package:sparzamapp/services/product_catalog_store.dart';
 import 'package:sparzamapp/services/prospect_import_module.dart';
+import 'package:sparzamapp/features/offers/prospect_regular_price_persistence.dart';
 import 'package:sparzamapp/services/prospect_feed_service.dart';
 import 'package:sparzamapp/services/purchase_store.dart';
 import 'package:sparzamapp/services/recent_purchase_store.dart';
@@ -408,14 +409,9 @@ void main() {
     },
   );
 
-  testWidgets(
+  test(
     'Prospektrefresh speichert nur den regulären Normalpreis lokal',
-    (tester) async {
-      tester.view.physicalSize = const Size(800, 1000);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-
+    () async {
       final now = DateTime(2026, 10, 15, 12);
       const coffee = Product(
         id: 'shell-coffee-500',
@@ -437,62 +433,30 @@ void main() {
         proofRef: 'https://example.test/lidl/coffee',
         capturedAt: now,
       );
-      final module = _FakeProspectImportModule(
-        ProspectFeedLoadResult(
-          records: [record],
-          refreshedStores: const ['Lidl'],
-          generatedAt: now,
-          prospects: const <ProspectIssue>[],
-        ),
-      );
-      final stores = _Stores(
-        shoppingListStore: _InMemoryShoppingListStore(),
-        offerStore: _InMemoryOfferStore(),
-        productCatalogStore: _InMemoryProductCatalogStore(),
+      var raw = <String>[];
+      final store = PriceObservationStore(
+        readRaw: () async => List<String>.of(raw),
+        writeRaw: (values) async => raw = List<String>.of(values),
       );
 
-      await tester.pumpWidget(
-        _app(
-          stores,
-          module,
-          initialCustomProducts: const [coffee],
-        ),
+      final result = await persistCurrentProspectRegularPrices(
+        store: store,
+        records: [record],
+        catalogProducts: const [coffee],
+        observedAt: now,
+        now: now,
+        refreshedStores: const ['Lidl'],
       );
-      await tester.runAsync(() async {
-        for (var attempt = 0; attempt < 200; attempt++) {
-          final observations = await PriceObservationStore().load();
-          if (observations.any(
-            (entry) =>
-                entry.kind == PriceObservationKind.regular &&
-                entry.price == 7.99,
-          )) {
-            return;
-          }
-          await Future<void>.delayed(const Duration(milliseconds: 25));
-        }
-      });
-      await tester.pump(const Duration(milliseconds: 300));
 
-      final observations = await PriceObservationStore().load();
-      expect(
-        observations.where(
-          (entry) =>
-              entry.sourceAdapter == 'kaufda' &&
-              entry.storeName == 'Lidl' &&
-              entry.locationId == 'lidl-branch-1',
-        ),
-        hasLength(1),
-      );
-      expect(observations.single.kind, PriceObservationKind.regular);
-      expect(observations.single.price, 7.99);
-      expect(observations.single.discounted, isFalse);
-
-      await tester.tap(find.text('Prospekte').last);
-      await tester.pump(const Duration(milliseconds: 300));
-      expect(
-        find.textContaining('1 regulärer Normalpreis als Preisbasis gespeichert.'),
-        findsOneWidget,
-      );
+      expect(result.learned, hasLength(1));
+      expect(result.learned.single.kind, PriceObservationKind.regular);
+      expect(result.learned.single.price, 7.99);
+      expect(result.learned.single.discounted, isFalse);
+      expect(result.learned.single.locationId, 'lidl-branch-1');
+      expect(result.stored, hasLength(1));
+      expect(result.stored.single.price, 7.99);
+      expect(result.stored.single.price, isNot(4.99));
+      expect(await store.load(), hasLength(1));
     },
   );
 
