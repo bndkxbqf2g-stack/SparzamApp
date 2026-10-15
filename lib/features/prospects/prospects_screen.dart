@@ -89,7 +89,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
   // search query and favorite state. Reuse them while those controls change.
   List<OfferImportRecord>? _derivedRecordsInput;
   List<ProspectIssue>? _derivedProspectsInput;
-  DateTime? _derivedNow;
+  DateTime? _derivedDay;
   _ProspectDerivedData? _derivedData;
   List<OfferImportRecord>? _searchIndexInput;
   Map<OfferImportRecord, String>? _searchIndexCache;
@@ -166,11 +166,12 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
   }
 
   _ProspectDerivedData _prospectViewData() {
+    final day = offerFilterDay(widget.now);
     final cached = _derivedData;
     if (cached != null &&
         identical(_derivedRecordsInput, widget.records) &&
         identical(_derivedProspectsInput, widget.prospects) &&
-        _derivedNow == widget.now) {
+        _derivedDay == day) {
       return cached;
     }
 
@@ -257,7 +258,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
     );
     _derivedRecordsInput = widget.records;
     _derivedProspectsInput = widget.prospects;
-    _derivedNow = widget.now;
+    _derivedDay = day;
     _derivedData = next;
     return next;
   }

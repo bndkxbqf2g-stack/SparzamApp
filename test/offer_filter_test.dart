@@ -136,6 +136,15 @@ void main() {
       ['current'],
     );
   });
+  test('der Cache-Tag wechselt erst am nächsten Kalendertag', () {
+    final morning = offerFilterDay(DateTime(2026, 9, 22, 0, 1));
+    final evening = offerFilterDay(DateTime(2026, 9, 22, 23, 59));
+    final nextDay = offerFilterDay(DateTime(2026, 9, 23, 0, 0));
+
+    expect(evening, morning);
+    expect(nextDay, isNot(morning));
+  });
+
   test('offene Gültigkeit verwirft einen zukünftigen Start', () {
     expect(
       isOptionalOfferDateRangeActive(

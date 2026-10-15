@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Prospektfilter aktualisiert den Kalendertag
+
+- [x] Angebote- und Prospekte-Reiter invalidieren ihre Tages-Caches auch dann, wenn der Shell-Aufruf keinen expliziten Referenzzeitpunkt liefert.
+- [x] Abgelaufene oder noch nicht gestartete Datensätze können nach Mitternacht nicht aus dem alten Tagessnapshot sichtbar bleiben.
+- [x] Eine Fachregression schützt den Wechsel des Cache-Schlüssels am Kalendertag.
+
 
 ## Update 15.10.2026 – Routen-Cache erkennt Mengenänderungen
 
