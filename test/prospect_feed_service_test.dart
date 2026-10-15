@@ -23,6 +23,7 @@ void main() {
     {
       "storeName": "ALDI Süd",
       "status": "ok",
+      "sourceAdapter": "structured_api",
       "branchId": "B384",
       "location": "Zellingen",
       "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
@@ -85,6 +86,7 @@ void main() {
     expect(aldi.branchId, 'B384');
     expect(aldi.location, 'Zellingen');
     expect(aldi.address, contains('Würzburger Str. 74'));
+    expect(aldi.sourceAdapter, 'structured_api');
   });
 
 
