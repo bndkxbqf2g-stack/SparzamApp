@@ -248,6 +248,41 @@ void main() {
     expect(aldi.thumbnailUrl, 'https://cdn.example/aldi-cover.jpg');
   });
 
+
+  test('preserves declared page count separately from loaded samples', () {
+    final result = parseProspectFeed(r'''
+{
+  "sources": [
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "prospects": [
+        {
+          "title": "Lidl Wochenprospekt",
+          "pageCount": 73,
+          "pageCountKnown": true,
+          "loadedPageCount": 2,
+          "pageSamples": [
+            {"number": 1, "image": "https://example.test/page-1.jpg"},
+            {"number": 5, "image": "https://example.test/page-5.jpg"}
+          ]
+        }
+      ]
+    }
+  ],
+  "offers": []
+}
+''');
+
+    final issue = result.prospects.singleWhere(
+      (item) => item.storeName == 'Lidl',
+    );
+    expect(issue.pages, hasLength(2));
+    expect(issue.availablePageCount, 73);
+    expect(issue.loadedPageCount, 2);
+    expect(issue.pageCountKnown, isTrue);
+  });
+
   test('accepts alternate cover and page image fields', () {
     final result = parseProspectFeed(r'''
 {
