@@ -459,7 +459,7 @@ void main() {
       // this navigation assertion deterministic while the page is mounted.
       await tester.pump(const Duration(milliseconds: 500));
       final favoriteCard =
-          find.byKey(const ValueKey('prospect-open-favorite-Netto'));
+          find.byKey(const ValueKey('prospect-open-favorite-Netto#4371'));
       expect(favoriteCard, findsOneWidget);
       await tester.ensureVisible(favoriteCard);
       final favoriteRect = tester.getRect(favoriteCard);
