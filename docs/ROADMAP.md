@@ -1,3 +1,12 @@
+## Update 15.10.2026 – Coverkarten zeigen exakte Filialherkunft
+
+- [x] Eine vorhandene Filial-ID wird neben der technischen Quellenkennung auf
+  Coverkarten und im Bring-Überblick angezeigt.
+- [x] Händlername, Ort und Filial-ID bleiben getrennte Nachweise; fehlende
+  Filial-IDs werden nicht erfunden.
+- [x] Die bestehende Regression prüft Quellen-, Seiten- und Filialherkunft
+  zusammen im sichtbaren Coverpfad.
+
 ## Update 15.10.2026 – Coverkarten zeigen Quellen- und Seitenstatus
 
 - [x] `sourceAdapter` wird auf der Coverkarte als technische Feed-Herkunft
