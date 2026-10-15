@@ -126,7 +126,7 @@ List<PriceObservation> prospectPriceObservations({
   final observations = <PriceObservation>[];
   for (final record in records) {
     final source = _source(record.source);
-    if (!isEligibleProspectPriceRecord(record)) {
+    if (source == null || !isEligibleProspectPriceRecord(record)) {
       continue;
     }
 
