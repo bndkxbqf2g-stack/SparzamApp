@@ -833,3 +833,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   Evidenz erhalten; reguläre Preisbeobachtungen werden nicht gelöscht.
 - [x] Eine Fixture-Regression schützt die Trennung zwischen Altbereinigung und
   dem ausschließlich regulären Normalpreisbestand.
+
+## Update 15.10.2026 – Branchlose Prospektprojektionen gesperrt
+
+- [x] Reguläre Prospektbeobachtungen ohne exakte Filial-ID bleiben im lokalen Verlauf sichtbar, werden aber nicht mehr als `MarketPrice` für Route und Preisvergleich projiziert.
+- [x] Die Projektion akzeptiert branchlose Beobachtungen aus manuellen, Bon- und sonstigen nicht-prospektbezogenen Quellen weiterhin nach den bestehenden Regeln.
+- [x] Eine Regression schützt die Grenze zwischen historischer Evidenz und route-fähigem aktuellem Preis.
