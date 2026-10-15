@@ -5,6 +5,15 @@ import '../../models/product.dart';
 
 enum OfferStatusFilter { active, all, expired }
 
+/// Returns the calendar day used by all current-offer filters and screen caches.
+///
+/// Offer validity is day-based, so a cache must change at midnight even when
+/// the caller does not provide an explicit reference timestamp.
+DateTime offerFilterDay(DateTime? now) {
+  final reference = now ?? DateTime.now();
+  return DateTime(reference.year, reference.month, reference.day);
+}
+
 List<Offer> filterOffers(
   List<Offer> offers, {
   required OfferStatusFilter status,
@@ -12,7 +21,7 @@ List<Offer> filterOffers(
   DateTime? now,
   List<Product> catalogProducts = products,
 }) {
-  final today = _day(now ?? DateTime.now());
+  final today = offerFilterDay(now);
   final normalizedQuery = query.trim().toLowerCase();
 
   final result = offers.where((offer) {
@@ -73,7 +82,7 @@ bool isOptionalOfferDateRangeActive({
   DateTime? validUntil,
   DateTime? now,
 }) {
-  final today = _day(now ?? DateTime.now());
+  final today = offerFilterDay(now);
   final start = validFrom == null ? null : _day(validFrom);
   final end = validUntil == null ? null : _day(validUntil);
   if (start != null && end != null && end.isBefore(start)) return false;
