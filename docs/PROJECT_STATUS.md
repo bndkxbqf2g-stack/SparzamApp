@@ -1,3 +1,7 @@
+## Update 15.10.2026 – Formatierte Normalpreise werden aus Prospekten gespeichert
+
+Der Prospektparser akzeptiert reguläre Händlerpreise jetzt als Zahl oder als strikt formatierten deutschen Anzeigewert wie `7,99 €`. Freie Beschreibungen werden verworfen. Der Aktionspreis bleibt ausschließlich Angebotsdaten; nur der ausdrücklich höhere Normalpreis wird automatisch als `PriceObservationKind.regular` lokal gespeichert und weiterprojiziert. Ein End-to-End-Test prüft die Kette vom Feed bis zum lokalen Preisbeobachtungsspeicher.
+
 ## Update 15.10.2026 – Recycelte Prospektbilder behalten keinen alten Fallback
 
 Beim schnellen Prospekt-Scroll werden verzögerte HTML-Fallbacks jetzt gegen die URL des aktuell montierten Bildes geprüft. Ein Fehler eines bereits recycelten Covers oder einer Seite kann dadurch keinen teuren Browserpfad für den nächsten Eintrag aktivieren. Eine Regression schützt die Zuordnung zwischen fehlgeschlagener und aktueller Bild-URL.
