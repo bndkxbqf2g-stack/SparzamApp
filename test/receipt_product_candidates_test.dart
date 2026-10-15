@@ -73,3 +73,33 @@ void main() {
     );
   });
 }
+
+
+testWidgets('suggestion chip requires an explicit tap', (tester) async {
+  Product? selected;
+  await tester.pumpWidget(
+    MaterialApp(
+      home: Scaffold(
+        body: ReceiptProductSuggestionList(
+          rawLabel: 'Milch',
+          products: const [
+            Product(
+              id: 'milk',
+              name: 'H-Milch',
+              unit: '1 l',
+              group: 'milch',
+              aliases: ['Milch'],
+            ),
+          ],
+          onSelected: (product) => selected = product,
+        ),
+      ),
+    ),
+  );
+
+  expect(find.text('Mögliche Katalogtreffer – bitte ausdrücklich auswählen:'), findsOneWidget);
+  expect(selected, isNull);
+  await tester.tap(find.widgetWithText(ActionChip, 'H-Milch'));
+  await tester.pump();
+  expect(selected?.id, 'milk');
+});
