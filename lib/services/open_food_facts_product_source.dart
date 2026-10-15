@@ -134,22 +134,32 @@ class OpenFoodFactsProductSource implements ProductDataSource {
     }
   }
 
-  Product _merge(Product enriched, Product? existing, String code) => Product(
-        id: existing?.id ?? enriched.id,
-        name: enriched.name.trim().isNotEmpty
-            ? enriched.name
-            : (existing?.name ?? enriched.name),
-        unit: existing?.unit ?? enriched.unit,
-        group: existing?.group ?? enriched.group,
-        aliases: existing?.aliases ?? enriched.aliases,
-        isFavorite: existing?.isFavorite ?? enriched.isFavorite,
-        isStaple: existing?.isStaple ?? enriched.isStaple,
-        ean: code,
-        brand: enriched.brand ?? existing?.brand,
-        packageAmount: enriched.packageAmount ?? existing?.packageAmount,
-        packageUnit: enriched.packageUnit ?? existing?.packageUnit,
-        imageUrl: enriched.imageUrl ?? existing?.imageUrl,
-      );
+  Product _merge(Product enriched, Product? existing, String code) {
+    final existingUnit = existing?.unit.trim();
+    final keepExistingUnit =
+        existingUnit != null &&
+        existingUnit.isNotEmpty &&
+        existingUnit.toLowerCase() != 'artikel';
+
+    return Product(
+      id: existing?.id ?? enriched.id,
+      name: enriched.name.trim().isNotEmpty
+          ? enriched.name
+          : (existing?.name ?? enriched.name),
+      // A generic scanner placeholder must not hide a verified package size.
+      // Explicit user-entered units remain authoritative.
+      unit: keepExistingUnit ? existing!.unit : enriched.unit,
+      group: existing?.group ?? enriched.group,
+      aliases: existing?.aliases ?? enriched.aliases,
+      isFavorite: existing?.isFavorite ?? enriched.isFavorite,
+      isStaple: existing?.isStaple ?? enriched.isStaple,
+      ean: code,
+      brand: enriched.brand ?? existing?.brand,
+      packageAmount: enriched.packageAmount ?? existing?.packageAmount,
+      packageUnit: enriched.packageUnit ?? existing?.packageUnit,
+      imageUrl: enriched.imageUrl ?? existing?.imageUrl,
+    );
+  }
 
   _ParsedQuantity? _quantity(Map<String, dynamic> raw) {
     final amount = (raw['product_quantity'] as num?)?.toDouble();
