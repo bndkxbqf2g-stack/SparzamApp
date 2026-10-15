@@ -1,3 +1,8 @@
+## Update 15.10.2026 – Adapterherkunft am Prospekt-Viewer
+
+- [x] Feed-Metadaten führen `sourceAdapter` bis zum `ProspectIssue`; sichtbare Issue-Rebuilds und der manuelle Seiten-/OCR-Pfad verlieren die Herkunft nicht.
+- [x] Fingerprint- und UI-Regressionen prüfen den Wechsel zwischen offizieller Quelle und optionalem KaufDA-Adapter.
+
 ## Update 15.10.2026 – Provenienz für geprüfte Prospektseiten
 
 - [x] Manuelle Prospekt-/OCR-Übernahmen speichern `capturedAt` am Offer-Datensatz und behalten optionale Adapterherkunft.
