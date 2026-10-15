@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Route-UI bleibt filialgenau
+
+- RouteScreen reicht den exakten Filialkatalog jetzt an RouteOptimizer und OSRM weiter; die Distanzmatrix wird nicht mehr auf den globalen Namenkatalog begrenzt.
+- ShellRouting hält den Filialkatalog im Snapshot-Schlüssel. Ein Wechsel zwischen gleichnamigen Filialen verwirft den alten Optimierer deterministisch.
+- Die Regression prüft Branch-ID und Adresse im Optimierer sowie die Snapshot-Invalidierung. Preisabdeckung, Mindestvorteil und Offline-Fallback bleiben unverändert.
+
 ## Update 15.10.2026 – Routenlimit auf sechs Projektmärkte erweitert
 
 - Die Route erzeugt jetzt deterministisch jede nicht-leere Kombination bis zum konfigurierten maxStores-Limit. Damit werden vier bis sechs aktivierte Märkte nicht mehr stillschweigend ignoriert.

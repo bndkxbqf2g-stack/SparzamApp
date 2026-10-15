@@ -72,6 +72,12 @@ Diese Roadmap ist eine Prioritätenliste, kein starres Releaseversprechen.
 - [x] Das Routenlimit bleibt über maxStores und den Mindestvorteil steuerbar; fehlende Preise werden weiterhin als unbekannt behandelt.
 - [x] Mobilitätseinstellungen und lokale Altformate akzeptieren bis zu sechs Märkte; die bestehende Ein-, Zwei- und Dreimarktlogik bleibt unverändert.
 
+## Update 15.10.2026 – Route-UI bleibt filialgenau
+
+- [x] RouteScreen und ShellRouting verwenden denselben exakten Filialkatalog wie der RouteOptimizer.
+- [x] OSRM-Ziele, Fallback-Distanzen und sichtbare Routenpfade behalten Branch-ID, Ort und Adresse; ein gleichnamiger Händler wird nicht stillschweigend vertauscht.
+- [x] Der Shell-Snapshot wird bei einem geänderten Filialkatalog invalidiert und bleibt bei unveränderten Eingaben wiederverwendbar.
+
 ## Phase A – Solide Datengrundlage
 - Bon-Parsing stabilisieren.
 - Stück-, Gewichts- und Grundpreise korrekt unterscheiden.
