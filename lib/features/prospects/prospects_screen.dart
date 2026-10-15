@@ -889,6 +889,15 @@ ProspectIssue _visibleIssue(
     address: current?.address ?? selected.address,
     sourceStatus: sourceStatus,
     recordCount: currentRecordCount,
+    availablePageCount:
+        current?.availablePageCount ?? selected.availablePageCount,
+    loadedPageCount: current?.loadedPageCount ?? selected.loadedPageCount,
+    missingPageNumbers:
+        current?.missingPageNumbers ?? selected.missingPageNumbers,
+    pageStatus: current?.pageStatus ?? selected.pageStatus,
+    pageCountKnown: current?.pageCountKnown ?? selected.pageCountKnown,
+    uncertainProductCount:
+        current?.uncertainProductCount ?? selected.uncertainProductCount,
     validFrom: current?.validFrom,
     validUntil: current?.validUntil,
   );
@@ -900,13 +909,25 @@ ProspectIssue _bestVisibleProspect(Iterable<ProspectIssue> entries) {
   return sorted.first;
 }
 
+int _prospectComparablePageCount(ProspectIssue issue) {
+  final loadedPageCount = issue.loadedPageCount ?? issue.pages.length;
+  final reportedPageCount =
+      issue.pageCountKnown ? issue.availablePageCount : null;
+  if (reportedPageCount != null && reportedPageCount > loadedPageCount) {
+    return reportedPageCount;
+  }
+  return loadedPageCount;
+}
+
 int _compareVisibleProspects(ProspectIssue a, ProspectIssue b) {
   final status = _prospectStatusRank(b.sourceStatus).compareTo(
     _prospectStatusRank(a.sourceStatus),
   );
   if (status != 0) return status;
 
-  final pages = b.pages.length.compareTo(a.pages.length);
+  final pages = _prospectComparablePageCount(
+    b,
+  ).compareTo(_prospectComparablePageCount(a));
   if (pages != 0) return pages;
 
   final aHasThumbnail = a.thumbnailUrl?.trim().isNotEmpty == true;
@@ -1721,6 +1742,15 @@ class ProspectViewerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pages = _viewerPages(issue);
+    final loadedPageCount = pages.length;
+    final reportedPageCount =
+        issue.pageCountKnown ? issue.availablePageCount : null;
+    final visiblePageCount =
+        reportedPageCount != null && reportedPageCount > loadedPageCount
+            ? reportedPageCount
+            : loadedPageCount;
+    final hasUnloadedPageSamples =
+        reportedPageCount != null && loadedPageCount < reportedPageCount;
     final items = records
         .where((record) => _prospectRecordBelongsToIssue(record, issue))
         .toList(growable: false);
@@ -1768,12 +1798,17 @@ class ProspectViewerScreen extends StatelessWidget {
           '${_prospectDate(issue.validFrom!)} – ${_prospectDate(issue.validUntil!)}',
           style: const TextStyle(color: Colors.black54),
         ),
-      if (pages.isNotEmpty) ...[
+      if (visiblePageCount > 0) ...[
         const SizedBox(height: 14),
         Text(
-          'Prospektseiten (${pages.length})',
+          'Prospektseiten ($visiblePageCount)',
           style: Theme.of(context).textTheme.titleMedium,
         ),
+        if (hasUnloadedPageSamples)
+          Text(
+            '$loadedPageCount Bildvorschauen geladen; weitere Seiten beim Händler öffnen.',
+            style: const TextStyle(color: Colors.black54),
+          ),
       ],
       if (pages.isEmpty)
         Card(
