@@ -102,11 +102,7 @@ OptimizedTravelRoute optimizeTravelRoute(
   final distance = stores.fold<double>(
     0,
     (sum, store) =>
-        sum +
-        (fallbackDistances[travelMatrixStoreKey(store)] ??
-                fallbackDistances[store.name] ??
-                store.distanceKm) *
-            2,
+        sum + _fallbackDistanceForStore(store, fallbackDistances) * 2,
   );
 
   return OptimizedTravelRoute(
@@ -114,6 +110,30 @@ OptimizedTravelRoute optimizeTravelRoute(
     distanceKm: distance,
     usesRoadMatrix: false,
   );
+}
+
+/// Uses a legacy name key when the distance map has no branch-specific
+/// entry for this retailer. Once any branch-specific value exists, a missing
+/// exact branch stays on the store's configured fallback instead of borrowing
+/// an ambiguous sibling value.
+double _fallbackDistanceForStore(
+  Store store,
+  Map<String, double> fallbackDistances,
+) {
+  final key = travelMatrixStoreKey(store);
+  final exact = fallbackDistances[key];
+  if (exact != null) return exact;
+  if (key == store.name) {
+    return fallbackDistances[store.name] ?? store.distanceKm;
+  }
+  final branchPrefix = '${store.name}#';
+  final hasBranchSpecificValue = fallbackDistances.keys.any(
+    (candidate) => candidate.startsWith(branchPrefix),
+  );
+  if (!hasBranchSpecificValue) {
+    return fallbackDistances[store.name] ?? store.distanceKm;
+  }
+  return store.distanceKm;
 }
 
 Iterable<List<T>> _permutations<T>(List<T> items) sync* {

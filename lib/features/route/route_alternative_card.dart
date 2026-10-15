@@ -27,7 +27,7 @@ class RouteAlternativeCard extends StatelessWidget {
           ),
         ),
         title: Text(
-          plan.stores.map((store) => store.name).join(' + '),
+          plan.stores.map(routeStoreDisplayLabel).join(' + '),
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
         subtitle: Text(
