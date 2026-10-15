@@ -312,7 +312,7 @@ void main() {
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
       "proofRef": "https://example.test/lidl/formatted-persistence",
-      "capturedAt": "2026-10-15T12:00:00Z"
+      "capturedAt": "2026-10-12T12:00:00Z"
     }
   ]
 }
