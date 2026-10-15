@@ -66,15 +66,16 @@ class _OffersScreenState extends State<OffersScreen> {
   final searchController = TextEditingController();
   var query = '';
   List<OfferImportRecord>? _currentRecordsInput;
-  DateTime? _currentRecordsNow;
+  DateTime? _currentRecordsDay;
   List<OfferImportRecord>? _currentRecordsCache;
   List<ProspectIssue>? _currentIssuesInput;
-  DateTime? _currentIssuesNow;
+  DateTime? _currentIssuesDay;
   List<ProspectIssue>? _currentIssuesCache;
 
   List<OfferImportRecord> _currentRecords() {
+    final day = offerFilterDay(widget.now);
     if (identical(_currentRecordsInput, widget.prospectRecords) &&
-        _currentRecordsNow == widget.now) {
+        _currentRecordsDay == day) {
       return _currentRecordsCache ?? const <OfferImportRecord>[];
     }
     final current = currentProspectRecords(
@@ -82,14 +83,15 @@ class _OffersScreenState extends State<OffersScreen> {
       now: widget.now,
     );
     _currentRecordsInput = widget.prospectRecords;
-    _currentRecordsNow = widget.now;
+    _currentRecordsDay = day;
     _currentRecordsCache = current;
     return current;
   }
 
   List<ProspectIssue> _currentIssues() {
+    final day = offerFilterDay(widget.now);
     if (identical(_currentIssuesInput, widget.prospectIssues) &&
-        _currentIssuesNow == widget.now) {
+        _currentIssuesDay == day) {
       return _currentIssuesCache ?? const <ProspectIssue>[];
     }
     final current = _currentProspectIssues(
@@ -97,7 +99,7 @@ class _OffersScreenState extends State<OffersScreen> {
       now: widget.now,
     );
     _currentIssuesInput = widget.prospectIssues;
-    _currentIssuesNow = widget.now;
+    _currentIssuesDay = day;
     _currentIssuesCache = current;
     return current;
   }
