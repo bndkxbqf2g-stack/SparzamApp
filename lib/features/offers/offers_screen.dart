@@ -13,6 +13,7 @@ import 'offer_filter.dart';
 import '../../services/prospect_feed_service.dart';
 import '../prospects/prospect_feed_status.dart';
 import '../prospects/prospect_cover_section.dart';
+import '../prospects/prospect_issue_identity.dart';
 import '../prospects/prospects_screen.dart';
 
 class OffersScreen extends StatefulWidget {
