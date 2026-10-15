@@ -42,12 +42,13 @@ Future<ProspectRegularPricePersistenceResult>
     now: now,
     refreshedStores: refreshedStores,
   );
-  final stored = observedAt == null
-      ? await store.load()
-      : await store.upsertById(
-          learned,
-          removeWhere: _isAutomaticProspectOfferObservation,
-        );
+  final stored = await store.upsertById(
+    learned,
+    // Remove legacy automatic offer observations even when a cache lacks a
+    // feed timestamp. They are never routeable prices and must not remain in
+    // the local prospect price database.
+    removeWhere: _isAutomaticProspectOfferObservation,
+  );
   return ProspectRegularPricePersistenceResult(
     learned: learned,
     stored: stored,
