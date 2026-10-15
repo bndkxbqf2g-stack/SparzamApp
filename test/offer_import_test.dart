@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/models/offer.dart';
+import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/product.dart';
 
 void main() {
@@ -323,6 +324,33 @@ void main() {
     expect(result.offer!.source, 'MANUAL');
   });
 
+  test('persists evidence confidence while keeping legacy offers readable', () {
+    final offer = Offer(
+      id: 'reviewed-ocr',
+      productId: 'schmand',
+      storeName: 'Lidl',
+      originalPrice: 0.89,
+      offerPrice: 0.69,
+      validUntil: DateTime(2026, 9, 30),
+      source: 'leaflet',
+      evidenceConfidence: EvidenceConfidence.manuallyConfirmed,
+    );
+
+    final restored = Offer.fromJson(offer.toJson());
+    expect(restored.evidenceConfidence, EvidenceConfidence.manuallyConfirmed);
+
+    final legacy = Offer.fromJson(
+      jsonEncode({
+        'id': 'legacy-confidence',
+        'productId': 'schmand',
+        'storeName': 'Lidl',
+        'originalPrice': 0.89,
+        'offerPrice': 0.69,
+        'validUntil': '2026-09-30T00:00:00.000',
+      }),
+    );
+    expect(legacy.evidenceConfidence, isNull);
+  });
   test('legacy offers without package fields remain readable', () {
     final offer = Offer.fromJson(
       jsonEncode({
