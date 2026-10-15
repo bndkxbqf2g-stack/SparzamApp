@@ -606,3 +606,191 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 ## Update 01.10.2026 – Aktive Fallbackangebote kenntlich machen
 - [x] Gültige Bestandsangebote eines vorübergehend nicht erreichbaren
   Händlerfeeds bleiben sichtbar, solange ihr eigenes Angebotsfenster gilt.
+- [x] Der Angebotstab kennzeichnet diesen Stand als letzten geprüften
+  Prospekt und zeigt die fehlende automatische Aktualisierung ohne Preis- oder
+  Identitätserfindung.
+- [ ] Die Händlerquelle muss weiterhin regelmäßig erfolgreich aktualisieren,
+  damit der Hinweis wieder in einen frischen Live-Status übergeht.
+
+## Update 02.10.2026 – Fallback-Provenienz in Angebote und Prospekte
+- [x] Beide Prospektansichten kennzeichnen gültige Bestandsangebote eines
+  fehlgeschlagenen Händlerabrufs als letzten geprüften Prospektstand.
+- [x] Die Prospektkarte zeigt dabei die Anzahl der gültigen Datensätze; die
+  Detailansicht bleibt preisfrei und verweist auf die fehlende Aktualisierung.
+- [x] Karten- und Detailpfad sind als Widgetregression abgesichert.
+
+## Update 02.10.2026 – Sparorientierte Reihenfolge verwandter Varianten
+- [x] Verwandte Interpretationen werden nach aktueller Angebots-/Preisevidenz
+  und danach nach dem belastbaren Preis sortiert.
+- [x] Unbelegte Varianten bleiben sichtbar und als Interpretation getrennt;
+  die Sortierung erweitert keine Preisidentität.
+- [x] Der offene `K.H-Milch`-Fall ist mit einer Preisrangfolge-Regression
+  abgesichert.
+
+## Update 02.10.2026 – Normale Milch aus unklaren Bonkürzeln auswählbar
+- [x] `K.H-Milch` öffnet neben getrennten H-Milch-Fettstufen auch eindeutig
+  normale Milchprodukte für den Preisvergleich.
+- [x] Aktuelle Angebote für normale Milch werden im Such- und Kandidatenpfad
+  zuerst berücksichtigt, ohne Produktidentitäten oder Preise zu verschmelzen.
+- [x] Regressionen sichern beide Auswahlpfade und den bestehenden Schutz vor
+  unbestätigten Varianten ab.
+
+## Update 11.10.2026 – Prospektkategorien direkt durchsuchbar
+- [x] Aktuelle Prospektartikel können zusätzlich zur Volltextsuche über ihre
+  vorhandene Händler- oder Darstellungskategorie gefiltert werden.
+- [x] Der Kategorienfilter bleibt reine Navigation: Herkunft, Gültigkeit,
+  Produktidentität und sichere Add-to-List-Auflösung werden nicht verändert.
+- [x] Widgetregression prüft die Auswahl einer Kategorie über mehrere Märkte.
+
+## Update 11.10.2026 – Originalnachweis an jeder belegten Artikelkarte
+- [x] Belegte kompakte und große Prospektkarten öffnen ihren vorhandenen
+  HTTP(S)-Originalnachweis direkt aus der Artikelansicht.
+- [x] Fehlende oder ungültige Nachweise erzeugen keinen Link und bleiben nach
+  den bestehenden Identitätsregeln nicht auswählbar.
+- [x] Widgetregression prüft die sichtbare Nachweisaktion und den Review-Fall.
+
+## Update 11.10.2026 – Filialort in Suchtreffern
+- [x] Marktübergreifende Prospektartikel zeigen den vorhandenen Filialort direkt
+  unter dem Händlernamen.
+- [x] Fehlende Filialdaten bleiben leer; es werden keine Standorte aus Labels
+  oder Händlerähnlichkeiten erfunden.
+- [x] Widgetregression deckt den sichtbaren Ort im Trefferpfad ab.
+
+## Update 11.10.2026 – Prospektartikel nach Händler auswählen
+- [x] Die Prospektansicht bietet Händlerchips für die direkte Marktfilterung.
+- [x] Die Filterung nutzt nur aktuell gültige Datensätze und den bestehenden
+  Nachweis-/Identitätsvertrag; sie erzeugt keinen Preis oder Marktbezug.
+- [x] Widgetregression prüft die Auswahl eines Händlers gegenüber einem zweiten
+  Markt.
+
+## Update 11.10.2026 – Offizielle Prospektlinks validieren
+- [x] Der offizielle Händlerlink im Prospektreader wird vor dem Öffnen auf ein
+  gültiges HTTP(S)-Ziel mit Host geprüft.
+- [x] Ungültige URI-Schemes bleiben ohne externe Aktion; Prospektdaten und
+  Angebotsidentität werden dadurch nicht verändert.
+
+## Update 11.10.2026 – Angebotsnachweise in der Abdeckung ausweisen
+- [x] Die Abdeckungskarte zählt pro Markt die strukturierten Angebotsdatensätze
+  mit vorhandenem Originalnachweis.
+- [x] Fehlende Nachweise bleiben als sichtbare Datenlücke bestehen und werden
+  weder durch einen Händlerlink noch durch eine Preis- oder Identitätsannahme
+  ersetzt.
+- [x] Ungültige URI-Schemes oder URLs ohne Host werden nicht als belastbarer
+  Originalnachweis gezählt.
+
+
+## Update 13.10.2026 – Preisvergleich für lange Listen
+- [x] Preisvergleichskarten im Preise-Reiter werden in kleinen Seiten aufgebaut, damit lange Einkaufslisten nicht beim ersten Öffnen alle Detailkarten rendern.
+- [x] Die bestehende Preisabdeckung bleibt vollständig; nur die sichtbare Vergleichsliste wird schrittweise erweitert.
+- [x] Der Nachladepfad ist widgetgetestet und ändert keine Preis-, Angebots- oder Routenlogik.
+
+
+## Update 13.10.2026 – Fehlende Preisbelege schneller erfassen
+- [x] Der Preise-Reiter führt fehlende Marktpreise je Listenposition direkt in die bestehende Datenlückenauflösung.
+- [x] Produkt-/Preiswahl, Quellenprüfung und Speicherung bleiben im vorhandenen `openPriceGapEditor`-Pfad gebündelt.
+- [x] Die neue Aktion erzeugt keine Ersatzpreise und ändert keine Routenentscheidung ohne bestätigte Evidenz.
+
+
+## Update 13.10.2026 – Route-Rebuilds beschleunigen
+- [x] Der Route-Reiter cached den Optimierungs-Snapshot über stabile Eingabereferenzen und invalidiert bei Daten- oder Tageswechsel.
+- [x] Preisabdeckung, Mindestvorteil, Fahrtkosten und Marktanzahl werden weiterhin ausschließlich vom bestehenden `RouteOptimizer` berechnet.
+- [x] Der Performance-Block ändert keine Preisquelle und führt keine zusätzlichen Netzwerkanfragen ein.
+
+
+## Update 14.10.2026 – Lange Einkaufslisten beschleunigen
+- [x] Warengruppen werden im Einkaufsliste-Reiter seitenweise aufgebaut; zusätzliche Gruppen bleiben über „Weitere Warengruppen laden“ erreichbar.
+- [x] Der bestehende Preis-, Angebots- und Kaufaktionsfluss wird unverändert an jede Gruppe weitergegeben.
+- [x] Die neue Begrenzung ist lokal und reversibel und erzeugt keine zusätzlichen Datenabrufe.
+
+
+## Update 14.10.2026 – Bestätigte Normalpreisspeicherung in den Prospektansichten
+- [x] Der Angebotstab verwendet für den Hinweis „als Preisbasis gespeichert“ ausschließlich die vom lokalen Preisbeobachtungslauf bestätigte Anzahl.
+- [x] Ein fehlgeschlagener oder noch nicht abgeschlossener Speichervorgang erzeugt keinen falschen Bestätigungsstatus, obwohl der Feed einen ausdrücklich ausgewiesenen Normalpreis enthält.
+- [x] Die Standalone-Ansicht behält ihren konservativen Feed-Fallback, wenn kein Shell-Persistenzwert übergeben wird.
+
+
+## Update 14.10.2026 – Reguläre Preisbasis je Händler nachvollziehbar
+- [x] Der Prospektfeed führt die Anzahl ausdrücklich ausgewiesener Normalpreise je Händler bis in die Abdeckungskarte.
+- [x] Die Anzeige trennt feed-seitig lernbare Normalpreise von den tatsächlich in `PriceObservationStore` gespeicherten Beobachtungen.
+- [x] Bei einem fehlgeschlagenen Persistenzlauf bleibt der Speicherstatus unbekannt beziehungsweise null; ein Angebotspreis wird niemals als regulärer Preis gezählt.
+
+## Update 14.10.2026 – Erfolgreiche Preisprüfung zeigt auch Nullspeicherung
+- [x] Ein erfolgreicher Persistenzlauf wird je Händler mit `0 gespeichert` ausgewiesen, wenn der aktuelle Feed keinen belegten regulären Preis enthält.
+- [x] `null` bleibt dem nicht übergebenen oder fehlgeschlagenen Speicherstatus vorbehalten; der UI-Fallback erfindet keine Bestätigung.
+- [x] Die Statusprojektion wird mit einer Regression für leere Händlerkarten abgesichert.
+
+## Update 14.10.2026 – Regulärer Prospektpreis im Preisvergleich sichtbar
+- [x] Preisbeobachtungen behalten die Evidenzart `regular` bis in die Preisansicht.
+- [x] Ausdrücklich ausgewiesene Normalpreise werden als `Prospektpreis · Normalpreis` gekennzeichnet und bleiben vom aktiven Angebot getrennt.
+- [x] Widget- und Fachtests sichern die Kennzeichnung, ohne Legacy-Preise oder die Routenbewertung zu verändern.
+
+
+## Update 14.10.2026 – Quellen- und Refresh-Provenienz geschützt
+- [x] Ein Feed-Refresh ordnet Händlernamen nur nach Groß-/Kleinschreibung und Rand-Whitespace zu; unterschiedliche Märkte bleiben getrennt.
+- [x] Die lokale Kompaktierung hält automatische Beobachtungen je Adapter getrennt, damit KaufDA- und Händlerdaten ihre Herkunft behalten.
+- [x] Regressionen sichern den Refresh-Filter und die Quota-Buckets ohne zusätzliche Netzwerkanfragen.
+
+
+## Update 14.10.2026 – Persistenzstatus in Angebote und Prospekte eindeutig
+- [x] Die Tabs unterscheiden Feed-Erkennung, laufende Speicherung, bestätigte Speicherung und unbekannten Speicherstatus.
+- [x] Eine bestätigte Nullspeicherung wird sichtbar als `0` ausgewiesen; ein Fehler wird nicht als `0 gespeichert` ausgegeben.
+- [x] Standalone-Ansichten behaupten keine lokale Speicherung ohne Shell-Nachweis.
+
+
+## Update 14.10.2026 – Abdeckungskarte mit Persistenzstatus
+- [x] Die Prospekt-Abdeckungskarte unterscheidet bestätigte Speicherung von laufender, fehlgeschlagener und nicht bestätigter Preisbeobachtung.
+- [x] Ein fehlgeschlagener Lauf zeigt keine `0 gespeichert`-Aussage und bleibt als unbekannt sichtbar.
+- [x] Die Einzelmarkt-Details verwenden denselben Status wie die Kopfzeile.
+
+
+## Update 14.10.2026 – Tägliche Prospektaktualisierung
+- [x] Der öffentliche Händlerfeed wird täglich um 04:15 Uhr Europe/Berlin-nah aktualisiert.
+- [x] Der bestehende Refresh bleibt auf die sechs konfigurierten offiziellen Filialquellen begrenzt; KaufDA bleibt opt-in und ersetzt keine exakte Filiale.
+- [x] Neue reguläre Normalpreise gelangen nach dem Feed-Refresh automatisch in den lokalen `PriceObservationStore`; Angebotspreise bleiben davon getrennt.
+
+## Update 14.10.2026 – Explizite Normalpreisfelder toleranter auslesen
+
+- [x] Händleradapter akzeptieren zusätzliche ausdrücklich benannte Vorher-/Streichpreisfelder (CamelCase und snake_case), ohne Rabattprozente, UVPs oder beliebige Zahlen als Normalpreis zu deuten.
+- [x] Die Alias-Auflösung bleibt vor dem Angebotspreisvergleich und speichert nur Werte, die mindestens so hoch wie der Angebotspreis sind.
+- [x] Parser-Fixtures decken die zusätzlichen Feldnamen ab; Datenmodell, Quellenpriorität und aktive Angebotspreise bleiben unverändert.
+
+## Update 14.10.2026 – Quellenmetadaten für Bilder und Kategorien erweitern
+
+- [x] Offizielle Prospektadapter akzeptieren zusätzliche ausdrücklich benannte Bildfelder und flache beziehungsweise verschachtelte Renditions, wenn die Quelle eine gültige HTTP(S)-URL liefert.
+- [x] Zusätzliche sichtbare Kategoriebezeichnungen werden als Quellenmetadatum übernommen; IDs, URLs und beliebige nicht-textuelle Werte bleiben ausgeschlossen.
+- [x] Die Erweiterung ändert weder Produktidentität noch Preis-/Gültigkeitslogik und ist mit Parser-Fixtures abgesichert.
+
+## Update 15.10.2026 – Aktuelle reguläre Prospektpreise nach Refresh-Provenienz projizieren
+
+- [x] Append-only Normalpreisbeobachtungen bleiben vollständig historisch gespeichert.
+- [x] Für dieselbe Produkt-/Filial-/Gültigkeitskombination ersetzt ein neuerer regulärer Prospektnachweis die ältere aktuelle Projektion auch dann, wenn sich die Prospektseite oder `proofRef` geändert hat.
+- [x] Die aktuelle Preisprojektion und Route verwenden dadurch keinen niedrigeren, veralteten Normalpreis aus einer früheren Feedfassung; Nachweis und Historie bleiben sichtbar.
+- [x] Eine Regression deckt den Wechsel des Prospektnachweises bei identischer Produkt-/Filial-/Gültigkeitsidentität ab.
+
+## Update 15.10.2026 – Selektiver Cover-Fallback bei Canvas-/CORS-Problemen
+
+- [x] Coverkarten verwenden weiterhin den Canvas-first-Pfad mit begrenzter Decode-Größe, damit schnelles Scrollen keine Plattform-Views pro Karte erzeugt.
+- [x] Nur ein Bild, dessen Canvas-Decodierung tatsächlich fehlschlägt, wechselt einmalig auf den HTML-Fallback; erfolgreiche Cover bleiben im schnellen Pfad.
+- [x] Favoritenrail und Coverraster teilen dieselbe begrenzte Decode-Größe und vermeiden dadurch doppelte Bildcache-Einträge.
+- [x] Der Angebote-Widgettest schützt Coverdarstellung und Seitenansicht.
+
+## Update 15.10.2026 – Issue #409: Seitenvollständigkeit und Datenabdeckung
+- [x] Offizielle EDEKA-`catalog.xml`-Bereiche und ALDI-/Netto-Publitas-
+  `spreads.json`-Listen vollständig und mit Cache-Token importieren.
+- [x] Kaufland-Lebensmittelkampagne gegenüber dem gleichzeitigen `-OD`-
+  Drogerieblatt auswählen und alle offiziellen Leaflet-v4-Seiten übernehmen.
+- [x] Lidl-Kampagnen nach Zeitraum deduplizieren, vollständige Seitenlisten
+  behalten und Dictionary-Produktanzahlen korrekt ausweisen.
+- [x] Fehlende oder nicht abrufbare Seiten, Cover-only-Quellen und unbekannte
+  Publisher-Gesamtzahlen im Feed und in der Prospekt-Abdeckung anzeigen.
+- [x] Seitenabdeckung beim Branch-Resolver und in der Tages-Fingerprint-Logik
+  erhalten; Wiederholungsimports bleiben idempotent.
+- [x] Den bestehenden `ReceiptObservation → PriceObservation → MarketPrice →
+  planningMarketPrices → RoutePriceResolver → RouteOptimizer`-Pfad unverändert
+  weiterverwenden; belegte Normalpreise und Angebote bleiben getrennt.
+- [x] Den lokalen Feedcache auf einen begrenzten, ersetzbaren Eintrag mit
+  4-MiB-Grenze beschränken und Originalbelege außerhalb dieses Caches nicht
+  antasten.
+- [ ] Als nächstes OCR-/Hotspot-Kandidaten nur als sichtbare, unsichere
+  Artikelreview ergänzen, wenn die Quelle keinen strukturierten Artikel liefert;
+  keine automatische Identitäts- oder Preisprojektion ohne Bestätigung.
