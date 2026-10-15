@@ -1596,6 +1596,31 @@ void main() {
     );
   });
 
+  testWidgets('wärmt eine begrenzte Prospektreihe vor', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: const [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: [],
+            ),
+          ],
+        ),
+      ),
+    );
+
+    final scroll = tester.widget<CustomScrollView>(
+      find.byKey(const ValueKey('prospect-bring-scroll')),
+    );
+    expect(
+      scroll.scrollCacheExtent,
+      const ScrollCacheExtent.pixels(360),
+    );
+  });
+
 }
 
 Future<void> _scrollProspects(
