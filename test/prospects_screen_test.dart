@@ -461,6 +461,75 @@ void main() {
     );
   });
 
+  testWidgets('keeps same-name branch card children keyed independently', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: const [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: const [],
+              branchId: 'lidl-zellingen',
+              location: 'Zellingen',
+              thumbnailUrl: 'https://example.test/lidl-zellingen.jpg',
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+            ),
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: const [],
+              branchId: 'lidl-wuerzburg',
+              location: 'Würzburg',
+              thumbnailUrl: 'https://example.test/lidl-wuerzburg.jpg',
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+            ),
+          ],
+          now: DateTime(2026, 9, 30),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(
+      find.byKey(
+        const ValueKey('prospect-cover-image-grid-Lidl#lidl-zellingen'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const ValueKey('prospect-cover-image-grid-Lidl#lidl-wuerzburg'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('prospect-open-grid-Lidl#lidl-zellingen')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('prospect-open-grid-Lidl#lidl-wuerzburg')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const ValueKey('prospect-favorite-Lidl#lidl-zellingen'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const ValueKey('prospect-favorite-Lidl#lidl-wuerzburg'),
+      ),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('filters current prospect articles by source category', (
     tester,
   ) async {
