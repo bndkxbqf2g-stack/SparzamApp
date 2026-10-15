@@ -303,7 +303,9 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
         color: _bringBackground,
         child: CustomScrollView(
           controller: _bringScrollController,
-          scrollCacheExtent: const ScrollCacheExtent.pixels(0),
+          // Warm one bounded card row so a fast swipe can decode the next
+          // covers without building the complete prospect feed.
+          scrollCacheExtent: const ScrollCacheExtent.pixels(360),
           key: const ValueKey('prospect-bring-scroll'),
           slivers: [
             if (hasSelection)

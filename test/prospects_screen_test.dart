@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/prospects/prospects_screen.dart';
 import 'package:sparzamapp/features/prospects/prospect_cover_section.dart';
@@ -1593,6 +1594,31 @@ void main() {
     expect(
       tester.widget<TextFormField>(fields.at(1)).controller!.text,
       '0,99',
+    );
+  });
+
+  testWidgets('wärmt eine begrenzte Prospektreihe vor', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: const [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: [],
+            ),
+          ],
+        ),
+      ),
+    );
+
+    final scroll = tester.widget<CustomScrollView>(
+      find.byKey(const ValueKey('prospect-bring-scroll')),
+    );
+    expect(
+      scroll.scrollCacheExtent,
+      const ScrollCacheExtent.pixels(360),
     );
   });
 
