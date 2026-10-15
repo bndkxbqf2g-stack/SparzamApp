@@ -201,7 +201,7 @@ class _OffersScreenState extends State<OffersScreen> {
           const SizedBox(height: 14),
           _ProspectOffers(
             records: currentRecords,
-            issues: widget.prospectIssues,
+            issues: currentProspectIssues,
             query: query,
             catalogProducts: widget.catalogProducts,
             onAddToShoppingList: widget.onAddToShoppingList,
