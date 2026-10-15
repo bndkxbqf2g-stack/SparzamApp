@@ -241,7 +241,9 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
                   padding: EdgeInsets.zero,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: columns,
-                    mainAxisExtent: 300,
+                    // Leave room for source and page-completeness metadata
+                    // without allowing a card to overflow during grid layout.
+                    mainAxisExtent: 324,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 14,
                   ),
@@ -382,6 +384,32 @@ class ProspectCoverCard extends StatelessWidget {
                               style: const TextStyle(
                                 color: Color(0xFF6F7C80),
                                 fontSize: 12,
+                              ),
+                            ),
+                          if (prospectSourceLabel(issue) case final sourceLabel?)
+                            Text(
+                              sourceLabel,
+                              key: ValueKey(
+                                'prospect-cover-source-$scope-${prospectIssueKey(issue)}',
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Color(0xFF6F7C80),
+                                fontSize: 11,
+                              ),
+                            ),
+                          if (prospectPageCoverage(issue) case final pageCoverage?)
+                            Text(
+                              pageCoverage,
+                              key: ValueKey(
+                                'prospect-cover-pages-$scope-${prospectIssueKey(issue)}',
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Color(0xFF6F7C80),
+                                fontSize: 11,
                               ),
                             ),
                           Text(
@@ -629,6 +657,31 @@ String? _validity(ProspectIssue issue) {
   String date(DateTime value) =>
       '${value.day.toString().padLeft(2, '0')}.${value.month.toString().padLeft(2, '0')}.${value.year}';
   return '${date(from)} – ${date(until)}';
+}
+
+String? prospectSourceLabel(ProspectIssue issue) {
+  final adapter = issue.sourceAdapter?.trim();
+  if (adapter == null || adapter.isEmpty) return null;
+  return 'Quelle: $adapter';
+}
+
+String? prospectPageCoverage(ProspectIssue issue) {
+  final loaded = issue.loadedPageCount ?? issue.pages.length;
+  final available = issue.availablePageCount;
+  if (available != null && available > 0) {
+    final missing = issue.missingPageNumbers.length;
+    final missingLabel = missing == 0
+        ? ''
+        : missing == 1
+            ? ' · 1 fehlt'
+            : ' · $missing fehlen';
+    return '$loaded/$available Seiten geladen$missingLabel';
+  }
+  if (loaded > 0) return '$loaded Seiten geladen';
+  if (issue.pageStatus.trim().toLowerCase() == 'unavailable') {
+    return 'Seiten nicht verfügbar';
+  }
+  return null;
 }
 
 List<ProspectIssue> _uniqueIssues(Iterable<ProspectIssue> issues) {
