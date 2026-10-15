@@ -1556,8 +1556,8 @@ String _prospectCardSummary(ProspectIssue issue) {
       ? prospectPageCoverage(issue)
       : null;
   final evidence = <String>[
-    if (sourceLabel != null) sourceLabel,
-    if (pageLabel != null) pageLabel,
+    ?sourceLabel,
+    ?pageLabel,
   ];
   if (evidence.isEmpty) return summary;
   return '$summary · ${evidence.join(' · ')}';
