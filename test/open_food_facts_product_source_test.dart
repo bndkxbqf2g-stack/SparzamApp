@@ -133,4 +133,73 @@ void main() {
     expect(product?.packageUnit, 'ml');
     expect(product?.unit, '200 ml');
   });
+  test('replaces a generic Artikel unit with verified package metadata', () async {
+    final source = OpenFoodFactsProductSource(
+      client: MockClient((_) async {
+        return http.Response(
+          jsonEncode({
+            'status': 1,
+            'product': {
+              'code': '789',
+              'product_name': 'Milch 1,5 %',
+              'quantity': '1 l',
+            },
+          }),
+          200,
+        );
+      }),
+    );
+
+    const existing = Product(
+      id: 'local-milk',
+      name: 'Milch',
+      unit: 'Artikel',
+      group: 'milch',
+      ean: '789',
+    );
+
+    final product = await source.fetchProductByEan('789', existing: existing);
+    source.close();
+
+    expect(product?.id, 'local-milk');
+    expect(product?.unit, '1 l');
+    expect(product?.packageAmount, 1);
+    expect(product?.packageUnit, 'l');
+  });
+
+  test('keeps an explicit local unit while retaining structured package data',
+      () async {
+    final source = OpenFoodFactsProductSource(
+      client: MockClient((_) async {
+        return http.Response(
+          jsonEncode({
+            'status': 1,
+            'product': {
+              'code': '790',
+              'product_name': 'Milch',
+              'product_quantity': 500,
+              'product_quantity_unit': 'g',
+            },
+          }),
+          200,
+        );
+      }),
+    );
+
+    const existing = Product(
+      id: 'local-milk',
+      name: 'Milch',
+      unit: 'Packung',
+      group: 'milch',
+      ean: '790',
+    );
+
+    final product = await source.fetchProductByEan('790', existing: existing);
+    source.close();
+
+    expect(product?.unit, 'Packung');
+    expect(product?.packageAmount, 500);
+    expect(product?.packageUnit, 'g');
+  });
+
 }
