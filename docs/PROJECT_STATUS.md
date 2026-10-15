@@ -1,3 +1,7 @@
+## Update 15.10.2026 – Recycelte Prospektbilder behalten keinen alten Fallback
+
+Beim schnellen Prospekt-Scroll werden verzögerte HTML-Fallbacks jetzt gegen die URL des aktuell montierten Bildes geprüft. Ein Fehler eines bereits recycelten Covers oder einer Seite kann dadurch keinen teuren Browserpfad für den nächsten Eintrag aktivieren. Eine Regression schützt die Zuordnung zwischen fehlgeschlagener und aktueller Bild-URL.
+
 ## Update 15.10.2026 – Filialgenaue Prospektkarten beim Lazy-Scroll
 
 Die Prospektkarten verwenden für Cover, Öffnen und Favoriten jetzt denselben vollständigen Filialschlüssel wie die äußere Karte. Beim virtuellen Scrollen bleiben gleichnamige Filialen dadurch getrennt; Bild- und Aktionszustände können nicht zwischen zwei Märkten wiederverwendet werden. Eine Widgetregression prüft zwei Lidl-Filialen mit eigener Branch-ID.
