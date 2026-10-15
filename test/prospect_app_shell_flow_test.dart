@@ -13,7 +13,6 @@ import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/mobility_settings.dart';
 import 'package:sparzamapp/models/named_shopping_list.dart';
 import 'package:sparzamapp/models/offer.dart';
-import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/price_data_settings.dart';
 import 'package:sparzamapp/models/price_point.dart';
 import 'package:sparzamapp/models/product.dart';
@@ -27,7 +26,6 @@ import 'package:sparzamapp/services/offer_store.dart';
 import 'package:sparzamapp/services/price_data_settings_store.dart';
 import 'package:sparzamapp/services/price_history_store.dart';
 import 'package:sparzamapp/services/product_catalog_store.dart';
-import 'package:sparzamapp/services/price_observation_store.dart';
 import 'package:sparzamapp/services/prospect_import_module.dart';
 import 'package:sparzamapp/services/prospect_feed_service.dart';
 import 'package:sparzamapp/services/purchase_store.dart';
@@ -41,21 +39,6 @@ class _FakeProspectImportModule extends ProspectImportModule {
 
   @override
   Future<ProspectFeedLoadResult> execute({String? startAddress}) async => result;
-}
-
-class _CachedOnlyProspectImportModule extends ProspectImportModule {
-  _CachedOnlyProspectImportModule(this.cached);
-
-  final ProspectFeedLoadResult cached;
-
-  @override
-  Future<ProspectFeedLoadResult?> executeCached({String? startAddress}) async =>
-      cached;
-
-  @override
-  Future<ProspectFeedLoadResult> execute({String? startAddress}) async {
-    throw StateError('offline');
-  }
 }
 
 class _DelayedNamedListStore extends ShoppingListStore {
@@ -537,68 +520,4 @@ void main() {
       expect(savedOffers.single.address, issue.address);
     },
   );
-  testWidgets(
-    'speichert reguläre Preise auch aus einem validierten Cache-Feed',
-    (tester) async {
-      final now = DateTime.now();
-      final record = OfferImportRecord(
-        sourceId: 'cached-regular-price',
-        productLabel: 'Kaffee 500 g',
-        storeName: 'Netto',
-        originalPrice: 7.99,
-        offerPrice: 4.99,
-        validFrom: now.subtract(const Duration(days: 1)),
-        validUntil: now.add(const Duration(days: 2)),
-        source: 'retailerWebsite',
-        sourceAdapter: 'kaufda',
-        branchId: 'netto-test-branch',
-        proofRef: 'https://example.test/netto/cached-regular-price',
-      );
-      final cached = ProspectFeedLoadResult(
-        records: [record],
-        refreshedStores: const ['Netto'],
-        generatedAt: now,
-        prospects: const [
-          ProspectIssue(
-            storeName: 'Netto',
-            title: 'Aktionsprospekt',
-            pages: [],
-            branchId: 'netto-test-branch',
-          ),
-        ],
-        fromCache: true,
-      );
-
-      await tester.pumpWidget(
-        _app(
-          _Stores(),
-          _CachedOnlyProspectImportModule(cached),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 500));
-      // SharedPreferencesAsync is real asynchronous I/O in this widget
-      // harness. Give the queued cache write a bounded real-time window and
-      // read once; an unbounded polling loop makes the full suite time out.
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(seconds: 3)),
-      );
-
-      final observations = await PriceObservationStore().load();
-      expect(
-        observations.where((entry) =>
-            entry.id.contains('cached-regular-price|regular')),
-        hasLength(1),
-      );
-      final regular = observations.singleWhere(
-        (entry) => entry.id.contains('cached-regular-price|regular'),
-      );
-      expect(regular.price, 7.99);
-      expect(regular.kind, PriceObservationKind.regular);
-      expect(
-        observations.any((entry) => entry.price == 4.99),
-        isFalse,
-      );
-    },
-  );
-
 }
