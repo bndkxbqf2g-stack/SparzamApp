@@ -156,7 +156,7 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
     final persistedByStore = widget.prospectRegularPriceCountsByStore.entries
         .toList()
       ..sort((a, b) => a.key.compareTo(b.key));
-    for (final entry of persistedByStore) {
+    for (final entry in persistedByStore) {
       add(entry.key);
       add(entry.value);
     }
