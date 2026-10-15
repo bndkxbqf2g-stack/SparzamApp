@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/product.dart';
 import '../offers/offer_import.dart';
+import '../offers/prospect_price_learning.dart';
 import '../offers/offer_filter.dart';
 import '../../services/prospect_feed_service.dart';
 
@@ -339,21 +340,8 @@ ProspectCoverage _coverageForStore(
   );
 }
 
-bool hasLearnableProspectRegularPrice(OfferImportRecord record) {
-  final regular = record.originalPrice;
-  return !record.regionalOnly &&
-      hasExactOfferRecordBranch(record) &&
-      hasTrustedOfferProofReference(record.proofRef) &&
-      regular != null &&
-      regular.isFinite &&
-      regular > 0 &&
-      record.offerPrice.isFinite &&
-      record.offerPrice > 0 &&
-      // Only a real crossed-out amount is persisted as regular-price history.
-      regular > record.offerPrice &&
-      (record.validFrom == null ||
-          !record.validUntil.isBefore(record.validFrom!));
-}
+bool hasLearnableProspectRegularPrice(OfferImportRecord record) =>
+    isLearnableProspectRegularPrice(record);
 
 int _prospectPageCount(ProspectIssue? issue) {
   if (issue == null) return 0;
