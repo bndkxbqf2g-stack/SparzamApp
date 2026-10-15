@@ -312,6 +312,70 @@ void main() {
     expect(find.text('Milch Filiale B'), findsNothing);
   });
 
+  testWidgets('keeps same-name branches in search results', (tester) async {
+    final records = [
+      OfferImportRecord(
+        sourceId: 'branch-a-multi-search',
+        productLabel: 'Milch Filiale A',
+        storeName: 'Lidl',
+        offerPrice: 0.99,
+        validFrom: DateTime(2026, 9, 28),
+        validUntil: DateTime(2026, 10, 3),
+        branchId: 'lidl-zellingen',
+        proofRef: 'https://example.test/lidl/zellingen/milk',
+      ),
+      OfferImportRecord(
+        sourceId: 'branch-b-multi-search',
+        productLabel: 'Milch Filiale B',
+        storeName: 'Lidl',
+        offerPrice: 1.09,
+        validFrom: DateTime(2026, 9, 28),
+        validUntil: DateTime(2026, 10, 3),
+        branchId: 'lidl-wuerzburg',
+        proofRef: 'https://example.test/lidl/wuerzburg/milk',
+      ),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: records,
+          prospects: [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt Zellingen',
+              pages: const [],
+              branchId: 'lidl-zellingen',
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+            ),
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt Würzburg',
+              pages: const [],
+              branchId: 'lidl-wuerzburg',
+              validFrom: DateTime(2026, 9, 28),
+              validUntil: DateTime(2026, 10, 3),
+            ),
+          ],
+          now: DateTime(2026, 9, 30),
+        ),
+      ),
+    );
+
+    final search = find.byWidgetPredicate(
+      (widget) =>
+          widget is TextField &&
+          widget.decoration?.hintText == 'Prospekte und Artikel durchsuchen',
+    );
+    await tester.enterText(search, 'Milch');
+    await tester.pump();
+
+    expect(find.text('2 passende Prospektartikel'), findsOneWidget);
+    expect(find.text('Milch Filiale A'), findsOneWidget);
+    expect(find.text('Milch Filiale B'), findsOneWidget);
+  });
+
   testWidgets('searches current prospect articles across markets', (
     tester,
   ) async {
