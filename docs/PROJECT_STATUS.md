@@ -1,3 +1,10 @@
+## Update 15.10.2026 – Cache-Prospektpreise filialgenau ausweisen
+
+- Der Offline-/Cache-Pfad verwendet jetzt dieselbe Persistenz-Auswertung wie der Live-Refresh.
+- Nur aktuell gelernte und tatsächlich gespeicherte reguläre Beobachtungen zählen als bestätigt; ein fehlender regulärer Cache-Preis wird als bestätigte Null statt als alter Stand angezeigt.
+- Filialschlüssel bleiben auch im Cache getrennt, sodass gleichnamige Märkte nicht zusammengezählt werden.
+- Eine Regression schützt getrennte Filialen, storeweite Legacy-Einträge und nicht gespeicherte Beobachtungen.
+
 ## Update 15.10.2026 – Prospektabdeckung exakt je Filiale
 
 - Prospektabdeckung gruppiert Angebote, Seiten und Herkunft jetzt über die bestehende Store-plus-Branch-Identität; gleichnamige Filialen werden getrennt angezeigt.

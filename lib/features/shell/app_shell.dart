@@ -40,7 +40,6 @@ import '../../services/prospect_feed_fingerprint.dart';
 import '../offers/prospect_regular_price_persistence.dart';
 import '../offers/prospect_price_statistics.dart';
 import '../prospects/prospect_feed_status.dart';
-import '../prospects/prospect_issue_identity.dart';
 import 'price_observation_merge.dart';
 import '../../services/market_price_observation_adapter.dart';
 import '../../services/recent_purchase_store.dart';
@@ -727,29 +726,18 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       final learnedPrices = persistence?.learned ?? const <PriceObservation>[];
       final historical =
           persistence?.stored ?? historicalPriceObservations;
-      final persistedRegularPriceIds = persistence?.stored
-          .where((entry) => entry.kind == PriceObservationKind.regular)
-          .map((entry) => entry.id)
-          .toSet() ??
-          const <String>{};
-      final persistedRegularPriceCount = learnedPrices
-          .where((entry) => persistedRegularPriceIds.contains(entry.id))
-          .length;
-      final persistedRegularPriceCountsByStore = <String, int>{};
-      if (pricePersistenceWarning == null) {
-        for (final entry in learnedPrices) {
-          if (!persistedRegularPriceIds.contains(entry.id)) continue;
-          final coverageKey = prospectStoreBranchKey(
-            storeName: entry.storeName,
-            branchId: entry.locationId,
-          );
-          persistedRegularPriceCountsByStore.update(
-            coverageKey,
-            (count) => count + 1,
-            ifAbsent: () => 1,
-          );
-        }
-      }
+      final persistedSummary = pricePersistenceWarning == null
+          ? summarizePersistedProspectRegularPrices(
+              learned: learnedPrices,
+              stored: historical,
+            )
+          : const ProspectRegularPricePersistenceSummary(
+              count: 0,
+              countsByBranch: <String, int>{},
+            );
+      final persistedRegularPriceCount = persistedSummary.count;
+      final persistedRegularPriceCountsByStore =
+          persistedSummary.countsByBranch;
       setState(() {
         prospectRegularPriceCount = pricePersistenceWarning == null
             ? persistedRegularPriceCount
@@ -833,26 +821,15 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     if (!_isCurrentDataRevision(revision) || isSuperseded()) return;
 
     final learned = persistence?.learned ?? const <PriceObservation>[];
-    if (learned.isEmpty) return;
     final stored = persistence?.stored ?? const <PriceObservation>[];
-    final persistedIds = stored
-        .where((entry) => entry.kind == PriceObservationKind.regular)
-        .map((entry) => entry.id)
-        .toSet();
-    final countsByStore = <String, int>{};
-    for (final entry in learned) {
-      if (!persistedIds.contains(entry.id)) continue;
-      countsByStore.update(
-        entry.storeName,
-        (count) => count + 1,
-        ifAbsent: () => 1,
-      );
-    }
+    final persistedSummary = summarizePersistedProspectRegularPrices(
+      learned: learned,
+      stored: stored,
+    );
     if (!mounted || isSuperseded()) return;
     setState(() {
-      prospectRegularPriceCount =
-          learned.where((entry) => persistedIds.contains(entry.id)).length;
-      prospectRegularPriceCountsByStore = Map.unmodifiable(countsByStore);
+      prospectRegularPriceCount = persistedSummary.count;
+      prospectRegularPriceCountsByStore = persistedSummary.countsByBranch;
       prospectRegularPricePersistenceStatus =
           ProspectRegularPricePersistenceStatus.succeeded;
       historicalPriceObservations = mergePriceObservations(
