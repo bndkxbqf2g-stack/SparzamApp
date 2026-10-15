@@ -8,7 +8,7 @@ import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/services/prospect_feed_service.dart';
 
 void main() {
-  testWidgets('begrenzt den äußeren Angebote-Scrollvorlauf', (tester) async {
+  testWidgets('wärmt genau eine Angebote-Scrollreihe vor', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: OffersScreen(catalogProducts: const <Product>[]),
@@ -20,7 +20,7 @@ void main() {
     );
     expect(
       scroll.scrollCacheExtent,
-      const ScrollCacheExtent.pixels(0),
+      const ScrollCacheExtent.pixels(360),
     );
   });
 
