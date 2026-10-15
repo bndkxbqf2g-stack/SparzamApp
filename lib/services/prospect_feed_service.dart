@@ -440,9 +440,10 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     final branchId = _optionalNonEmptyString(source['branchId']);
     final location = _optionalNonEmptyString(source['location']);
     final address = _optionalNonEmptyString(source['address']);
-    final sourceAdapter = _optionalNonEmptyString(
-      source['sourceAdapter'] ?? source['adapter'] ?? source['mode'],
-    );
+    final sourceAdapter =
+        _optionalNonEmptyString(source['sourceAdapter']) ??
+        _optionalNonEmptyString(source['adapter']) ??
+        _optionalNonEmptyString(source['mode']);
     final metadata = _ProspectSourceMetadata(
       storeName: storeName,
       url: sourceUrl,
