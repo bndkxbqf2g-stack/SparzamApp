@@ -1232,6 +1232,7 @@ void main() {
     expect(saved!.locationId, 'L-42');
     expect(saved!.region, 'Zellingen');
     expect(saved!.address, 'Hauptstraße 1, 97225 Zellingen');
+    expect(saved!.evidenceConfidence, EvidenceConfidence.manuallyConfirmed);
     expect(added?.name, 'Kaffee Crema 500 g');
   });
 
