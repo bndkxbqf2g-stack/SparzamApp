@@ -193,6 +193,8 @@ List<Widget> buildShellPages({
     prospectRegularPriceCountsByStore: prospectRegularPriceCountsByStore,
     prospectRegularPricePersistenceStatus:
         prospectRegularPricePersistenceStatus,
+    historicalPriceObservations: historicalPriceObservations,
+    catalogProducts: catalogProducts,
     onOpenList: onOpenList,
     onOpenRoute: onOpenRoute,
     onResolvePriceGap: onResolvePriceGap,

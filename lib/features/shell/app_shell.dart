@@ -820,6 +820,16 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
         );
       });
     } catch (error) {
+      if (_isCurrentDataRevision(revision) &&
+          !isSuperseded() &&
+          mounted) {
+        setState(() {
+          prospectRegularPriceCount = 0;
+          prospectRegularPriceCountsByStore = const <String, int>{};
+          prospectRegularPricePersistenceStatus =
+              ProspectRegularPricePersistenceStatus.failed;
+        });
+      }
       widget.diagnosticLogService.record(
         category: 'Prospekte',
         message: 'Lokaler Prospektpreisstand konnte nicht gespeichert werden.',
