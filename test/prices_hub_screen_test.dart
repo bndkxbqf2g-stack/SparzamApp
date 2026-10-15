@@ -428,4 +428,93 @@ void main() {
     );
   });
 
+  testWidgets(
+    'zeigt aktuelle gespeicherte Normalpreise mit Filialnachweis',
+    (tester) async {
+      const product = Product(
+        id: 'ledger-coffee',
+        name: 'Jacobs Kaffee Crema 500 g',
+        unit: '500 g',
+        group: 'Kaffee',
+      );
+      final now = DateTime(2026, 10, 15, 12);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: PricesHubScreen(
+              onOpenCatalog: () {},
+              onOpenSettings: () {},
+              summary: 'Prospektpreise',
+              catalogProducts: const [product],
+              historicalPriceObservations: [
+                PriceObservation(
+                  id: 'ledger-regular',
+                  productId: product.id,
+                  storeName: 'Lidl',
+                  price: 7.99,
+                  observedAt: now,
+                  source: PriceObservationSource.leaflet,
+                  sourceAdapter: 'kaufda',
+                  kind: PriceObservationKind.regular,
+                  validFrom: DateTime(2026, 10, 13),
+                  validUntil: DateTime(2026, 10, 19),
+                  locationId: 'lidl-zellingen',
+                  proofRef: 'https://example.test/ledger',
+                ),
+                PriceObservation(
+                  id: 'ledger-offer',
+                  productId: product.id,
+                  storeName: 'Lidl',
+                  price: 4.99,
+                  observedAt: now,
+                  source: PriceObservationSource.leaflet,
+                  sourceAdapter: 'kaufda',
+                  kind: PriceObservationKind.offer,
+                  validFrom: DateTime(2026, 10, 13),
+                  validUntil: DateTime(2026, 10, 19),
+                  locationId: 'lidl-zellingen',
+                  proofRef: 'https://example.test/ledger',
+                ),
+                PriceObservation(
+                  id: 'ledger-expired',
+                  productId: product.id,
+                  storeName: 'Lidl',
+                  price: 6.99,
+                  observedAt: DateTime(2026, 10, 1),
+                  source: PriceObservationSource.leaflet,
+                  kind: PriceObservationKind.regular,
+                  validFrom: DateTime(2026, 9, 28),
+                  validUntil: DateTime(2026, 10, 5),
+                  locationId: 'lidl-zellingen',
+                  proofRef: 'https://example.test/expired',
+                ),
+              ],
+              now: now,
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        find.byKey(const ValueKey('prospect-regular-price-ledger-card')),
+        findsOneWidget,
+      );
+      expect(
+        find.text('1 gespeicherter regulärer Preis mit Filialnachweis'),
+        findsOneWidget,
+      );
+      await tester.tap(
+        find.byKey(const ValueKey('prospect-regular-price-ledger-card')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
+      expect(find.text('7,99 €'), findsOneWidget);
+      expect(find.textContaining('Filiale lidl-zellingen'), findsOneWidget);
+      expect(find.textContaining('Nachweis vorhanden'), findsOneWidget);
+      expect(find.text('4,99 €'), findsNothing);
+      expect(find.text('6,99 €'), findsNothing);
+    },
+  );
+
 }
