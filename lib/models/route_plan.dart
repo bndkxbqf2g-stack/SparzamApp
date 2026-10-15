@@ -47,3 +47,33 @@ class RoutePlan {
       totalItemCount == 0 ? 0 : pricedItemCount / totalItemCount;
   bool get hasDataGaps => unassigned.isNotEmpty;
 }
+
+/// Stable identity for one exact store in a route comparison.
+///
+/// Visible retailer names are not unique: two branches can share the same
+/// name while having different branch IDs, locations, or addresses. Keep all
+/// available identity fields in the key so UI deduplication cannot collapse
+/// distinct route stops.
+String routeStoreIdentityKey(Store store) => [
+      store.name,
+      store.branchId ?? '',
+      store.location,
+      store.address,
+    ].map((value) => value.trim().toLowerCase()).join('|');
+
+/// Stable identity for a route alternative, including exact store branches
+/// and the product assignments shown to the user.
+String routePlanIdentityKey(RoutePlan plan) {
+  final stores = plan.stores.map(routeStoreIdentityKey).toList()..sort();
+  final assignments =
+      plan.assignments.entries
+          .expand(
+            (entry) => entry.value.map(
+              (item) =>
+                  '${routeStoreIdentityKey(entry.key)}:${item.product.id}',
+            ),
+          )
+          .toList()
+        ..sort();
+  return '${stores.join('|')}::${assignments.join('|')}';
+}
