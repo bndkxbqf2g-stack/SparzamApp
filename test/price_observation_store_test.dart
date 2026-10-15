@@ -912,5 +912,38 @@ void main() {
     expect(quality.discountRate, 0.10);
     expect(quality.confidence, closeTo(0.65, 0.00001));
   });
+  test('offer adapter normalizes known prospect source token variants', () {
+    Offer offer(String source) => Offer(
+          id: 'source-$source',
+          productId: 'schmand',
+          storeName: 'Lidl',
+          originalPrice: 0.89,
+          offerPrice: 0.69,
+          validUntil: DateTime(2026, 10, 17),
+          source: source,
+          proofRef: 'https://example.test/lidl/$source',
+        );
+
+    for (final source in const [
+      ' RETAILERWEBSITE ',
+      'retailer_website',
+      'retailer-website',
+    ]) {
+      final observation = observationFromOffer(
+        offer(source),
+        observedAt: DateTime(2026, 10, 15),
+      );
+      expect(observation.source, PriceObservationSource.retailerWebsite);
+    }
+
+    expect(
+      observationFromOffer(
+        offer('retailer website'),
+        observedAt: DateTime(2026, 10, 15),
+      ).source,
+      PriceObservationSource.manual,
+    );
+  });
+
 }
 
