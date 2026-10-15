@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import '../../services/prospect_favorites_store.dart';
+import '../../services/prospect_feed_service.dart';
+import 'prospect_issue_identity.dart';
 
 /// Returns whether a delayed browser-image fallback still belongs to the
 /// image currently mounted in a recycled prospect card.
@@ -9,8 +11,6 @@ bool prospectImageFallbackMatches({
   required String currentUrl,
   required String failedUrl,
 }) => currentUrl == failedUrl;
-import '../../services/prospect_feed_service.dart';
-import 'prospect_issue_identity.dart';
 
 /// A Bring-style overview of validated prospect covers.
 ///
