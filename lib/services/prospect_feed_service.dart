@@ -535,6 +535,13 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
             _stringValue(raw['endDate']) ??
             '',
       );
+      final rawBranchId = _optionalNonEmptyString(raw['branchId']);
+      final rawLocation = _optionalNonEmptyString(raw['location']);
+      final rawAddress = _optionalNonEmptyString(raw['address']);
+      final inheritsSourceContext = rawBranchId == null ||
+          (sourceMetadata.branchId != null &&
+              rawBranchId == sourceMetadata.branchId);
+      final issueBranchId = rawBranchId ?? sourceMetadata.branchId;
       final issue = ProspectIssue(
         storeName: storeName,
         title: _stringValue(raw['title']) ?? 'Prospekt',
@@ -551,15 +558,11 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
               raw['image'],
             ]) ??
             (pages.isEmpty ? null : pages.first.imageUrl),
-        branchId:
-            _optionalNonEmptyString(raw['branchId']) ??
-            sourceMetadata.branchId,
-        location:
-            _optionalNonEmptyString(raw['location']) ??
-            sourceMetadata.location,
-        address:
-            _optionalNonEmptyString(raw['address']) ??
-            sourceMetadata.address,
+        branchId: issueBranchId,
+        location: rawLocation ??
+            (inheritsSourceContext ? sourceMetadata.location : null),
+        address: rawAddress ??
+            (inheritsSourceContext ? sourceMetadata.address : null),
         sourceStatus: sourceMetadata.status,
         recordCount: sourceMetadata.recordCount,
         availablePageCount: _intValue(raw['availablePageCount']) ??

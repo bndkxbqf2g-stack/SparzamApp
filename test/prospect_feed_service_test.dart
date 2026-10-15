@@ -652,6 +652,37 @@ void main() {
     expect(issues.map((item) => item.address), ['Branch A', 'Branch B']);
   });
 
+  test('does not inherit source location for a conflicting record branch', () {
+    final result = parseProspectFeed(r'''
+{
+  "sources": [
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "branchId": "lidl-a",
+      "location": "Würzburg",
+      "address": "Branch A",
+      "prospects": [
+        {
+          "title": "Lidl B",
+          "branchId": "lidl-b",
+          "location": null,
+          "address": null
+        }
+      ]
+    }
+  ],
+  "offers": []
+}
+''');
+
+    final issue = result.prospects
+        .firstWhere((item) => item.title == 'Lidl B');
+    expect(issue.branchId, 'lidl-b');
+    expect(issue.location, isNull);
+    expect(issue.address, isNull);
+  });
+
   test('leaves same-name offers unscoped without an explicit branch', () {
     final result = parseProspectFeed(r'''
 {
