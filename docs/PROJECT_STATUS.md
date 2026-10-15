@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Bonzeilen mit expliziten Produktvorschlägen
+
+- Unklare Bonpositionen können jetzt direkt am Eintrag aus bis zu drei Namens-/Alias-Treffern des vorhandenen Katalogs ausgewählt werden.
+- Die Auswahl bleibt manuell und trennt Vorschlag, Identitätsbestätigung und Preisprojektion; breite Kategorie-Treffer werden nicht als Produktidentität angeboten.
+- Unit- und Widget-Tests prüfen Trefferfilterung, Begrenzung und die notwendige explizite Auswahl.
+
 ## Update 15.10.2026 – OSRM-Caches bleiben filialgenau
 
 - Ein gespeicherter Matrixstand wird nur wiederverwendet, wenn er alle aktuell angeforderten exakten Filialschlüssel abdeckt.
