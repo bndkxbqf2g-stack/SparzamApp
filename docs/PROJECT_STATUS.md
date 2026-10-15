@@ -1,3 +1,9 @@
+## Update 15.10.2026 – KaufDA-UVP bleibt aus der Preisbasis
+
+- Der optionale KaufDA-Adapter erkennt neben dem Boolean-Feld auch explizite UVP-/Herstellerpreis-Kennzeichnungen.
+- Solche Vergleichswerte bleiben aus `originalPrice` und damit aus der automatischen regulären Preisbeobachtung ausgeschlossen.
+- Ein tatsächlich ausgewiesener, höherer Normalpreis bleibt weiterhin speicherbar; die neue Regression schützt beide Fälle.
+
 ## Update 15.10.2026 – Prospekt-Herkunft bleibt beim Öffnen erhalten
 
 - `sourceAdapter` wird aus dem Feed-Metadatenknoten auch am `ProspectIssue` geführt und beim sichtbaren Issue-Rebuild erhalten.
