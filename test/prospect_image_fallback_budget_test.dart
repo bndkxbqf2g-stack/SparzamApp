@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:sparzam_app/features/prospects/prospect_cover_section.dart';
+import 'package:sparzamapp/features/prospects/prospect_cover_section.dart';
 
 void main() {
   test('cover fallback budget limits active platform views', () {
