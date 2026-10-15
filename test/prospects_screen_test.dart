@@ -508,6 +508,14 @@ void main() {
       ),
       findsOneWidget,
     );
+    expect(
+      find.byKey(const ValueKey('prospect-favorite-Lidl#lidl-zellingen')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('prospect-favorite-Lidl#lidl-wuerzburg')),
+      findsOneWidget,
+    );
 
     await _scrollProspects(tester, distance: 500);
 
@@ -529,18 +537,6 @@ void main() {
     );
     expect(
       find.byKey(const ValueKey('prospect-open-grid-Lidl#lidl-wuerzburg')),
-      findsOneWidget,
-    );
-    expect(
-      find.byKey(
-        const ValueKey('prospect-favorite-Lidl#lidl-zellingen'),
-      ),
-      findsOneWidget,
-    );
-    expect(
-      find.byKey(
-        const ValueKey('prospect-favorite-Lidl#lidl-wuerzburg'),
-      ),
       findsOneWidget,
     );
   });
