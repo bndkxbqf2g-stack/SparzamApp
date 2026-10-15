@@ -604,7 +604,7 @@ void main() {
 
       expect(find.text('1/1 Märkte aktuell'), findsOneWidget);
       expect(find.textContaining('Angebot bis 19.10.2026'), findsOneWidget);
-      expect(find.text('0,99 €'), findsNWidgets(2);
+      expect(find.text('0,99 €'), findsNWidgets(2));
     },
   );
 
