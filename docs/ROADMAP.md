@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Open Prices bewahrt gleichnamige Filialen
+
+- [x] Der Open-Prices-Adapter verwendet die Quellfiliale als Preis-Slot und legt zwei gleichnamige Märkte nicht mehr zusammen.
+- [x] Branch-ID, Preis und Erfassungszeit bleiben je exakter Filiale getrennt; der bestehende Standort- und Altersfilter bleibt unverändert.
+- [x] Eine anonymisierte Regression schützt zwei gleichnamige Lidl-Filialen mit unterschiedlichen Open-Prices-IDs.
+
 ## Update 15.10.2026 – Prospekt-Cover berücksichtigen offene Gültigkeitsgrenzen
 
 - [x] Ein Prospekt mit künftigem Startdatum wird im Angebote-Reiter nicht als aktuelles Cover angezeigt, auch wenn der Feed noch kein Enddatum liefert.
