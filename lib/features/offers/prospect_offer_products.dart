@@ -263,7 +263,7 @@ Offer? _offerForProduct(
           unit: package.unit,
         );
   return Offer(
-    id: 'import|${canonicalSource}|${record.sourceId}|${product.id}',
+    id: 'import|$canonicalSource|${record.sourceId}|${product.id}',
     productId: product.id,
     storeName: record.storeName,
     originalPrice: originalPrice,
