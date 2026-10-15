@@ -428,7 +428,10 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     if (source is! Map<String, dynamic>) continue;
     final storeName = _stringValue(source['storeName']);
     if (storeName == null || storeName.trim().isEmpty) continue;
-    if (!availableStores.contains(storeName)) {
+    final storeKey = _prospectStoreMetadataKey(storeName);
+    if (!availableStores.any(
+      (entry) => _prospectStoreMetadataKey(entry) == storeKey,
+    )) {
       availableStores.add(storeName);
     }
     final sourceUrl = _stringValue(source['url']);
@@ -452,7 +455,9 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
       availableStoreUrls[storeName] = sourceUrl;
     }
     if (metadata.status == 'ok' &&
-        !refreshedStores.contains(storeName)) {
+        !refreshedStores.any(
+          (entry) => _prospectStoreMetadataKey(entry) == storeKey,
+        )) {
       refreshedStores.add(storeName);
     }
   }
@@ -609,7 +614,9 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
       sourceIndex++) {
     final metadata = sourceMetadataByIndex[sourceIndex];
     if (metadata == null) continue;
-    sourceStoreNames.add(metadata.storeName);
+    sourceStoreNames.add(
+      _prospectStoreMetadataKey(metadata.storeName),
+    );
     if (sourceIndicesWithProspects.contains(sourceIndex)) continue;
     prospects.add(
       ProspectIssue(
@@ -628,7 +635,9 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
   // Jeder konfigurierte Markt bleibt in der Prospektansicht sichtbar, even
   // when the feed has no source entry at all.
   for (final storeName in availableStores) {
-    if (sourceStoreNames.contains(storeName)) continue;
+    if (sourceStoreNames.contains(
+      _prospectStoreMetadataKey(storeName),
+    )) continue;
     prospects.add(
       ProspectIssue(
         storeName: storeName,
