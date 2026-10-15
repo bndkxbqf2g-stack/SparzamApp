@@ -94,9 +94,15 @@ class ProspectFeedStatusCard extends StatelessWidget {
         'Speicherstatus unbekannt; reguläre Normalpreise wurden in diesem Lauf '
             'nicht bestätigt.',
     };
-    final subtitle = regularPriceStatus == null
-        ? baseSubtitle
-        : '$baseSubtitle $regularPriceStatus';
+    final pricePolicy = regularPriceStatus == null
+        ? null
+        : 'Aktionspreise bleiben an den gültigen Prospektzeitraum gebunden '
+            'und werden nicht als Normalpreis gespeichert.';
+    final subtitle = [
+      baseSubtitle,
+      regularPriceStatus,
+      pricePolicy,
+    ].whereType<String>().join(' ');
     return Card(
       color: fromCache || stale
           ? theme.colorScheme.surfaceContainerHighest
