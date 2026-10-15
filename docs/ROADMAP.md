@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Preise-Reiter zeigt Herkunft und Route-Fähigkeit
+
+- [x] Aktuelle, veraltete und unvollständige gespeicherte Marktpreise werden in einer kompakten Qualitätsübersicht getrennt gezählt.
+- [x] Prospekt-Normalpreise bleiben als eigene Quelle sichtbar; Prospekt-Angebotsnachweise werden ausdrücklich separat ausgewiesen.
+- [x] Die Übersicht zeigt die aktuelle Belegabdeckung je Markt, ohne die bestehende Preis- oder Routenauflösung zu verändern.
+
 ## Update 15.10.2026 – Formatierte Normalpreise werden aus Prospekten gespeichert
 
 - [x] Prospektfelder wie `7,99 €` werden als regulärer, durchgestrichener Preis erkannt; freie Texte wie `UVP 7,99 €` bleiben ungültig.
