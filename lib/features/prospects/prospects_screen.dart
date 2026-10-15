@@ -458,7 +458,6 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                       issues: visibleProspects,
                       records: currentRecords,
                       now: widget.now,
-                      catalogProducts: widget.catalogProducts,
                       persistedRegularPriceCounts:
                           widget.persistedRegularPriceCounts,
                     ),
@@ -889,6 +888,7 @@ ProspectIssue _visibleIssue(
     address: current?.address ?? selected.address,
     sourceStatus: sourceStatus,
     recordCount: currentRecordCount,
+    pageCount: current?.pageCount ?? selected.pageCount,
     validFrom: current?.validFrom,
     validUntil: current?.validUntil,
   );
@@ -906,7 +906,7 @@ int _compareVisibleProspects(ProspectIssue a, ProspectIssue b) {
   );
   if (status != 0) return status;
 
-  final pages = b.pages.length.compareTo(a.pages.length);
+  final pages = b.visiblePageCount.compareTo(a.visiblePageCount);
   if (pages != 0) return pages;
 
   final aHasThumbnail = a.thumbnailUrl?.trim().isNotEmpty == true;
@@ -1721,6 +1721,11 @@ class ProspectViewerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pages = _viewerPages(issue);
+    final loadedPageCount = pages.length;
+    final visiblePageCount = issue.visiblePageCount > loadedPageCount
+        ? issue.visiblePageCount
+        : loadedPageCount;
+    final hasUnloadedPageSamples = loadedPageCount < visiblePageCount;
     final items = records
         .where((record) => _prospectRecordBelongsToIssue(record, issue))
         .toList(growable: false);
@@ -1768,12 +1773,17 @@ class ProspectViewerScreen extends StatelessWidget {
           '${_prospectDate(issue.validFrom!)} – ${_prospectDate(issue.validUntil!)}',
           style: const TextStyle(color: Colors.black54),
         ),
-      if (pages.isNotEmpty) ...[
+      if (visiblePageCount > 0) ...[
         const SizedBox(height: 14),
         Text(
-          'Prospektseiten (${pages.length})',
+          'Prospektseiten ($visiblePageCount)',
           style: Theme.of(context).textTheme.titleMedium,
         ),
+        if (hasUnloadedPageSamples)
+          Text(
+            '$loadedPageCount Bildvorschauen geladen; weitere Seiten beim Händler öffnen.',
+            style: const TextStyle(color: Colors.black54),
+          ),
       ],
       if (pages.isEmpty)
         Card(
