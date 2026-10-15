@@ -631,4 +631,42 @@ void main() {
     );
     expect(evidence, isEmpty);
   });
+  test('normalizes known prospect source token variants only', () {
+    OfferImportRecord record(String source) => OfferImportRecord(
+          sourceId: source,
+          productLabel: 'Kaffee 500 g',
+          storeName: 'Lidl',
+          offerPrice: 4.99,
+          validUntil: DateTime(2026, 10, 17),
+          source: source,
+          proofRef: 'https://example.test/lidl/$source',
+        );
+
+    final evidence = prospectPriceObservations(
+      records: [
+        record(' RETAILERWEBSITE '),
+        record('retailer_website'),
+        record('retailer-website'),
+      ],
+      catalogProducts: const [],
+      observedAt: DateTime(2026, 10, 12, 8),
+    );
+
+    expect(evidence, hasLength(3));
+    expect(
+      evidence.every(
+        (entry) => entry.source == PriceObservationSource.retailerWebsite,
+      ),
+      isTrue,
+    );
+    expect(
+      prospectPriceObservations(
+        records: [record('retailer website')],
+        catalogProducts: const [],
+        observedAt: DateTime(2026, 10, 12, 8),
+      ),
+      isEmpty,
+    );
+  });
+
 }
