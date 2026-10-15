@@ -250,6 +250,37 @@ void main() {
     },
   );
 
+  test('removes legacy prospect offers without a feed timestamp', () async {
+    final store = memoryStore();
+    final legacy = prospectPriceObservations(
+      records: [current],
+      catalogProducts: const [coffee],
+      observedAt: now,
+    );
+    await store.replaceAll(legacy);
+
+    final result = await persistCurrentProspectRegularPrices(
+      store: store,
+      records: [current],
+      catalogProducts: const [coffee],
+      now: now,
+    );
+
+    expect(result.learned, isEmpty);
+    expect(
+      result.stored.where(
+        (entry) =>
+            entry.id.startsWith('prospect|') &&
+            entry.kind == PriceObservationKind.offer,
+      ),
+      isEmpty,
+    );
+    expect(
+      result.stored.where((entry) => entry.kind == PriceObservationKind.regular),
+      hasLength(1),
+    );
+  });
+
   test('does not persist without a feed timestamp', () async {
     final store = memoryStore();
     final result = await persistCurrentProspectRegularPrices(

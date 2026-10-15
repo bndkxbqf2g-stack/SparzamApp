@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Reguläre Prospektpreise vor Cache-Rennen schützen
+
+- [x] Ein später Cache-Lauf kann einen frischeren Live-Preis nicht mehr über denselben Beobachtungsbeleg überschreiben.
+- [x] Alte automatische Prospekt-Angebotsbeobachtungen werden auch bei fehlendem Feed-Zeitstempel entfernt; nur reguläre Preisbelege bleiben für die automatische Preisbasis.
+- [x] Store- und Persistenzregressionen prüfen Frische, Zeitstempel und die getrennte Behandlung von Angebotspreisen.
+
 ## Update 15.10.2026 – Prospektartikel bleiben filialgenau
 
 - [x] Aktuelle Prospektartikel werden nach Händler und vorhandener Branch-ID getrennt gruppiert; gleichnamige Filialen vermischen keine Artikel mehr.

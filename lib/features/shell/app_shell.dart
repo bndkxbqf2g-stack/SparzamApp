@@ -612,7 +612,13 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
               // explicitly stated regular prices as well; the live refresh
               // below remains responsible for rebuilding the visible offer
               // snapshot and can safely upsert the same observation IDs.
-              unawaited(_persistCachedProspectPrices(cached, revision));
+              unawaited(
+                _persistCachedProspectPrices(
+                  cached,
+                  revision,
+                  isSuperseded: () => networkFeedShown,
+                ),
+              );
             }
           } catch (_) {
             // The normal refresh below remains the source of truth.
@@ -795,12 +801,13 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
 
   Future<void> _persistCachedProspectPrices(
     ProspectFeedLoadResult feed,
-    int revision,
-  ) async {
+    int revision, {
+    required bool Function() isSuperseded,
+  }) async {
     ProspectRegularPricePersistenceResult? persistence;
     try {
       await _priceSaves.add(() async {
-        if (!_isCurrentDataRevision(revision)) return;
+        if (!_isCurrentDataRevision(revision) || isSuperseded()) return;
         persistence = await persistCurrentProspectRegularPrices(
           store: priceObservationStore,
           records: feed.records,
@@ -818,7 +825,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       );
       return;
     }
-    if (!_isCurrentDataRevision(revision)) return;
+    if (!_isCurrentDataRevision(revision) || isSuperseded()) return;
 
     final learned = persistence?.learned ?? const <PriceObservation>[];
     if (learned.isEmpty) return;
@@ -836,7 +843,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
         ifAbsent: () => 1,
       );
     }
-    if (!mounted) return;
+    if (!mounted || isSuperseded()) return;
     setState(() {
       prospectRegularPriceCount =
           learned.where((entry) => persistedIds.contains(entry.id)).length;
