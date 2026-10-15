@@ -19,6 +19,23 @@ String prospectRecordKey(OfferImportRecord record) =>
       branchId: record.branchId,
     );
 
+/// Stable persisted key for a favorite prospect cover. Legacy entries that
+/// contain only the retailer name remain valid as a store-wide fallback.
+String prospectFavoriteKey(ProspectIssue issue) => prospectIssueKey(issue);
+
+/// Matches both new branch-specific favorites and legacy store-only entries.
+bool prospectFavoriteMatches({
+  required String storedKey,
+  required ProspectIssue issue,
+}) {
+  final key = storedKey.trim();
+  if (key.isEmpty) return false;
+  final exact = prospectFavoriteKey(issue);
+  if (key == exact) return true;
+  final hasBranch = canonicalBranchId(issue.branchId) != null;
+  return hasBranch && key == issue.storeName.trim();
+}
+
 String prospectStoreBranchKey({
   required String storeName,
   String? branchId,
