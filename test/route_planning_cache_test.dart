@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/route/route_optimizer.dart';
+import 'package:sparzamapp/features/route/route_screen.dart';
 import 'package:sparzamapp/features/route/route_price_resolver.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
@@ -43,6 +44,15 @@ void main() {
 
     expect(first, isNotNull);
     expect(second, same(first));
+  });
+
+  test('Routen-Cache-Signatur erkennt Mengenänderungen derselben ListItem-Instanz', () {
+    final item = ListItem(product: product);
+    final before = routeItemInputSignature([item]);
+
+    item.quantity = 2;
+
+    expect(routeItemInputSignature([item]), isNot(before));
   });
 
   test('Route-Ergebnisse bleiben bei wiederholten Zugriffen stabil', () {

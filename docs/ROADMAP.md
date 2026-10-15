@@ -1,4 +1,10 @@
 
+## Update 15.10.2026 – Routen-Cache erkennt Mengenänderungen
+
+- [x] Der direkte RouteScreen bildet Produkt-/Packungsdaten und Listenmenge in einer Eingabesignatur ab; eine in-place geänderte Menge verwirft den alten Optimierungsplan.
+- [x] Preisabdeckung, Fahrtkosten, Mindestvorteil und Marktanzahl bleiben vollständig im bestehenden RouteOptimizer.
+- [x] Eine Fachregression schützt denselben ListItem-Verweis vor einem veralteten Mengenplan.
+
 ## Update 15.10.2026 – Einkaufsliste aktualisiert Quotes nach Katalog-Laden
 
 - [x] Der Einkaufslisten-Quote-Snapshot nimmt die Katalogreferenz in seinen
