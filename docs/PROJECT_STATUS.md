@@ -1,3 +1,7 @@
+## Update 15.10.2026 – Filialgenauer Distanz-Cache und Routenanzeige
+
+Die einzelne Marktansicht speichert Straßenentfernungen jetzt über denselben stabilen Filialschlüssel wie die Routenberechnung. Ein alter Cache-Eintrag nur mit Händlername wird für eine identifizierte Filiale nicht mehr als scheinbar exakte Entfernung wiederverwendet. Routenalternativen zeigen zusätzlich den Ort; dadurch bleiben gleichnamige Filialen im Vergleich erkennbar. Tests schützen getrennte Fallback-Distanzen und die sichtbare Filialbezeichnung.
+
 ## Update 15.10.2026 – Routenalternativen bleiben filialgenau
 
 - Die Alternativenliste unterschlägt gleichnamige Filialen nicht mehr: Branch-ID, Ort und Adresse fließen in den Routenschlüssel ein.
