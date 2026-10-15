@@ -46,4 +46,49 @@ void main() {
 
     expect(after, isNot(before));
   });
+
+  test('reprocesses when page completeness diagnostics change', () {
+    final first = ProspectFeedLoadResult(
+      records: const [],
+      refreshedStores: const ['EDEKA'],
+      prospects: const [
+        ProspectIssue(
+          storeName: 'EDEKA',
+          title: 'Prospekt',
+          pages: [
+            ProspectPage(number: 1, imageUrl: 'https://example.test/1.jpg'),
+          ],
+          availablePageCount: 3,
+          loadedPageCount: 1,
+          missingPageNumbers: [2, 3],
+          pageStatus: 'partial',
+          pageCountKnown: true,
+        ),
+      ],
+    );
+    final second = ProspectFeedLoadResult(
+      records: const [],
+      refreshedStores: const ['EDEKA'],
+      prospects: const [
+        ProspectIssue(
+          storeName: 'EDEKA',
+          title: 'Prospekt',
+          pages: [
+            ProspectPage(number: 1, imageUrl: 'https://example.test/1.jpg'),
+            ProspectPage(number: 2, imageUrl: 'https://example.test/2.jpg'),
+            ProspectPage(number: 3, imageUrl: 'https://example.test/3.jpg'),
+          ],
+          availablePageCount: 3,
+          loadedPageCount: 3,
+          pageStatus: 'complete',
+          pageCountKnown: true,
+        ),
+      ],
+    );
+
+    expect(
+      prospectFeedFingerprintFor(first, now: DateTime(2026, 10, 14)),
+      isNot(prospectFeedFingerprintFor(second, now: DateTime(2026, 10, 14))),
+    );
+  });
 }

@@ -458,6 +458,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                       issues: visibleProspects,
                       records: currentRecords,
                       now: widget.now,
+                      catalogProducts: widget.catalogProducts,
                       persistedRegularPriceCounts:
                           widget.persistedRegularPriceCounts,
                     ),

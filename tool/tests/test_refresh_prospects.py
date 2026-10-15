@@ -293,6 +293,43 @@ class ProspectParserTest(unittest.TestCase):
                     str(cover_pages[0].get("image", "")).startswith("https://")
                 )
 
+    def test_versioned_feed_keeps_verified_multi_page_catalogs(self):
+        payload = refresh.json.loads(FEED.read_text(encoding="utf-8"))
+        minimum_pages = {
+            "ALDI Süd": 2,
+            "EDEKA": 2,
+            "Kaufland": 2,
+            "Lidl": 2,
+            "PENNY": 1,
+            "Netto": 2,
+        }
+        for store_name, minimum in minimum_pages.items():
+            source = next(
+                source
+                for source in payload["sources"]
+                if source["storeName"] == store_name
+            )
+            prospects = source.get("prospects", [])
+            self.assertTrue(prospects, store_name)
+            current = max(
+                prospects,
+                key=lambda item: len(item.get("pageSamples", [])),
+            )
+            with self.subTest(store=store_name):
+                self.assertGreaterEqual(
+                    len(current.get("pageSamples", [])),
+                    minimum,
+                )
+                if store_name == "PENNY":
+                    self.assertEqual(current.get("pageStatus"), "cover_only")
+                    self.assertFalse(current.get("pageCountKnown"))
+                else:
+                    self.assertEqual(current.get("pageStatus"), "complete")
+                    self.assertEqual(
+                        current.get("loadedPageCount"),
+                        len(current.get("pageSamples", [])),
+                    )
+
     def test_current_prospect_offers_drop_overlapping_old_periods(self):
         offers = [
             {"storeName": "Kaufland", "validFrom": "2026-09-24", "validUntil": "2026-09-30", "productLabel": str(i), "offerPrice": 1.0}
@@ -657,6 +694,192 @@ class ProspectParserTest(unittest.TestCase):
             prospects[0]["pageSamples"][0]["image"],
             "https://dm.emea.cms.aldi.cx/is/image/aldiprodeu/prospekte-opmp-kw42%3A2-1?wid=1400&fmt=png-alpha",
         )
+        self.assertEqual(prospects[0]["loadedPageCount"], 1)
+        self.assertEqual(prospects[0]["pageStatus"], "cover_only")
+        self.assertFalse(prospects[0]["pageCountKnown"])
+
+    def test_publitas_catalog_flattens_all_pages_and_resolves_images(self):
+        data = '{"numPages": 3, "cacheToken": "token"}'
+        spreads = refresh.json.dumps([
+            {
+                "pages": [{
+                    "number": 1,
+                    "text": "Seite eins",
+                    "images": {"at1600": "/pages/one.jpg", "at2400": "/pages/one-large.jpg"},
+                }],
+            },
+            {
+                "pages": [
+                    {
+                        "number": 2,
+                        "text": "Seite zwei",
+                        "images": {"at1600": "/pages/two.jpg", "at2400": "/pages/two-large.jpg"},
+                    },
+                    {
+                        "number": 3,
+                        "text": "Seite drei",
+                        "images": {"at1600": "/pages/three.jpg"},
+                    },
+                ],
+            },
+        ])
+
+        samples, coverage = refresh._parse_publitas_pages(
+            spreads,
+            "https://reader.example.test/prospect",
+            expected_count=3,
+        )
+
+        self.assertEqual([page["number"] for page in samples], [1, 2, 3])
+        self.assertEqual(
+            samples[1]["image"],
+            "https://reader.example.test/pages/two.jpg",
+        )
+        self.assertEqual(
+            samples[0]["zoom"],
+            "https://reader.example.test/pages/one-large.jpg",
+        )
+        self.assertEqual(coverage["pageCount"], 3)
+        self.assertEqual(coverage["loadedPageCount"], 3)
+        self.assertEqual(coverage["missingPageNumbers"], [])
+        self.assertEqual(coverage["pageStatus"], "complete")
+
+    def test_publitas_catalog_reports_missing_page_without_inventing_it(self):
+        spreads = refresh.json.dumps([
+            {"pages": [{"number": 1, "images": {"at1600": "/one.jpg"}}]},
+            {"pages": [{"number": 3, "images": {"at1600": "/three.jpg"}}]},
+        ])
+
+        samples, coverage = refresh._parse_publitas_pages(
+            spreads,
+            "https://reader.example.test/prospect/",
+            expected_count=3,
+        )
+
+        self.assertEqual([page["number"] for page in samples], [1, 3])
+        self.assertEqual(coverage["missingPageNumbers"], [2])
+        self.assertEqual(coverage["pageStatus"], "partial")
+
+    def test_publitas_catalog_accepts_one_verified_page(self):
+        spreads = refresh.json.dumps([
+            {"number": 1, "images": {"at1600": "/only-page.jpg"}},
+        ])
+
+        samples, coverage = refresh._parse_publitas_pages(
+            spreads,
+            "https://reader.example.test/prospect/",
+            expected_count=1,
+        )
+
+        self.assertEqual([page["number"] for page in samples], [1])
+        self.assertEqual(coverage["pageCount"], 1)
+        self.assertEqual(coverage["loadedPageCount"], 1)
+        self.assertEqual(coverage["missingPageNumbers"], [])
+        self.assertEqual(coverage["pageStatus"], "complete")
+
+    def test_edeka_catalog_xml_expands_verified_page_mapping(self):
+        html = """
+        <p>Gültig vom 12.10.2026 bis zum 17.10.2026.</p>
+        <a href="/maerkte/023738/prospekte/">Prospekt ansehen</a>
+        <iframe src="https://blaetterkatalog.edeka.de/NORDBAYERN/8002976/index.html"></iframe>
+        <img src="https://blaetterkatalog.edeka.de/NORDBAYERN/8002976/blaetterkatalog/normal/bk_1.jpg">
+        """
+        catalog = """
+        <catalog>
+          <structure>
+            <detaillevel name="normal" path="../normal/" filename="bk_" extension="jpg" />
+            <detaillevel name="large" path="../large/" filename="bk_" extension="jpg" />
+          </structure>
+          <mapping><range id_start="1" nr_start="1" pages="3" /></mapping>
+        </catalog>
+        """
+
+        prospects = refresh.parse_edeka_prospects(
+            html,
+            "https://www.edeka.de/maerkte/023738/",
+            today=refresh.date(2026, 10, 12),
+            catalog_xml=catalog,
+            catalog_url="https://blaetterkatalog.edeka.de/NORDBAYERN/8002976/blaetterkatalog/xml/catalog.xml",
+        )
+
+        self.assertEqual(len(prospects), 1)
+        prospect = prospects[0]
+        self.assertEqual(prospect["pageCount"], 3)
+        self.assertEqual(prospect["loadedPageCount"], 3)
+        self.assertEqual([page["number"] for page in prospect["pageSamples"]], [1, 2, 3])
+        self.assertTrue(prospect["pageSamples"][2]["image"].endswith("/normal/bk_3.jpg"))
+        self.assertTrue(prospect["pageSamples"][2]["zoom"].endswith("/large/bk_3.jpg"))
+
+    def test_kaufland_leaflet_api_expands_all_verified_pages(self):
+        payload = {
+            "flyer": {
+                "id": "flyer-1",
+                "pdfUrl": "https://assets.example.test/flyer.pdf",
+                "pages": [
+                    {"number": 1, "image": "https://img.example.test/1.jpg", "zoom": "https://img.example.test/1-large.jpg"},
+                    {"number": 2, "image": "https://img.example.test/2.jpg", "zoom": "https://img.example.test/2-large.jpg"},
+                ],
+            },
+        }
+        base = [{
+            "title": "Kaufland Prospekt",
+            "url": "https://leaflets.kaufland.com/de-DE/DE_de_test/ar/5103",
+            "pageSamples": [{"number": 1, "image": "https://img.example.test/cover.jpg"}],
+        }]
+
+        enriched = refresh._enrich_kaufland_prospects(
+            base,
+            refresh.json.dumps(payload),
+        )
+
+        self.assertEqual(enriched[0]["pageCount"], 2)
+        self.assertEqual(enriched[0]["loadedPageCount"], 2)
+        self.assertEqual([page["number"] for page in enriched[0]["pageSamples"]], [1, 2])
+        self.assertEqual(enriched[0]["flyerId"], "flyer-1")
+
+    def test_lidl_campaign_dedup_keeps_complete_variant(self):
+        duplicate_cover = {
+            "title": "Aktionsprospekt 12.10.2026 – 17.10.2026",
+            "offerStartDate": "2026-10-12",
+            "offerEndDate": "2026-10-17",
+            "pageCount": 73,
+            "productCount": 163,
+            "pageSamples": [1],
+        }
+        complete = {
+            **duplicate_cover,
+            "pageCount": 77,
+            "productCount": 164,
+            "pageSamples": list(range(1, 78)),
+            "url": "https://www.lidl.de/l/prospekte/example/ar/7",
+        }
+
+        deduped = refresh._dedupe_lidl_prospects([duplicate_cover, complete])
+
+        self.assertEqual(len(deduped), 1)
+        self.assertEqual(deduped[0]["pageCount"], 77)
+        self.assertEqual(deduped[0]["productCount"], 164)
+
+    def test_lidl_leaflet_counts_dictionary_products(self):
+        item = {
+            "title": "Aktionsprospekt",
+            "url": "https://www.lidl.de/l/prospekte/example/ar/12",
+            "apiUrl": "https://api.example.test/flyer",
+        }
+        payload = {
+            "flyer": {
+                "products": {"one": {"title": "Produkt 1"}, "two": {"title": "Produkt 2"}},
+                "pages": [{
+                    "number": 1,
+                    "image": "https://img.example.test/1.jpg",
+                }],
+            },
+        }
+        with mock.patch.object(refresh, "fetch", return_value=refresh.json.dumps(payload)):
+            enriched = refresh._enrich_lidl_prospect(item)
+
+        self.assertEqual(enriched["productCount"], 2)
+        self.assertEqual(enriched["pageCount"], 1)
 
     def test_edeka_api_reads_market_offers_and_dates(self):
         payload = """
@@ -1397,6 +1620,29 @@ ab Montag, 28.09.26
         self.assertEqual(
             prospects[0]["pageSamples"][0]["image"],
             "https://imgproxy.leaflets.schwarz/example-cover.png",
+        )
+
+    def test_kaufland_public_leaflet_parser_prefers_food_campaign_over_od(self):
+        branch_html = """
+        <a href="https://leaflets.kaufland.com/de-DE/DE_de_KDZ1_5103_D42/ar/5103">
+          Gültig vom 12.10. bis 17.10. Jetzt blättern
+        </a>
+        <a href="https://leaflets.kaufland.com/de-DE/DE_de_leaflet1_5103_D42-OD/ar/5103">
+          Gültig vom 12.10. bis 17.10. Jetzt blättern
+        </a>
+        """
+        viewer_html = '<img src="https://imgproxy.leaflets.schwarz/cover.png">'
+
+        prospects = refresh.parse_kaufland_leaflet_prospect(
+            branch_html,
+            viewer_html,
+            "https://filiale.kaufland.de/service/filiale.storeName%3DDE5103.html",
+            today=refresh.date(2026, 10, 12),
+        )
+
+        self.assertEqual(
+            prospects[0]["url"],
+            "https://leaflets.kaufland.com/de-DE/DE_de_KDZ1_5103_D42/ar/5103",
         )
 
     def test_kaufland_structured_offer_reads_price_old_price_and_image(self):

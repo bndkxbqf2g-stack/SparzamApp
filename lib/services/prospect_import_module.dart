@@ -63,6 +63,12 @@ class ProspectImportModule {
                   address: issue.address,
                   sourceStatus: issue.sourceStatus,
                   recordCount: issue.recordCount,
+                  availablePageCount: issue.availablePageCount,
+                  loadedPageCount: issue.loadedPageCount,
+                  missingPageNumbers: issue.missingPageNumbers,
+                  pageStatus: issue.pageStatus,
+                  pageCountKnown: issue.pageCountKnown,
+                  uncertainProductCount: issue.uncertainProductCount,
                   validFrom: issue.validFrom,
                   validUntil: issue.validUntil,
                 )

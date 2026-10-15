@@ -1439,3 +1439,31 @@ Quelle, Filiale, Packungsgröße, Nachweis und Gültigkeit getrennt sichtbar,
 während Preise-Reiter und Route denselben aktuellen Normalpreis verwenden.
 Die Quelle erhält eigene Frische-/Qualitäts- und Anzeigeetiketten; sie wird
 nicht als eigener Preis oder Open Prices ausgegeben.
+
+## D176 – Prospektseiten werden nur aus belegten Publisher-Katalogen ergänzt
+
+Für Issue #409 werden vollständige Seitenlisten aus offiziellen
+Händler-/Publisher-Readern bevorzugt: EDEKA `catalog.xml`, ALDI und Netto
+Publitas mit `cacheToken` sowie Kaufland/Lidl Leaflets-v4. Ein parallel
+veröffentlichtes Kaufland-`-OD`-Drogerieblatt darf den Lebensmittelprospekt
+nicht verdrängen. Lidl-Kopien werden nach Händlerkampagne und Zeitraum
+dedupliziert.
+
+Jede Seite muss eine positive, begrenzte Nummer und eine gültige HTTP(S)-
+Bildquelle besitzen. `pageCount`, `loadedPageCount`, fehlende Seitennummern,
+Seitenstatus und Seitenquelle werden getrennt gespeichert. Kann die Quelle nur
+das Cover oder keine belastbare Gesamtzahl liefern, bleibt dieser Zustand
+sichtbar; fehlende Seiten, Artikel und Preise werden nicht erfunden. Bildseiten
+ohne strukturierte Artikelzeile sind zunächst nur OCR-/Review-Evidenz.
+
+Die normalisierten Artikel- und Preisfelder bleiben im bestehenden
+`OfferImportRecord`-/`PriceObservation`-Datenfluss. `originalPrice` ist nur ein
+ausdrücklich belegter Normal-/Streichpreis, `offerPrice` bleibt das zeitlich
+befristete Angebot. Die neue Seitenmetadaten-Projektion darf weder eine
+zweite Preisdatenbank noch eine implizite Produktidentität erzeugen.
+
+Der lokale Prospektcache besitzt weiterhin genau einen austauschbaren Eintrag
+und lehnt Werte über 4 MiB ab. Ein unabhängiger Händler-Endpunktfehler darf
+noch gültige, mit ihrem ursprünglichen `capturedAt` gespeicherte
+Vorbeobachtungen nicht leeren; ein späterer erfolgreicher Refresh ersetzt sie
+idempotent.

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/features/prospects/prospect_feed_status.dart';
+import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/services/prospect_feed_service.dart';
 
 void main() {
@@ -171,6 +172,75 @@ void main() {
     expect(kaufland.offerProofCount, 1);
     expect(kaufland.regularPriceCount, 1);
     expect(kaufland.persistedRegularPriceCount, 1);
+  });
+
+  testWidgets('shows verified page coverage and uncertain assignments', (
+    tester,
+  ) async {
+    final coverage = calculateProspectCoverage(
+      issues: [
+        ProspectIssue(
+          storeName: 'EDEKA',
+          title: 'Aktionsprospekt',
+          pages: [
+            ProspectPage(number: 1, imageUrl: 'https://example.test/1'),
+            ProspectPage(number: 3, imageUrl: 'https://example.test/3'),
+          ],
+          sourceStatus: 'ok',
+          availablePageCount: 3,
+          loadedPageCount: 2,
+          missingPageNumbers: const [2],
+          pageStatus: 'partial',
+          pageCountKnown: true,
+          uncertainProductCount: 1,
+        ),
+      ],
+      records: const [],
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ListView(children: [ProspectCoverageCard(coverage: coverage)]),
+      ),
+    );
+
+    await tester.tap(find.text('Datenabdeckung der aktuellen Prospekte'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('2/3 Bildseiten'), findsOneWidget);
+    expect(find.textContaining('1 fehlende Seiten'), findsOneWidget);
+    expect(find.textContaining('1 unsichere Zuordnungen'), findsOneWidget);
+  });
+
+  test('counts identity uncertainty only until the catalog resolves an item', () {
+    final record = OfferImportRecord(
+      sourceId: 'uncertain-coffee',
+      productLabel: 'Jacobs Kaffee Crema 500 g',
+      storeName: 'Lidl',
+      offerPrice: 4.99,
+      validUntil: DateTime(2026, 10, 17),
+      proofRef: 'https://example.test/lidl/coffee',
+    );
+
+    final unresolved = calculateProspectCoverage(
+      issues: const <ProspectIssue>[],
+      records: [record],
+      catalogProducts: const <Product>[],
+    ).firstWhere((entry) => entry.storeName == 'Lidl');
+    expect(unresolved.uncertainProductCount, 1);
+
+    final resolved = calculateProspectCoverage(
+      issues: const <ProspectIssue>[],
+      records: [record],
+      catalogProducts: const [
+        Product(
+          id: 'jacobs-coffee-500',
+          name: 'Jacobs Kaffee Crema 500 g',
+          unit: '500 g',
+          group: 'kaffee',
+        ),
+      ],
+    ).firstWhere((entry) => entry.storeName == 'Lidl');
+    expect(resolved.uncertainProductCount, 0);
   });
 
   test('does not count an equal offer amount as a regular price', () {

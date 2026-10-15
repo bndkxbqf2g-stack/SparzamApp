@@ -51,6 +51,12 @@ String prospectFeedFingerprintFor(
         issue.address,
         issue.sourceStatus,
         issue.recordCount,
+        issue.availablePageCount,
+        issue.loadedPageCount,
+        issue.pageStatus,
+        issue.pageCountKnown,
+        ...issue.missingPageNumbers,
+        issue.uncertainProductCount,
         issue.validFrom?.toIso8601String(),
         issue.validUntil?.toIso8601String(),
         for (final page in issue.pages)

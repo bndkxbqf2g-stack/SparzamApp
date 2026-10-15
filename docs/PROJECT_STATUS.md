@@ -3405,3 +3405,35 @@ Falls ein Lauf vorzeitig endet, muss der nächste Lauf GitHub als technische Wah
 - [x] Nur ein Bild, dessen Canvas-Decodierung tatsächlich fehlschlägt, wechselt einmalig auf den HTML-Fallback; erfolgreiche Cover bleiben im schnellen Pfad.
 - [x] Favoritenrail und Coverraster teilen dieselbe begrenzte Decode-Größe und vermeiden dadurch doppelte Bildcache-Einträge.
 - [x] Der Angebote-Widgettest schützt Coverdarstellung und Seitenansicht.
+
+## Update 15.10.2026 – Vollständiger Prospekt-Seitenimport für Issue #409
+- [x] Die offiziellen Katalogquellen werden seitenvollständig eingelesen und
+  nicht mehr auf die Coverseite reduziert: ALDI Süd (36), EDEKA (40),
+  Kaufland Lebensmittelprospekt (72), Lidl je Kampagne (vollständige
+  Publisher-Seitenliste) und Netto (aktueller Publitas-Katalog).
+- [x] Kaufland trennt das parallel veröffentlichte `-OD`-Drogerieblatt vom
+  Lebensmittelprospekt; die Lebensmittelkampagne wird bei identischer
+  Gültigkeit bevorzugt. Ein Cover-only-Fallback bleibt sichtbar, wenn keine
+  weitergehende öffentliche Seite nachweisbar ist.
+- [x] Lidl-Kampagnen werden nach Händlerkampagne dedupliziert, statt mehrere
+  regionale Kopien als dieselbe Filialausgabe zu zählen. Dictionary-basierte
+  Publisher-Produktlisten werden in der Seitenabdeckung korrekt gezählt.
+- [x] Netto und ALDI verwenden `data.json`/`spreads.json` nur mit dem vom
+  Publisher gelieferten `cacheToken`; fehlende Seiten werden als `partial`
+  ausgewiesen und niemals ergänzt.
+- [x] Jeder Prospekt führt jetzt `pageCount`, `loadedPageCount`,
+  `missingPageNumbers`, `pageStatus`, `pageCountKnown` und die Seitenquelle.
+  Die Abdeckungskarte zeigt geladene/angekündigte Seiten und fehlende Seiten;
+  fehlende Unsicherheitszahlen werden ausdrücklich als nicht ausgewiesen
+  markiert.
+- [x] PENNY bleibt bei der nachweisbaren Coverseite, weil der öffentliche
+  Händlerstand keinen vollständigen Seitenkatalog bereitstellt. Es werden
+  keine Seiten oder Artikel aus dem Cover erfunden.
+- [x] Ein Refresh hält gültige Lidl-Angebote aus dem letzten geprüften Feed,
+  wenn nur der unabhängige Filial-Endpunkt temporär ausfällt. Der originale
+  Erfassungszeitpunkt bleibt dabei erhalten.
+- [x] Der lokale Prospektcache ersetzt weiterhin genau einen Feed-Eintrag und
+  lehnt UTF-8-Inhalte über 4 MiB ab. Die App bleibt bei Cachefehlern mit Live-
+  oder Bundle-Feed funktionsfähig.
+- [x] Die Seitenmetadaten werden beim Filial-Resolver und im Feed-Fingerprint
+  erhalten, damit ein vollständigerer Katalog erneut verarbeitet wird.

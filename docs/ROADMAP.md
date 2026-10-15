@@ -572,3 +572,24 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Nur ein Bild, dessen Canvas-Decodierung tatsächlich fehlschlägt, wechselt einmalig auf den HTML-Fallback; erfolgreiche Cover bleiben im schnellen Pfad.
 - [x] Favoritenrail und Coverraster teilen dieselbe begrenzte Decode-Größe und vermeiden dadurch doppelte Bildcache-Einträge.
 - [x] Der Angebote-Widgettest schützt Coverdarstellung und Seitenansicht.
+
+## Update 15.10.2026 – Issue #409: Seitenvollständigkeit und Datenabdeckung
+- [x] Offizielle EDEKA-`catalog.xml`-Bereiche und ALDI-/Netto-Publitas-
+  `spreads.json`-Listen vollständig und mit Cache-Token importieren.
+- [x] Kaufland-Lebensmittelkampagne gegenüber dem gleichzeitigen `-OD`-
+  Drogerieblatt auswählen und alle offiziellen Leaflet-v4-Seiten übernehmen.
+- [x] Lidl-Kampagnen nach Zeitraum deduplizieren, vollständige Seitenlisten
+  behalten und Dictionary-Produktanzahlen korrekt ausweisen.
+- [x] Fehlende oder nicht abrufbare Seiten, Cover-only-Quellen und unbekannte
+  Publisher-Gesamtzahlen im Feed und in der Prospekt-Abdeckung anzeigen.
+- [x] Seitenabdeckung beim Branch-Resolver und in der Tages-Fingerprint-Logik
+  erhalten; Wiederholungsimports bleiben idempotent.
+- [x] Den bestehenden `ReceiptObservation → PriceObservation → MarketPrice →
+  planningMarketPrices → RoutePriceResolver → RouteOptimizer`-Pfad unverändert
+  weiterverwenden; belegte Normalpreise und Angebote bleiben getrennt.
+- [x] Den lokalen Feedcache auf einen begrenzten, ersetzbaren Eintrag mit
+  4-MiB-Grenze beschränken und Originalbelege außerhalb dieses Caches nicht
+  antasten.
+- [ ] Als nächstes OCR-/Hotspot-Kandidaten nur als sichtbare, unsichere
+  Artikelreview ergänzen, wenn die Quelle keinen strukturierten Artikel liefert;
+  keine automatische Identitäts- oder Preisprojektion ohne Bestätigung.
