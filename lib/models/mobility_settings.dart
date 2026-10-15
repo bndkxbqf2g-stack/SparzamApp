@@ -1,5 +1,8 @@
 enum MobilityMode { car, bike, walk }
 
+/// Maximum number of markets the current project catalog can route through.
+const maximumSupportedRouteStores = 6;
+
 extension MobilityModeLabel on MobilityMode {
   String get label => switch (this) {
     MobilityMode.car => 'Auto',
@@ -138,7 +141,7 @@ class MobilitySettings {
           : 0,
       mode: mode.isEmpty ? MobilityMode.car : mode.first,
       maxStores: ((json['maxStores'] as num?)?.toInt() ?? 3)
-          .clamp(1, 3)
+          .clamp(1, maximumSupportedRouteStores)
           .toInt(),
       minExtraStoreSavings:
           minSavings != null &&
