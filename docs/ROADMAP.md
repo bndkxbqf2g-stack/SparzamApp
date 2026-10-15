@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Recycelte Prospektbilder behalten keinen alten Fallback
+
+- [x] Verzögerte HTML-Fallbacks werden nur noch aktiviert, wenn die fehlgeschlagene URL noch zum aktuell montierten Prospektbild gehört.
+- [x] Beim schnellen Lazy-Scroll können alte Bildfehler dadurch weder neue Cover noch ganze Prospektseiten in den teureren Browserpfad schalten.
+- [x] Eine Regression prüft die URL-Zuordnung für alte und aktuelle Bildfehler.
+
 ## Update 15.10.2026 – Filialgenaue Prospektkarten beim Lazy-Scroll
 
 - [x] Cover-, Öffnen- und Favoriten-Elemente verwenden den vollständigen Prospekt-/Filialschlüssel statt nur des Händlernamens.
