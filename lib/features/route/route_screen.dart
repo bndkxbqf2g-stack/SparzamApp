@@ -9,6 +9,7 @@ import '../../models/price_observation.dart';
 import '../../models/road_route_matrix.dart';
 import '../../models/route_plan.dart';
 import '../../models/recent_purchase.dart';
+import '../../models/store.dart';
 import '../../services/road_distance_service.dart';
 import '../../services/road_distance_store.dart';
 import '../../services/road_route_matrix_store.dart';
@@ -36,6 +37,7 @@ class RouteScreen extends StatefulWidget {
     required this.mobility,
     required this.marketPrices,
     this.openPricesMaxAgeDays = 60,
+    this.storeCatalog = stores,
     this.recentPurchases = const <RecentPurchase>[],
     this.historicalPriceObservations = const <PriceObservation>[],
     this.onRoadDistancesChanged,
@@ -48,6 +50,7 @@ class RouteScreen extends StatefulWidget {
   final MobilitySettings mobility;
   final List<MarketPrice> marketPrices;
   final int openPricesMaxAgeDays;
+  final List<Store> storeCatalog;
   final List<RecentPurchase> recentPurchases;
   final List<PriceObservation> historicalPriceObservations;
   final ValueChanged<Map<String, double>>? onRoadDistancesChanged;
@@ -72,6 +75,7 @@ class _RouteScreenState extends State<RouteScreen> {
   List<Offer>? _optimizerOffers;
   List<MarketPrice>? _optimizerMarketPrices;
   Map<String, double>? _optimizerRoadDistances;
+  List<Store>? _optimizerStoreCatalog;
   RoadRouteMatrix? _optimizerRoadMatrix;
   MobilitySettings? _optimizerMobility;
   int _optimizerOpenPricesMaxAgeDays = -1;
@@ -138,7 +142,7 @@ class _RouteScreenState extends State<RouteScreen> {
     setState(() => loadingRoadDistances = true);
 
     final destinations = {
-      for (final store in stores)
+      for (final store in widget.storeCatalog)
         if (widget.mobility.isStoreEnabled(store.name) &&
             store.address.isNotEmpty)
           travelMatrixStoreKey(store): store.address,
@@ -153,7 +157,7 @@ class _RouteScreenState extends State<RouteScreen> {
 
       final next = {...roadDistances};
       if (matrix != null) {
-        for (final store in stores) {
+        for (final store in widget.storeCatalog) {
           final matrixKey = travelMatrixStoreKey(store);
           final distance =
               matrix.distance(RoadRouteMatrix.origin, matrixKey) ??
@@ -220,6 +224,7 @@ class _RouteScreenState extends State<RouteScreen> {
         _sameListReferences(_optimizerOffers, widget.offers) &&
         _sameListReferences(_optimizerMarketPrices, widget.marketPrices) &&
         identical(_optimizerRoadDistances, roadDistances) &&
+        _sameListReferences(_optimizerStoreCatalog, widget.storeCatalog) &&
         identical(_optimizerRoadMatrix, roadMatrix) &&
         identical(_optimizerMobility, widget.mobility) &&
         _optimizerOpenPricesMaxAgeDays == widget.openPricesMaxAgeDays &&
@@ -238,6 +243,7 @@ class _RouteScreenState extends State<RouteScreen> {
       timeValuePerHour: widget.mobility.timeValuePerHour,
       travelMinutesPerKm: 60 / widget.mobility.mode.averageSpeedKmh,
       enabledStoreNames: widget.mobility.enabledStoreNames,
+      storeCatalog: widget.storeCatalog,
       marketPrices: widget.marketPrices,
       openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
       roadMatrix: widget.mobility.mode == MobilityMode.car ? roadMatrix : null,
@@ -248,6 +254,7 @@ class _RouteScreenState extends State<RouteScreen> {
     _optimizerOffers = widget.offers;
     _optimizerMarketPrices = widget.marketPrices;
     _optimizerRoadDistances = roadDistances;
+    _optimizerStoreCatalog = widget.storeCatalog;
     _optimizerRoadMatrix = roadMatrix;
     _optimizerMobility = widget.mobility;
     _optimizerOpenPricesMaxAgeDays = widget.openPricesMaxAgeDays;
@@ -320,7 +327,7 @@ class _RouteScreenState extends State<RouteScreen> {
           mobility: widget.mobility,
         ),
         optimizedTravel: optimizedTravel,
-        realCount: stores
+        realCount: widget.storeCatalog
             .where((store) => widget.mobility.isStoreEnabled(store.name))
             .where(
               (store) =>
@@ -441,7 +448,7 @@ class _RouteScreenState extends State<RouteScreen> {
               title: Text(
                 [
                   'Start',
-                  ...best.stores.map((store) => store.name),
+                  ...best.stores.map(_routeStorePathLabel),
                   'Start',
                 ].join(' → '),
               ),
