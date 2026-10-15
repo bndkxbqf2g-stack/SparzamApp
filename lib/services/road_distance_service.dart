@@ -149,7 +149,7 @@ class RoadDistanceService implements TravelMatrixProvider {
       final distances = <String, double>{};
       for (var from = 0; from < rows.length; from++) {
         final row = rows[from] as List<dynamic>;
-        if (row.length != coordinates.length) return cached;
+        if (row.length != coordinates.length) return cachedForRequest;
         for (var to = 0; to < row.length; to++) {
           if (from == to) continue;
           final meters = (row[to] as num?)?.toDouble();
