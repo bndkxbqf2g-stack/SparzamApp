@@ -6,6 +6,7 @@ import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/offer.dart';
 import '../offers/prospect_price_statistics.dart';
+import 'market_price_freshness.dart';
 import '../price_gaps/price_gap_priority.dart';
 import '../shopping_list/shopping_price_quotes.dart';
 
@@ -191,6 +192,11 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
     final screen = widget;
     final quoteSnapshot = _quoteSnapshot();
     final snapshots = _snapshots(quoteSnapshot);
+    final quality = calculatePriceDataQuality(
+      screen.marketPrices,
+      openPricesMaxAgeDays: screen.openPricesMaxAgeDays,
+      now: screen.now,
+    );
     final current = snapshots.where((row) => row.quote != null).length;
     final historical = snapshots.where((row) => row.hasHistorical).length;
     final missing = snapshots.length - current;
@@ -230,6 +236,10 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
             onOpenList: screen.onOpenList,
             onOpenRoute: screen.onOpenRoute,
           ),
+        if (quality.hasData) ...[
+          const SizedBox(height: 16),
+          _PriceDataQualityCard(quality: quality),
+        ],
         if (snapshots.isNotEmpty && current > 0) ...[
           const SizedBox(height: 16),
           Text(
@@ -322,6 +332,104 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
     );
   }
 }
+class _PriceDataQualityCard extends StatelessWidget {
+  const _PriceDataQualityCard({required this.quality});
+
+  final PriceDataQuality quality;
+
+  @override
+  Widget build(BuildContext context) {
+    final stores = quality.currentByStore.entries.toList()
+      ..sort((a, b) {
+        final byCount = b.value.compareTo(a.value);
+        return byCount != 0 ? byCount : a.key.compareTo(b.key);
+      });
+    return Card(
+      key: const ValueKey('price-data-quality-card'),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Gespeicherte Preisbelege',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              '${quality.current} von ${quality.total} Belegen sind aktuell '
+              'und für die Routenplanung zugelassen.',
+            ),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 8,
+              runSpacing: 6,
+              children: [
+                if (quality.currentProspectRegular > 0)
+                  Chip(
+                    avatar: const Icon(Icons.menu_book_outlined, size: 16),
+                    label: Text(
+                      'Prospekt-Normalpreise ${quality.currentProspectRegular}',
+                    ),
+                  ),
+                if (quality.currentReceipt > 0)
+                  Chip(
+                    avatar: const Icon(Icons.receipt_long_outlined, size: 16),
+                    label: Text('Kassenbons ${quality.currentReceipt}'),
+                  ),
+                if (quality.currentManual > 0)
+                  Chip(
+                    avatar: const Icon(Icons.edit_outlined, size: 16),
+                    label: Text('Eigene Preise ${quality.currentManual}'),
+                  ),
+                if (quality.currentOpenPrices > 0)
+                  Chip(
+                    avatar: const Icon(Icons.public_outlined, size: 16),
+                    label: Text('Open Prices ${quality.currentOpenPrices}'),
+                  ),
+                if (quality.notRouteReady > 0)
+                  Chip(
+                    avatar: const Icon(Icons.schedule_outlined, size: 16),
+                    label: Text(
+                      '${quality.notRouteReady} veraltet oder unvollständig',
+                    ),
+                  ),
+                if (quality.prospectOfferEvidence > 0)
+                  Chip(
+                    avatar: const Icon(Icons.local_offer_outlined, size: 16),
+                    label: Text(
+                      'Prospekt-Angebote separat ${quality.prospectOfferEvidence}',
+                    ),
+                  ),
+              ],
+            ),
+            if (stores.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                'Aktuell je Markt',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                stores
+                    .take(6)
+                    .map((entry) => '${entry.key}: ${entry.value}')
+                    .join(' · '),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _ListCoverageCard extends StatelessWidget {
   const _ListCoverageCard({
     required this.current,
