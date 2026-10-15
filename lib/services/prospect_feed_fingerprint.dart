@@ -25,8 +25,15 @@ String prospectFeedFingerprintFor(
 }) {
   final day = now ?? DateTime.now();
   final currentDay = DateTime(day.year, day.month, day.day);
+  final refreshedStores = feed.refreshedStores
+      .map((store) => store.trim().toLowerCase())
+      .where((store) => store.isNotEmpty)
+      .toSet()
+      .toList()
+    ..sort();
   final values = <Object?>[
     'current-day:${currentDay.toIso8601String()}',
+    'refreshed-stores:${refreshedStores.join('|')}',
     for (final record in feed.records)
       ...[
         record.sourceId,
