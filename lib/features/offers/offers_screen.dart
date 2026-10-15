@@ -229,10 +229,11 @@ List<ProspectIssue> _currentProspectIssues(
         )) {
       continue;
     }
-    final previous = byStore[issue.storeName];
+    final key = prospectIssueKey(issue);
+    final previous = byStore[key];
     if (previous == null ||
         _prospectIssueScore(issue) > _prospectIssueScore(previous)) {
-      byStore[issue.storeName] = issue;
+      byStore[key] = issue;
     }
   }
   return byStore.values.toList(growable: false);
