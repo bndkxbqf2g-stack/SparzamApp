@@ -825,3 +825,11 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Die bestehende Herkunfts-, Gültigkeits-, Nachweis- und
   Packungsgrößenprüfung bleibt unverändert; eine Regression schützt die
   fehlende-Filiale-Grenze.
+## Update 15.10.2026 – Alte automatische Angebotsbeobachtungen bereinigen
+
+- [x] Der Persistenzlauf entfernt neben dem aktuellen `prospect|`-Format auch
+  ältere automatische `offer|import|`-Angebotsbeobachtungen.
+- [x] Manuell geprüfte Seitenangebote bleiben anhand ihrer eigenen ID und
+  Evidenz erhalten; reguläre Preisbeobachtungen werden nicht gelöscht.
+- [x] Eine Fixture-Regression schützt die Trennung zwischen Altbereinigung und
+  dem ausschließlich regulären Normalpreisbestand.
