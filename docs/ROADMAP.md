@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Routenalternativen bleiben filialgenau
+
+- [x] Route-Alternativen werden nach Branch-ID, Ort und Adresse dedupliziert; gleichnamige Filialen bleiben eigenständige Stopps.
+- [x] Die UI-Deduplizierung verwendet denselben stabilen Routenschlüssel wie die deterministische Optimierer-Reihenfolge.
+- [x] Eine Regression schützt zwei gleichnamige Lidl-Filialen mit unterschiedlichen Fahrwegen.
+
 ## Update 15.10.2026 – Einkaufs-Preis-Matrix zeigt exakte Filiale
 
 - [x] Preiszitate übernehmen Branch-ID sowie vorhandenen Standort, Ort und Adresse aus Marktpreis- und Angebotsbelegen.
