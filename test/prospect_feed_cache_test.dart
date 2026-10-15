@@ -151,6 +151,67 @@ void main() {
     );
   });
 
+  test('keeps published page totals and missing-page diagnostics', () {
+    final result = parseProspectFeed('''
+{
+  "generatedAt": "2026-10-14T04:15:00Z",
+  "sources": [{
+    "storeName": "EDEKA",
+    "status": "ok",
+    "recordCount": 1,
+    "prospects": [{
+      "title": "EDEKA Prospekt",
+      "pageCount": 3,
+      "loadedPageCount": 2,
+      "missingPageNumbers": [2],
+      "pageStatus": "partial",
+      "pageCountKnown": true,
+      "uncertainProductCount": 1,
+      "pageSamples": [
+        {"number": 1, "image": "https://example.test/1.jpg"},
+        {"number": 3, "image": "https://example.test/3.jpg"}
+      ]
+    }]
+  }],
+  "offers": []
+}
+''');
+
+    final issue = result.prospects.singleWhere((item) => item.storeName == 'EDEKA');
+    expect(issue.availablePageCount, 3);
+    expect(issue.loadedPageCount, 2);
+    expect(issue.missingPageNumbers, [2]);
+    expect(issue.pageStatus, 'partial');
+    expect(issue.uncertainProductCount, 1);
+  });
+
+  test('does not present an unknown cover total as complete pagination', () {
+    final result = parseProspectFeed('''
+{
+  "sources": [{
+    "storeName": "PENNY",
+    "status": "ok",
+    "prospects": [{
+      "title": "PENNY Prospekt",
+      "pageCount": 1,
+      "loadedPageCount": 1,
+      "pageStatus": "cover_only",
+      "pageCountKnown": false,
+      "pageSamples": [
+        {"number": 1, "image": "https://example.test/cover.jpg"}
+      ]
+    }]
+  }],
+  "offers": []
+}
+''');
+
+    final issue = result.prospects.single;
+    expect(issue.pageCountKnown, isFalse);
+    expect(issue.availablePageCount, isNull);
+    expect(issue.loadedPageCount, 1);
+  });
+
   test('preserves only valid source EAN evidence', () {
     final parsed = parseProspectFeed(
       _feed(validUntil: '2026-10-03').replaceFirst(
@@ -204,6 +265,14 @@ void main() {
 
     await writing;
     expect(await reading, raw);
+  });
+
+  test('verwirft übergroße Prospektfeeds statt den lokalen Speicher wachsen zu lassen', () async {
+    final cache = SharedPreferencesProspectFeedCache();
+    final oversized = 'x' * (SharedPreferencesProspectFeedCache.maxRawBytes + 1);
+
+    await expectLater(cache.save(oversized), throwsA(isA<StateError>()));
+    expect(await cache.load(), isNull);
   });
 
   test('parallele Feed-Ladevorgänge teilen eine laufende Anfrage', () async {

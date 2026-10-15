@@ -1,4 +1,5 @@
-## Update 15.10.2026 ‚Äì Branch-stabile Fahrmatrizen
+µ®•z∫ËØ
+‚∂)‡≤÷ßu™›¢Îi∫–k¢Gß¶*^## Update 15.10.2026 ‚Äì Branch-stabile Fahrmatrizen
 
 - Neue OSRM-Matrizen verwenden bei vorhandener Branch-ID stabile Filialschl√ºssel; identische H√§ndlernamen k√∂nnen dadurch getrennte Distanz- und Fahrzeitwerte tragen.
 - √Ñltere Matrizen mit sichtbaren H√§ndlernamen sowie bestehende Distanz-Caches bleiben als Fallback lesbar.
@@ -611,7 +612,8 @@
 - Der Feedparser verwendet bei √§lteren Prospectformaten ohne eigenes
   `thumbnailUrl` das erste bereits validierte `pageSamples`-Bild als Cover.
 - Dadurch bleiben vorhandene H√§ndlerseiten im Karten- und Viewerpfad sichtbar;
-  unzul√§ssige oder fehlende URLs werden weiterhin nicht erfunden.
+  unzµ®•z∫ËØ
+‚∂)‡≤÷ßu™›¢Îi∫–k¢Gß¶*^ul√§ssige oder fehlende URLs werden weiterhin nicht erfunden.
 - `prospect_feed_service_test.dart` sch√ºtzt den Fallback einschlie√ülich der
   bestehenden HTTP-Validierung.
 
@@ -1397,7 +1399,8 @@
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
 - Letzter gepr√ºfter Code-Stand auf main: `4a9800e` (Bon-Aliase auf
-  konfigurierte Marktidentit√§ten normalisiert); der aktuelle Feed-Stand ist
+  konfigurieµ®•z∫ËØ
+‚∂)‡≤÷ßu™›¢Îi∫–k¢Gß¶*^rte Marktidentit√§ten normalisiert); der aktuelle Feed-Stand ist
   `ec1227e`.
 - PR #248 wurde mit den CI-L√§ufen `38039823586` und `38039837524` gepr√ºft und
   in main gemergt. Main-CI `38040080993` sowie Release `38040080990` waren mit
@@ -2148,7 +2151,8 @@
   die Auswahl.
 - Eine Regression deckt den Vorrang und den effektiven Couponpreis ab.
 - F√ºr diesen Block: Flutter-Analyse ohne Befund, 424 Tests bestanden und
-  `flutter build web --release` erfolgreich.
+  `flutter builµ®•z∫ËØ
+‚∂)‡≤÷ßu™›¢Îi∫–k¢Gß¶*^d web --release` erfolgreich.
 
 ## Update 30.09.2026 ‚Äì Routenempfehlung bei unvollst√§ndiger Preisabdeckung
 - Wenn der beste Einzelmarkt nicht alle Listenartikel bepreisen kann, erkl√§rt
@@ -3405,3 +3409,35 @@ Falls ein Lauf vorzeitig endet, muss der n√§chste Lauf GitHub als technische Wah
 - [x] Nur ein Bild, dessen Canvas-Decodierung tats√§chlich fehlschl√§gt, wechselt einmalig auf den HTML-Fallback; erfolgreiche Cover bleiben im schnellen Pfad.
 - [x] Favoritenrail und Coverraster teilen dieselbe begrenzte Decode-Gr√∂√üe und vermeiden dadurch doppelte Bildcache-Eintr√§ge.
 - [x] Der Angebote-Widgettest sch√ºtzt Coverdarstellung und Seitenansicht.
+
+## Update 15.10.2026 ‚Äì Vollst√§ndiger Prospekt-Seitenimport f√ºr Issue #409
+- [x] Die offiziellen Katalogquellen werden seitenvollst√§ndig eingelesen und
+  nicht mehr auf die Coverseite reduziert: ALDI S√ºd (36), EDEKA (40),
+  Kaufland Lebensmittelprospekt (72), Lidl je Kampagne (vollst√§ndige
+  Publisher-Seitenliste) und Netto (aktueller Publitas-Katalog).
+- [x] Kaufland trennt das parallel ver√∂ffentlichte `-OD`-Drogerieblatt vom
+  Lebensmittelprospekt; die Lebensmittelkampagne wird bei identischer
+  G√ºltigkeit bevorzugt. Ein Cover-only-Fallback bleibt sichtbar, wenn keine
+  weitergehende √∂ffentliche Seite nachweisbar ist.
+- [x] Lidl-Kampagnen werden nach H√§ndlerkampagne dedupliziert, statt mehrere
+  regionale Kopien als dieselbe Filialausgabe zu z√§hlen. Dictionary-basierte
+  Publisher-Produktlisten werden in der Seitenabdeckung korrekt gez√§hlt.
+- [x] Netto und ALDI verwenden `data.json`/`spreads.json` nur mit dem vom
+  Publisher gelieferten `cacheToken`; fehlende Seiten werden als `partial`
+  ausgewiesen und niemals erg√§nzt.
+- [x] Jeder Prospekt f√ºhrt jetzt `pageCount`, `loadedPageCount`,
+  `missingPageNumbers`, `pageStatus`, `pageCountKnown` und die Seitenquelle.
+  Die Abdeckungskarte zeigt geladene/angek√ºndigte Seiten und fehlende Seiten;
+  fehlende Unsicherheitszahlen werden ausdr√ºcklich als nicht ausgewiesen
+  markiert.
+- [x] PENNY bleibt bei der nachweisbaren Coverseite, weil der √∂ffentliche
+  H√§ndlerstand keinen vollst√§ndigen Seitenkatalog bereitstellt. Es werden
+  keine Seiten oder Artikel aus dem Cover erfunden.
+- [x] Ein Refresh h√§lt g√ºltige Lidl-Angebote aus dem letzten gepr√ºften Feed,
+  wenn nur der unabh√§ngige Filial-Endpunkt tempor√§r ausf√§llt. Der originale
+  Erfassungszeitpunkt bleibt dabei erhalten.
+- [x] Der lokale Prospektcache ersetzt weiterhin genau einen Feed-Eintrag und
+  lehnt UTF-8-Inhalte √ºber 4 MiB ab. Die App bleibt bei Cachefehlern mit Live-
+  oder Bundle-Feed funktionsf√§hig.
+- [x] Die Seitenmetadaten werden beim Filial-Resolver und im Feed-Fingerprint
+  erhalten, damit ein vollst√§ndigerer Katalog erneut verarbeitet wird.

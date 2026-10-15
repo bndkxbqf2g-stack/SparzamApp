@@ -51,6 +51,48 @@ void main() {
     },
   );
 
+  test('start-address enrichment keeps page coverage diagnostics', () async {
+    final client = MockClient(
+      (_) async => http.Response('''
+{
+  "generatedAt": "2026-10-01T04:15:00Z",
+  "sources": [{
+    "storeName": "EDEKA",
+    "status": "ok",
+    "prospects": [{
+      "title": "EDEKA Prospekt",
+      "pageCount": 3,
+      "loadedPageCount": 2,
+      "missingPageNumbers": [2],
+      "pageStatus": "partial",
+      "pageCountKnown": true,
+      "uncertainProductCount": 1,
+      "pageSamples": [
+        {"number": 1, "image": "https://example.test/1.jpg"},
+        {"number": 3, "image": "https://example.test/3.jpg"}
+      ]
+    }]
+  }],
+  "offers": []
+}
+''', 200),
+    );
+
+    final result = await ProspectImportModule(
+      client: client,
+      cache: _MemoryProspectFeedCache(),
+    ).execute(startAddress: '97225 Zellingen, Germany');
+    final edeka = result.prospects.firstWhere(
+      (issue) => issue.storeName == 'EDEKA',
+    );
+
+    expect(edeka.availablePageCount, 3);
+    expect(edeka.loadedPageCount, 2);
+    expect(edeka.missingPageNumbers, [2]);
+    expect(edeka.pageStatus, 'partial');
+    expect(edeka.uncertainProductCount, 1);
+  });
+
   test(
     'cached feed can render before the first network refresh',
     () async {

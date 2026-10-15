@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../models/product.dart';
 import '../offers/offer_import.dart';
 import '../offers/offer_filter.dart';
 import '../../services/prospect_feed_service.dart';
@@ -161,6 +162,10 @@ class ProspectCoverage {
     required this.structuredOfferCount,
     required this.regionalOnlyCount,
     required this.pageCount,
+    this.availablePageCount,
+    this.missingPageCount = 0,
+    this.pageStatus = 'unknown',
+    this.uncertainProductCount,
     required this.offerImageCount,
     required this.offerCategoryCount,
     required this.offerProofCount,
@@ -177,6 +182,12 @@ class ProspectCoverage {
   final int structuredOfferCount;
   final int regionalOnlyCount;
   final int pageCount;
+  /// Publisher-declared page total, when the source exposes one.
+  final int? availablePageCount;
+  final int missingPageCount;
+  final String pageStatus;
+  /// Null means the source did not publish an identity-review count.
+  final int? uncertainProductCount;
   final int offerImageCount;
   final int offerCategoryCount;
   final int offerProofCount;
@@ -196,6 +207,7 @@ class ProspectCoverage {
           .clamp(0, structuredOfferCount)
           .toInt();
   bool get hasPageImages => pageCount > 0;
+  bool get hasMissingPages => missingPageCount > 0;
 
   int get availableStoreSignals => [
     hasBranch,
@@ -212,6 +224,7 @@ List<ProspectCoverage> calculateProspectCoverage({
   required Iterable<OfferImportRecord> records,
   DateTime? now,
   Map<String, int>? persistedRegularPriceCounts,
+  Iterable<Product>? catalogProducts,
 }) {
   final currentRecords = now == null
       ? records.toList(growable: false)
@@ -251,6 +264,7 @@ List<ProspectCoverage> calculateProspectCoverage({
         persistedRegularPriceCounts == null
             ? null
             : (persistedRegularPriceCounts[storeName] ?? 0),
+        catalogProducts,
       ),
   ];
 }
@@ -274,6 +288,7 @@ ProspectCoverage _coverageForStore(
   ProspectIssue? issue,
   List<OfferImportRecord> records,
   int? persistedRegularPriceCount,
+  Iterable<Product>? catalogProducts,
 ) {
   final offerImageCount = records
       .where((record) => record.imageUrl?.trim().isNotEmpty == true)
@@ -287,12 +302,25 @@ ProspectCoverage _coverageForStore(
   final regularPriceCount = records.where(hasLearnableProspectRegularPrice).length;
   final regionalOnlyCount = records.where((record) => record.regionalOnly).length;
   final storedRegularPriceCount = persistedRegularPriceCount?.clamp(0, regularPriceCount).toInt();
+  final uncertainProductCount = catalogProducts == null
+      ? issue?.uncertainProductCount
+      : records.where((record) {
+          final reason = resolveOfferImport(record, catalogProducts).reason;
+          return reason == 'unknown_identity' ||
+              reason == 'ambiguous_identity' ||
+              reason == 'package_mismatch' ||
+              reason == 'ean_mismatch';
+        }).length;
   return ProspectCoverage(
     storeName: storeName,
     sourceStatus: issue?.sourceStatus ?? 'unavailable',
     structuredOfferCount: records.length,
     regionalOnlyCount: regionalOnlyCount,
     pageCount: _prospectPageCount(issue),
+    availablePageCount: issue?.availablePageCount,
+    missingPageCount: issue?.missingPageNumbers.length ?? 0,
+    pageStatus: issue?.pageStatus ?? 'unknown',
+    uncertainProductCount: uncertainProductCount,
     offerImageCount: offerImageCount,
     offerCategoryCount: offerCategoryCount,
     offerProofCount: offerProofCount,
@@ -487,16 +515,25 @@ String _coverageDetails(
     ProspectRegularPricePersistenceStatus.failed => 'Speicherstatus unbekannt',
   };
   final storeSignals = '${coverage.availableStoreSignals}/4 Filialdaten';
+  final pages = coverage.availablePageCount == null
+      ? '${coverage.pageCount} Bildseiten'
+      : '${coverage.pageCount}/${coverage.availablePageCount} Bildseiten';
+  final missingPages = coverage.missingPageCount == 0
+      ? ''
+      : ' · ${coverage.missingPageCount} fehlende Seiten';
+  final uncertain = coverage.uncertainProductCount == null
+      ? 'unsichere Zuordnungen nicht ausgewiesen'
+      : '${coverage.uncertainProductCount} unsichere Zuordnungen';
   final regional = coverage.regionalOnlyCount == 0
       ? ''
       : ' · ${coverage.regionalOnlyCount} nur regional';
   return '${coverage.structuredOfferCount} strukturierte Angebote'
       '$regional · '
-      '${coverage.pageCount} Bildseiten · $productImages · $categories · '
+      '$pages$missingPages · $productImages · $categories · '
       '$proofs · '
       '$regularPrices · '
       '$storedRegularPrices · '
-      '$storeSignals';
+      '$uncertain · $storeSignals';
 }
 
 String _sourceStatusLabel(String status) {

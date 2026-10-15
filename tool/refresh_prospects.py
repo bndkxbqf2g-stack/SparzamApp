@@ -8,7 +8,7 @@ import time
 from datetime import date, datetime, timedelta, timezone
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import parse_qs, quote, unquote, urljoin, urlsplit
+from urllib.parse import parse_qs, quote, unquote, urljoin, urlsplit, urlunsplit
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
 
@@ -439,6 +439,213 @@ def record(
         result["priceByBaseUnit"] = base_unit_price
     return result
 
+
+# Public leaflet readers differ in transport, but their page metadata follows
+# the same contract in the generated feed. Keep page construction bounded and
+# deterministic so a malformed publisher response cannot grow the asset or
+# local cache without limit.
+MAX_PROSPECT_PAGES = 500
+
+
+def _page_number(value):
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        number = int(value)
+    elif isinstance(value, str) and value.strip().isdigit():
+        number = int(value.strip())
+    else:
+        return None
+    return number if 1 <= number <= MAX_PROSPECT_PAGES else None
+
+
+def _page_samples_from_items(items, *, base_url=None):
+    samples = {}
+    for page_data in items or []:
+        if not isinstance(page_data, dict):
+            continue
+        number = _page_number(
+            page_data.get("number") or page_data.get("pageNumber")
+        )
+        if number is None:
+            continue
+        image = _source_image(
+            page_data,
+            "image",
+            "imageUrl",
+            "image_url",
+            "thumbnail",
+            "thumbnailUrl",
+        )
+        if image is None and base_url:
+            raw_image = page_data.get("image") or page_data.get("imageUrl")
+            if isinstance(raw_image, str):
+                candidate = urljoin(base_url, raw_image.strip())
+                if urlsplit(candidate).scheme in {"http", "https"}:
+                    image = candidate
+        if image is None:
+            continue
+        zoom = _source_image(
+            page_data,
+            "zoom",
+            "zoomUrl",
+            "largeImageUrl",
+            "fullImageUrl",
+        )
+        if zoom is None and base_url:
+            raw_zoom = page_data.get("zoom") or page_data.get("zoomUrl")
+            if isinstance(raw_zoom, str):
+                candidate = urljoin(base_url, raw_zoom.strip())
+                if urlsplit(candidate).scheme in {"http", "https"}:
+                    zoom = candidate
+        samples[number] = {
+            "number": number,
+            "altText": clean(str(page_data.get("altText") or ""))[:320],
+            "keyWords": clean(str(
+                page_data.get("keyWords")
+                or page_data.get("keywords")
+                or page_data.get("text")
+                or ""
+            ))[:900],
+            "image": image,
+        }
+        if zoom:
+            samples[number]["zoom"] = zoom
+    return [samples[number] for number in sorted(samples)]
+
+
+def _page_coverage(samples, expected_numbers=None, expected_count=None):
+    numbers = [sample["number"] for sample in samples]
+    if expected_numbers is None and expected_count:
+        expected_numbers = list(range(1, expected_count + 1))
+    expected_numbers = sorted(set(expected_numbers or numbers))
+    page_count = len(expected_numbers) if expected_numbers else len(numbers)
+    missing = [number for number in expected_numbers if number not in numbers]
+    if not samples:
+        status = "unavailable"
+    elif missing:
+        status = "partial"
+    else:
+        status = "complete"
+    return {
+        "pageCount": page_count,
+        "loadedPageCount": len(samples),
+        "missingPageNumbers": missing,
+        "pageStatus": status,
+        "pageCountKnown": bool(expected_numbers),
+    }
+
+
+def _with_page_coverage(item, samples, *, expected_numbers=None, expected_count=None,
+                        page_source=None):
+    result = dict(item)
+    result["pageSamples"] = samples
+    result.update(_page_coverage(
+        samples,
+        expected_numbers=expected_numbers,
+        expected_count=expected_count,
+    ))
+    if page_source:
+        result["pageSource"] = page_source
+    return result
+
+
+def _reader_base_url(reader_url):
+    parts = urlsplit(reader_url)
+    path = parts.path.rstrip("/") + "/"
+    return urlunsplit((parts.scheme, parts.netloc, path, "", ""))
+
+
+def _parse_publitas_pages(spreads_json, reader_url, *, expected_count=None):
+    payload = json.loads(spreads_json)
+    if isinstance(payload, dict):
+        payload = payload.get("spreads", payload.get("pages", []))
+    if not isinstance(payload, list):
+        raise ValueError("Publitas spreads: ung√ºltige Seitenliste")
+    pages = []
+    for spread in payload:
+        if not isinstance(spread, dict):
+            continue
+        spread_pages = spread.get("pages", [spread])
+        if not isinstance(spread_pages, list):
+            continue
+        pages.extend(page for page in spread_pages if isinstance(page, dict))
+    samples = _page_samples_from_items(
+        [
+            {
+                **page,
+                "image": (
+                    (page.get("images") or {}).get("at1600")
+                    if isinstance(page.get("images"), dict)
+                    else page.get("image")
+                ),
+                "zoom": (
+                    (page.get("images") or {}).get("at2400")
+                    if isinstance(page.get("images"), dict)
+                    else page.get("zoom")
+                ),
+                "keyWords": page.get("text") or "",
+            }
+            for page in pages
+        ],
+        base_url=_reader_base_url(reader_url),
+    )
+    return samples, _page_coverage(samples, expected_count=expected_count)
+
+
+def _publitas_data(json_text):
+    payload = json.loads(json_text)
+    if not isinstance(payload, dict):
+        raise ValueError("Publitas data: ung√ºltige Antwort")
+    count = payload.get("numPages")
+    expected_count = _page_number(count) if count is not None else None
+    cache_token = clean(str(payload.get("cacheToken") or ""))
+    return expected_count, cache_token
+
+
+def _enrich_publitas_prospect(item, data_json, spreads_json):
+    expected_count, _ = _publitas_data(data_json)
+    samples, coverage = _parse_publitas_pages(
+        spreads_json,
+        item.get("url") or "",
+        expected_count=expected_count,
+    )
+    result = dict(item)
+    result["pageSamples"] = samples
+    result.update(coverage)
+    result["pageSource"] = "Publitas spreads.json"
+    return result
+
+
+def _fetch_publitas_prospect_pages(prospects):
+    enriched = []
+    for item in prospects or []:
+        if not isinstance(item, dict):
+            continue
+        try:
+            base_url = _reader_base_url(str(item.get("url") or ""))
+            data_url = urljoin(base_url, "data.json")
+            data_body = fetch(data_url)
+            expected_count, cache_token = _publitas_data(data_body)
+            if not cache_token:
+                raise ValueError("Publitas cacheToken fehlt")
+            spreads_url = urljoin(
+                base_url,
+                "spreads.json?version=" + quote(cache_token, safe=""),
+            )
+            enriched.append(_enrich_publitas_prospect(
+                item,
+                data_body,
+                fetch(spreads_url),
+            ))
+        except Exception as error:
+            result = dict(item)
+            result["pageStatus"] = "partial"
+            result["pageError"] = clean(str(error))[:240]
+            result.setdefault("loadedPageCount", len(result.get("pageSamples") or []))
+            enriched.append(result)
+    return enriched
+
 ALDI_API_URL = "https://api.aldi-sued.de/v3/product-search"
 ALDI_HOME_URL = "https://www.aldi-sued.de/"
 ALDI_PROSPECT_HOST = "prospekt.aldi-sued.de"
@@ -465,8 +672,8 @@ def parse_aldi_prospects(html_text, base_url=ALDI_HOME_URL, *, today=None):
     """Extract the current public ALDI S√ºd leaflet cover from the homepage.
 
     The official page publishes a public leaflet link and a matching CMS
-    image. We keep one verified cover page; offer records continue to come
-    from the structured product endpoint.
+    image. The Publitas reader is enriched separately when its page catalogue
+    is available; this function remains a truthful cover-only fallback.
     """
     reference = today or local_today()
     candidates = []
@@ -522,6 +729,9 @@ def parse_aldi_prospects(html_text, base_url=ALDI_HOME_URL, *, today=None):
         "status": "current",
         "productCount": 0,
         "pageCount": 1,
+        "loadedPageCount": 1,
+        "pageStatus": "cover_only",
+        "pageCountKnown": False,
         "thumbnailUrl": images[0],
         "pageSamples": [{
             "number": 1,
@@ -671,6 +881,7 @@ def fetch_aldi_api_offers():
     prospects = []
     try:
         prospects = parse_aldi_prospects(fetch(ALDI_HOME_URL), ALDI_HOME_URL)
+        prospects = _fetch_publitas_prospect_pages(prospects)
     except Exception:
         # The structured price source remains usable if the public cover
         # teaser is temporarily unavailable or changes its markup.
@@ -874,8 +1085,96 @@ def parse_edeka_api(json_text, base_url):
     return dedupe(offers), []
 
 
-def parse_edeka_prospects(html_text, base_url, *, today=None):
-    """Extract all explicit branch-linked EDEKA leaflet pages.
+def _edeka_catalog_url(html_text, base_url):
+    iframe_match = re.search(
+        r'<iframe\b[^>]*\bsrc=["\']([^"\']+?/index\.html(?:\?[^"\']*)?)["\']',
+        html_text or "",
+        flags=re.I,
+    )
+    if iframe_match:
+        iframe_url = urljoin(base_url, html.unescape(iframe_match.group(1)))
+        if urlsplit(iframe_url).netloc.casefold() == "blaetterkatalog.edeka.de":
+            return urljoin(iframe_url, "blaetterkatalog/xml/catalog.xml")
+
+    image_match = re.search(
+        r'(https?://blaetterkatalog\.edeka\.de/[^"\'<>\s]+?/blaetterkatalog/)'
+        r'(?:normal|large|thumbnails)/[^"\'<>\s]+',
+        html_text or "",
+        flags=re.I,
+    )
+    if image_match:
+        return urljoin(image_match.group(1), "xml/catalog.xml")
+    return None
+
+
+def _edeka_catalog_pages(catalog_xml, catalog_url):
+    detaillevels = {}
+    for tag in re.findall(r"<detaillevel\b[^>]*>", catalog_xml or "", flags=re.I):
+        name_match = re.search(r'\bname=["\']([^"\']+)["\']', tag, flags=re.I)
+        path_match = re.search(r'\bpath=["\']([^"\']*)["\']', tag, flags=re.I)
+        filename_match = re.search(
+            r'\bfilename=["\']([^"\']*)["\']', tag, flags=re.I,
+        )
+        extension_match = re.search(
+            r'\bextension=["\']([^"\']*)["\']', tag, flags=re.I,
+        )
+        if not name_match or not path_match or not filename_match or not extension_match:
+            continue
+        detaillevels[name_match.group(1).casefold()] = (
+            path_match.group(1),
+            filename_match.group(1),
+            extension_match.group(1).lstrip("."),
+        )
+    normal = detaillevels.get("normal")
+    if normal is None:
+        raise ValueError("EDEKA Katalog: normale Bildaufl√∂sung fehlt")
+
+    page_numbers = []
+    for tag in re.findall(r"<range\b[^>]*>", catalog_xml or "", flags=re.I):
+        pages_match = re.search(r'\bpages=["\'](\d+)["\']', tag, flags=re.I)
+        if not pages_match:
+            continue
+        start_match = re.search(r'\bnr_start=["\'](\d+)["\']', tag, flags=re.I)
+        start = int(start_match.group(1)) if start_match else 1
+        count = min(int(pages_match.group(1)), MAX_PROSPECT_PAGES)
+        page_numbers.extend(range(start, start + count))
+    page_numbers = sorted(set(number for number in page_numbers if number > 0))
+    if not page_numbers:
+        raise ValueError("EDEKA Katalog: Seitenzahl fehlt")
+
+    normal_path, normal_filename, normal_extension = normal
+    normal_base = urljoin(catalog_url, normal_path)
+    large = detaillevels.get("large")
+    large_base = urljoin(catalog_url, large[0]) if large else None
+    samples = []
+    for number in page_numbers:
+        sample = {
+            "number": number,
+            "altText": f"EDEKA Prospektseite {number}",
+            "keyWords": "",
+            "image": urljoin(
+                normal_base,
+                f"{normal_filename}{number}.{normal_extension}",
+            ),
+        }
+        if large_base and large:
+            sample["zoom"] = urljoin(
+                large_base,
+                f"{large[1]}{number}.{large[2]}",
+            )
+        samples.append(sample)
+    return samples
+
+
+def parse_edeka_prospects(
+    html_text,
+    base_url,
+    *,
+    today=None,
+    catalog_xml=None,
+    catalog_url=None,
+):
+    """Extract branch-linked EDEKA pages from explicit HTML or catalog XML.
 
     EDEKA's market page exposes both the exact market prospect link and public
     leaflets-catalog images. Keep those two signals together so a generic
@@ -939,8 +1238,6 @@ def parse_edeka_prospects(html_text, base_url, *, today=None):
             continue
         image = html.unescape(match.group(0)).rstrip(".,)")
         page_images[number] = image
-    if not page_images:
-        return []
     page_samples = [
         {
             "number": number,
@@ -950,8 +1247,17 @@ def parse_edeka_prospects(html_text, base_url, *, today=None):
         }
         for number, image in sorted(page_images.items())
     ]
+    if not page_samples and catalog_xml and catalog_url:
+        try:
+            catalog_samples = _edeka_catalog_pages(catalog_xml, catalog_url)
+            page_samples = catalog_samples[:1]
+        except Exception:
+            page_samples = []
+    if not page_samples:
+        return []
+
     title = f"EDEKA Prospekt {valid_from:%d.%m.%Y} ‚Äì {valid_until:%d.%m.%Y}"
-    return [{
+    item = {
         "id": stable_id("EDEKA", prospect_url, title),
         "title": title,
         "url": prospect_url,
@@ -960,9 +1266,46 @@ def parse_edeka_prospects(html_text, base_url, *, today=None):
         "status": "current",
         "productCount": 0,
         "pageCount": len(page_samples),
+        "loadedPageCount": len(page_samples),
+        "pageStatus": "complete",
+        "pageCountKnown": True,
         "thumbnailUrl": page_samples[0]["image"],
         "pageSamples": page_samples,
-    }]
+    }
+    if catalog_xml and catalog_url:
+        try:
+            samples = _edeka_catalog_pages(catalog_xml, catalog_url)
+            item = _with_page_coverage(
+                item,
+                samples,
+                expected_numbers=[sample["number"] for sample in samples],
+                page_source="EDEKA Blaetterkatalog catalog.xml",
+            )
+            item["catalogUrl"] = catalog_url
+        except Exception as error:
+            item["pageStatus"] = "partial"
+            item["pageError"] = clean(str(error))[:240]
+    return [item]
+
+
+def _fetch_edeka_prospects(branch_html, base_url):
+    prospects = parse_edeka_prospects(branch_html, base_url)
+    catalog_url = _edeka_catalog_url(branch_html, base_url)
+    if not catalog_url:
+        return prospects
+    try:
+        return parse_edeka_prospects(
+            branch_html,
+            base_url,
+            catalog_xml=fetch(catalog_url),
+            catalog_url=catalog_url,
+        )
+    except Exception as error:
+        result = [dict(item) for item in prospects]
+        for item in result:
+            item["pageStatus"] = "partial"
+            item["pageError"] = clean(str(error))[:240]
+        return result
 
 
 def parse_edeka(html_text, base_url):
@@ -1019,7 +1362,9 @@ def parse_edeka(html_text, base_url):
         has_specific_start = False
         if explicit_start:
             start = parse_date(explicit_start.group(1)) or start
-            label_text = before_price[:explicit_start.start()]
+            label_text =µ®•z∫ËØ
+‚∂)‡≤÷ßu™›¢Îi∫–k¢Gß¶*^µ®•z∫ËØ
+‚∂)‡≤÷ßu™›¢Îi∫–k¢Gß¶*^ before_price[:explicit_start.start()]
             has_specific_start = True
 
         # Some card variants expose the start date inside the accessible label
@@ -1135,8 +1480,8 @@ def parse_kaufland_leaflet_prospect(
     """Extract one current public Kaufland leaflet cover.
 
     The branch page is the source of the exact store and validity label. The
-    separate public viewer supplies the cover image. Only a single verified
-    page is published; no private API or account state is required.
+    separate public viewer supplies the cover image. The official flyer API
+    enriches the page list later; this parser stays a truthful cover fallback.
     """
     selector = _kaufland_selector(store_url)
     if not selector:
@@ -1168,6 +1513,18 @@ def parse_kaufland_leaflet_prospect(
     # current one. Prefer the leaflet active today, then the latest upcoming
     # period when no active period is published.
     pool = active or candidates
+    # The branch page publishes the food leaflet and a separate ``-OD``
+    # online-drogerie leaflet with the same validity window. The latter is a
+    # valid public brochure, but it is not the weekly food prospect requested
+    # by this feed. Prefer the non-OD campaign when both are available while
+    # retaining the OD cover as a truthful fallback if it is all the source
+    # exposes.
+    food_pool = [
+        candidate
+        for candidate in pool
+        if "-od" not in candidate[2].casefold()
+    ]
+    pool = food_pool or pool
     valid_from, valid_until, viewer_url, label = max(
         pool,
         key=lambda value: (value[0], value[1], value[2]),
@@ -1188,6 +1545,9 @@ def parse_kaufland_leaflet_prospect(
         "status": "current",
         "productCount": 0,
         "pageCount": 1,
+        "loadedPageCount": 1,
+        "pageStatus": "cover_only",
+        "pageCountKnown": False,
         "thumbnailUrl": images[0],
         "pageSamples": [{
             "number": 1,
@@ -1197,6 +1557,50 @@ def parse_kaufland_leaflet_prospect(
         }],
         "sourceLabel": clean(label),
     }]
+
+
+def _kaufland_flyer_api_url(viewer_url):
+    match = re.search(r"/([^/]+)/ar/(\d+)(?:[/?]|$)", viewer_url or "")
+    if match is None:
+        return None
+    flyer_identifier, region = match.groups()
+    return (
+        "https://endpoints.leaflets.schwarz/v4/flyer?flyer_identifier="
+        + quote(flyer_identifier)
+        + "&region_id=" + quote(region)
+        + "&region_code=" + quote(region)
+    )
+
+
+def _enrich_kaufland_prospects(prospects, json_text):
+    payload = json.loads(json_text)
+    flyer = payload.get("flyer", payload) if isinstance(payload, dict) else {}
+    pages = flyer.get("pages", []) if isinstance(flyer, dict) else []
+    if not isinstance(pages, list) or not pages:
+        raise ValueError("Kaufland Prospekt-API enth√§lt keine Seiten")
+    samples = _page_samples_from_items(pages)
+    expected_numbers = [
+        number
+        for number in (
+            _page_number(page.get("number"))
+            for page in pages
+            if isinstance(page, dict)
+        )
+        if number is not None
+    ]
+    enriched = []
+    for item in prospects or []:
+        result = _with_page_coverage(
+            item,
+            samples,
+            expected_numbers=expected_numbers,
+            page_source="Kaufland leaflets API v4",
+        )
+        if isinstance(flyer, dict):
+            result["pdfUrl"] = flyer.get("pdfUrl")
+            result["flyerId"] = flyer.get("id")
+        enriched.append(result)
+    return enriched
 
 
 def _kaufland_available_ids(json_text):
@@ -1383,6 +1787,13 @@ def fetch_kaufland_api_offers(store_url):
                 viewer_page,
                 store_url,
             )
+            if prospects:
+                flyer_api_url = _kaufland_flyer_api_url(prospects[0]["url"])
+                if flyer_api_url:
+                    prospects = _enrich_kaufland_prospects(
+                        prospects,
+                        fetch(flyer_api_url),
+                    )
     except Exception:
         # Cover metadata is optional. The structured offer source remains
         # usable when the public viewer changes or is temporarily unavailable.
@@ -1727,7 +2138,11 @@ def _enrich_lidl_prospect(item):
     pages = flyer.get("pages", [])
     products = flyer.get("products", [])
     item = dict(item)
-    item["productCount"] = len(products) if isinstance(products, list) else 0
+    item["productCount"] = (
+        len(products)
+        if isinstance(products, (list, dict))
+        else 0
+    )
     item["pageCount"] = len(pages) if isinstance(pages, list) else 0
     item["offerStartDate"] = flyer.get("offerStartDate") or item.get("offerStartDate")
     item["offerEndDate"] = flyer.get("offerEndDate") or item.get("offerEndDate")
@@ -1737,19 +2152,71 @@ def _enrich_lidl_prospect(item):
     item["category"] = flyer.get("category")
     item["subcategory"] = flyer.get("subcategory")
     if isinstance(pages, list) and pages:
-        samples = []
-        for page_data in pages[:5]:
-            if not isinstance(page_data, dict):
-                continue
-            samples.append({
-                "number": page_data.get("number"),
-                "altText": clean(str(page_data.get("altText") or ""))[:320],
-                "keyWords": clean(str(page_data.get("keyWords") or ""))[:900],
-                "image": page_data.get("image"),
-                "zoom": page_data.get("zoom"),
-            })
-        item["pageSamples"] = samples
+        samples = _page_samples_from_items(pages)
+        expected_numbers = [
+            number
+            for number in (
+                _page_number(page.get("number"))
+                for page in pages
+                if isinstance(page, dict)
+            )
+            if number is not None
+        ]
+        item = _with_page_coverage(
+            item,
+            samples,
+            expected_numbers=expected_numbers,
+            page_source="Lidl leaflets API v4",
+        )
     return item
+
+
+def _lidl_prospect_campaign_key(item):
+    return (
+        clean(str(item.get("title") or "")).casefold(),
+        clean(str(item.get("offerStartDate") or ""))[:10],
+        clean(str(item.get("offerEndDate") or ""))[:10],
+    )
+
+
+def _dedupe_lidl_prospects(prospects):
+    """Keep one exact campaign for the configured branch.
+
+    Lidl publishes one regional flyer object per region. The configured store
+    already supplies the exact branch offer feed, so exposing all regional
+    copies would duplicate the same campaign in the UI and inflate page and
+    article counts. Keep the first publisher-selected object for a campaign;
+    its detail response contains the complete page list for that object.
+    """
+
+    def score_value(value):
+        try:
+            return int(value or 0)
+        except (TypeError, ValueError):
+            return 0
+
+    unique = {}
+    for item in prospects or []:
+        if not isinstance(item, dict):
+            continue
+        key = _lidl_prospect_campaign_key(item)
+        if key not in unique:
+            unique[key] = item
+            continue
+        previous = unique[key]
+        previous_score = (
+            score_value(previous.get("pageCount")),
+            score_value(previous.get("productCount")),
+            len(previous.get("pageSamples") or []),
+        )
+        current_score = (
+            score_value(item.get("pageCount")),
+            score_value(item.get("productCount")),
+            len(item.get("pageSamples") or []),
+        )
+        if current_score > previous_score:
+            unique[key] = item
+    return list(unique.values())
 
 
 def fetch_lidl_api_prospects():
@@ -1771,6 +2238,7 @@ def fetch_lidl_api_prospects():
 
     today = local_today().isoformat()
     relevant = []
+    seen_campaigns = set()
     for item in prospects:
         end = clean(str(item.get("offerEndDate") or ""))
         if end and end[:10] < today:
@@ -1781,18 +2249,20 @@ def fetch_lidl_api_prospects():
         ]).lower()
         if "aktionsprospekt" not in marker:
             continue
+        campaign_key = _lidl_prospect_campaign_key(item)
+        if campaign_key in seen_campaigns:
+            continue
+        seen_campaigns.add(campaign_key)
         try:
             item = _enrich_lidl_prospect(item)
         except Exception as error:
             item = dict(item)
             item["apiError"] = clean(str(error))[:240]
         relevant.append(item)
-        if len(relevant) >= 8:
-            break
 
     if not relevant:
         raise ValueError("Lidl overview API enth√§lt keine aktiven Aktionsprospekte")
-    return [], relevant
+    return [], _dedupe_lidl_prospects(relevant)
 
 
 def parse_lidl(html_text, base_url):
@@ -1827,8 +2297,15 @@ def parse_lidl(html_text, base_url):
                 item["apiUrl"] = api_url
                 item["apiTopKeys"] = sorted(payload.keys()) if isinstance(payload, dict) else []
                 item["flyerKeys"] = sorted(flyer.keys()) if isinstance(flyer, dict) else []
-                item["productCount"] = len(products) if isinstance(products, list) else 0
+                item["productCount"] = (
+                    len(products)
+                    if isinstance(products, (list, dict))
+                    else 0
+                )
                 item["pageCount"] = len(pages) if isinstance(pages, list) else 0
+                item["loadedPageCount"] = 0
+                item["pageStatus"] = "unavailable"
+                item["pageCountKnown"] = bool(pages)
                 item["offerStartDate"] = flyer.get("offerStartDate") if isinstance(flyer, dict) else None
                 item["offerEndDate"] = flyer.get("offerEndDate") if isinstance(flyer, dict) else None
                 item["pdfUrl"] = flyer.get("pdfUrl") if isinstance(flyer, dict) else None
@@ -1847,24 +2324,27 @@ def parse_lidl(html_text, base_url):
                     }
                 if isinstance(pages, list) and pages and isinstance(pages[0], dict):
                     item["pageKeys"] = sorted(pages[0].keys())
-                    if not prospects:
-                        samples = []
-                        for page_data in pages[:5]:
-                            if not isinstance(page_data, dict):
-                                continue
-                            samples.append({
-                                "number": page_data.get("number"),
-                                "altText": clean(str(page_data.get("altText") or ""))[:320],
-                                "keyWords": clean(str(page_data.get("keyWords") or ""))[:900],
-                                "image": page_data.get("image"),
-                                "zoom": page_data.get("zoom"),
-                            })
-                        item["pageSamples"] = samples
+                    samples = _page_samples_from_items(pages)
+                    expected_numbers = [
+                        number
+                        for number in (
+                            _page_number(page.get("number"))
+                            for page in pages
+                            if isinstance(page, dict)
+                        )
+                        if number is not None
+                    ]
+                    item = _with_page_coverage(
+                        item,
+                        samples,
+                        expected_numbers=expected_numbers,
+                        page_source="Lidl leaflets API v4",
+                    )
             except Exception as error:
                 item["apiError"] = clean(str(error))[:240]
         prospects.append(item)
 
-    return [], prospects[:8]
+    return [], _dedupe_lidl_prospects(prospects)
 
 
 PENNY_MARKETS_URL = "https://www.penny.de/.rest/market"
@@ -2058,6 +2538,9 @@ def parse_penny_prospect(html_text, base_url=PENNY_OFFERS_PAGE, *, today=None):
         "status": "current",
         "productCount": 0,
         "pageCount": 1,
+        "loadedPageCount": 1,
+        "pageStatus": "cover_only",
+        "pageCountKnown": False,
         "thumbnailUrl": image,
         "pageSamples": [{
             "number": 1,
@@ -2370,6 +2853,9 @@ def _parse_netto_prospects(
             "offerEndDate": valid_until.isoformat() if valid_until else None,
             "status": "current",
             "pageCount": 1,
+            "loadedPageCount": 1,
+            "pageStatus": "cover_only",
+            "pageCountKnown": False,
             "thumbnailUrl": thumbnail,
             "pageSamples": [{
                 "number": 1,
@@ -3071,6 +3557,11 @@ def main(selected_source_ids=None):
                 except Exception:
                     body = fetch(url)
                     offers, prospects = parse_aldi(body, url)
+                    try:
+                        prospects = parse_aldi_prospects(body, url)
+                        prospects = _fetch_publitas_prospect_pages(prospects)
+                    except Exception:
+                        prospects = []
                     source_mode = "website_fallback"
             elif parser_name == "edeka_api":
                 try:
@@ -3080,12 +3571,13 @@ def main(selected_source_ids=None):
                     if not offers:
                         raise ValueError("EDEKA API lieferte keine Angebote")
                     try:
-                        prospects = parse_edeka_prospects(fetch(url), url)
+                        prospects = _fetch_edeka_prospects(fetch(url), url)
                     except Exception:
                         prospects = []
                 except Exception:
                     body = fetch(url)
-                    offers, prospects = parse_edeka(body, url)
+                    offers, _ = parse_edeka(body, url)
+                    prospects = _fetch_edeka_prospects(body, url)
                     source_mode = "website_fallback"
             elif parser_name == "penny_api":
                 try:
@@ -3115,7 +3607,12 @@ def main(selected_source_ids=None):
                         if prospects:
                             prospects[0]["storeKey"] = store_key
                     except Exception as error:
-                        offers = []
+                        # The leaflet catalogue and the exact-store offer API
+                        # are independent public endpoints. Keep still-valid
+                        # branch offers when only the store endpoint is
+                        # temporarily unavailable; their original capture
+                        # timestamp remains evidence of their age.
+                        offers = active_previous(previous, store)
                         source_mode = "structured_leaflet"
                         if prospects:
                             prospects[0]["offerApiError"] = clean(str(error))[:240]
@@ -3132,6 +3629,8 @@ def main(selected_source_ids=None):
                     else:
                         raise
                 offers, prospects = PARSERS[parser_name](body, url)
+                if parser_name == "netto":
+                    prospects = _fetch_publitas_prospect_pages(prospects)
             bring_data = bring_by_store.get(store)
             if bring_data:
                 # dedupe keeps the last matching record. The retailer's

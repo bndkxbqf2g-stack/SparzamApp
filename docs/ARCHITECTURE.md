@@ -296,3 +296,40 @@ Prospektstand älter als sechs Stunden ist oder kein Erfassungszeitpunkt vorlieg
 startet ein Hintergrund-Refresh über denselben `ProspectImportModule`- und
 `PriceObservation`-Pfad wie der Kaltstart. Der vorhandene Feed bleibt während
 des Abrufs sichtbar; die kurze Ereignisdrossel verhindert doppelte Requests. Im aktiven Lebenszyklus plant AppShell höchstens einen sechsstündigen Timer und beendet ihn beim Pausieren.
+
+### Prospect-Seitenabdeckung und Artikel-Provenienz
+
+Der Refresh-Adapter liest zuerst die offizielle strukturierte Händlerquelle.
+Wenn ein Händler einen öffentlichen Katalog-Reader liefert, wird dessen
+veröffentlichte Seitenliste vollständig in `pageSamples` abgelegt. Die
+gemeinsame Seitenhülle schreibt zusätzlich:
+
+| Feld | Bedeutung |
+| --- | --- |
+| `pageCount` | vom Publisher erklärte oder aus einer verifizierten Seitenliste abgeleitete Gesamtzahl |
+| `loadedPageCount` | tatsächlich mit einer gültigen HTTP(S)-Bildquelle geladene Seiten |
+| `missingPageNumbers` | erklärte, aber nicht geladene Seitennummern |
+| `pageStatus` | `complete`, `partial`, `cover_only` oder `unavailable` |
+| `pageCountKnown` | ob die Quelle eine belastbare Gesamtzahl veröffentlicht |
+| `pageSource` | konkreter Nachweis des Seitenkatalogs |
+
+Publitas wird über `data.json` und den daraus gelieferten `cacheToken` auf
+`spreads.json` begrenzt. EDEKA verwendet `catalog.xml`, Kaufland und Lidl die
+öffentliche Schwarz-Leaflets-v4-API. Regionale oder thematische
+Drogerie-/Non-Food-Blätter verdrängen dabei keinen branchennahen
+Lebensmittelprospekt. Bei fehlender Seitenquelle bleibt die einzelne belegte
+Coverseite sichtbar und der Status bleibt unvollständig; Seiten, Artikel oder
+Preise werden nicht aus Dateinamen, Seitenlücken oder Rabattanzeigen erfunden.
+
+Die aus strukturierten Händlerdaten gewonnenen Artikel bleiben im bestehenden
+`OfferImportRecord`-Vertrag. Explizite Streich-/Normalpreise bleiben
+`originalPrice`, zeitlich begrenzte Werte `offerPrice`; beide werden über
+`PriceObservation` weitergereicht. Bildseiten ohne strukturierte Artikelzeile
+bleiben visuelle/OCR-Evidenz und werden erst nach Identitätsbestätigung als
+exakter Preis übernommen.
+
+`ProspectFeedService` dedupliziert Seitennummern beim Parsen erneut. Der
+Filial-Resolver kopiert sämtliche Abdeckungsdiagnostik, und der
+Feed-Fingerprint berücksichtigt sie, damit neue Seiten nach einem Refresh
+nicht vom bisherigen Tagesstand unterdrückt werden. `SharedPreferences` hält
+nur den einen austauschbaren Feed-Key und begrenzt dessen UTF-8-Größe.

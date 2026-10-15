@@ -37,6 +37,12 @@ class ProspectIssue {
     this.address,
     this.sourceStatus = 'unknown',
     this.recordCount = 0,
+    this.availablePageCount,
+    this.loadedPageCount,
+    this.missingPageNumbers = const <int>[],
+    this.pageStatus = 'unknown',
+    this.pageCountKnown = false,
+    this.uncertainProductCount,
     this.validFrom,
     this.validUntil,
   });
@@ -50,6 +56,16 @@ class ProspectIssue {
   final String? address;
   final String sourceStatus;
   final int recordCount;
+  /// Number of pages the publisher declared for this prospect, when known.
+  final int? availablePageCount;
+  /// Number of page images that were actually included in the feed.
+  final int? loadedPageCount;
+  final List<int> missingPageNumbers;
+  final String pageStatus;
+  final bool pageCountKnown;
+  /// A source-reported count of records that still need identity review.
+  /// Null means that the source did not publish this diagnostic.
+  final int? uncertainProductCount;
   final DateTime? validFrom;
   final DateTime? validUntil;
 }
@@ -494,6 +510,16 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
             sourceAddresses[storeName],
         sourceStatus: sourceStatuses[storeName] ?? 'unknown',
         recordCount: sourceRecordCounts[storeName] ?? 0,
+        availablePageCount: _intValue(raw['availablePageCount']) ??
+            (_boolValue(raw['pageCountKnown']) == false
+                ? null
+                : _intValue(raw['pageCount'])),
+        loadedPageCount: _intValue(raw['loadedPageCount']) ?? pages.length,
+        missingPageNumbers: _intList(raw['missingPageNumbers']),
+        pageStatus: _stringValue(raw['pageStatus']) ?? 'unknown',
+        pageCountKnown: _boolValue(raw['pageCountKnown']) ??
+            raw['pageCount'] != null,
+        uncertainProductCount: _intValue(raw['uncertainProductCount']),
         validFrom: issueValidFrom,
         validUntil: issueValidUntil,
       );
@@ -874,6 +900,16 @@ int? _intValue(Object? value) {
   final trimmed = value.trim();
   if (trimmed.isEmpty) return null;
   return int.tryParse(trimmed);
+}
+
+List<int> _intList(Object? value) {
+  if (value is! List) return const <int>[];
+  final result = <int>{};
+  for (final item in value) {
+    final number = _intValue(item);
+    if (number != null && number > 0) result.add(number);
+  }
+  return result.toList()..sort();
 }
 
 bool? _boolValue(Object? value) {
