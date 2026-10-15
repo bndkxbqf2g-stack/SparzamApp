@@ -661,9 +661,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         'oldPrice',
       ],
     );
-    final originalPrice = originalPriceValue is num
-        ? originalPriceValue.toDouble()
-        : null;
+    final originalPrice = _priceValue(originalPriceValue);
     final hasMalformedOriginalPrice = originalPriceValue != null &&
         (originalPrice == null ||
             !originalPrice.isFinite ||
@@ -825,6 +823,45 @@ Object? _firstNonNullValue(
 }
 
 String? _stringValue(Object? value) => value is String ? value.trim() : null;
+
+/// Parses the strict price formats used by German retailer feeds.
+///
+/// A regular-price field may arrive as a JSON number or as a display value
+/// such as `7,99 €`. Free-form labels like `UVP 7,99 €` are rejected so a
+/// descriptive text cannot become a false price observation.
+double? _priceValue(Object? value) {
+  if (value is num) {
+    final number = value.toDouble();
+    return number.isFinite ? number : null;
+  }
+  if (value is! String) return null;
+  var compact = value
+      .replaceAll('\u00a0', '')
+      .replaceAll(RegExp(r'\s+'), '')
+      .trim();
+  if (compact.isEmpty) return null;
+  final currencyPrefix = RegExp(r'^(?:€|EUR)', caseSensitive: false);
+  if (currencyPrefix.matchAsPrefix(compact) != null) {
+    compact = compact.replaceFirst(currencyPrefix, '');
+  }
+  final uppercase = compact.toUpperCase();
+  if (uppercase.endsWith('EUR')) {
+    compact = compact.substring(0, compact.length - 3);
+  } else if (compact.endsWith('€')) {
+    compact = compact.substring(0, compact.length - 1);
+  }
+  if (compact.isEmpty) return null;
+  final simple = RegExp(r'^\d+(?:[.,]\d{1,2})?');
+  final grouped = RegExp(r'^\d{1,3}(?:\.\d{3})+,\d{1,2}');
+  final isSimple = simple.matchAsPrefix(compact)?.end == compact.length;
+  final isGrouped = grouped.matchAsPrefix(compact)?.end == compact.length;
+  if (!isSimple && !isGrouped) return null;
+  final normalized = compact.contains(',')
+      ? compact.replaceAll('.', '').replaceFirst(',', '.')
+      : compact;
+  final number = double.tryParse(normalized);
+  return number != null && number.isFinite ? number : null;
+}
 
 String? _firstHttpUrl(
   Iterable<Object?> values, {

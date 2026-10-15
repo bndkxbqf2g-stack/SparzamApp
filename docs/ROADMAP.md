@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Formatierte Normalpreise werden aus Prospekten gespeichert
+
+- [x] Prospektfelder wie `7,99 €` werden als regulärer, durchgestrichener Preis erkannt; freie Texte wie `UVP 7,99 €` bleiben ungültig.
+- [x] Angebots- und Normalpreis bleiben getrennt: Nur der strikt höhere Normalpreis läuft in die automatische lokale Preisbeobachtung.
+- [x] Parser- und Persistenzregression prüfen den Weg vom Feed über `PriceObservationStore` bis zur regulären Preisbeobachtung.
+
 ## Update 15.10.2026 – Recycelte Prospektbilder behalten keinen alten Fallback
 
 - [x] Verzögerte HTML-Fallbacks werden nur noch aktiviert, wenn die fehlgeschlagene URL noch zum aktuell montierten Prospektbild gehört.

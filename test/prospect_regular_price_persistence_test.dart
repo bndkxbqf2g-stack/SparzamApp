@@ -10,6 +10,7 @@ import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/services/market_price_observation_adapter.dart';
+import 'package:sparzamapp/services/prospect_feed_service.dart';
 import 'package:sparzamapp/services/price_observation_store.dart';
 
 void main() {
@@ -292,6 +293,42 @@ void main() {
 
     expect(result.learned, isEmpty);
     expect(result.stored, isEmpty);
+  });
+  test('persists only a formatted regular amount from the parsed feed', () async {
+    final feed = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-10-15T04:15:00Z",
+  "sources": [
+    {"storeName": "Lidl", "status": "ok", "branchId": "lidl-branch-1"}
+  ],
+  "offers": [
+    {
+      "sourceId": "formatted-persistence",
+      "productLabel": "Jacobs Kaffee Crema 500 g",
+      "storeName": "Lidl",
+      "offerPrice": 4.99,
+      "originalPrice": "7,99 €",
+      "validFrom": "2026-10-10",
+      "validUntil": "2026-10-17",
+      "source": "retailerWebsite",
+      "proofRef": "https://example.test/lidl/formatted-persistence",
+      "capturedAt": "2026-10-12T12:00:00Z"
+    }
+  ]
+}
+''');
+    final result = await persistCurrentProspectRegularPrices(
+      store: memoryStore(),
+      records: feed.records,
+      catalogProducts: const [coffee],
+      observedAt: now,
+      now: now,
+    );
+
+    expect(result.learned, hasLength(1));
+    expect(result.learned.single.kind, PriceObservationKind.regular);
+    expect(result.learned.single.price, 7.99);
+    expect(result.learned.single.discounted, isFalse);
   });
 }
 

@@ -869,5 +869,33 @@ void main() {
     service.close();
   });
 
+  test('parses strict German display prices for regular-price ingestion', () {
+    final result = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-10-15T04:15:00Z",
+  "sources": [
+    {"storeName": "Lidl", "status": "ok", "branchId": "lidl-zellingen"}
+  ],
+  "offers": [
+    {
+      "sourceId": "formatted-regular",
+      "productLabel": "Jacobs Kaffee Crema 500 g",
+      "storeName": "Lidl",
+      "offerPrice": 4.99,
+      "wasPrice": "7,99 €",
+      "validFrom": "2026-10-13",
+      "validUntil": "2026-10-17",
+      "source": "retailerWebsite",
+      "proofRef": "https://example.test/lidl/formatted-regular"
+    }
+  ]
+}
+''');
+
+    expect(result.records, hasLength(1));
+    expect(result.records.single.offerPrice, 4.99);
+    expect(result.records.single.originalPrice, 7.99);
+  });
+
 }
 
