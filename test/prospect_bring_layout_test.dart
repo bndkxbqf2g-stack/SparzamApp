@@ -82,4 +82,12 @@ void main() {
     expect(find.text('Angebote'), findsOneWidget);
     expect(find.byKey(const ValueKey('prospect-location-pill')), findsNothing);
   });
+  test('begrenzt automatische HTML-Fallbacks im langen Seitenviewer', () {
+    expect(prospectPageHtmlFallbackBudget, 2);
+    expect(prospectPageHtmlFallbackAllowed(0), isTrue);
+    expect(prospectPageHtmlFallbackAllowed(1), isTrue);
+    expect(prospectPageHtmlFallbackAllowed(2), isFalse);
+    expect(prospectPageHtmlFallbackAllowed(-1), isFalse);
+  });
+
 }
