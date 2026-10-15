@@ -570,7 +570,9 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     final productLabel = _stringValue(value['productLabel']);
     final storeName = _stringValue(value['storeName']);
     final offerPriceValue = value['offerPrice'];
-    final offerPrice = _priceValue(offerPriceValue);
+    final offerPrice = offerPriceValue is num
+        ? offerPriceValue.toDouble()
+        : null;
     final validUntilValue = value['validUntil'];
     final validUntilText = _stringValue(validUntilValue);
     final validUntil = DateTime.tryParse(validUntilText ?? '');
