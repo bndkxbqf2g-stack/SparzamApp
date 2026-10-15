@@ -1,3 +1,7 @@
+## Update 15.10.2026 – Preise-Reiter zeigt Herkunft und Route-Fähigkeit
+
+Der Preise-Reiter zeigt jetzt neben dem Listenvergleich eine lokale Qualitätsübersicht der gespeicherten Marktpreisbelege. Nur `MarketPrice.isUsable` zählt als aktuell und routenfähig; veraltete, zukünftige, unvollständige oder unsichere Belege bleiben als Datenlücke sichtbar. Prospekt-Normalpreise werden getrennt von Prospekt-Angebotsnachweisen gezählt. Die Übersicht zeigt zusätzlich die aktuelle Abdeckung je Markt, ohne Preisauflösung oder Optimierer zu verändern.
+
 ## Update 15.10.2026 – Formatierte Normalpreise werden aus Prospekten gespeichert
 
 Der Prospektparser akzeptiert reguläre Händlerpreise jetzt als Zahl oder als strikt formatierten deutschen Anzeigewert wie `7,99 €`. Freie Beschreibungen werden verworfen. Der Aktionspreis bleibt ausschließlich Angebotsdaten; nur der ausdrücklich höhere Normalpreis wird automatisch als `PriceObservationKind.regular` lokal gespeichert und weiterprojiziert. Ein End-to-End-Test prüft die Kette vom Feed bis zum lokalen Preisbeobachtungsspeicher.
