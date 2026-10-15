@@ -1,3 +1,8 @@
+## Update 15.10.2026 – Jeder Routen-Einstieg bleibt filialgenau
+
+- [x] Der RouteScreen im More-/Shell-Seitenpfad erhält denselben exakten Filialkatalog wie AppShell, ShellRouting und die direkte Routenaktion.
+- [x] Der zweite Einstieg kann gleichnamige Filialen nicht mehr auf den globalen Namenskatalog zurückfallen lassen; Branch-ID, Ort und Adresse bleiben bis zur Anzeige erhalten.
+
 ## Update 15.10.2026 – Branch-stabile Fahrmatrizen
 
 - [x] Neue OSRM-Matrizen verwenden bei vorhandener Branch-ID einen stabilen Filialschlüssel; gleichnamige Märkte bleiben im Matrixknoten getrennt.
