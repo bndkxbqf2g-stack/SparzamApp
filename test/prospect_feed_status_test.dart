@@ -37,6 +37,12 @@ void main() {
     expect(find.textContaining('01.10.2026 · 12:02 Uhr'), findsOneWidget);
     expect(find.textContaining('2 reguläre Normalpreise als Preisbasis gespeichert.'), findsOneWidget);
     expect(
+      find.textContaining(
+        'Aktionspreise bleiben an den gültigen Prospektzeitraum gebunden und werden nicht als Normalpreis gespeichert.',
+      ),
+      findsOneWidget,
+    );
+    expect(
       find.textContaining('abgelaufene Angebote bleiben ausgeblendet'),
       findsOneWidget,
     );
