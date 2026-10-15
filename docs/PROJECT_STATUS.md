@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Cover-Fallbacks beim Scrollen begrenzt
+
+- Nach einem Canvas-/CDN-Fehler dürfen höchstens vier Cover gleichzeitig einen teuren HTML-Plattformfallback reservieren.
+- Recycelte Karten geben ihren Slot beim Unmount oder URL-Wechsel frei; weitere Fehler zeigen einen sicheren Platzhalter und erzeugen keine zusätzliche Browseransicht.
+- Eine Unit-Regression schützt das Budget und die Wiederverwendung freier Slots. Der explizite Prospekt- und Großansicht-Link bleibt unverändert.
+
 ## Update 15.10.2026 – Seitenviewer begrenzt Plattform-Fallbacks
 
 Der lange Prospektseitenviewer begrenzt automatische HTML-Plattform-Fallbacks jetzt auf die ersten zwei Seiten. Weitere Seiten bleiben im Canvas-Pfad und zeigen bei einem CDN/CORS-Fehler einen sicheren Platzhalter; der vorhandene Großansicht-Link bleibt als expliziter Ausweichpfad erhalten. Damit bleibt der Scrollpfad bei großen Prospekten begrenzt.
