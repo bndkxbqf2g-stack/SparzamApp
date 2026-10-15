@@ -498,6 +498,21 @@ void main() {
 
     expect(
       find.byKey(
+        const ValueKey('prospect-cover-image-favorite-Lidl#lidl-zellingen'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const ValueKey('prospect-cover-image-favorite-Lidl#lidl-wuerzburg'),
+      ),
+      findsOneWidget,
+    );
+
+    await _scrollProspects(tester, distance: 500);
+
+    expect(
+      find.byKey(
         const ValueKey('prospect-cover-image-grid-Lidl#lidl-zellingen'),
       ),
       findsOneWidget,
