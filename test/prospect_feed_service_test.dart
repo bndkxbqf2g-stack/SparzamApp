@@ -165,6 +165,54 @@ void main() {
     expect(result.records.single.address, isNull);
   });
 
+
+  test('inherits source adapter provenance and keeps explicit overrides', () {
+    final result = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-10-15T04:15:00Z",
+  "sources": [
+    {
+      "storeName": "ALDI Süd",
+      "status": "ok",
+      "mode": "structured_api",
+      "branchId": "B384"
+    }
+  ],
+  "offers": [
+    {
+      "sourceId": "mode-provenance",
+      "productLabel": "Butter 250 g",
+      "storeName": "ALDI Süd",
+      "offerPrice": 1.49,
+      "originalPrice": 1.99,
+      "branchId": "B384",
+      "validUntil": "2026-10-17",
+      "proofRef": "https://example.test/aldi/butter"
+    },
+    {
+      "sourceId": "explicit-provenance",
+      "productLabel": "Milch 1 l",
+      "storeName": "ALDI Süd",
+      "offerPrice": 0.99,
+      "originalPrice": 1.29,
+      "branchId": "B384",
+      "sourceAdapter": "kaufda",
+      "validUntil": "2026-10-17",
+      "proofRef": "https://example.test/aldi/milk"
+    }
+  ]
+}
+''');
+
+    expect(result.records, hasLength(2));
+    final inherited = result.records
+        .firstWhere((record) => record.sourceId == 'mode-provenance');
+    final explicit = result.records
+        .firstWhere((record) => record.sourceId == 'explicit-provenance');
+    expect(inherited.sourceAdapter, 'structured_api');
+    expect(explicit.sourceAdapter, 'kaufda');
+  });
+
   test('accepts explicit regular-price aliases from feed adapters', () {
     final result = parseProspectFeed(r'''
 {
