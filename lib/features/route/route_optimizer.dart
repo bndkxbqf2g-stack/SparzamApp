@@ -185,29 +185,34 @@ class RouteOptimizer {
     return (distanceKm * travelMinutesPerKm).round();
   }
 
+  /// Returns every non-empty market combination up to [maxStores].
+  ///
+  /// The previous implementation stopped at three nested loops, which made
+  /// the optimizer silently ignore configured markets once a user selected
+  /// four or more stops. The recursive generator keeps the existing
+  /// deterministic source order while supporting the complete six-market
+  /// project catalog without introducing an external solver.
   List<List<Store>> storeCombinations() {
     final source = availableStores;
+    if (source.isEmpty) return const <List<Store>>[];
+
+    final limit = maxStores.clamp(1, source.length).toInt();
     final combinations = <List<Store>>[];
 
-    for (final store in source) {
-      combinations.add([store]);
-    }
-    if (maxStores >= 2) {
-      for (var i = 0; i < source.length; i++) {
-        for (var j = i + 1; j < source.length; j++) {
-          combinations.add([source[i], source[j]]);
-        }
+    void visit(int start, List<Store> selected) {
+      if (selected.isNotEmpty) {
+        combinations.add(List<Store>.of(selected));
+      }
+      if (selected.length == limit) return;
+
+      for (var index = start; index < source.length; index++) {
+        selected.add(source[index]);
+        visit(index + 1, selected);
+        selected.removeLast();
       }
     }
-    if (maxStores >= 3) {
-      for (var i = 0; i < source.length; i++) {
-        for (var j = i + 1; j < source.length; j++) {
-          for (var k = j + 1; k < source.length; k++) {
-            combinations.add([source[i], source[j], source[k]]);
-          }
-        }
-      }
-    }
+
+    visit(0, <Store>[]);
     return combinations;
   }
 
