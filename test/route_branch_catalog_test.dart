@@ -28,14 +28,15 @@ void main() {
     distanceKm: 8,
     prices: {},
   );
+  const mobility = MobilitySettings(
+    mode: MobilityMode.bike,
+    enabledStoreNames: ['Lidl'],
+  );
 
   ShellRouting routing(List<Store> catalog) => ShellRouting(
         items: [ListItem(product: product)],
         offers: const [],
-        mobility: const MobilitySettings(
-          mode: MobilityMode.bike,
-          enabledStoreNames: ['Lidl'],
-        ),
+        mobility: mobility,
         marketPrices: const [],
         roadDistances: const {},
         roadMatrix: null,
@@ -50,13 +51,11 @@ void main() {
 
   test('invalidiert den Shell-Snapshot bei geändertem Filialkatalog', () {
     final cache = ShellRoutingSnapshotCache();
+    final items = <ListItem>[ListItem(product: product)];
     final first = cache.resolve(
-      items: [ListItem(product: product)],
+      items: items,
       offers: const [],
-      mobility: const MobilitySettings(
-        mode: MobilityMode.bike,
-        enabledStoreNames: ['Lidl'],
-      ),
+      mobility: mobility,
       marketPrices: const [],
       openPricesMaxAgeDays: 60,
       roadDistances: const {},
@@ -64,12 +63,9 @@ void main() {
       storeCatalog: const [branchA],
     );
     final second = cache.resolve(
-      items: [ListItem(product: product)],
+      items: items,
       offers: const [],
-      mobility: const MobilitySettings(
-        mode: MobilityMode.bike,
-        enabledStoreNames: ['Lidl'],
-      ),
+      mobility: mobility,
       marketPrices: const [],
       openPricesMaxAgeDays: 60,
       roadDistances: const {},
