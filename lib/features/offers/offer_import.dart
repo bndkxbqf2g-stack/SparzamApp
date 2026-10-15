@@ -331,7 +331,7 @@ OfferImportResolution resolveOfferImport(
   final canonicalSource =
       canonicalProspectSourceToken(record.source) ?? record.source;
   final offer = Offer(
-    id: 'import|${canonicalSource}|${record.sourceId}|${product.id}',
+    id: 'import|$canonicalSource|${record.sourceId}|${product.id}',
     productId: product.id,
     storeName: record.storeName,
     originalPrice: record.originalPrice ?? record.offerPrice,
