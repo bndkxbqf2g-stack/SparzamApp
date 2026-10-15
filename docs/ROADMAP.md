@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Bonzeilen erhalten explizite Katalogvorschläge
+
+- [x] Unklare Bonpositionen zeigen bis zu drei passende Namens-/Alias-Treffer aus dem vorhandenen Katalog.
+- [x] Ein Vorschlag bleibt eine sichtbare Evidenz; erst die manuelle Auswahl setzt die Zuordnung.
+- [x] Kategorie-only-Treffer werden aus der direkten Bonzuordnung herausgehalten und bleiben damit ohne falsche Produktidentität.
+
 ## Update 15.10.2026 – OSRM-Cache deckt aktuelle Filialen vollständig ab
 
 - [x] Eine Matrix wird nur als Offline-Fallback verwendet, wenn sie alle aktuell angeforderten Branch-Schlüssel abdeckt.

@@ -20,6 +20,7 @@ import 'receipt_observation_builder.dart';
 import 'receipt_price_review.dart';
 import 'receipt_product_picker.dart';
 import 'receipt_product_candidate_dialog.dart';
+import 'receipt_product_candidates.dart';
 
 class ReceiptImportDialog extends StatefulWidget {
   const ReceiptImportDialog({
@@ -579,6 +580,27 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
     super.dispose();
   }
 
+  Widget _receiptCandidateSuggestions(
+    ReceiptDraft draft,
+    ReceiptRow row,
+  ) {
+    final key = _rowKey(draft, row);
+    if (assignedProducts.containsKey(key)) return const SizedBox.shrink();
+    return ReceiptProductSuggestionList(
+      rawLabel: row.label,
+      products: availableProducts,
+      enabled: !saving,
+      onSelected: (product) {
+        setState(() {
+          assignedProducts[key] = product.id;
+          automaticProductAssignments.remove(key);
+          learnedProductAssignments.remove(key);
+          learnedAliasConfirmations.remove(key);
+        });
+      },
+    );
+  }
+
   List<ReceiptDisplayEntry> get _displayReceiptDrafts =>
       orderReceiptDraftsForDisplay(receiptDrafts);
 
@@ -845,6 +867,7 @@ class _ReceiptImportDialogState extends State<ReceiptImportDialog> {
                                             '${learnedProductAssignments.contains(_rowKey(draft, row)) ? ' · ${learnedAliasConfirmations[_rowKey(draft, row)] ?? 2} Bestätigungen' : ''}',
                                             style: const TextStyle(fontWeight: FontWeight.w600),
                                           ),
+                                        _receiptCandidateSuggestions(draft, row),
                                         Align(
                                           alignment: Alignment.centerLeft,
                                           child: TextButton.icon(
