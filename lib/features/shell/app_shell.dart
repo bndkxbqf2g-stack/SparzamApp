@@ -2051,6 +2051,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       mobility: mobility,
       catalogProducts: catalog,
       marketPrices: plannedPrices,
+      storeCatalog: stores,
       openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
       priceObservations: plannedPrices,
       historicalPriceObservations: historicalPriceObservations,
