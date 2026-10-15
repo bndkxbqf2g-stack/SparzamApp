@@ -864,6 +864,50 @@ void main() {
     expect(find.text('Seite 1'), findsOneWidget);
   });
 
+
+  testWidgets(
+    'shows the reported page count separately from bounded image previews',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ProspectViewerScreen(
+            issue: ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: const [
+                ProspectPage(
+                  number: 1,
+                  imageUrl: 'https://example.test/page-1.jpg',
+                ),
+                ProspectPage(
+                  number: 5,
+                  imageUrl: 'https://example.test/page-5.jpg',
+                ),
+              ],
+              availablePageCount: 73,
+              loadedPageCount: 2,
+              pageCountKnown: true,
+              validFrom: DateTime(2026, 10, 12),
+              validUntil: DateTime(2026, 10, 17),
+            ),
+            records: const [],
+            catalogProducts: const [],
+            now: DateTime(2026, 10, 13),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.text('Prospektseiten (73)'), findsOneWidget);
+      expect(
+        find.text(
+          '2 Bildvorschauen geladen; weitere Seiten beim Händler öffnen.',
+        ),
+        findsOneWidget,
+      );
+    },
+  );
+
   testWidgets('keeps prospect page previews bounded for smooth scrolling', (
     tester,
   ) async {
