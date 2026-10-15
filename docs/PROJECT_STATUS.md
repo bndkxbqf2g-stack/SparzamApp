@@ -1,7 +1,3 @@
-## Update 15.10.2026 – Exakte Filialen bleiben im Prospekt-Refresh getrennt
-
-Der Refresh-Deduplikator verwendet jetzt neben Händler, Artikel, Preis und Zeitraum auch Branch-ID, Ort und Adresse. Gleichnamige Filialen können dadurch nicht mehr gegenseitig Angebote oder die ausgewählte aktuelle Prospektperiode verdrängen; eine KaufDA-Ergänzung wird nur innerhalb derselben Filiale zusammengeführt.
-
 ## Update 15.10.2026 – Seitenviewer begrenzt Plattform-Fallbacks
 
 Der lange Prospektseitenviewer begrenzt automatische HTML-Plattform-Fallbacks jetzt auf die ersten zwei Seiten. Weitere Seiten bleiben im Canvas-Pfad und zeigen bei einem CDN/CORS-Fehler einen sicheren Platzhalter; der vorhandene Großansicht-Link bleibt als expliziter Ausweichpfad erhalten. Damit bleibt der Scrollpfad bei großen Prospekten begrenzt.
