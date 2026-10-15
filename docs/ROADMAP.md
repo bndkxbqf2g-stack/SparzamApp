@@ -809,6 +809,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Den lokalen Feedcache auf einen begrenzten, ersetzbaren Eintrag mit
   4-MiB-Grenze beschränken und Originalbelege außerhalb dieses Caches nicht
   antasten.
-- [ ] Als nächstes OCR-/Hotspot-Kandidaten nur als sichtbare, unsichere
-  Artikelreview ergänzen, wenn die Quelle keinen strukturierten Artikel liefert;
-  keine automatische Identitäts- oder Preisprojektion ohne Bestätigung.
+- [x] OCR-/Hotspot-Kandidaten werden nur als sichtbare, unsichere
+  Artikelreview ergänzt, wenn die Quelle keinen strukturierten Artikel liefert;
+  automatische Identitäts- oder Preisprojektion bleibt ohne Bestätigung gesperrt.
+- [x] Nach dem Speichern eines geprüften OCR-Artikels bleibt die Evidenzstufe
+  `MANUELL_BESTÄTIGT` in Angebot, Preisbeobachtung und Marktpreis-Projektion
+  erhalten; ältere Datensätze bleiben ohne diese optionale Metadaten-Spalte
+  abwärtskompatibel lesbar.
