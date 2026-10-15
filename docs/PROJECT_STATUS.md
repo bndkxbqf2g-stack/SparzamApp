@@ -1,3 +1,10 @@
+## Update 15.10.2026 – Prospekt-Adapterherkunft bis zur Preisbeobachtung
+
+- Der Quellenknoten `mode` bzw. eine explizite Adapterkennung wird bei fehlender Zeilenkennung kontrolliert auf das Prospektangebot vererbt.
+- Eine vorhandene Zeilenkennung wie `kaufda` hat Vorrang; Markt, Branch-ID, Gültigkeit, Preis und Nachweis bleiben unverändert.
+- Dadurch bleibt die konkrete technische Herkunft auch in regulären `PriceObservation`-Belegen nachvollziehbar.
+- Parser- und Persistenzregressionen prüfen Vererbung und explizite Überschreibung.
+
 ## Update 15.10.2026 – Formatierten Händlerquellen ohne doppelte Karten
 
 - Quellen und konfigurierte Händlerkarten vergleichen Händlernamen jetzt mit derselben begrenzten Normalisierung aus Leerzeichen und Groß-/Kleinschreibung.

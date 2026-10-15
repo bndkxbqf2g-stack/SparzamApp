@@ -56,6 +56,7 @@ void main() {
     expect(result.learned.single.price, 7.99);
     expect(result.learned.single.discounted, isFalse);
     expect(result.learned.single.locationId, 'lidl-branch-1');
+    expect(result.learned.single.sourceAdapter, 'kaufda');
     expect(result.stored, hasLength(1));
     expect(result.stored.single.price, 7.99);
     expect(result.stored.single.price, isNot(4.99));

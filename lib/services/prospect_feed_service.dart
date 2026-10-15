@@ -106,6 +106,7 @@ class _ProspectSourceMetadata {
     required this.address,
     required this.status,
     required this.recordCount,
+    required this.sourceAdapter,
   });
 
   final String storeName;
@@ -115,6 +116,7 @@ class _ProspectSourceMetadata {
   final String? address;
   final String status;
   final int recordCount;
+  final String? sourceAdapter;
 }
 
 
@@ -438,6 +440,10 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     final branchId = _optionalNonEmptyString(source['branchId']);
     final location = _optionalNonEmptyString(source['location']);
     final address = _optionalNonEmptyString(source['address']);
+    final sourceAdapter =
+        _optionalNonEmptyString(source['sourceAdapter']) ??
+        _optionalNonEmptyString(source['adapter']) ??
+        _optionalNonEmptyString(source['mode']);
     final metadata = _ProspectSourceMetadata(
       storeName: storeName,
       url: sourceUrl,
@@ -446,6 +452,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
       address: address,
       status: _stringValue(source['status']) ?? 'unknown',
       recordCount: _intValue(source['recordCount']) ?? 0,
+      sourceAdapter: sourceAdapter,
     );
     sourceMetadataByIndex[sourceIndex] = metadata;
     sourceEntriesByStore
@@ -758,11 +765,13 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     if (hasMalformedOriginalPrice) continue;
     final regionalOnlyValue = value['regionalOnly'];
     final parsedRegionalOnly = _boolValue(regionalOnlyValue);
-    final sourceAdapter = _stringValue(value['sourceAdapter']);
+    final explicitSourceAdapter = _optionalNonEmptyString(
+      value['sourceAdapter'],
+    );
     final brochurePage = _intValue(value['brochurePage']);
     final explicitBranchId = _optionalNonEmptyString(value['branchId']);
     final isKaufdaWithoutBranch =
-        sourceAdapter?.trim().toLowerCase() == 'kaufda' &&
+        explicitSourceAdapter?.trim().toLowerCase() == 'kaufda' &&
         explicitBranchId == null;
     // A false/changed-format regional flag cannot promote a publisher-level
     // KaufDA hit to a branch price. The branch assertion must be present on
@@ -817,7 +826,8 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
           value,
           const ['priceByBaseUnit', 'unitPrice', 'baseUnitPrice'],
         ),
-        sourceAdapter: sourceAdapter,
+        sourceAdapter:
+            explicitSourceAdapter ?? sourceFallback?.sourceAdapter,
         // An unknown explicit regional flag is treated conservatively. It
         // remains visible as diagnostic evidence but cannot become routeable.
         regionalOnly: regionalOnly,
