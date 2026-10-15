@@ -468,11 +468,11 @@ void main() {
       MaterialApp(
         home: ProspectsScreen(
           records: const [],
-          prospects: const [
+          prospects: [
             ProspectIssue(
               storeName: 'Lidl',
               title: 'Aktionsprospekt',
-              pages: const [],
+              pages: [],
               branchId: 'lidl-zellingen',
               location: 'Zellingen',
               thumbnailUrl: 'https://example.test/lidl-zellingen.jpg',
@@ -482,7 +482,7 @@ void main() {
             ProspectIssue(
               storeName: 'Lidl',
               title: 'Aktionsprospekt',
-              pages: const [],
+              pages: [],
               branchId: 'lidl-wuerzburg',
               location: 'Würzburg',
               thumbnailUrl: 'https://example.test/lidl-wuerzburg.jpg',
