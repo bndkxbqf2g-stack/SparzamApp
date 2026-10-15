@@ -72,10 +72,8 @@ void main() {
       isEmpty,
     );
   });
-}
 
-
-testWidgets('suggestion chip requires an explicit tap', (tester) async {
+  testWidgets('suggestion chip requires an explicit tap', (tester) async {
   Product? selected;
   await tester.pumpWidget(
     MaterialApp(
@@ -103,3 +101,4 @@ testWidgets('suggestion chip requires an explicit tap', (tester) async {
   await tester.pump();
   expect(selected?.id, 'milk');
 });
+}
