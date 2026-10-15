@@ -1,3 +1,12 @@
+## Update 15.10.2026 – Coverkarten zeigen Quellen- und Seitenstatus
+
+Die Coveransicht zeigt jetzt die technische Herkunft des Prospektfeeds, wenn der
+Adapter sie liefert, sowie die belegte Seitenabdeckung. Bekannte Gesamtseiten,
+geladene Bildvorschauen und gemeldete fehlende Seiten werden getrennt angezeigt;
+unbekannte Angaben bleiben ausgeblendet. Die Anzeige nutzt ausschließlich
+vorhandene Feed-Metadaten und verändert weder die Prospektfilterung noch die
+automatische Speicherung regulärer Normalpreise.
+
 ## Update 15.10.2026 – Zukünftige individuelle Prospekt-Erfassungen bleiben ungespeichert
 
 Die automatische Speicherung regulärer Prospektpreise prüft neben Laufzeit,
