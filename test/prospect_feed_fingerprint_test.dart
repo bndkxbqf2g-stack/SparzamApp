@@ -72,6 +72,38 @@ void main() {
     );
   });
 
+  test('reprocesses when prospect adapter provenance changes', () {
+    final first = ProspectFeedLoadResult(
+      records: const [],
+      refreshedStores: const [],
+      prospects: const [
+        ProspectIssue(
+          storeName: 'Lidl',
+          title: 'Prospekt',
+          pages: const [],
+          sourceAdapter: 'structured_api',
+        ),
+      ],
+    );
+    final second = ProspectFeedLoadResult(
+      records: const [],
+      refreshedStores: const [],
+      prospects: const [
+        ProspectIssue(
+          storeName: 'Lidl',
+          title: 'Prospekt',
+          pages: const [],
+          sourceAdapter: 'kaufda_next_data',
+        ),
+      ],
+    );
+
+    expect(
+      prospectFeedFingerprintFor(first, now: DateTime(2026, 10, 15)),
+      isNot(prospectFeedFingerprintFor(second, now: DateTime(2026, 10, 15))),
+    );
+  });
+
   test('reprocesses when page completeness diagnostics change', () {
     final first = ProspectFeedLoadResult(
       records: const [],
