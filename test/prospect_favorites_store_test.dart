@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:sparzamapp/features/prospects/prospects_screen.dart';
+import 'package:sparzamapp/features/prospects/prospect_issue_identity.dart';
 import 'package:sparzamapp/services/prospect_feed_service.dart';
 import 'package:sparzamapp/services/prospect_favorites_store.dart';
 
@@ -37,6 +38,42 @@ void main() {
 
     await writing;
     expect(await reading, {'ALDI Süd', 'Lidl'});
+  });
+
+  test('branch-specific favorites do not cross-match same-name stores', () {
+    const zellingen = ProspectIssue(
+      storeName: 'Lidl',
+      branchId: 'lidl-zellingen',
+      title: 'Aktionsprospekt',
+      pages: [],
+    );
+    const wuerzburg = ProspectIssue(
+      storeName: 'Lidl',
+      branchId: 'lidl-wuerzburg',
+      title: 'Aktionsprospekt',
+      pages: [],
+    );
+
+    expect(prospectFavoriteKey(zellingen), 'Lidl#lidl-zellingen');
+    expect(
+      prospectFavoriteMatches(
+        storedKey: prospectFavoriteKey(zellingen),
+        issue: zellingen,
+      ),
+      isTrue,
+    );
+    expect(
+      prospectFavoriteMatches(
+        storedKey: prospectFavoriteKey(zellingen),
+        issue: wuerzburg,
+      ),
+      isFalse,
+    );
+    // Existing store-only data remains readable during migration.
+    expect(
+      prospectFavoriteMatches(storedKey: 'Lidl', issue: zellingen),
+      isTrue,
+    );
   });
 
   testWidgets('heart toggles a favorite without opening the prospect', (
