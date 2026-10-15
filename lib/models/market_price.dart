@@ -73,6 +73,8 @@ class MarketPrice {
     // are allowed to stay usable indefinitely, but they still cannot describe
     // a price that has not been observed yet.
     if (observed.isAfter(today) ||
+        evidenceConfidence == EvidenceConfidence.probable ||
+        evidenceConfidence == EvidenceConfidence.uncertain ||
         !identityConfidence.isFinite ||
         identityConfidence < 1 ||
         !hasComparableBasis) {
