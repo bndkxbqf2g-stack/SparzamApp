@@ -373,6 +373,9 @@ void main() {
 
     expect(find.text('2 passende Prospektartikel'), findsOneWidget);
     expect(find.text('Milch Filiale A'), findsOneWidget);
+
+    // The second exact-branch group is built lazily by the search sliver.
+    await _scrollProspects(tester, distance: 500);
     expect(find.text('Milch Filiale B'), findsOneWidget);
   });
 
