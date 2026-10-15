@@ -138,8 +138,8 @@ class _OffersScreenState extends State<OffersScreen> {
       body: ListView(
         key: const ValueKey('offers-scroll'),
         // Warm one bounded card row so image decoding starts before a fast
-        // // swipe reaches it. The nested cover/page lists keep their own
-        // // strict limits, so this does not materialize the full feed.
+        // swipe reaches it. The nested cover/page lists keep their own
+        // strict limits, so this does not materialize the full feed.
         scrollCacheExtent: const ScrollCacheExtent.pixels(360),
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
         children: [
