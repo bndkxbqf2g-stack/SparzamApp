@@ -615,6 +615,7 @@ class _PriceMatrixRow extends StatelessWidget {
     }
     final details = <String>[
       quote.sourceLabel,
+      if (quote.branchLabel != null) 'Filiale ${quote.branchLabel}',
       if (quote.packageLabel != null) 'Packung ${quote.packageLabel}',
       if (quote.baseUnitPriceLabel != null) quote.baseUnitPriceLabel!,
       quote.comparabilityLabel,

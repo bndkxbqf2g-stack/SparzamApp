@@ -35,6 +35,10 @@ class ShoppingQuote {
     this.quantity,
     this.unit,
     this.baseUnitPrice,
+    this.locationId,
+    this.locationName,
+    this.region,
+    this.address,
     this.evidenceKind = PriceObservationKind.unknown,
     this.historical = false,
   });
@@ -52,6 +56,14 @@ class ShoppingQuote {
   final String? unit;
   /// Normalized price for [unit], for example €/kg or €/l.
   final double? baseUnitPrice;
+  /// Stable provider branch identity, retained through quote resolution so
+  /// the visible matrix cannot hide which exact branch supplied the evidence.
+  final String? locationId;
+  /// Human-readable branch/location metadata from the provider.
+  final String? locationName;
+  final String? region;
+  final String? address;
+
   /// Evidence kind retained from the central price observation. A regular
   /// prospect observation is the explicitly crossed-out normal price and is
   /// displayed separately from the active offer.
@@ -59,6 +71,23 @@ class ShoppingQuote {
   final bool historical;
 
   double get rankingPrice => comparisonPrice ?? unitPrice;
+
+  /// Human-readable exact-branch context for the visible price matrix.
+  ///
+  /// A provider location ID is shown only when no readable name/address was
+  /// supplied. This keeps legacy observations usable while making branch
+  /// ambiguity visible instead of silently collapsing it.
+  String? get branchLabel {
+    final parts = <String>[
+      if (locationName?.trim().isNotEmpty == true) locationName!.trim(),
+      if (region?.trim().isNotEmpty == true) region!.trim(),
+      if (address?.trim().isNotEmpty == true) address!.trim(),
+    ];
+    if (parts.isNotEmpty) return parts.join(' · ');
+    final id = locationId?.trim();
+    if (id == null || id.isEmpty) return null;
+    return 'ID $id';
+  }
 
   String? get packageLabel {
     final amount = quantity;
@@ -341,6 +370,8 @@ List<ShoppingQuote> shoppingQuotes(
         quantity: price.quantity,
         unit: price.unit,
         baseUnitPrice: price.unitPrice,
+        locationId: price.sourceLocationId,
+        locationName: price.sourceLocationName,
         evidenceKind: price.kind,
         comparisonPrice: price.price *
             (1 + marketPriceQuality(price, today).uncertaintyRate),
@@ -381,6 +412,9 @@ List<ShoppingQuote> shoppingQuotes(
         offer: offer,
         quantity: offer.packageAmount,
         unit: offer.packageUnit,
+        locationId: offer.locationId,
+        region: offer.region,
+        address: offer.address,
         baseUnitPrice: normalizedUnitPrice(
               price: effective.finalPrice,
               amount: offer.packageAmount,
@@ -441,6 +475,8 @@ List<ShoppingQuote> shoppingQuotes(
     if (sourceOrder != 0) return sourceOrder;
     final storeOrder = a.storeName.compareTo(b.storeName);
     if (storeOrder != 0) return storeOrder;
+    final byLocationId = (a.locationId ?? '').compareTo(b.locationId ?? '');
+    if (byLocationId != 0) return byLocationId;
     return b.observedAt?.compareTo(a.observedAt ?? today) ?? 0;
   });
   return candidates;
@@ -578,6 +614,10 @@ int _compareMatrixQuotes(ShoppingQuote a, ShoppingQuote b) {
   }
   final byPrice = a.unitPrice.compareTo(b.unitPrice);
   if (byPrice != 0) return byPrice;
+  final byLocationId = (a.locationId ?? '').compareTo(b.locationId ?? '');
+  if (byLocationId != 0) return byLocationId;
+  final byBranch = (a.branchLabel ?? '').compareTo(b.branchLabel ?? '');
+  if (byBranch != 0) return byBranch;
   return a.sourceLabel.compareTo(b.sourceLabel);
 }
 

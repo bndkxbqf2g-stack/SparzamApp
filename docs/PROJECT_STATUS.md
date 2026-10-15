@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Einkaufs-Preis-Matrix zeigt exakte Filiale
+
+- Preiszitate verlieren die Quellfiliale nicht mehr zwischen Filterung, Matrix und UI: Branch-ID und lesbare Standortdaten bleiben erhalten.
+- Einkaufslisten-Badge, Preis-Matrix und Detailansicht kennzeichnen jetzt die tatsächlich ausgewählte Filiale; ohne Quelle wird keine Filiale erfunden.
+- Unit-Regressionen prüfen Marktpreis-, Angebots- und deterministische Gleichstandsfälle.
+
 ## Update 15.10.2026 – Reguläre Prospektpreise vor Cache-Rennen schützen
 
 - Ein langsamer Cache-Lauf wird nach einem erfolgreichen Live-Feed verworfen; zusätzlich schützt der lokale Beobachtungsspeicher frischere automatische Evidenz vor verspäteten älteren Writes.
