@@ -1,3 +1,10 @@
+## Update 15.10.2026 – Geprüfte Prospektseiten behalten den Erfassungszeitpunkt
+
+- Manuell bestätigte Angebote aus einer Prospektseite oder einem lokalen OCR-Vorschlag speichern jetzt den Zeitpunkt der Prüfung als `capturedAt`.
+- Beim Weiterreichen in den persistenten Offer-Datensatz bleiben Erfassungszeitpunkt und optionale Adapterherkunft erhalten.
+- Angebotsgültigkeit, Normal-/Angebotspreis-Trennung und Identitätsprüfung bleiben unverändert.
+- Eine Widgetregression schützt den Provenienzbeleg.
+
 ## Update 15.10.2026 – Manueller Prospekt-Refresh repariert lokale Preisspeicherung
 
 - Der manuelle Aktualisieren-Button darf einen unveränderten, validierten Feed erneut durch den regulären Preis-Persistenzpfad führen.
