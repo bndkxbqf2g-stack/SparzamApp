@@ -1,3 +1,7 @@
+## Update 15.10.2026 – Aktuellste reguläre Prospektquelle pro Filiale
+
+Die aktuelle Preisprojektion behandelt überlappende, neu eingelesene Prospektzeiträume derselben Produkt-/Filialkombination jetzt deterministisch: Der neueste belegte reguläre Anspruch ersetzt nur die ältere aktuelle Projektion. Append-only Preisbeobachtungen und ihre Nachweise bleiben erhalten; unterschiedliche Branch-IDs werden getrennt projiziert.
+
 ## Update 15.10.2026 – Preisregel im Prospekt-Reiter sichtbar
 
 Die Prospektstatuskarte erklärt jetzt direkt die getrennte Preisrolle: Ein belegter, durchgestrichener Normalpreis kann als lokale Preisbasis gespeichert werden; der aktuelle Aktionspreis bleibt an den gültigen Prospektzeitraum gebunden und wird nicht als Normalpreis gespeichert. Die bestehende Speicherung und Routenlogik bleiben unverändert.
