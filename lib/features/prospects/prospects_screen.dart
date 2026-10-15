@@ -982,6 +982,7 @@ ProspectIssue _visibleIssue(
     branchId: current?.branchId ?? selected.branchId,
     location: current?.location ?? selected.location,
     address: current?.address ?? selected.address,
+    sourceAdapter: current?.sourceAdapter ?? selected.sourceAdapter,
     sourceStatus: sourceStatus,
     recordCount: currentRecordCount,
     availablePageCount:
@@ -1638,6 +1639,7 @@ class ProspectViewerScreen extends StatelessWidget {
       validFrom: issue.validFrom,
       validUntil: draft.validUntil,
       source: 'leaflet',
+      sourceAdapter: issue.sourceAdapter,
       proofRef: page.zoomUrl ?? page.imageUrl,
       imageUrl: page.imageUrl,
       capturedAt: capturedAt,
