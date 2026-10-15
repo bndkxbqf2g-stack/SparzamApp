@@ -137,6 +137,34 @@ void main() {
     expect(route.usesRoadMatrix, isFalse);
     expect(route.distanceKm, 10);
   });
+  test('fallback-Distanzen verwechseln gleichnamige Filialen nicht', () {
+    const branchA = Store(
+      name: 'Lidl',
+      branchId: 'lidl-a',
+      location: 'Ort A',
+      distanceKm: 1,
+      prices: {},
+    );
+    const branchB = Store(
+      name: 'Lidl',
+      branchId: 'lidl-b',
+      location: 'Ort B',
+      distanceKm: 9,
+      prices: {},
+    );
+
+    final route = optimizeTravelRoute(
+      [branchA, branchB],
+      fallbackDistances: const {
+        'Lidl': 2,
+        'Lidl#lidl-a': 3,
+      },
+    );
+
+    expect(route.usesRoadMatrix, isFalse);
+    expect(route.distanceKm, 24);
+  });
+
   test('branch-stabile Matrixschlüssel trennen gleichnamige Filialen', () {
     const branchA = Store(
       name: 'Lidl',
