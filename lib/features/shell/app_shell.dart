@@ -607,6 +607,12 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                 _isCurrentDataRevision(revision) &&
                 cached != null) {
               _showProspectFeed(cached);
+              // A cached/bundled feed is already validated and may be the
+              // only available stand during an offline launch. Persist its
+              // explicitly stated regular prices as well; the live refresh
+              // below remains responsible for rebuilding the visible offer
+              // snapshot and can safely upsert the same observation IDs.
+              unawaited(_persistCachedProspectPrices(cached, revision));
             }
           } catch (_) {
             // The normal refresh below remains the source of truth.
@@ -785,6 +791,63 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       _prospectFeedRefreshing = false;
       if (mounted) setState(() {});
     }
+  }
+
+  Future<void> _persistCachedProspectPrices(
+    ProspectFeedLoadResult feed,
+    int revision,
+  ) async {
+    ProspectRegularPricePersistenceResult? persistence;
+    try {
+      await _priceSaves.add(() async {
+        if (!_isCurrentDataRevision(revision)) return;
+        persistence = await persistCurrentProspectRegularPrices(
+          store: priceObservationStore,
+          records: feed.records,
+          catalogProducts: buildCatalogProducts(customProducts),
+          observedAt: feed.generatedAt,
+          now: DateTime.now(),
+          refreshedStores: feed.refreshedStores,
+        );
+      });
+    } catch (error) {
+      widget.diagnosticLogService.record(
+        category: 'Prospekte',
+        message: 'Lokaler Prospektpreisstand konnte nicht gespeichert werden.',
+        details: error.toString(),
+      );
+      return;
+    }
+    if (!_isCurrentDataRevision(revision)) return;
+
+    final learned = persistence?.learned ?? const <PriceObservation>[];
+    if (learned.isEmpty) return;
+    final stored = persistence?.stored ?? const <PriceObservation>[];
+    final persistedIds = stored
+        .where((entry) => entry.kind == PriceObservationKind.regular)
+        .map((entry) => entry.id)
+        .toSet();
+    final countsByStore = <String, int>{};
+    for (final entry in learned) {
+      if (!persistedIds.contains(entry.id)) continue;
+      countsByStore.update(
+        entry.storeName,
+        (count) => count + 1,
+        ifAbsent: () => 1,
+      );
+    }
+    if (!mounted) return;
+    setState(() {
+      prospectRegularPriceCount =
+          learned.where((entry) => persistedIds.contains(entry.id)).length;
+      prospectRegularPriceCountsByStore = Map.unmodifiable(countsByStore);
+      prospectRegularPricePersistenceStatus =
+          ProspectRegularPricePersistenceStatus.succeeded;
+      historicalPriceObservations = mergePriceObservations(
+        historicalPriceObservations,
+        stored,
+      );
+    });
   }
 
   void _showProspectFeed(ProspectFeedLoadResult feed) {

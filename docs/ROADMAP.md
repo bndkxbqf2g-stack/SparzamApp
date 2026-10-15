@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Cache-Prospektpreise lokal sichern
+
+- [x] Ein validierter Cache-/Bundle-Feed speichert beim Offline-Start ebenfalls nur aktuell gültige, explizit angegebene reguläre Preise.
+- [x] Der Angebotspreis bleibt ausschließlich Angebotsbeleg; er wird aus diesem automatischen Cache-Lernpfad nicht als Normalpreis gespeichert.
+- [x] Ein späterer Live-Refresh darf dieselben Beobachtungs-IDs sicher aktualisieren; die Preis-Historie bleibt append-only nachvollziehbar.
+
 ## Update 15.10.2026 – Mehrdeutige Open-Prices-Filialen bleiben unbekannt
 
 - [x] Ohne eindeutige Quellfilial-ID wird ein Treffer bei mehreren gleichnamigen Filialen im selben Ort verworfen, statt die erste Filiale zu wählen.
