@@ -172,8 +172,8 @@ class _MobilitySettingsScreenState extends State<MobilitySettingsScreen> {
           Slider(
             value: maxStores.toDouble(),
             min: 1,
-            max: 3,
-            divisions: 2,
+            max: maximumSupportedRouteStores.toDouble(),
+            divisions: maximumSupportedRouteStores - 1,
             label: maxStores.toString(),
             onChanged: (value) => setState(() => maxStores = value.round()),
           ),
