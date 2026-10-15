@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Filialgenaue Prospektkarten beim Lazy-Scroll
+
+- [x] Cover-, Öffnen- und Favoriten-Elemente verwenden den vollständigen Prospekt-/Filialschlüssel statt nur des Händlernamens.
+- [x] Gleichnamige Filialen können dadurch beim Recycling des Prospektgitters keinen Bild- oder Aktionszustand untereinander übernehmen.
+- [x] Eine Widgetregression prüft getrennte Schlüssel für zwei Lidl-Filialen.
+
 ## Update 15.10.2026 – Filialgenauer Distanz-Cache und Routenanzeige
 
 - [x] Einzelmarkt-Entfernungen werden bei vorhandener Branch-ID unter einem stabilen Filialschlüssel gespeichert.
