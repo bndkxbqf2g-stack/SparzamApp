@@ -575,6 +575,7 @@ class _ProspectOffersState extends State<_ProspectOffers> {
           branchId: issue.branchId,
           location: issue.location,
           address: issue.address,
+          sourceAdapter: issue.sourceAdapter,
           sourceStatus: status,
           recordCount: count,
           validFrom: issue.validFrom,
