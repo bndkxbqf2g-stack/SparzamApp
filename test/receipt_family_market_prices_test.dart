@@ -51,6 +51,76 @@ void main() {
     expect(prices.single.unitPrice, 0.79);
   });
 
+  test('stored family identity rescues an otherwise unreadable receipt label', () {
+    const product = Product(
+      id: 'shopping_schmand_unreadable',
+      name: 'Schmand',
+      unit: 'Stück',
+      group: 'sonstiges',
+    );
+    final prices = receiptFamilyMarketPrices(
+      items: [ListItem(product: product)],
+      observations: [
+        ReceiptObservation(
+          id: 'receipt-unreadable',
+          receiptFingerprint: 'receipt-unreadable',
+          rowLine: 7,
+          rawLabel: 'OCR 7 ??',
+          familyKey: 'schmand',
+          storeName: 'PENNY',
+          observedAt: DateTime(2026, 9, 20),
+          totalPrice: 0.69,
+          quantity: null,
+          quantityUnit: '',
+          unitPrice: null,
+          discounted: false,
+        ),
+      ],
+      now: DateTime(2026, 9, 24),
+    );
+
+    expect(prices, hasLength(1));
+    expect(prices.single.storeName, 'PENNY');
+    expect(prices.single.price, 0.69);
+  });
+
+  test('confirmed product identity survives an unreadable receipt label', () {
+    const product = Product(
+      id: 'schmand-200-confirmed',
+      name: 'Schmand 200 g',
+      unit: '200 g',
+      group: 'milchprodukte',
+      packageAmount: 200,
+      packageUnit: 'g',
+    );
+    final prices = receiptFamilyMarketPrices(
+      items: [ListItem(product: product)],
+      observations: [
+        ReceiptObservation(
+          id: 'receipt-confirmed',
+          receiptFingerprint: 'receipt-confirmed',
+          rowLine: 8,
+          rawLabel: 'OCR 8 ??',
+          familyKey: '',
+          storeName: 'Kaufland',
+          observedAt: DateTime(2026, 9, 20),
+          totalPrice: 0.99,
+          quantity: 200,
+          quantityUnit: 'g',
+          unitPrice: null,
+          discounted: false,
+          productId: product.id,
+          identityConfirmed: true,
+        ),
+      ],
+      now: DateTime(2026, 9, 24),
+    );
+
+    expect(prices, hasLength(1));
+    expect(prices.single.productId, product.id);
+    expect(prices.single.price, closeTo(0.99, 0.0001));
+  });
+
   test('family projection uses quality-adjusted evidence instead of newest date', () {
     const product = Product(
       id: 'shopping_schmand_quality',
@@ -697,7 +767,9 @@ void main() {
             receiptFingerprint: 'r2',
             rowLine: 1,
             rawLabel: 'Tomatenmark',
-            familyKey: 'tomatenmark',
+            // Deliberately stale legacy family metadata. The explicit raw
+            // label must remain the more specific hierarchy signal.
+            familyKey: 'tomaten',
             storeName: 'Lidl',
             observedAt: DateTime(2026, 9, 24),
             totalPrice: 0.89,

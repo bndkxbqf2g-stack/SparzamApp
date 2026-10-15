@@ -158,6 +158,17 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 - Fehlende Preisbelege direkt aus der Routen-Datenlücke zur bestehenden
   Marktpreis-Eingabe führen, ohne historische Werte zu bestätigen.
 - Routenempfehlung erklärt vollständige Preisabdeckung gegenüber einer unvollständigen Einzelmarkt-Teilroute.
+
+## Update 15.10.2026 – Bonpreise hierarchisch bis zur Route nutzen
+
+- [x] Bestätigte Händlerprodukt-Identitäten bleiben auch bei abweichendem
+  OCR-/Bontext routenfähig, sofern die Packungsbasis belegbar ist.
+- [x] Familienpreise dürfen ein unleserliches Label unterstützen, ohne eine
+  konkrete Variante zu erfinden.
+- [x] Spezifische Labels überschreiben keine Produktfamilie in Richtung einer
+  fachlich falschen Identität; Tomatenmark bleibt von frischen Tomaten getrennt.
+- [x] Regression deckt die Kette Bonbeleg → Familien-/Marktpreis → Planung →
+  Routenoptimierung ab.
 - Einen zusätzlichen Markt nur wählen, wenn die Ersparnis des gesamten Teilwarenkorbs den zusätzlichen Aufwand wirtschaftlich rechtfertigt.
 - Primäres Ergebnis: konkrete Empfehlung der wirtschaftlichsten Einkaufsstrategie (z. B. nur Lidl, Lidl + Aldi oder nur Kaufland), nicht bloß eine Liste billiger Einzelpreise.
 - Vorschläge nur dann, wenn sie praktisch relevant sind.
