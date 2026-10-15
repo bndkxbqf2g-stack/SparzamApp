@@ -592,7 +592,10 @@ void main() {
         ),
       );
 
-      expect(find.text('1 von 1 Positionen mit aktuellem Marktpreis'), findsOneWidget);
+      expect(
+        find.text('1 von 1 Positionen mit aktuellem Marktpreis'),
+        findsOneWidget,
+      );
       final card = find.byKey(
         const ValueKey('price-comparison-price-hub-generic-milk'),
       );
