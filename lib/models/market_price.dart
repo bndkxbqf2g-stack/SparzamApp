@@ -20,6 +20,7 @@ class MarketPrice {
     this.unitPrice,
     this.identityConfidence = 1,
     this.kind = PriceObservationKind.unknown,
+    this.evidenceConfidence,
   });
 
   final String productId;
@@ -44,6 +45,8 @@ class MarketPrice {
   final double? unitPrice;
   final double identityConfidence;
   final PriceObservationKind kind;
+  /// Evidence confidence survives projection from the central observation store.
+  final EvidenceConfidence? evidenceConfidence;
 
   String get key => '$storeName|$productId';
   bool get isManual =>
@@ -141,6 +144,7 @@ class MarketPrice {
         'unitPrice': unitPrice,
         'identityConfidence': identityConfidence,
         'kind': kind.name,
+        'evidenceConfidence': evidenceConfidence?.name,
       };
 
   factory MarketPrice.fromJson(Map<String, dynamic> json) {
@@ -183,6 +187,7 @@ class MarketPrice {
       kind: kindName == null
           ? PriceObservationKind.unknown
           : PriceObservationKind.values.byName(kindName),
+      evidenceConfidence: parseEvidenceConfidence(json['evidenceConfidence']),
     );
   }
 }
