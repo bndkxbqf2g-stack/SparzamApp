@@ -104,9 +104,12 @@ class RoadDistanceService implements TravelMatrixProvider {
       }
     }
 
+    final cachedForRequest =
+        cached != null && cached.covers(requested) ? cached : null;
+
     try {
       final origin = _origin ??= await _geocode(originAddress);
-      if (origin == null) return cached;
+      if (origin == null) return cachedForRequest;
 
       final names = <String>[RoadRouteMatrix.origin];
       final coordinates = <_Coordinate>[origin];
@@ -122,7 +125,7 @@ class RoadDistanceService implements TravelMatrixProvider {
         coordinates.add(coordinate);
       }
 
-      if (coordinates.length < 2) return cached;
+      if (coordinates.length < 2) return cachedForRequest;
 
       final coordinateText = coordinates
           .map(
@@ -137,11 +140,11 @@ class RoadDistanceService implements TravelMatrixProvider {
       final response = await _client
           .get(uri, headers: const {'Accept': 'application/json'})
           .timeout(matrixTimeout);
-      if (response.statusCode != 200) return cached;
+      if (response.statusCode != 200) return cachedForRequest;
 
       final json = jsonDecode(response.body) as Map<String, dynamic>;
       final rows = json['distances'] as List<dynamic>?;
-      if (rows == null || rows.length != coordinates.length) return cached;
+      if (rows == null || rows.length != coordinates.length) return cachedForRequest;
 
       final distances = <String, double>{};
       for (var from = 0; from < rows.length; from++) {
@@ -189,7 +192,7 @@ class RoadDistanceService implements TravelMatrixProvider {
       }
       return matrix;
     } catch (_) {
-      return cached;
+      return cachedForRequest;
     }
   }
 
