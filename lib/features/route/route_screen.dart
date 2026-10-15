@@ -597,19 +597,7 @@ List<PriceGapPriority> _buildPriceGaps(
 
 List<RoutePlan> _uniqueAlternatives(List<RoutePlan> plans) {
   final seen = <String>{};
-  return plans.where((plan) {
-    final stores = plan.stores.map((store) => store.name).toList()..sort();
-    final assignments =
-        plan.assignments.entries
-            .expand(
-              (entry) => entry.value.map(
-                (item) => '${entry.key.name}:${item.product.id}',
-              ),
-            )
-            .toList()
-          ..sort();
-    return seen.add('${stores.join('|')}::${assignments.join('|')}');
-  }).toList();
+  return plans.where((plan) => seen.add(routePlanIdentityKey(plan))).toList();
 }
 
 class _Title extends StatelessWidget {
