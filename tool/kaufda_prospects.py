@@ -1180,8 +1180,16 @@ def dedupe_kaufda(offers: Iterable[dict]) -> list[dict]:
             # Exact branch context is part of identity. Two same-name stores
             # may publish the same item, price, and page in one campaign.
             clean(offer.get("branchId")),
-            clean(offer.get("location")).casefold(),
-            clean(offer.get("address")).casefold(),
+            (
+                ""
+                if clean(offer.get("branchId"))
+                else clean(offer.get("location")).casefold()
+            ),
+            (
+                ""
+                if clean(offer.get("branchId"))
+                else clean(offer.get("address")).casefold()
+            ),
             # Without leaflet context, retain a source identity because two
             # otherwise identical records may belong to separate campaigns.
             "" if clean(offer.get("brochureId")) or clean(offer.get("brochurePage")) else source_id,
