@@ -4,6 +4,7 @@
 - MobilitySettings validiert gespeicherte Werte bis sechs Märkte; die Profileinstellung bietet denselben Bereich an.
 - Die Regression prüft alle 63 Kombinationen des vollständigen Sechs-Markt-Katalogs und die JSON-Rundreise des neuen Limits. Preisabdeckung, Mindestvorteil, Fahrtkosten und Offline-Fallback bleiben unverändert.
 
+## Update 15.10.2026 – Branch-stabile Fahrmatrizen
 
 - Neue OSRM-Matrizen verwenden bei vorhandener Branch-ID stabile Filialschlüssel; identische Händlernamen können dadurch getrennte Distanz- und Fahrzeitwerte tragen.
 - Ältere Matrizen mit sichtbaren Händlernamen sowie bestehende Distanz-Caches bleiben als Fallback lesbar.
