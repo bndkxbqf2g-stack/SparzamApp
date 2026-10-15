@@ -386,7 +386,7 @@ class ProspectCoverCard extends StatelessWidget {
                                 fontSize: 12,
                               ),
                             ),
-                          if (_sourceLabel(issue) case final sourceLabel?)
+                          if (prospectSourceLabel(issue) case final sourceLabel?)
                             Text(
                               sourceLabel,
                               key: ValueKey(
@@ -399,7 +399,7 @@ class ProspectCoverCard extends StatelessWidget {
                                 fontSize: 11,
                               ),
                             ),
-                          if (_pageCoverage(issue) case final pageCoverage?)
+                          if (prospectPageCoverage(issue) case final pageCoverage?)
                             Text(
                               pageCoverage,
                               key: ValueKey(
@@ -659,13 +659,13 @@ String? _validity(ProspectIssue issue) {
   return '${date(from)} – ${date(until)}';
 }
 
-String? _sourceLabel(ProspectIssue issue) {
+String? prospectSourceLabel(ProspectIssue issue) {
   final adapter = issue.sourceAdapter?.trim();
   if (adapter == null || adapter.isEmpty) return null;
   return 'Quelle: $adapter';
 }
 
-String? _pageCoverage(ProspectIssue issue) {
+String? prospectPageCoverage(ProspectIssue issue) {
   final loaded = issue.loadedPageCount ?? issue.pages.length;
   final available = issue.availablePageCount;
   if (available != null && available > 0) {
