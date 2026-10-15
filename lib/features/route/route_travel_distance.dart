@@ -126,7 +126,7 @@ double _fallbackDistanceForStore(
   if (key == store.name) {
     return fallbackDistances[store.name] ?? store.distanceKm;
   }
-  final branchPrefix = '#';
+  final branchPrefix = '${store.name}#';
   final hasBranchSpecificValue = fallbackDistances.keys.any(
     (candidate) => candidate.startsWith(branchPrefix),
   );
