@@ -116,7 +116,7 @@ class RouteOptimizer {
         if (score < bestScore ||
             (score == bestScore &&
                 (bestStore == null ||
-                    _storeTieKey(store).compareTo(_storeTieKey(bestStore)) <
+                    routeStoreIdentityKey(store).compareTo(routeStoreIdentityKey(bestStore)) <
                         0))) {
           bestScore = score;
           bestStore = store;
