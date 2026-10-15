@@ -130,4 +130,37 @@ void main() {
     expect(cached?.distance(RoadRouteMatrix.origin, 'Lidl'), 1);
     offline.close();
   });
+  test('incomplete cached matrix is not reused for a new exact branch key',
+      () async {
+    const oldBranch = 'Lidl|old';
+    final cache = MemoryTravelMatrixCache(
+      RoadRouteMatrix(
+        originAddress: '97225 Zellingen, Germany',
+        distancesKm: const {
+          '@origin|Lidl|old': 1,
+          'Lidl|old|@origin': 1,
+        },
+        fetchedAt: DateTime(2026, 10, 15),
+      ),
+    );
+    final service = RoadDistanceService(
+      originAddress: '97225 Zellingen, Germany',
+      client: MockClient((_) async {
+        throw StateError('offline');
+      }),
+      osrmBaseUri: osrm,
+      geocodingBaseUri: geocoder,
+      geocodeDelay: Duration.zero,
+      matrixCache: cache,
+    );
+
+    final result = await service.fetchMatrix({
+      'Lidl|new': 'Neue Filiale, Germany',
+    });
+
+    expect(result, isNull);
+    expect(oldBranch, isNotEmpty);
+    service.close();
+  });
+
 }
