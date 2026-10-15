@@ -829,9 +829,8 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     );
     if (!mounted || isSuperseded()) return;
     setState(() {
-      prospectRegularPriceCount =
-          learned.where((entry) => persistedIds.contains(entry.id)).length;
-      prospectRegularPriceCountsByStore = Map.unmodifiable(countsByStore);
+      prospectRegularPriceCount = persistedSummary.count;
+      prospectRegularPriceCountsByStore = persistedSummary.countsByBranch;
       prospectRegularPricePersistenceStatus =
           ProspectRegularPricePersistenceStatus.succeeded;
       historicalPriceObservations = mergePriceObservations(
