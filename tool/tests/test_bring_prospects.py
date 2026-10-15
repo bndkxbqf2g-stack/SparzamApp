@@ -93,6 +93,78 @@ class BringProspectTest(unittest.TestCase):
         self.assertEqual(item["imageUrl"], "https://cdn.example/schmand.png")
         self.assertIn("brn:bring-de:offersbrochure:218970/0", item["proofRef"])
 
+    def test_explicit_regular_price_aliases_are_preserved(self):
+        aliases = (
+            "streichpreis",
+            "wasPriceDisplay",
+            "wasPrice",
+            "originalPrice",
+            "regularPrice",
+            "normalPrice",
+            "alterPreis",
+            "oldPrice",
+            "priceBefore",
+            "previousPrice",
+            "crossedOutPrice",
+            "strikethroughPrice",
+            "wasPriceNumeric",
+            "original_price",
+            "regular_price",
+            "normal_price",
+            "old_price",
+            "previous_price",
+            "crossed_out_price",
+            "strikethrough_price",
+        )
+        for alias in aliases:
+            with self.subTest(alias=alias):
+                record = bring._discount_record(
+                    "Lidl",
+                    "brn:bring-de:offersbrochure:218970",
+                    1,
+                    date(2026, 9, 28),
+                    date(2026, 10, 3),
+                    {
+                        "name": "Milch",
+                        "price": 69,
+                        alias: "1,09 €" if alias == "wasPriceDisplay" else 109,
+                    },
+                )
+                self.assertIsNotNone(record)
+                self.assertEqual(record["originalPrice"], 1.09)
+
+        lower_than_sale = bring._discount_record(
+            "Lidl",
+            "brn:bring-de:offersbrochure:218970",
+            1,
+            date(2026, 9, 28),
+            date(2026, 10, 3),
+            {
+                "name": "Milch",
+                "price": 69,
+                "crossedOutPrice": 59,
+            },
+        )
+        self.assertIsNotNone(lower_than_sale)
+        self.assertNotIn("originalPrice", lower_than_sale)
+
+    def test_unrelated_price_fields_do_not_become_regular_price(self):
+        record = bring._discount_record(
+            "Lidl",
+            "brn:bring-de:offersbrochure:218970",
+            1,
+            date(2026, 9, 28),
+            date(2026, 10, 3),
+            {
+                "name": "Milch",
+                "price": 69,
+                "uvp": 199,
+                "discountPercent": 50,
+            },
+        )
+        self.assertIsNotNone(record)
+        self.assertNotIn("originalPrice", record)
+
     def test_expired_brochure_is_not_imported(self):
         parsed = bring.transform_bring_brochure(
             {

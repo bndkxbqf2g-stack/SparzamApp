@@ -284,7 +284,31 @@ def _discount_record(
         return None
 
     original = None
-    for key in ("oldPrice", "regularPrice", "originalPrice"):
+    # Only explicit crossed-out/previous-price fields qualify as a regular
+    # price.  Do not infer one from discounts, percentages, UVPs, or arbitrary
+    # numeric fields; the candidate must also be at least the sale price.
+    for key in (
+        "streichpreis",
+        "wasPriceDisplay",
+        "wasPrice",
+        "originalPrice",
+        "regularPrice",
+        "normalPrice",
+        "alterPreis",
+        "oldPrice",
+        "priceBefore",
+        "previousPrice",
+        "crossedOutPrice",
+        "strikethroughPrice",
+        "wasPriceNumeric",
+        "original_price",
+        "regular_price",
+        "normal_price",
+        "old_price",
+        "previous_price",
+        "crossed_out_price",
+        "strikethrough_price",
+    ):
         candidate = _money_eur(discount.get(key))
         if candidate is not None and candidate >= sale:
             original = candidate
