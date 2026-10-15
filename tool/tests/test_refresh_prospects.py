@@ -123,6 +123,85 @@ class ProspectParserTest(unittest.TestCase):
             [],
         )
 
+    def test_previous_fallback_stays_with_the_exact_store_branch(self):
+        previous = {
+            "offers": [
+                {
+                    "storeName": "Lidl",
+                    "branchId": "lidl-zellingen",
+                    "location": "Zellingen",
+                    "validUntil": "2099-10-17",
+                    "productLabel": "Butter 250 g",
+                },
+                {
+                    "storeName": "Lidl",
+                    "branchId": "lidl-wuerzburg",
+                    "location": "Würzburg",
+                    "validUntil": "2099-10-17",
+                    "productLabel": "Butter 250 g",
+                },
+            ]
+        }
+        result = refresh.active_previous(
+            previous,
+            "Lidl",
+            {"branchId": "lidl-zellingen", "location": "Zellingen"},
+        )
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["branchId"], "lidl-zellingen")
+
+    def test_previous_cover_does_not_cross_same_store_branches(self):
+        previous = {
+            "sources": [
+                {
+                    "storeName": "Lidl",
+                    "branchId": "lidl-zellingen",
+                    "location": "Zellingen",
+                    "prospects": [
+                        {
+                            "id": "same-leaflet",
+                            "title": "Lidl Prospekt",
+                            "offerEndDate": "2099-10-17",
+                            "pageSamples": [{"number": 1, "image": "https://example.test/zellingen.jpg"}],
+                        }
+                    ],
+                },
+                {
+                    "storeName": "Lidl",
+                    "branchId": "lidl-wuerzburg",
+                    "location": "Würzburg",
+                    "prospects": [
+                        {
+                            "id": "same-leaflet",
+                            "title": "Lidl Prospekt",
+                            "offerEndDate": "2099-10-17",
+                            "pageSamples": [{"number": 1, "image": "https://example.test/wuerzburg.jpg"}],
+                        }
+                    ],
+                },
+            ]
+        }
+        current = [
+            {
+                "id": "same-leaflet",
+                "title": "Lidl Prospekt",
+                "offerEndDate": "2099-10-17",
+                "branchId": "lidl-zellingen",
+                "location": "Zellingen",
+            }
+        ]
+        merged = refresh._merge_previous_prospects(
+            previous,
+            "Lidl",
+            current,
+            branch={"branchId": "lidl-zellingen", "location": "Zellingen"},
+            today=refresh.date(2026, 10, 13),
+        )
+        self.assertEqual(
+            merged[0]["pageSamples"][0]["image"],
+            "https://example.test/zellingen.jpg",
+        )
+
     def test_record_accepts_only_http_images(self):
         invalid = refresh.record(
             "Lidl",
