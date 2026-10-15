@@ -61,6 +61,16 @@ String routeStoreIdentityKey(Store store) => [
       store.address,
     ].map((value) => value.trim().toLowerCase()).join('|');
 
+/// User-facing label for one exact store branch.
+String routeStoreDisplayLabel(Store store) {
+  final name = store.name.trim();
+  final location = store.location.trim();
+  if (location.isNotEmpty) return '$name · $location';
+  final address = store.address.trim();
+  if (address.isNotEmpty) return '$name · $address';
+  return name;
+}
+
 /// Stable identity for a route alternative, including exact store branches
 /// and the product assignments shown to the user.
 String routePlanIdentityKey(RoutePlan plan) {
