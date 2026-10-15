@@ -302,16 +302,9 @@ class RouteOptimizer {
     if (planning != 0) return planning;
     final storeCount = a.stores.length.compareTo(b.stores.length);
     if (storeCount != 0) return storeCount;
-    final aKey = a.stores.map(_storeTieKey).join('|');
-    final bKey = b.stores.map(_storeTieKey).join('|');
+    final aKey = a.stores.map(routeStoreIdentityKey).join('|');
+    final bKey = b.stores.map(routeStoreIdentityKey).join('|');
     return aKey.compareTo(bKey);
   }
 }
-
-String _storeTieKey(Store store) => [
-  store.name,
-  store.branchId ?? '',
-  store.location,
-  store.address,
-].map((value) => value.trim().toLowerCase()).join('|');
 
