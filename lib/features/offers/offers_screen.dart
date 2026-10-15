@@ -334,7 +334,7 @@ class _ProspectOffersState extends State<_ProspectOffers> {
           !(searchIndex[record] ?? '').contains(normalizedQuery)) {
         continue;
       }
-      byStore.putIfAbsent(record.storeName, () => []).add(record);
+      byStore.putIfAbsent(prospectRecordKey(record), () => []).add(record);
     }
     _filteredInput = widget.records;
     _filteredQuery = normalizedQuery;
@@ -398,11 +398,11 @@ class _ProspectOffersState extends State<_ProspectOffers> {
             key: PageStorageKey('prospect-store-${entry.key}'),
             initiallyExpanded: false,
             title: Text(
-              entry.key,
+              entry.value.first.storeName,
               style: const TextStyle(fontWeight: FontWeight.w800),
             ),
             subtitle: Text(
-              '${prospectRecordLocationLabel(entry.key, entry.value)} · '
+              '${prospectRecordLocationLabel(entry.value.first.storeName, entry.value)} · '
               '${entry.value.length} Angebote',
             ),
             onExpansionChanged: (expanded) => setState(() {
@@ -507,24 +507,49 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     if (widget.query.trim().isNotEmpty) return const <Widget>[];
     final currentCounts = <String, int>{};
     final regionalCounts = <String, int>{};
+    final unscopedCounts = <String, int>{};
+    final unscopedRegionalCounts = <String, int>{};
     for (final record in widget.records) {
       currentCounts.update(
-        record.storeName,
+        prospectRecordKey(record),
         (count) => count + 1,
         ifAbsent: () => 1,
       );
-      if (record.regionalOnly) {
-        regionalCounts.update(
+      final recordBranch = record.branchId?.trim();
+      if (recordBranch == null || recordBranch.isEmpty) {
+        unscopedCounts.update(
           record.storeName,
           (count) => count + 1,
           ifAbsent: () => 1,
         );
       }
+      if (record.regionalOnly) {
+        regionalCounts.update(
+          prospectRecordKey(record),
+          (count) => count + 1,
+          ifAbsent: () => 1,
+        );
+        if (recordBranch == null || recordBranch.isEmpty) {
+          unscopedRegionalCounts.update(
+            record.storeName,
+            (count) => count + 1,
+            ifAbsent: () => 1,
+          );
+        }
+      }
     }
     final visible = <String, ProspectIssue>{};
     for (final issue in widget.issues) {
-      final count = currentCounts[issue.storeName] ?? 0;
-      final regionalCount = regionalCounts[issue.storeName] ?? 0;
+      final hasBranch = issue.branchId?.trim().isNotEmpty == true;
+      final issueKey = prospectIssueKey(issue);
+      final count = hasBranch
+          ? (currentCounts[issueKey] ?? 0) +
+              (unscopedCounts[issue.storeName] ?? 0)
+          : currentCounts[issue.storeName] ?? 0;
+      final regionalCount = hasBranch
+          ? (regionalCounts[issueKey] ?? 0) +
+              (unscopedRegionalCounts[issue.storeName] ?? 0)
+          : regionalCounts[issue.storeName] ?? 0;
       final usesCurrentFallback = issue.sourceStatus == 'error' && count > 0;
       final needsRegionalNotice = issue.sourceStatus == 'regional_only' ||
           (count > 0 && regionalCount == count);
@@ -540,7 +565,7 @@ class _ProspectOffersState extends State<_ProspectOffers> {
         status = issue.sourceStatus;
       }
       visible.putIfAbsent(
-        issue.storeName,
+        issueKey,
         () => ProspectIssue(
           storeName: issue.storeName,
           title: issue.title,

@@ -442,6 +442,44 @@ void main() {
     );
   });
 
+  testWidgets('trennt Artikelgruppen gleichnamiger Filialen', (tester) async {
+    final records = [
+      OfferImportRecord(
+        sourceId: 'branch-zellingen',
+        productLabel: 'Butter 250 g',
+        storeName: 'Lidl',
+        branchId: 'lidl-zellingen',
+        location: 'Zellingen',
+        offerPrice: 1.29,
+        validUntil: DateTime(2026, 10, 17),
+        proofRef: 'https://example.test/lidl/zellingen/butter',
+      ),
+      OfferImportRecord(
+        sourceId: 'branch-wuerzburg',
+        productLabel: 'Butter 250 g',
+        storeName: 'Lidl',
+        branchId: 'lidl-wuerzburg',
+        location: 'Würzburg',
+        offerPrice: 1.39,
+        validUntil: DateTime(2026, 10, 17),
+        proofRef: 'https://example.test/lidl/wuerzburg/butter',
+      ),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: OffersScreen(
+          catalogProducts: const <Product>[],
+          prospectRecords: records,
+          now: DateTime(2026, 10, 13),
+        ),
+      ),
+    );
+
+    expect(find.text('Zellingen · 1 Angebote'), findsOneWidget);
+    expect(find.text('Würzburg · 1 Angebote'), findsOneWidget);
+  });
+
   testWidgets('lädt Artikelkarten innerhalb einer Kategorie seitenweise', (
     tester,
   ) async {
