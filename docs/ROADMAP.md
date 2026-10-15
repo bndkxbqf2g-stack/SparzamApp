@@ -874,3 +874,12 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Der Vorlauf bleibt auf 360 Pixel begrenzt; Seitenviewer und Cover-Fallback
   behalten ihre eigenen Speichergrenzen.
 - [x] Eine Widgetregression prüft den festen Vorlauf ohne zusätzliche Abrufe.
+
+## Update 15.10.2026 – Preise-Ledger bleibt filialgenau
+
+- [x] Der aktuelle Prospekt-Normalpreis-Ledger zeigt nur Beobachtungen mit
+  ausdrücklich gespeicherter exakter Filial-ID.
+- [x] Branchlose Altbeobachtungen bleiben für Historie und Prüfung erhalten,
+  werden aber weder als aktueller Ledger-Preis noch als Routenpreis ausgegeben.
+- [x] Eine Fachregression schützt die Grenze zwischen sichtbarer Historie und
+  aktueller Filialabdeckung.
