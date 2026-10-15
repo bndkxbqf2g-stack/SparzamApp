@@ -219,8 +219,10 @@ List<ProspectIssue> _currentProspectIssues(
     if (!hasCover) continue;
     final validFrom = issue.validFrom;
     final validUntil = issue.validUntil;
-    if (validUntil != null &&
-        !isOfferDateRangeActive(
+    // A supplied start date is validity evidence even when a feed omits
+    // its end date. Otherwise a future cover could appear in the current tab.
+    if ((validFrom != null || validUntil != null) &&
+        !isOptionalOfferDateRangeActive(
           validFrom: validFrom,
           validUntil: validUntil,
           now: now,
