@@ -1,9 +1,3 @@
-## Update 15.10.2026 – Exakte Filialen bei Prospekt-Deduplizierung
-
-- [x] Prospektangebote werden bei gleicher Händler-/Artikel-/Preis-/Gültigkeitsidentität zusätzlich nach Branch-ID, Ort und Adresse getrennt.
-- [x] Mehrere gleichnamige Filialen behalten dadurch ihre jeweils aktuelle Angebotsperiode; KaufDA kann eine offizielle Quelle nur innerhalb derselben Filiale ergänzen.
-- [x] Eine Python-Regression prüft zwei Lidl-Filialen mit identischem Artikel und Preis.
-
 ## Update 15.10.2026 – Seitenviewer begrenzt Plattform-Fallbacks
 
 - [x] Nur die ersten zwei sichtbaren Prospektseiten dürfen nach einem Canvas-Fehler auf einen HTML-Plattform-View wechseln.
