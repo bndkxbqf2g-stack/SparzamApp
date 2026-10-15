@@ -81,6 +81,48 @@ void main() {
     expect(evidence.single.kind, PriceObservationKind.regular);
   });
 
+  test('eligibility rejects malformed rows before regular-price persistence', () {
+    OfferImportRecord row({
+      String sourceId = 'valid',
+      String productLabel = 'Butter 250 g',
+      String source = 'leaflet',
+      String? proofRef = 'https://example.test/lidl/butter',
+      String? ean,
+    }) => OfferImportRecord(
+      sourceId: sourceId,
+      productLabel: productLabel,
+      storeName: 'Lidl',
+      originalPrice: 2.49,
+      offerPrice: 1.99,
+      validUntil: DateTime(2026, 10, 17),
+      source: source,
+      proofRef: proofRef,
+      ean: ean,
+    );
+
+    final valid = row();
+    expect(isLearnableProspectRegularPrice(valid), isTrue);
+
+    final malformed = <OfferImportRecord>[
+      row(sourceId: ''),
+      row(productLabel: ' '),
+      row(source: 'manual'),
+      row(proofRef: 'javascript:alert(1)'),
+      row(ean: 'not-a-barcode'),
+    ];
+    for (final record in malformed) {
+      expect(isLearnableProspectRegularPrice(record), isFalse);
+      expect(
+        prospectPriceObservations(
+          records: [record],
+          catalogProducts: const [],
+          observedAt: DateTime(2026, 10, 12),
+        ),
+        isEmpty,
+      );
+    }
+  });
+
   test('does not learn an equal original amount as a crossed-out price', () {
     final allEvidence = prospectPriceObservations(
       records: [
