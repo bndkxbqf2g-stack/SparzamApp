@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Prospekt-Cover respektieren offene Gültigkeitsgrenzen
+
+- Der Angebote-Reiter prüft jetzt auch ein allein geliefertes `validFrom` und blendet zukünftige Cover aus; ein fehlendes `validUntil` macht einen Datensatz nicht automatisch aktuell.
+- Abgelaufene und umgekehrte optionale Zeiträume werden als unbrauchbare Evidenz behandelt. Unbegrenzte Metadaten ohne Datumsangabe bleiben als Quelle sichtbar.
+- Unit- und Widgetregressionen decken die offene Datumsgrenze und den Angebote-Reiter ab.
+
 ## Update 15.10.2026 – Bonzeilen mit expliziten Produktvorschlägen
 
 - Unklare Bonpositionen können jetzt direkt am Eintrag aus bis zu drei Namens-/Alias-Treffern des vorhandenen Katalogs ausgewählt werden.
