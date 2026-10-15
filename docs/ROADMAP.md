@@ -924,3 +924,8 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   werden aber weder als aktueller Ledger-Preis noch als Routenpreis ausgegeben.
 - [x] Eine Fachregression schützt die Grenze zwischen sichtbarer Historie und
   aktueller Filialabdeckung.
+## Update 15.10.2026 – Bring-Normalpreisfelder explizit auswerten
+
+- [x] Der optionale Bring-Adapter übernimmt benannte Streich-/Vorherpreisfelder in CamelCase, snake_case und deutschen Feldnamen.
+- [x] Rabattprozente, UVP-Felder und beliebige numerische Felder bleiben ausgeschlossen; ein Normalpreis muss mindestens so hoch wie der Angebotspreis sein.
+- [x] Die Änderung erweitert nur die Normalpreis-Erkennung; Gültigkeitszeitraum, Filiale, Nachweis und die Trennung von Angebotspreis und Preisbasis bleiben unverändert.
