@@ -201,7 +201,10 @@ class _OffersScreenState extends State<OffersScreen> {
           const SizedBox(height: 14),
           _ProspectOffers(
             records: currentRecords,
-            issues: widget.prospectIssues,
+            issues: _currentProspectStatusIssues(
+              widget.prospectIssues,
+              now: widget.now,
+            ),
             query: query,
             catalogProducts: widget.catalogProducts,
             onAddToShoppingList: widget.onAddToShoppingList,
@@ -211,6 +214,23 @@ class _OffersScreenState extends State<OffersScreen> {
     );
   }
 }
+
+List<ProspectIssue> _currentProspectStatusIssues(
+  Iterable<ProspectIssue> issues, {
+  DateTime? now,
+}) =>
+    issues
+        .where(
+          (issue) =>
+              (issue.validFrom != null || issue.validUntil != null)
+                  ? isOptionalOfferDateRangeActive(
+                      validFrom: issue.validFrom,
+                      validUntil: issue.validUntil,
+                      now: now,
+                    )
+                  : true,
+        )
+        .toList(growable: false);
 
 List<ProspectIssue> _currentProspectIssues(
   Iterable<ProspectIssue> issues, {

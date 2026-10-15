@@ -557,6 +557,7 @@ void main() {
         ),
         findsNothing,
       );
+      expect(find.text('Zukunftsmarkt'), findsNothing);
     },
   );
 
