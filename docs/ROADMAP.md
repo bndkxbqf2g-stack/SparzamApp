@@ -845,3 +845,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Aktionspreise aus öffentlichen Feeds akzeptieren neben JSON-Zahlen auch ausdrücklich als EUR/€ gekennzeichnete deutsche Anzeigewerte.
 - [x] Benannte verschachtelte Preisfelder (`amount`, `value`, `formattedPrice` usw.) werden begrenzt gelesen; freie Texte und nackte Zahlenstrings bleiben ungültig.
 - [x] Eine Parserregression schützt den Weg vom Feed über den regulären Normalpreis bis zur lokalen Speicherung.
+
+## Update 15.10.2026 – Begrenzter Prospekt-Scrollvorlauf
+
+- [x] Der äußere Angebote-Scroll wärmt maximal eine Kartenreihe vor, damit Coverbilder und erste Artikel vor dem Sichtbereich dekodiert werden.
+- [x] Cover- und Seitenlisten behalten ihre eigenen Seiten-/Fallback-Limits; der Vorlauf materialisiert nicht den vollständigen Feed.
+- [x] Eine Widgetregression schützt den festen Vorlauf von 360 Pixeln.
+
