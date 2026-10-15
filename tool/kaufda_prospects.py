@@ -654,6 +654,123 @@ def _page_number(value: object) -> int | None:
     return page if page > 0 else None
 
 
+_PAGE_IMAGE_KEYS = (
+    "image",
+    "imageUrl",
+    "imageURL",
+    "image_url",
+    "pageImage",
+    "pageImageUrl",
+    "page_image",
+    "page_image_url",
+    "thumbnail",
+    "thumbnailUrl",
+    "cover",
+    "coverUrl",
+    "coverImage",
+    "coverImageUrl",
+    "normal",
+    "original",
+    "large",
+)
+
+
+def _page_image_url(value: object) -> str:
+    """Read a page/cover image only from explicit brochure fields."""
+
+    if isinstance(value, Mapping):
+        for key in _PAGE_IMAGE_KEYS:
+            image = _first_http_url((value.get(key),))
+            if image:
+                return image
+        return ""
+    return _http_url(value)
+
+
+def _prospect_page_image(
+    raw: Mapping[str, object],
+    parent: Mapping[str, object],
+) -> str:
+    """Resolve a brochure page image without reusing a product image."""
+
+    page = parent.get("page")
+    image = _page_image_url(page)
+    if image:
+        return image
+    image = _page_image_url(parent)
+    if image:
+        return image
+    for key in (
+        "brochurePageImage",
+        "brochurePageImageUrl",
+        "pageImage",
+        "pageImageUrl",
+        "page_image",
+        "page_image_url",
+        "pagePreview",
+        "pagePreviewUrl",
+    ):
+        image = _first_http_url((raw.get(key),))
+        if image:
+            return image
+    return ""
+
+
+def _prospect_cover_image(
+    raw: Mapping[str, object],
+    parent: Mapping[str, object],
+) -> str:
+    """Resolve an explicit brochure cover/thumbnail field only."""
+
+    for container, keys in (
+        (
+            parent,
+            (
+                "cover",
+                "coverUrl",
+                "coverImage",
+                "coverImageUrl",
+                "thumbnail",
+                "thumbnailUrl",
+            ),
+        ),
+        (
+            raw,
+            (
+                "brochureCover",
+                "brochureCoverUrl",
+                "brochureCoverImage",
+                "brochureCoverImageUrl",
+                "cover",
+                "coverUrl",
+                "coverImage",
+                "coverImageUrl",
+            ),
+        ),
+    ):
+        for key in keys:
+            image = _first_http_url((container.get(key),))
+            if image:
+                return image
+    return ""
+
+
+def _add_page_sample(
+    samples: list[object],
+    page: int,
+    image: str,
+) -> None:
+    """Keep legacy page numbers while enriching them with verified images."""
+
+    for index, existing in enumerate(samples):
+        if _page_number(existing) != page:
+            continue
+        if image and not _page_image_url(existing):
+            samples[index] = {"number": page, "image": image}
+        return
+    samples.append({"number": page, "image": image} if image else page)
+
+
 def _category_text(raw: Mapping[str, object]) -> str:
     values: list[str] = []
     for key in (
@@ -864,7 +981,10 @@ def parse_kaufda_html(
         parent = raw.get("parentContent")
         parent = parent if isinstance(parent, Mapping) else {}
         brochure_id = clean(parent.get("id") or raw.get("brochureId"))
-        page = _page_number(parent.get("page") or raw.get("brochurePage"))
+        parent_page = parent.get("page")
+        page = _page_number(parent_page or raw.get("brochurePage"))
+        page_image = _prospect_page_image(raw, parent)
+        cover_image = _prospect_cover_image(raw, parent)
         source_id = _source_id(
             publisher=publisher,
             item_id=item_id,
@@ -1005,8 +1125,10 @@ def parse_kaufda_html(
                 },
             )
             prospect["productCount"] += 1
-            if page is not None and page not in prospect["pageSamples"]:
-                prospect["pageSamples"].append(page)
+            if cover_image and not prospect.get("thumbnailUrl"):
+                prospect["thumbnailUrl"] = cover_image
+            if page is not None:
+                _add_page_sample(prospect["pageSamples"], page, page_image)
 
     offers = dedupe_kaufda(offers)
     return offers, {

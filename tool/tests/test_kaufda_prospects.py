@@ -157,6 +157,42 @@ class KaufdaProspectTest(unittest.TestCase):
         self.assertEqual(offers[0]["publisherId"], "lidl")
         self.assertEqual(metadata["prospects"][0]["pageSamples"], [3])
 
+    def test_parser_keeps_explicit_brochure_cover_and_page_images(self):
+        payload = kaufda.extract_next_data(self.html)
+        item = payload["props"]["pageProps"]["pageInformation"]["offers"]["main"]["items"][0]
+        item["parentContent"]["page"] = {
+            "number": 3,
+            "imageUrl": "https://img.example.test/lidl-page-3.jpg",
+        }
+        item["parentContent"]["coverUrl"] = (
+            "https://img.example.test/lidl-cover.jpg"
+        )
+        html = (
+            '<script id="__NEXT_DATA__" type="application/json">'
+            + kaufda.json.dumps(payload)
+            + "</script>"
+        )
+
+        _, metadata = kaufda.parse_kaufda_html(
+            html,
+            city="Wuerzburg",
+            query="Butter",
+            today=self.today,
+        )
+
+        prospect = metadata["prospects"][0]
+        self.assertEqual(
+            prospect["thumbnailUrl"],
+            "https://img.example.test/lidl-cover.jpg",
+        )
+        self.assertEqual(
+            prospect["pageSamples"][0],
+            {
+                "number": 3,
+                "image": "https://img.example.test/lidl-page-3.jpg",
+            },
+        )
+
     def test_parser_keeps_stated_regular_price_but_not_uvp(self):
         regular_price_shape = self.html.replace(
             '"mainPrice": 1.29,',
