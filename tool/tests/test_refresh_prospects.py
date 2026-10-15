@@ -338,6 +338,58 @@ class ProspectParserTest(unittest.TestCase):
         result = refresh.current_prospect_offers(offers, refresh.date(2026, 9, 29))
         self.assertEqual(len(result), 3)
 
+    def test_current_prospect_offers_keeps_same_store_branches_separate(self):
+        offers = [
+            {
+                "storeName": "Lidl",
+                "productLabel": "Butter 250 g",
+                "offerPrice": 1.29,
+                "validFrom": "2026-10-12",
+                "validUntil": "2026-10-17",
+                "source": "retailerWebsite",
+                "sourceAdapter": "lidl_api",
+                "branchId": "lidl-zellingen",
+                "location": "Zellingen",
+            },
+            {
+                "storeName": "Lidl",
+                "productLabel": "Butter 250 g",
+                "offerPrice": 1.29,
+                "validFrom": "2026-10-12",
+                "validUntil": "2026-10-17",
+                "source": "retailerWebsite",
+                "sourceAdapter": "kaufda",
+                "branchId": "lidl-zellingen",
+                "location": "Zellingen",
+            },
+            {
+                "storeName": "Lidl",
+                "productLabel": "Butter 250 g",
+                "offerPrice": 1.29,
+                "validFrom": "2026-10-12",
+                "validUntil": "2026-10-17",
+                "source": "retailerWebsite",
+                "sourceAdapter": "lidl_api",
+                "branchId": "lidl-wuerzburg",
+                "location": "Würzburg",
+            },
+        ]
+
+        result = refresh.current_prospect_offers(
+            offers,
+            refresh.date(2026, 10, 12),
+        )
+
+        self.assertEqual(len(result), 2)
+        self.assertEqual(
+            {item["branchId"] for item in result},
+            {"lidl-zellingen", "lidl-wuerzburg"},
+        )
+        zellingen = next(
+            item for item in result if item["branchId"] == "lidl-zellingen"
+        )
+        self.assertEqual(zellingen["sourceAdapter"], "lidl_api")
+
     def test_current_prospect_offers_excludes_non_food_campaign_items(self):
         offers = [
             {

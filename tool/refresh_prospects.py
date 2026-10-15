@@ -3189,10 +3189,32 @@ def parse_rewe_api(json_text, base_url):
     return dedupe(offers), []
 
 
+def _branch_identity(item):
+    """Return the strongest available exact-store identity for one record.
+
+    A retailer name alone is not unique. Keep the explicit branch assertion
+    first and retain location/address as a bounded fallback for public sources
+    that expose a store without a stable branch ID.
+    """
+    if not isinstance(item, dict):
+        return ("", "", "")
+    return tuple(
+        clean(str(item.get(field) or "")).casefold()
+        for field in ("branchId", "location", "address")
+    )
+
+
 def dedupe(offers):
     unique = {}
     for item in offers:
-        key = (item["storeName"], clean(item["productLabel"]).lower(), item["validFrom"], item["validUntil"], item["offerPrice"])
+        key = (
+            item["storeName"],
+            _branch_identity(item),
+            clean(item["productLabel"]).lower(),
+            item["validFrom"],
+            item["validUntil"],
+            item["offerPrice"],
+        )
         previous = unique.get(key)
         if previous is None:
             unique[key] = item
@@ -3327,7 +3349,7 @@ def update_source_record_counts(sources, offers):
 
 
 def current_prospect_offers(offers, today=None):
-    """Keep only the dominant currently valid leaflet period per retailer."""
+    """Keep the dominant current period independently for each exact branch."""
     reference = today or local_today()
     active = []
     for item in offers:
@@ -3342,32 +3364,53 @@ def current_prospect_offers(offers, today=None):
             active.append(item)
     groups = {}
     for item in active:
-        key = (item.get("storeName"), item.get("validFrom"), item.get("validUntil"))
+        key = (
+            item.get("storeName"),
+            _branch_identity(item),
+            item.get("validFrom"),
+            item.get("validUntil"),
+        )
         groups.setdefault(key, []).append(item)
     selected = set()
-    by_store = {}
+    by_branch = {}
     for key, values in groups.items():
         # Optional KaufDA discovery must never displace an official retailer
         # period merely because it returned more search hits. It may enrich
         # the selected official period, but its own period is only selected
-        # when no authoritative period exists for that retailer.
+        # when no authoritative period exists for that exact branch.
         has_official_record = any(
             clean(item.get("sourceAdapter", "")).casefold() != "kaufda"
             for item in values
         )
-        by_store.setdefault(key[0], []).append(
+        branch_key = (key[0], key[1])
+        by_branch.setdefault(branch_key, []).append(
             (
                 1 if has_official_record else 0,
                 len(values),
-                key[1],
                 key[2],
+                key[3],
                 key,
             )
         )
-    for candidates in by_store.values():
-        candidates.sort(key=lambda value: (value[0], value[1], value[2], value[3]), reverse=True)
+    for candidates in by_branch.values():
+        candidates.sort(
+            key=lambda value: (value[0], value[1], value[2], value[3]),
+            reverse=True,
+        )
         selected.add(candidates[0][4])
-    return dedupe([item for item in active if (item.get("storeName"), item.get("validFrom"), item.get("validUntil")) in selected])
+    return dedupe(
+        [
+            item
+            for item in active
+            if (
+                item.get("storeName"),
+                _branch_identity(item),
+                item.get("validFrom"),
+                item.get("validUntil"),
+            )
+            in selected
+        ]
+    )
 
 PARSERS = {
     "aldi": parse_aldi,
