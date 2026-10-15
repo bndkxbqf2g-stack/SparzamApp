@@ -14,6 +14,7 @@ import 'package:sparzamapp/models/mobility_settings.dart';
 import 'package:sparzamapp/models/named_shopping_list.dart';
 import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/models/price_data_settings.dart';
+import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/price_point.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/purchase_record.dart';
