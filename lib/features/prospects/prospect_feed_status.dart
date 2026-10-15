@@ -600,13 +600,21 @@ String _coverageDetails(
   final regional = coverage.regionalOnlyCount == 0
       ? ''
       : ' · ${coverage.regionalOnlyCount} nur regional';
+  final branchInfo = [
+    if (coverage.branchId?.trim().isNotEmpty == true)
+      'Filiale ${coverage.branchId!.trim()}',
+    if (coverage.location?.trim().isNotEmpty == true)
+      coverage.location!.trim(),
+  ].join(' · ');
+  final exactStoreInfo = branchInfo.isEmpty ? '' : ' · $branchInfo';
   return '${coverage.structuredOfferCount} strukturierte Angebote'
       '$regional · '
       '$pages$missingPages · $productImages · $categories · '
       '$proofs · '
       '$regularPrices · '
       '$storedRegularPrices · '
-      '$uncertain · $storeSignals';
+      '$uncertain · $storeSignals'
+      '$exactStoreInfo';
 }
 
 String _sourceStatusLabel(String status) {
