@@ -7,6 +7,7 @@ import '../offers/offer_import.dart';
 import '../offers/prospect_offer_products.dart';
 import 'prospect_category_presentation.dart';
 import 'prospect_cover_section.dart';
+import 'prospect_issue_identity.dart';
 import '../../models/product.dart';
 import '../../services/prospect_feed_service.dart';
 import '../offers/offer_filter.dart';
@@ -164,34 +165,75 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
     );
     final currentCounts = <String, int>{};
     final currentRegionalCounts = <String, int>{};
+    final currentStoreCounts = <String, int>{};
+    final currentRegionalStoreCounts = <String, int>{};
+    final currentUnscopedStoreCounts = <String, int>{};
+    final currentUnscopedRegionalStoreCounts = <String, int>{};
     for (final record in currentRecords) {
       currentCounts.update(
+        prospectRecordKey(record),
+        (count) => count + 1,
+        ifAbsent: () => 1,
+      );
+      currentStoreCounts.update(
         record.storeName,
         (count) => count + 1,
         ifAbsent: () => 1,
       );
-      if (record.regionalOnly) {
-        currentRegionalCounts.update(
+      final recordBranch = record.branchId?.trim();
+      if (recordBranch == null || recordBranch.isEmpty) {
+        currentUnscopedStoreCounts.update(
           record.storeName,
           (count) => count + 1,
           ifAbsent: () => 1,
         );
       }
+      if (record.regionalOnly) {
+        currentRegionalCounts.update(
+          prospectRecordKey(record),
+          (count) => count + 1,
+          ifAbsent: () => 1,
+        );
+        currentRegionalStoreCounts.update(
+          record.storeName,
+          (count) => count + 1,
+          ifAbsent: () => 1,
+        );
+        if (recordBranch == null || recordBranch.isEmpty) {
+          currentUnscopedRegionalStoreCounts.update(
+            record.storeName,
+            (count) => count + 1,
+            ifAbsent: () => 1,
+          );
+        }
+      }
     }
-    final byStore = <String, List<ProspectIssue>>{};
+    final byIssue = <String, List<ProspectIssue>>{};
     for (final issue in widget.prospects) {
-      byStore.putIfAbsent(issue.storeName, () => []).add(issue);
+      byIssue.putIfAbsent(prospectIssueKey(issue), () => []).add(issue);
     }
-    final visibleProspects = <ProspectIssue>[
-      for (final entries in byStore.values)
+    final visibleProspects = <ProspectIssue>[];
+    for (final entries in byIssue.values) {
+      final issue = entries.first;
+      final hasBranch = issue.branchId?.trim().isNotEmpty == true;
+      final issueKey = prospectIssueKey(issue);
+      final recordCount = hasBranch
+          ? (currentCounts[issueKey] ?? 0) +
+              (currentUnscopedStoreCounts[issue.storeName] ?? 0)
+          : currentStoreCounts[issue.storeName] ?? 0;
+      final regionalRecordCount = hasBranch
+          ? (currentRegionalCounts[issueKey] ?? 0) +
+              (currentUnscopedRegionalStoreCounts[issue.storeName] ?? 0)
+          : currentRegionalStoreCounts[issue.storeName] ?? 0;
+      visibleProspects.add(
         _visibleIssue(
           entries,
-          currentCounts[entries.first.storeName] ?? 0,
-          currentRegionalRecordCount:
-              currentRegionalCounts[entries.first.storeName] ?? 0,
+          recordCount,
+          currentRegionalRecordCount: regionalRecordCount,
           now: widget.now,
         ),
-    ];
+      );
+    }
     final next = _ProspectDerivedData(
       currentRecords: currentRecords,
       categories: _prospectCategories(currentRecords),
@@ -368,7 +410,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                             final issue = favoriteProspects[index];
                             return _ProspectCard(
                               key: ValueKey(
-                                'prospect-card-favorite-${issue.storeName}',
+                                'prospect-card-favorite-${prospectIssueKey(issue)}',
                               ),
                               issue: issue,
                               compact: false,
@@ -419,7 +461,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                       final issue = visibleProspects[index];
                       return _ProspectCard(
                         key: ValueKey(
-                          'prospect-card-grid-${issue.storeName}',
+                          'prospect-card-grid-${prospectIssueKey(issue)}',
                         ),
                         issue: issue,
                         compact: true,

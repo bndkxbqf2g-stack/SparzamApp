@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Prospekt-Cover bleiben filialgenau
+
+- Coverkarten und Artikelgruppen verwenden jetzt Händlername plus vorhandene Branch-ID als stabilen Schlüssel; gleichnamige Lidl-/Netto-Filialen bleiben getrennt.
+- Nicht filialgebundene Altbelege zählen weiterhin als unscoped Evidenz für eine Branch-Karte, während Belege anderer expliziter Filialen nicht zugemischt werden.
+- Eine Widgetregression schützt zwei anonymisierte Filialen derselben Kette in Favoritenleiste und Raster.
+
 ## Update 15.10.2026 – Prospekt-Cover beim Scrollen stabilisieren
 
 - Coverbilder erhalten innerhalb des adaptiven Image-Widgets jetzt einen Schlüssel aus ihrer vollständigen URL.

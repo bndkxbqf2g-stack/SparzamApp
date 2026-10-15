@@ -100,4 +100,64 @@ void main() {
     );
   });
 
+  testWidgets('zeigt gleichnamige Filialen als getrennte Prospektkarten', (
+    tester,
+  ) async {
+    final issues = [
+      ProspectIssue(
+        storeName: 'Lidl',
+        title: 'Filiale Zellingen',
+        pages: const [
+          ProspectPage(
+            number: 1,
+            imageUrl: 'https://example.test/lidl-zellingen.jpg',
+          ),
+        ],
+        thumbnailUrl: 'https://example.test/lidl-zellingen.jpg',
+        branchId: 'LIDL-ZELLINGEN',
+        location: 'Zellingen',
+        validFrom: DateTime(2026, 10, 12),
+        validUntil: DateTime(2026, 10, 17),
+      ),
+      ProspectIssue(
+        storeName: 'Lidl',
+        title: 'Filiale Würzburg',
+        pages: const [
+          ProspectPage(
+            number: 1,
+            imageUrl: 'https://example.test/lidl-wuerzburg.jpg',
+          ),
+        ],
+        thumbnailUrl: 'https://example.test/lidl-wuerzburg.jpg',
+        branchId: 'lidl-wuerzburg',
+        location: 'Würzburg',
+        validFrom: DateTime(2026, 10, 12),
+        validUntil: DateTime(2026, 10, 17),
+      ),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: OffersScreen(
+          catalogProducts: const <Product>[],
+          prospectIssues: issues,
+          now: DateTime(2026, 10, 13),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(
+      find.byKey(const ValueKey('offer-cover-open-grid-Lidl#lidl-zellingen')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('offer-cover-open-grid-Lidl#lidl-wuerzburg')),
+      findsOneWidget,
+    );
+    // Each branch is rendered in both the favorite rail and the grid.
+    expect(find.text('Zellingen'), findsNWidgets(2));
+    expect(find.text('Würzburg'), findsNWidgets(2));
+  });
+
 }

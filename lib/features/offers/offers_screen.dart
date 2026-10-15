@@ -13,6 +13,7 @@ import 'offer_filter.dart';
 import '../../services/prospect_feed_service.dart';
 import '../prospects/prospect_feed_status.dart';
 import '../prospects/prospect_cover_section.dart';
+import '../prospects/prospect_issue_identity.dart';
 import '../prospects/prospects_screen.dart';
 
 class OffersScreen extends StatefulWidget {
@@ -229,10 +230,11 @@ List<ProspectIssue> _currentProspectIssues(
         )) {
       continue;
     }
-    final previous = byStore[issue.storeName];
+    final key = prospectIssueKey(issue);
+    final previous = byStore[key];
     if (previous == null ||
         _prospectIssueScore(issue) > _prospectIssueScore(previous)) {
-      byStore[issue.storeName] = issue;
+      byStore[key] = issue;
     }
   }
   return byStore.values.toList(growable: false);

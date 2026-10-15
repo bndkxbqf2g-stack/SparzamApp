@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 
 import '../../services/prospect_favorites_store.dart';
 import '../../services/prospect_feed_service.dart';
+import 'prospect_issue_identity.dart';
 
 /// A Bring-style overview of validated prospect covers.
 ///
@@ -148,7 +149,7 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
                 final issue = favorites[index];
                 return ProspectCoverCard(
                   key: ValueKey(
-                    'offer-cover-favorite-${issue.storeName}',
+                    'offer-cover-favorite-${prospectIssueKey(issue)}',
                   ),
                   issue: issue,
                   compact: false,
@@ -197,7 +198,7 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
                     final issue = issues[index];
                     return ProspectCoverCard(
                       key: ValueKey(
-                        'offer-cover-grid-${issue.storeName}',
+                        'offer-cover-grid-${prospectIssueKey(issue)}',
                       ),
                       issue: issue,
                       compact: true,
@@ -263,7 +264,7 @@ class ProspectCoverCard extends StatelessWidget {
         ? _coverPlaceholder()
         : ProspectAdaptiveImage(
             key: ValueKey(
-              'offer-cover-image-$scope-${issue.storeName}',
+              'offer-cover-image-$scope-${prospectIssueKey(issue)}',
             ),
             url: previewUrl,
             // Use one bounded decode size for favorites and the grid so the
@@ -285,7 +286,7 @@ class ProspectCoverCard extends StatelessWidget {
             children: [
               InkWell(
                 key: ValueKey(
-                  'offer-cover-open-$scope-${issue.storeName}',
+                  'offer-cover-open-$scope-${prospectIssueKey(issue)}',
                 ),
                 onTap: onOpen,
                 child: Column(
@@ -356,7 +357,7 @@ class ProspectCoverCard extends StatelessWidget {
                 right: compact ? 8 : 10,
                 child: IconButton(
                   key: ValueKey(
-                    'offer-cover-favorite-$scope-${issue.storeName}',
+                    'offer-cover-favorite-$scope-${prospectIssueKey(issue)}',
                   ),
                   tooltip: isFavorite
                       ? '${issue.storeName} aus Favoriten entfernen'
@@ -546,9 +547,9 @@ String? _validity(ProspectIssue issue) {
 List<ProspectIssue> _uniqueIssues(Iterable<ProspectIssue> issues) {
   final byStore = <String, ProspectIssue>{};
   for (final issue in issues) {
-    final previous = byStore[issue.storeName];
+    final previous = byStore[prospectIssueKey(issue)];
     if (previous == null || _issueScore(issue) > _issueScore(previous)) {
-      byStore[issue.storeName] = issue;
+      byStore[prospectIssueKey(issue)] = issue;
     }
   }
   return byStore.values.toList(growable: false);
