@@ -839,3 +839,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Reguläre Prospektbeobachtungen ohne exakte Filial-ID bleiben im lokalen Verlauf sichtbar, werden aber nicht mehr als `MarketPrice` für Route und Preisvergleich projiziert.
 - [x] Die Projektion akzeptiert branchlose Beobachtungen aus manuellen, Bon- und sonstigen nicht-prospektbezogenen Quellen weiterhin nach den bestehenden Regeln.
 - [x] Eine Regression schützt die Grenze zwischen historischer Evidenz und route-fähigem aktuellem Preis.
+
+## Update 15.10.2026 – Formatierte Aktionspreise sicher normalisieren
+
+- [x] Aktionspreise aus öffentlichen Feeds akzeptieren neben JSON-Zahlen auch ausdrücklich als EUR/€ gekennzeichnete deutsche Anzeigewerte.
+- [x] Benannte verschachtelte Preisfelder (`amount`, `value`, `formattedPrice` usw.) werden begrenzt gelesen; freie Texte und nackte Zahlenstrings bleiben ungültig.
+- [x] Eine Parserregression schützt den Weg vom Feed über den regulären Normalpreis bis zur lokalen Speicherung.
