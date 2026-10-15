@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:sparzamapp/features/catalog/prices_hub_screen.dart';
+import 'package:sparzamapp/features/catalog/market_price_freshness.dart';
 import 'package:sparzamapp/features/price_gaps/price_gap_priority.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
@@ -277,4 +278,85 @@ void main() {
     expect(resolved.single.missingMarketCount, 2);
     expect(resolved.single.marketCount, 2);
   });
+  test('separates current regular prospect prices from offer evidence', () {
+    final quality = calculatePriceDataQuality(
+      [
+        MarketPrice(
+          productId: 'milk',
+          storeName: 'Lidl',
+          price: 1.29,
+          updatedAt: DateTime(2026, 10, 13),
+          source: MarketPriceSource.prospect,
+          kind: PriceObservationKind.regular,
+        ),
+        MarketPrice(
+          productId: 'coffee',
+          storeName: 'Lidl',
+          price: 3.99,
+          updatedAt: DateTime(2026, 10, 13),
+          source: MarketPriceSource.prospect,
+          kind: PriceObservationKind.offer,
+        ),
+        MarketPrice(
+          productId: 'bread',
+          storeName: 'ALDI Süd',
+          price: 1.49,
+          updatedAt: DateTime(2026, 8, 1),
+          source: MarketPriceSource.prospect,
+          kind: PriceObservationKind.regular,
+        ),
+      ],
+      openPricesMaxAgeDays: 60,
+      now: DateTime(2026, 10, 13),
+    );
+
+    expect(quality.total, 3);
+    expect(quality.current, 2);
+    expect(quality.notRouteReady, 1);
+    expect(quality.currentProspectRegular, 1);
+    expect(quality.prospectOfferEvidence, 1);
+    expect(quality.currentByStore['Lidl'], 2);
+  });
+
+  testWidgets('zeigt Preisquellen und veraltete Belege im Preise-Reiter', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PricesHubScreen(
+            onOpenCatalog: () {},
+            onOpenSettings: () {},
+            summary: 'Prospektpreise',
+            marketPrices: [
+              MarketPrice(
+                productId: 'milk',
+                storeName: 'Lidl',
+                price: 1.29,
+                updatedAt: DateTime(2026, 10, 13),
+                source: MarketPriceSource.prospect,
+                kind: PriceObservationKind.regular,
+              ),
+              MarketPrice(
+                productId: 'coffee',
+                storeName: 'ALDI Süd',
+                price: 3.99,
+                updatedAt: DateTime(2026, 8, 1),
+                source: MarketPriceSource.prospect,
+                kind: PriceObservationKind.regular,
+              ),
+            ],
+            now: DateTime(2026, 10, 13),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.byKey(const ValueKey('price-data-quality-card')), findsOneWidget);
+    expect(find.text('1 von 2 Belegen sind aktuell und für die Routenplanung zugelassen.'), findsOneWidget);
+    expect(find.text('Prospekt-Normalpreise 1'), findsOneWidget);
+    expect(find.text('1 veraltet oder unvollständig'), findsOneWidget);
+    expect(find.textContaining('Lidl: 1'), findsOneWidget);
+  });
+
 }
