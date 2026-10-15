@@ -258,8 +258,6 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
     );
   }
 
-  bool _isFavorite(ProspectIssue issue) =>
-      (_favoriteStores ?? const <String>{}).contains(issue.storeName);
 }
 
 class ProspectCoverCard extends StatelessWidget {
