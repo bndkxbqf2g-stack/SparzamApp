@@ -1,3 +1,10 @@
+## Update 15.10.2026 – Manueller Prospekt-Refresh repariert lokale Preisspeicherung
+
+- Der manuelle Aktualisieren-Button darf einen unveränderten, validierten Feed erneut durch den regulären Preis-Persistenzpfad führen.
+- Automatische und zeitgesteuerte Refreshes bleiben über den Feed-Fingerprint dedupliziert.
+- So können reguläre, durchgestrichene Prospektpreise nach einem temporären Speicherfehler erneut lokal bestätigt werden, ohne Angebotspreise umzudeuten.
+- Eine Fingerprint-Regression prüft den erzwungenen Reparaturlauf.
+
 ## Update 15.10.2026 – Prospekt-Adapterherkunft bis zur Preisbeobachtung
 
 - Der Quellenknoten `mode` bzw. eine explizite Adapterkennung wird bei fehlender Zeilenkennung kontrolliert auf das Prospektangebot vererbt.

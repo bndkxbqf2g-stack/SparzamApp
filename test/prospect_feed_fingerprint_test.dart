@@ -47,6 +47,31 @@ void main() {
     expect(after, isNot(before));
   });
 
+  test('manual refresh can force an unchanged feed to be processed', () {
+    expect(
+      shouldProcessProspectFeed(
+        previousFingerprint: 'same',
+        currentFingerprint: 'same',
+      ),
+      isFalse,
+    );
+    expect(
+      shouldProcessProspectFeed(
+        previousFingerprint: 'same',
+        currentFingerprint: 'same',
+        force: true,
+      ),
+      isTrue,
+    );
+    expect(
+      shouldProcessProspectFeed(
+        previousFingerprint: null,
+        currentFingerprint: 'same',
+      ),
+      isTrue,
+    );
+  });
+
   test('reprocesses when page completeness diagnostics change', () {
     final first = ProspectFeedLoadResult(
       records: const [],
