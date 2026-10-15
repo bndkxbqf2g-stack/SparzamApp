@@ -1735,7 +1735,11 @@ class ProspectViewerScreen extends StatelessWidget {
     }
   }
 
-  Widget _buildPageCard(BuildContext context, ProspectPage page) {
+  Widget _buildPageCard(
+    BuildContext context,
+    ProspectPage page, {
+    required bool allowHtmlFallback,
+  }) {
     final pageUrl = _officialProspectUri(page.imageUrl)?.toString() ?? '';
     final zoomUri = _officialProspectUri(page.zoomUrl);
     return Card(
@@ -1748,7 +1752,11 @@ class ProspectViewerScreen extends StatelessWidget {
             height: 240,
             child: pageUrl.isEmpty
                 ? const Center(child: Icon(Icons.broken_image_outlined, size: 48))
-                : _ProspectPageImage(url: pageUrl, pageNumber: page.number),
+                : _ProspectPageImage(
+                    url: pageUrl,
+                    pageNumber: page.number,
+                    allowHtmlFallback: allowHtmlFallback,
+                  ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
@@ -1905,8 +1913,11 @@ class ProspectViewerScreen extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
               sliver: SliverList.builder(
                 itemCount: pages.length,
-                itemBuilder: (context, index) =>
-                    _buildPageCard(context, pages[index]),
+                itemBuilder: (context, index) => _buildPageCard(
+                  context,
+                  pages[index],
+                  allowHtmlFallback: prospectPageHtmlFallbackAllowed(index),
+                ),
                 addAutomaticKeepAlives: false,
                 addRepaintBoundaries: true,
               ),
@@ -1984,14 +1995,25 @@ class ProspectViewerScreen extends StatelessWidget {
   }
 }
 
+const prospectPageHtmlFallbackBudget = 2;
+
+/// Only the first two pages may create an HTML platform view after a Canvas
+/// decode failure. Long prospect viewers keep later pages on the cheap Canvas
+/// path so a CDN/CORS problem cannot create dozens of platform views while
+/// the user scrolls.
+bool prospectPageHtmlFallbackAllowed(int pageIndex) =>
+    pageIndex >= 0 && pageIndex < prospectPageHtmlFallbackBudget;
+
 class _ProspectPageImage extends StatefulWidget {
   const _ProspectPageImage({
     required this.url,
     required this.pageNumber,
+    required this.allowHtmlFallback,
   });
 
   final String url;
   final int pageNumber;
+  final bool allowHtmlFallback;
 
   @override
   State<_ProspectPageImage> createState() => _ProspectPageImageState();
@@ -2003,7 +2025,8 @@ class _ProspectPageImageState extends State<_ProspectPageImage> {
   @override
   void didUpdateWidget(covariant _ProspectPageImage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.url != widget.url) {
+    if (oldWidget.url != widget.url ||
+        oldWidget.allowHtmlFallback != widget.allowHtmlFallback) {
       _useHtmlFallback = false;
     }
   }
@@ -2038,6 +2061,11 @@ class _ProspectPageImageState extends State<_ProspectPageImage> {
         );
       },
       errorBuilder: (context, error, stackTrace) {
+        if (!widget.allowHtmlFallback) {
+          return const Center(
+            child: Icon(Icons.broken_image_outlined, size: 48),
+          );
+        }
         if (!_useHtmlFallback) {
           final failedUrl = widget.url;
           WidgetsBinding.instance.addPostFrameCallback((_) {

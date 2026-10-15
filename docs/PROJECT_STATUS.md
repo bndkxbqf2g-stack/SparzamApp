@@ -1,3 +1,7 @@
+## Update 15.10.2026 – Seitenviewer begrenzt Plattform-Fallbacks
+
+Der lange Prospektseitenviewer begrenzt automatische HTML-Plattform-Fallbacks jetzt auf die ersten zwei Seiten. Weitere Seiten bleiben im Canvas-Pfad und zeigen bei einem CDN/CORS-Fehler einen sicheren Platzhalter; der vorhandene Großansicht-Link bleibt als expliziter Ausweichpfad erhalten. Damit bleibt der Scrollpfad bei großen Prospekten begrenzt.
+
 ## Update 15.10.2026 – Aktuellste reguläre Prospektquelle pro Filiale
 
 Die aktuelle Preisprojektion behandelt überlappende, neu eingelesene Prospektzeiträume derselben Produkt-/Filialkombination jetzt deterministisch: Der neueste belegte reguläre Anspruch ersetzt nur die ältere aktuelle Projektion. Append-only Preisbeobachtungen und ihre Nachweise bleiben erhalten; unterschiedliche Branch-IDs werden getrennt projiziert.

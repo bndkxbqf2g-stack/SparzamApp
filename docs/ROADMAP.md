@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Seitenviewer begrenzt Plattform-Fallbacks
+
+- [x] Nur die ersten zwei sichtbaren Prospektseiten dürfen nach einem Canvas-Fehler auf einen HTML-Plattform-View wechseln.
+- [x] Spätere Seiten bleiben ohne Plattform-View im begrenzten Canvas-Pfad; ein CDN/CORS-Fehler erzeugt beim Scrollen keine unbeschränkte View-Kaskade.
+- [x] Eine Regression schützt das feste Fallback-Budget.
+
 ## Update 15.10.2026 – Aktuellste reguläre Prospektquelle pro Filiale
 
 - [x] Überlappende Prospektzeiträume derselben Produkt-/Filialkombination werden bei der Routenprojektion auf den neuesten belegten regulären Anspruch reduziert.
