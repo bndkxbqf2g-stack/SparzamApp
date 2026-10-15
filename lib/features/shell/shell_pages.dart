@@ -187,6 +187,12 @@ List<Widget> buildShellPages({
     enabledStoreNames: mobility.enabledStoreNames,
     openPricesMaxAgeDays: openPricesMaxAgeDays,
     prospectPriceHistory: prospectPriceHistory,
+    prospectFeedGeneratedAt: prospectFeedGeneratedAt,
+    prospectFeedFromCache: prospectFeedFromCache,
+    prospectRegularPriceCount: prospectRegularPriceCount,
+    prospectRegularPriceCountsByStore: prospectRegularPriceCountsByStore,
+    prospectRegularPricePersistenceStatus:
+        prospectRegularPricePersistenceStatus,
     onOpenList: onOpenList,
     onOpenRoute: onOpenRoute,
     onResolvePriceGap: onResolvePriceGap,

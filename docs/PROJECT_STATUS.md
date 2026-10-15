@@ -1,3 +1,12 @@
+## Update 15.10.2026 – Preise-Reiter zeigt automatische Normalpreisspeicherung
+
+Der Preise-Reiter zeigt jetzt zusätzlich zum aktuellen Belegbestand den Status
+des automatischen Prospekt-Preislernens: Feed-Zeitpunkt, Cache-Herkunft,
+bestätigte Speicherung und die Abdeckung je Markt/Filiale. Die Anzeige zählt
+ausschließlich ausdrücklich ausgewiesene reguläre Normalpreise; Aktionspreise
+bleiben getrennt. Die Darstellung ändert weder die bestehende
+PriceObservation-/MarketPrice-Projektion noch die Routenentscheidung.
+
 ## Update 15.10.2026 – KaufDA-UVP bleibt aus der Preisbasis
 
 - Der optionale KaufDA-Adapter erkennt neben dem Boolean-Feld auch explizite UVP-/Herstellerpreis-Kennzeichnungen.

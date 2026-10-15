@@ -6,6 +6,7 @@ import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/offer.dart';
 import '../offers/prospect_price_statistics.dart';
+import '../prospects/prospect_feed_status.dart';
 import 'market_price_freshness.dart';
 import '../price_gaps/price_gap_priority.dart';
 import '../shopping_list/shopping_price_quotes.dart';
@@ -22,6 +23,12 @@ class PricesHubScreen extends StatefulWidget {
     this.enabledStoreNames = const <String>[],
     this.openPricesMaxAgeDays = 60,
     this.prospectPriceHistory = const <String, ProspectPriceHistorySummary>{},
+    this.prospectFeedGeneratedAt,
+    this.prospectFeedFromCache = false,
+    this.prospectRegularPriceCount = 0,
+    this.prospectRegularPriceCountsByStore = const <String, int>{},
+    this.prospectRegularPricePersistenceStatus =
+        ProspectRegularPricePersistenceStatus.standalone,
     this.onOpenList,
     this.onOpenRoute,
     this.onResolvePriceGap,
@@ -37,6 +44,12 @@ class PricesHubScreen extends StatefulWidget {
   final List<String> enabledStoreNames;
   final int openPricesMaxAgeDays;
   final Map<String, ProspectPriceHistorySummary> prospectPriceHistory;
+  final DateTime? prospectFeedGeneratedAt;
+  final bool prospectFeedFromCache;
+  final int prospectRegularPriceCount;
+  final Map<String, int> prospectRegularPriceCountsByStore;
+  final ProspectRegularPricePersistenceStatus
+      prospectRegularPricePersistenceStatus;
   final VoidCallback? onOpenList;
   final VoidCallback? onOpenRoute;
   final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
@@ -57,6 +70,12 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
   List<String>? _signatureEnabledStoresInput;
   int? _signatureMaxAgeDays;
   DateTime? _signatureDay;
+  DateTime? _signatureProspectFeedGeneratedAt;
+  bool? _signatureProspectFeedFromCache;
+  int? _signatureProspectRegularPriceCount;
+  Map<String, int>? _signatureProspectRegularPriceCountsByStore;
+  ProspectRegularPricePersistenceStatus?
+      _signatureProspectRegularPricePersistenceStatus;
 
   int _snapshotSignature() {
     final reference = widget.now ?? DateTime.now();
@@ -68,7 +87,17 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
         identical(_signatureHistoryInput, widget.prospectPriceHistory) &&
         identical(_signatureEnabledStoresInput, widget.enabledStoreNames) &&
         _signatureMaxAgeDays == widget.openPricesMaxAgeDays &&
-        _signatureDay == day) {
+        _signatureDay == day &&
+        _signatureProspectFeedGeneratedAt == widget.prospectFeedGeneratedAt &&
+        _signatureProspectFeedFromCache == widget.prospectFeedFromCache &&
+        _signatureProspectRegularPriceCount ==
+            widget.prospectRegularPriceCount &&
+        identical(
+          _signatureProspectRegularPriceCountsByStore,
+          widget.prospectRegularPriceCountsByStore,
+        ) &&
+        _signatureProspectRegularPricePersistenceStatus ==
+            widget.prospectRegularPricePersistenceStatus) {
       return _snapshotSignatureValue!;
     }
 
@@ -121,6 +150,17 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
     }
     add(widget.enabledStoreNames.join('|'));
     add(widget.openPricesMaxAgeDays);
+    add(widget.prospectFeedGeneratedAt?.millisecondsSinceEpoch);
+    add(widget.prospectFeedFromCache);
+    add(widget.prospectRegularPriceCount);
+    final persistedByStore = widget.prospectRegularPriceCountsByStore.entries
+        .toList()
+      ..sort((a, b) => a.key.compareTo(b.key));
+    for (final entry in persistedByStore) {
+      add(entry.key);
+      add(entry.value);
+    }
+    add(widget.prospectRegularPricePersistenceStatus.name);
     add(day.millisecondsSinceEpoch);
 
     _signatureShoppingListInput = widget.shoppingList;
@@ -130,6 +170,13 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
     _signatureEnabledStoresInput = widget.enabledStoreNames;
     _signatureMaxAgeDays = widget.openPricesMaxAgeDays;
     _signatureDay = day;
+    _signatureProspectFeedGeneratedAt = widget.prospectFeedGeneratedAt;
+    _signatureProspectFeedFromCache = widget.prospectFeedFromCache;
+    _signatureProspectRegularPriceCount = widget.prospectRegularPriceCount;
+    _signatureProspectRegularPriceCountsByStore =
+        widget.prospectRegularPriceCountsByStore;
+    _signatureProspectRegularPricePersistenceStatus =
+        widget.prospectRegularPricePersistenceStatus;
     _snapshotSignatureValue = hash;
     return hash;
   }
@@ -205,6 +252,12 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
       0,
       (sum, row) => sum + (row.quote?.unitPrice ?? 0) * row.item.quantity,
     );
+    final hasProspectRegularPriceStatus =
+        screen.prospectFeedGeneratedAt != null ||
+        screen.prospectFeedFromCache ||
+        screen.prospectRegularPriceCount > 0 ||
+        screen.prospectRegularPricePersistenceStatus !=
+            ProspectRegularPricePersistenceStatus.standalone;
 
     return ListView(
       scrollCacheExtent: ScrollCacheExtent.pixels(0),
@@ -303,6 +356,16 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
           const SizedBox(height: 16),
           _PriceDataQualityCard(quality: quality),
         ],
+        if (hasProspectRegularPriceStatus) ...[
+          const SizedBox(height: 16),
+          _ProspectRegularPriceDatabaseCard(
+            generatedAt: screen.prospectFeedGeneratedAt,
+            fromCache: screen.prospectFeedFromCache,
+            count: screen.prospectRegularPriceCount,
+            countsByStore: screen.prospectRegularPriceCountsByStore,
+            status: screen.prospectRegularPricePersistenceStatus,
+          ),
+        ],
         const SizedBox(height: 22),
         Card(
           child: ListTile(
@@ -332,6 +395,109 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
     );
   }
 }
+
+class _ProspectRegularPriceDatabaseCard extends StatelessWidget {
+  const _ProspectRegularPriceDatabaseCard({
+    required this.generatedAt,
+    required this.fromCache,
+    required this.count,
+    required this.countsByStore,
+    required this.status,
+  });
+
+  final DateTime? generatedAt;
+  final bool fromCache;
+  final int count;
+  final Map<String, int> countsByStore;
+  final ProspectRegularPricePersistenceStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final stores = countsByStore.entries.toList()
+      ..sort((a, b) {
+        final byCount = b.value.compareTo(a.value);
+        return byCount != 0 ? byCount : a.key.compareTo(b.key);
+      });
+    final countLabel = count == 1
+        ? '1 regulärer Normalpreis'
+        : '$count reguläre Normalpreise';
+    final statusLabel = switch (status) {
+      ProspectRegularPricePersistenceStatus.standalone =>
+        count == 0
+            ? 'Lokale Speicherung nicht bestätigt.'
+            : '$countLabel im Feed erkannt; lokale Speicherung nicht bestätigt.',
+      ProspectRegularPricePersistenceStatus.pending =>
+        count == 0
+            ? 'Speicherung läuft.'
+            : 'Speicherung läuft; $countLabel erkannt.',
+      ProspectRegularPricePersistenceStatus.succeeded =>
+        '$countLabel als Preisbasis gespeichert.',
+      ProspectRegularPricePersistenceStatus.failed =>
+        'Speicherung fehlgeschlagen oder unbekannt; keine Bestätigung für '
+            'reguläre Normalpreise.',
+    };
+    final feedLabel = generatedAt == null
+        ? 'Feed-Stand unbekannt.'
+        : 'Feed-Stand ${formatProspectFeedTimestamp(generatedAt)}'
+            '${fromCache ? ' · lokaler Cache' : ''}.';
+
+    return Card(
+      key: const ValueKey('prospect-regular-price-database-card'),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Automatische Prospekt-Normalpreise',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              statusLabel,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Nur ausdrücklich ausgewiesene reguläre Normalpreise werden '
+              'gespeichert. Aktionspreise bleiben getrennt.',
+            ),
+            const SizedBox(height: 6),
+            Text(feedLabel),
+            if (stores.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                'Gespeichert je Markt/Filiale',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                stores
+                    .take(6)
+                    .map((entry) => '${entry.key}: ${entry.value}')
+                    .join(' · '),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ] else if (status ==
+                ProspectRegularPricePersistenceStatus.succeeded) ...[
+              const SizedBox(height: 8),
+              const Text('0 gespeichert: Der aktuelle Feed enthält keinen '
+                  'belegten regulären Normalpreis.'),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _PriceDataQualityCard extends StatelessWidget {
   const _PriceDataQualityCard({required this.quality});
 
