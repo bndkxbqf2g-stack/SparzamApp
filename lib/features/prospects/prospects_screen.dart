@@ -553,19 +553,21 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final issueByStore = <String, ProspectIssue>{};
+    final issuesByStore = <String, List<ProspectIssue>>{};
     for (final issue in prospects) {
-      issueByStore.putIfAbsent(issue.storeName, () => issue);
+      issuesByStore.putIfAbsent(issue.storeName, () => []).add(issue);
     }
 
     // A store can have multiple branch-specific records in the shared feed.
-    // Once the visible prospect asserts a branch, keep search results on that
-    // exact branch; otherwise prices and images from a neighbouring store can
-    // leak into the selected prospect.
+    // Match against every issue for that store so one branch cannot hide
+    // another branch with the same visible retailer name.
     final matchingRecords = records
         .where((record) {
-          final issue = issueByStore[record.storeName];
-          return issue == null || _prospectRecordBelongsToIssue(record, issue);
+          final candidates = issuesByStore[record.storeName];
+          if (candidates == null || candidates.isEmpty) return true;
+          return candidates.any(
+            (issue) => _prospectRecordBelongsToIssue(record, issue),
+          );
         })
         .toList(growable: false);
     if (matchingRecords.isEmpty) {
@@ -587,7 +589,10 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
 
     final byStore = <String, List<OfferImportRecord>>{};
     for (final record in matchingRecords) {
-      byStore.putIfAbsent(record.storeName, () => []).add(record);
+      // Use the exact store/branch key for grouping. The row still displays
+      // the human-readable retailer name, while two same-name branches keep
+      // independent locations and product lists.
+      byStore.putIfAbsent(prospectRecordKey(record), () => []).add(record);
     }
 
     // Keep product identity resolution out of repeated sliver child builds. The
@@ -609,9 +614,14 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
       final location = entry.value.every(
                 (record) => record.location?.trim().isEmpty ?? true,
               )
-              ? issueByStore[entry.key]?.location?.trim()
+              ? _prospectSearchLocation(entry.value, issuesByStore)
               : null;
-      rows.add(_ProspectSearchRow.store(entry.key, location: location));
+      rows.add(
+        _ProspectSearchRow.store(
+          entry.value.first.storeName,
+          location: location,
+        ),
+      );
       rows.addAll(
         entry.value.map((record) => _ProspectSearchRow.offer(record)),
       );
@@ -699,6 +709,35 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
       onAdd: !canAdd ? null : () => onAddProduct!(product ?? manualProduct!),
     );
   }
+}
+
+ProspectIssue? _prospectSearchIssueForRecord(
+  OfferImportRecord record,
+  Map<String, List<ProspectIssue>> issuesByStore,
+) {
+  final candidates = issuesByStore[record.storeName];
+  if (candidates == null || candidates.isEmpty) return null;
+  final recordKey = prospectRecordKey(record);
+  for (final issue in candidates) {
+    if (prospectIssueKey(issue) == recordKey) return issue;
+  }
+  final matching = candidates
+      .where((issue) => _prospectRecordBelongsToIssue(record, issue))
+      .toList(growable: false);
+  return matching.length == 1 ? matching.single : null;
+}
+
+String? _prospectSearchLocation(
+  List<OfferImportRecord> records,
+  Map<String, List<ProspectIssue>> issuesByStore,
+) {
+  final issues = <ProspectIssue>{};
+  for (final record in records) {
+    final issue = _prospectSearchIssueForRecord(record, issuesByStore);
+    if (issue != null) issues.add(issue);
+  }
+  if (issues.length != 1) return null;
+  return issues.single.location?.trim();
 }
 
 enum _ProspectSearchRowKind { heading, description, store, offer }
