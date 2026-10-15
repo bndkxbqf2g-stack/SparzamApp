@@ -547,7 +547,7 @@ String? _validity(ProspectIssue issue) {
 List<ProspectIssue> _uniqueIssues(Iterable<ProspectIssue> issues) {
   final byStore = <String, ProspectIssue>{};
   for (final issue in issues) {
-    final previous = byStore[issue.storeName];
+    final previous = byStore[prospectIssueKey(issue)];
     if (previous == null || _issueScore(issue) > _issueScore(previous)) {
       byStore[prospectIssueKey(issue)] = issue;
     }
