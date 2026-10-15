@@ -47,12 +47,12 @@ void main() {
   );
 
   ShoppingListScreen screen(List<Product> catalog) => ShoppingListScreen(
-        items: const [ListItem(product: request)],
+        items: [ListItem(product: request)],
         onAdd: (_) {},
-        onChangeQuantity: (_, __) {},
+        onChangeQuantity: (_, _) {},
         preferredProductByGroup: const {},
         recentPurchases: const [],
-        onPurchased: (_, __) async {},
+        onPurchased: (_, _) async {},
         onClearPurchased: (_) {},
         shoppingListStore: ShoppingListStore(),
         onOpenScanner: () {},
