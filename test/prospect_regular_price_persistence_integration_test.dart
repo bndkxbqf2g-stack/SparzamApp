@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/features/offers/prospect_regular_price_persistence.dart';
 import 'package:sparzamapp/models/price_observation.dart';
@@ -6,6 +8,12 @@ import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/services/price_observation_store.dart';
 
 void main() {
+  setUp(
+    () => SharedPreferencesAsyncPlatform.instance =
+        InMemorySharedPreferencesAsync.empty(),
+  );
+  tearDown(() => SharedPreferencesAsyncPlatform.instance = null);
+
   test('Prospektrefresh speichert nur den regulären Normalpreis lokal', () async {
     final now = DateTime(2026, 10, 15, 12);
     const coffee = Product(
