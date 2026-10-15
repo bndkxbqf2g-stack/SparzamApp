@@ -1541,12 +1541,12 @@ class _BringSectionTitle extends StatelessWidget {
 String _prospectCardSummary(ProspectIssue issue) {
   final String summary;
   if (issue.sourceStatus == 'current_fallback') {
-    summary = '\${issue.recordCount} Angebote aus dem letzten geprüften '
+    summary = '${issue.recordCount} Angebote aus dem letzten geprüften '
         'Prospektstand. Automatische Aktualisierung aktuell nicht verfügbar.';
   } else if (issue.sourceStatus == 'regional_only') {
     summary = 'Nur regional erkannt · Filiale noch nicht bestätigt.';
   } else if (issue.recordCount > 0) {
-    summary = '\${issue.recordCount} Angebote geladen';
+    summary = '${issue.recordCount} Angebote geladen';
   } else {
     summary = _sourceStatusLabel(issue);
   }
@@ -1560,7 +1560,7 @@ String _prospectCardSummary(ProspectIssue issue) {
     if (pageLabel != null) pageLabel,
   ];
   if (evidence.isEmpty) return summary;
-  return '\$summary · \${evidence.join(' · ')}';
+  return '\$summary · ${evidence.join(' · ')}';
 }
 
 bool _hasPageCompletenessMetadata(ProspectIssue issue) =>
