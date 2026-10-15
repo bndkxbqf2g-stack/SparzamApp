@@ -1,3 +1,10 @@
+## Update 15.10.2026 – Prospektabdeckung exakt je Filiale
+
+- Prospektabdeckung gruppiert Angebote, Seiten und Herkunft jetzt über die bestehende Store-plus-Branch-Identität; gleichnamige Filialen werden getrennt angezeigt.
+- Filial-ID, Ort und Adresse bleiben im Coverage-Modell sichtbar. Der alte Store-Platzhalter wird ausgeblendet, sobald exakte Filialdaten vorhanden sind.
+- Persistierte reguläre Preise verwenden denselben Filialschlüssel. Store-only Altstände bleiben nur bei höchstens einer erkannten Filiale verwendbar; bei mehreren Filialen bleibt die Zuordnung unbekannt.
+- Regressionstests decken getrennte gleichnamige Filialen, Legacy-Zähler und den einzelnen Filial-Fallback ab.
+
 ## Update 15.10.2026 – Cover-Fallbacks beim Scrollen begrenzt
 
 - Nach einem Canvas-/CDN-Fehler dürfen höchstens vier Cover gleichzeitig einen teuren HTML-Plattformfallback reservieren.

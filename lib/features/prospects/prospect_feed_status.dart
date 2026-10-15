@@ -4,6 +4,7 @@ import '../../models/product.dart';
 import '../offers/offer_import.dart';
 import '../offers/prospect_price_learning.dart';
 import '../offers/offer_filter.dart';
+import 'prospect_issue_identity.dart';
 import '../../services/prospect_feed_service.dart';
 
 /// Describes whether the regular prices shown for the current prospect feed
@@ -165,6 +166,9 @@ String formatProspectFeedTimestamp(DateTime? value) {
 class ProspectCoverage {
   const ProspectCoverage({
     required this.storeName,
+    this.branchId,
+    this.location,
+    this.address,
     required this.sourceStatus,
     required this.structuredOfferCount,
     required this.regionalOnlyCount,
@@ -185,6 +189,9 @@ class ProspectCoverage {
   });
 
   final String storeName;
+  final String? branchId;
+  final String? location;
+  final String? address;
   final String sourceStatus;
   final int structuredOfferCount;
   final int regionalOnlyCount;
@@ -242,20 +249,49 @@ List<ProspectCoverage> calculateProspectCoverage({
             .where((issue) => _isCurrentProspectIssue(issue, now: now))
             .toList(growable: false);
 
-  final issuesByStore = <String, ProspectIssue>{};
+  final issuesByKey = <String, ProspectIssue>{};
+  final branchKeysByStore = <String, Set<String>>{};
   for (final issue in currentIssues) {
-    issuesByStore.putIfAbsent(issue.storeName, () => issue);
+    final key = prospectIssueKey(issue);
+    issuesByKey.putIfAbsent(key, () => issue);
+    if (issue.branchId?.trim().isNotEmpty == true) {
+      branchKeysByStore
+          .putIfAbsent(issue.storeName, () => <String>{})
+          .add(key);
+    }
   }
 
-  final recordsByStore = <String, List<OfferImportRecord>>{};
+  final recordsByKey = <String, List<OfferImportRecord>>{};
   for (final record in currentRecords) {
-    recordsByStore.putIfAbsent(record.storeName, () => []).add(record);
+    final key = prospectRecordKey(record);
+    recordsByKey.putIfAbsent(key, () => []).add(record);
+    if (record.branchId?.trim().isNotEmpty == true) {
+      branchKeysByStore
+          .putIfAbsent(record.storeName, () => <String>{})
+          .add(key);
+    }
   }
 
+  // A filialloser Legacy-Datensatz remains a safe fallback when exactly
+  // one exact branch exists. With multiple branches it stays separate and
+  // unknown so one location cannot inherit another location's evidence.
+  for (final entry in branchKeysByStore.entries) {
+    if (entry.value.length != 1) continue;
+    final legacyKey = prospectStoreBranchKey(storeName: entry.key);
+    final legacyRecords = recordsByKey.remove(legacyKey);
+    if (legacyRecords == null) continue;
+    final exactKey = entry.value.single;
+    recordsByKey.putIfAbsent(exactKey, () => []).addAll(legacyRecords);
+  }
+
+  // Keep configured store placeholders for markets without a branch assertion,
+  // but suppress the old store-only placeholder when exact branch cards exist.
   final stores = <String>[
-    ...configuredProspectStores,
-    ...issuesByStore.keys,
-    ...recordsByStore.keys,
+    ...configuredProspectStores.where(
+      (store) => !(branchKeysByStore[store]?.isNotEmpty ?? false),
+    ),
+    ...issuesByKey.keys,
+    ...recordsByKey.keys,
   ];
   final uniqueStores = <String>[];
   for (final store in stores) {
@@ -263,14 +299,21 @@ List<ProspectCoverage> calculateProspectCoverage({
   }
 
   return [
-    for (final storeName in uniqueStores)
+    for (final coverageKey in uniqueStores)
       _coverageForStore(
-        storeName,
-        issuesByStore[storeName],
-        recordsByStore[storeName] ?? const <OfferImportRecord>[],
+        issuesByKey[coverageKey]?.storeName ??
+            _coverageStoreName(coverageKey),
+        issuesByKey[coverageKey],
+        recordsByKey[coverageKey] ?? const <OfferImportRecord>[],
         persistedRegularPriceCounts == null
             ? null
-            : (persistedRegularPriceCounts[storeName] ?? 0),
+            : _persistedCoverageCount(
+                persistedRegularPriceCounts,
+                coverageKey,
+                issuesByKey[coverageKey]?.storeName ??
+                    _coverageStoreName(coverageKey),
+                branchKeysByStore,
+              ),
         catalogProducts,
       ),
   ];
@@ -318,8 +361,23 @@ ProspectCoverage _coverageForStore(
               reason == 'package_mismatch' ||
               reason == 'ean_mismatch';
         }).length;
+  final recordBranchId = _firstRecordValue(
+    records,
+    (record) => record.branchId,
+  );
+  final recordLocation = _firstRecordValue(
+    records,
+    (record) => record.location,
+  );
+  final recordAddress = _firstRecordValue(
+    records,
+    (record) => record.address,
+  );
   return ProspectCoverage(
     storeName: storeName,
+    branchId: issue?.branchId ?? recordBranchId,
+    location: issue?.location ?? recordLocation,
+    address: issue?.address ?? recordAddress,
     sourceStatus: issue?.sourceStatus ?? 'unavailable',
     structuredOfferCount: records.length,
     regionalOnlyCount: regionalOnlyCount,
@@ -342,6 +400,44 @@ ProspectCoverage _coverageForStore(
 
 bool hasLearnableProspectRegularPrice(OfferImportRecord record) =>
     isLearnableProspectRegularPrice(record);
+
+String _coverageStoreName(String key) {
+  final separator = key.indexOf('#');
+  return separator < 0 ? key : key.substring(0, separator);
+}
+
+int? _persistedCoverageCount(
+  Map<String, int> counts,
+  String key,
+  String storeName,
+  Map<String, Set<String>> branchKeysByStore,
+) {
+  final exact = counts[key];
+  if (exact != null) return exact;
+  final branchKeys = branchKeysByStore[storeName] ?? const <String>{};
+  // Legacy store-only maps remain safe when this feed has at most one exact
+  // branch for that retailer. A successful persistence run has a complete
+  // count map, so a missing single-branch entry means zero.
+  if (branchKeys.length <= 1) {
+    return counts[storeName] ?? 0;
+  }
+  // A branch-aware map can omit a zero-count branch. Once any exact key is
+  // present, an absent exact key is therefore a confirmed zero. A legacy
+  // store-only map with multiple branches remains unknown.
+  if (branchKeys.any(counts.containsKey)) return 0;
+  return null;
+}
+
+String? _firstRecordValue(
+  Iterable<OfferImportRecord> records,
+  String? Function(OfferImportRecord record) read,
+) {
+  for (final record in records) {
+    final value = read(record)?.trim();
+    if (value != null && value.isNotEmpty) return value;
+  }
+  return null;
+}
 
 int _prospectPageCount(ProspectIssue? issue) {
   if (issue == null) return 0;
@@ -521,13 +617,21 @@ String _coverageDetails(
   final regional = coverage.regionalOnlyCount == 0
       ? ''
       : ' · ${coverage.regionalOnlyCount} nur regional';
+  final branchInfo = [
+    if (coverage.branchId?.trim().isNotEmpty == true)
+      'Filiale ${coverage.branchId!.trim()}',
+    if (coverage.location?.trim().isNotEmpty == true)
+      coverage.location!.trim(),
+  ].join(' · ');
+  final exactStoreInfo = branchInfo.isEmpty ? '' : ' · $branchInfo';
   return '${coverage.structuredOfferCount} strukturierte Angebote'
       '$regional · '
       '$pages$missingPages · $productImages · $categories · '
       '$proofs · '
       '$regularPrices · '
       '$storedRegularPrices · '
-      '$uncertain · $storeSignals';
+      '$uncertain · $storeSignals'
+      '$exactStoreInfo';
 }
 
 String _sourceStatusLabel(String status) {
