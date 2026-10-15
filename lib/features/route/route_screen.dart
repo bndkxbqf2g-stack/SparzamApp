@@ -29,6 +29,22 @@ import 'route_store_card.dart';
 import 'route_summary_card.dart';
 import 'travel_estimator.dart';
 
+/// Stable input signature for route caches.
+///
+/// [ListItem.quantity] is mutable in the shell's quantity callback, so a
+/// list/object identity check alone can retain a plan for the previous amount.
+int routeItemInputSignature(Iterable<ListItem> items) => Object.hashAll(
+      items.map(
+        (item) => Object.hash(
+          item.product.id,
+          item.product.name,
+          item.product.packageAmount,
+          item.product.packageUnit,
+          item.quantity,
+        ),
+      ),
+    );
+
 class RouteScreen extends StatefulWidget {
   const RouteScreen({
     super.key,
@@ -80,6 +96,7 @@ class _RouteScreenState extends State<RouteScreen> {
   MobilitySettings? _optimizerMobility;
   int _optimizerOpenPricesMaxAgeDays = -1;
   int _optimizerDayKey = -1;
+  int? _optimizerItemSignature;
 
   _RouteComputation? _routeComputationCache;
   RouteOptimizer? _routeComputationOptimizer;
@@ -218,9 +235,11 @@ class _RouteScreenState extends State<RouteScreen> {
   RouteOptimizer _optimizerForCurrentInputs() {
     final today = DateTime.now();
     final dayKey = _dayKey(today);
+    final itemSignature = routeItemInputSignature(widget.items);
     final cached = _optimizerCache;
     if (cached != null &&
         _sameListReferences(_optimizerItems, widget.items) &&
+        _optimizerItemSignature == itemSignature &&
         _sameListReferences(_optimizerOffers, widget.offers) &&
         _sameListReferences(_optimizerMarketPrices, widget.marketPrices) &&
         _sameListReferences(_optimizerStoreCatalog, widget.storeCatalog) &&
@@ -251,6 +270,7 @@ class _RouteScreenState extends State<RouteScreen> {
     );
     _optimizerCache = next;
     _optimizerItems = widget.items;
+    _optimizerItemSignature = itemSignature;
     _optimizerOffers = widget.offers;
     _optimizerMarketPrices = widget.marketPrices;
     _optimizerStoreCatalog = widget.storeCatalog;
