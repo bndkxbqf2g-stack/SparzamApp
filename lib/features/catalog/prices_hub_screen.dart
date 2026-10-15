@@ -536,6 +536,10 @@ List<PriceObservation> currentProspectRegularPriceObservations({
         entry.productId?.trim().isNotEmpty != true ||
         entry.identityConfidence < 1 ||
         entry.proofRef?.trim().isNotEmpty != true ||
+        // A current prospect ledger entry must identify one exact branch.
+        // Branchless legacy history stays available for audit but is not
+        // presented as a current filial price.
+        entry.locationId?.trim().isNotEmpty != true ||
         entry.validUntil == null ||
         _priceLedgerDay(entry.observedAt).isAfter(day) ||
         (entry.validFrom != null &&
