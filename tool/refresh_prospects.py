@@ -3204,6 +3204,29 @@ def _branch_identity(item):
     )
 
 
+def _branch_matches(item, expected):
+    """Match only shared, normalized branch evidence.
+
+    The previous feed can contain records written before a stable branch ID
+    was added. In that case location/address can still prove continuity. If
+    the two records share no branch evidence, the match stays unknown and is
+    rejected for an exact-branch fallback.
+    """
+    if not expected:
+        return True
+    expected_identity = _branch_identity(expected)
+    actual_identity = _branch_identity(item)
+    shared = [
+        (expected_value, actual_value)
+        for expected_value, actual_value in zip(expected_identity, actual_identity)
+        if expected_value and actual_value
+    ]
+    return bool(shared) and all(
+        expected_value == actual_value
+        for expected_value, actual_value in shared
+    )
+
+
 def dedupe(offers):
     unique = {}
     for item in offers:
@@ -3432,11 +3455,23 @@ def load_previous():
     except Exception:
         return {"sources": [], "offers": []}
 
-def active_previous(previous, store):
+def active_previous(previous, store, branch=None):
+    """Return still-current fallback offers for one exact branch.
+
+    A retailer name is not a store identity. When the caller knows the
+    configured branch, records from another branch or records without any
+    branch evidence are excluded instead of being presented as a safe
+    fallback.
+    """
     today = local_today().isoformat()
     active = [
-        item for item in previous.get("offers", [])
-        if item.get("storeName") == store and item.get("validUntil", "") >= today
+        item
+        for item in previous.get("offers", [])
+        if (
+            item.get("storeName") == store
+            and item.get("validUntil", "") >= today
+            and _branch_matches(item, branch)
+        )
     ]
     if store == "Netto":
         return [
@@ -3466,7 +3501,14 @@ def _prospect_has_pages(item):
     )
 
 
-def _merge_previous_prospects(previous, store, prospects, *, today=None):
+def _merge_previous_prospects(
+    previous,
+    store,
+    prospects,
+    *,
+    branch=None,
+    today=None,
+):
     """Keep still-current cover metadata when an offer refresh omits pages.
 
     Retailer offer endpoints and leaflet endpoints do not always fail
@@ -3475,14 +3517,23 @@ def _merge_previous_prospects(previous, store, prospects, *, today=None):
     never carried forward as current metadata.
     """
 
-    previous_source = next(
-        (
-            source
-            for source in previous.get("sources", [])
-            if isinstance(source, dict) and source.get("storeName") == store
-        ),
-        None,
-    )
+    previous_sources = [
+        source
+        for source in previous.get("sources", [])
+        if (
+            isinstance(source, dict)
+            and source.get("storeName") == store
+            and _branch_matches(source, branch)
+        )
+    ]
+    if branch and not previous_sources:
+        return prospects
+    previous_source = previous_sources[0] if previous_sources else None
+    source_branch = {
+        key: previous_source.get(key)
+        for key in ("branchId", "location", "address")
+        if previous_source and previous_source.get(key)
+    }
     previous_items = [
         item
         for item in (previous_source or {}).get("prospects", [])
@@ -3497,7 +3548,11 @@ def _merge_previous_prospects(previous, store, prospects, *, today=None):
         return end is not None and end >= today
 
     active_previous_items = [
-        item for item in previous_items if active(item) and _prospect_has_pages(item)
+        item
+        for item in previous_items
+        if active(item)
+        and _prospect_has_pages(item)
+        and _branch_matches({**source_branch, **item}, branch)
     ]
     current_items = [item for item in prospects if isinstance(item, dict)]
     if not current_items:
@@ -3653,7 +3708,11 @@ def main(selected_source_ids=None):
                         # branch offers when only the store endpoint is
                         # temporarily unavailable; their original capture
                         # timestamp remains evidence of their age.
-                        offers = active_previous(previous, store)
+                        offers = active_previous(
+                            previous,
+                            store,
+                            source_branch_metadata(source_id),
+                        )
                         source_mode = "structured_leaflet"
                         if prospects:
                             prospects[0]["offerApiError"] = clean(str(error))[:240]
@@ -3695,10 +3754,15 @@ def main(selected_source_ids=None):
 
             # Keep branch provenance at record level as well as on the source
             # node. Provider-specific values remain authoritative.
-            prospects = _merge_previous_prospects(previous, store, prospects)
+            prospects = _attach_source_branch_metadata(prospects, source_id)
+            prospects = _merge_previous_prospects(
+                previous,
+                store,
+                prospects,
+                branch=source_branch_metadata(source_id),
+            )
             offers = _attach_capture_timestamp(offers, captured_at)
             offers = _attach_source_branch_metadata(offers, source_id)
-            prospects = _attach_source_branch_metadata(prospects, source_id)
 
             metadata_only = parser_name in ("lidl", "lidl_api") and not offers
             if not offers and not metadata_only:
@@ -3744,7 +3808,11 @@ def main(selected_source_ids=None):
                 })
                 refreshed_source_count += 1
                 continue
-            kept = active_previous(previous, store)
+            kept = active_previous(
+                previous,
+                store,
+                source_branch_metadata(source_id),
+            )
             all_offers.extend(kept)
             sources.append({"id": source_id, "storeName": store, "url": url, "status": "error", "recordCount": len(kept), "error": clean(str(error))[:240], **source_branch_metadata(source_id)})
 
@@ -3804,7 +3872,14 @@ def main(selected_source_ids=None):
                     kaufda_metadata[key] = clean(branch[key])
             # Keep kaufDA provenance beside the authoritative retailer source.
             matching_source = next(
-                (item for item in sources if item.get("storeName") == store),
+                (
+                    item
+                    for item in sources
+                    if (
+                        item.get("storeName") == store
+                        and _branch_matches(item, branch)
+                    )
+                ),
                 None,
             )
             if matching_source is not None:
