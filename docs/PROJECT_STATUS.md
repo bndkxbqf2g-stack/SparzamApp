@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Mehrdeutige Open-Prices-Filialen bleiben unbekannt
+
+- Der Preisadapter übernimmt einen standortlosen Open-Prices-Treffer nur bei genau einer passenden konfigurierten Filiale.
+- Bei mehreren gleichnamigen Märkten im selben Ort bleibt der Preis unbekannt, bis der Anbieter eine eindeutige Standort-ID liefert; dadurch wird keine falsche Routebasis erzeugt.
+- Die Regression läuft zusammen mit den bestehenden EAN-, Orts-, Postleitzahl- und Branch-ID-Prüfungen.
+
 ## Update 15.10.2026 – Open Prices bleibt filialgenau
 
 - Der Open-Prices-Adapter gruppiert Beobachtungen jetzt nach Händler und Quellfiliale statt nur nach dem sichtbaren Händlernamen.
