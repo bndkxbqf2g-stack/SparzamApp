@@ -359,6 +359,29 @@ void main() {
       hasLength(1),
     );
   });
+  test('purges legacy automatic offer observations without a feed refresh', () async {
+    final store = memoryStore();
+    final legacy = prospectPriceObservations(
+      records: [current],
+      catalogProducts: const [coffee],
+      observedAt: now,
+    );
+    await store.replaceAll(legacy);
+
+    final purged = await purgeLegacyAutomaticProspectOfferObservations(
+      store: store,
+    );
+
+    expect(
+      purged.where((entry) => entry.kind == PriceObservationKind.offer),
+      isEmpty,
+    );
+    expect(
+      purged.where((entry) => entry.kind == PriceObservationKind.regular),
+      hasLength(1),
+    );
+  });
+
   test('does not persist a regular price without an exact branch', () async {
     final store = memoryStore();
     final noBranch = OfferImportRecord(
