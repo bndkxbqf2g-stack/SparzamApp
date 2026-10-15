@@ -753,6 +753,7 @@ void main() {
         id: 'leaflet-regular',
         productId: 'chocolate',
         storeName: 'Lidl',
+        locationId: 'lidl-branch-1',
         price: 2.19,
         observedAt: DateTime(2026, 9, 25),
         source: PriceObservationSource.leaflet,
