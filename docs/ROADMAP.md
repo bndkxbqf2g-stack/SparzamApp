@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Aktuellste reguläre Prospektquelle pro Filiale
+
+- [x] Überlappende Prospektzeiträume derselben Produkt-/Filialkombination werden bei der Routenprojektion auf den neuesten belegten regulären Anspruch reduziert.
+- [x] Die historische append-only Beobachtung bleibt vollständig erhalten; nur die aktuelle MarketPrice-Projektion wird dedupliziert.
+- [x] Unterschiedliche exakte Filialen bleiben über ihre Branch-ID getrennt und erhalten jeweils ihren eigenen regulären Preis.
+
 ## Update 15.10.2026 – Preisregel im Prospekt-Reiter sichtbar
 
 - [x] Der Status weist ausdrücklich aus, dass nur belegte durchgestrichene Normalpreise lokal als Preisbasis gespeichert werden.
