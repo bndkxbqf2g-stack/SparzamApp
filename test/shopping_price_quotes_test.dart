@@ -910,6 +910,83 @@ void main() {
     expect(snapshot.matrixFor(ListItem(product: secondProduct))[1].quote?.unitPrice, 1.79);
   });
 
+
+  test('shopping quotes retain the exact configured branch', () {
+    final quote = shoppingQuotes(
+      item,
+      prices: [
+        MarketPrice(
+          productId: milk.id,
+          storeName: 'Lidl',
+          price: 1.19,
+          updatedAt: DateTime(2026, 9, 24),
+          source: MarketPriceSource.prospect,
+          sourceLocationId: 'lidl_zellingen',
+          sourceLocationName: 'Zellingen',
+        ),
+      ],
+      offers: const [],
+      enabledStores: const ['Lidl'],
+      now: DateTime(2026, 9, 24),
+    ).single;
+
+    expect(quote.locationId, 'lidl_zellingen');
+    expect(quote.branchLabel, 'Zellingen');
+  });
+
+  test('offer quotes retain regional and address metadata', () {
+    final quote = shoppingQuotes(
+      item,
+      prices: const [],
+      offers: [
+        Offer(
+          id: 'branch-offer',
+          productId: milk.id,
+          storeName: 'Lidl',
+          originalPrice: 1.29,
+          offerPrice: 0.89,
+          source: 'retailerWebsite',
+          proofRef: 'https://example.test/branch-offer',
+          locationId: 'lidl_zellingen',
+          region: 'Zellingen',
+          address: 'Am Güßgraben 2',
+          validUntil: DateTime(2026, 9, 30),
+        ),
+      ],
+      enabledStores: const ['Lidl'],
+      now: DateTime(2026, 9, 24),
+    ).single;
+
+    expect(quote.locationId, 'lidl_zellingen');
+    expect(quote.branchLabel, 'Zellingen · Am Güßgraben 2');
+  });
+
+  test('matrix branch tie-breaker is deterministic', () {
+    final quotes = [
+      ShoppingQuote(
+        storeName: 'Lidl',
+        unitPrice: 1.09,
+        kind: ShoppingQuoteKind.prospect,
+        observedAt: DateTime(2026, 9, 24),
+        locationId: 'lidl_zellingen_b',
+      ),
+      ShoppingQuote(
+        storeName: 'Lidl',
+        unitPrice: 1.09,
+        kind: ShoppingQuoteKind.prospect,
+        observedAt: DateTime(2026, 9, 24),
+        locationId: 'lidl_zellingen_a',
+      ),
+    ];
+
+    final matrix = shoppingPriceMatrixFromQuotes(
+      quotes,
+      enabledStores: const ['Lidl'],
+    );
+
+    expect(matrix.single.quote?.locationId, 'lidl_zellingen_a');
+  });
+
   test('generic item shows a current matching prospect offer by market', () {
     const genericMilk = Product(
       id: 'milch',
