@@ -112,15 +112,28 @@ OptimizedTravelRoute optimizeTravelRoute(
   );
 }
 
-/// Uses a legacy name key only when the store has no branch ID.
+/// Uses a legacy name key when the distance map has no branch-specific
+/// entry for this retailer. Once any branch-specific value exists, a missing
+/// exact branch stays on the store's configured fallback instead of borrowing
+/// an ambiguous sibling value.
 double _fallbackDistanceForStore(
   Store store,
   Map<String, double> fallbackDistances,
 ) {
   final key = travelMatrixStoreKey(store);
-  return fallbackDistances[key] ??
-      (key == store.name ? fallbackDistances[store.name] : null) ??
-      store.distanceKm;
+  final exact = fallbackDistances[key];
+  if (exact != null) return exact;
+  if (key == store.name) {
+    return fallbackDistances[store.name] ?? store.distanceKm;
+  }
+  final branchPrefix = '#';
+  final hasBranchSpecificValue = fallbackDistances.keys.any(
+    (candidate) => candidate.startsWith(branchPrefix),
+  );
+  if (!hasBranchSpecificValue) {
+    return fallbackDistances[store.name] ?? store.distanceKm;
+  }
+  return store.distanceKm;
 }
 
 Iterable<List<T>> _permutations<T>(List<T> items) sync* {
