@@ -838,9 +838,29 @@ double? _priceValue(Object? value) {
       .replaceAll(RegExp(r'\s+'), '')
       .trim();
   if (compact.isEmpty) return null;
-  compact = compact
-      .replaceFirst(RegExp(r'^(?:€|EUR)', caseSensitive: false), '')
-      .replaceFirst(RegExp(r'(?:€|EUR)
+  final currencyPrefix = RegExp(r'^(?:€|EUR)', caseSensitive: false);
+  if (currencyPrefix.matchAsPrefix(compact) != null) {
+    compact = compact.replaceFirst(currencyPrefix, '');
+  }
+  final uppercase = compact.toUpperCase();
+  if (uppercase.endsWith('EUR')) {
+    compact = compact.substring(0, compact.length - 3);
+  } else if (compact.endsWith('€')) {
+    compact = compact.substring(0, compact.length - 1);
+  }
+  if (compact.isEmpty) return null;
+  final simple = RegExp(r'^\d+(?:[.,]\d{1,2})?');
+  final grouped = RegExp(r'^\d{1,3}(?:\.\d{3})+,\d{1,2}');
+  final isSimple = simple.matchAsPrefix(compact)?.end == compact.length;
+  final isGrouped = grouped.matchAsPrefix(compact)?.end == compact.length;
+  if (!isSimple && !isGrouped) return null;
+  final normalized = compact.contains(',')
+      ? compact.replaceAll('.', '').replaceFirst(',', '.')
+      : compact;
+  final number = double.tryParse(normalized);
+  return number != null && number.isFinite ? number : null;
+}
+
 String? _firstHttpUrl(
   Iterable<Object?> values, {
   int depth = 0,
