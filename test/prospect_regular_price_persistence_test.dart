@@ -306,7 +306,7 @@ void main() {
       "sourceId": "formatted-persistence",
       "productLabel": "Jacobs Kaffee Crema 500 g",
       "storeName": "Lidl",
-      "offerPrice": "4,99 €",
+      "offerPrice": 4.99,
       "originalPrice": "7,99 €",
       "validFrom": "2026-10-10",
       "validUntil": "2026-10-17",
