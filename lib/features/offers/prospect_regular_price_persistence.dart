@@ -109,3 +109,15 @@ bool _isAutomaticProspectOfferObservation(PriceObservation observation) =>
     observation.kind == PriceObservationKind.offer &&
     (observation.id.startsWith('prospect|') ||
         observation.id.startsWith('offer|import|'));
+
+/// Removes legacy automatic prospect offer evidence before the first feed
+/// refresh. This keeps an offline/error launch from leaving offer prices in
+/// the local prospect observation database; regular prices and user evidence
+/// are preserved.
+Future<List<PriceObservation>>
+    purgeLegacyAutomaticProspectOfferObservations({
+  required PriceObservationStore store,
+}) => store.upsertById(
+      const <PriceObservation>[],
+      removeWhere: _isAutomaticProspectOfferObservation,
+    );
