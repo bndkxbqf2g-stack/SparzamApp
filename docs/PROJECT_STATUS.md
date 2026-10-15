@@ -1,3 +1,11 @@
+## Update 15.10.2026 – Gespeicherte Normalpreisbelege im Preise-Reiter
+
+Der Preise-Reiter zeigt neben dem Speicherstatus nun die aktuell gültigen,
+automatisch gespeicherten regulären Prospektbelege mit Produkt, exakter Filiale,
+Gültigkeitszeitraum, Adapterherkunft und Nachweis. Angebotsbelege und abgelaufene
+Beobachtungen werden aus diesem Ledger ausgeschlossen; die Anzeige bleibt eine
+Nachvollziehbarkeitsschicht und ändert keine Routenentscheidung.
+
 ## Update 15.10.2026 – Preise-Reiter zeigt automatische Normalpreisspeicherung
 
 Der Preise-Reiter zeigt jetzt zusätzlich zum aktuellen Belegbestand den Status
