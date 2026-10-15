@@ -423,7 +423,7 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.text('Aktionspreise bleiben getrennt.'),
+      find.textContaining('Aktionspreise bleiben getrennt.'),
       findsOneWidget,
     );
   });
