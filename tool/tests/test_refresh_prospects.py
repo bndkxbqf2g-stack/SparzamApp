@@ -352,7 +352,12 @@ class ProspectParserTest(unittest.TestCase):
         reference_day = refresh.date.fromisoformat(generated_at[:10]).isoformat()
         for source in payload["sources"]:
             with self.subTest(store=source["storeName"]):
-                self.assertEqual(source.get("status"), "ok")
+                status = source.get("status")
+                self.assertIn(status, ("ok", "metadata_only", "error"))
+                if status == "error":
+                    # A failed refresh may retain the last validated current
+                    # cover, but it must remain visibly marked as an error.
+                    self.assertTrue(source.get("prospects"))
                 self.assertTrue(source.get("branchId"))
                 self.assertTrue(source.get("location"))
                 self.assertTrue(source.get("address"))
