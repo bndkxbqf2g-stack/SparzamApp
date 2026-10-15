@@ -1,3 +1,14 @@
+## Update 15.10.2026 – Automatische Normalpreisspeicherung im Preise-Reiter
+
+- [x] Der Preise-Reiter zeigt Feed-Zeitpunkt, Cache-Herkunft und den bestätigten
+  Status der lokalen Speicherung regulärer Prospektpreise.
+- [x] Die Anzeige trennt erkannte, laufende, bestätigte und unbekannte
+  Speicherstände; eine bestätigte Nullspeicherung bleibt sichtbar.
+- [x] Markt-/Filialabdeckung wird aus dem bestehenden Persistenzsnapshot
+  übernommen; Angebotspreise werden nicht als Normalpreise gezählt.
+- [x] Widgetregressionen sichern den bestätigten und den nicht bestätigten
+  Shell-Status.
+
 ## Update 15.10.2026 – KaufDA-UVP bleibt aus regulären Preisen
 
 - [x] Explizit als UVP oder Herstellerpreis beschriftete Vergleichswerte werden unabhängig von der Quellfeldform nicht als durchgestrichener Normalpreis übernommen.

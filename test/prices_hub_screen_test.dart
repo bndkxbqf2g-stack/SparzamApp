@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:sparzamapp/features/catalog/prices_hub_screen.dart';
 import 'package:sparzamapp/features/catalog/market_price_freshness.dart';
+import 'package:sparzamapp/features/prospects/prospect_feed_status.dart';
 import 'package:sparzamapp/features/price_gaps/price_gap_priority.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
@@ -357,6 +358,74 @@ void main() {
     expect(find.text('Prospekt-Normalpreise 1'), findsOneWidget);
     expect(find.text('1 veraltet oder unvollständig'), findsOneWidget);
     expect(find.textContaining('Lidl: 1'), findsOneWidget);
+  });
+
+  testWidgets('zeigt bestätigte automatische Normalpreisspeicherung', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PricesHubScreen(
+            onOpenCatalog: () {},
+            onOpenSettings: () {},
+            summary: 'Prospektpreise',
+            prospectFeedGeneratedAt: DateTime(2026, 10, 15, 8, 30),
+            prospectRegularPriceCount: 2,
+            prospectRegularPriceCountsByStore: const {
+              'Lidl · Zellingen': 1,
+              'ALDI Süd · Würzburg': 1,
+            },
+            prospectRegularPricePersistenceStatus:
+                ProspectRegularPricePersistenceStatus.succeeded,
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      find.byKey(const ValueKey('prospect-regular-price-database-card')),
+      findsOneWidget,
+    );
+    expect(find.text('Automatische Prospekt-Normalpreise'), findsOneWidget);
+    expect(
+      find.text('2 reguläre Normalpreise als Preisbasis gespeichert.'),
+      findsOneWidget,
+    );
+    expect(
+      find.textContaining('Feed-Stand 15.10.2026 · 08:30 Uhr'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('Lidl · Zellingen: 1'), findsOneWidget);
+  });
+
+  testWidgets('bestätigt ohne Shell-Status keine lokale Speicherung', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PricesHubScreen(
+            onOpenCatalog: () {},
+            onOpenSettings: () {},
+            summary: 'Prospektpreise',
+            prospectFeedGeneratedAt: DateTime(2026, 10, 15, 8, 30),
+            prospectRegularPriceCount: 1,
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      find.text(
+        '1 regulärer Normalpreis im Feed erkannt; lokale Speicherung nicht bestätigt.',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Aktionspreise bleiben getrennt.'),
+      findsOneWidget,
+    );
   });
 
 }
