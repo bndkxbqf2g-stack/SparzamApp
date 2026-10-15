@@ -3,6 +3,8 @@ import '../../models/market_price.dart';
 import '../../models/mobility_settings.dart';
 import '../../models/offer.dart';
 import '../../models/road_route_matrix.dart';
+import '../../models/store.dart';
+import '../../data/stores.dart';
 import '../route/route_optimizer.dart';
 
 class ShellRouting {
@@ -12,6 +14,7 @@ class ShellRouting {
     required this.mobility,
     required this.marketPrices,
     this.openPricesMaxAgeDays = 60,
+    this.storeCatalog = stores,
     required this.roadDistances,
     required this.roadMatrix,
   });
@@ -21,6 +24,7 @@ class ShellRouting {
   final MobilitySettings mobility;
   final List<MarketPrice> marketPrices;
   final int openPricesMaxAgeDays;
+  final List<Store> storeCatalog;
   final Map<String, double> roadDistances;
   final RoadRouteMatrix? roadMatrix;
 
@@ -46,6 +50,7 @@ class ShellRouting {
           timeValuePerHour: mobility.timeValuePerHour,
           travelMinutesPerKm: 60 / mobility.mode.averageSpeedKmh,
           enabledStoreNames: mobility.enabledStoreNames,
+          storeCatalog: storeCatalog,
           marketPrices: marketPrices,
           openPricesMaxAgeDays: openPricesMaxAgeDays,
           roadMatrix: mobility.mode == MobilityMode.car ? roadMatrix : null,
@@ -67,6 +72,7 @@ class ShellRoutingSnapshotCache {
   List<MarketPrice>? _cachedMarketPrices;
   Map<String, double>? _cachedRoadDistances;
   RoadRouteMatrix? _cachedRoadMatrix;
+  List<Store>? _cachedStoreCatalog;
   int? _cachedOpenPricesMaxAgeDays;
   int? _cachedItemSignature;
   int? _cachedMobilitySignature;
@@ -79,7 +85,9 @@ class ShellRoutingSnapshotCache {
     required int openPricesMaxAgeDays,
     required Map<String, double> roadDistances,
     required RoadRouteMatrix? roadMatrix,
+    List<Store>? storeCatalog,
   }) {
+    final resolvedStoreCatalog = storeCatalog ?? stores;
     final itemSignature = _itemSignature(items);
     final mobilitySignature = _mobilitySignature(mobility);
     final cached = _cached;
@@ -90,6 +98,7 @@ class ShellRoutingSnapshotCache {
         identical(_cachedMarketPrices, marketPrices) &&
         identical(_cachedRoadDistances, roadDistances) &&
         identical(_cachedRoadMatrix, roadMatrix) &&
+        identical(_cachedStoreCatalog, resolvedStoreCatalog) &&
         _cachedOpenPricesMaxAgeDays == openPricesMaxAgeDays &&
         _cachedItemSignature == itemSignature &&
         _cachedMobilitySignature == mobilitySignature) {
@@ -104,6 +113,7 @@ class ShellRoutingSnapshotCache {
       openPricesMaxAgeDays: openPricesMaxAgeDays,
       roadDistances: roadDistances,
       roadMatrix: roadMatrix,
+      storeCatalog: resolvedStoreCatalog,
     );
     _cached = next;
     _cachedItems = items;
@@ -112,6 +122,7 @@ class ShellRoutingSnapshotCache {
     _cachedMarketPrices = marketPrices;
     _cachedRoadDistances = roadDistances;
     _cachedRoadMatrix = roadMatrix;
+    _cachedStoreCatalog = resolvedStoreCatalog;
     _cachedOpenPricesMaxAgeDays = openPricesMaxAgeDays;
     _cachedItemSignature = itemSignature;
     _cachedMobilitySignature = mobilitySignature;
