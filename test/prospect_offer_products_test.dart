@@ -414,4 +414,36 @@ void main() {
 
     expect(entries, isEmpty);
   });
+
+  test('canonicalizes source variants for addable prospect offers', () {
+    final entries = prospectOfferProducts(
+      records: [
+        OfferImportRecord(
+          sourceId: 'canonical-product-source',
+          productLabel: 'Schmand 200 g',
+          storeName: 'Lidl',
+          offerPrice: 0.69,
+          validUntil: DateTime(2026, 10, 2),
+          source: 'retailer_website',
+          proofRef: 'https://example.test/lidl/canonical-product-source',
+        ),
+      ],
+      catalogProducts: const [
+        Product(
+          id: 'schmand-canonical',
+          name: 'Schmand 200 g',
+          unit: '200 g',
+          group: 'schmand',
+        ),
+      ],
+      now: current,
+    );
+
+    expect(entries, hasLength(1));
+    expect(entries.single.offer.source, 'retailerWebsite');
+    expect(
+      entries.single.offer.id,
+      'import|retailerWebsite|canonical-product-source|schmand-canonical',
+    );
+  });
 }

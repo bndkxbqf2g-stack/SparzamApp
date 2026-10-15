@@ -252,6 +252,8 @@ Offer? _offerForProduct(
 }) {
   if (!_isUsableRecord(record, now: now)) return null;
   final originalPrice = record.originalPrice ?? record.offerPrice;
+  final canonicalSource =
+      canonicalProspectSourceToken(record.source) ?? record.source;
   final package = _offerPackage(record, product);
   final packagePrice = package == null
       ? null
@@ -261,7 +263,7 @@ Offer? _offerForProduct(
           unit: package.unit,
         );
   return Offer(
-    id: 'import|${record.source}|${record.sourceId}|${product.id}',
+    id: 'import|$canonicalSource|${record.sourceId}|${product.id}',
     productId: product.id,
     storeName: record.storeName,
     originalPrice: originalPrice,
@@ -269,7 +271,7 @@ Offer? _offerForProduct(
     offerPrice: record.offerPrice,
     validFrom: record.validFrom,
     validUntil: record.validUntil,
-    source: record.source,
+    source: canonicalSource,
     sourceAdapter: record.sourceAdapter,
     capturedAt: record.capturedAt,
     proofRef: record.proofRef,

@@ -166,7 +166,7 @@ List<PriceObservation> prospectPriceObservations({
     final confidence = exactProduct == null ? 0.0 : 1.0;
     final prefix = [
       'prospect',
-      record.source,
+      source.name,
       record.storeName,
       record.sourceId,
       productId,
@@ -246,19 +246,13 @@ List<PriceObservation> prospectPriceObservations({
   return observations;
 }
 
-PriceObservationSource? _source(String source) {
-  final normalized = source.trim().toLowerCase();
-  return switch (normalized) {
-    'leaflet' => PriceObservationSource.leaflet,
-    'retailer' => PriceObservationSource.retailer,
-    // Public adapters have emitted this stable source token with different
-    // casing/separators. Keep the allowlist explicit; unknown labels remain
-    // historical-only instead of becoming a new price source.
-    'retailerwebsite' || 'retailer_website' || 'retailer-website' =>
-      PriceObservationSource.retailerWebsite,
-    _ => null,
-  };
-}
+PriceObservationSource? _source(String source) =>
+    switch (canonicalProspectSourceToken(source)) {
+      'leaflet' => PriceObservationSource.leaflet,
+      'retailer' => PriceObservationSource.retailer,
+      'retailerWebsite' => PriceObservationSource.retailerWebsite,
+      _ => null,
+    };
 
 String _prospectStoreKey(String value) => value.trim().toLowerCase();
 
