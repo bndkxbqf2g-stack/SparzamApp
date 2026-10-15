@@ -574,7 +574,10 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
 
   Future<void> _loadPriceObservations() async {
     final revision = _dataRevision;
-    final loaded = await priceObservationStore.load();
+    final loaded =
+        await purgeLegacyAutomaticProspectOfferObservations(
+          store: priceObservationStore,
+        );
     if (!_isCurrentDataRevision(revision)) return;
     setState(() {
       historicalPriceObservations = mergePriceObservations(
