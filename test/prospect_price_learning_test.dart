@@ -309,6 +309,29 @@ void main() {
     expect(evidence.single.kind, PriceObservationKind.regular);
   });
 
+  test('rejects a future individual capture from current regular learning', () {
+    final evidence = currentDatedProspectRegularPriceObservations(
+      records: [
+        OfferImportRecord(
+          sourceId: 'future-capture',
+          productLabel: 'Butter 250 g',
+          storeName: 'Lidl',
+          originalPrice: 2.49,
+          offerPrice: 1.99,
+          validFrom: DateTime(2026, 10, 10),
+          validUntil: DateTime(2026, 10, 17),
+          capturedAt: DateTime(2026, 10, 13, 9),
+          proofRef: 'https://example.test/lidl/future-capture',
+        ),
+      ],
+      catalogProducts: const [],
+      observedAt: DateTime(2026, 10, 12, 8),
+      now: DateTime(2026, 10, 12, 8),
+    );
+
+    expect(evidence, isEmpty);
+  });
+
   test('current prospect learns offer and stated regular price separately', () {
     final evidence = prospectPriceObservations(
       records: [
@@ -609,4 +632,3 @@ void main() {
     expect(evidence, isEmpty);
   });
 }
-
