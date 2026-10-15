@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Prospektartikel bleiben filialgenau
+
+- Aktuelle Prospektartikel werden nach Händler und vorhandener Branch-ID getrennt gruppiert; gleichnamige Filialen vermischen keine Artikel mehr.
+- Händlername und Standort bleiben in der Anzeige lesbar; interne Schlüssel, Kategorien und Quellenhinweise bleiben exakt filialbezogen.
+- Eine Widgetregression schützt getrennte Lidl-Gruppen für Zellingen und Würzburg.
+
 ## Update 15.10.2026 – Prospekt-Cover bleiben filialgenau
 
 - Coverkarten und Artikelgruppen verwenden jetzt Händlername plus vorhandene Branch-ID als stabilen Schlüssel; gleichnamige Lidl-/Netto-Filialen bleiben getrennt.
