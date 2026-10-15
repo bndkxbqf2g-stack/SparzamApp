@@ -1,3 +1,9 @@
+## Update 15.10.2026 – OSRM-Caches bleiben filialgenau
+
+- Ein gespeicherter Matrixstand wird nur wiederverwendet, wenn er alle aktuell angeforderten exakten Filialschlüssel abdeckt.
+- Bei neuen Branch-IDs liefert ein Offline-/Timeout-Fallback keinen alten gleichnamigen Marktstand zurück; die Route fällt transparent auf lokale Entfernungen zurück.
+- Eine Regression schützt die Abgrenzung zwischen alter und neuer Filiale.
+
 ## Update 15.10.2026 – More-Routenansicht bleibt filialgenau
 
 - Der RouteScreen im More-/Shell-Seitenpfad erhält jetzt denselben exakten Filialkatalog wie die direkte Routenansicht und der ShellRouting-Snapshot.

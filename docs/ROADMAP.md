@@ -1,3 +1,9 @@
+## Update 15.10.2026 – OSRM-Cache deckt aktuelle Filialen vollständig ab
+
+- [x] Eine Matrix wird nur als Offline-Fallback verwendet, wenn sie alle aktuell angeforderten Branch-Schlüssel abdeckt.
+- [x] Teil- oder Altmatrizen dürfen bei gleichnamigen, aber geänderten Filialen keine alten Distanzwerte weiterreichen; lokale Fallback-Distanzen bleiben sichtbar.
+- [x] Eine Fixture-Regression prüft den Ausfall bei einem neuen exakten Filialschlüssel.
+
 ## Update 15.10.2026 – Jeder Routen-Einstieg bleibt filialgenau
 
 - [x] Der RouteScreen im More-/Shell-Seitenpfad erhält denselben exakten Filialkatalog wie AppShell, ShellRouting und die direkte Routenaktion.
