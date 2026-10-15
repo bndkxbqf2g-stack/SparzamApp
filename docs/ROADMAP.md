@@ -852,3 +852,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Cover- und Seitenlisten behalten ihre eigenen Seiten-/Fallback-Limits; der Vorlauf materialisiert nicht den vollständigen Feed.
 - [x] Eine Widgetregression schützt den festen Vorlauf von 360 Pixeln.
 
+## Update 15.10.2026 – Startbereinigung alter Prospektaktionspreise
+
+- [x] Der lokale Preisbeobachtungsspeicher entfernt beim Start nur veraltete automatische `prospect|`-/`offer|import|`-Aktionszeilen.
+- [x] Reguläre Normalpreisbelege sowie manuelle und Bon-Evidenz bleiben bei Offline-/Feedfehlern erhalten.
+- [x] Eine Fixture-Regression schützt die Bereinigung ohne aktuellen Feed.
+
