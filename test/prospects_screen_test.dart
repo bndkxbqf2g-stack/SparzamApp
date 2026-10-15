@@ -77,7 +77,8 @@ void main() {
     expect(find.text('Prospekte'), findsOneWidget);
     expect(find.text('Alle Märkte').first, findsOneWidget);
     expect(find.text('Zellingen'), findsOneWidget);
-    expect(find.text('1 Angebote geladen'), findsOneWidget);
+    expect(find.textContaining('1 Angebote geladen'), findsOneWidget);
+    expect(find.textContaining('Filiale: B384'), findsOneWidget);
     expect(
       find.text('Aktuelle Prospekte. Produkte antippen und vormerken.'),
       findsOneWidget,

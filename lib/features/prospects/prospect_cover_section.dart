@@ -661,8 +661,18 @@ String? _validity(ProspectIssue issue) {
 
 String? prospectSourceLabel(ProspectIssue issue) {
   final adapter = issue.sourceAdapter?.trim();
-  if (adapter == null || adapter.isEmpty) return null;
-  return 'Quelle: $adapter';
+  final adapterLabel = adapter == null || adapter.isEmpty
+      ? null
+      : 'Quelle: $adapter';
+  final branch = issue.branchId?.trim();
+  final branchLabel = branch == null || branch.isEmpty
+      ? null
+      : 'Filiale: $branch';
+  final labels = <String>[
+    ?adapterLabel,
+    ?branchLabel,
+  ];
+  return labels.isEmpty ? null : labels.join(' · ');
 }
 
 String? prospectPageCoverage(ProspectIssue issue) {

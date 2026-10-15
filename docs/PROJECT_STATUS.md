@@ -1,3 +1,10 @@
+## Update 15.10.2026 – Coverkarten zeigen exakte Filialherkunft
+
+Wenn der Prospektfeed eine Filial-ID liefert, wird sie gemeinsam mit der
+Quellenkennung auf der Coverkarte angezeigt. Händlername und Ort bleiben davon
+getrennt; gleichnamige Märkte bleiben durch den bestehenden vollständigen
+Filialschlüssel eindeutig. Fehlende Filial-IDs werden nicht ergänzt.
+
 ## Update 15.10.2026 – Coverkarten zeigen Quellen- und Seitenstatus
 
 Die Coveransicht zeigt jetzt die technische Herkunft des Prospektfeeds, wenn der

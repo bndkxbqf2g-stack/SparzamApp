@@ -24,6 +24,7 @@ void main() {
                 ],
                 location: 'Zellingen',
                 address: 'Würzburger Str. 74, 97225 Zellingen',
+                branchId: 'lidl-zellingen',
                 sourceAdapter: 'kaufda',
                 availablePageCount: 2,
                 loadedPageCount: 1,
@@ -55,6 +56,7 @@ void main() {
     expect(find.byKey(const ValueKey('prospect-location-pill')), findsOneWidget);
     expect(find.text('97225'), findsOneWidget);
     expect(find.textContaining('Quelle: kaufda'), findsOneWidget);
+    expect(find.textContaining('Filiale: lidl-zellingen'), findsOneWidget);
     expect(find.textContaining('1/2 Seiten geladen · 1 fehlt'), findsOneWidget);
     await tester.drag(
       find.byKey(const ValueKey('prospect-bring-scroll')),
