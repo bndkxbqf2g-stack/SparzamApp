@@ -576,17 +576,12 @@ void main() {
         ),
       );
       await tester.pump(const Duration(milliseconds: 500));
-      await tester.runAsync(() async {
-        for (var attempt = 0; attempt < 200; attempt++) {
-          final observations = await PriceObservationStore().load();
-          if (observations.any(
-            (entry) => entry.id.contains('cached-regular-price|regular'),
-          )) {
-            return;
-          }
-          await Future<void>.delayed(const Duration(milliseconds: 25));
-        }
-      });
+      // SharedPreferencesAsync is real asynchronous I/O in this widget
+      // harness. Give the queued cache write a bounded real-time window and
+      // read once; an unbounded polling loop makes the full suite time out.
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(seconds: 3)),
+      );
 
       final observations = await PriceObservationStore().load();
       expect(
