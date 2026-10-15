@@ -112,15 +112,11 @@ double _offerIdentityConfidence(Offer offer) {
   return hasTrustedOfferEvidence(offer) && hasExactOfferBranch(offer) ? 1 : 0;
 }
 
-PriceObservationSource _offerSource(Offer offer) {
-  final normalized = offer.source.trim().toLowerCase();
-  return switch (normalized) {
-    'retailer' => PriceObservationSource.retailer,
-    // Keep the same explicit source allowlist as prospect price learning.
-    'retailerwebsite' || 'retailer_website' || 'retailer-website' =>
-      PriceObservationSource.retailerWebsite,
-    'leaflet' => PriceObservationSource.leaflet,
-    _ => PriceObservationSource.manual,
-  };
-}
+PriceObservationSource _offerSource(Offer offer) =>
+    switch (canonicalProspectSourceToken(offer.source)) {
+      'retailer' => PriceObservationSource.retailer,
+      'retailerWebsite' => PriceObservationSource.retailerWebsite,
+      'leaflet' => PriceObservationSource.leaflet,
+      _ => PriceObservationSource.manual,
+    };
 
