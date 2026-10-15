@@ -147,13 +147,13 @@ String _prospectRegularProjectionKey(PriceObservation entry) => [
       entry.variant?.trim().toLowerCase() ?? '',
       entry.quantity?.toStringAsFixed(6) ?? '',
       entry.unit?.trim().toLowerCase() ?? '',
-      entry.validFrom?.toIso8601String() ?? '',
-      entry.validUntil?.toIso8601String() ?? '',
+      // Validity is deliberately not part of the projection identity. A
+      // refreshed brochure can move the same product into a new, overlapping
+      // period; the newest current claim must replace the older claim instead
+      // of leaving two simultaneous regular prices for one exact branch slot.
       // proofRef remains on the projected price for traceability, but it is
       // not part of the current identity. A refreshed leaflet may use a new
-      // page/URL for the same product, branch and validity window; the latest
-      // captured regular claim must replace the older current claim instead
-      // of allowing both prices into route planning.
+      // page/URL for the same product and branch.
     ].join('\u001f');
 
 bool _isNewerPriceObservation(
