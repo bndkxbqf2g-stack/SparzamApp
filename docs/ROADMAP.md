@@ -7,7 +7,7 @@
 - [x] Die bestehende generische Familienauflösung bleibt unverändert und
   verlangt weiterhin exakte Identität, Packungsbasis, Filiale, Gültigkeit und
   Nachweis vor einer sichtbaren aktuellen Preiszeile.
-- [x] Eine Widgetregression prüft den Wechsel von „unbekannt“ zu einem
+- [x] Eine fachliche Regression prüft den Wechsel von „unbekannt“ zu einem
   belegten aktuellen Prospektangebot nach dem Katalog-Update.
 
 
