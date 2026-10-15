@@ -1,3 +1,11 @@
+## Update 15.10.2026 – Zukünftige individuelle Prospekt-Erfassungen bleiben ungespeichert
+
+Die automatische Speicherung regulärer Prospektpreise prüft neben Laufzeit,
+Nachweis und Filialbezug nun auch den individuellen `capturedAt`-Zeitpunkt.
+Liegt dieser Zeitpunkt in der Zukunft, bleibt der Beleg aus der lokalen
+Preisgrundlage; ein gültiger Feed mit anderen Datensätzen wird dadurch nicht
+verworfen. Eine Fachregression schützt diesen Provenienzfilter.
+
 ## Update 15.10.2026 – Gespeicherte Normalpreisbelege im Preise-Reiter
 
 Der Preise-Reiter zeigt neben dem Speicherstatus nun die aktuell gültigen,

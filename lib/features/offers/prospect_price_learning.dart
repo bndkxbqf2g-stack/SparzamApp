@@ -72,13 +72,27 @@ List<PriceObservation> currentDatedProspectRegularPriceObservations({
   DateTime? observedAt,
   DateTime? now,
   Iterable<String>? refreshedStores,
-}) =>
-    datedProspectRegularPriceObservations(
-      records: currentProspectRecords(records, now: now),
-      catalogProducts: catalogProducts,
-      observedAt: observedAt,
-      refreshedStores: refreshedStores,
-    );
+}) {
+  final reference = now ?? DateTime.now();
+  final current = datedProspectRegularPriceObservations(
+    records: currentProspectRecords(records, now: reference),
+    catalogProducts: catalogProducts,
+    observedAt: observedAt,
+    refreshedStores: refreshedStores,
+  );
+  // A source can attach an individual capture time that is newer than the
+  // feed timestamp. A future capture is provenance-invalid and must not be
+  // promoted into the automatic local regular-price basis.
+  return current
+      .where(
+        (entry) =>
+            entry.isValid &&
+            !entry.observedAt.isAfter(reference) &&
+            (entry.validFrom == null ||
+                !entry.validFrom!.isAfter(reference)),
+      )
+      .toList(growable: false);
+}
 
 /// Shared feed boundary for automatic prospect price evidence.
 ///
@@ -246,5 +260,4 @@ bool _isKaufdaEvidence(OfferImportRecord record) {
   final proof = record.proofRef?.trim().toLowerCase() ?? '';
   return proof.contains('kaufda.de');
 }
-
 

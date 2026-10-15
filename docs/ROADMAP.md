@@ -1,3 +1,11 @@
+## Update 15.10.2026 – Zukunftszeitpunkte nicht als Preisbeleg übernehmen
+
+- [x] Aktuelle reguläre Prospektpreise mit einem individuellen zukünftigen
+  `capturedAt` bleiben aus der automatischen Preisbasis ausgeschlossen.
+- [x] Gültige Nachbardatensätze werden weiter gelernt; Feed-, Laufzeit- und
+  Filialprüfungen bleiben unverändert.
+- [x] Eine Fachregression schützt den Provenienzfilter.
+
 ## Update 15.10.2026 – Preisbeleg-Ledger im Preise-Reiter
 
 - [x] Aktuell gültige reguläre Prospektbeobachtungen werden mit Produkt,
