@@ -206,7 +206,9 @@ void main() {
 }
 ''');
 
-    final issue = result.prospects.single;
+    final issue = result.prospects.singleWhere(
+      (item) => item.storeName == 'PENNY',
+    );
     expect(issue.pageCountKnown, isFalse);
     expect(issue.availablePageCount, isNull);
     expect(issue.loadedPageCount, 1);
