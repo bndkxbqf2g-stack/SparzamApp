@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Routenlimit auf sechs Projektmärkte erweitert
+
+- Die Route erzeugt jetzt deterministisch jede nicht-leere Kombination bis zum konfigurierten maxStores-Limit. Damit werden vier bis sechs aktivierte Märkte nicht mehr stillschweigend ignoriert.
+- MobilitySettings validiert gespeicherte Werte bis sechs Märkte; die Profileinstellung bietet denselben Bereich an.
+- Die Regression prüft alle 63 Kombinationen des vollständigen Sechs-Markt-Katalogs und die JSON-Rundreise des neuen Limits. Preisabdeckung, Mindestvorteil, Fahrtkosten und Offline-Fallback bleiben unverändert.
+
 ## Update 15.10.2026 – Branch-stabile Fahrmatrizen
 
 - Neue OSRM-Matrizen verwenden bei vorhandener Branch-ID stabile Filialschlüssel; identische Händlernamen können dadurch getrennte Distanz- und Fahrzeitwerte tragen.

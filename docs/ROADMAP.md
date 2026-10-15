@@ -66,6 +66,12 @@
 
 Diese Roadmap ist eine Prioritätenliste, kein starres Releaseversprechen.
 
+## Update 15.10.2026 – Routenoptimierung bis sechs Märkte
+
+- [x] Die Kombinationserzeugung unterstützt alle sechs konfigurierten Projektmärkte statt einer fest verdrahteten Dreimarktgrenze.
+- [x] Das Routenlimit bleibt über maxStores und den Mindestvorteil steuerbar; fehlende Preise werden weiterhin als unbekannt behandelt.
+- [x] Mobilitätseinstellungen und lokale Altformate akzeptieren bis zu sechs Märkte; die bestehende Ein-, Zwei- und Dreimarktlogik bleibt unverändert.
+
 ## Phase A – Solide Datengrundlage
 - Bon-Parsing stabilisieren.
 - Stück-, Gewichts- und Grundpreise korrekt unterscheiden.
