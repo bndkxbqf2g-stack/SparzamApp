@@ -82,6 +82,17 @@ class OfferImportRecord {
   /// Source-provided branch address kept with the exact offer record.
   final String? address;
 }
+/// Canonicalizes only source tokens already understood by the prospect
+/// pipeline. Unknown labels stay null so external adapters cannot silently
+/// create a new price source.
+String? canonicalProspectSourceToken(String source) =>
+    switch (source.trim().toLowerCase()) {
+      'leaflet' => 'leaflet',
+      'retailer' => 'retailer',
+      'retailerwebsite' || 'retailer_website' || 'retailer-website' =>
+        'retailerWebsite',
+      _ => null,
+    };
 
 /// Stable widget identity for an imported prospect record.
 ///
@@ -317,8 +328,10 @@ OfferImportResolution resolveOfferImport(
           unit: package.unit,
         );
 
+  final canonicalSource =
+      canonicalProspectSourceToken(record.source) ?? record.source;
   final offer = Offer(
-    id: 'import|${record.source}|${record.sourceId}|${product.id}',
+    id: 'import|${canonicalSource}|${record.sourceId}|${product.id}',
     productId: product.id,
     storeName: record.storeName,
     originalPrice: record.originalPrice ?? record.offerPrice,
@@ -326,7 +339,7 @@ OfferImportResolution resolveOfferImport(
     offerPrice: record.offerPrice,
     validFrom: record.validFrom,
     validUntil: record.validUntil,
-    source: record.source,
+    source: canonicalSource,
     sourceAdapter: record.sourceAdapter,
     capturedAt: record.capturedAt,
     proofRef: record.proofRef,
