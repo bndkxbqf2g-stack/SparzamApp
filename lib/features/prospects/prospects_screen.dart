@@ -1539,16 +1539,35 @@ class _BringSectionTitle extends StatelessWidget {
 }
 
 String _prospectCardSummary(ProspectIssue issue) {
+  final String summary;
   if (issue.sourceStatus == 'current_fallback') {
-    return '${issue.recordCount} Angebote aus dem letzten geprüften '
+    summary = '\${issue.recordCount} Angebote aus dem letzten geprüften '
         'Prospektstand. Automatische Aktualisierung aktuell nicht verfügbar.';
+  } else if (issue.sourceStatus == 'regional_only') {
+    summary = 'Nur regional erkannt · Filiale noch nicht bestätigt.';
+  } else if (issue.recordCount > 0) {
+    summary = '\${issue.recordCount} Angebote geladen';
+  } else {
+    summary = _sourceStatusLabel(issue);
   }
-  if (issue.sourceStatus == 'regional_only') {
-    return 'Nur regional erkannt · Filiale noch nicht bestätigt.';
-  }
-  if (issue.recordCount > 0) return '${issue.recordCount} Angebote geladen';
-  return _sourceStatusLabel(issue);
+
+  final sourceLabel = prospectSourceLabel(issue);
+  final pageLabel = _hasPageCompletenessMetadata(issue)
+      ? prospectPageCoverage(issue)
+      : null;
+  final evidence = <String>[
+    if (sourceLabel != null) sourceLabel,
+    if (pageLabel != null) pageLabel,
+  ];
+  if (evidence.isEmpty) return summary;
+  return '\$summary · \${evidence.join(' · ')}';
 }
+
+bool _hasPageCompletenessMetadata(ProspectIssue issue) =>
+    issue.pageCountKnown ||
+    issue.availablePageCount != null ||
+    issue.missingPageNumbers.isNotEmpty ||
+    issue.pageStatus.trim().toLowerCase() == 'unavailable';
 
 String _sourceStatusLabel(ProspectIssue issue) {
   if (issue.sourceStatus == 'no_current_offers') {
