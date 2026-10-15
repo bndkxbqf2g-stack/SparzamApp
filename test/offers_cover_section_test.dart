@@ -60,4 +60,44 @@ void main() {
     expect(find.text('Prospektseiten (1)'), findsOneWidget);
     expect(find.text('Aktionsprospekt'), findsOneWidget);
   });
+
+  testWidgets('verwendet URL-spezifische Schlüssel für adaptive Coverbilder', (
+    tester,
+  ) async {
+    const firstUrl = 'https://example.test/lidl-cover.jpg';
+    const secondUrl = 'https://example.test/aldi-cover.jpg';
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Column(
+          children: [
+            ProspectAdaptiveImage(
+              url: firstUrl,
+              cacheWidth: 120,
+              cacheHeight: 100,
+              fit: BoxFit.cover,
+              placeholder: const SizedBox.shrink(),
+            ),
+            ProspectAdaptiveImage(
+              url: secondUrl,
+              cacheWidth: 120,
+              cacheHeight: 100,
+              fit: BoxFit.cover,
+              placeholder: const SizedBox.shrink(),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    expect(
+      find.byKey(const ValueKey('prospect-adaptive-image-https://example.test/lidl-cover.jpg')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('prospect-adaptive-image-https://example.test/aldi-cover.jpg')),
+      findsOneWidget,
+    );
+  });
+
 }

@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Prospekt-Cover beim Scrollen stabilisieren
+
+- Coverbilder erhalten innerhalb des adaptiven Image-Widgets jetzt einen Schlüssel aus ihrer vollständigen URL.
+- Beim Wiederverwenden von Grid-/Favoritenkarten bleibt der Bildzustand damit an der tatsächlichen Quelle gebunden; unterschiedliche Händlercover werden nicht mehr durch einen identischen Literal-Schlüssel verwechselt.
+- Eine Widgetregression prüft beide URL-Schlüssel. Der bestehende Canvas-/HTML-Fallback und die Bildgrößenbegrenzung bleiben erhalten.
+
 ## Update 15.10.2026 – Cache-Prospektpreise lokal sichern
 
 - Ein validierter gecachter Prospektstand wird beim Offline-Start nun ebenfalls durch den regulären Preisbeobachtungspfad geführt.
