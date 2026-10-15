@@ -5,6 +5,8 @@ import '../../design/sparzam_theme.dart';
 import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/offer.dart';
+import '../../models/price_observation.dart';
+import '../../models/product.dart';
 import '../offers/prospect_price_statistics.dart';
 import '../prospects/prospect_feed_status.dart';
 import 'market_price_freshness.dart';
@@ -29,6 +31,8 @@ class PricesHubScreen extends StatefulWidget {
     this.prospectRegularPriceCountsByStore = const <String, int>{},
     this.prospectRegularPricePersistenceStatus =
         ProspectRegularPricePersistenceStatus.standalone,
+    this.historicalPriceObservations = const <PriceObservation>[],
+    this.catalogProducts = const <Product>[],
     this.onOpenList,
     this.onOpenRoute,
     this.onResolvePriceGap,
@@ -50,6 +54,8 @@ class PricesHubScreen extends StatefulWidget {
   final Map<String, int> prospectRegularPriceCountsByStore;
   final ProspectRegularPricePersistenceStatus
       prospectRegularPricePersistenceStatus;
+  final List<PriceObservation> historicalPriceObservations;
+  final List<Product> catalogProducts;
   final VoidCallback? onOpenList;
   final VoidCallback? onOpenRoute;
   final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
@@ -258,6 +264,11 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
         screen.prospectRegularPriceCount > 0 ||
         screen.prospectRegularPricePersistenceStatus !=
             ProspectRegularPricePersistenceStatus.standalone;
+    final currentProspectRegularPrices =
+        currentProspectRegularPriceObservations(
+          observations: screen.historicalPriceObservations,
+          now: screen.now,
+        );
 
     return ListView(
       scrollCacheExtent: ScrollCacheExtent.pixels(0),
@@ -364,6 +375,13 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
             count: screen.prospectRegularPriceCount,
             countsByStore: screen.prospectRegularPriceCountsByStore,
             status: screen.prospectRegularPricePersistenceStatus,
+          ),
+        ],
+        if (currentProspectRegularPrices.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          _ProspectRegularPriceLedgerCard(
+            observations: currentProspectRegularPrices,
+            catalogProducts: screen.catalogProducts,
           ),
         ],
         const SizedBox(height: 22),
@@ -496,6 +514,152 @@ class _ProspectRegularPriceDatabaseCard extends StatelessWidget {
       ),
     );
   }
+}
+
+
+List<PriceObservation> currentProspectRegularPriceObservations({
+  required Iterable<PriceObservation> observations,
+  DateTime? now,
+}) {
+  final reference = now ?? DateTime.now();
+  final day = DateTime(reference.year, reference.month, reference.day);
+  final latestByKey = <String, PriceObservation>{};
+  for (final entry in observations) {
+    final sourceIsProspect = switch (entry.source) {
+      PriceObservationSource.retailer ||
+      PriceObservationSource.retailerWebsite ||
+      PriceObservationSource.leaflet => true,
+      _ => false,
+    };
+    if (entry.kind != PriceObservationKind.regular ||
+        !sourceIsProspect ||
+        entry.productId?.trim().isNotEmpty != true ||
+        entry.identityConfidence < 1 ||
+        entry.proofRef?.trim().isNotEmpty != true ||
+        entry.validUntil == null ||
+        _priceLedgerDay(entry.observedAt).isAfter(day) ||
+        (entry.validFrom != null &&
+            _priceLedgerDay(entry.validFrom!).isAfter(day)) ||
+        _priceLedgerDay(entry.validUntil!).isBefore(day)) {
+      continue;
+    }
+    final key = [
+      entry.source.name,
+      entry.sourceAdapter?.trim().toLowerCase() ?? '',
+      entry.storeName.trim().toLowerCase(),
+      entry.locationId?.trim().toLowerCase() ?? '',
+      entry.productId!.trim(),
+      entry.quantity?.toStringAsFixed(6) ?? '',
+      entry.unit?.trim().toLowerCase() ?? '',
+    ].join('\u001f');
+    final previous = latestByKey[key];
+    if (previous == null ||
+        entry.observedAt.isAfter(previous.observedAt) ||
+        (entry.observedAt.isAtSameMomentAs(previous.observedAt) &&
+            entry.id.compareTo(previous.id) > 0)) {
+      latestByKey[key] = entry;
+    }
+  }
+  final result = latestByKey.values.toList()
+    ..sort((a, b) {
+      final store = a.storeName.compareTo(b.storeName);
+      if (store != 0) return store;
+      final product = (a.productId ?? '').compareTo(b.productId ?? '');
+      if (product != 0) return product;
+      return b.observedAt.compareTo(a.observedAt);
+    });
+  return result;
+}
+
+DateTime _priceLedgerDay(DateTime value) =>
+    DateTime(value.year, value.month, value.day);
+
+class _ProspectRegularPriceLedgerCard extends StatelessWidget {
+  const _ProspectRegularPriceLedgerCard({
+    required this.observations,
+    required this.catalogProducts,
+  });
+
+  final List<PriceObservation> observations;
+  final List<Product> catalogProducts;
+
+  @override
+  Widget build(BuildContext context) {
+    final catalogById = {
+      for (final product in catalogProducts) product.id: product,
+    };
+    final visible = observations.take(12).toList(growable: false);
+    final countLabel = observations.length == 1
+        ? '1 gespeicherter regulärer Preis mit Filialnachweis'
+        : '${observations.length} gespeicherte reguläre Preise mit Filialnachweis';
+    return Card(
+      child: ExpansionTile(
+        key: const ValueKey('prospect-regular-price-ledger-card'),
+        leading: const Icon(Icons.fact_check_outlined),
+        title: const Text('Aktuelle gespeicherte Normalpreise'),
+        subtitle: Text(countLabel),
+        children: [
+          for (final observation in visible)
+            _ProspectRegularPriceLedgerRow(
+              observation: observation,
+              product: catalogById[observation.productId],
+            ),
+          if (observations.length > visible.length)
+            ListTile(
+              dense: true,
+              leading: const Icon(Icons.more_horiz),
+              title: Text(
+                'Weitere ${observations.length - visible.length} '
+                'gespeicherte Normalpreise',
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProspectRegularPriceLedgerRow extends StatelessWidget {
+  const _ProspectRegularPriceLedgerRow({
+    required this.observation,
+    required this.product,
+  });
+
+  final PriceObservation observation;
+  final Product? product;
+
+  @override
+  Widget build(BuildContext context) {
+    final branch = observation.locationId?.trim();
+    final validity = [
+      if (branch != null && branch.isNotEmpty) 'Filiale $branch',
+      if (observation.validFrom != null)
+        'ab ${_priceLedgerDate(observation.validFrom!)}',
+      'bis ${_priceLedgerDate(observation.validUntil!)}',
+      if (observation.sourceAdapter?.trim().isNotEmpty == true)
+        'Quelle ${observation.sourceAdapter!.trim()}',
+      'Nachweis vorhanden',
+    ].join(' · ');
+    final name = product?.name ?? observation.productId ?? 'Produkt unbekannt';
+    final amount = observation.price.toStringAsFixed(2).replaceAll('.', ',');
+    return ListTile(
+      dense: true,
+      leading: const Icon(Icons.price_check_outlined),
+      title: Text(name, maxLines: 1, overflow: TextOverflow.ellipsis),
+      subtitle: Text(validity, maxLines: 2, overflow: TextOverflow.ellipsis),
+      trailing: Text(
+        '$amount €',
+        style: const TextStyle(fontWeight: FontWeight.w800),
+      ),
+    );
+  }
+}
+
+String _priceLedgerDate(DateTime value) {
+  final local = value.toLocal();
+  final day = local.day.toString().padLeft(2, '0');
+  final month = local.month.toString().padLeft(2, '0');
+  return '$day.$month.${local.year}';
 }
 
 class _PriceDataQualityCard extends StatelessWidget {
