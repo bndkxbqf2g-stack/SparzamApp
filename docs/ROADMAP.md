@@ -866,3 +866,11 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   `packageAmount`-/`packageUnit`-Daten werden trotzdem übernommen.
 - [x] Regressionen sichern lokale Produktidentität, Packungsgröße und die
   Trennung zwischen Quellenmetadaten und manueller Einheit.
+
+## Update 15.10.2026 – Begrenzter Vorlauf im Prospekte-Reiter
+
+- [x] Der vertikale Prospekte-Feed wärmt höchstens eine Kartenreihe vor, damit
+  Coverbilder bei schnellen Wischbewegungen früher dekodiert werden.
+- [x] Der Vorlauf bleibt auf 360 Pixel begrenzt; Seitenviewer und Cover-Fallback
+  behalten ihre eigenen Speichergrenzen.
+- [x] Eine Widgetregression prüft den festen Vorlauf ohne zusätzliche Abrufe.
