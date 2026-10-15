@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Angebots-Hinweise bleiben tagesaktuell
+
+- [x] Der Angebote-Reiter reicht nur die bereits nach Gültigkeit gefilterten Prospekt-Issues an seine Statuskarten weiter.
+- [x] Abgelaufene oder zukünftige Prospekte erzeugen dadurch keinen sichtbaren Hinweis im aktuellen Angebotsfluss.
+- [x] Eine Widgetregression schützt den current-only-Pfad.
+
 ## Update 15.10.2026 – Prospektfilter aktualisiert den Kalendertag
 
 - [x] Angebote- und Prospekte-Reiter invalidieren ihre Tages-Caches auch dann, wenn der Shell-Aufruf keinen expliziten Referenzzeitpunkt liefert.
