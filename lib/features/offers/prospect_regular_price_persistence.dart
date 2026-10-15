@@ -107,4 +107,5 @@ Future<ProspectRegularPricePersistenceResult>
 
 bool _isAutomaticProspectOfferObservation(PriceObservation observation) =>
     observation.kind == PriceObservationKind.offer &&
-    observation.id.startsWith('prospect|');
+    (observation.id.startsWith('prospect|') ||
+        observation.id.startsWith('offer|import|'));
