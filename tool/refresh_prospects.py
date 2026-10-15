@@ -1362,9 +1362,7 @@ def parse_edeka(html_text, base_url):
         has_specific_start = False
         if explicit_start:
             start = parse_date(explicit_start.group(1)) or start
-            label_text =µ¨¥zºè¯
-â¶)à²Ö§uªÝ¢ëiºÐk¢G§¦*^µ¨¥zºè¯
-â¶)à²Ö§uªÝ¢ëiºÐk¢G§¦*^ before_price[:explicit_start.start()]
+            label_text = before_price[:explicit_start.start()]
             has_specific_start = True
 
         # Some card variants expose the start date inside the accessible label

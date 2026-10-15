@@ -1,5 +1,4 @@
-µ¨¥zºè¯
-â¶)à²Ö§uªİ¢ëiºĞk¢G§¦*^## Update 15.10.2026 â€“ Branch-stabile Fahrmatrizen
+## Update 15.10.2026 â€“ Branch-stabile Fahrmatrizen
 
 - Neue OSRM-Matrizen verwenden bei vorhandener Branch-ID stabile FilialschlÃ¼ssel; identische HÃ¤ndlernamen kÃ¶nnen dadurch getrennte Distanz- und Fahrzeitwerte tragen.
 - Ã„ltere Matrizen mit sichtbaren HÃ¤ndlernamen sowie bestehende Distanz-Caches bleiben als Fallback lesbar.
@@ -612,8 +611,7 @@
 - Der Feedparser verwendet bei Ã¤lteren Prospectformaten ohne eigenes
   `thumbnailUrl` das erste bereits validierte `pageSamples`-Bild als Cover.
 - Dadurch bleiben vorhandene HÃ¤ndlerseiten im Karten- und Viewerpfad sichtbar;
-  unzµ¨¥zºè¯
-â¶)à²Ö§uªİ¢ëiºĞk¢G§¦*^ulÃ¤ssige oder fehlende URLs werden weiterhin nicht erfunden.
+  unzulÃ¤ssige oder fehlende URLs werden weiterhin nicht erfunden.
 - `prospect_feed_service_test.dart` schÃ¼tzt den Fallback einschlieÃŸlich der
   bestehenden HTTP-Validierung.
 
@@ -1399,8 +1397,7 @@
 - Repository: bndkxbqf2g-stack/SparzamApp
 - Hauptbranch: main
 - Letzter geprÃ¼fter Code-Stand auf main: `4a9800e` (Bon-Aliase auf
-  konfigurieµ¨¥zºè¯
-â¶)à²Ö§uªİ¢ëiºĞk¢G§¦*^rte MarktidentitÃ¤ten normalisiert); der aktuelle Feed-Stand ist
+  konfigurierte MarktidentitÃ¤ten normalisiert); der aktuelle Feed-Stand ist
   `ec1227e`.
 - PR #248 wurde mit den CI-LÃ¤ufen `38039823586` und `38039837524` geprÃ¼ft und
   in main gemergt. Main-CI `38040080993` sowie Release `38040080990` waren mit
@@ -2151,8 +2148,7 @@
   die Auswahl.
 - Eine Regression deckt den Vorrang und den effektiven Couponpreis ab.
 - FÃ¼r diesen Block: Flutter-Analyse ohne Befund, 424 Tests bestanden und
-  `flutter builµ¨¥zºè¯
-â¶)à²Ö§uªİ¢ëiºĞk¢G§¦*^d web --release` erfolgreich.
+  `flutter build web --release` erfolgreich.
 
 ## Update 30.09.2026 â€“ Routenempfehlung bei unvollstÃ¤ndiger Preisabdeckung
 - Wenn der beste Einzelmarkt nicht alle Listenartikel bepreisen kann, erklÃ¤rt
