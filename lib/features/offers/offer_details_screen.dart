@@ -5,6 +5,7 @@ import '../../models/list_item.dart';
 import '../../models/market_price.dart';
 import '../../models/mobility_settings.dart';
 import '../../models/offer.dart';
+import '../../models/price_observation.dart';
 import '../../models/price_point.dart';
 import '../../models/product.dart';
 import '../store/store_screen.dart';
@@ -52,6 +53,14 @@ class OfferDetailsScreen extends StatelessWidget {
             catalogProducts: catalogProducts,
             onAddToShoppingList: onAddToShoppingList,
           ),
+          if (offer.evidenceConfidence != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Text(
+                'Evidenz: ${evidenceConfidenceLabel(offer.evidenceConfidence!)}',
+                style: const TextStyle(fontWeight: FontWeight.w700),
+              ),
+            ),
           if (store != null) ...[
             const SizedBox(height: 16),
             Card(

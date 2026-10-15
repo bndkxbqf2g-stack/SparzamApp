@@ -6,6 +6,7 @@ import 'package:sparzamapp/features/prospects/prospect_page_ocr.dart';
 import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/offer.dart';
+import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/services/prospect_feed_service.dart';
 
 void main() {
@@ -1232,6 +1233,7 @@ void main() {
     expect(saved!.locationId, 'L-42');
     expect(saved!.region, 'Zellingen');
     expect(saved!.address, 'Hauptstraße 1, 97225 Zellingen');
+    expect(saved!.evidenceConfidence, EvidenceConfidence.manuallyConfirmed);
     expect(added?.name, 'Kaffee Crema 500 g');
   });
 

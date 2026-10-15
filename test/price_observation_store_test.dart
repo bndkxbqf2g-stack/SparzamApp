@@ -224,6 +224,7 @@ void main() {
       unit: 'l',
       unitPrice: 1.09,
       kind: PriceObservationKind.offer,
+      evidenceConfidence: EvidenceConfidence.manuallyConfirmed,
     );
 
     final restored = MarketPrice.fromJson(price.toJson());
@@ -234,6 +235,7 @@ void main() {
     expect(restored.unit, 'l');
     expect(restored.unitPrice, 1.09);
     expect(restored.kind, PriceObservationKind.offer);
+    expect(restored.evidenceConfidence, EvidenceConfidence.manuallyConfirmed);
 
     final observation = observationFromMarketPrice(price);
     expect(observation.proofRef, price.proofRef);
@@ -242,6 +244,7 @@ void main() {
     expect(observation.unit, 'l');
     expect(observation.unitPrice, 1.09);
     expect(observation.kind, PriceObservationKind.offer);
+    expect(observation.evidenceConfidence, EvidenceConfidence.manuallyConfirmed);
 
     final projected = marketPricesFromObservations(
       [observation],
@@ -253,6 +256,7 @@ void main() {
     expect(projected.single.unit, 'l');
     expect(projected.single.unitPrice, 1.09);
     expect(projected.single.kind, PriceObservationKind.offer);
+    expect(projected.single.evidenceConfidence, EvidenceConfidence.manuallyConfirmed);
   });
 
   test('record keeps branch, amount, offer validity and proof separately', () {

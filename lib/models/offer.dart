@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'price_observation.dart';
 
 class Offer {
   const Offer({
@@ -7,6 +8,7 @@ class Offer {
     required this.storeName,
     required this.originalPrice,
     this.originalPriceVerified = true,
+    this.evidenceConfidence,
     required this.offerPrice,
     required this.validUntil,
     this.validFrom,
@@ -36,6 +38,9 @@ class Offer {
   final String storeName;
   final double originalPrice;
   final bool originalPriceVerified;
+  /// Provenance confidence for the stored evidence. Null preserves legacy
+  /// offers that predate the confidence field.
+  final EvidenceConfidence? evidenceConfidence;
   final double offerPrice;
   final DateTime validUntil;
   final DateTime? validFrom;
@@ -86,6 +91,7 @@ class Offer {
     final storeName = json['storeName'] as String?;
     final originalPrice = _finiteDouble(json['originalPrice']);
     final originalPriceVerified = json['originalPriceVerified'] as bool? ?? true;
+    final evidenceConfidence = parseEvidenceConfidence(json['evidenceConfidence']);
     final offerPrice = _finiteDouble(json['offerPrice']);
     final packageAmount = _optionalPositiveDouble(json['packageAmount']);
     final packageUnit = json['packageUnit'] as String?;
@@ -110,6 +116,7 @@ class Offer {
       storeName: storeName,
       originalPrice: originalPrice,
       originalPriceVerified: originalPriceVerified,
+      evidenceConfidence: evidenceConfidence,
       offerPrice: offerPrice,
       validUntil: DateTime.parse(json['validUntil'] as String),
       validFrom: DateTime.tryParse(json['validFrom'] as String? ?? ''),
@@ -162,6 +169,7 @@ class Offer {
         'storeName': storeName,
         'originalPrice': originalPrice,
         'originalPriceVerified': originalPriceVerified,
+        'evidenceConfidence': evidenceConfidence?.name,
         'offerPrice': offerPrice,
         'validUntil': validUntil.toIso8601String(),
         'validFrom': validFrom?.toIso8601String(),

@@ -43,6 +43,7 @@ PriceObservation observationFromMarketPrice(MarketPrice price) =>
       unit: price.unit,
       unitPrice: price.unitPrice,
       identityConfidence: price.identityConfidence,
+      evidenceConfidence: price.evidenceConfidence,
       discounted: price.discounted,
     );
 
@@ -104,6 +105,7 @@ List<MarketPrice> marketPricesFromObservations(
           unitPrice: entry.unitPrice,
           identityConfidence: entry.identityConfidence,
           kind: entry.kind,
+          evidenceConfidence: entry.evidenceConfidence,
         ),
       )
       .toList();

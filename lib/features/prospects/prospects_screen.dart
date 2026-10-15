@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/offer.dart';
+import '../../models/price_observation.dart';
 import '../offers/offer_import.dart';
 import '../offers/prospect_offer_products.dart';
 import 'prospect_category_presentation.dart';
@@ -1693,6 +1694,8 @@ class ProspectViewerScreen extends StatelessWidget {
       storeName: entry.offer.storeName,
       originalPrice: entry.offer.originalPrice,
       originalPriceVerified: entry.offer.originalPriceVerified,
+      // The OCR candidate was reviewed and explicitly saved by the user.
+      evidenceConfidence: EvidenceConfidence.manuallyConfirmed,
       offerPrice: entry.offer.offerPrice,
       validFrom: entry.offer.validFrom,
       validUntil: entry.offer.validUntil,

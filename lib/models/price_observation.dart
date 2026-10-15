@@ -1,3 +1,25 @@
+enum EvidenceConfidence {
+  documented,
+  probable,
+  uncertain,
+  manuallyConfirmed,
+}
+
+String evidenceConfidenceLabel(EvidenceConfidence confidence) =>
+    switch (confidence) {
+      EvidenceConfidence.documented => 'BELEGT',
+      EvidenceConfidence.probable => 'WAHRSCHEINLICH',
+      EvidenceConfidence.uncertain => 'UNSICHER',
+      EvidenceConfidence.manuallyConfirmed => 'MANUELL BESTÄTIGT',
+    };
+
+EvidenceConfidence? parseEvidenceConfidence(Object? value) {
+  if (value is! String) return null;
+  for (final confidence in EvidenceConfidence.values) {
+    if (confidence.name == value) return confidence;
+  }
+  return null;
+}
 enum PriceObservationSource {
   receipt,
   manual,
@@ -31,6 +53,7 @@ class PriceObservation {
     this.unit,
     this.unitPrice,
     this.kind = PriceObservationKind.unknown,
+    this.evidenceConfidence,
     this.validFrom,
     this.validUntil,
     this.identityConfidence = 1,
@@ -52,6 +75,9 @@ class PriceObservation {
   final String? unit;
   final double? unitPrice;
   final PriceObservationKind kind;
+  /// Confidence assigned to the source evidence. This is separate from
+  /// [identityConfidence], which only describes product identity.
+  final EvidenceConfidence? evidenceConfidence;
   final DateTime? validFrom;
   final DateTime? validUntil;
   final DateTime observedAt;
@@ -89,6 +115,7 @@ class PriceObservation {
         'unit': unit,
         'unitPrice': unitPrice,
         'kind': kind.name,
+        'evidenceConfidence': evidenceConfidence?.name,
         'validFrom': validFrom?.toIso8601String(),
         'validUntil': validUntil?.toIso8601String(),
         'observedAt': observedAt.toIso8601String(),
@@ -118,6 +145,7 @@ class PriceObservation {
       kind: kindName == null
           ? PriceObservationKind.unknown
           : PriceObservationKind.values.byName(kindName),
+      evidenceConfidence: parseEvidenceConfidence(json['evidenceConfidence']),
       validFrom: DateTime.tryParse(json['validFrom'] as String? ?? ''),
       validUntil: DateTime.tryParse(json['validUntil'] as String? ?? ''),
       observedAt: DateTime.parse(json['observedAt'] as String),
