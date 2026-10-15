@@ -3686,3 +3686,12 @@ Damit können alte oder direkt importierte branchlose Datensätze weiterhin für
 Nachvollziehbarkeit und Statistik geladen werden, aber nicht als aktueller
 Routenpreis dienen. Nicht-prospektbezogene manuelle, Bon- und andere Quellen
 behalten ihre bisherigen Projektionsregeln.
+
+## Update 15.10.2026 – Preisfelder aus Händlerfeeds konservativ normalisiert
+
+Der Dart-Feedparser akzeptiert für Aktionspreise jetzt neben JSON-Zahlen auch
+strikt formatierte deutsche Preisangaben mit `€` oder `EUR`. Reguläre Preise
+können zusätzlich aus begrenzten, benannten Preisobjekten gelesen werden.
+Freie Beschreibungen und nackte Zahlenstrings bleiben ungültig. Dadurch gehen
+verwertbare Händlerangebote nicht mehr nur wegen ihrer Darstellungsform verloren,
+ohne dass beliebige Quellzahlen zu Preisbelegen werden.
