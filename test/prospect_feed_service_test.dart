@@ -614,6 +614,97 @@ void main() {
     expect(result.records.single.address, 'Offer street 2');
   });
 
+  test('keeps same-name source branches separate in prospect metadata', () {
+    final result = parseProspectFeed(r'''
+{
+  "sources": [
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "branchId": "lidl-a",
+      "location": "Würzburg",
+      "address": "Branch A",
+      "prospects": [
+        {"title": "Lidl A", "offerStartDate": "2026-10-12", "offerEndDate": "2026-10-17"}
+      ]
+    },
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "branchId": "lidl-b",
+      "location": "Zellingen",
+      "address": "Branch B",
+      "prospects": [
+        {"title": "Lidl B", "offerStartDate": "2026-10-12", "offerEndDate": "2026-10-17"}
+      ]
+    }
+  ],
+  "offers": []
+}
+''');
+
+    final issues = result.prospects
+        .where((item) => item.storeName == 'Lidl')
+        .toList(growable: false);
+    expect(issues, hasLength(2));
+    expect(issues.map((item) => item.branchId), ['lidl-a', 'lidl-b']);
+    expect(issues.map((item) => item.location), ['Würzburg', 'Zellingen']);
+    expect(issues.map((item) => item.address), ['Branch A', 'Branch B']);
+  });
+
+  test('leaves same-name offers unscoped without an explicit branch', () {
+    final result = parseProspectFeed(r'''
+{
+  "sources": [
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "branchId": "lidl-a",
+      "location": "Würzburg"
+    },
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "branchId": "lidl-b",
+      "location": "Zellingen"
+    }
+  ],
+  "offers": [
+    {
+      "sourceId": "ambiguous",
+      "productLabel": "Butter 250 g",
+      "storeName": "Lidl",
+      "offerPrice": 1.49,
+      "originalPrice": 1.99,
+      "validFrom": "2026-10-12",
+      "validUntil": "2026-10-17",
+      "proofRef": "https://example.test/ambiguous"
+    },
+    {
+      "sourceId": "explicit",
+      "productLabel": "Milch 1 l",
+      "storeName": "Lidl",
+      "offerPrice": 0.99,
+      "originalPrice": 1.29,
+      "validFrom": "2026-10-12",
+      "validUntil": "2026-10-17",
+      "branchId": "lidl-b",
+      "proofRef": "https://example.test/explicit"
+    }
+  ]
+}
+''');
+
+    final ambiguous = result.records
+        .firstWhere((record) => record.sourceId == 'ambiguous');
+    expect(ambiguous.branchId, isNull);
+    expect(ambiguous.location, isNull);
+    final explicit = result.records
+        .firstWhere((record) => record.sourceId == 'explicit');
+    expect(explicit.branchId, 'lidl-b');
+    expect(explicit.location, 'Zellingen');
+  });
+
   test('rejects malformed or contradictory offer validity evidence', () {
     final result = parseProspectFeed(r'''
 {
