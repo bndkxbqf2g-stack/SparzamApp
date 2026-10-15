@@ -586,6 +586,46 @@ class KaufdaProspectTest(unittest.TestCase):
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0].get("imageUrl"), "https://img.test/butter.jpg")
 
+    def test_dedupe_keeps_distinct_exact_branches_and_prefers_verified_context(self):
+        base = {
+            "storeName": "Lidl",
+            "productLabel": "Butter 250 g",
+            "offerPrice": 1.29,
+            "validFrom": "2026-10-12",
+            "validUntil": "2026-10-17",
+            "brochureId": "leaflet-1",
+            "brochurePage": 3,
+            "sourceId": "branch-a",
+            "branchId": "lidl-a",
+            "location": "Zellingen",
+            "regionalOnly": True,
+        }
+        branch_b = {
+            **base,
+            "sourceId": "branch-b",
+            "branchId": "lidl-b",
+            "location": "Würzburg",
+        }
+        verified = {
+            **base,
+            "sourceId": "verified-a",
+            "regionalOnly": False,
+            "address": "Am Güßgraben 2",
+        }
+
+        result = kaufda.dedupe_kaufda([base, branch_b, verified])
+
+        self.assertEqual(len(result), 2)
+        self.assertEqual(
+            {offer["branchId"] for offer in result},
+            {"lidl-a", "lidl-b"},
+        )
+        zellingen = next(
+            offer for offer in result if offer["branchId"] == "lidl-a"
+        )
+        self.assertFalse(zellingen["regionalOnly"])
+        self.assertEqual(zellingen["address"], "Am Güßgraben 2")
+
     def test_future_cache_timestamp_is_not_used_as_current_evidence(self):
         with tempfile.TemporaryDirectory() as directory:
             cache_path = pathlib.Path(directory) / "kaufda.json"

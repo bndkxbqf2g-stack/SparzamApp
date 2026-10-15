@@ -1177,6 +1177,19 @@ def dedupe_kaufda(offers: Iterable[dict]) -> list[dict]:
             clean(offer.get("ean")),
             clean(offer.get("brochureId")),
             clean(offer.get("brochurePage")),
+            # Exact branch context is part of identity. Two same-name stores
+            # may publish the same item, price, and page in one campaign.
+            clean(offer.get("branchId")),
+            (
+                ""
+                if clean(offer.get("branchId"))
+                else clean(offer.get("location")).casefold()
+            ),
+            (
+                ""
+                if clean(offer.get("branchId"))
+                else clean(offer.get("address")).casefold()
+            ),
             # Without leaflet context, retain a source identity because two
             # otherwise identical records may belong to separate campaigns.
             "" if clean(offer.get("brochureId")) or clean(offer.get("brochurePage")) else source_id,
@@ -1189,6 +1202,13 @@ def dedupe_kaufda(offers: Iterable[dict]) -> list[dict]:
         # order. A query with an image/category must not erase that evidence
         # from an earlier duplicate.
         merged = dict(previous)
+        if (
+            merged.get("regionalOnly") is True
+            and offer.get("regionalOnly") is False
+        ):
+            # A verified branch assertion wins when all identity fields above
+            # match; a regional hit must not downgrade an exact one.
+            merged["regionalOnly"] = False
         for field in (
             "originalPrice",
             "imageUrl",
