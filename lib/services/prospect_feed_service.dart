@@ -97,6 +97,27 @@ class _ProspectPageImageCandidate {
   final DateTime? validUntil;
 }
 
+class _ProspectSourceMetadata {
+  const _ProspectSourceMetadata({
+    required this.storeName,
+    required this.url,
+    required this.branchId,
+    required this.location,
+    required this.address,
+    required this.status,
+    required this.recordCount,
+  });
+
+  final String storeName;
+  final String? url;
+  final String? branchId;
+  final String? location;
+  final String? address;
+  final String status;
+  final int recordCount;
+}
+
+
 // Retailer feeds can contain household and seasonal campaign articles next to
 // food. Keep the app-side boundary defensive even when an older public feed
 // was generated before the refresh workflow applied its food-only filter.
@@ -388,54 +409,85 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
   final generatedAt = DateTime.tryParse(
     _stringValue(json['generatedAt']) ?? '',
   );
+  final sourceValues =
+      json['sources'] as List<dynamic>? ?? const <dynamic>[];
   final refreshedStores = <String>[];
   final availableStores = <String>[...configuredProspectStores];
   final availableStoreUrls = <String, String>{};
-  final sourceBranchIds = <String, String>{};
-  final sourceLocations = <String, String>{};
-  final sourceAddresses = <String, String>{};
-  final sourceStatuses = <String, String>{};
-  final sourceRecordCounts = <String, int>{};
-  for (final source in (json['sources'] as List<dynamic>? ?? const [])) {
+  final sourceMetadataByIndex =
+      List<_ProspectSourceMetadata?>.filled(sourceValues.length, null);
+  final sourceEntriesByStore =
+      <String, List<_ProspectSourceMetadata>>{};
+
+  for (var sourceIndex = 0;
+      sourceIndex < sourceValues.length;
+      sourceIndex++) {
+    final source = sourceValues[sourceIndex];
     if (source is! Map<String, dynamic>) continue;
     final storeName = _stringValue(source['storeName']);
     if (storeName == null || storeName.trim().isEmpty) continue;
     if (!availableStores.contains(storeName)) {
       availableStores.add(storeName);
     }
-    sourceStatuses[storeName] = _stringValue(source['status']) ?? 'unknown';
-    sourceRecordCounts[storeName] = _intValue(source['recordCount']) ?? 0;
     final sourceUrl = _stringValue(source['url']);
+    final branchId = _optionalNonEmptyString(source['branchId']);
+    final location = _optionalNonEmptyString(source['location']);
+    final address = _optionalNonEmptyString(source['address']);
+    final metadata = _ProspectSourceMetadata(
+      storeName: storeName,
+      url: sourceUrl,
+      branchId: branchId,
+      location: location,
+      address: address,
+      status: _stringValue(source['status']) ?? 'unknown',
+      recordCount: _intValue(source['recordCount']) ?? 0,
+    );
+    sourceMetadataByIndex[sourceIndex] = metadata;
+    sourceEntriesByStore
+        .putIfAbsent(storeName, () => <_ProspectSourceMetadata>[])
+        .add(metadata);
     if (sourceUrl != null && sourceUrl.trim().isNotEmpty) {
       availableStoreUrls[storeName] = sourceUrl;
     }
-    final branchId = _stringValue(source['branchId']);
-    if (branchId != null && branchId.trim().isNotEmpty) {
-      sourceBranchIds[storeName] = branchId;
-    }
-    final location = _stringValue(source['location']);
-    if (location != null && location.trim().isNotEmpty) {
-      sourceLocations[storeName] = location;
-    }
-    final address = _stringValue(source['address']);
-    if (address != null && address.trim().isNotEmpty) {
-      sourceAddresses[storeName] = address;
-    }
-    if ((_stringValue(source['status']) ?? '') == 'ok' &&
+    if (metadata.status == 'ok' &&
         !refreshedStores.contains(storeName)) {
       refreshedStores.add(storeName);
     }
   }
 
+  _ProspectSourceMetadata? sourceMetadataForOffer(
+    String storeName,
+    String? branchId,
+  ) {
+    final entries = sourceEntriesByStore[storeName];
+    if (entries == null || entries.isEmpty) return null;
+    if (branchId != null) {
+      final matches = entries
+          .where((entry) => entry.branchId == branchId)
+          .toList(growable: false);
+      return matches.length == 1 ? matches.single : null;
+    }
+    // A store name alone is insufficient when the feed contains multiple
+    // branches. Leave the record unscoped instead of assigning the last
+    // source entry's branch and location.
+    return entries.length == 1 ? entries.single : null;
+  }
+
+
   final recordsByKey = <String, OfferImportRecord>{};
   final prospects = <ProspectIssue>[];
   final pageImagesByStoreAndNumber =
       <String, List<_ProspectPageImageCandidate>>{};
-  for (final source in (json['sources'] as List<dynamic>? ?? const [])) {
-    if (source is! Map<String, dynamic>) continue;
-    final storeName = _stringValue(source['storeName']);
+  final sourceIndicesWithProspects = <int>{};
+  for (var sourceIndex = 0;
+      sourceIndex < sourceValues.length;
+      sourceIndex++) {
+    final source = sourceValues[sourceIndex];
+    final sourceMetadata = sourceMetadataByIndex[sourceIndex];
+    if (source is! Map<String, dynamic> || sourceMetadata == null) continue;
+    final storeName = sourceMetadata.storeName;
     for (final raw in (source['prospects'] as List<dynamic>? ?? const [])) {
-      if (storeName == null || raw is! Map<String, dynamic>) continue;
+      if (raw is! Map<String, dynamic>) continue;
       final pagesByNumber = <int, ProspectPage>{};
       for (final page in (raw['pageSamples'] as List<dynamic>? ?? const [])) {
         if (page is! Map<String, dynamic>) continue;
@@ -501,15 +553,15 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
             (pages.isEmpty ? null : pages.first.imageUrl),
         branchId:
             _optionalNonEmptyString(raw['branchId']) ??
-            sourceBranchIds[storeName],
+            sourceMetadata.branchId,
         location:
             _optionalNonEmptyString(raw['location']) ??
-            sourceLocations[storeName],
+            sourceMetadata.location,
         address:
             _optionalNonEmptyString(raw['address']) ??
-            sourceAddresses[storeName],
-        sourceStatus: sourceStatuses[storeName] ?? 'unknown',
-        recordCount: sourceRecordCounts[storeName] ?? 0,
+            sourceMetadata.address,
+        sourceStatus: sourceMetadata.status,
+        recordCount: sourceMetadata.recordCount,
         availablePageCount: _intValue(raw['availablePageCount']) ??
             (_boolValue(raw['pageCountKnown']) == false
                 ? null
@@ -524,6 +576,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         validUntil: issueValidUntil,
       );
       prospects.add(issue);
+      sourceIndicesWithProspects.add(sourceIndex);
       for (final page in pages) {
         pageImagesByStoreAndNumber
             .putIfAbsent(
@@ -541,28 +594,47 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
       }
     }
   }
-  // Jeder konfigurierte Markt bleibt in der Prospektansicht sichtbar.
-  // Einige Händler liefern aktuell nur strukturierte Angebote oder Metadaten,
-  // aber noch keine Bildseiten. Für diese Märkte zeigt die App eine
-  // informative Platzhalterkarte.
-  final storesWithProspects = prospects.map((issue) => issue.storeName).toSet();
-  for (final storeName in availableStores) {
-    if (!storesWithProspects.contains(storeName)) {
-      prospects.add(
-        ProspectIssue(
-          storeName: storeName,
-          title: 'Aktionsprospekt',
-          pages: const <ProspectPage>[],
-          url: officialProspectUrl(storeName, availableStoreUrls[storeName]),
-          branchId: sourceBranchIds[storeName],
-          location: sourceLocations[storeName],
-          address: sourceAddresses[storeName],
-          sourceStatus: sourceStatuses[storeName] ?? 'unavailable',
-          recordCount: sourceRecordCounts[storeName] ?? 0,
-        ),
-      );
-    }
+  // Keep one card per exact source entry. Two branches may share the
+  // same retailer name, and collapsing them by store name would show the
+  // wrong cover/location or hide one of the branches.
+  final sourceStoreNames = <String>{};
+  for (var sourceIndex = 0;
+      sourceIndex < sourceMetadataByIndex.length;
+      sourceIndex++) {
+    final metadata = sourceMetadataByIndex[sourceIndex];
+    if (metadata == null) continue;
+    sourceStoreNames.add(metadata.storeName);
+    if (sourceIndicesWithProspects.contains(sourceIndex)) continue;
+    prospects.add(
+      ProspectIssue(
+        storeName: metadata.storeName,
+        title: 'Aktionsprospekt',
+        pages: const <ProspectPage>[],
+        url: officialProspectUrl(metadata.storeName, metadata.url),
+        branchId: metadata.branchId,
+        location: metadata.location,
+        address: metadata.address,
+        sourceStatus: metadata.status,
+        recordCount: metadata.recordCount,
+      ),
+    );
   }
+  // Jeder konfigurierte Markt bleibt in der Prospektansicht sichtbar, even
+  // when the feed has no source entry at all.
+  for (final storeName in availableStores) {
+    if (sourceStoreNames.contains(storeName)) continue;
+    prospects.add(
+      ProspectIssue(
+        storeName: storeName,
+        title: 'Aktionsprospekt',
+        pages: const <ProspectPage>[],
+        url: officialProspectUrl(storeName, availableStoreUrls[storeName]),
+        sourceStatus: 'unavailable',
+        recordCount: 0,
+      ),
+    );
+  }
+
 
   for (final value in (json['offers'] as List<dynamic>? ?? const [])) {
     if (value is! Map<String, dynamic>) continue;
@@ -681,9 +753,13 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     final regionalOnly = isKaufdaWithoutBranch
         ? true
         : (parsedRegionalOnly ?? (regionalOnlyValue != null));
+    final sourceFallback = sourceMetadataForOffer(
+      storeName,
+      explicitBranchId,
+    );
     final recordBranchId = regionalOnly
         ? explicitBranchId
-        : (explicitBranchId ?? sourceBranchIds[storeName]);
+        : (explicitBranchId ?? sourceFallback?.branchId);
     final record = OfferImportRecord(
         sourceId: sourceId,
         productLabel: productLabel,
@@ -736,11 +812,11 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         location: regionalOnly
             ? _optionalNonEmptyString(value['location'])
             : (_optionalNonEmptyString(value['location']) ??
-                sourceLocations[storeName]),
+                sourceFallback?.location),
         address: regionalOnly
             ? _optionalNonEmptyString(value['address'])
             : (_optionalNonEmptyString(value['address']) ??
-                sourceAddresses[storeName]),
+                sourceFallback?.address),
       );
     final key = _prospectRecordKey(record);
     recordsByKey.putIfAbsent(key, () => record);
