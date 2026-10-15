@@ -965,8 +965,8 @@ double? _priceValue(Object? value) {
   }
   if (value is! String) return null;
   var compact = value
-      .replaceAll('\\u00a0', '')
-      .replaceAll(RegExp(r'\\s+'), '')
+      .replaceAll('\u00a0', '')
+      .replaceAll(RegExp(r'\s+'), '')
       .trim();
   if (compact.isEmpty) return null;
   final currencyPrefix = RegExp(r'^(?:€|EUR)', caseSensitive: false);
@@ -980,8 +980,8 @@ double? _priceValue(Object? value) {
     compact = compact.substring(0, compact.length - 1);
   }
   if (compact.isEmpty) return null;
-  final simple = RegExp(r'^\\d+(?:[.,]\\d{1,2})?');
-  final grouped = RegExp(r'^\\d{1,3}(?:\\.\\d{3})+,\\d{1,2}');
+  final simple = RegExp(r'^\d+(?:[.,]\\d{1,2})?');
+  final grouped = RegExp(r'^\\d{1,3}(?:\.\\d{3})+,\\d{1,2}');
   final isSimple = simple.matchAsPrefix(compact)?.end == compact.length;
   final isGrouped = grouped.matchAsPrefix(compact)?.end == compact.length;
   if (!isSimple && !isGrouped) return null;
@@ -993,7 +993,7 @@ double? _priceValue(Object? value) {
 }
 
 bool _hasCurrencyMarker(String value) =>
-    RegExp(r'(?:€|\\bEUR\\b)', caseSensitive: false).hasMatch(value);
+    RegExp(r'(?:€|\bEUR\b)', caseSensitive: false).hasMatch(value);
 
 /// Offer prices may arrive as a localized display string or a small named
 /// price object. A plain numeric string remains invalid by design.
