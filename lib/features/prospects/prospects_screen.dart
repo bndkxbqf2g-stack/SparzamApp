@@ -1024,6 +1024,9 @@ class _ProspectCard extends StatelessWidget {
     // Cards are visible in both the horizontal favorites rail and the grid.
     // Prefer the source thumbnail there; full page images stay available in
     // the viewer and should not all be decoded while the overview scrolls.
+    // Include the exact branch in child keys so lazy grid recycling cannot
+    // reuse an image or action from another same-name market.
+    final issueKey = prospectIssueKey(issue);
     final thumbnail = _officialProspectUri(issue.thumbnailUrl)?.toString();
     String? previewUrl;
     if (thumbnail != null && thumbnail.isNotEmpty) {
@@ -1037,7 +1040,7 @@ class _ProspectCard extends StatelessWidget {
         ? _bringCoverPlaceholder()
         : ProspectAdaptiveImage(
             key: ValueKey(
-              'prospect-cover-image-${compact ? "grid" : "favorite"}-${issue.storeName}',
+              'prospect-cover-image-${compact ? "grid" : "favorite"}-$issueKey',
             ),
             url: previewUrl,
             // Use one bounded decode size for both cover layouts to avoid
@@ -1059,7 +1062,7 @@ class _ProspectCard extends StatelessWidget {
           children: [
             InkWell(
               key: ValueKey(
-                'prospect-open-${compact ? 'grid' : 'favorite'}-${issue.storeName}',
+                'prospect-open-${compact ? 'grid' : 'favorite'}-$issueKey',
               ),
               onTap: onTap,
               child: Column(
@@ -1176,6 +1179,7 @@ class _ProspectCard extends StatelessWidget {
               right: compact ? 10 : 12,
               child: _ProspectFavoriteButton(
                 storeName: issue.storeName,
+                issueKey: issueKey,
                 isFavorite: isFavorite,
                 onPressed: onToggleFavorite,
                 compact: compact,
@@ -1192,12 +1196,14 @@ class _ProspectCard extends StatelessWidget {
 class _ProspectFavoriteButton extends StatelessWidget {
   const _ProspectFavoriteButton({
     required this.storeName,
+    required this.issueKey,
     required this.isFavorite,
     required this.onPressed,
     required this.compact,
   });
 
   final String storeName;
+  final String issueKey;
   final bool isFavorite;
   final VoidCallback onPressed;
   final bool compact;
@@ -1208,7 +1214,7 @@ class _ProspectFavoriteButton extends StatelessWidget {
         ? '$storeName aus Favoriten entfernen'
         : '$storeName zu Favoriten hinzufügen';
     return IconButton(
-      key: ValueKey('prospect-favorite-$storeName'),
+      key: ValueKey('prospect-favorite-$issueKey'),
       tooltip: action,
       onPressed: onPressed,
       padding: EdgeInsets.zero,
