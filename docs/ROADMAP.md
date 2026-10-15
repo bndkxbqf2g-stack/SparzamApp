@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Prospekt-Normalpreise erreichen die Einkaufsliste
+
+- [x] Eine deterministische Regression deckt den vollständigen Pfad vom Speichern eines aktuellen regulären Prospektpreises über die Projektion bis zum Einkaufslisten-Zitat ab.
+- [x] Die Prüfung verwendet eine konfigurierte Filiale und bleibt damit kompatibel mit der exakten Branch-Prüfung der Listenpreise.
+- [x] Angebotspreise, abgelaufene Beobachtungen und unsichere Produktidentitäten bleiben außerhalb der route-tauglichen Liste.
+
 ## Update 15.10.2026 – Cache-Prospektpreise lokal sichern
 
 - [x] Ein validierter Cache-/Bundle-Feed speichert beim Offline-Start ebenfalls nur aktuell gültige, explizit angegebene reguläre Preise.
