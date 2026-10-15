@@ -1560,7 +1560,7 @@ String _prospectCardSummary(ProspectIssue issue) {
     if (pageLabel != null) pageLabel,
   ];
   if (evidence.isEmpty) return summary;
-  return '\$summary · ${evidence.join(' · ')}';
+  return '$summary · ${evidence.join(' · ')}';
 }
 
 bool _hasPageCompletenessMetadata(ProspectIssue issue) =>
