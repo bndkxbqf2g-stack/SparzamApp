@@ -1,3 +1,9 @@
+## Update 15.10.2026 – Mehrdeutige Open-Prices-Filialen bleiben unbekannt
+
+- [x] Ohne eindeutige Quellfilial-ID wird ein Treffer bei mehreren gleichnamigen Filialen im selben Ort verworfen, statt die erste Filiale zu wählen.
+- [x] Eine Regression schützt exakte Filialtreue und lässt eindeutig auflösbare Einzel-Filialen unverändert.
+- [x] Der Adapter behandelt die Datenlücke weiterhin sichtbar als unbekannt; es wird kein Preis erfunden oder in die Routenplanung übernommen.
+
 ## Update 15.10.2026 – Open Prices bewahrt gleichnamige Filialen
 
 - [x] Der Open-Prices-Adapter verwendet die Quellfiliale als Preis-Slot und legt zwei gleichnamige Märkte nicht mehr zusammen.
