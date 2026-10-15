@@ -980,8 +980,8 @@ double? _priceValue(Object? value) {
     compact = compact.substring(0, compact.length - 1);
   }
   if (compact.isEmpty) return null;
-  final simple = RegExp(r'^\d+(?:[.,]\\d{1,2})?');
-  final grouped = RegExp(r'^\\d{1,3}(?:\.\\d{3})+,\\d{1,2}');
+  final simple = RegExp(r'^\d+(?:[.,]\d{1,2})?');
+  final grouped = RegExp(r'^\d{1,3}(?:\.\d{3})+,\d{1,2}');
   final isSimple = simple.matchAsPrefix(compact)?.end == compact.length;
   final isGrouped = grouped.matchAsPrefix(compact)?.end == compact.length;
   if (!isSimple && !isGrouped) return null;
