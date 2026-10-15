@@ -197,6 +197,7 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
       widget.shoppingList,
       prices: widget.marketPrices,
       offers: widget.offers,
+      catalogProducts: widget.catalogProducts,
       prospectPriceHistory: widget.prospectPriceHistory,
       enabledStores: widget.enabledStoreNames,
       openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
