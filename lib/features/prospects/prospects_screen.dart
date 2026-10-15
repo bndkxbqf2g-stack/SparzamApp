@@ -121,10 +121,21 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
     setState(() => _favoriteStores = loaded);
   }
 
-  Future<void> _toggleFavorite(String storeName) async {
+  Future<void> _toggleFavorite(ProspectIssue issue) async {
     final previous = _favoriteStores;
     final next = {...(_favoriteStores ?? const <String>{})};
-    if (!next.add(storeName)) next.remove(storeName);
+    final exactKey = prospectFavoriteKey(issue);
+    final legacyKey = issue.storeName.trim();
+    if (next.contains(exactKey)) {
+      next.remove(exactKey);
+    } else if (exactKey != legacyKey && next.contains(legacyKey)) {
+      // A legacy store-wide favorite is treated as the active branch's
+      // favorite once. Removing it preserves the old user's intent without
+      // silently favoriting every same-name branch forever.
+      next.remove(legacyKey);
+    } else {
+      next.add(exactKey);
+    }
     setState(() => _favoriteStores = next);
     try {
       await _favoriteStore.save(next);
@@ -138,7 +149,10 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
   }
 
   bool _isFavorite(ProspectIssue issue) =>
-      (_favoriteStores ?? const <String>{}).contains(issue.storeName);
+      (_favoriteStores ?? const <String>{}).any(
+        (storedKey) =>
+            prospectFavoriteMatches(storedKey: storedKey, issue: issue),
+      );
 
   void _scrollToMoreProspects() {
     final target = _moreProspectsKey.currentContext;
@@ -278,7 +292,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
     final favoriteProspects = _favoriteStores == null
         ? visibleProspects.take(2).toList(growable: false)
         : visibleProspects
-              .where((issue) => _favoriteStores!.contains(issue.storeName))
+              .where(_isFavorite)
               .toList(growable: false);
 
     return Theme(
@@ -418,7 +432,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                               showSummary: true,
                               isFavorite: _isFavorite(issue),
                               onToggleFavorite: () =>
-                                  _toggleFavorite(issue.storeName),
+                                  _toggleFavorite(issue),
                               onTap: () => _openProspect(
                                 context,
                                 issue,
@@ -469,7 +483,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                         showSummary: true,
                         isFavorite: _isFavorite(issue),
                         onToggleFavorite: () =>
-                            _toggleFavorite(issue.storeName),
+                            _toggleFavorite(issue),
                         onTap: () => _openProspect(
                           context,
                           issue,
