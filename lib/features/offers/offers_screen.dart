@@ -551,7 +551,7 @@ class _ProspectOffersState extends State<_ProspectOffers> {
       requiresManualConfirmation:
           listOnlyWithoutBranch || (product == null && manualProduct != null),
       listOnlyWithoutBranch: listOnlyWithoutBranch,
-      onAdd: !canAdd ? null : () => onAdd(selectableProduct!),
+      onAdd: !canAdd ? null : () => onAdd(selectableProduct),
     );
   }
 
