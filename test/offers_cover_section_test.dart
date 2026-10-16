@@ -69,6 +69,26 @@ void main() {
           .height,
       340,
     );
+    expect(
+      tester
+          .getSize(
+            find.byKey(
+              const ValueKey('offer-cover-details-grid-Lidl'),
+            ),
+          )
+          .height,
+      156,
+    );
+    expect(
+      tester
+          .getSize(
+            find.byKey(
+              const ValueKey('offer-cover-details-favorite-Lidl'),
+            ),
+          )
+          .height,
+      159,
+    );
 
     final cover = find.byKey(
       const ValueKey('offer-cover-open-grid-Lidl'),
