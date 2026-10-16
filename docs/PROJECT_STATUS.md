@@ -1,3 +1,9 @@
+## Update 16.10.2026 – Prospekte-Tab hält kürzere Bildreserve
+
+- Der äußere Prospekte-Scroll wärmt nur noch 180 statt 360 Pixel Vorlauf vor.
+- Dadurch bleibt die nächste Coverzeile schnell sichtbar, während beim schnellen Scroll weniger dekodierte Bilder außerhalb des Viewports gehalten werden.
+- Die lazy Cover-, Seiten- und Add-to-List-Pfade bleiben unverändert.
+
 ## Update 16.10.2026 – Offers-Scroll hält kürzere Bildreserve
 
 - Der übergeordnete Angebote-Scroll wärmt nur noch 180 statt 360 Pixel Vorlauf vor.
