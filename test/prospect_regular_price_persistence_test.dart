@@ -3,6 +3,7 @@ import 'package:shared_preferences_platform_interface/in_memory_shared_preferenc
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/features/offers/prospect_regular_price_persistence.dart';
+import 'package:sparzamapp/features/offers/prospect_offer_products.dart';
 import 'package:sparzamapp/features/offers/prospect_price_learning.dart';
 import 'package:sparzamapp/features/shopping_list/shopping_price_quotes.dart';
 import 'package:sparzamapp/models/list_item.dart';
@@ -79,6 +80,49 @@ void main() {
     expect(projected.single.price, 7.99);
     expect(projected.single.kind, PriceObservationKind.regular);
   });
+
+  test(
+    'uses the exact generated prospect product for an unknown regular price',
+    () async {
+      final record = OfferImportRecord(
+        sourceId: 'unknown-regular-price',
+        productLabel: 'Eigenmarke Haferdrink 1 l',
+        storeName: 'Lidl',
+        originalPrice: 1.49,
+        offerPrice: 0.99,
+        validFrom: now.subtract(const Duration(days: 1)),
+        validUntil: now.add(const Duration(days: 2)),
+        source: 'retailerWebsite',
+        sourceAdapter: 'kaufda',
+        branchId: 'lidl-branch-unknown',
+        proofRef: 'https://example.test/lidl/unknown-regular-price',
+        capturedAt: now,
+      );
+      final offerProducts = prospectOfferProducts(
+        records: [record],
+        catalogProducts: const <Product>[],
+        now: now,
+      );
+      final catalog = catalogProductsWithProspectOffers(
+        catalogProducts: const <Product>[],
+        offerProducts: offerProducts,
+      );
+
+      final result = await persistCurrentProspectRegularPrices(
+        store: memoryStore(),
+        records: [record],
+        catalogProducts: catalog,
+        observedAt: now,
+        now: now,
+      );
+
+      expect(offerProducts, hasLength(1));
+      expect(catalog, hasLength(1));
+      expect(result.learned, hasLength(1));
+      expect(result.learned.single.productId, offerProducts.single.product.id);
+      expect(result.learned.single.identityConfidence, 1);
+    },
+  );
 
   test('projects the persisted regular price into the shopping-list quote', () async {
     final store = memoryStore();
