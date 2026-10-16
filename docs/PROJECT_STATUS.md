@@ -1,3 +1,9 @@
+## Update 16.10.2026 – Adapterherkunft im erzeugten Prospektfeed
+
+- Aktuell geladene offizielle Angebotszeilen tragen jetzt die konkrete Adapterstrecke in sourceAdapter; der verwendete Modus (structured_api, Website-Fallback oder Netto-Adapter) bleibt damit bis zur Preisbeobachtung nachvollziehbar.
+- Provider-eigene Kennungen wie KaufDA oder Bring werden nicht überschrieben.
+- Eine Fixture-Regression prüft, dass offizielle Feedzeilen nicht ohne Adapterherkunft in den Import gelangen; Preise, Produktidentität, Gültigkeit und Filialregeln bleiben unverändert.
+
 ## Update 15.10.2026 – Coverkarten zeigen exakte Filialherkunft
 
 Wenn der Prospektfeed eine Filial-ID liefert, wird sie gemeinsam mit der
