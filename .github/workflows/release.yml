@@ -37,6 +37,11 @@ jobs:
         run: flutter test
       - name: Build web for GitHub Pages
         run: flutter build web --release --no-tree-shake-icons --base-href "/SparzamApp/"
+      - name: Stamp Flutter bootstrap with release revision
+        run: |
+          sed -i "s/flutter_bootstrap.js/flutter_bootstrap.js?v=${GITHUB_SHA}/" build/web/index.html
+          grep -F "flutter_bootstrap.js?v=${GITHUB_SHA}" build/web/index.html
+
       - name: Verify full Material Icons font
         run: |
           test -f build/web/assets/fonts/MaterialIcons-Regular.otf
