@@ -1,3 +1,9 @@
+## Update 16.10.2026 – Coverkarten füllen feste Zellen
+
+- Favoritenrail und Coverraster füllen ihre festen Kartenhöhen jetzt vollständig; die weiße Metadatenfläche endet nicht mehr vor der Zellkante.
+- Coverbild, Gültigkeit, Quellen-/Seitenstatus und Favoriten-/Öffnen-Aktionen bleiben unverändert.
+- Ein Widgettest schützt die Höhe der Favoriten- und Rasterkarten.
+
 ## Update 16.10.2026 – Prospekte-Tab hält kürzere Bildreserve
 
 - Der äußere Prospekte-Scroll wärmt nur noch 180 statt 360 Pixel Vorlauf vor.
