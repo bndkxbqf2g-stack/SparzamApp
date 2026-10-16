@@ -1,3 +1,9 @@
+## Update 16.10.2026 – Coverkarten füllen feste Zellen
+
+- [x] Favoritenrail und Coverraster füllen ihre festen Kartenhöhen vollständig, damit kein dunkler Leerstreifen unter den Metadaten entsteht.
+- [x] Der Inhalt bleibt an Coverbild, Filiale, Gültigkeit, Quellen-/Seitenstatus und Aktionen gebunden.
+- [x] Eine Widgetregression prüft die festen Höhen beider Covervarianten.
+
 ## Update 16.10.2026 – Kürzere Vorlade-Reserve im Prospekte-Tab
 
 - [x] Der äußere Prospekte-Scroll verwendet einen 180-Pixel-Vorlauf.
