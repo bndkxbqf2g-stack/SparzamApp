@@ -531,16 +531,27 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     final product = _memoizedProduct(record);
     final manualProduct =
         product == null ? manualProductForProspectOffer(record) : null;
+    final regionalProduct = record.regionalOnly
+        ? listOnlyProductForRegionalProspectOffer(
+            record,
+            widget.catalogProducts,
+          )
+        : null;
+    final selectableProduct =
+        record.regionalOnly ? regionalProduct : product ?? manualProduct;
+    final listOnlyWithoutBranch =
+        record.regionalOnly && selectableProduct != null;
     final onAdd = widget.onAddToShoppingList;
-    final canAdd = onAdd != null &&
-        (product != null || manualProduct != null);
+    final canAdd = onAdd != null && selectableProduct != null;
     return ProspectOfferCard(
       key: ValueKey('prospect-offer-${prospectOfferRecordKey(record)}'),
       record: record,
-      product: product,
+      product: selectableProduct,
       compact: true,
-      requiresManualConfirmation: product == null && manualProduct != null,
-      onAdd: !canAdd ? null : () => onAdd(product ?? manualProduct!),
+      requiresManualConfirmation:
+          listOnlyWithoutBranch || (product == null && manualProduct != null),
+      listOnlyWithoutBranch: listOnlyWithoutBranch,
+      onAdd: !canAdd ? null : () => onAdd(selectableProduct!),
     );
   }
 
