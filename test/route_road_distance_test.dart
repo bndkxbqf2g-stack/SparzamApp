@@ -69,4 +69,26 @@ void main() {
     expect(fallbackOptimizer.travelCost([store]), closeTo(4.40, 0.001));
   });
 
+  test('ungültige Planungsparameter fallen auf sichere Defaults zurück', () {
+    final optimizer = RouteOptimizer(
+      const [],
+      const [],
+      euroPerKm: -1,
+      maxStores: 0,
+      minExtraStoreSavings: double.nan,
+      additionalStoreCost: -2,
+      timeValuePerHour: double.infinity,
+      travelMinutesPerKm: -3,
+      openPricesMaxAgeDays: -1,
+    );
+
+    expect(optimizer.euroPerKm, 0.22);
+    expect(optimizer.maxStores, 1);
+    expect(optimizer.minExtraStoreSavings, 0);
+    expect(optimizer.additionalStoreCost, 0);
+    expect(optimizer.timeValuePerHour, 0);
+    expect(optimizer.travelMinutesPerKm, closeTo(60 / 45, 0.0001));
+    expect(optimizer.openPricesMaxAgeDays, 60);
+  });
+
 }
