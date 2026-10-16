@@ -155,6 +155,7 @@ List<Widget> buildShellPages({
     fromCache: prospectFeedFromCache,
     regularPriceCount: prospectRegularPriceCount,
     regularPricePersistenceStatus: prospectRegularPricePersistenceStatus,
+    persistedRegularPriceCounts: prospectRegularPriceCountsByStore,
     onRefreshProspects: onRefreshProspects,
     prospectsRefreshing: prospectsRefreshing,
     priceHistory: priceHistory,

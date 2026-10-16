@@ -834,6 +834,51 @@ class ProspectParserTest(unittest.TestCase):
                     1.29,
                 )
 
+    def test_explicit_regular_price_reads_bounded_nested_money_objects(self):
+        self.assertEqual(
+            refresh._explicit_regular_price(
+                {
+                    "priceReference": {
+                        "previousPrice": {"amount": 1.29},
+                    },
+                },
+                0.99,
+            ),
+            1.29,
+        )
+        self.assertEqual(
+            refresh._explicit_regular_price(
+                {
+                    "pricing": {
+                        "comparison": {
+                            "regular": {"formattedValue": "1,29 €"},
+                        },
+                    },
+                },
+                0.99,
+            ),
+            1.29,
+        )
+        self.assertIsNone(
+            refresh._explicit_regular_price(
+                {
+                    "pricing": {
+                        "discount": {"amount": 1.29},
+                        "uvp": {"amount": 2.99},
+                    },
+                },
+                0.99,
+            )
+        )
+        self.assertIsNone(
+            refresh._explicit_regular_price(
+                {
+                    "metadata": {"previousPrice": {"amount": 1.29}},
+                },
+                0.99,
+            )
+        )
+
     def test_aldi_public_prospect_parser_keeps_current_cover_and_period(self):
         html = """
         <a href="https://prospekt.aldi-sued.de/kw41-26-op-mp/page/10">Vorwoche</a>

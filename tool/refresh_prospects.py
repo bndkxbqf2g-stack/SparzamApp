@@ -934,51 +934,118 @@ def _edeka_api_url(base_url):
 def _json_money(value):
     if isinstance(value, (int, float)):
         return float(value)
+    if isinstance(value, dict):
+        # Retailer APIs sometimes wrap an explicitly named money value in a
+        # small presentation object. Follow only bounded money keys; arbitrary
+        # nested numbers must never become a price by accident.
+        for key in (
+            "amount",
+            "value",
+            "numeric",
+            "numericValue",
+            "number",
+            "display",
+            "formatted",
+            "formattedValue",
+            "formattedPrice",
+        ):
+            if key not in value:
+                continue
+            candidate = _json_money(value.get(key))
+            if candidate is not None:
+                return candidate
+        return None
     if not isinstance(value, str):
         return None
     match = re.search(r"(\d+[,.]\d{1,2})", value)
     return money(match.group(1)) if match else None
 
 
-def _explicit_regular_price(raw, sale):
+_EXPLICIT_REGULAR_KEYS = (
+    "streichpreis",
+    "wasPriceDisplay",
+    "wasPrice",
+    "originalPrice",
+    "regularPrice",
+    "normalPrice",
+    "alterPreis",
+    "oldPrice",
+    "priceBefore",
+    "previousPrice",
+    "crossedOutPrice",
+    "strikethroughPrice",
+    "wasPriceNumeric",
+    "original_price",
+    "regular_price",
+    "normal_price",
+    "old_price",
+    "previous_price",
+    "crossed_out_price",
+    "strikethrough_price",
+    "vorherPreis",
+    "vorherigerPreis",
+    "vorher_price",
+    "vorheriger_preis",
+    "streichPreis",
+    "normalpreis",
+)
+
+# Only these named containers may be traversed for a nested explicit regular
+# price. This keeps a source schema change bounded and prevents discount, UVP,
+# or unrelated numeric fields from being interpreted as a regular price.
+_EXPLICIT_REGULAR_CONTAINERS = (
+    "price",
+    "pricing",
+    "prices",
+    "priceInfo",
+    "price_info",
+    "priceReference",
+    "price_reference",
+    "comparison",
+    "comparisonPrice",
+    "comparison_price",
+    "regular",
+    "previous",
+    "original",
+    "was",
+)
+
+
+def _explicit_regular_price(raw, sale, _depth=0):
     """Read only an explicitly named regular-price field.
 
     These keys describe a stated crossed-out/previous price. Discount rates,
     UVP/list prices and arbitrary numeric fields stay outside this helper so a
-    source format change cannot invent a comparable regular price.
+    source format change cannot invent a comparable regular price. Nested
+    presentation objects are followed only through the allow-listed
+    containers above and at a bounded depth.
     """
-    if not isinstance(raw, dict):
+    if not isinstance(raw, dict) or _depth > 2:
         return None
-    for key in (
-        "streichpreis",
-        "wasPriceDisplay",
-        "wasPrice",
-        "originalPrice",
-        "regularPrice",
-        "normalPrice",
-        "alterPreis",
-        "oldPrice",
-        # Public retailer payloads use these names for the value printed
-        # beside the sale price. They remain explicit regular-price evidence;
-        # discount percentages, UVPs and arbitrary numeric fields stay out.
-        "priceBefore",
-        "previousPrice",
-        "crossedOutPrice",
-        "strikethroughPrice",
-        "wasPriceNumeric",
-        "original_price",
-        "regular_price",
-        "normal_price",
-        "old_price",
-        "previous_price",
-        "crossed_out_price",
-        "strikethrough_price",
-    ):
+    for key in _EXPLICIT_REGULAR_KEYS:
         candidate = _json_money(raw.get(key))
         if candidate is not None and candidate >= sale:
             return candidate
+    for key in _EXPLICIT_REGULAR_CONTAINERS:
+        nested = raw.get(key)
+        if isinstance(nested, dict):
+            # A semantic container such as regular is already explicit;
+            # allow its bounded presentation value before descending further.
+            if key in ("regular", "previous", "original", "was"):
+                candidate = _json_money(nested)
+                if candidate is not None and candidate >= sale:
+                    return candidate
+            candidate = _explicit_regular_price(nested, sale, _depth + 1)
+            if candidate is not None:
+                return candidate
+        elif isinstance(nested, list):
+            for item in nested[:8]:
+                if not isinstance(item, dict):
+                    continue
+                candidate = _explicit_regular_price(item, sale, _depth + 1)
+                if candidate is not None:
+                    return candidate
     return None
-
 
 def _edeka_date(value):
     if isinstance(value, (int, float)):

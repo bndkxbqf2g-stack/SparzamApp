@@ -35,6 +35,7 @@ class OffersScreen extends StatefulWidget {
     this.regularPriceCount,
     this.regularPricePersistenceStatus =
         ProspectRegularPricePersistenceStatus.standalone,
+    this.persistedRegularPriceCounts,
   });
 
   // Kept for the shell/route data contract. The Angebote tab deliberately
@@ -57,6 +58,8 @@ class OffersScreen extends StatefulWidget {
   /// Null keeps standalone screens on their feed-derived fallback.
   final int? regularPriceCount;
   final ProspectRegularPricePersistenceStatus regularPricePersistenceStatus;
+  /// Per-store counts confirmed by local price-observation persistence.
+  final Map<String, int>? persistedRegularPriceCounts;
 
   @override
   State<OffersScreen> createState() => _OffersScreenState();
@@ -209,6 +212,21 @@ class _OffersScreenState extends State<OffersScreen> {
             catalogProducts: widget.catalogProducts,
             onAddToShoppingList: widget.onAddToShoppingList,
           ),
+          if (currentProspectIssues.isNotEmpty || currentRecords.isNotEmpty) ...[
+            const SizedBox(height: 18),
+            ProspectCoverageCard(
+              coverage: calculateProspectCoverage(
+                issues: currentProspectIssues,
+                records: currentRecords,
+                now: widget.now,
+                catalogProducts: widget.catalogProducts,
+                persistedRegularPriceCounts:
+                    widget.persistedRegularPriceCounts,
+              ),
+              regularPricePersistenceStatus:
+                  widget.regularPricePersistenceStatus,
+            ),
+          ],
         ],
       ),
     );
