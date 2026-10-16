@@ -123,7 +123,7 @@ ReceiptDraft parseReceiptLedger(String text) {
 
   for (var index = 0; index < lines.length; index++) {
     final raw = lines[index];
-    final line = raw.trim();
+    final line = _normalizeReceiptOcrMoneySpacing(raw.trim());
     if (!inItems) {
       if (line == 'Preis EUR' || line == 'EUR') inItems = true;
       continue;
@@ -324,6 +324,21 @@ String? _receiptRetailer(String text) {
   if (hasToken(r'penny')) return 'PENNY';
   if (hasToken(r'rewe')) return 'REWE';
   return null;
+}
+
+String _normalizeReceiptOcrMoneySpacing(String value) {
+  // Mobile OCR may split the decimal separator from either side of a
+  // two-digit cents token (for example \"1 , 49\" or \"0 . 85\").
+  // Restrict the rewrite to numeric tokens so product labels remain evidence
+  // and are never silently rewritten into a different identity.
+  final pattern = RegExp(
+    r'(?<![\\w])(-?[\\d@]+)\\s*([,.])\\s*([\\d@])\\s*([\\d@])',
+  );
+  return value.replaceAllMapped(
+    pattern,
+    (match) =>
+        '${match.group(1)}${match.group(2)}${match.group(3)}${match.group(4)}',
+  );
 }
 
 int _cents(String value) {
