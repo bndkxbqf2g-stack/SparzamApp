@@ -117,6 +117,25 @@ Kartenzahlung 2,09
     expect(draft.balances, isTrue);
   });
 
+  test('normalizes OCR spaces around decimal money tokens', () {
+    final draft = parseReceiptLedger('''
+Preis EUR
+Milch 1 , 29 B
+Brot 2 * 0 . 85 1 , 70 B
+K Card XTRA Rabatt - 0 , 20
+Summe 2,79
+Kartenzahlung 2,79
+''');
+
+    expect(draft.rows[0].cents, 129);
+    expect(draft.rows[1].quantity, 2);
+    expect(draft.rows[1].unitCents, 85);
+    expect(draft.rows[1].cents, 170);
+    expect(draft.rows[2].cents, -20);
+    expect(draft.unresolvedLines, isEmpty);
+    expect(draft.balances, isTrue);
+  });
+
   test('flags a quantity mismatch instead of inventing a correction', () {
     final draft = parseReceiptLedger('''
 Preis EUR
