@@ -57,6 +57,28 @@ void main() {
     expect(await reading, const {'Lidl': 4.2});
   });
 
+  test('behält gültige Werte aus einem teilweise beschädigten Cache', () async {
+    await SharedPreferencesAsync().setString(
+      'road_distances_v3',
+      jsonEncode({
+        'version': 1,
+        'entries': {
+          'start a': {
+            'originAddress': 'Start A',
+            'distances': {
+              'Lidl': 4.2,
+              'Kaufland': 'unbekannt',
+              'Edeka': -1,
+              'Penny': null,
+            },
+          },
+        },
+      }),
+    );
+
+    expect(await RoadDistanceStore().load('Start A'), const {'Lidl': 4.2});
+  });
+
   test('liest den alten Einzel-Startort-Cache weiter', () async {
     await SharedPreferencesAsync().setString(
       'road_distances_v2',
