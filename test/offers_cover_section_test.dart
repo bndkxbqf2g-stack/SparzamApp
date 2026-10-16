@@ -90,6 +90,15 @@ void main() {
       159,
     );
 
+    final gridCard = find.ancestor(
+      of: find.byKey(
+        const ValueKey('offer-cover-open-grid-Lidl'),
+      ),
+      matching: find.byType(Card),
+    );
+    expect(tester.widget<Card>(gridCard).color, Colors.white);
+    expect(tester.widget<Card>(gridCard).surfaceTintColor, Colors.white);
+
     final cover = find.byKey(
       const ValueKey('offer-cover-open-grid-Lidl'),
     );
