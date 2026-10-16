@@ -691,6 +691,27 @@ class ProspectParserTest(unittest.TestCase):
         self.assertTrue(all(float(item["offerPrice"]) > 0 for item in offers))
         self.assertTrue(all(item.get("proofRef") for item in offers))
 
+    def test_versioned_feed_offers_keep_adapter_provenance(self):
+        payload = refresh.json.loads(FEED.read_text(encoding="utf-8"))
+        official = [
+            item
+            for item in payload["offers"]
+            if item.get("source") == "retailerWebsite"
+        ]
+
+        self.assertTrue(official)
+        self.assertTrue(
+            all(
+                isinstance(item.get("sourceAdapter"), str)
+                and item["sourceAdapter"].strip()
+                for item in official
+            )
+        )
+        self.assertIn(
+            "structured_api",
+            {item["sourceAdapter"] for item in official},
+        )
+
     def test_versioned_feed_regular_prices_are_explicit_and_branch_bound(self):
         payload = refresh.json.loads(FEED.read_text(encoding="utf-8"))
         regular = [

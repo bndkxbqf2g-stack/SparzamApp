@@ -1,3 +1,9 @@
+## Update 16.10.2026 – Adapterherkunft pro Angebotszeile
+
+- [x] Der erzeugte offizielle Prospektfeed führt die verwendete Adapterstrecke pro Angebotszeile in sourceAdapter.
+- [x] Provider-eigene Quellenkennungen bleiben vorrangig; die bestehende Preis-, Filial- und Gültigkeitsprüfung bleibt unverändert.
+- [x] Eine versionskontrollierte Feed-Regression schützt die Herkunft bis zum Import.
+
 ## Update 15.10.2026 – Angebots-Hinweise bleiben tagesaktuell
 
 - [x] Der Angebote-Reiter reicht nur die bereits nach Gültigkeit gefilterten Prospekt-Issues an seine Statuskarten weiter.
