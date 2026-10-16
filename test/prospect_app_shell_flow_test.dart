@@ -14,6 +14,8 @@ import 'package:sparzamapp/models/mobility_settings.dart';
 import 'package:sparzamapp/models/named_shopping_list.dart';
 import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/models/price_data_settings.dart';
+import 'package:sparzamapp/models/price_observation.dart';
+import 'package:sparzamapp/services/price_observation_store.dart';
 import 'package:sparzamapp/models/price_point.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/purchase_record.dart';
@@ -33,12 +35,24 @@ import 'package:sparzamapp/services/recent_purchase_store.dart';
 import 'package:sparzamapp/services/shopping_list_store.dart';
 
 class _FakeProspectImportModule extends ProspectImportModule {
-  _FakeProspectImportModule(this.result);
+  _FakeProspectImportModule(
+    this.result, {
+    this.disableCache = false,
+  });
 
   final ProspectFeedLoadResult result;
+  final bool disableCache;
 
   @override
   Future<ProspectFeedLoadResult> execute({String? startAddress}) async => result;
+
+  @override
+  Future<ProspectFeedLoadResult?> executeCached({
+    String? startAddress,
+  }) async {
+    if (disableCache) return null;
+    return super.executeCached(startAddress: startAddress);
+  }
 }
 
 class _DelayedNamedListStore extends ShoppingListStore {
@@ -116,6 +130,32 @@ class _InMemoryProductCatalogStore extends ProductCatalogStore {
   }
 }
 
+class _InMemoryPriceObservationStore extends PriceObservationStore {
+  List<PriceObservation> observations = <PriceObservation>[];
+
+  @override
+  Future<List<PriceObservation>> load() async =>
+      List<PriceObservation>.of(observations);
+
+  @override
+  Future<List<PriceObservation>> upsertById(
+    Iterable<PriceObservation> incoming, {
+    bool Function(PriceObservation observation)? removeWhere,
+  }) async {
+    final byId = <String, PriceObservation>{
+      for (final observation in observations)
+        if (!(removeWhere?.call(observation) ?? false))
+          observation.id: observation,
+    };
+    for (final observation in incoming) {
+      if (removeWhere?.call(observation) ?? false) continue;
+      byId[observation.id] = observation;
+    }
+    observations = byId.values.toList(growable: false);
+    return List<PriceObservation>.of(observations);
+  }
+}
+
 class _Stores {
   _Stores({
     ShoppingListStore? shoppingListStore,
@@ -144,6 +184,7 @@ Widget _app(
   List<Offer> initialOffers = const <Offer>[],
   List<Product> initialCustomProducts = const <Product>[],
   List<ListItem> initialShoppingList = const <ListItem>[],
+  PriceObservationStore? priceObservationStore,
 }) {
   return MaterialApp(
     home: AppShell(
@@ -160,6 +201,7 @@ Widget _app(
       shoppingListStore: stores.shoppingList,
       diagnosticLogService: DiagnosticLogService(),
       prospectImportModule: module,
+      priceObservationStore: priceObservationStore,
       initialBudget: const BudgetPlan(),
       initialOffers: initialOffers,
       initialMobility: const MobilitySettings(
@@ -189,6 +231,8 @@ void main() {
   tearDown(() {
     SharedPreferencesAsyncPlatform.instance = null;
   });
+
+
 
   testWidgets(
     'verzögerter alter Listenstand überschreibt keine neue Nutzereingabe',
@@ -518,6 +562,81 @@ void main() {
       expect(savedOffers.single.locationId, '4371');
       expect(savedOffers.single.region, 'Thüngersheim');
       expect(savedOffers.single.address, issue.address);
+    },
+  );
+
+  testWidgets(
+    'unveränderter Prospektfeed reconciliiert den lokalen Normalpreis nach Speicherverlust',
+    (tester) async {
+      final now = DateTime.now();
+      final record = OfferImportRecord(
+        sourceId: 'netto-reconcile-shell',
+        productLabel: 'Jacobs Kaffee Crema 500 g',
+        storeName: 'Netto',
+        originalPrice: 7.99,
+        offerPrice: 4.99,
+        validFrom: now.subtract(const Duration(days: 1)),
+        validUntil: now.add(const Duration(days: 2)),
+        source: 'retailerWebsite',
+        sourceAdapter: 'kaufda',
+        branchId: 'netto-branch-1',
+        proofRef: 'https://example.test/netto/reconcile',
+        capturedAt: now,
+      );
+      final module = _FakeProspectImportModule(
+        ProspectFeedLoadResult(
+          records: [record],
+          refreshedStores: const ['Netto'],
+          // Older than the resume threshold so the unchanged-feed branch runs.
+          generatedAt: now.subtract(const Duration(hours: 7)),
+          prospects: const <ProspectIssue>[],
+        ),
+        disableCache: true,
+      );
+      final priceStore = _InMemoryPriceObservationStore();
+      final stores = _Stores(
+        shoppingListStore: _InMemoryShoppingListStore(),
+        offerStore: _InMemoryOfferStore(),
+        productCatalogStore: _InMemoryProductCatalogStore(),
+      );
+
+      await tester.pumpWidget(
+        _app(
+          stores,
+          module,
+          initialCustomProducts: const [
+            Product(
+              id: 'test-jacobs-kaffee-crema-500-g',
+              name: 'Jacobs Kaffee Crema 500 g',
+              unit: '500 g',
+              group: 'Kaffee & Snacks',
+            ),
+          ],
+          priceObservationStore: priceStore,
+        ),
+      );
+      for (var attempt = 0;
+          attempt < 20 && priceStore.observations.isEmpty;
+          attempt++) {
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+      expect(priceStore.observations, hasLength(1));
+
+      // Simulate a local reset without changing the feed fingerprint.
+      priceStore.observations = <PriceObservation>[];
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      for (var attempt = 0;
+          attempt < 20 && priceStore.observations.isEmpty;
+          attempt++) {
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+
+      expect(priceStore.observations, hasLength(1));
+      expect(priceStore.observations.single.kind, PriceObservationKind.regular);
+      expect(priceStore.observations.single.price, 7.99);
     },
   );
 }
