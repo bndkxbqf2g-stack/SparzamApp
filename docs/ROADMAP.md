@@ -929,3 +929,8 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Der optionale Bring-Adapter übernimmt benannte Streich-/Vorherpreisfelder in CamelCase, snake_case und deutschen Feldnamen.
 - [x] Rabattprozente, UVP-Felder und beliebige numerische Felder bleiben ausgeschlossen; ein Normalpreis muss mindestens so hoch wie der Angebotspreis sein.
 - [x] Die Änderung erweitert nur die Normalpreis-Erkennung; Gültigkeitszeitraum, Filiale, Nachweis und die Trennung von Angebotspreis und Preisbasis bleiben unverändert.
+## Update 15.10.2026 – Cover-Metadaten bei Quellfehlern erhalten
+
+- [x] Ein fehlgeschlagener Händler-Refresh löscht keinen noch gültigen, zuvor validierten Prospektcover.
+- [x] Der Fallback bleibt an die exakte Filiale gebunden und verwirft abgelaufene Seiten weiterhin.
+- [x] Der Fehlerstatus und die alte Erfassungsherkunft bleiben sichtbar; neue Angebote werden bei einem Quellfehler nicht erfunden.

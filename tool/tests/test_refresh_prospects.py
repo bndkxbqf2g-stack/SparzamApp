@@ -1,5 +1,6 @@
 import importlib.util
 import pathlib
+import tempfile
 import unittest
 from datetime import datetime
 from unittest import mock
@@ -351,7 +352,12 @@ class ProspectParserTest(unittest.TestCase):
         reference_day = refresh.date.fromisoformat(generated_at[:10]).isoformat()
         for source in payload["sources"]:
             with self.subTest(store=source["storeName"]):
-                self.assertEqual(source.get("status"), "ok")
+                status = source.get("status")
+                self.assertIn(status, ("ok", "metadata_only", "error"))
+                if status == "error":
+                    # A failed refresh may retain the last validated current
+                    # cover, but it must remain visibly marked as an error.
+                    self.assertTrue(source.get("prospects"))
                 self.assertTrue(source.get("branchId"))
                 self.assertTrue(source.get("location"))
                 self.assertTrue(source.get("address"))
@@ -1989,6 +1995,79 @@ ab Montag, 28.09.26
         self.assertEqual(enriched_prospects[1]["branchId"], "page-branch")
         self.assertEqual(enriched_prospects[1]["location"], "Page City")
         self.assertEqual(offers[0], {"productLabel": "Milch", "storeName": "EDEKA"})
+
+    def test_source_error_preserves_current_cover_metadata(self):
+        previous = {
+            "generatedAt": "2026-10-14T04:15:00Z",
+            "sources": [
+                {
+                    "storeName": "Netto",
+                    "branchId": "4371",
+                    "location": "Thüngersheim",
+                    "address": "Am Strassacker 1, 97291 Thüngersheim, Germany",
+                    "prospects": [
+                        {
+                            "id": "netto-current",
+                            "title": "Netto Prospekt",
+                            "offerStartDate": "2026-10-12",
+                            "offerEndDate": "2026-10-17",
+                            "pageSamples": [
+                                {
+                                    "number": 1,
+                                    "image": "https://example.test/netto-cover.jpg",
+                                }
+                            ],
+                        }
+                    ],
+                }
+            ],
+            "offers": [],
+        }
+
+        with tempfile.TemporaryDirectory() as directory:
+            output = pathlib.Path(directory) / "current.json"
+            output.write_text(
+                refresh.json.dumps(previous),
+                encoding="utf-8",
+            )
+            source = (
+                "netto_thuengersheim",
+                "Netto",
+                "https://example.test/netto",
+                "netto",
+            )
+            with (
+                mock.patch.object(refresh, "OUTPUT", output),
+                mock.patch.object(refresh, "SOURCES", (source,)),
+                mock.patch.object(
+                    refresh,
+                    "fetch_current_bring_prospects",
+                    return_value={},
+                ),
+                mock.patch.object(
+                    refresh,
+                    "fetch",
+                    side_effect=OSError("source unavailable"),
+                ),
+                mock.patch.object(
+                    refresh,
+                    "local_today",
+                    return_value=refresh.date(2026, 10, 15),
+                ),
+            ):
+                refresh.main(["netto_thuengersheim"])
+
+            payload = refresh.json.loads(output.read_text(encoding="utf-8"))
+            netto = next(
+                item for item in payload["sources"] if item["storeName"] == "Netto"
+            )
+            self.assertEqual(netto["status"], "error")
+            self.assertEqual(netto["prospects"][0]["id"], "netto-current")
+            self.assertEqual(
+                netto["prospects"][0]["pageSamples"][0]["image"],
+                "https://example.test/netto-cover.jpg",
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
