@@ -1,3 +1,9 @@
+## Update 16.10.2026 – Cover-Scroll hält Offscreen-Karten nicht fest
+
+- Die horizontale Favoritenleiste und das Coverraster deaktivieren automatische Keep-Alives und eigene Vorhaltebereiche; der übergeordnete Scrollpfad kontrolliert die sichtbare Reserve.
+- Dadurch werden beim schnellen Prospekt-Scroll weniger Coverkarten und externe Bilder gleichzeitig im Widget-/Decode-Pfad gehalten.
+- Das Coverraster bleibt seitenweise nachladbar; Quellen-, Gültigkeits- und Add-to-List-Regeln ändern sich nicht.
+
 ## Update 16.10.2026 – Prospektparser bleibt bei malformed Collections nutzbar
 
 - Der Feedparser ignoriert falsch typisierte `sources`, `prospects`, `pageSamples` und `offers`-Felder, statt den gesamten aktuellen Snapshot zu verwerfen.

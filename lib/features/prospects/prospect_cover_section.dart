@@ -193,7 +193,11 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
             height: 340,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
+              // Favorites are a bounded rail. Do not retain offscreen cards or
+              // decode an additional image row while the parent feed moves.
               scrollCacheExtent: const ScrollCacheExtent.pixels(0),
+              addAutomaticKeepAlives: false,
+              addRepaintBoundaries: true,
               itemCount: favorites.length,
               separatorBuilder: (_, index) => const SizedBox(width: 12),
               itemBuilder: (context, index) {
@@ -238,6 +242,11 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
                   itemCount: visibleCount,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
+                  // The outer ListView owns scrolling and its bounded cache.
+                  // Avoid a second grid cache retaining decoded cover cards.
+                  scrollCacheExtent: const ScrollCacheExtent.pixels(0),
+                  addAutomaticKeepAlives: false,
+                  addRepaintBoundaries: true,
                   padding: EdgeInsets.zero,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: columns,
