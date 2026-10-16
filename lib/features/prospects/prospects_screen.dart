@@ -725,14 +725,14 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
         ? prospectOfferRecordKey(record)
         : record.sourceId.trim();
     return ProspectOfferCard(
-      key: ValueKey('prospect-search-offer-${recordKey}'),
+      key: ValueKey('prospect-search-offer-$recordKey'),
       record: record,
       product: selectableProduct,
       compact: true,
       requiresManualConfirmation:
           listOnlyWithoutBranch || (product == null && manualProduct != null),
       listOnlyWithoutBranch: listOnlyWithoutBranch,
-      onAdd: !canAdd ? null : () => onAddProduct!(selectableProduct!),
+      onAdd: !canAdd ? null : () => onAddProduct!(selectableProduct),
     );
   }
 }
@@ -2086,7 +2086,7 @@ class ProspectViewerScreen extends StatelessWidget {
                       final canAdd = onAddProduct != null &&
                           selectableProduct != null;
                       return ProspectOfferCard(
-                        key: ValueKey('prospect-offer-${recordKey}'),
+                        key: ValueKey('prospect-offer-$recordKey'),
                         record: record,
                         product: selectableProduct,
                         requiresManualConfirmation: listOnlyWithoutBranch ||
@@ -2094,7 +2094,7 @@ class ProspectViewerScreen extends StatelessWidget {
                         listOnlyWithoutBranch: listOnlyWithoutBranch,
                         onAdd: !canAdd
                             ? null
-                            : () => onAddProduct!(selectableProduct!),
+                            : () => onAddProduct!(selectableProduct),
                       );
                     },
                     childCount: groupedItems[category]!.length,
