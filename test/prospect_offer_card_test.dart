@@ -179,6 +179,30 @@ void main() {
     );
   });
 
+  testWidgets('hides an invalid crossed-out regular price', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ProspectOfferCard(
+            record: OfferImportRecord(
+              sourceId: 'invalid-regular-price',
+              productLabel: 'Butter 250 g',
+              storeName: 'Lidl',
+              originalPrice: 1.49,
+              offerPrice: 1.79,
+              validUntil: DateTime(2026, 10, 2),
+              proofRef: 'https://example.test/lidl/invalid-regular-price',
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('1,79 €'), findsOneWidget);
+    expect(find.text('1,49 €'), findsNothing);
+    expect(find.textContaining('-%'), findsNothing);
+  });
+
   testWidgets('shows KaufDA capture time and prospect page when available', (
     tester,
   ) async {

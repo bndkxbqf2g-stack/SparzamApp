@@ -258,12 +258,17 @@ class _OfferSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final savings = record.originalPrice == null
+    final validOriginalPrice = record.originalPrice != null &&
+            record.originalPrice! > record.offerPrice &&
+            record.originalPrice! > 0
+        ? record.originalPrice
+        : null;
+    final savings = validOriginalPrice == null
         ? null
-        : record.originalPrice! - record.offerPrice;
-    final discount = record.originalPrice == null || record.originalPrice! <= 0
+        : validOriginalPrice - record.offerPrice;
+    final discount = validOriginalPrice == null
         ? null
-        : ((savings! / record.originalPrice!) * 100).round();
+        : ((savings! / validOriginalPrice) * 100).round();
     final unit = product?.unit.trim() ?? record.packageSize?.trim();
     final baseUnitPrice = product == null
         ? null
@@ -288,9 +293,9 @@ class _OfferSummary extends StatelessWidget {
                 fontSize: compact ? 16 : 20,
               ),
             ),
-            if (record.originalPrice != null)
+            if (validOriginalPrice != null)
               Text(
-                _price(record.originalPrice!),
+                _price(validOriginalPrice),
                 style: const TextStyle(
                   color: Colors.grey,
                   decoration: TextDecoration.lineThrough,
