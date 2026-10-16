@@ -1006,3 +1006,16 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Eindeutig als Non-Food gekennzeichnete Badartikel und Halloween-Dekorationen werden vor dem aktuellen Angebotsfeed entfernt.
 - [x] Lebensmittel in gemischten Händlerkategorien bleiben erhalten; die Sperre nutzt explizite Artikel-/Kategorienachweise.
 - [x] Der versionierte Feed und Parserregressionen prüfen gemeinsam, dass aktuelle Prospektangebote food-only bleiben.
+
+## Update 16.10.2026 – Veraltete reguläre Prospektpreise nach Refresh gesperrt
+
+- [x] Ein bestätigter Händler-Refresh markiert reguläre Beobachtungen, die im
+  aktuellen Feed fehlen, als nicht aktuell und behält sie für Historie und
+  Nachvollziehbarkeit.
+- [x] Nicht aktuelle automatische Prospektbeobachtungen werden weder in
+  MarketPrice noch in Route und Preisvergleich projiziert; fehlende Preise
+  bleiben unbekannt.
+- [x] Die Reconciliation ist auf ausdrücklich aktualisierte Händler begrenzt;
+  Offline-/Fehlerläufe ohne bestätigten Refresh verändern keinen Preisbestand.
+- [x] Regressionen prüfen entfernte Artikel, unberührte Händler, JSON-Abwärts-
+  kompatibilität und den unveränderten Normalpreis-/Aktionspreisvertrag.

@@ -92,12 +92,32 @@ Future<ProspectRegularPricePersistenceResult>
   ).where((entry) => entry.locationId?.trim().isNotEmpty == true).toList(
         growable: false,
       );
+  final refreshedStoreKeys = refreshedStores
+      ?.map(_normalizedProspectStoreKey)
+      .where((value) => value.isNotEmpty)
+      .toSet();
+  final currentKeys = refreshedStoreKeys == null
+      ? null
+      : learned.map(_prospectRegularCurrentKey).toSet();
   final stored = await store.upsertById(
     learned,
     // Remove legacy automatic offer observations even when a cache lacks a
     // feed timestamp. They are never routeable prices and must not remain in
     // the local prospect price database.
     removeWhere: _isAutomaticProspectOfferObservation,
+    // A successful refresh reconciles the current projection while retaining
+    // superseded rows for historical inspection.
+    rewriteExisting: (existing) {
+      if (refreshedStoreKeys == null ||
+          currentKeys == null ||
+          !_isCurrentProspectRegular(existing) ||
+          !refreshedStoreKeys
+              .contains(_normalizedProspectStoreKey(existing.storeName)) ||
+          currentKeys.contains(_prospectRegularCurrentKey(existing))) {
+        return existing;
+      }
+      return _withProspectCurrent(existing, false);
+    },
   );
   return ProspectRegularPricePersistenceResult(
     learned: learned,
@@ -109,6 +129,59 @@ bool _isAutomaticProspectOfferObservation(PriceObservation observation) =>
     observation.kind == PriceObservationKind.offer &&
     (observation.id.startsWith('prospect|') ||
         observation.id.startsWith('offer|import|'));
+String _normalizedProspectStoreKey(String value) => value.trim().toLowerCase();
+
+bool _isCurrentProspectRegular(PriceObservation entry) =>
+    entry.isCurrent &&
+    entry.kind == PriceObservationKind.regular &&
+    switch (entry.source) {
+      PriceObservationSource.retailer ||
+      PriceObservationSource.retailerWebsite ||
+      PriceObservationSource.leaflet => true,
+      _ => false,
+    };
+
+String _prospectRegularCurrentKey(PriceObservation entry) => [
+      entry.source.name,
+      entry.sourceAdapter?.trim().toLowerCase() ?? '',
+      _normalizedProspectStoreKey(entry.storeName),
+      entry.locationId?.trim().toLowerCase() ?? '',
+      entry.productId?.trim() ?? '',
+      entry.familyKey?.trim().toLowerCase() ?? '',
+      entry.variant?.trim().toLowerCase() ?? '',
+      entry.quantity?.toStringAsFixed(6) ?? '',
+      entry.unit?.trim().toLowerCase() ?? '',
+    ].join('\u001f');
+
+PriceObservation _withProspectCurrent(
+  PriceObservation entry,
+  bool isCurrent,
+) => PriceObservation(
+      id: entry.id,
+      productId: entry.productId,
+      familyKey: entry.familyKey,
+      variant: entry.variant,
+      ean: entry.ean,
+      storeName: entry.storeName,
+      locationId: entry.locationId,
+      region: entry.region,
+      price: entry.price,
+      quantity: entry.quantity,
+      unit: entry.unit,
+      unitPrice: entry.unitPrice,
+      kind: entry.kind,
+      evidenceConfidence: entry.evidenceConfidence,
+      validFrom: entry.validFrom,
+      validUntil: entry.validUntil,
+      observedAt: entry.observedAt,
+      source: entry.source,
+      sourceAdapter: entry.sourceAdapter,
+      identityConfidence: entry.identityConfidence,
+      proofRef: entry.proofRef,
+      discounted: entry.discounted,
+      isCurrent: isCurrent,
+    );
+
 
 /// Removes legacy automatic prospect offer evidence before the first feed
 /// refresh. This keeps an offline/error launch from leaving offer prices in

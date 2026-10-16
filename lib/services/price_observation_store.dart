@@ -164,15 +164,25 @@ class PriceObservationStore {
   Future<List<PriceObservation>> upsertById(
     Iterable<PriceObservation> incoming, {
     bool Function(PriceObservation observation)? removeWhere,
+    PriceObservation Function(PriceObservation observation)? rewriteExisting,
   }) {
     final valid = incoming.where((entry) => entry.isValid).toList();
     return _queue.schedule(() async {
       final existing = await _loadNow();
-      final byId = <String, PriceObservation>{
-        for (final entry in existing)
-          if (!(removeWhere?.call(entry) ?? false)) entry.id: entry,
-      };
-      var changed = byId.length != existing.length;
+      final byId = <String, PriceObservation>{};
+      var changed = false;
+      for (final entry in existing) {
+        if (removeWhere?.call(entry) ?? false) {
+          changed = true;
+          continue;
+        }
+        final rewritten = rewriteExisting?.call(entry) ?? entry;
+        if (jsonEncode(rewritten.toJson()) != jsonEncode(entry.toJson())) {
+          changed = true;
+        }
+        byId[rewritten.id] = rewritten;
+      }
+      if (byId.length != existing.length) changed = true;
       for (final entry in valid) {
         final previous = byId[entry.id];
         if (!_shouldReplaceObservation(previous, entry)) continue;
