@@ -109,6 +109,7 @@ class AppShell extends StatefulWidget {
     required this.initialPreferredProductByGroup,
     required this.diagnosticLogService,
     this.prospectImportModule,
+    this.priceObservationStore,
   });
 
   final BudgetStore budgetStore;
@@ -134,6 +135,9 @@ class AppShell extends StatefulWidget {
   final Map<String, String> initialPreferredProductByGroup;
   final DiagnosticLogService diagnosticLogService;
   final ProspectImportModule? prospectImportModule;
+  /// Injectable only for deterministic local-storage tests; production uses
+  /// the default local preference-backed store.
+  final PriceObservationStore? priceObservationStore;
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -171,7 +175,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   Map<String, int> prospectRegularPriceCountsByStore = const <String, int>{};
   ProspectRegularPricePersistenceStatus prospectRegularPricePersistenceStatus =
       ProspectRegularPricePersistenceStatus.standalone;
-  final priceObservationStore = PriceObservationStore();
+  final _defaultPriceObservationStore = PriceObservationStore();
+  PriceObservationStore get priceObservationStore =>
+      widget.priceObservationStore ?? _defaultPriceObservationStore;
   final receiptAliasStore = ReceiptAliasStore();
   late PriceDataSettings priceDataSettings;
   late List<PricePoint> priceHistory;
