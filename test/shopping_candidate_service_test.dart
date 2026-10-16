@@ -710,8 +710,6 @@ void main() {
     expect(candidates, hasLength(1));
     expect(candidates.single.quotes, isEmpty);
   });
-}
-
 
   test('same nominal price uses deterministic source precedence', () {
     const product = Product(
@@ -759,3 +757,4 @@ void main() {
     expect(candidates.single.bestPrice, 1.00);
     expect(candidates.single.bestComparisonPrice, 1.00);
   });
+}

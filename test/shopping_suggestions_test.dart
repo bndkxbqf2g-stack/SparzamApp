@@ -1994,8 +1994,6 @@ void main() {
   });
 
 
-}
-
 
   test('same nominal receipt and Open Prices values prefer the receipt source', () {
     final hint = shoppingSuggestionPriceForProduct(
@@ -2022,3 +2020,4 @@ void main() {
     expect(hint?.sourceLabel, 'Bonpreis');
     expect(hint?.sourcePriority, 1);
   });
+}
