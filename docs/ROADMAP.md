@@ -934,3 +934,7 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Ein fehlgeschlagener Händler-Refresh löscht keinen noch gültigen, zuvor validierten Prospektcover.
 - [x] Der Fallback bleibt an die exakte Filiale gebunden und verwirft abgelaufene Seiten weiterhin.
 - [x] Der Fehlerstatus und die alte Erfassungsherkunft bleiben sichtbar; neue Angebote werden bei einem Quellfehler nicht erfunden.
+## Update 16.10.2026 – Bewegliche Grundpreis-Fixture
+
+- [x] Die Prospektmatrix prüft weiterhin belegte Packungs- und Grundpreise, ohne einen einzelnen Tageswert als dauerhaftes Angebot vorauszusetzen.
+- [x] Einheit, Preisbasis und sichere unaufgelöste Mehrfachmengen bleiben im Testfall erhalten.
