@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/shell/shell_pricing.dart';
 import 'package:sparzamapp/models/market_price.dart';
+import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/price_data_settings.dart';
 import 'package:sparzamapp/models/price_point.dart';
 
@@ -55,6 +56,25 @@ void main() {
       [manual, oldReceipt],
       const PriceDataSettings(openPricesEnabled: false),
     );
+    expect(result, [manual]);
+  });
+
+  test('deaktivierte externe Quelle schließt direkte Prospekt-Aktionspreise aus', () {
+    final offer = MarketPrice(
+      productId: 'milk',
+      storeName: 'Lidl',
+      price: 0.79,
+      updatedAt: DateTime.now(),
+      source: MarketPriceSource.prospect,
+      kind: PriceObservationKind.offer,
+      discounted: true,
+    );
+
+    final result = activePrices(
+      [manual, offer],
+      const PriceDataSettings(openPricesEnabled: false),
+    );
+
     expect(result, [manual]);
   });
 
