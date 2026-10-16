@@ -47,4 +47,26 @@ void main() {
 
     expect(optimizer.travelCost([store]), closeTo(4.40, 0.001));
   });
+  test('ungültige Matrix- und Fallback-Distanzen werden nicht geroutet', () {
+    final matrixOptimizer = RouteOptimizer(
+      [ListItem(product: product)],
+      const [],
+      roadMatrix: const RoadRouteMatrix(
+        originAddress: 'Start',
+        distancesKm: {
+          '@origin|Markt': -2,
+          'Markt|@origin': -2,
+        },
+      ),
+    );
+    final fallbackOptimizer = RouteOptimizer(
+      [ListItem(product: product)],
+      const [],
+      roadDistances: {'Markt': double.nan},
+    );
+
+    expect(matrixOptimizer.travelCost([store]), closeTo(4.40, 0.001));
+    expect(fallbackOptimizer.travelCost([store]), closeTo(4.40, 0.001));
+  });
+
 }
