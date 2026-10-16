@@ -964,3 +964,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Der Produktkatalog baut zunächst höchstens 40 Produktkarten auf und lädt weitere Karten explizit nach.
 - [x] Eine neue Suche setzt den sichtbaren Seitenstand zurück; Produkt-, Preis- und Open-Prices-Daten bleiben unverändert.
 - [x] Der Nachladepfad ist widgetgetestet und erzeugt keine zusätzlichen Datenabrufe.
+
+## Update 16.10.2026 – Food-only Prospektfeed konsequent halten
+
+- [x] Eindeutig als Non-Food gekennzeichnete Badartikel und Halloween-Dekorationen werden vor dem aktuellen Angebotsfeed entfernt.
+- [x] Lebensmittel in gemischten Händlerkategorien bleiben erhalten; die Sperre nutzt explizite Artikel-/Kategorienachweise.
+- [x] Der versionierte Feed und Parserregressionen prüfen gemeinsam, dass aktuelle Prospektangebote food-only bleiben.

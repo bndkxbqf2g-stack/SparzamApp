@@ -563,6 +563,24 @@ class ProspectParserTest(unittest.TestCase):
             )
         )
 
+        for item in (
+            {"productLabel": "LED-Lesehilfe je", "category": "181_NF_Badartikel"},
+            {"productLabel": "WEINBERGER LED-Flächenlupe je", "category": "181_NF_Badartikel"},
+            {"productLabel": "LED-Eimer Halloween", "category": "221_Halloween"},
+            {"productLabel": "Süßigkeitenschale Halloween", "category": "221_Halloween"},
+            {"productLabel": "Totenkopf Halloween", "category": "221_Halloween"},
+        ):
+            self.assertFalse(refresh.is_food_offer(item))
+
+        self.assertTrue(
+            refresh.is_food_offer(
+                {
+                    "productLabel": "BAD HEILBRUNNER Brennnesselblätter Tee* je 8 Stück",
+                    "category": "drogerie-und-haushalt1",
+                }
+            )
+        )
+
         for label in (
             "CROFTON Halloween Tasse, Fledermaus",
             "MELITTA Filterkaffeemaschine Easy Therm",

@@ -3377,6 +3377,7 @@ NON_FOOD_OFFER_RE = re.compile(
     r"purina|gourmet\s+(?:perle|gold)|vitakraft|sheba|calgon|cosmea|"
     r"viss|wc-frisch|pampers|gillette|emyo|slipeinlagen|hundesnack|hundefutter|"
     r"katzenfutter|tiernahrung|"
+    r"led[-\s]?(?:lesehilfe|eimer)|flächenlupe|flaechenlupe|süßigkeitenschale|suessigkeitenschale|totenkopf|"
     r"tasse|kaffeemaschine|filterkaffeemaschine|kaffeepadmaschine|multizerkleinerer|kontaktgrill|"
     r"kochplatte|allesschneider|gemüseschneider|gemueseschneider|fleischwolf|"
     r"weichspüler|weichspueler|dampfbügelstation|dampfbuegelstation|"
@@ -3392,7 +3393,8 @@ NON_FOOD_OFFER_RE = re.compile(
 )
 
 NON_FOOD_CATEGORY_RE = re.compile(
-    r"(?:tierbedarf|tiernahrung|haustierbedarf|pet\s*food)",
+    r"(?:tierbedarf|tiernahrung|haustierbedarf|pet\s*food|"
+    r"(?:^|[^a-z0-9])nf[_\s-]*badartikel(?:$|[^a-z0-9]))",
     re.IGNORECASE,
 )
 KNOWN_FOOD_IN_NON_FOOD_CATEGORY_RE = re.compile(
