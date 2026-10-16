@@ -369,6 +369,11 @@ class _OfferSummary extends StatelessWidget {
             'Grundpreis $sourceBaseUnitPrice',
             style: const TextStyle(fontSize: 12, color: Colors.black54),
           ),
+        if (record.validFrom != null)
+          Text(
+            'Gültig ab ${_date(record.validFrom!)}',
+            style: const TextStyle(fontSize: 12, color: Colors.black54),
+          ),
         Text(
           'Gültig bis ${_date(record.validUntil)}',
           style: const TextStyle(fontSize: 12, color: Colors.black54),
