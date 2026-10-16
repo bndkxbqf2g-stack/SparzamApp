@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/route/route_optimizer.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/product.dart';
+import 'package:sparzamapp/models/road_route_matrix.dart';
 import 'package:sparzamapp/models/store.dart';
 
 void main() {
