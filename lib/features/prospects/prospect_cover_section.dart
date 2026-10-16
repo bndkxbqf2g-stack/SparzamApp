@@ -341,11 +341,18 @@ class ProspectCoverCard extends StatelessWidget {
       child: SizedBox(
         width: compact ? double.infinity : 214,
         height: cardHeight,
-        child: Card(
-          color: Colors.white,
-          surfaceTintColor: Colors.white,
-          margin: EdgeInsets.zero,
-          clipBehavior: Clip.antiAlias,
+        child: ClipRRect(
+          key: ValueKey(
+            'offer-cover-surface-${scope}-${prospectIssueKey(issue)}',
+          ),
+          borderRadius: BorderRadius.circular(18),
+          child: ColoredBox(
+            color: Colors.white,
+            child: Card(
+              color: Colors.white,
+              surfaceTintColor: Colors.white,
+              margin: EdgeInsets.zero,
+              clipBehavior: Clip.antiAlias,
           child: SizedBox.expand(
             child: Stack(
               children: [
@@ -476,6 +483,7 @@ class ProspectCoverCard extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
             ),
           ),
         ),
