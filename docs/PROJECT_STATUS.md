@@ -3745,3 +3745,14 @@ ohne dass beliebige Quellzahlen zu Preisbelegen werden.
   Offline-/Fehlerläufe ohne bestätigten Refresh verändern keinen Preisbestand.
 - [x] Regressionen prüfen entfernte Artikel, unberührte Händler, JSON-Abwärts-
   kompatibilität und den unveränderten Normalpreis-/Aktionspreisvertrag.
+
+
+## Update 16.10.2026 – Preise-Ledger respektiert aktuelle Reconciliation
+
+- [x] Der Preise-Reiter blendet als historisch markierte reguläre Prospektbelege
+  aus der Liste „Aktuelle gespeicherte Normalpreise“ aus.
+- [x] Historische Preisstatistik bleibt unverändert verfügbar; nur die
+  aktuelle Ledger-Projektion folgt jetzt demselben isCurrent-Vertrag wie
+  Route und MarketPrice.
+- [x] Eine Widget-/Fachregression schützt den Fall eines nach Refresh
+  supersedierten, weiterhin gültigen Belegs.
