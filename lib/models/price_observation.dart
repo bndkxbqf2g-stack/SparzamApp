@@ -60,6 +60,7 @@ class PriceObservation {
     this.proofRef,
     this.sourceAdapter,
     this.discounted = false,
+    this.isCurrent = true,
   });
 
   final String id;
@@ -90,6 +91,9 @@ class PriceObservation {
   final double identityConfidence;
   final String? proofRef;
   final bool discounted;
+  /// False means a successful source refresh superseded this observation.
+  /// The row remains in local history, but it must not feed current routing.
+  final bool isCurrent;
 
   bool get isValid => id.isNotEmpty &&
       (productId?.isNotEmpty == true || familyKey?.isNotEmpty == true) &&
@@ -124,6 +128,7 @@ class PriceObservation {
         'identityConfidence': identityConfidence,
         'proofRef': proofRef,
         'discounted': discounted,
+        'isCurrent': isCurrent,
       };
 
   factory PriceObservation.fromJson(Map<String, dynamic> json) {
@@ -156,6 +161,9 @@ class PriceObservation {
               (source == PriceObservationSource.receipt ? 0 : 1),
       proofRef: json['proofRef'] as String?,
       discounted: json['discounted'] as bool? ?? false,
+      // Older local rows predate current-feed reconciliation and remain
+      // current until a later refresh explicitly supersedes them.
+      isCurrent: json['isCurrent'] as bool? ?? true,
     );
     if (!observation.isValid) throw const FormatException('Ungültige Preisbeobachtung');
     return observation;
