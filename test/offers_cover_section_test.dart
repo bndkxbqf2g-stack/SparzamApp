@@ -57,7 +57,7 @@ void main() {
             ),
           )
           .height,
-      324,
+      300,
     );
     expect(
       tester
@@ -77,7 +77,7 @@ void main() {
             ),
           )
           .height,
-      156,
+      132,
     );
     expect(
       tester
@@ -109,7 +109,7 @@ void main() {
             ),
           )
           .height,
-      324,
+      300,
     );
     final cover = find.byKey(
       const ValueKey('offer-cover-open-grid-Lidl'),
