@@ -486,6 +486,102 @@ void main() {
     expect(result.learned, isEmpty);
     expect(await store.load(), isEmpty);
   });
+
+  test(
+    'keeps a removed prospect price as history but excludes it after refresh',
+    () async {
+      final store = memoryStore();
+      final first = await persistCurrentProspectRegularPrices(
+        store: store,
+        records: [current],
+        catalogProducts: const [coffee],
+        observedAt: now,
+        now: now,
+        refreshedStores: const ['Lidl'],
+      );
+      expect(first.stored, hasLength(1));
+      expect(first.stored.single.isCurrent, isTrue);
+
+      final refreshed = await persistCurrentProspectRegularPrices(
+        store: store,
+        records: const [],
+        catalogProducts: const [coffee],
+        observedAt: now.add(const Duration(hours: 1)),
+        now: now.add(const Duration(hours: 1)),
+        refreshedStores: const ['Lidl'],
+      );
+
+      expect(refreshed.learned, isEmpty);
+      expect(refreshed.stored, hasLength(1));
+      expect(refreshed.stored.single.isCurrent, isFalse);
+      expect(
+        marketPricesFromObservations(
+          refreshed.stored,
+          products: const [coffee],
+          now: now.add(const Duration(hours: 1)),
+        ),
+        isEmpty,
+      );
+      expect((await store.load()).single.isCurrent, isFalse);
+    },
+  );
+
+  test('does not reconcile stores outside the confirmed refresh scope', () async {
+    final store = memoryStore();
+    final netto = OfferImportRecord(
+      sourceId: 'netto-coffee-current',
+      productLabel: coffee.name,
+      storeName: 'Netto',
+      originalPrice: 8.49,
+      offerPrice: 5.49,
+      validFrom: DateTime(2026, 10, 10),
+      validUntil: DateTime(2026, 10, 17),
+      source: 'retailerWebsite',
+      sourceAdapter: 'kaufda',
+      branchId: 'netto-branch-1',
+      proofRef: 'https://example.test/kaufda/netto-coffee',
+      capturedAt: now,
+    );
+    final first = await persistCurrentProspectRegularPrices(
+      store: store,
+      records: [current, netto],
+      catalogProducts: const [coffee],
+      observedAt: now,
+      now: now,
+      refreshedStores: const ['Lidl', 'Netto'],
+    );
+    expect(first.stored, hasLength(2));
+
+    final refreshed = await persistCurrentProspectRegularPrices(
+      store: store,
+      records: const [],
+      catalogProducts: const [coffee],
+      observedAt: now.add(const Duration(hours: 1)),
+      now: now.add(const Duration(hours: 1)),
+      refreshedStores: const ['Lidl'],
+    );
+
+    final byStore = <String, PriceObservation>{
+      for (final entry in refreshed.stored) entry.storeName: entry,
+    };
+    expect(byStore['Lidl']?.isCurrent, isFalse);
+    expect(byStore['Netto']?.isCurrent, isTrue);
+  });
+
+  test('defaults legacy observations to current during JSON migration', () async {
+    final store = memoryStore();
+    final result = await persistCurrentProspectRegularPrices(
+      store: store,
+      records: [current],
+      catalogProducts: const [coffee],
+      observedAt: now,
+      now: now,
+    );
+    final legacy = Map<String, dynamic>.from(result.stored.single.toJson())
+      ..remove('isCurrent');
+
+    expect(PriceObservation.fromJson(legacy).isCurrent, isTrue);
+  });
 }
 
 
