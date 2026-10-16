@@ -58,8 +58,6 @@ void main() {
     expect(before, lessThan(100));
     expect(find.widgetWithText(ListTile, 'ZZZ Testprodukt'), findsNothing);
 
-    await tester.drag(find.byType(ListView), const Offset(0, -10000));
-    await tester.pump();
     final more = find.textContaining('Weitere Produkte laden');
     expect(more, findsOneWidget);
     await tester.tap(more);
