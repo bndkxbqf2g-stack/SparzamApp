@@ -85,7 +85,7 @@ void main() {
       tester
           .getSize(
             find.byKey(
-              const ValueKey('prospect-card-grid-ALDI Süd#B384'),
+              const ValueKey('prospect-card-grid-ALDI Süd#b384'),
             ),
           )
           .height,
@@ -95,7 +95,7 @@ void main() {
       tester
           .getSize(
             find.byKey(
-              const ValueKey('prospect-details-grid-ALDI Süd#B384'),
+              const ValueKey('prospect-details-grid-ALDI Süd#b384'),
             ),
           )
           .height,
