@@ -1,3 +1,9 @@
+## Update 16.10.2026 – Kürzere Vorlade-Reserve im Prospekte-Tab
+
+- [x] Der äußere Prospekte-Scroll verwendet einen 180-Pixel-Vorlauf.
+- [x] Cover- und Seitenlisten behalten ihre getrennten Cache-Grenzen und Lazy-Pfade.
+- [x] Prospektgültigkeit, Quellenherkunft und Artikelübernahme bleiben unverändert.
+
 ## Update 16.10.2026 – Kürzere Vorlade-Reserve im Angebote-Scroll
 
 - [x] Der äußere Angebote-Scroll verwendet einen kleinen 180-Pixel-Vorlauf für die nächste Coverzeile.
