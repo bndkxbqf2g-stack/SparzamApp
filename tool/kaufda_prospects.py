@@ -1581,8 +1581,8 @@ def fetch_current_kaufda_prospects(
             if error:
                 entry["errors"].append(error)
 
-        if index + 1 < len(queries) and settings.request_delay_seconds:
-            time.sleep(settings.request_delay_seconds)
+        if index + 1 < len(queries) and safe_request_delay_seconds:
+            time.sleep(safe_request_delay_seconds)
 
     for store, entry in grouped.items():
         entry["offers"] = dedupe_kaufda(entry.get("offers", []))
