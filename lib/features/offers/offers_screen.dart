@@ -142,10 +142,10 @@ class _OffersScreenState extends State<OffersScreen> {
       appBar: AppBar(title: const Text('Angebote'), centerTitle: true),
       body: ListView(
         key: const ValueKey('offers-scroll'),
-        // Warm one bounded card row so image decoding starts before a fast
+        // Warm a short cover lead-in so image decoding starts before a fast
         // swipe reaches it. The nested cover/page lists keep their own
-        // strict limits, so this does not materialize the full feed.
-        scrollCacheExtent: const ScrollCacheExtent.pixels(360),
+        // strict limits; the smaller reserve avoids retaining a full extra cover row.
+        scrollCacheExtent: const ScrollCacheExtent.pixels(180),
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
         children: [
           const Center(child: Text('Die besten Preise. Für dich.')),
