@@ -53,7 +53,7 @@ void main() {
     final price = MarketPrice(
       productId: 'coffee-500',
       storeName: 'Lidl',
-      locationId: 'lidl-branch-1',
+      sourceLocationId: 'lidl-branch-1',
       price: 4.99,
       updatedAt: now,
       source: MarketPriceSource.prospect,
