@@ -99,6 +99,27 @@ def _attach_source_branch_metadata(items, source_id):
         enriched.append(record)
     return enriched
 
+def _attach_source_adapter(items, adapter):
+    """Preserve the concrete parser path on every current source record.
+
+    Provider-supplied values (for example KaufDA or Bring) remain
+    authoritative. Official records receive the adapter mode used for this
+    refresh so later price observations can retain source provenance without
+    guessing it from the retailer name.
+    """
+    source_adapter = clean(adapter)
+    enriched = []
+    for item in items or []:
+        if not isinstance(item, dict):
+            continue
+        record = dict(item)
+        existing = record.get("sourceAdapter")
+        if (not isinstance(existing, str) or not existing.strip()) and source_adapter:
+            record["sourceAdapter"] = source_adapter
+        enriched.append(record)
+    return enriched
+
+
 def _attach_capture_timestamp(items, captured_at):
     """Stamp newly fetched records while preserving provider timestamps."""
     timestamp = captured_at.strip() if isinstance(captured_at, str) else ""
@@ -3830,6 +3851,8 @@ def main(selected_source_ids=None):
                         ],
                     ]
                 source_mode += "+bring_brochure"
+
+            offers = _attach_source_adapter(offers, source_mode)
 
             # Keep branch provenance at record level as well as on the source
             # node. Provider-specific values remain authoritative.
