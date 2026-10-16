@@ -1173,7 +1173,10 @@ class _ProspectCard extends StatelessWidget {
                   ),
                   Expanded(
                     child: Container(
-                    color: Colors.white,
+                      key: ValueKey(
+                        'prospect-details-${compact ? 'grid' : 'favorite'}-$issueKey',
+                      ),
+                      color: Colors.white,
                     padding: EdgeInsets.fromLTRB(
                       compact ? 10 : 12,
                       10,
