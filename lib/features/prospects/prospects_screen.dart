@@ -1668,15 +1668,18 @@ class ProspectViewerScreen extends StatelessWidget {
       branchId: issue.branchId,
       location: issue.location,
       address: issue.address,
-      // An unscoped page claim may still add the exact typed product to the
-      // shopping list, but it must not become a route price.
-      regionalOnly: issue.branchId?.trim().isNotEmpty != true,
+      // A publisher-level KaufDA claim may still add the exact typed
+      // product to the shopping list, but it must not become a route price.
+      regionalOnly: issue.sourceAdapter?.trim().toLowerCase() == 'kaufda' &&
+          issue.branchId?.trim().isNotEmpty != true,
     );
-    final hasExactBranch = issue.branchId?.trim().isNotEmpty == true;
+    final requiresExactBranch =
+        record.sourceAdapter?.trim().toLowerCase() == 'kaufda';
+    final hasExactBranch = hasExactOfferRecordBranch(record);
     final saveOffer = onSaveOffer;
-    if (!hasExactBranch || saveOffer == null) {
+    if ((requiresExactBranch && !hasExactBranch) || saveOffer == null) {
       addProduct(productForProspectOffer(record, catalogProducts));
-      final message = !hasExactBranch
+      final message = requiresExactBranch && !hasExactBranch
           ? 'Artikel zur Einkaufsliste hinzugefügt. Für einen Routenpreis '
               'fehlt die exakte Filiale.'
           : 'Artikel zur Einkaufsliste hinzugefügt. Das Angebot konnte '
