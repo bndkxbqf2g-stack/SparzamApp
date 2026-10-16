@@ -141,14 +141,15 @@ class _InMemoryPriceObservationStore extends PriceObservationStore {
   Future<List<PriceObservation>> upsertById(
     Iterable<PriceObservation> incoming, {
     bool Function(PriceObservation observation)? removeWhere,
+    PriceObservation Function(PriceObservation observation)? rewriteExisting,
   }) async {
-    final byId = <String, PriceObservation>{
-      for (final observation in observations)
-        if (!(removeWhere?.call(observation) ?? false))
-          observation.id: observation,
-    };
-    for (final observation in incoming) {
+    final byId = <String, PriceObservation>{};
+    for (final observation in observations) {
       if (removeWhere?.call(observation) ?? false) continue;
+      final rewritten = rewriteExisting?.call(observation) ?? observation;
+      byId[rewritten.id] = rewritten;
+    }
+    for (final observation in incoming) {
       byId[observation.id] = observation;
     }
     observations = byId.values.toList(growable: false);
