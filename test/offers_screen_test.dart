@@ -24,6 +24,40 @@ void main() {
     );
   });
 
+  testWidgets('zeigt die Datenabdeckung auch im Angebotstab', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: OffersScreen(
+          catalogProducts: const <Product>[],
+          now: DateTime(2026, 10, 14),
+          regularPriceCount: 0,
+          regularPricePersistenceStatus:
+              ProspectRegularPricePersistenceStatus.succeeded,
+          persistedRegularPriceCounts: const {'ALDI Süd': 0},
+          prospectRecords: [
+            OfferImportRecord(
+              sourceId: 'aldi-coverage',
+              productLabel: 'Butter 250 g',
+              storeName: 'ALDI Süd',
+              offerPrice: 1.49,
+              validUntil: DateTime(2026, 10, 17),
+              branchId: 'B384',
+              location: 'Zellingen',
+              proofRef: 'https://example.test/aldi/butter',
+            ),
+          ],
+        ),
+      ),
+    );
+
+    expect(find.text('Datenabdeckung der aktuellen Prospekte'), findsOneWidget);
+    await tester.tap(find.text('Datenabdeckung der aktuellen Prospekte'));
+    await tester.pumpAndSettle();
+    expect(find.text('ALDI Süd'), findsOneWidget);
+    expect(find.textContaining('0/1 Normalpreise'), findsOneWidget);
+    expect(find.textContaining('0/1 gespeichert'), findsOneWidget);
+  });
+
   testWidgets(
     'zeigt im Angebotstab nur bestätigte Normalpreisspeicherung an',
     (tester) async {
