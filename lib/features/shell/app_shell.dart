@@ -648,6 +648,14 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
         currentFingerprint: feedFingerprint,
         force: force,
       )) {
+        // The visible feed may be unchanged while local price evidence was
+        // cleared or a previous write failed. Reconcile regular prices
+        // idempotently without rebuilding the offer snapshot.
+        await _persistCachedProspectPrices(
+          feed,
+          revision,
+          isSuperseded: () => false,
+        );
         return;
       }
       // A new feed starts with no confirmed count until its observations are
