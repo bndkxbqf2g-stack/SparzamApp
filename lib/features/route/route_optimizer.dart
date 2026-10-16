@@ -41,7 +41,7 @@ class RouteOptimizer {
          offers,
          marketPrices: marketPrices,
          now: now,
-         openPricesMaxAgeDays: openPricesMaxAgeDays,
+         openPricesMaxAgeDays: openPricesMaxAgeDays < 0 ? 60 : openPricesMaxAgeDays,
        );
 
   final List<ListItem> items;
