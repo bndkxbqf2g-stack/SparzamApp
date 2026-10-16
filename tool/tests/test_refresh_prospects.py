@@ -611,6 +611,10 @@ class ProspectParserTest(unittest.TestCase):
             "576er-LED-Clusterlichtergirlande* je Stück",
             "LED-Glitzertannenbaum* je Stück",
             "LED-Fensterbild* je Stück",
+            "AXE Bodyspray 250 ml, Temptation",
+            "Fenjal Cremedusche 200 ml",
+            "Dick & Durstig Küchentücher",
+            "Flamingoblume je",
         ):
             self.assertFalse(refresh.is_food_offer({"productLabel": label}))
 
