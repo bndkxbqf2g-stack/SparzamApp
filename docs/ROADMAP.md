@@ -958,3 +958,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Der Angebotstab zeigt dieselbe pro Händler aufgeschlüsselte Datenabdeckung wie der Prospekte-Reiter.
 - [x] Explizit fehlende Normalpreise bleiben je Filiale als unbekannt beziehungsweise `0/Artikel` sichtbar; Aktionspreise werden nicht als Preisbasis gezählt.
 - [x] Die Abdeckung nutzt ausschließlich aktuelle Datensätze und den lokalen Persistenzstatus und ändert keine Preis- oder Routenentscheidung.
+
+## Update 16.10.2026 – Produktkatalog seitenweise rendern
+
+- [x] Der Produktkatalog baut zunächst höchstens 40 Produktkarten auf und lädt weitere Karten explizit nach.
+- [x] Eine neue Suche setzt den sichtbaren Seitenstand zurück; Produkt-, Preis- und Open-Prices-Daten bleiben unverändert.
+- [x] Der Nachladepfad ist widgetgetestet und erzeugt keine zusätzlichen Datenabrufe.
