@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/services/prospect_feed_service.dart';
 import 'package:sparzamapp/services/prospect_feed_cache.dart';
@@ -248,6 +249,60 @@ void main() {
     expect(result.records, hasLength(2));
     expect(result.records[0].originalPrice, 1.29);
     expect(result.records[1].originalPrice, 1.99);
+  });
+
+  test('accepts additional explicit regular-price aliases', () {
+    const aliases = <String>[
+      'priceBefore',
+      'previousPrice',
+      'crossedOutPrice',
+      'strikethroughPrice',
+      'wasPriceNumeric',
+      'original_price',
+      'regular_price',
+      'normal_price',
+      'old_price',
+      'previous_price',
+      'crossed_out_price',
+      'strikethrough_price',
+    ];
+    final offers = <Map<String, dynamic>>[
+      for (var index = 0; index < aliases.length; index++)
+        {
+          'sourceId': 'regular-extra-$index',
+          'productLabel': 'Produkt $index',
+          'storeName': 'ALDI Süd',
+          'offerPrice': 0.99,
+          aliases[index]: 1.29,
+          'validUntil': '2026-10-17',
+          'proofRef': 'https://example.test/aldi/regular-$index',
+        },
+      {
+        'sourceId': 'unrelated-price-fields',
+        'productLabel': 'Produkt ohne Normalpreis',
+        'storeName': 'ALDI Süd',
+        'offerPrice': 0.99,
+        'uvp': 2.99,
+        'discountPercent': 50,
+        'validUntil': '2026-10-17',
+        'proofRef': 'https://example.test/aldi/unrelated',
+      },
+    ];
+    final result = parseProspectFeed(
+      jsonEncode({
+        'generatedAt': '2026-10-15T04:15:00Z',
+        'sources': [
+          {'storeName': 'ALDI Süd', 'status': 'ok', 'branchId': 'B384'},
+        ],
+        'offers': offers,
+      }),
+    );
+
+    expect(result.records, hasLength(aliases.length + 1));
+    for (var index = 0; index < aliases.length; index++) {
+      expect(result.records[index].originalPrice, 1.29);
+    }
+    expect(result.records.last.originalPrice, isNull);
   });
 
   test('accepts strict formatted offer and nested regular prices', () {
