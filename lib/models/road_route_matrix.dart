@@ -70,22 +70,31 @@ class RoadRouteMatrix {
         'fetchedAt': fetchedAt?.toIso8601String(),
       };
 
-  factory RoadRouteMatrix.fromJson(Map<String, dynamic> json) =>
-      RoadRouteMatrix(
-        originAddress: json['originAddress'] as String,
-        distancesKm:
-            (json['distancesKm'] as Map<String, dynamic>).map(
-          (key, value) => MapEntry(key, (value as num).toDouble()),
-        ),
-        durationsMinutes:
-            (json['durationsMinutes'] as Map<String, dynamic>?)?.map(
-                  (key, value) => MapEntry(key, (value as num).toDouble()),
-                ) ??
-                const <String, double>{},
-        fetchedAt: json['fetchedAt'] == null
-            ? null
-            : DateTime.tryParse(json['fetchedAt'] as String),
-      );
+  factory RoadRouteMatrix.fromJson(Map<String, dynamic> json) {
+    final originAddress = json['originAddress'];
+    final fetchedAt = json['fetchedAt'];
+    return RoadRouteMatrix(
+      originAddress: originAddress is String ? originAddress : '',
+      distancesKm: _readNonNegativeFiniteMap(json['distancesKm']),
+      durationsMinutes: _readNonNegativeFiniteMap(json['durationsMinutes']),
+      fetchedAt: fetchedAt is String ? DateTime.tryParse(fetchedAt) : null,
+    );
+  }
+
+  static Map<String, double> _readNonNegativeFiniteMap(Object? raw) {
+    if (raw is! Map) return const <String, double>{};
+    final values = <String, double>{};
+    for (final entry in raw.entries) {
+      final key = entry.key.toString().trim();
+      final value = entry.value;
+      if (key.isEmpty || value is! num) continue;
+      final number = value.toDouble();
+      if (!number.isFinite || number < 0) continue;
+      values[key] = number;
+    }
+    return values;
+  }
+}
 
 bool _usableNonNegative(double? value) =>
     value != null && value.isFinite && value >= 0;
