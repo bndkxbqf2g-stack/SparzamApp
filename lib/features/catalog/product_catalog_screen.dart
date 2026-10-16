@@ -114,7 +114,7 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
     if (!hasMoreVisibleProducts) return;
     setState(() {
       visibleProductCount =
-          (visibleProductCount + _catalogPageSize).clamp(0, visible.length);
+          (visibleProductCount + _catalogPageSize).clamp(0, visible.length).toInt();
     });
   }
 
