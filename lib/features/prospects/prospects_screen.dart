@@ -1177,13 +1177,13 @@ class _ProspectCard extends StatelessWidget {
                         'prospect-details-${compact ? 'grid' : 'favorite'}-$issueKey',
                       ),
                       color: Colors.white,
-                    padding: EdgeInsets.fromLTRB(
-                      compact ? 10 : 12,
-                      10,
-                      compact ? 10 : 12,
-                      11,
-                    ),
-                    child: Column(
+                      padding: EdgeInsets.fromLTRB(
+                        compact ? 10 : 12,
+                        10,
+                        compact ? 10 : 12,
+                        11,
+                      ),
+                      child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (!compact)
@@ -1242,9 +1242,9 @@ class _ProspectCard extends StatelessWidget {
                           ),
                       ],
                     ),
+                    ),
                   ),
-
-                  ),                ],
+                ],
               ),
             ),
             Positioned(
