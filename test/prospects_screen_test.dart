@@ -82,6 +82,17 @@ void main() {
     expect(find.textContaining('1 Angebote geladen'), findsOneWidget);
     expect(find.textContaining('Filiale: B384'), findsOneWidget);
     expect(
+      find.text('Aktuelle Prospekte. Produkte antippen und vormerken.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('1854 aktuelle Prospektartikel aus 5 Märkten'),
+      findsNothing,
+    );
+
+    await _scrollProspects(tester);
+
+    expect(
       tester
           .getSize(
             find.byKey(
@@ -101,16 +112,6 @@ void main() {
           .height,
       132,
     );
-    expect(
-      find.text('Aktuelle Prospekte. Produkte antippen und vormerken.'),
-      findsOneWidget,
-    );
-    expect(
-      find.text('1854 aktuelle Prospektartikel aus 5 Märkten'),
-      findsNothing,
-    );
-
-    await _scrollProspects(tester);
     await tester.tap(find.textContaining('ALDI Süd').last);
     await tester.pumpAndSettle();
 
