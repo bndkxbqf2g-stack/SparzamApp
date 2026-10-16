@@ -29,11 +29,17 @@ class RoadRouteMatrix {
 
   String _key(String from, String to) => '$from|$to';
 
-  double? distance(String from, String to) =>
-      from == to ? 0 : distancesKm[_key(from, to)];
+  double? distance(String from, String to) {
+    if (from == to) return 0;
+    final value = distancesKm[_key(from, to)];
+    return _usableNonNegative(value) ? value : null;
+  }
 
-  double? durationMinutes(String from, String to) =>
-      from == to ? 0 : durationsMinutes[_key(from, to)];
+  double? durationMinutes(String from, String to) {
+    if (from == to) return 0;
+    final value = durationsMinutes[_key(from, to)];
+    return _usableNonNegative(value) ? value : null;
+  }
 
   bool covers(Iterable<String> storeNames) {
     final nodes = [origin, ...storeNames];
@@ -80,4 +86,7 @@ class RoadRouteMatrix {
             ? null
             : DateTime.tryParse(json['fetchedAt'] as String),
       );
+
+bool _usableNonNegative(double? value) =>
+    value != null && value.isFinite && value >= 0;
 }

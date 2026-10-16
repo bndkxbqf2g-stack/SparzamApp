@@ -122,19 +122,29 @@ double _fallbackDistanceForStore(
 ) {
   final key = travelMatrixStoreKey(store);
   final exact = fallbackDistances[key];
-  if (exact != null) return exact;
+  if (_usableNonNegative(exact)) return exact!;
   if (key == store.name) {
-    return fallbackDistances[store.name] ?? store.distanceKm;
+    return _safeDistance(fallbackDistances[store.name], store.distanceKm);
   }
   final branchPrefix = '${store.name}#';
   final hasBranchSpecificValue = fallbackDistances.keys.any(
     (candidate) => candidate.startsWith(branchPrefix),
   );
   if (!hasBranchSpecificValue) {
-    return fallbackDistances[store.name] ?? store.distanceKm;
+    return _safeDistance(fallbackDistances[store.name], store.distanceKm);
   }
-  return store.distanceKm;
+  return _safeDistance(null, store.distanceKm);
 }
+
+bool _usableNonNegative(double? value) =>
+    value != null && value.isFinite && value >= 0;
+
+double _safeDistance(double? candidate, double fallback) =>
+    _usableNonNegative(candidate)
+        ? candidate!
+        : _usableNonNegative(fallback)
+        ? fallback
+        : 0;
 
 Iterable<List<T>> _permutations<T>(List<T> items) sync* {
   if (items.length <= 1) {
