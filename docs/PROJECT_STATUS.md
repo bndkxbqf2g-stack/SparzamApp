@@ -1,3 +1,9 @@
+## Update 16.10.2026 – Prospektparser bleibt bei malformed Collections nutzbar
+
+- Der Feedparser ignoriert falsch typisierte `sources`, `prospects`, `pageSamples` und `offers`-Felder, statt den gesamten aktuellen Snapshot zu verwerfen.
+- Valide Einträge aus demselben Feed werden weiterhin eingelesen; unbekannte Collection-Strukturen bleiben ohne erfundene Angebote leer.
+- Eine Parserregression deckt verschachtelte und oberste Fehlformate ohne Netzwerkzugriff ab.
+
 ## Update 16.10.2026 – Routen-Refresh bleibt bei Cachefehlern aktuell
 
 - Ein frischer OSRM-/Straßenmatrix-Abruf wird jetzt auch dann in der Ansicht verwendet, wenn das lokale Schreiben der Matrix oder der Distanzkarte fehlschlägt.

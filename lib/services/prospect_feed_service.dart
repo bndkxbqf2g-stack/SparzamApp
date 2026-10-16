@@ -221,6 +221,9 @@ String? officialProspectUrl(String storeName, [String? fallback]) {
   }
 }
 
+List<dynamic> _listValue(Object? value) =>
+    value is List<dynamic> ? value : const <dynamic>[];
+
 String? _optionalNonEmptyString(Object? value) {
   if (value is! String) return null;
   final trimmed = value.trim();
@@ -418,7 +421,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     _stringValue(json['generatedAt']) ?? '',
   );
   final sourceValues =
-      json['sources'] as List<dynamic>? ?? const <dynamic>[];
+      _listValue(json['sources']);
   final refreshedStores = <String>[];
   final availableStores = <String>[...configuredProspectStores];
   final availableStoreUrls = <String, String>{};
@@ -505,10 +508,10 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     final sourceMetadata = sourceMetadataByIndex[sourceIndex];
     if (source is! Map<String, dynamic> || sourceMetadata == null) continue;
     final storeName = sourceMetadata.storeName;
-    for (final raw in (source['prospects'] as List<dynamic>? ?? const [])) {
+    for (final raw in _listValue(source['prospects'])) {
       if (raw is! Map<String, dynamic>) continue;
       final pagesByNumber = <int, ProspectPage>{};
-      for (final page in (raw['pageSamples'] as List<dynamic>? ?? const [])) {
+      for (final page in _listValue(raw['pageSamples'])) {
         if (page is! Map<String, dynamic>) continue;
         final image = _firstHttpUrl([
           page['image'],
@@ -666,7 +669,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
   }
 
 
-  for (final value in (json['offers'] as List<dynamic>? ?? const [])) {
+  for (final value in _listValue(json['offers'])) {
     if (value is! Map<String, dynamic>) continue;
     final sourceId = _stringValue(value['sourceId']);
     final productLabel = _stringValue(value['productLabel']);
