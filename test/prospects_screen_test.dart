@@ -1658,7 +1658,7 @@ void main() {
     );
   });
 
-  testWidgets('wärmt eine begrenzte Prospektreihe vor', (tester) async {
+  testWidgets('wärmt einen kurzen Prospekt-Scrollvorlauf vor', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: ProspectsScreen(
@@ -1679,7 +1679,7 @@ void main() {
     );
     expect(
       scroll.scrollCacheExtent,
-      const ScrollCacheExtent.pixels(360),
+      const ScrollCacheExtent.pixels(180),
     );
   });
 
