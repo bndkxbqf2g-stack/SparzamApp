@@ -1228,5 +1228,43 @@ void main() {
     expect(result.records.single.originalPrice, 7.99);
   });
 
+  test('skips malformed collection values without aborting feed parsing', () {
+    final result = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-10-16T04:15:00Z",
+  "sources": [
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "prospects": "not-a-list"
+    },
+    {
+      "storeName": "ALDI Süd",
+      "status": "ok",
+      "prospects": [
+        {
+          "pageSamples": {"number": 1, "image": "https://example.test/invalid.jpg"}
+        },
+        {
+          "pageSamples": [
+            {"number": 1, "image": "https://example.test/aldi-page.jpg"}
+          ]
+        }
+      ]
+    }
+  ],
+  "offers": {"sourceId": "malformed-offer-collection"}
+}
+''');
+
+    expect(result.records, isEmpty);
+    expect(
+      result.prospects.any(
+        (item) => item.storeName == 'ALDI Süd' && item.pages.length == 1,
+      ),
+      isTrue,
+    );
+  });
+
 }
 
