@@ -394,6 +394,14 @@ String _sourceAdapterLabel(String value) {
       return 'KaufDA';
     case 'bring':
       return 'Bring';
+    case 'structured_api':
+      return 'Offizielle Händlerquelle';
+    case 'structured_leaflet':
+      return 'Offizieller Prospekt';
+    case 'website_fallback':
+      return 'Händler-Webseite';
+    case 'netto':
+      return 'Netto-Prospekt';
     default:
       return value.trim();
   }
