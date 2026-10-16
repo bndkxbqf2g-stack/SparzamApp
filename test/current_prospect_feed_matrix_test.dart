@@ -182,7 +182,7 @@ void main() {
             record.priceByBaseUnit!.contains('€/l'),
       ),
       isTrue,
-    ),
+    );
     expect(
       feed.records.any(
         (record) => record.productLabel.contains('114/110/105 g') &&
