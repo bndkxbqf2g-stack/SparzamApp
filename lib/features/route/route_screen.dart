@@ -13,6 +13,7 @@ import '../../models/recent_purchase.dart';
 import '../../services/road_distance_service.dart';
 import '../../services/road_distance_store.dart';
 import '../../services/road_route_matrix_store.dart';
+import 'route_distance_persistence.dart';
 import '../price_gaps/price_gap_card.dart';
 import '../price_gaps/price_gap_history.dart';
 import '../price_gaps/price_gap_priority.dart';
@@ -183,10 +184,14 @@ class _RouteScreenState extends State<RouteScreen> {
             next[matrixKey] = distance;
           }
         }
-        await matrixCache.save(matrix);
       }
-
-      await cache.save(originAddress, next);
+      await persistRouteDistanceCachesBestEffort(
+        matrix: matrix,
+        originAddress: originAddress,
+        distances: next,
+        saveMatrix: matrixCache.save,
+        saveDistances: cache.save,
+      );
       if (!mounted ||
           revision != _distanceRequestRevision ||
           originAddress != widget.mobility.startAddress) {
