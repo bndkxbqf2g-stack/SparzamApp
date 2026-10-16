@@ -252,7 +252,7 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
                     crossAxisCount: columns,
                     // Leave room for source and page-completeness metadata
                     // without allowing a card to overflow during grid layout.
-                    mainAxisExtent: 300,
+                    mainAxisExtent: 324,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 14,
                   ),
@@ -347,19 +347,19 @@ class ProspectCoverCard extends StatelessWidget {
           );
 
     final validity = _validity(issue);
-    final cardHeight = compact ? 300.0 : 340.0;
-    final titleStyle = TextStyle(
+    final cardHeight = compact ? 324.0 : 340.0;
+    final titleStyle = const TextStyle(
       color: const Color(0xFF27343A),
-      fontSize: compact ? 14.0 : 16.0,
+      fontSize: 16.0,
       fontWeight: FontWeight.w800,
     );
-    final primaryMetaStyle = TextStyle(
+    final primaryMetaStyle = const TextStyle(
       color: const Color(0xFF6F7C80),
-      fontSize: compact ? 11.0 : 12.0,
+      fontSize: 12.0,
     );
-    final secondaryMetaStyle = TextStyle(
+    final secondaryMetaStyle = const TextStyle(
       color: const Color(0xFF6F7C80),
-      fontSize: compact ? 10.0 : 11.0,
+      fontSize: 11.0,
     );
     return RepaintBoundary(
       child: SizedBox(
@@ -407,16 +407,16 @@ class ProspectCoverCard extends StatelessWidget {
                                 ),
                                 color: Colors.white,
                                 padding: EdgeInsets.fromLTRB(
-                                  compact ? 8 : 12,
-                                  compact ? 6 : 10,
-                                  compact ? 8 : 12,
-                                  compact ? 4 : 11,
+                                  compact ? 10 : 12,
+                                  10,
+                                  compact ? 10 : 12,
+                                  11,
                                 ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SizedBox(
-                                      height: compact ? 26 : 32,
+                                      height: 32,
                                       child: Text(
                                         issue.storeName,
                                         maxLines: 1,
