@@ -943,3 +943,14 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Der Dart-Parser übernimmt dieselben ausdrücklich benannten Vorher-/Streichpreisfelder wie die Quelladapter.
 - [x] UVP-, Rabatt- und beliebige Zahlenfelder bleiben ausgeschlossen; nur ein positiver, expliziter Normalpreis wird gespeichert.
 - [x] Die Parserregression führt die Aliaswerte bis in die reguläre Prospektpreis-Evidenz.
+
+## Update 16.10.2026 – Unveränderter Prospektfeed reconciliert den Preisstand
+
+- [x] Ein unveränderter, erneut geladener Feed schreibt explizite reguläre
+  Prospektpreise erneut idempotent in den lokalen Beobachtungsspeicher.
+- [x] Ein zwischenzeitlich geleerter oder fehlgeschlagener lokaler Preisstand
+  bleibt damit beim nächsten Feedlauf reparierbar, ohne Angebotsdaten neu zu
+  materialisieren.
+- [x] Die Regression prüft die Wiederherstellung ausschließlich des belegten
+  Normalpreises; der Aktionspreis bleibt aus dem Preisledger ausgeschlossen.
+
