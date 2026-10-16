@@ -283,6 +283,7 @@ void main() {
       // Simulate a local reset without changing the feed fingerprint.
       priceStore.observations = <PriceObservation>[];
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
       for (var attempt = 0;
           attempt < 20 && priceStore.observations.isEmpty;
