@@ -329,16 +329,21 @@ String? _receiptRetailer(String text) {
 String _normalizeReceiptOcrMoneySpacing(String value) {
   // Mobile OCR may split the decimal separator from either side of a
   // two-digit cents token (for example "1 , 49" or "0 . 85").
-  // Restrict the rewrite to numeric tokens so product labels remain evidence
-  // and are never silently rewritten into a different identity.
-  final pattern = RegExp(
-    r'(?<![\w])(-?)\s*([\d@]+)\s*([,.])\s*([\d@])\s*([\d@])',
-  );
-  return value.replaceAllMapped(
-    pattern,
+  // Only rewrite when whitespace is actually present; clean receipt text
+  // remains unchanged and product labels stay evidence.
+  var normalized = value.replaceAllMapped(
+    RegExp(
+      r'(?<![\w])(-?)\s*([\d@]+)\s+([,.])\s*([\d@])\s*([\d@])',
+    ),
     (match) =>
         '${match.group(1)}${match.group(2)}${match.group(3)}${match.group(4)}${match.group(5)}',
   );
+  normalized = normalized.replaceAllMapped(
+    RegExp(r'(?<![\w])(-?[\d@]+)([,.])\s+([\d@])\s*([\d@])'),
+    (match) =>
+        '${match.group(1)}${match.group(2)}${match.group(3)}${match.group(4)}',
+  );
+  return normalized;
 }
 
 int _cents(String value) {
