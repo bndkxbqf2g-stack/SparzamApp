@@ -359,6 +359,9 @@ class ProspectCoverCard extends StatelessWidget {
                       SizedBox(height: imageHeight, child: image),
                       Expanded(
                         child: Container(
+                          key: ValueKey(
+                            'offer-cover-details-$scope-${prospectIssueKey(issue)}',
+                          ),
                           color: Colors.white,
                           padding: EdgeInsets.fromLTRB(
                             compact ? 10 : 12,
