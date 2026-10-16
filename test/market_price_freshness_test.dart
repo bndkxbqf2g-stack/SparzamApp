@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/catalog/market_price_freshness.dart';
 import 'package:sparzamapp/features/catalog/price_coverage.dart';
 import 'package:sparzamapp/models/market_price.dart';
+import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/product.dart';
 
 void main() {
@@ -220,6 +221,36 @@ void main() {
       futureManual.isUsable(now: now, openPricesMaxAgeDays: 60),
       isFalse,
     );
+  });
+
+  test('usable market prices exclude direct prospect offers', () {
+    final usable = usableMarketPrices(
+      [
+        MarketPrice(
+          productId: 'milk',
+          storeName: 'Lidl',
+          price: 0.79,
+          updatedAt: now,
+          source: MarketPriceSource.prospect,
+          kind: PriceObservationKind.offer,
+          discounted: true,
+        ),
+        MarketPrice(
+          productId: 'milk',
+          storeName: 'Lidl',
+          price: 1.29,
+          updatedAt: now,
+          source: MarketPriceSource.prospect,
+          kind: PriceObservationKind.regular,
+        ),
+      ],
+      openPricesMaxAgeDays: 60,
+      now: now,
+    );
+
+    expect(usable, hasLength(1));
+    expect(usable.single.price, 1.29);
+    expect(usable.single.kind, PriceObservationKind.regular);
   });
 
 }

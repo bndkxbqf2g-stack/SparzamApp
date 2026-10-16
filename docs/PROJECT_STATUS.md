@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Aktive Preisoberflächen trennen Angebotsbelege
+
+- Die gemeinsame `usableMarketPrices`-Sicht verwirft direkte Legacy-Prospekt-Aktionspreise, bevor aktive Preisoberflächen und der Preisverlauf sie erhalten.
+- `PriceDataQuality` zählt aktuelle Angebotsbelege weiterhin separat für die Datenqualität; reguläre Prospektpreise bleiben unverändert nutzbar.
+- Eine Regression schützt die Trennung zwischen aktueller Preisbasis und sichtbarer Angebots-Evidenz.
+
 ## Update 17.10.2026 – Suchvorschläge verwenden keine direkten Prospekt-Aktionspreise
 
 - Der Suchvorschlags-Preispfad verwirft direkte Legacy-Prospekt-Aktionspreise jetzt vor der sichtbaren Preisermittlung.

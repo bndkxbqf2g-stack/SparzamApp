@@ -9,10 +9,12 @@ List<MarketPrice> usableMarketPrices(
   final today = now ?? DateTime.now();
   return prices
       .where(
-        (price) => price.isUsable(
-          now: today,
-          openPricesMaxAgeDays: openPricesMaxAgeDays,
-        ),
+        (price) =>
+            !price.isProspectOffer &&
+            price.isUsable(
+              now: today,
+              openPricesMaxAgeDays: openPricesMaxAgeDays,
+            ),
       )
       .toList(growable: false);
 }
