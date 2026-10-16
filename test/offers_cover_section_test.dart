@@ -90,25 +90,27 @@ void main() {
       159,
     );
 
-    final gridCard = find.ancestor(
-      of: find.byKey(
-        const ValueKey('offer-cover-open-grid-Lidl'),
-      ),
-      matching: find.byType(Card),
+    final gridMaterial = find.byKey(
+      const ValueKey('offer-cover-material-grid-Lidl'),
     );
-    expect(tester.widget<Card>(gridCard).color, Colors.white);
-    expect(tester.widget<Card>(gridCard).surfaceTintColor, Colors.white);
+    expect(gridMaterial, findsOneWidget);
+    expect(tester.widget<Material>(gridMaterial).color, Colors.white);
+    expect(
+      tester.widget<Material>(gridMaterial).surfaceTintColor,
+      Colors.white,
+    );
     expect(
       tester
           .getSize(
             find.byKey(
-              const ValueKey('offer-cover-surface-grid-Lidl'),
+              const ValueKey(
+                'offer-cover-surface-grid-Lidl',
+              ),
             ),
           )
           .height,
       324,
     );
-
     final cover = find.byKey(
       const ValueKey('offer-cover-open-grid-Lidl'),
     );
