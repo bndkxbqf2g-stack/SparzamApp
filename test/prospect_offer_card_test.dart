@@ -203,6 +203,29 @@ void main() {
     expect(find.textContaining('-%'), findsNothing);
   });
 
+  testWidgets('shows a readable official source label', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ProspectOfferCard(
+            record: OfferImportRecord(
+              sourceId: 'official-source',
+              productLabel: 'Milch 1 l',
+              storeName: 'Lidl',
+              offerPrice: 0.99,
+              sourceAdapter: 'structured_api',
+              validUntil: DateTime(2026, 10, 2),
+              proofRef: 'https://example.test/lidl/official-source',
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Quelle Offizielle Händlerquelle'), findsOneWidget);
+    expect(find.text('Quelle structured_api'), findsNothing);
+  });
+
   testWidgets('shows KaufDA capture time and prospect page when available', (
     tester,
   ) async {
