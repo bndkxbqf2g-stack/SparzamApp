@@ -348,13 +348,14 @@ class ProspectCoverCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(18),
           child: ColoredBox(
             color: Colors.white,
-            child: Card(
-              color: Colors.white,
-              surfaceTintColor: Colors.white,
-              margin: EdgeInsets.zero,
-              clipBehavior: Clip.antiAlias,
-              child: SizedBox.expand(
+            child: SizedBox.expand(
+              child: Card(
+                color: Colors.white,
+                surfaceTintColor: Colors.white,
+                margin: EdgeInsets.zero,
+                clipBehavior: Clip.antiAlias,
                 child: Stack(
+                  fit: StackFit.expand,
                   children: [
                     Positioned.fill(
                       child: InkWell(
