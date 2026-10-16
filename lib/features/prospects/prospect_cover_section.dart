@@ -344,8 +344,9 @@ class ProspectCoverCard extends StatelessWidget {
         child: Card(
           margin: EdgeInsets.zero,
           clipBehavior: Clip.antiAlias,
-          child: Stack(
-            children: [
+          child: SizedBox.expand(
+            child: Stack(
+              children: [
               Positioned.fill(
                 child: InkWell(
                   key: ValueKey(
@@ -469,7 +470,8 @@ class ProspectCoverCard extends StatelessWidget {
                   ),
                 ),
               ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
