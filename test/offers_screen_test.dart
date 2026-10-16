@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:sparzamapp/features/offers/offers_screen.dart';
 import 'package:sparzamapp/features/offers/offer_import.dart';
+import 'package:sparzamapp/features/prospects/prospect_feed_status.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/services/prospect_feed_service.dart';
 
