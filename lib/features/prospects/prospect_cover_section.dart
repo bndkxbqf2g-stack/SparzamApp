@@ -252,7 +252,7 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
                     crossAxisCount: columns,
                     // Leave room for source and page-completeness metadata
                     // without allowing a card to overflow during grid layout.
-                    mainAxisExtent: 324,
+                    mainAxisExtent: 300,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 14,
                   ),
@@ -347,7 +347,7 @@ class ProspectCoverCard extends StatelessWidget {
           );
 
     final validity = _validity(issue);
-    final cardHeight = compact ? 324.0 : 340.0;
+    final cardHeight = compact ? 300.0 : 340.0;
     return RepaintBoundary(
       child: SizedBox(
         width: compact ? double.infinity : 214,
