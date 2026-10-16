@@ -19,7 +19,7 @@ void main() {
         throw StateError('preferences unavailable');
       },
       saveDistances: (origin, distances) async {
-        events.add('distances:' + origin + ':' + distances['Lidl'].toString());
+        events.add('distances:$origin:${distances['Lidl']}');
       },
     );
 
@@ -38,7 +38,7 @@ void main() {
       originAddress: 'Würzburg',
       distances: const {'Kaufland': 7.1},
       saveMatrix: (_) async => events.add('matrix'),
-      saveDistances: (_, __) async {
+      saveDistances: (_, _) async {
         events.add('distances');
         throw StateError('quota exceeded');
       },
