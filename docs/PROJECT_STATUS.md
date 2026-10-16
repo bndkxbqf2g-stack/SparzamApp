@@ -3731,3 +3731,17 @@ können zusätzlich aus begrenzten, benannten Preisobjekten gelesen werden.
 Freie Beschreibungen und nackte Zahlenstrings bleiben ungültig. Dadurch gehen
 verwertbare Händlerangebote nicht mehr nur wegen ihrer Darstellungsform verloren,
 ohne dass beliebige Quellzahlen zu Preisbelegen werden.
+
+
+## Update 16.10.2026 – Veraltete reguläre Prospektpreise nach Refresh gesperrt
+
+- [x] Ein bestätigter Händler-Refresh markiert reguläre Beobachtungen, die im
+  aktuellen Feed fehlen, als nicht aktuell und behält sie für Historie und
+  Nachvollziehbarkeit.
+- [x] Nicht aktuelle automatische Prospektbeobachtungen werden weder in
+  MarketPrice noch in Route und Preisvergleich projiziert; fehlende Preise
+  bleiben unbekannt.
+- [x] Die Reconciliation ist auf ausdrücklich aktualisierte Händler begrenzt;
+  Offline-/Fehlerläufe ohne bestätigten Refresh verändern keinen Preisbestand.
+- [x] Regressionen prüfen entfernte Artikel, unberührte Händler, JSON-Abwärts-
+  kompatibilität und den unveränderten Normalpreis-/Aktionspreisvertrag.
