@@ -1673,20 +1673,19 @@ class ProspectViewerScreen extends StatelessWidget {
       regionalOnly: issue.branchId?.trim().isNotEmpty != true,
     );
     final hasExactBranch = issue.branchId?.trim().isNotEmpty == true;
-    if (!hasExactBranch) {
+    final saveOffer = onSaveOffer;
+    if (!hasExactBranch || saveOffer == null) {
       addProduct(productForProspectOffer(record, catalogProducts));
+      final message = !hasExactBranch
+          ? 'Artikel zur Einkaufsliste hinzugefügt. Für einen Routenpreis '
+              'fehlt die exakte Filiale.'
+          : 'Artikel zur Einkaufsliste hinzugefügt. Das Angebot konnte '
+              'ohne Speicherverbindung nicht abgelegt werden.';
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Artikel zur Einkaufsliste hinzugefügt. Für einen Routenpreis '
-            'fehlt die exakte Filiale.',
-          ),
-        ),
+        SnackBar(content: Text(message)),
       );
       return;
     }
-    final saveOffer = onSaveOffer;
-    if (saveOffer == null) return;
     final entries = prospectOfferProducts(
       records: [record],
       catalogProducts: catalogProducts,
@@ -1798,7 +1797,7 @@ class ProspectViewerScreen extends StatelessWidget {
     BuildContext context,
     ProspectPage page,
   ) async {
-    if (onSaveOffer == null || onAddProduct == null) return;
+    if (onAddProduct == null) return;
     final messenger = ScaffoldMessenger.of(context);
     messenger
       ..hideCurrentSnackBar()
@@ -1875,14 +1874,14 @@ class ProspectViewerScreen extends StatelessWidget {
                     label: const Text('Großansicht öffnen'),
                   ),
                 OutlinedButton.icon(
-                  onPressed: onSaveOffer == null || onAddProduct == null
+                  onPressed: onAddProduct == null
                       ? null
                       : () => _addPageOffer(context, page),
                   icon: const Icon(Icons.add_shopping_cart_outlined),
                   label: const Text('Artikel von Seite hinzufügen'),
                 ),
                 OutlinedButton.icon(
-                  onPressed: onSaveOffer == null || onAddProduct == null
+                  onPressed: onAddProduct == null
                       ? null
                       : () => _runPageOcr(context, page),
                   icon: const Icon(Icons.document_scanner_outlined),
