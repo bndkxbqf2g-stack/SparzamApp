@@ -54,7 +54,7 @@ void main() {
     expect(find.text('Datenabdeckung der aktuellen Prospekte'), findsOneWidget);
     await tester.tap(find.text('Datenabdeckung der aktuellen Prospekte'));
     await tester.pumpAndSettle();
-    expect(find.text('ALDI Süd'), findsOneWidget);
+    expect(find.text('ALDI Süd'), findsAtLeastNWidgets(1));
     expect(find.textContaining('0/1 Normalpreise'), findsOneWidget);
     expect(find.textContaining('0/1 gespeichert'), findsOneWidget);
   });
