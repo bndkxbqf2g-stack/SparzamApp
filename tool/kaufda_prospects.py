@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import os
 import re
 import tempfile
@@ -35,6 +36,7 @@ KAUFDA_SOURCE = "kaufda"
 DEFAULT_CITY = "Wuerzburg"
 DEFAULT_MAX_QUERIES = 8
 DEFAULT_TIMEOUT_SECONDS = 15.0
+DEFAULT_REQUEST_DELAY_SECONDS = 1.0
 DEFAULT_CACHE_MAX_AGE_HOURS = 12
 MAX_RESPONSE_BYTES = 4 * 1024 * 1024
 LOCAL_TIMEZONE = ZoneInfo("Europe/Berlin")
@@ -177,7 +179,7 @@ class KaufdaConfig:
     enabled: bool = False
     max_queries: int = DEFAULT_MAX_QUERIES
     timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS
-    request_delay_seconds: float = 1.0
+    request_delay_seconds: float = DEFAULT_REQUEST_DELAY_SECONDS
     cache_path: Path | None = None
     cache_max_age_hours: int = DEFAULT_CACHE_MAX_AGE_HOURS
     # A branch assertion must come from a separately verified mapping.  A
@@ -248,7 +250,10 @@ def config_from_env(env: Mapping[str, str] | None = None) -> KaufdaConfig:
         ),
         request_delay_seconds=max(
             0.0,
-            _positive_float(values.get("SPARZAM_KAUFDA_REQUEST_DELAY_SECONDS"), 1.0),
+            _positive_float(
+                values.get("SPARZAM_KAUFDA_REQUEST_DELAY_SECONDS"),
+                DEFAULT_REQUEST_DELAY_SECONDS,
+            ),
         ),
         cache_path=Path(cache_value) if cache_value else None,
         cache_max_age_hours=_positive_int(
@@ -302,12 +307,20 @@ def _nonnegative_int(value: str | None, fallback: int) -> int:
     return parsed if parsed >= 0 else fallback
 
 
-def _positive_float(value: str | None, fallback: float) -> float:
+def _positive_float(value: object, fallback: float) -> float:
     try:
-        parsed = float(value or "")
-    except ValueError:
+        parsed = float(value) if value is not None else float("")
+    except (TypeError, ValueError, OverflowError):
         return fallback
-    return parsed if parsed > 0 else fallback
+    return parsed if math.isfinite(parsed) and parsed > 0 else fallback
+
+
+def _finite_nonnegative_float(value: object, fallback: float) -> float:
+    try:
+        parsed = float(value) if value is not None else float("")
+    except (TypeError, ValueError, OverflowError):
+        return fallback
+    return parsed if math.isfinite(parsed) and parsed >= 0 else fallback
 
 
 def clean(value: object) -> str:
@@ -1256,6 +1269,7 @@ def dedupe_kaufda(offers: Iterable[dict]) -> list[dict]:
 
 
 def fetch_kaufda_html(url: str, *, timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS) -> str:
+    safe_timeout_seconds = _positive_float(timeout_seconds, DEFAULT_TIMEOUT_SECONDS)
     request = Request(
         url,
         headers={
@@ -1264,7 +1278,7 @@ def fetch_kaufda_html(url: str, *, timeout_seconds: float = DEFAULT_TIMEOUT_SECO
             "Accept": "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
         },
     )
-    with urlopen(request, timeout=timeout_seconds) as response:
+    with urlopen(request, timeout=safe_timeout_seconds) as response:
         body = response.read(MAX_RESPONSE_BYTES + 1)
         if len(body) > MAX_RESPONSE_BYTES:
             raise ValueError("kaufDA: Antwort ist zu groß")
@@ -1284,6 +1298,10 @@ def _load_cached_body(
 ) -> tuple[str, datetime] | None:
     if path is None or not path.exists():
         return None
+    safe_max_age_hours = _finite_nonnegative_float(
+        max_age_hours,
+        DEFAULT_CACHE_MAX_AGE_HOURS,
+    )
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
         if not isinstance(payload, Mapping):
@@ -1297,7 +1315,7 @@ def _load_cached_body(
             not isinstance(body, str)
             or len(body.encode("utf-8")) > MAX_RESPONSE_BYTES
             or captured_at > now
-            or now - captured_at > timedelta(hours=max_age_hours)
+            or now - captured_at > timedelta(hours=safe_max_age_hours)
         ):
             return None
         return body, captured_at
@@ -1378,6 +1396,18 @@ def fetch_current_kaufda_prospects(
     if not settings.enabled or not queries:
         return {}
 
+    safe_timeout_seconds = _positive_float(
+        settings.timeout_seconds,
+        DEFAULT_TIMEOUT_SECONDS,
+    )
+    safe_request_delay_seconds = _finite_nonnegative_float(
+        settings.request_delay_seconds,
+        DEFAULT_REQUEST_DELAY_SECONDS,
+    )
+    safe_cache_max_age_hours = _finite_nonnegative_float(
+        settings.cache_max_age_hours,
+        DEFAULT_CACHE_MAX_AGE_HOURS,
+    )
     reference_now = now or datetime.now(timezone.utc)
     reference_day = today or reference_now.astimezone(LOCAL_TIMEZONE).date()
     grouped: dict[str, dict] = {}
@@ -1389,7 +1419,7 @@ def fetch_current_kaufda_prospects(
         error = None
         try:
             candidate = (fetcher or (lambda target: fetch_kaufda_html(
-                target, timeout_seconds=settings.timeout_seconds
+                target, timeout_seconds=safe_timeout_seconds
             )))(url)
             if not isinstance(candidate, str) or not candidate.strip():
                 raise ValueError("kaufDA: leere Antwort")
@@ -1402,11 +1432,11 @@ def fetch_current_kaufda_prospects(
                 settings.cache_path,
                 url,
                 now=reference_now,
-                max_age_hours=settings.cache_max_age_hours,
+                max_age_hours=safe_cache_max_age_hours,
             )
             if cached is None:
-                if index + 1 < len(queries) and settings.request_delay_seconds:
-                    time.sleep(settings.request_delay_seconds)
+                if index + 1 < len(queries) and safe_request_delay_seconds:
+                    time.sleep(safe_request_delay_seconds)
                 continue
             body, captured_at = cached
             cache_used = True
@@ -1430,7 +1460,7 @@ def fetch_current_kaufda_prospects(
                     settings.cache_path,
                     url,
                     now=reference_now,
-                    max_age_hours=settings.cache_max_age_hours,
+                    max_age_hours=safe_cache_max_age_hours,
                 )
             if cached is not None:
                 try:
@@ -1551,8 +1581,8 @@ def fetch_current_kaufda_prospects(
             if error:
                 entry["errors"].append(error)
 
-        if index + 1 < len(queries) and settings.request_delay_seconds:
-            time.sleep(settings.request_delay_seconds)
+        if index + 1 < len(queries) and safe_request_delay_seconds:
+            time.sleep(safe_request_delay_seconds)
 
     for store, entry in grouped.items():
         entry["offers"] = dedupe_kaufda(entry.get("offers", []))
