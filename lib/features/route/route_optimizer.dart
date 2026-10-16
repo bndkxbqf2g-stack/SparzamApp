@@ -314,7 +314,6 @@ class RouteOptimizer {
     return aKey.compareTo(bKey);
   }
 }
-}
 
 double _finiteNonNegative(double value, double fallback) =>
     value.isFinite && value >= 0 ? value : fallback;
