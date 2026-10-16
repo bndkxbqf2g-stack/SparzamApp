@@ -1,3 +1,9 @@
+## Update 16.10.2026 – Prospektparser bleibt bei malformed Collections nutzbar
+
+- [x] Falsch typisierte Feed-Collections werden übersprungen, ohne valide Märkte oder Cache-Fallbacks zu verlieren.
+- [x] Verschachtelte Prospekt-/Seiten-Collections bleiben bei falschem Datentyp leer, statt den Parser zu beenden.
+- [x] Eine versionskontrollierte Regression schützt diesen Fehlerpfad.
+
 ## Update 16.10.2026 – Routen-Refresh bleibt bei Cachefehlern aktuell
 
 - [x] Ein frischer OSRM-/Straßenmatrix-Abruf bleibt sichtbar, wenn das lokale Schreiben eines Cachepfads fehlschlägt.
