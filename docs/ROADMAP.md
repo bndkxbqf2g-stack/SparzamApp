@@ -1,3 +1,9 @@
+## Update 16.10.2026 – Kürzere Vorlade-Reserve im Angebote-Scroll
+
+- [x] Der äußere Angebote-Scroll verwendet einen kleinen 180-Pixel-Vorlauf für die nächste Coverzeile.
+- [x] Cover-Favoritenleiste und Coverraster behalten ihren eigenen Cache-Vorlauf 0.
+- [x] Die Vorschaubild-, Gültigkeits- und Add-to-List-Funktionen bleiben unverändert.
+
 ## Update 16.10.2026 – Cover-Scroll hält Offscreen-Karten nicht fest
 
 - [x] Cover-Favoritenleiste und Coverraster recyceln Offscreen-Karten ohne automatische Keep-Alives.
