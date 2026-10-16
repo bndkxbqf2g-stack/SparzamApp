@@ -81,13 +81,16 @@ class RoadDistanceStore {
 
   Map<String, double>? _decodeDistances(Object? value) {
     if (value is! Map) return null;
-    try {
-      return value.map(
-        (key, raw) => MapEntry(key.toString(), (raw as num).toDouble()),
-      );
-    } catch (_) {
-      return null;
+    final distances = <String, double>{};
+    for (final entry in value.entries) {
+      final key = entry.key.toString().trim();
+      final raw = entry.value;
+      if (key.isEmpty || raw is! num) continue;
+      final distance = raw.toDouble();
+      if (!distance.isFinite || distance < 0) continue;
+      distances[key] = distance;
     }
+    return distances;
   }
 
   String _originKey(String originAddress) => originAddress
