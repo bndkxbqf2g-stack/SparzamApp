@@ -953,4 +953,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   materialisieren.
 - [x] Die Regression prüft die Wiederherstellung ausschließlich des belegten
   Normalpreises; der Aktionspreis bleibt aus dem Preisledger ausgeschlossen.
+## Update 16.10.2026 – Angebotsabdeckung auch im Angebotstab
+
+- [x] Der Angebotstab zeigt dieselbe pro Händler aufgeschlüsselte Datenabdeckung wie der Prospekte-Reiter.
+- [x] Explizit fehlende Normalpreise bleiben je Filiale als unbekannt beziehungsweise `0/Artikel` sichtbar; Aktionspreise werden nicht als Preisbasis gezählt.
+- [x] Die Abdeckung nutzt ausschließlich aktuelle Datensätze und den lokalen Persistenzstatus und ändert keine Preis- oder Routenentscheidung.
 
