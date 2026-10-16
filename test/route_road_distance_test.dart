@@ -70,6 +70,31 @@ void main() {
     expect(fallbackOptimizer.travelCost([store]), closeTo(4.40, 0.001));
   });
 
+  test('ignoriert beschädigte Werte aus dem Routen-Cache', () {
+    final matrix = RoadRouteMatrix.fromJson({
+      'originAddress': 'Start',
+      'distancesKm': {
+        '@origin|Markt': 4.2,
+        'Markt|@origin': 'unbekannt',
+        'Markt|Andere': double.nan,
+        'Andere|Markt': -1,
+      },
+      'durationsMinutes': {
+        '@origin|Markt': 18,
+        'Markt|@origin': null,
+        'Markt|Andere': double.infinity,
+      },
+      'fetchedAt': 'kein Datum',
+    });
+
+    expect(matrix.originAddress, 'Start');
+    expect(matrix.distance('@origin', 'Markt'), 4.2);
+    expect(matrix.distance('Markt', '@origin'), isNull);
+    expect(matrix.durationMinutes('@origin', 'Markt'), 18);
+    expect(matrix.durationMinutes('Markt', '@origin'), isNull);
+    expect(matrix.fetchedAt, isNull);
+  });
+
   test('ungültige Planungsparameter fallen auf sichere Defaults zurück', () {
     final optimizer = RouteOptimizer(
       const [],
