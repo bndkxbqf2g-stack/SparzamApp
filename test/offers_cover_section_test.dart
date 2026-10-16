@@ -98,6 +98,16 @@ void main() {
     );
     expect(tester.widget<Card>(gridCard).color, Colors.white);
     expect(tester.widget<Card>(gridCard).surfaceTintColor, Colors.white);
+    expect(
+      tester
+          .getSize(
+            find.byKey(
+              const ValueKey('offer-cover-surface-grid-Lidl'),
+            ),
+          )
+          .height,
+      324,
+    );
 
     final cover = find.byKey(
       const ValueKey('offer-cover-open-grid-Lidl'),
