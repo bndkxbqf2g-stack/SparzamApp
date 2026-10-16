@@ -244,7 +244,7 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
                   physics: const NeverScrollableScrollPhysics(),
                   // The outer ListView owns scrolling and its bounded cache.
                   // Avoid a second grid cache retaining decoded cover cards.
-                  cacheExtent: 0,
+                  scrollCacheExtent: const ScrollCacheExtent.pixels(0),
                   addAutomaticKeepAlives: false,
                   addRepaintBoundaries: true,
                   padding: EdgeInsets.zero,
