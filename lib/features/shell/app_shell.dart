@@ -901,11 +901,25 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
 
   void _showProspectFeed(ProspectFeedLoadResult feed) {
     if (!mounted) return;
+    final now = DateTime.now();
+    final currentRecords = currentProspectRecords(feed.records, now: now);
+    final baseCatalog = buildCatalogProducts(customProducts);
+    final offerBackedProducts = prospectOfferProducts(
+      records: currentRecords,
+      catalogProducts: baseCatalog,
+      now: now,
+    );
     setState(() {
       // The visible offer area only receives currently valid prospect records;
       // the feed remains the source of truth for provenance and cache status.
       // Historical observations stay in the price store.
-      prospectRecords = currentProspectRecords(feed.records);
+      prospectRecords = currentRecords;
+      // Keep cached/offline prospect identities in the shell catalog too. A
+      // regular price persisted from that same feed must remain routeable
+      // before a network refresh becomes available.
+      prospectProducts = offerBackedProducts
+          .map((entry) => entry.product)
+          .toList(growable: false);
       prospectIssues = feed.prospects;
       prospectFeedFromCache = feed.fromCache;
       prospectFeedGeneratedAt = feed.generatedAt;
