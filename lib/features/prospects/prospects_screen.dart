@@ -1120,12 +1120,14 @@ class _ProspectCard extends StatelessWidget {
     return RepaintBoundary(
       child: SizedBox(
         width: compact ? double.infinity : 214,
+        height: compact ? 300.0 : 340.0,
         child: Card(
           color: _bringSurface,
           clipBehavior: Clip.antiAlias,
           margin: EdgeInsets.zero,
           child: Stack(
-          children: [
+            fit: StackFit.expand,
+            children: [
             InkWell(
               key: ValueKey(
                 'prospect-open-${compact ? 'grid' : 'favorite'}-$issueKey',
@@ -1169,7 +1171,8 @@ class _ProspectCard extends StatelessWidget {
                           )
                         : cover,
                   ),
-                  Container(
+                  Expanded(
+                    child: Container(
                     color: Colors.white,
                     padding: EdgeInsets.fromLTRB(
                       compact ? 10 : 12,
@@ -1237,7 +1240,8 @@ class _ProspectCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                ],
+
+                  ),                ],
               ),
             ),
             Positioned(
