@@ -222,4 +222,34 @@ void main() {
     );
   });
 
+  test('usable market prices exclude direct prospect offers', () {
+    final usable = usableMarketPrices(
+      [
+        MarketPrice(
+          productId: 'milk',
+          storeName: 'Lidl',
+          price: 0.79,
+          updatedAt: now,
+          source: MarketPriceSource.prospect,
+          kind: PriceObservationKind.offer,
+          discounted: true,
+        ),
+        MarketPrice(
+          productId: 'milk',
+          storeName: 'Lidl',
+          price: 1.29,
+          updatedAt: now,
+          source: MarketPriceSource.prospect,
+          kind: PriceObservationKind.regular,
+        ),
+      ],
+      openPricesMaxAgeDays: 60,
+      now: now,
+    );
+
+    expect(usable, hasLength(1));
+    expect(usable.single.price, 1.29);
+    expect(usable.single.kind, PriceObservationKind.regular);
+  });
+
 }
