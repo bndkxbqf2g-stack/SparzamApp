@@ -1641,9 +1641,8 @@ class ProspectViewerScreen extends StatelessWidget {
     ProspectPage page, {
     ProspectPageOcrCandidate? initialCandidate,
   }) async {
-    final saveOffer = onSaveOffer;
     final addProduct = onAddProduct;
-    if (saveOffer == null || addProduct == null) return;
+    if (addProduct == null) return;
     final draft = await showProspectPageOfferDialog(
       context,
       initialValidUntil: issue.validUntil,
@@ -1669,7 +1668,27 @@ class ProspectViewerScreen extends StatelessWidget {
       branchId: issue.branchId,
       location: issue.location,
       address: issue.address,
+      // A publisher-level KaufDA claim may still add the exact typed
+      // product to the shopping list, but it must not become a route price.
+      regionalOnly: issue.sourceAdapter?.trim().toLowerCase() == 'kaufda' &&
+          issue.branchId?.trim().isNotEmpty != true,
     );
+    final requiresExactBranch =
+        record.sourceAdapter?.trim().toLowerCase() == 'kaufda';
+    final hasExactBranch = hasExactOfferRecordBranch(record);
+    final saveOffer = onSaveOffer;
+    if ((requiresExactBranch && !hasExactBranch) || saveOffer == null) {
+      addProduct(productForProspectOffer(record, catalogProducts));
+      final message = requiresExactBranch && !hasExactBranch
+          ? 'Artikel zur Einkaufsliste hinzugefügt. Für einen Routenpreis '
+              'fehlt die exakte Filiale.'
+          : 'Artikel zur Einkaufsliste hinzugefügt. Das Angebot konnte '
+              'ohne Speicherverbindung nicht abgelegt werden.';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+      return;
+    }
     final entries = prospectOfferProducts(
       records: [record],
       catalogProducts: catalogProducts,
@@ -1781,7 +1800,7 @@ class ProspectViewerScreen extends StatelessWidget {
     BuildContext context,
     ProspectPage page,
   ) async {
-    if (onSaveOffer == null || onAddProduct == null) return;
+    if (onAddProduct == null) return;
     final messenger = ScaffoldMessenger.of(context);
     messenger
       ..hideCurrentSnackBar()
@@ -1858,14 +1877,14 @@ class ProspectViewerScreen extends StatelessWidget {
                     label: const Text('Großansicht öffnen'),
                   ),
                 OutlinedButton.icon(
-                  onPressed: onSaveOffer == null || onAddProduct == null
+                  onPressed: onAddProduct == null
                       ? null
                       : () => _addPageOffer(context, page),
                   icon: const Icon(Icons.add_shopping_cart_outlined),
                   label: const Text('Artikel von Seite hinzufügen'),
                 ),
                 OutlinedButton.icon(
-                  onPressed: onSaveOffer == null || onAddProduct == null
+                  onPressed: onAddProduct == null
                       ? null
                       : () => _runPageOcr(context, page),
                   icon: const Icon(Icons.document_scanner_outlined),

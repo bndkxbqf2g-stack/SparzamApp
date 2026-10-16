@@ -1238,6 +1238,67 @@ void main() {
     expect(added?.name, 'Kaffee Crema 500 g');
   });
 
+  testWidgets(
+    'adds an unscoped prospect page article to the list without a route price',
+    (tester) async {
+      Offer? saved;
+      Product? added;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ProspectsScreen(
+            records: const [],
+            prospects: [
+              ProspectIssue(
+                storeName: 'Lidl',
+                title: 'Regionaler Aktionsprospekt',
+                pages: [
+                  ProspectPage(
+                    number: 2,
+                    imageUrl: 'https://example.test/lidl/page-2.png',
+                  ),
+                ],
+                sourceAdapter: 'kaufda',
+                location: 'Würzburg',
+                validFrom: DateTime(2026, 9, 28),
+                validUntil: DateTime(2026, 12, 31),
+                sourceStatus: 'regional_only',
+              ),
+            ],
+            now: DateTime(2026, 9, 30),
+            onAddProduct: (product) => added = product,
+            onSaveOffer: (offer) async {
+              saved = offer;
+              return [offer];
+            },
+          ),
+        ),
+      );
+
+      await _scrollProspects(tester);
+      await tester.tap(find.text('Lidl').last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Artikel von Seite hinzufügen'));
+      await tester.pumpAndSettle();
+
+      final fields = find.byType(TextFormField);
+      await tester.enterText(fields.at(0), 'Kaffee Crema 500 g');
+      await tester.enterText(fields.at(1), '4,99');
+      await tester.enterText(fields.at(2), '5,99');
+      await tester.tap(find.widgetWithText(FilledButton, 'Artikel hinzufügen'));
+      await tester.pumpAndSettle();
+
+      expect(saved, isNull);
+      expect(added?.name, 'Kaffee Crema 500 g');
+      expect(
+        find.text(
+          'Artikel zur Einkaufsliste hinzugefügt. Für einen Routenpreis '
+          'fehlt die exakte Filiale.',
+        ),
+        findsOneWidget,
+      );
+    },
+  );
+
   testWidgets('hides an invalid official prospect link', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
