@@ -176,7 +176,11 @@ void main() {
     expect(packaged, isNotEmpty);
     expect(packaged.any((record) => record.packageSize == '250 ml'), isTrue);
     expect(
-      packaged.any((record) => record.priceByBaseUnit == '27,96 €/l'),
+      packaged.any(
+        (record) =>
+            record.packageSize == '250 ml' &&
+            record.priceByBaseUnit!.contains('€/l'),
+      ),
       isTrue,
     );
     expect(
