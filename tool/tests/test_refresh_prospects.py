@@ -598,6 +598,22 @@ class ProspectParserTest(unittest.TestCase):
             )
         )
 
+        self.assertTrue(
+            refresh.is_food_offer(
+                {"productLabel": "WINTERTRAUM Tassenhänger Knuspermännchen 170 g"}
+            )
+        )
+
+        for label in (
+            "CROFTON Halloween Backsortiment, Groß, Kürbis, Orange",
+            "KESPER Frühstücksbrettchen* je 2er-Packung",
+            "KESPER Schneid-und-Servierbrett mit Einbrand* je Stück",
+            "576er-LED-Clusterlichtergirlande* je Stück",
+            "LED-Glitzertannenbaum* je Stück",
+            "LED-Fensterbild* je Stück",
+        ):
+            self.assertFalse(refresh.is_food_offer({"productLabel": label}))
+
     def test_source_counts_report_filtered_food_and_keep_provider_count(self):
         sources = [{"storeName": "Kaufland", "recordCount": 3}]
         offers = [
