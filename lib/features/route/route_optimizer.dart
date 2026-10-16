@@ -14,19 +14,26 @@ class RouteOptimizer {
     this.items,
     List<Offer> offers, {
     Map<String, double>? roadDistances,
-    this.euroPerKm = 0.22,
-    this.maxStores = 3,
-    this.minExtraStoreSavings = 0,
-    this.additionalStoreCost = 0,
-    this.timeValuePerHour = 0,
-    this.travelMinutesPerKm = 60 / 45,
+    double euroPerKm = 0.22,
+    int maxStores = 3,
+    double minExtraStoreSavings = 0,
+    double additionalStoreCost = 0,
+    double timeValuePerHour = 0,
+    double travelMinutesPerKm = 60 / 45,
     List<String>? enabledStoreNames,
     List<Store>? storeCatalog,
     List<MarketPrice> marketPrices = const <MarketPrice>[],
-    this.openPricesMaxAgeDays = 60,
+    int openPricesMaxAgeDays = 60,
     this.roadMatrix,
     DateTime? now,
   }) : roadDistances = roadDistances ?? const <String, double>{},
+       euroPerKm = _finiteNonNegative(euroPerKm, 0.22),
+       maxStores = maxStores < 1 ? 1 : maxStores,
+       minExtraStoreSavings = _finiteNonNegative(minExtraStoreSavings, 0),
+       additionalStoreCost = _finiteNonNegative(additionalStoreCost, 0),
+       timeValuePerHour = _finiteNonNegative(timeValuePerHour, 0),
+       travelMinutesPerKm = _finiteNonNegative(travelMinutesPerKm, 60 / 45),
+       openPricesMaxAgeDays = openPricesMaxAgeDays < 0 ? 60 : openPricesMaxAgeDays,
        storeCatalog = storeCatalog ?? stores,
        today = now ?? DateTime.now(),
        enabledStoreNames = (enabledStoreNames ?? const <String>[]).toSet(),
@@ -307,4 +314,9 @@ class RouteOptimizer {
     return aKey.compareTo(bKey);
   }
 }
+}
+
+double _finiteNonNegative(double value, double fallback) =>
+    value.isFinite && value >= 0 ? value : fallback;
+
 
