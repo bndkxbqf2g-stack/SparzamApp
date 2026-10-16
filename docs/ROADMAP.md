@@ -1,3 +1,9 @@
+## Update 16.10.2026 – Cover-Scroll hält Offscreen-Karten nicht fest
+
+- [x] Cover-Favoritenleiste und Coverraster recyceln Offscreen-Karten ohne automatische Keep-Alives.
+- [x] Der verschachtelte Coverpfad verwendet keinen zusätzlichen Bild-Cache neben dem übergeordneten Offers-Scroll.
+- [x] Seitenweises Nachladen und die bestehende Bild-Fallback-Grenze bleiben erhalten.
+
 ## Update 16.10.2026 – Prospektparser bleibt bei malformed Collections nutzbar
 
 - [x] Falsch typisierte Feed-Collections werden übersprungen, ohne valide Märkte oder Cache-Fallbacks zu verlieren.
