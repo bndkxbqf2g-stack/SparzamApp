@@ -2064,7 +2064,9 @@ class ProspectViewerScreen extends StatelessWidget {
                   ),
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 240,
-                    mainAxisExtent: 540,
+                    // Leave room for the full evidence block, including
+                    // the optional validity start date.
+                    mainAxisExtent: 580,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 12,
                   ),
