@@ -122,6 +122,32 @@ class _InMemoryProductCatalogStore extends ProductCatalogStore {
   }
 }
 
+class _InMemoryPriceObservationStore extends PriceObservationStore {
+  List<PriceObservation> observations = <PriceObservation>[];
+
+  @override
+  Future<List<PriceObservation>> load() async =>
+      List<PriceObservation>.of(observations);
+
+  @override
+  Future<List<PriceObservation>> upsertById(
+    Iterable<PriceObservation> incoming, {
+    bool Function(PriceObservation observation)? removeWhere,
+  }) async {
+    final byId = <String, PriceObservation>{
+      for (final observation in observations)
+        if (!(removeWhere?.call(observation) ?? false))
+          observation.id: observation,
+    };
+    for (final observation in incoming) {
+      if (removeWhere?.call(observation) ?? false) continue;
+      byId[observation.id] = observation;
+    }
+    observations = byId.values.toList(growable: false);
+    return List<PriceObservation>.of(observations);
+  }
+}
+
 class _Stores {
   _Stores({
     ShoppingListStore? shoppingListStore,
@@ -225,11 +251,7 @@ void main() {
           prospects: const <ProspectIssue>[],
         ),
       );
-      var raw = <String>[];
-      final priceStore = PriceObservationStore(
-        readRaw: () async => raw,
-        writeRaw: (values) async => raw = [...values],
-      );
+      final priceStore = _InMemoryPriceObservationStore();
       final stores = _Stores(
         shoppingListStore: _InMemoryShoppingListStore(),
         offerStore: _InMemoryOfferStore(),
@@ -251,30 +273,26 @@ void main() {
           priceObservationStore: priceStore,
         ),
       );
-      await tester.runAsync(() async {
-        for (var attempt = 0; attempt < 200; attempt++) {
-          if ((await priceStore.load()).isNotEmpty) return;
-          await Future<void>.delayed(const Duration(milliseconds: 10));
-        }
-      });
-      expect(await priceStore.load(), hasLength(1));
+      for (var attempt = 0;
+          attempt < 20 && priceStore.observations.isEmpty;
+          attempt++) {
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+      expect(priceStore.observations, hasLength(1));
 
       // Simulate a local reset without changing the feed fingerprint.
-      raw = <String>[];
+      priceStore.observations = <PriceObservation>[];
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
-      await tester.pump();
-      await tester.runAsync(() async {
-        for (var attempt = 0; attempt < 200; attempt++) {
-          if ((await priceStore.load()).isNotEmpty) return;
-          await Future<void>.delayed(const Duration(milliseconds: 10));
-        }
-      });
+      for (var attempt = 0;
+          attempt < 20 && priceStore.observations.isEmpty;
+          attempt++) {
+        await tester.pump(const Duration(milliseconds: 50));
+      }
 
-      final reconciled = await priceStore.load();
-      expect(reconciled, hasLength(1));
-      expect(reconciled.single.kind, PriceObservationKind.regular);
-      expect(reconciled.single.price, 7.99);
+      expect(priceStore.observations, hasLength(1));
+      expect(priceStore.observations.single.kind, PriceObservationKind.regular);
+      expect(priceStore.observations.single.price, 7.99);
     },
   );
 
