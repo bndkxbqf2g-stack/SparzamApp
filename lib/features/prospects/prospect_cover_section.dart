@@ -361,6 +361,9 @@ class ProspectCoverCard extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
+                    const Positioned.fill(
+                      child: ColoredBox(color: Colors.white),
+                    ),
                     Positioned.fill(
                       child: InkWell(
                         key: ValueKey(
