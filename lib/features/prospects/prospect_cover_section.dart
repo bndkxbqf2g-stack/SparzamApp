@@ -343,7 +343,7 @@ class ProspectCoverCard extends StatelessWidget {
         height: cardHeight,
         child: ClipRRect(
           key: ValueKey(
-            'offer-cover-surface-${scope}-${prospectIssueKey(issue)}',
+            'offer-cover-surface-$scope-${prospectIssueKey(issue)}',
           ),
           borderRadius: BorderRadius.circular(18),
           child: ColoredBox(
