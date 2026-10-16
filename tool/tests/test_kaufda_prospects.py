@@ -687,5 +687,66 @@ class KaufdaProspectTest(unittest.TestCase):
             )
 
 
+    def test_nonfinite_env_timing_values_fall_back(self):
+        config = kaufda.config_from_env(
+            {
+                "SPARZAM_KAUFDA_TIMEOUT_SECONDS": "inf",
+                "SPARZAM_KAUFDA_REQUEST_DELAY_SECONDS": "Infinity",
+            }
+        )
+
+        self.assertEqual(config.timeout_seconds, kaufda.DEFAULT_TIMEOUT_SECONDS)
+        self.assertEqual(
+            config.request_delay_seconds,
+            kaufda.DEFAULT_REQUEST_DELAY_SECONDS,
+        )
+        self.assertEqual(
+            kaufda._positive_float(float("inf"), kaufda.DEFAULT_TIMEOUT_SECONDS),
+            kaufda.DEFAULT_TIMEOUT_SECONDS,
+        )
+        self.assertEqual(
+            kaufda._finite_nonnegative_float(float("nan"), 0.0),
+            0.0,
+        )
+
+    def test_nonfinite_direct_timing_values_are_normalized_before_fetch(self):
+        config = kaufda.KaufdaConfig(
+            enabled=True,
+            city="Wuerzburg",
+            queries=("Butter", "Milch"),
+            timeout_seconds=float("inf"),
+            request_delay_seconds=float("inf"),
+            cache_max_age_hours=float("inf"),
+        )
+
+        with mock.patch.object(kaufda.time, "sleep") as sleep:
+            result = kaufda.fetch_current_kaufda_prospects(
+                config,
+                fetcher=lambda _url: self.html,
+                today=self.today,
+                now=datetime(2026, 10, 12, 8, tzinfo=timezone.utc),
+            )
+
+        self.assertIn("Lidl", result)
+        sleep.assert_called_once_with(kaufda.DEFAULT_REQUEST_DELAY_SECONDS)
+
+    def test_nonfinite_http_timeout_is_replaced_before_urlopen(self):
+        response = mock.MagicMock()
+        response.__enter__.return_value.read.return_value = b""
+        with mock.patch.object(kaufda, "urlopen", return_value=response) as opener:
+            self.assertEqual(
+                kaufda.fetch_kaufda_html(
+                    "https://example.test",
+                    timeout_seconds=float("inf"),
+                ),
+                "",
+            )
+
+        self.assertEqual(
+            opener.call_args.kwargs["timeout"],
+            kaufda.DEFAULT_TIMEOUT_SECONDS,
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
