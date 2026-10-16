@@ -550,6 +550,7 @@ List<PriceObservation> currentProspectRegularPriceObservations({
     };
     if (entry.kind != PriceObservationKind.regular ||
         !sourceIsProspect ||
+        !entry.isCurrent ||
         entry.productId?.trim().isNotEmpty != true ||
         entry.identityConfidence < 1 ||
         entry.proofRef?.trim().isNotEmpty != true ||
