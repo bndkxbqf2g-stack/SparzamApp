@@ -77,12 +77,30 @@ Product? manualProductForProspectOffer(OfferImportRecord record) {
   return _offerBackedProduct(record);
 }
 
-bool _hasVerifiedOfferEvidence(OfferImportRecord record) {
+/// Returns a product that may be added to the shopping list when a current
+/// prospect was found only at publisher/region level. The product deliberately
+/// remains list-only: without an exact branch it must not create an [Offer],
+/// [MarketPrice], or route price.
+Product? listOnlyProductForRegionalProspectOffer(
+  OfferImportRecord record,
+  Iterable<Product> catalogProducts,
+) {
+  if (!record.regionalOnly ||
+      !_hasVerifiedOfferEvidence(record, requireExactBranch: false)) {
+    return null;
+  }
+  return productForProspectOffer(record, catalogProducts);
+}
+
+bool _hasVerifiedOfferEvidence(
+  OfferImportRecord record, {
+  bool requireExactBranch = true,
+}) {
   final original = record.originalPrice;
   return record.productLabel.trim().isNotEmpty &&
       record.storeName.trim().isNotEmpty &&
-      !record.regionalOnly &&
-      hasExactOfferRecordBranch(record) &&
+      (!requireExactBranch ||
+          (!record.regionalOnly && hasExactOfferRecordBranch(record))) &&
       record.offerPrice.isFinite &&
       record.offerPrice > 0 &&
       (original == null ||
