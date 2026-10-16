@@ -2520,7 +2520,519 @@
       "error": "HTTP Error 503: Service Unavailable",
       "branchId": "4371",
       "location": "Thüngersheim",
-      "address": "Am Straßacker 1, 97291 Thüngersheim, Germany"
+      "address": "Am Straßacker 1, 97291 Thüngersheim, Germany",
+      "prospects": [
+        {
+          "id": "e4b082194e79ba4cda17",
+          "title": "Netto Wochenprospekt 12.10.2026 – 17.10.2026",
+          "url": "https://wochenprospekt.netto-online.de/hz42_kisa_4/?storeid=4371",
+          "offerStartDate": "2026-10-12",
+          "offerEndDate": "2026-10-17",
+          "status": "current",
+          "pageCount": 70,
+          "loadedPageCount": 70,
+          "pageStatus": "complete",
+          "pageCountKnown": true,
+          "thumbnailUrl": "https://www.netto-online.de/media_nfs/images/2026-42/flipbook_kisa-500x700-kisa_Seite_01-c.jpg?vs=126b8376e5947f4059531a76aebfcc962cc07abf7f015b424e9bce188b354176",
+          "pageSamples": [
+            {
+              "number": 1,
+              "altText": "",
+              "keyWords": "Super Wochenende Schlagsahne gekühlt, mind. 30% Fett 4 x 200 g (3.75 / kg) Einzelpreis: 0.89 (4.45 / kg) Do Fr Sa 62 BIS ZU 4x % –15% 4 für SPAREN 3.– * 3.56 Softlan Weichspüler versch. Sorten 8 x 0.65 – 1 Liter Ehrmann Almighurt gekühlt, versch. Sorten 100 g – 150 g (1.25 – 1.92 / l) Einzelpreis: 1.59 (2.20 – 3.30 / kg) (1.59 – 2.45 / l) GRATIS Wäschekorb Maße: ca. 56 x 38 x 21 cm Volumen: ca. 30 Liter Einzelpreis: 2.99 –62% 0. 33* 0.89 Clementinen 8x KW 42 / KiSB Spanien, Kl. I 1 kg Netz –24% 1. 89 * UVP 2.49 –21% 8 für 9.99 * 12.72 –29% 8. 99* (1.12 – 1.23 / l)",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/ZEY5CpET0vEsPU_XKhIeZ3XR1B1YulqAhPl9KRzNwiU/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/c8fe2fbf-e9d4-45a4-9880-268377edb039-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/3eb7sA_lMR46_p94ug3C9D1NWvS28hBINAN0tD3_TAc/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/c8fe2fbf-e9d4-45a4-9880-268377edb039-downscaled.jpg"
+            },
+            {
+              "number": 2,
+              "altText": "",
+              "keyWords": "gültig von Donnerstag, 15.10.26 – Samstag, 17.10.26 Hähnchen-Innenfilet aus dem Brustfilet geschnitten 800 g 15% 1 2.– (8.74 / kg) SPAREN XXL 6.99 bis zu 23g SPAREN Preisauslobung – siehe Etikett 1 auf Artikel der Marke UVP 8.99 PROTEIN Cocktail Rispentomaten Tchibo Feine Milde Italien/Spanien, Kl. I 500 g Schale versch. Sorten 2 x 250 g; 500 g (4.98 / kg) (15.98 / kg) Fleischartikel nur erhältlich in Filialen mit Fleisch und Wurst in Selbstbedienung. –22% pro 100g 2.– SPAREN 7. 99* –13% 2. 49* UVP 9.99 –20% UVP 2.89 Holzbriketts oder Kaminholz Ramazzotti Kräuterlikör oder Arancia Holzbriketts 10 kg 0,0 – 30 % Vol. 0,7 Liter (0.40 / kg) Kaminholz 11dm³ (14.27 / l) (362.73 / m³) –20% 3.99 je - regionale Verpackungsabweichungen möglich - 4.99 iglo Fischstäbchen oder iglo Filegro XXL Pepsi oder Pepsi Zero tiefgekühlt, versch. Sorten 480 g – 840 g koffeinhaltig 12 x 1 Liter zzgl. Pfand 3.30 ",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/S7PXTr_8kGWypYXv-NR4QUAdG2YyWac7ny5uYN8Wed0/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/185fa1e5-290a-43ea-8809-f87879dbe6fb-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/XmuRZILwWVYsfmQxHJlDPsbu2sripXC5_RqrUUpAPcw/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/185fa1e5-290a-43ea-8809-f87879dbe6fb-downscaled.jpg"
+            },
+            {
+              "number": 3,
+              "altText": "",
+              "keyWords": "Do Fr Sa Super Wochenende Kaki Obst & Gemüse Spanien, Kl. I Sorte: Rojo Brillante Stück –25% 0. 66* UVP 0.89 Avocado Peru/Südafrika, Kl. I Sorte: Hass Stück vorgereift unverpackt –23% Speisekürbis Hokkaido Deutschland, 1 kg 0. 99* UVP 1.29 –13% –23% Speisekürbis Butternut Deutschland, 1 kg 0. 1. 99* 11* UVP 1.29 UVP 1.29 Edelrosen XXL ca. 45 cm lang, versch. Ausführungen, 20 Stiele Aktion Pink Lady Äpfel 2. 79* Chile/Südafrika, Kl. I Sorte: Cripps Pink 1 kg Schale Lauch Champignon braun Deutschland/ Niederlande, Kl. I Stück Niederlande, Kl. I 400 g Schale (4.48 / kg) KW 42 / PoDeKiErh unverpackt –14% –18% 0. 1. 59* 79* UVP 0.69 UVP 2.19 Donnerstag – Samstag 15. Oktober 2026 – 17. Oktober 2026 100 °Punkte = 1 Euro! –20% XXL 5. 55* UVP 6.99 Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Preise (inkl. MwSt.) u. Verkaufseinheiten (Stückzahl/Mengenei",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/E2WHk3lIYjw0Qr6d4VC-SS4zoDjLOVoYTxK460plN4Y/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/8027deea-0edd-4370-be3f-14a342bdbbe7-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/zKgdg5r0AwNM9wHhZK9kuXiGL1ygsyhMlANdnRooA8o/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/8027deea-0edd-4370-be3f-14a342bdbbe7-downscaled.jpg"
+            },
+            {
+              "number": 4,
+              "altText": "",
+              "keyWords": "gültig von Donnerstag, 15.10.26 – Samstag, 17.10.26 Geflügelfleischwurst Schweine-Rücken 500 g mit Schwarte, ohne Knochen, vakuumverpackt, ca. 1,7 kg 1 kg (4.38 / kg) –20% –18% 2. pro kg 3.99 19* 2.69 UVP 4.99 mit Schinken und Käse, paniert 625 g Leberpastete (9.58 / kg) geschnitten 125 g 2.– (10.32 / kg) SPAREN XXL –13% 29* 1. 1.49 5.99 –20% 1.19 * UVP 7.99 –25% (9.52 / kg) Leberkäs-Brät zum Selbstbacken 800 g Bratwurst gebrüht 540 g (4.99 / kg) (5.54 / kg) 3.– SPAREN Fleischartikel nur erhältlich in Filialen mit Fleisch und Wurst in Selbstbedienung. Hähnchen-Schnitte „Cordon Bleu Art“ XXL * 3.99 UVP 3.79 –42% –21% 2.99 UVP 6.99 Kibbelinge Alaska-Seelachs, mit Sauce 275 g Hähnchenbrustfiletroulade (13.78 / kg) versch. Sorten 150 g bis zu 20g PROTEIN pro 100g –13% –24% 1. 3.79 89* UVP 2.19 *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begre",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/gP68pYEZgmlKSgpyjyU7a99Zyy3NXwTF69PIVjZupMw/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/b6164a38-80b8-4be8-9c21-6be7ad6ed5b3-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/r_F1KadvPOtSReUwJSD32QfHbaNByrlVUfxrtKpXX8Q/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/b6164a38-80b8-4be8-9c21-6be7ad6ed5b3-downscaled.jpg"
+            },
+            {
+              "number": 5,
+              "altText": "",
+              "keyWords": "Do Fr Sa Super Wochenende Schwarzwaldmilch Trinkmahlzeit Kühlregal & Tiefkühlung versch. Sorten 500 ml zzgl. Pfand 0.25 (5.98 / l) bis zu 8g PROTEIN pro 100g –21% 2.99 UVP 3.79 Regilait Gezuckerte kondensierte Vollmilch 300 g (6.63 / kg) bis zu 38g PROTEIN pro 100g Dr. Oetker Paula Pudding gekühlt, versch. Sorten 4 x 125 g; 8 x 50 g (2.98 – 3.73 / kg) –34% DOVGAN körniger Frischkäse 1. 49* gekühlt, versch. Sorten 250 g (7.16 / kg) UVP 2.29 Burgis Knödelinos oder Kartoffelknödel Neumarkt UVP 2.29 1.99 UVP 2.59 gekühlt, versch. Sorten 350 g – 400 g (4.98 – 5.69 / kg) –21% Aktion 1.79 1.99 UVP 2.29 Eisriegel Ital Pizza La Bomba tiefgekühlt, versch. Sorten 223 g – 251,5 g tiefgekühlt, versch. Sorten 440 g – 465 g (11.09 – 12.51 / kg) (7.16 – 7.57 / kg) 5 Stück KW 42 / Ki 1.79 –23% Bertoncello gefüllte Gnocchi gekühlt 375 g – 500 g (3.58 – 4.77 / kg) –21% –24% 79 2. 3.69 –32% 2.49 (9.90 - 11.",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/uzRXO2gYYDI7VdF9qoQoksOHicf9blNd0hnOKeipn0s/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/9acf7b84-0e84-4571-b634-bbd848ea5542-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/2kWbxo5LRdqeTaqvEpjzUbDoa_4vfOOZ8fsQZe4a5Sc/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/9acf7b84-0e84-4571-b634-bbd848ea5542-downscaled.jpg"
+            },
+            {
+              "number": 6,
+              "altText": "",
+              "keyWords": "gültig von Donnerstag, 15.10.26 – Samstag, 17.10.26 T N E M I T R O S IM batt a R p p A s n te s e d min 10 % Dauertiefpreis 1. 69* –11% Dauertiefpreis 1.49 * 1.49 Kinderpunsch –13% 1.29 Bergfeuer Glühwein das Original ohne Alkohol, trinkfertig 1 Liter 1 Liter Christkindl Glühwein versch. Sorten 1 Liter Dauertiefpreis 1.99 *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenzten Angebots schon am ersten Tag ausverkauft sein. * –10% 1. 79* Nürnberger Christkindles Glühwein aus Rotwein 1 Liter auch online /?&_2400061000 Dauertiefpreis 4.49 * –11% 3. 99* Donnerstag – Samstag 15. Oktober 2026 – 17. Oktober 2026 Winzerglühwein aus Rotwein 0,75 Liter (4.65 / l) Aktion 3.49 * –14% 2. 99* (3.99 / l) KW 42 / Ki Nürnberg",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/mUX_--F1CmmaEF7z2DRp7_mR0gWlAgBIiAGzXVvjE_0/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/62955d81-a712-4f34-b818-9d67878cbb2d-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/y-y5XLOR_9mF_iGgctxKxM0cchPcg7roOj4qLLoHQPo/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/62955d81-a712-4f34-b818-9d67878cbb2d-downscaled.jpg"
+            },
+            {
+              "number": 7,
+              "altText": "",
+              "keyWords": "DER BESTE PREIS: UNSERE EIGENMARKE Kuvertüre versch. Sorten 200 g (8.45 / kg) Dauertiefpreis 1. 69* Haselnusskerne ganz 200 g (17.45 / kg) Dauertiefpreis 3. 49* Streudekor KW 42 versch. Sorten 57 – 75 g Mandeln Dauertiefpreis naturbelassen und gemahlen 200 g (12.45 / kg) 2. 49* Vanillepaste 50 g (11.87 – 15.61 / kg) (55.80 / kg) Dauertiefpreis Dauertiefpreis 0. 2. 89* 79* Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Preise (inkl. MwSt.) u. Verkaufseinheiten (Stückzahl/Mengeneinheit) können abweichen, zzgl. Versandkosten. online Konkrete Angaben finden Sie beim jeweiligen Artikel im Online-Shop.",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/aUeHBtkCAPYdj4dAsPtxzrtni0Jl9-7ImrkLc0KWdHg/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/71ce8fbd-e2e0-4de1-a1f9-afa3ef30c895-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/pyWafZsd8PXS6gCl_8KVcjL1EolRQNvSdSRiWRqKmBI/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/71ce8fbd-e2e0-4de1-a1f9-afa3ef30c895-downscaled.jpg"
+            },
+            {
+              "number": 8,
+              "altText": "",
+              "keyWords": "Dessertsauce Vanillegeschmack für 3 x 500 ml Milch (0.33 / l) Dauertiefpreis 0. 49* Pudding Vanillegeschmack für 5 x 500 ml Milch (0.16 / l) Dauertiefpreis 0. 39* Pudding Schokolade für 3 x 500 ml Milch (0.46 / l) Dauertiefpreis 0. 69* Backkakao 250 g (13.16 / kg) 3. 29* *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenzten Angebots schon am ersten Tag ausverkauft sein. Kuchenbackmischungen versch. Sorten 340 – 500 g (3.98 - 5.85 / kg) netto-online.de 1. 99* KW 42 Dauertiefpreis Dauertiefpreis",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/Ql1RoxibM9DziAwXrRmNFar5MvNPwrqgqfstK3idvas/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/1584250a-9a4f-42f7-96bf-6bfae29c56f1-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/Ywj58dJkI2OZdwctC7-DjoIWcDfiprm7FnY62IuRczc/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/1584250a-9a4f-42f7-96bf-6bfae29c56f1-downscaled.jpg"
+            },
+            {
+              "number": 9,
+              "altText": "",
+              "keyWords": "Do Fr Sa Super Wochenende Fleischartikel nur erhältlich in Filialen mit Fleisch und Wurst in Selbstbedienung. KLASSIKER AUS DER HEIMAT 2.– SPAREN auch online /?&_2209646000 pro kg SchweineSchäufele 5. 99 aus der Schulter, mit Knochen, vakuumverpackt, ca. 1,3 kg 1 kg Mengen Dorfmühle Oberschwäbische Spätzle UVP 7.99 500 g –25% (3.98 / kg) Preßsack UVP 2.99 gekühlt, versch. Sorten 350 g – 400 g (8.60 / kg) 300 g (5.73 – 6.54 / kg) (9.30 / kg) KW 42 / KiOsSB 1. 99* Settele Fertiggerichte versch. Sorten 150 g Nürnberger Rostbratwürste –33% –15% 2. 79* UVP 3.29 –13% 1. 29* UVP 1.49 Donnerstag – Samstag 15. Oktober 2026 – 17. Oktober 2026 –14% NeuUlm 2.29 UVP 2.69 Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Preise (inkl. MwSt.) u. Verkaufseinheiten (Stückzahl/Mengeneinheit) können abweichen, zzgl. Versandkosten. Konkrete Angaben finden Sie beim jew",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/Lqcx1CT_GK47aOij2KFrUZQEqUPhxzNDTBLRe1X8djg/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/6c068bab-1e65-4a5f-a753-9d64b4ac317c-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/jxE3rAYVj6t8wFfaqW8GqsoRVCqtK8cWerSfZfiRtJI/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/6c068bab-1e65-4a5f-a753-9d64b4ac317c-downscaled.jpg"
+            },
+            {
+              "number": 10,
+              "altText": "",
+              "keyWords": "gültig von Donnerstag, 15.10.26 – Samstag, 17.10.26 Bürger Maultaschen Grüner Vollbier oder Zirndorfer versch. Sorten 0,5 Liter zzgl. Pfand 0.25 gekühlt, versch. Sorten 340 g – 400 g (1.60 / l) (6.23 – 7.32 / kg) –37% 2.49 UVP 3.99 Seeberger Studentenfutter klassisch naturbelassen 150 g (15.27 / kg) –36% 2. –10% 0.80 29* Berchtesgadener Land Topfen Bauhofer Emmentaler gerieben gekühlt, versch. Sorten 250 g gekühlt 200 g (3.56 / kg) (7.45 / kg) 3.59 Oppmann Schwarzlack Sekt, trocken 0,75 Liter (6.65 / l) 2.– Aktion 0. 89* *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenzten Angebots schon am ersten Tag ausverkauft sein. 4.99 –25% 1. 49 UVP 1.99 Donnerstag – Samstag 15. Oktober 2026 – 17. Oktober 2026 UVP 6.99 Würzburg –28% KW 42 / KiOsSB SPAREN",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/Blq4aNAfkmNZCIC5l8KajPrDMp1GHykHM-27kOLl1Fw/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/16ac92cb-8fef-4313-85df-b08661233a53-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/uytWql5TsCF0wD02Q8LKPK0WqhZo-8VpxJFTUNDNJ8E/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/16ac92cb-8fef-4313-85df-b08661233a53-downscaled.jpg"
+            },
+            {
+              "number": 11,
+              "altText": "",
+              "keyWords": "gültig am 16.10.26 r e l l a n K e °Punkt n e t k n u p ° a r t x e g a it e Jeden Fr 90 Extra°Punkte Ausschneiden oder in der App aktivieren! 90 EXTRA °P Gültig am 16.10.26 60 Extra°Punkte *Von der Bepunktung ausgenommen (nicht rabattfähig): Pfand, Tabakwaren, Buch- und Presseerzeugnisse, Tchibound Eduscho-Artikel, Pre- und Anfangsmilchnahrung, Gutscheine und Guthabenkarten. 30 Extra°Punkte Weitere Infos unter: netto-online.de/payback PAPIER- ODER eCOUPON NUTZEN ab 30€ Einkaufswert Der Coupon ist nur einmalig und nicht nachträglich einlösbar. Nicht mit anderen Aktionen kombinierbar. 9 971001 282119 auf den Einkauf ab 35€, 60 EXTRA °P ab 30€ oder 30 EXTRA °P ab 25€!* ab 35€ Einkaufswert ab 25€ Einkaufswert ONLINE-KRACHER netto-online.de 555 Couchtisch AMIRI KW 42 / PoDeKiErhTu • matte PU-Lackierung schützt vor Kratzern • robustes MDF-Material • schwebender Effekt • Marmoroptik Extra°Punk",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/HWP9gGXEEH2xb-LSx24pBGXVWuK5fee0O5I0d7QylBM/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/c9795b7c-e157-4148-91ec-449881d18dec-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/XXrF8bP9ZePytVNWlU2K7c9WoC9msMOZaEIvM9St35k/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/c9795b7c-e157-4148-91ec-449881d18dec-downscaled.jpg"
+            },
+            {
+              "number": 12,
+              "altText": "",
+              "keyWords": "S G A T I E FR N E R A P S % 2 5 U Z IS B gültig am 16.10.26 Junge Ente Kohlrabi Tomatenmark küchenfertig, ohne Innereien, ca. 2 kg 1 kg Deutschland, Kl. I Stück dreifach konzentriert 200 g pro kg 4.50 SPAREN 4. 49 UVP 8.99 –50% –50% –25% 0. 0. 34* 66* UVP 0.69 Anheuser Busch Bud oder San Miguel Especial 0.89 11.– 24 x 0,3 Liter / 24 x 0,33 Liter zzgl. Pfand 3.42 SPAREN (1.52 / 1.67 / l) Fleischartikel nur erhältlich in Filialen mit Fleisch und Wurst in Selbstbedienung. (3.30 / kg) 9. 99* UVP 20.99 –52% versch. Sorten 32 x 85 g – 48 x 85 g (2.94 – 4.41 / kg) XXL 11.– SPAREN 40% BIS ZU 1 SPAREN Preisauslobung – siehe Etikett 1 11.99 UVP 22.99 –47% *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenzten Angebots schon am ersten Tag ausverkauft sein. am Freitag 16. Oktober 2026 auf Artikel der Marke KW 42 / PoKiErhTuSB Sheba oder Whiskas Katz",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/nzjbKWmCct3DlhqYDG6U7rMU4S8WXxX-oE95QrzyKQI/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/6a882c0b-2c7f-4789-9041-47556dc9bb0a-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/H8bQVluzdbkFkckmHSf-NMwP43yzdPeqKxDcxG-vSDY/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/6a882c0b-2c7f-4789-9041-47556dc9bb0a-downscaled.jpg"
+            },
+            {
+              "number": 13,
+              "altText": "",
+              "keyWords": "SAMSTAGS –37% KRACHER gültig am Samstag, 17.10.26 1. 11 UVP 1.79 fettarme H-Milch 1,5% Fett, 12 x 1 Liter (0.67 / l) Einzelpreis: 0.85 Fleischartikel nur erhältlich in Filialen mit Fleisch und Wurst in Selbstbedienung. Blumenkohl Deutschland, Kl. I Stück –35% 1. 12x 29* UVP 1.99 Coppenrath & Wiese Meistertorte tiefgekühlt, versch. Sorten 500 g – 1200 g (4.99 – 11.98 / kg) 3.– 12 für –21% SPAREN 5. 99* 8.– * 8.99 –33% 10.20 Milka Feine Kugeln Chiemseer Hell versch. Sorten 82 g – 90 g 20 x 0,5 Liter zzgl. Pfand 3.10 (22.22 – 24.39 / kg) (1.40 / l) Einzelpreis: 3.29 (36.56 – 40.12 / kg) KW 42 / KiSB 2x 6.– 2 für –39% 4.– * SPAREN 13.99 UVP 19.99 6.58 *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenzten Angebots schon am ersten Tag ausverkauft sein. Filialangebote: Netto Marken-Discount Stiftung & Co. KG | Industriepark Ponholz 1 | 93142 Ma",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/5vvhZU1pQUhHAkzUsEtmVuxtFuGc6-B-Mt5HLmrd6hk/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/ecae102c-70a4-4f44-93ca-eef00c9b3b36-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/XX8sbd-pIFdRJ6i2CDrZWUF2rLDtVvrkhwrcU0ozWPQ/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/ecae102c-70a4-4f44-93ca-eef00c9b3b36-downscaled.jpg"
+            },
+            {
+              "number": 14,
+              "altText": "",
+              "keyWords": "971648 580463 50FACH °P auf Wasch-, Putz- & Reinigungsmittel!* Einmalig einlösbar ab 2 € Mindestumsatz auf die genannte Warengruppe. Nicht mit anderen Aktionen kombinierbar. *Ausgenommen Nonfood. 9 Weitere Infos unter: netto-online.de/payback Gültig von 12.10.-17.10.26 PAPIER- ODER eCOUPON NUTZEN Montag, 12.10.26 – Samstag, 17.10.26 Schweine-Nacken ohne Knochen, vakuumverpackt, ca. 2,4 kg 1 kg 2.50 SPAREN pro kg 5. 49 UVP 7.99 –31% auch online /?&_1849820000 5.– Italien/Spanien, Kl. I 500 g Schale SPAREN (2.78 / kg) 12. 99* Melitta Bella Crema –17% 1. 39 * UVP 1.69 Meggle Feine Butter, Streichzart oder Joghurtbutter ganze Kaffeebohnen, versch. Sorten 1 kg – 1,1 kg 17.99 –27% (11.81 – 12.99 / kg) Haribo Fruchtgummi versch. Sorten 160 g – 175 g (3.77 – 4.13 / kg) –44% 0. 66* 1.19 Nutella NussNugatCreme 750 g (5.92 / kg) 5.50 SPAREN –61% gekühlt 250 g 0.99 (3.96 / kg) –23% 4. 44* UVP 2.59 5",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/Rv-ZZcA_sox-4GFrDmeLrnGXKabzldS5WPWlT66eiDc/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/8a3a40c4-5853-46a5-94cd-63750c41b861-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/pjBlKY7yDKcxRsQ4orQJqF3Hx1ntBxHfM7R9-qBH8dg/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/8a3a40c4-5853-46a5-94cd-63750c41b861-downscaled.jpg"
+            },
+            {
+              "number": 15,
+              "altText": "",
+              "keyWords": "Weltmeister-, Sonnenblumen- oder Kürbiskernbrötchen Junge Bayerische Ente 4 Stück Einzelpreis: 0.39 – 0.49 tiefgekühlt, HKl. A, bratfertig 2,3 kg 4x (5.65 / kg) bis zu 4.23 –48% SPAREN 12. 99* 4 für 1.– BEIM KAUF VON 4 STÜCK * ENTSPRICHT 0.25 PRO STÜCK UVP 17.22 1.56 – 1.96 Wachenroth –24% Lorenz Crunchips oder NicNac‘s versch. Sorten 110 g – 150 g E S I E R P T S BE (7.40 – 10.09 / kg) Angebot gilt nur in ausgewählten Filialen mit Backofen. ZUM WOCHENSTART Minipflaumen Tomaten Mövenpick Marokko/Spanien, Kl. I 1 kg Schale Kaffee gemahlen oder Ganze Bohnen, versch. Sorten 500 g (12.98 / kg) –20% –44% XXL 3. 1. 49* 11* UVP 4.38 UVP 1.99 Rapso Rapsöl Red Bull Energy Drink 750 ml (4.65 / l) KW 42 / KiErh 4.70 –30% 3. 49 * 4.99 4.20 SPAREN 5. 6.49 99 SPAREN taurin- & koffeinhaltig, versch. Sorten 250 ml zzgl. Pfand 0.25 (3.96 / l) (11.98 / kg) UVP 10.69 –39% –43% Montag – Samstag 12. Oktober ",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/f3eVO3MPXuP8YrqdcePEWNwk2jT_1ZlkKD-nFr4I21M/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/0f6d7e01-5797-4d08-a6ce-0325bdc3d979-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/l4y207Ac4W0Xfs2KqOGCKfjR9XZv-iPUV3Yt6ItjCh4/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/0f6d7e01-5797-4d08-a6ce-0325bdc3d979-downscaled.jpg"
+            },
+            {
+              "number": 16,
+              "altText": "",
+              "keyWords": "BEIM KAUF VON 6 PACKUNGEN 8.28 GESPART Albi Saft oder Nektar ab 2 Packungen versch. Sorten 1 Liter Einzelpreis: 2.49 (1.49 / l) –48% –55% (1.11 / l) pro Packung pro Packung pro Packung 1. 1. 1. 49 Ab 6 Packungen bleibt der Einzelpreis gleich. ab 6 Packungen (1.29 / l) –40% 1 ab 4 Packungen 29 2.49 11 2.49 1 2.49 BEIM KAUF VON 6 FLASCHEN 12.66 GESPART Rotkäppchen Sekt oder Fruchtsecco versch. Sorten 0,75 Liter Einzelpreis: 4.99 (6.65 / l ab 2 Flaschen ab 4 Flaschen ab 6 Flaschen –34% –40% –42% (4.39 / l) (3.99 / l) pro Flasche pro Flasche pro Flasche 3. 2. 2. 29 Ab 6 Flaschen bleibt der Einzelpreis gleich. 1 (3.84 / l) 99 4.99 4.99 88 1 4.99 BEIM KAUF VON 3 DOSEN GESPART 3 3 . 3 u z bis ab 2 Dosen ab 3 Dosen bis zu bis zu (6.03 / l) Ready to Drink (6.73 / l) –33% bis zu –25% 2. Ab 3 Dosen bleibt der Einzelpreis gleich. 2.99 50FACH °P pro Dose pro Dose 1. 1. 99 22 1 Rabatt *Von der Bepunkt",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/XdYfSaj9TWFgrmh0TWq6NnmQJ605AOszn2e2j8xc-zk/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/2e338b9b-2219-429d-8dce-2d57319693b3-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/XXli-Lm-QzN24rZqJ_SRJAd2Kk6MdcBntkhfubUC-q0/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/2e338b9b-2219-429d-8dce-2d57319693b3-downscaled.jpg"
+            },
+            {
+              "number": 17,
+              "altText": "",
+              "keyWords": "42 Fleischartikel nur erhältlich in Filialen mit Fleisch und Wurst in Selbstbedienung. Angebot gilt nur in ausgewählten Filialen mit Backofen. BIS ZU % SPAREN MIT DEN FRISCHE KRACHERN –15% Frischwurst-Aufschnitt versch. Sorten 200 g (5.- / kg) 1.– * Spitzpaprika rot Marokko/Spanien, Kl. I 500 g UVP 1.19 1. 79* UVP 2.29 (3.58 / kg) Unser Mehl kommt aus deutschen Mühlen 6x –42% 6 für KW 42 / KiSB –21% 1.– 8g PROTEIN pro 100g * Doppelschrippe 6 Stück Einzelpreis: 0.29 –22% bis zu Ehrmann High Protein Skyr gekühlt, versch. Sorten 150 g 1.74 UVP 0.89 (4.60 / kg) Montag – Samstag 12. Oktober 2026 – 17. Oktober 2026 0. 69 100 °Punkte = 1 Euro! Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Preise (inkl. MwSt.) u. Verkaufseinheiten (Stückzahl/Mengeneinheit) können abweichen, zzgl. Versandkosten. Konkrete Angaben finden Sie beim jeweiligen Artikel im Onl",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/xYvbrpKQcNQUcrhNsU0TSLHLztCwqrZMO54cA24-pBA/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/e10a1e2f-1b99-4249-a050-0e93239e949c-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/Wq2XMbVDb11nm7tQFoCXvhW6_fmEWXUR9Lzef_vN1DY/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/e10a1e2f-1b99-4249-a050-0e93239e949c-downscaled.jpg"
+            },
+            {
+              "number": 18,
+              "altText": "",
+              "keyWords": "Radieschen Zespri Kiwi Gold Jumbo Zwetschgen Deutschland, Kl. I 1 Bund Neuseeland, Kl. I Stück Moldau, Kl. I 1 kg Schale extra große Früchte –15% unverpackt Aktion 0. XXL 1. 0. 49* 69* 79* UVP 0.69 Schweine-Minutensteaks Hackfleisch gemischt zart und mager 400 g 50% weniger Fett 400 g (5.98 / kg) (7.48 / kg) Frikadellen bis zu 19g PROTEIN pro 100g –20% versch. Sorten 500 g (4.98 / kg) –21% 2. 2. 39* –16% 2. 99 UVP 2.99 1.99 49* 3.79 UVP 2.99 Nuss-Nougat-Croissant Weltmeisterbrot Laugenstange mit Käse Stück 750 g Stück (1.99 / kg) –21% –25% 0. 1. 59* 49* UVP 0.75 1.99 Nordsee Backfisch oder Matjesfilets Hirtenkäse gekühlt, versch. Sorten 250 g –33% 0. 39* UVP 0.59 20 gekühlt 280 g – 310 g (5.16 / kg) Fleischartikel nur erhältlich in Filialen mit Fleisch und Wurst in Selbstbedienung. –28% Extra°Punkte –13% 1. –24% 3.79 29* *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildete",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/lyA4mVuuP-fffV7dQt41F42HSDFwQKF_yCdmSxRqWbI/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/17d2a354-dc5e-4039-bb8e-742a4f521e28-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/qYVca2G6IOa03BmQo1pjY23EAJsas5nClLMnp0qZP90/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/17d2a354-dc5e-4039-bb8e-742a4f521e28-downscaled.jpg"
+            },
+            {
+              "number": 19,
+              "altText": "",
+              "keyWords": "Obst & Gemüse DEN GANZEN OKTOBER SPAREN! Speisekartoffeln Deutschland, versch. Kocheigenschaften 4 kg Netz (0.75 / kg) Chiquita Bananen Costa Rica/Panama, 1 kg –20% –25% 1. 99* XXL UVP 2.49 2. 99* KW 42 / PoKeDeKiTuWoe UVP 3.99 –33% Möhren Deutschland, Kl. I 2 kg Beutel (0.60 / kg) 1. 19* UVP 1.79 –23% –23% Orangen Südafrika, Kl. I 1,5 kg Netz (1.53 / kg) 2. XXL 29* Äpfel rot UVP 2.99 (1.15 / kg) Montag – Samstag 12. Oktober 2026 – 17. Oktober 2026 Deutschland, Kl. II 2 kg Beutel 2. 29* UVP 2.99 Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Preise (inkl. MwSt.) u. Verkaufseinheiten (Stückzahl/Mengeneinheit) können abweichen, zzgl. Versandkosten. Konkrete Angaben finden Sie beim jeweiligen Artikel im Online-Shop.",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/84miE3nyoJjLMJfup-LIoPvSEjdQH8MHdGigtFurvIE/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/e0b276b5-802d-44c8-a0bb-e6af05ef87e9-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/_3SokxpP6HHb5_VGRrMXS-y02emOJmIGVkH0cc-COOc/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/e0b276b5-802d-44c8-a0bb-e6af05ef87e9-downscaled.jpg"
+            },
+            {
+              "number": 20,
+              "altText": "",
+              "keyWords": "Heidelbeeren Peru/Argentinien, Kl. I 300 g Schale (13.30 / kg) –14% XXL 3. 99* X XL Obst & Gemüse UVP 4.69 Birnen Belgien/Niederlande, Kl. I 1,5 kg Beutel (1.66 / kg) –16% –17% XXL XXL 2. 49* UVP 2.99 2. 22* Zitronen Italien/Spanien, Kl. I 1 kg Netz Rosenkohl Suppengemüse Deutschland/ Niederlande, Kl. I 1 kg Netz 750 g UVP 2.69 (1.99 / kg) Zwiebeln Deutschland, Kl. II 3 kg Sack (0.83 / kg) –27% Aktion –16% XXL XXL XXL 1. 29* UVP 1.79 1. 49* 10% 2.49 UVP 2.99 2 SPAREN KW 42 / PoKeDeKiErhTuWo 2 Preisauslobung – siehe Etikett auf Obstkonserven der Marke *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenzten Angebots schon am ersten Tag ausverkauft sein. Montag – Samstag 12. Oktober 2026 – 17. Oktober 2026",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/OP3aTzDV92cTSincMubGi9WnKOhsjuGT9FDYdjo4gbE/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/af33f153-aa13-4075-9dc5-4c2e781f1a60-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/iuSVmwKf5TYCetiWA_jwaL2kxtcF6yZH9hBS9eUWP7s/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/af33f153-aa13-4075-9dc5-4c2e781f1a60-downscaled.jpg"
+            },
+            {
+              "number": 21,
+              "altText": "",
+              "keyWords": "der ort mit über .000 Bio Produkten. Bio-Buttergemüse tiefgekühlt 300 g (4.97 / kg) Über das Jahr 2026 verteilt im Standard-, Saison- und Aktionssortiment. 1 Dauertiefpreis 1.49 Bio Tee Kamille 30 g Bio Zitronensaft (31.67 / kg) 250 ml Dauertiefpreis (6.36 / l) 1. 59* Dauertiefpreis 0. 95* Bio Orangensaft 1 Liter Bio pflanzlicher Brotaufstrich Dauertiefpreis versch. Sorten 180 g (6.94 / kg) 2. 49* KW 42 Dauertiefpreis Bio Karottensaft 1 Liter 1. 79 Dauertiefpreis 1. 25* Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Preise (inkl. MwSt.) u. Verkaufseinheiten (Stückzahl/Mengeneinheit) können abweichen, zzgl. Versandkosten. online Konkrete Angaben finden Sie beim jeweiligen Artikel im Online-Shop.",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/lfyZ16Tz5jcvkPNqZIkEW-S84vPGG9HFkgPkcQkN6i4/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/6175713a-6286-41d3-8c60-ce47c8f1e65f-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/Hg8DMEkoXC-vfEwhD5kM_tyG4eF2KWrw4W7eyBPIbtM/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/6175713a-6286-41d3-8c60-ce47c8f1e65f-downscaled.jpg"
+            },
+            {
+              "number": 22,
+              "altText": "",
+              "keyWords": "Bio Joghurt und Knuspermüsli gekühlt, versch. Sorten 150 g (6.33 / kg) Bio Butterkäse Scheiben gekühlt 200 g (9.95 / kg) Dauertiefpreis Dauertiefpreis 1. 0. 99* 95* Bio Speisequark gekühlt, Magerstufe 250 g (3.96 / kg) Bio Rinder Hackfleisch zum Braten 400 g (16.23 / kg) 12g PROTEIN pro 100 g Dauertiefpreis Dauertiefpreis 0. 6. 99 49* Pesto Bio Natives Olivenöl Genovese und Rosso 190 g 750 ml (9.27 / l) (12.05 / kg) auch online Dauertiefpreis Dauertiefpreis 6. 2. 95* *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenzten Angebots schon am ersten Tag ausverkauft sein. auch online 29* KW 42 Bis zu netto-online.de",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/7POsQTIX_uBsAKJPuJ05JaB_Gk8fLz_gKMewcENLYD8/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/e60a37a1-ef77-48cd-9f60-3de0323317dd-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/ql7mA7AQIHM7MpgHgOobVJiQn1PdCgA93hMOdlKRVtc/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/e60a37a1-ef77-48cd-9f60-3de0323317dd-downscaled.jpg"
+            },
+            {
+              "number": 23,
+              "altText": "",
+              "keyWords": "Pflanzen ÜBER 3.700 PFLANZEN ONLINE BESTELLBAR netto-online.de/pflanzen winterhart winterhart Aktion 3. 99 Christrose ca. 25 cm hoch, Ø = 12 cm, je Topf * Aktion 9. Christrose 99 ca. 20 cm hoch, versch. Farben, je 6er Pack Zweifarbige Besenheide Koniferen ca. 30 cm hoch, je 4er Pack Calluna, ca. 20 cm hoch, versch. Farben, Ø = ca. 11 cm Topf Aktion Aktion 2. 6.99 KW 42 / KeDeKiErhHaBo 49* Chrysantheme Amaryllis Grünpflanzen ca. 25 cm hoch, versch. Farben, Ø = 12 cm, je Topf Ritterstern, ca. 25 cm hoch, versch. Farben, Ø = 12 cm, je Topf ca. 25 cm hoch, versch. Ausführungen, Ø = 12 cm, je Keramiktopf Aktion 2. 49* Aktion 3. 99* Montag – Samstag 12. Oktober 2026 – 17. Oktober 2026 Aktion 4.99 Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Preise (inkl. MwSt.) u. Verkaufseinheiten (Stückzahl/Mengeneinheit) können abweichen, zzgl. Versandkosten. Kon",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/QKscecw1RoV6NmGyqairQMBH9pIZ3oVnifT3A7pL_ic/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/3dad5eb6-9bde-42b7-a6a4-8ab248c26bf9-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/o_6OCZYsr6b1WchQZIKuYxxIkXSHZNUEt4MMfk_PEJc/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/3dad5eb6-9bde-42b7-a6a4-8ab248c26bf9-downscaled.jpg"
+            },
+            {
+              "number": 24,
+              "altText": "",
+              "keyWords": "DAS BACKREGAL MIT DER GRÖSSTEN AUSWAHL täglich über 80 frisch gebackene Ar tikel Cookies 4 für Laugenbreze 4 Stück Einzelpreis: 0.39 1.– –42% versch. Sorten Stück PREISKNÜLLER * 1.56 –10% Würstchen Dog Stück 0. 89* 0.99 –16% Steinofenbaguette 250 g (3.96 / kg) *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenzten Angebots schon am ersten Tag ausverkauft sein. 0. 99* 1.19 1. 99* UVP 3.49 –34% 0. 49* Börekstick versch. Sorten Stück –11% Hefezopf versch. Sorten 440 g (5.43 / kg) UVP 0.75 2. 39* 2.69 Montag – Samstag 12. Oktober 2026 – 17. Oktober 2026 Herzwaffeln versch. Sorten 165 g (9.64 / kg) –11% 1. 59* 1.79 Angebot gilt nur in ausgewählten Filialen mit Backofen. –35% KW 42 / PoDeKiErhTu 4x",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/B9MISMeXo_5HMlP0UQ_ToxZzCT9OgeJTCfq9_k088CU/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/fdddb537-71be-453c-a114-1e1080a3d7aa-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/6nuzPqOrIkN-xsjDKWe6UH54nKBGKnzOW9HeYsEEbxg/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/fdddb537-71be-453c-a114-1e1080a3d7aa-downscaled.jpg"
+            },
+            {
+              "number": 25,
+              "altText": "",
+              "keyWords": "QUALITÄT AUS DEUTSCHLAND Schweine-Bauch ohne Knochen, vakuumverpackt, ca. 2 kg 1 kg 3.– SPAREN pro kg 4.99 UVP 7.99 –37% Gulasch vom Rind zart und saftig 500 g Fleischartikel nur erhältlich in Filialen mit Fleisch und Wurst in Selbstbedienung. (12.98 / kg) –17% XXL 6. –16% 99* Hähnchen-Schenkel mit Rückenstück, HKl. A 2 kg (3.50 / kg) 6. 49* 8.49 UVP 7.79 Bayerische Puten-Schnitzel Hähnchen-Oberkeulensteaks Rinder-Hackfleisch mager, dünn geschnitten 500 g ohne Haut und ohne Knochen, natur 400 g zum Braten 500 g (9.58 / kg) (9.98 / kg) bis zu (7.48 / kg) 18g PROTEIN PROTEIN –26% –13% pro 100g –14% 4. –21% 99* 79* UVP 5.79 (6.98 / kg) bis zu QUELLE 4. 99* 2. UVP 3.79 Natürliche pro 100g 79* 2. UVP 5.59 23g PROTEIN pro 100g Brust vom Jungbullen ohne Knochen, vakuumverpackt, ca. 1 kg 100 g (11.90 / kg) Fe Zn KW 42 / KiSB bis zu 20g Fleisch liefert hochwertiges Protein. Protein trägt zum Aufb",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/k0e8Z9nmNfqCN_Vg5PJ-VfmayNY02XP1yCrHTtPS6YY/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/189d84d3-840a-4189-90e6-4669b106da6a-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/tC8V2fkUPWF73cjbPoA5Y3qLWGPRocwTExR7Qxbv7vE/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/189d84d3-840a-4189-90e6-4669b106da6a-downscaled.jpg"
+            },
+            {
+              "number": 26,
+              "altText": "",
+              "keyWords": "Original Österreichische Wurstspezialitäten Fleisch & Wurst DAS ORIGINAL AUS SPANIEN versch. Sorten 80 g (18.63 / kg) –11% 1. 49* UVP 1.69 MarkenMetzger SalamiSortiment versch. Sorten 100 g (14.90 / kg) –16% 1. 49* UVP 1.79 Original Jamón Serrano –10% 1. 69* 11 Monate gereift 100 g (16.90 / kg) UVP 1.89 Bifi versch. Sorten 6 x 20 g; 3 x 45 g; 3 x 40 g Bockwurst (14.74 – 16.58 / kg) über Buchenholz geräuchert 2 x 200 g (6.23 / kg) –33% 1. –10% 2. 99* Ansbach 49* 2.99 UVP 2.79 Geflügel Wiener RinderBurger, ChickenBurger, Hot-Dog über Buchenholz geräuchert, mit Joghurt verfeinert 2 x 150 g Leberkäse versch. Sorten 2 x 200 g (7.48 / kg) 2 x 100 g – 150 g (9.30 / kg) –10% 2. 49 * UVP 2.79 *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenzten Angebots schon am ersten Tag ausverkauft sein. –14% 2. 99 * UVP 3.49 Montag – Samstag 12. Oktober 2026",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/TngUFv6dni-R7bVR6M7hACC5Qc8hX-LQ5pT6aEWtd4U/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/787fff92-1f67-41b3-80a0-a93fab216203-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/02YNL6bA-r7dbgtNBRGK7H93_SoY2C_VSUUdkLVh7_k/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/787fff92-1f67-41b3-80a0-a93fab216203-downscaled.jpg"
+            },
+            {
+              "number": 27,
+              "altText": "",
+              "keyWords": "E G N I L B E I L N E I L FAMI ZUM KLEINEN PREIS Andechser Bio-Joghurt gekühlt, 3,8% oder 1,8% Fett 500 g (2.58 / kg) –50% XXL Zott Monte 1. gekühlt, versch. Sorten 150 g 49* gekühlt, versch. Sorten 4 x 100 g; 400 g (3.73 / kg) (2.93 / kg) 2.99 Brunch gekühlt, versch. Sorten 185 g (6.97 / kg) –23% –44% Müller Froop 0.44 1.29 UVP 0.79 UVP 1.69 Bergader Almzeit Weichkäse oder Bavaria Blu Kinder Maxi King, Milchschnitte oder Kinder Pingui gekühlt, versch. Sorten 175 g gekühlt, versch. Sorten 3 x 35 g; 5 x 28 g; 4 x 30 g (11.37 / kg) (11.36 – 15.14 / kg) 40 Extra°Punkte –31% 29* 1. (6.43 / kg) UVP 1.89 –20% 1. 1. 99 19* 1. KW 42 / Ki –41% –37% Waging am See 59* UVP 3.39 UVP 1.99 Feinkostsalate Galbani Mozzarella Nadler Sahneheringsfilets XXL gekühlt, versch. Sorten 400 g gekühlt, versch. Sorten 125 g gekühlt, versch. Sorten 500 g (3.23 / kg) (9.52 / kg) (5.58 / kg) –18% –40% 1.59 UVP 1.99 1.",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/0ofmW8hLBh0ExBLVQvGkWbvUB4oWLd9aL2vyxxPbJ1Q/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/ec991977-b40d-4a7c-824d-bbca3302d17e-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/VCM7enYqvVNBKOID-U7ADexPiRF-Y_Dc_dul-Ok9xLg/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/ec991977-b40d-4a7c-824d-bbca3302d17e-downscaled.jpg"
+            },
+            {
+              "number": 28,
+              "altText": "",
+              "keyWords": "SPEZIALITÄTEN AUS FRANKREICH Kühlregal & Tiefkühlung Dr. Oetker Crème fraîche oder Crème légère gekühlt 125 g – 150 g (6.67 – 8./ kg) –28% 1.– UVP 1.39 Weichkäse cremig-mild gekühlt 200 g (9.95 / kg) Tante Fanny Flammkuchenböden Macarons gekühlt, versch. Sorten 144 g gekühlt 340 g (7.32 / kg) (24.24 / kg) –16% –20% Aktion 2. 1. 3. 49 99* 49 UVP 2.99 2.49 10% Gustavo Gusto Pizza tiefgekühlt, versch. Sorten 410 g – 460 g 2 (7.24 – 8.12 / kg) SPAREN 2 –33% Preisauslobung – siehe Etikett auf Tiefkühlartikel der Marke 3.33 Neue Sorte UVP 4.99 Mini Zitronen- oder Erdbeerröllchen iglo Spinat tiefgekühlt, versch. Sorten 500 g – 750 g tiefgekühlt 250 g (2.96 – 4.44 / kg) (11.96 / kg) Ernte aus Deutschland –14% 2. 99 UVP 3.49 *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenzten Angebots schon am ersten Tag ausverkauft sein. bis zu bis zu 31,5g PR",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/mNOLH7l947iPk2clfTB10NHaEbOjC7aJUmMj6-30odM/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/865f055a-c524-4a18-b2a5-3fcac828bf7c-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/NpqF9AIBdqziyg_pYjJIYHndbsTB4GNp5c-xQxyMge8/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/865f055a-c524-4a18-b2a5-3fcac828bf7c-downscaled.jpg"
+            },
+            {
+              "number": 29,
+              "altText": "",
+              "keyWords": "MEHR KAUFEN MEHR SPAREN Hawesta Heringsfilets in Creme versch. Sorten 5 x 200 g (5.– / kg) 4.95 Einzelpreis: 1.99 SPAREN (9.95 / kg) 5 für 5x 5.– * bis zu 11,5 g UVP 9.95 PROTEIN –49% pro 100g Gewürzgurken Junge Erbsen mit Möhren extra fein 5 x 360 g (2.78 / kg) Einzelpreis: 1.19 (3.31 / kg) 4 x 3 x 130 g (3.21 / kg) Einzelpreis: 1.79 (4.59 / kg) 5x 4x 2.16 SPAREN –16% 4 für 5.– * 5 für 5.– * –30% 5.95 Sonnen Bassermann Eintopf Ben`s Original Express Reis versch. Sorten, 6 x 800 g (2.08 / kg) Einzelpreis: 1.99 (2.49 / kg) versch. Sorten 4 x 220 g (5.68 / kg) Einzelpreis: 2.29 KW 42 / DeKiSB 6x 7.16 (10.41 / kg) 4x –16% 4.16 SPAREN 4 für * 5.– 11.94 –45% 6 für 10.– Montag – Samstag 12. Oktober 2026 – 17. Oktober 2026 * 9.16 Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Preise (inkl. MwSt.) u. Verkaufseinheiten (Stückzahl/Mengeneinheit) können ab",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/LBQk-MvrCSEzr13WvEclOkU8pfI-oNQBDPz6XuWwfH8/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/c5285895-90d9-4e8e-97a2-f87bd40b85f0-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/EaDxwqEgV8UXevKD9Wwf_P3mnJBt0sUkOXH3Cyk9MOM/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/c5285895-90d9-4e8e-97a2-f87bd40b85f0-downscaled.jpg"
+            },
+            {
+              "number": 30,
+              "altText": "",
+              "keyWords": "PutenGulasch aus der Oberkeule 2 x 400 g Geschnetzeltes „Gyros Art“ vom Schwein, mit Zwiebeln und leichter Knoblauchnote 2 x 500 g (6.- / kg) Einzelpreis: 3.79 (7.58 / kg) (7.50 / kg) Einzelpreis: 3.49 (8.73 / kg) –20% 2 für 2x 2x 6.– * 7.58 Pfefferbeißer (14.90 / kg) 2x –32% –14% 2 für 2 für 2.– 6.– * 2.98 Frost Fertiggerichte – High Protein Coppenrath & WIese kernig & kräftig Brötchen tiefgekühlt, versch. Sorten 2 x 400 – 490 g (4.08 – 5.- / kg) Einzelpreis: 3.49 (7.12 – 8.73 / kg) 2x tiefgekühlt, versch. Sorten 2 x 500 g (9.– / kg) 2.98 SPAREN 2 für 4.– * 6.98 6 - 7 Stück 6.98 –42% Einzelpreis: 5.99 (11.98 / kg) 2x bis zu 13,4g PROTEIN pro 100g 2.98 SPAREN 2 für Fleischartikel nur erhältlich in Filialen mit Fleisch und Wurst in Selbstbedienung. 2 x 100 g (10.– / kg) Einzelpreis: 1.49 9.– * 11.98 –24% Jacobs Sticks löslicher Bohnenkaffee, versch. Sorten 2 x 111 – 124 g Doppelkeks XXL (",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/zKhwFznTryCXIkTyjKfpB3fHQ4Z6vvffVAQ63aBSmXs/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/ab4bb217-73cc-47c3-9bab-2af68586ffe2-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/Elj6tBt1tFgdMSaAOQ8aJsDDgla7BgRhcHgMo6A8Sh4/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/ab4bb217-73cc-47c3-9bab-2af68586ffe2-downscaled.jpg"
+            },
+            {
+              "number": 31,
+              "altText": "",
+              "keyWords": "Bis zu 44fach °P Jetzt einlösen Mit dem Joker °punkten & gewinnen Einfach Joker Couponheft an der Kasse mitnehmen, vielfach °punkten und tolle Preise gewinnen! ohne PAYBACK 5.55* mit 4.99 * Windeln versch. Sorten 30 Stück – 46 Stück Philadelphia Frischkäse/-zubereitung gekühlt, versch. Sorten 195 g (11.74 / kg) 30 Extra°Punkte Heinz Tomato Ketchup oder Mayonnaise * Nur solange der Vorrat reicht. Aktionszeitraum 28.09. - 01.11.2026. Teilnahmebedingungen auf PAYBACK.de/joker Maggi 5 Minuten Terrine versch. Sorten 41 g – 64 g (15.63 – 24.39 / kg) 30 versch. Sorten 400 ml 20 Extra°Punkte Extra°Punkte –28% –32% (4.98 / l) Dauertiefpreis 2. 29* 1. Extra°Punkte * 2.79 UVP 1.49 Maggi Delikatess Saucen Mit PAYBACK richtig sparen! 500 1.– 99* auch /?&_2985997000 online versch. Sorten 2 x 250 ml 1.000 Extra°Punkte (1.78 / l) 10 KW 42 / PoDeKiErh Extra°Punkte auf die 50€ Apple Geschenkkarte auf die ",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/xeMGbwLyMrTC-XEtp0BSE1QCoO3g4rU8KQtsfrUeWP0/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/dc5a309c-c7a5-4f7b-ba68-ef7c15519a9f-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/sGhcraMxVAr8PMdlT06avVsieDH0Lo6nLPcBxsVLz6k/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/dc5a309c-c7a5-4f7b-ba68-ef7c15519a9f-downscaled.jpg"
+            },
+            {
+              "number": 32,
+              "altText": "",
+              "keyWords": "Nur mit der Netto plus App. Pulled Pork zart gegart 550 g (9.07 / kg) 2.20 2.– SPAREN 79 4. 4.99 SPAREN (8.71 / kg) UVP 6.99 –28% –31% Costa Pacific Prawns tiefgekühlt, versch. Sorten 200 g – 215 g Mikrowellen – Pommes tiefgekühlt, versch. Sorten 140 g (27.86 – 29.95 / kg) (8.50 / kg) Preis ohne App: 7.99 (37.16 – 39.95 / kg) –14% 19* 1. 1.39 99* –40% 99 (7.07 / kg) UVP 9.99 –28% 0. Green Mountain Chunks 5. Erdinger Weißbier Hell oder Alkoholfrei 20 x 0,5 Liter zzgl. Pfand 3.10 gekühlt, versch. Sorten 180 g (13.83 / kg) (1.50 / l) 7.– –16% 49 2. UVP 2.99 6.– SPAREN 99 13. 14.99 –26% SPAREN 2.19 (1.40 / l) UVP 20.99 –28% (12.17 / kg) Barilla italienische Pasta Saupiquet Thunfisch Pesto versch. Ausformungen 1 kg versch. Sorten 130 g –33% Odol med 3 Zahncreme versch. Sorten 75 ml (19.15 / kg) 2.50 2.30 SPAREN 1. 69 UVP 3.99 –57% *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebi",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/FzwGspMeK87MtqaEwzYdMH32_crZLPr_A_lzUuX8YDA/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/ee8eaeb2-00e1-48d9-ae92-5b0312e15736-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/cW-hEVUdLVjG_09ICZAvMII7Bfd-QbECAe7J0rb2mGw/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/ee8eaeb2-00e1-48d9-ae92-5b0312e15736-downscaled.jpg"
+            },
+            {
+              "number": 33,
+              "altText": "",
+              "keyWords": "N IG ITÄT S E AL D ES E QU U NE ICH E GL Vitamin B 12 Kur 80 ml KW 42 / PoKeDeKiErhTuWoHaBo (62.38 / l) Dauertiefpreis 4.99 * w ir d zu –10% 4. 49 * Omega 3 Kapseln 59,5 g (83.87 / kg) (56.13 / l) Magnesium Sticks Brausetabletten Melatonin Kapseln 30 g versch. Sorten 102 g 15 g (29.67 / kg) Dauertiefpreis 4.99 * –10% 4. 49* (75.46 / kg) (266.- / kg) (7.35 / kg) Dauertiefpreis 0.89 * –11% 0. 79 * (26.33 / kg) Dauertiefpreis 0.75 * 0. Montag – Samstag 12. Oktober 2026 – 17. Oktober 2026 –13% 65 * (6.37 / kg) 100 °Punkte = 1 Euro! Dauertiefpreis 3.99 * –10% 3. 59* (239.33 / kg) Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Preise (inkl. MwSt.) u. Verkaufseinheiten (Stückzahl/Mengeneinheit) können abweichen, zzgl. Versandkosten. Konkrete Angaben finden Sie beim jeweiligen Artikel im Online-Shop.",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/-64yeJAHfOgHSkSApMjXTJVV08g7H2I77Dh-qR79ZiE/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/44ea3990-970c-421a-b450-4f6d3601a9c4-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/KC2EJ4nK6p69mue3O_TA2q4mhM6WUWi7cfchgTa48Yk/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/44ea3990-970c-421a-b450-4f6d3601a9c4-downscaled.jpg"
+            },
+            {
+              "number": 34,
+              "altText": "",
+              "keyWords": "STARK DURCH DIE ERKÄLTUNGSZEIT Arzneitee Dauertiefpreis versch. Sorten 35 g – 40 g (32.25 – 36.86 / kg) 1.29 * –10% 1. 15 Dauertiefpreis * Heiße Zitrone oder Holunder 100 g – 108 g (28.75 - 32.86 / kg) Schnupfenspray (16.57 – 17.90 / kg) Wundpflaster Sensitiv Meerwasser 20 ml 1.79 * –11% 1. 59* (14.72 - 15.90 / kg) Wundpflaster Classic 10 Stück 10 Stück Dauertiefpreis 1. 79* *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenzten Angebots schon am ersten Tag ausverkauft sein. –11% 1.59 * (79.50 / l) Dauertiefpreis 0. 45* –13% 0.39 * Montag – Samstag 12. Oktober 2026 – 17. Oktober 2026 Dauertiefpreis 0. 39* –10% 0.35 * KW 42 / PoKeDeKiErhTuWoHaBo (89.50 / l)",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/txgzlYZAKlhGhQ54FZqoTd-qwrgooyTgrXgfSwaDlWs/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/e7164499-4812-43f0-bd31-c093d3542097-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/f87lCPrKxslgOVDSLgO6tbolBBHU11GT14v9JK3vRfs/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/e7164499-4812-43f0-bd31-c093d3542097-downscaled.jpg"
+            },
+            {
+              "number": 35,
+              "altText": "",
+              "keyWords": "DER BESTE PREIS: UNSERE EIGENMARKE ft n- S a range Milder O en-Saft ang Or KW 42 Dauertiefpreis Orangensaft 1 Liter zzgl. Pfand 0.25 1. 99* Dauertiefpreis Milde Orange 1 Liter zzgl. Pfand 0.25 1. 99* Dauertiefpreis Orangen-Nektar 1,5 Liter zzgl. Pfand 0.25 (1.13 / l) 1. 69* Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Preise (inkl. MwSt.) u. Verkaufseinheiten (Stückzahl/Mengeneinheit) können abweichen, zzgl. Versandkosten. online Konkrete Angaben finden Sie beim jeweiligen Artikel im Online-Shop.",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/5OhrKVMPItzNZpyyBGiy6Ph-IUcwPq2SAiH-5eu7RXk/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/5c10ed88-fc1c-4b46-bbb6-b5c18603eca1-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/gjrPFJz4L7-9Q4Vvtx3xyJPIda2jBCHMbaeyVis1N-c/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/5c10ed88-fc1c-4b46-bbb6-b5c18603eca1-downscaled.jpg"
+            },
+            {
+              "number": 36,
+              "altText": "",
+              "keyWords": "Multivitamin ACE-Drink schwarzer Johannisbeer Nektar 1 Liter zzgl. Pfand 0.25 1,5 Liter zzgl. Pfand 0.25 1 Liter zzgl. Pfand 0.25 (0.79 / l) Dauertiefpreis Dauertiefpreis 1. 1. 39* BananenNektar 1. 99* 19* ApfelNektar Apfelsaft 1,5 Liter zzgl. Pfand 0.25 1 Liter zzgl. Pfand 0.25 Dauertiefpreis 1,5 Liter zzgl. Pfand 0.25 (0.99 / l) Dauertiefpreis Dauertiefpreis Dauertiefpreis 1. 1. 1. 49* *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenzten Angebots schon am ersten Tag ausverkauft sein. 49* 49* netto-online.de KW 42 (0.99 / l)",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/PvsWKPJY_QzN9wN1PHLr21CKp0yU6upfLbsAXZKe9Hk/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/5c48d867-d628-46cd-be96-3151daefc619-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/r7TS1SnO22SjWwWpmvUiMAtt52yjD0ZIQvgSQAI_Zgs/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/5c48d867-d628-46cd-be96-3151daefc619-downscaled.jpg"
+            },
+            {
+              "number": 37,
+              "altText": "",
+              "keyWords": "G E W R H E M ÜBER 150 GETRÄNKE IM SORTIMENT –15% Coca-Cola oder Fanta XXL teilw. koffeinhaltig, versch. Sorten 18 x 0,33 Liter zzgl. Pfand 4.50 8. 49 (1.43 / l) UVP 9.99 Mönchshof Pils oder Hell 20 x 0,33 Liter zzgl. Pfand 4.50 Limonaden (1.82 / l) 4.– SPAREN Zitrone oder Orange 20 x 0,5 Liter zzgl. Pfand 3.10 2.– (0.65 / l) SPAREN 11. 6. –25% –23% 49* 99 UVP 8.49 UVP 15.99 Leikeim Premium Pils oder Landbier Gerolsteiner Mineralwasser 20 x 0,5 Liter zzgl. Pfand 4.50 Sprudel oder Medium 12 x 1 Liter zzgl. Pfand 3.30 (1.20 / l) 100 Extra°Punkte (0.46 / l) 6.– 2.30 KW 42 / Ki SPAREN SPAREN 11.99 5.49 –33% –29% UVP 17.99 Altenkunstadt Montag – Samstag 12. Oktober 2026 – 17. Oktober 2026 UVP 7.79 100 °Punkte = 1 Euro! Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Preise (inkl. MwSt.) u. Verkaufseinheiten (Stückzahl/Mengeneinheit) können abweichen, ",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/A3nambRnFcMDR1EKqN91emYlJP5nH2S4gO-ycjnA-B4/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/2a0213f1-336e-42d3-a9c6-f308f80109f5-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/00BvL14w7Y8KzQo1TotkI866bUcy0OdIM-QDTC2OMn0/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/2a0213f1-336e-42d3-a9c6-f308f80109f5-downscaled.jpg"
+            },
+            {
+              "number": 38,
+              "altText": "",
+              "keyWords": "Getränke ÜBER 450 GETRÄNKE ONLINE BESTELLBAR netto-online.de/getraenke Ingwer Shot Pfanner Fruchtsaftgetränke Rauch Eistee versch. Sorten 1 Liter pfandfrei versch. Sorten 1,25 Liter zzgl. Pfand 0.25 Volvic Juicy versch. Sorten 1 Liter zzgl. Pfand 0.25 (1.03 / l) versch. Sorten 0,5 Liter pfandfrei –10% (5.38 / l) 2.69 UVP 2.99 San Pellegrino Italienische Limonade, versch. Sorten 0,33 Liter zzgl. Pfand 0.25 10 Extra°Punkte –25% –35% UVP 1.19 UVP 1.99 0.89 (2.70 / l) Pepsi oder Schwip Schwap koffeinhaltig, versch. Sorten 1,25 Liter zzgl. Pfand 0.25 –23% 1.29 1.29 1.29 UVP 1.69 UVP 1.89 Janee Chardonnay oder Syrah Rose Grey Grauburgunder Qualitätswein 0,75 Liter 0,75 Liter versch. Sorten, 17 % Vol. 0,5 Liter – 0,7 Liter (3.99 / l) (5.32 / l) (14.27 – 19.98 / l) Frankreich, Pays d´Oc Weißwein, halbtrocken (0.70 / l) –31% Baileys Likör Deutschland, Rheinhessen Weißwein, trocken zu Vorspeisen u",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/gRrgSeT3-YXafouPrcumexzTxiVJZRapAVqw8IE3agE/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/e4b8044c-589b-403e-8935-d0186f680370-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/N0HERXOJqPPyiAVoHNc4UqszvHq5GMuzx1BvYFN2ppM/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/e4b8044c-589b-403e-8935-d0186f680370-downscaled.jpg"
+            },
+            {
+              "number": 39,
+              "altText": "",
+              "keyWords": "R E B O T K O S T A N O M S E WEINE D Franken Silvanerdurst Qualitätswein Torre Santa Primitivo di Manduria DOC (6.65 / l) (9.32 / l) 0,75 Liter 0,75 Liter Deutschland, Franken Italien, Apulien Silvaner Primitivo Weißwein, trocken zu Spargel, Hähnchen und Salat Rotwein, trocken zu gebratenem roten Fleisch und zu Käse /?&_ 2.– SPAREN –16% 4. 99 6. 99 Eußenheim in Bayern 5.99 30% BEIM KAUF VON 6 FLASCHEN ENTSPRICHT 3.33 PRO FLASCHE UVP 8.99 –22% Le Filou Weine versch. Sorten 6 x 1 Liter (3.33 / l) Einzelpreis: 4.79 SPAREN KW 42 auch online –30% 6 für 6x 20.– * 28.74 Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Preise (inkl. MwSt.) u. Verkaufseinheiten (Stückzahl/Mengeneinheit) können abweichen, zzgl. Versandkosten. online Konkrete Angaben finden Sie beim jeweiligen Artikel im Online-Shop.",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/q37fXCgCWd9rVa_iGThxKVq3ah_Z-CKeiZZpvAakXeY/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/130f3ab3-0b61-401a-8db6-80513f718f29-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/_WoSkxDDEon88FuSGTR5YKfkARzfiURn4pzBWiLWqus/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/130f3ab3-0b61-401a-8db6-80513f718f29-downscaled.jpg"
+            },
+            {
+              "number": 40,
+              "altText": "",
+              "keyWords": "DER BESTE PREIS: Bardolino Chiaretto D.O.P. UNSERE EIGENMARKE Pinot Grigio Delle Venezie D.O.P. 0,75 Liter 0,75 Liter Italien / Venetien Rosewein, trocken (4.65 / l) (3.59 / l) Italien Weißwein, trocken zu Vorspeisen, Spargel, Fisch und Salate zu Salaten und Fleischgerichten Italien Weißwein, trocken zu Geflügel und hellem Fleisch Dauertiefpreis Dauertiefpreis 3. 2. 49 69* Primitivo IGT Chardonnay IGT 0,75 Liter 0,75 Liter (3.05 / l) Italien / Apulien Rotwein, trocken zu Gerichten der typisch italienischen Küche, sowie zu kräftigen Käsesorten (2.92 / l) Italien Weißwein, trocken zu Fleisch, Krustentieren, Quiche und Vorspeisen Dauertiefpreis Dauertiefpreis 2. 2. 29 *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenzten Angebots schon am ersten Tag ausverkauft sein. 19 * 1. 99 Soave DOC 0,75 Liter (2.65 / l) netto-online.de KW 42 Dauertief",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/SmLVwqei8P6WkU42YucpoYhFMZ_cGvDaCXXmSAoc_aY/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/f6c08c64-a760-4698-a467-138619dd5d9c-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/0ZyoE7jqOlhdCtgHNfQywVpbu14Aoc0Balm0rbhd_uc/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/f6c08c64-a760-4698-a467-138619dd5d9c-downscaled.jpg"
+            },
+            {
+              "number": 41,
+              "altText": "",
+              "keyWords": "SÜSSE VIELFALT FÜR JEDEN GESCHMACK. Häberlein Elisenlebkuchen 300 g (16.63 / kg) 2.– SPAREN 4.99 UVP 6.99 –28% Lambertz SchokoButter Spekulatius Auch passend für den 200 g (13.95 / kg) Baileys Cremelikör von Seite 21 –33% Wicklein Tassenwichtel versch. Sorten 200 g (9.95 / kg) 1. –30% 99 2.79 UVP 2.99 UVP 3.99 Lambertz Dominosteine Zartbitter Schluckwerder Lübecker Edel-Marzipan Geschenkpackung 125 g 250 g (12.72 / kg) (15.96 / kg) –20% –20% 1.59 3.99 UVP 1.99 UVP 4.99 Anisgebäck 150 g (13.27 / kg) Gebäck versch. Sorten 115 g – 200 g KW 42 / PoDeKiErhTuWo (11.45 – 19.91 / kg) auch online /?&_2706419000 Aktion 2.29 Montag – Samstag 12. Oktober 2026 – 17. Oktober 2026 –28% 1.99 UVP 2.79 Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Preise (inkl. MwSt.) u. Verkaufseinheiten (Stückzahl/Mengeneinheit) können abweichen, zzgl. Versandkosten. Konkrete ",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/WPmVp5GufRP3-xKhoCph_VWFOeqx2eoegU7Clb1TaiI/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/eba18078-7aee-430c-af88-2a74805f74a6-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/F8puFqS9S8BTRjKfmd0uzKW8gUzYJHAZxDXWOs8ltIs/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/eba18078-7aee-430c-af88-2a74805f74a6-downscaled.jpg"
+            },
+            {
+              "number": 42,
+              "altText": "",
+              "keyWords": "Borggreve Gebäckdosen versch. Sorten 600 g (5.82 / kg) –12% 3. –14% 2. 99 Kinder Kugeln 49 versch. Sorten 90 g UVP 3.99 (33.22 / kg) UVP 3.49 Lambertz Kräuter Printinchen Kirsch Mandel Stollen Kinder Mix Beutel mit Jamaica Rum 450 g 153 g 150 g (12.42 / kg) (26.08 / kg) (8.60 / kg) –13% –20% 1.29 5.59 UVP 1.49 UVP 6.99 –14% 3.99 UVP 4.69 ENTDECKE UNSERE GROSSE SÜSSWARENAUSWAHL KW 42 / PoDeKiErhTuWo IM DIGITALEN PROSPEKT In der Netto plus App oder unter netto-online.de *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenzten Angebots schon am ersten Tag ausverkauft sein. Montag – Samstag 12. Oktober 2026 – 17. Oktober 2026",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/K7DvS-DTv5MoSM19bVbCSHfLPouZAiyEol7MzsY3uDU/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/89d3dac6-6fa7-4ed3-9d16-e71cf94bdda7-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/zsAGDs4qu3ihsY0ecjWzJNh-vh_V7Wbu9w58dAm43ls/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/89d3dac6-6fa7-4ed3-9d16-e71cf94bdda7-downscaled.jpg"
+            },
+            {
+              "number": 43,
+              "altText": "",
+              "keyWords": "SÜSSE VIELFALT FÜR DIE WARTEZEIT. kinder Mix Adventskalender 3D-Haus Dauertiefpreis 11. 49 KW 42 234 g (49.10 / kg) Dauertiefpreis kinder Mix Adventskalender Geschenk 9.99 214 g (46.68 / kg) kinder Maxi Mix Adventskalender kinder Mini Mix Adventskalender Kinder Überraschung & Friends Adventskalender 351 g 151 g 370 g (45.56 / kg) (54.90 / kg) (67.54 / kg) Dauertiefpreis Dauertiefpreis Dauertiefpreis 15.99 8.29 24.99 Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Preise (inkl. MwSt.) u. Verkaufseinheiten (Stückzahl/Mengeneinheit) können abweichen, zzgl. Versandkosten. online Konkrete Angaben finden Sie beim jeweiligen Artikel im Online-Shop.",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/72ZUAVB6YttcvB1DK2XWmw9sJsyMQeNaKgBW6J61RLw/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/8d9e41ad-7b6d-4e5e-acbd-26c2fcd6d3dd-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/DmEZL9SRE386c0V6bUK_eYs51xzBk08Aw74GSYKACd0/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/8d9e41ad-7b6d-4e5e-acbd-26c2fcd6d3dd-downscaled.jpg"
+            },
+            {
+              "number": 44,
+              "altText": "",
+              "keyWords": "Merci Adventskalender 263 g (37.98 / kg) Lizenz Adventskalender 75 g (26.53 / kg) Dauertiefpreis Dauertiefpreis 1.99 9.99 Chupa Chups Adventskalender Windel Adventskalender 225 g versch. Designs 75 g (39.96 / kg) Dauertiefpreis Dauertiefpreis 8. 1. 99 *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenzten Angebots schon am ersten Tag ausverkauft sein. 29* netto-online.de KW 42 (17.20 / kg)",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/EoO8Pf2WgXvEga7UHygbMhYcR5cmRKzLpxMxJ6u1tCU/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/3c4f84f7-6b22-4ee5-9e9e-5c8b4d1e3f0c-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/6ppb4rYszX7OE44yegRawIuGcfCnpQL3DLtD5ZtM9EQ/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/3c4f84f7-6b22-4ee5-9e9e-5c8b4d1e3f0c-downscaled.jpg"
+            },
+            {
+              "number": 45,
+              "altText": "",
+              "keyWords": "EN HAPPY HALLOWE AM 31.10. auch online auch online /?&_2566733000 /?&_2941907000 –18% 3. 49 Fritt Halloween Mix 350 g UVP 4.29 (9.97 / kg) Aktion 2. 99 Trolli Halloween Beutel 360 g (8.31 / kg) Duplo, Kinder Riegel oder Kinder Country Kinder Bueno Minis oder Kinder Schokolade Minis 2 x 327,6 – 420 g (9.52 – 10.99 / kg) Einzelpreis: 5.39 (12.83 – 14.81 / kg) 2x 108 g –25% (20.56 / kg) –20% 2 für 8.– 2.22 * 10.78 Red Blood Dr. Pepper KoffeinhaltigesErfrischungsgetränk Waldfruchtlikör, 15 % Vol. 0,5 Liter KW 42 / DeKiErhTuWo (19.98 / l) Küchle Knabber-Esspapier Zungentattoos „Halloween“ 11 g (90.- / kg) versch. Sorten 0,33 Liter zzgl. Pfand 0.25 Aktion 9.99 UVP 2.79 auch online /?&_3191495000 (2.39 / l) –27% 0.79 UVP 1.09 Montag – Samstag 12. Oktober 2026 – 17. Oktober 2026 –16% 0.99 UVP 1.19 Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Preise (i",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/rhGCriWZC8vxYMRxtq_YIfOD4UVjrnMiGJrhEMuT1r8/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/e6fae04f-d25b-4019-b783-6d9430485028-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/X9SetuQniw7T492vzSxz61zLTJZkBIRRjxaG3UvfiaI/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/e6fae04f-d25b-4019-b783-6d9430485028-downscaled.jpg"
+            },
+            {
+              "number": 46,
+              "altText": "",
+              "keyWords": "Dänische Buttercookies 750 g (6.65 / kg) –28% 0. Aktion 4. 99* Saure Drachenzungen oder Saure Spinnenbeine versch. Sorten 125 g (7.92 / kg) 99 1.39 Milka Tafelschokolade 4er Multipack Lorenz Monster Munch versch. Sorten 4 x 90 g (11.08 / kg) versch. Sorten 75 g Maxi Dessert Ei Vanillequark, gekühlt versch. Sorten 160 g (24.94 / kg) (14.80 / kg) 3.97 SPAREN 3. –44% 99 1. 11 UVP 7.96 –49% UVP 1.99 Handpuppe ca. 17 cm groß –20% 99 3. UVP 4.99 –30% 3.49 (21.81 / kg) Halloweenartikel • versch. Ausführungen Aktion je *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenzten Angebots schon am ersten Tag ausverkauft sein. 1.– • mit Flackereffekt in der Flamme • inkl. Fernbedienung und Batterien Aktion 9.99 Schnurlänge: ca. 1,5 m Montag – Samstag 12. Oktober 2026 – 17. Oktober 2026 KW 42 / DeKiErhTuWo Schwebende LED Kerzen, 10er Set",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/JMHA6DIjbjS5sA-Z_Em8cnqrBZWHSyY-I6i_Eyibkaw/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/da5ab129-62dc-4875-af50-aa9f3a54f9b9-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/YMKR281Ib3CcOVGua8Ln5xHtt-M-bVh3AVE4Fd2DxV4/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/da5ab129-62dc-4875-af50-aa9f3a54f9b9-downscaled.jpg"
+            },
+            {
+              "number": 47,
+              "altText": "",
+              "keyWords": "Großtafel versch. Sorten 295 – 300 g (8.30 – 8.44 / kg) DER BESTE PREIS: UNSERE EIGENMARKE Pfefferminztäfelchen 300 g (9.97 / kg) Dauertiefpreis 2. 99* Dauertiefpreis 2. 49* Schoko-Milch-Riegel 11 Riegel 200 g (9.95 / kg) Kornello versch. Sorten 166,5 g (11.95 / kg) Dauertiefpreis 1. 99* Dauertiefpreis KW 42 Schoko & Keks Riegel 300 g (9.97 / kg) 2. 99* Dauertiefpreis 1. 99* Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Preise (inkl. MwSt.) u. Verkaufseinheiten (Stückzahl/Mengeneinheit) können abweichen, zzgl. Versandkosten. online Konkrete Angaben finden Sie beim jeweiligen Artikel im Online-Shop.",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/_fSPsvur7t4B5ozeGDDGFmRsN06N_lsUvbkVt423Cyk/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/6fbb9aee-14ec-42e4-8b68-3c5aeed2f23c-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/5pXk1YmAT1hJgbmEdkmEr3ZOuRS2kdYB0BSIY4eqb6s/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/6fbb9aee-14ec-42e4-8b68-3c5aeed2f23c-downscaled.jpg"
+            },
+            {
+              "number": 48,
+              "altText": "",
+              "keyWords": "Tafelschokolade versch. Sorten 90 g (16.56 / kg) Chocoluv versch. Sorten 150 g (19.93 / kg) Dauertiefpreis Dauertiefpreis 2. 99* 1. 49* Bunte Erdnüsse oder Crispies Schaumküsse versch. Sorten 340 – 400 g versch. Sorten 266 – 300 g (6.23 – 7.32 / kg) (8.30 – 9.36 / kg) Dauertiefpreis 2. 49* 2. 49* *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenzten Angebots schon am ersten Tag ausverkauft sein. Rafiore in Zartbitter Schokolade 250 g (7.16 / kg) 150 g (13.27 / kg) Dauertiefpreis Dauertiefpreis 1. 1. 79* 99* netto-online.de KW 42 Dauertiefpreis Gelee Bananen",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/ZqColjsQ8VWIQi5xovNLO_-1yR09N1S-v0ZBqSTc5I4/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/e001288f-f4b4-4abf-a83b-41bcc32f1f71-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/KbyRU43qyt7S2na6O0NAkinjQTaMr928iN1p0_Tbs0M/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/e001288f-f4b4-4abf-a83b-41bcc32f1f71-downscaled.jpg"
+            },
+            {
+              "number": 49,
+              "altText": "",
+              "keyWords": "Drogerie Garnier Wahre Schätze Shampoo oder Spülung oder Fructis Shampoo versch. Sorten 200 ml – 250 ml Aktion (7.96 – 9.95 / l) 1.99 Weißer Riese Waschmittel versch.Sorten 90 Waschladungen – 100 Waschladungen (0.12 – 0.13 / WL) 5.– SPAREN XXL 11.99 Aktion Fenjal Cremedusche 1. 99 versch. Sorten 200 ml (9.95 / l) Calgon Wasserenthärter UVP 16.99 –29% Axe Bodyspray versch. Sorten 2150 ml; 47 Waschladungen versch. Sorten 150 ml (3.72 / l; 0.17 / WL) (23.27 / l) auch online /?&_1990833000 (3.48 / l; 0.16 / wl) UVP 8.99 Fit Spülmittel Viss Reiniger versch. Sorten 500 ml 2-lagig 8 x 43 Blatt 3.49 7.49 7. Dick & Durstig Küchentücher Aktion –16% –11% 99 versch. Sorten 750 ml (2.58 / l) KW 42 / PoKeDeKiTuWoHaBo (2.96 / l) 2.– SPAREN 3. –18% 49 1.29 UVP 5.49 –36% 1.59 Montag – Samstag 12. Oktober 2026 – 17. Oktober 2026 100 °Punkte = 1 Euro! –23% 2.22 UVP 2.89 Artikel mit diesem Hinweis sind im A",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/aHiVJhyTJiRSTdH2L3G7jI2hbLtU8UL9WJFZfqqwV7Y/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/d5aadfc1-da12-4e4a-b783-8e385d43e7f2-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/7bfD43fYS3cANICdx0I4CVtYOixWZwvbfFhSfjQU3Ug/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/d5aadfc1-da12-4e4a-b783-8e385d43e7f2-downscaled.jpg"
+            },
+            {
+              "number": 50,
+              "altText": "",
+              "keyWords": "ANGEBOTE DER TV WERBUNG ONLINE BESTELLBAR netto-online.de/tv-hits Super-BH-Set Komfort-Slipper • so bequem wie eine zweite Haut, ohne störende Verschlüsse • mit extra breiten Trägern & Verstärkung an der Brust • in den Größen M – XXL • integrierte Gel-Sohle für erhöhten Tragekomfort • komfortables Fußbett für entspanntes Stehen & Gehen • in den Größen 37/38 bis 43/44 LÖWENSTARKE DEALS Silikon-Backformen für Heißluftfritteusen mit Gel-Sohle • hitzebeständig bis 230° C und spülmaschinenfest • rund, quadratisch oder eckig – je im 2er Set ihre Fritteuse bleibt sauber & fettfrei auch online auch online /?&_357559 /?&_333513 auch online /?&_359697 20.– 49.99 –40% dämpfende Eigenschaft für ein angenehmes Laufgefühl KörperanalyseWaage Haar- & Bartschneider • mit kabelloser Datenübertragung und kostenloser App • Edelstahl-Präzisionsscherkopf mit 4 Schnittlängen (3 –16 mm) • Akkubetrieb – mit LED-",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/1xco3JQNwSNLtcT5LVQu2cGhRbhtyjAAKe9bmIixKi8/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/f0ead76b-ce48-4626-845e-1cae1084820a-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/v-t23Ta8VlY1T2qYr7o5JUDsssmff_FuQ7EcGyiL_Fw/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/f0ead76b-ce48-4626-845e-1cae1084820a-downscaled.jpg"
+            },
+            {
+              "number": 51,
+              "altText": "",
+              "keyWords": "Telefunken Ölradiator TOR 650 50° Blickwinkel • Individuell regulierbare TemperaturEinstellung • Überhitzungsschutz für maximale Sicherheit • Heizleistung 650 W Hohe Bildqualität mit bis zu 1296p Fukk HS-Auflösung auch online /?&_3197145000 auch online App Preis Smart Home WIFI Kamera WIFICI24WT • Smarte WLAN Innenkamera mit 3 MP Auflösung für gestochen scharfe Überwachungsvideos • motorisierte Schwenk- und Neigefunktion • Nachtsichtfunktion mit bis zu 10 Metern Reichweite Kaminventilator • Antrieb nur durch Wärme • verbesserte Wärmeverteilung im Raum • geräuscharm und wirtschaftlich Maße: ca. 140 x 110 x 190 mm Aktion 14. 99 13.99 /?&_3198081000 Aktion Maße Gerät: ca. 23,5 cm x 14 cm x 38,5 cm (mit Füßen) Raumentfeuchter oder Nachfüllpack Nitril Einmalhandschuhe, 200er Pack • absorbiert die übermäßige Luftfeuchtigkeit durch das Granulat • verhindert Schimmel und Feuchtigkeitsflecken an ",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/7nRULgJdVkGxMFHNVx9M7A44tHCwnm7V37GiSI6zER8/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/876deee8-5b12-4877-852b-9d215c49bfb4-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/CPbSoUWg5yBtVmolHw-tIBxNxyIQyLyCKdn9APoauR4/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/876deee8-5b12-4877-852b-9d215c49bfb4-downscaled.jpg"
+            },
+            {
+              "number": 52,
+              "altText": "",
+              "keyWords": "Auto Winterhelfer Eiskratzer: weicher Softgriff Doppelseitiger Autound Universalschwamm 60° Blickwinkel 34 IT-LEDs für klare Nachtaufnahmen Windschutzscheibenabdeckung auch online /?&_3196844000 15.– SPAREN 1. je 99 34. 99 Aktion Wildkamera WCAM170GN • Videoaufnahmen in bis zu 4K-Auflösung • Fotoauflösung 48 Megapixel UVP 49.99 –30% KFZ-Verbandtasche • Inhalt gemäß DIN 13164:2022 • inkl. lizensierter Erste-Hilfe-Broschüre (Malteser) Zugluftstopper • vermindert Wärmeverlust • 2 Aufhängeschlaufen zur Befestigung an der Tür weitere Farben Größe: ca. 13 x 7 x 92 cm Aktion 3.99 Aktion 5.99 Wetterstation Schmutzfangmatte • 12/24 Stunden Zeitanzeige • inkl. Temperatur- und Luftfeuchtigkeitsanzeige • geeignet für Fußbodenheizung • für den Innen- und Außenbereich Aktion auch /?&_3198080000 online *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenz",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/joVTGkQpYfgUdcSePd4r4VFKUSohTbAt0tMLRU89aRA/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/f0b544bc-f760-45a6-a68a-9b452c08881f-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/0ixWMyPYHkBWYZg9BvDpnkULNYtcSouojjAIyH9s6eQ/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/f0b544bc-f760-45a6-a68a-9b452c08881f-downscaled.jpg"
+            },
+            {
+              "number": 53,
+              "altText": "",
+              "keyWords": "LICHT . c a. 13 7c • stufenlos dimmbar per Fernbedienung • mit Audiosensor • 8 verschiedene Farben zzgl. Weiß, 10 Farbmodi und 3 Musikmodi einstellbar Höhe: ca. 40 cm m ca. 104 cm ca. 130 cm DER ORT MIT FÜR BESTE STIMMUNG LED Gaming Tischleuchte Aktion 12.99 Höhe: ca. 35,5 cm LED Dekoleuchte jeweils inkl. Fernbedienung LED-Stehleuchte mit Audiosensor • RGB Farbwechsel und Weiß • dimmbar LED Dekotischlampe KW 42 • Sockel mit 4 austauschbaren Motivplatten • dimmbar • RGB Farbwechsel und Weiß kein Kinderspielzeug Flexible Leuchte: mit Knickgelenk individuell einstellbar auch online /?&_3185607000 • dekorative Akzentbeleuchtung, nicht zur Raumbeleuchtung • RGB Farbwechsel • mit glitzerndem Lichteffekt Aktion 16.99 je weitere Farben auch online /?&_3185288000 Aktion Aktion 4.99 je Höhe: ca. 22 cm 9.99 Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Pr",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/CZ7Wh5AYqmCd5DiuE34sJyydiUp3KxsQVUIQwHyYjUA/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/5049ee3f-baf8-4dae-98e7-c14b795553d7-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/6icoSuW0wpLh9P62yEcBapN1GKwpJjHZFJzcH052mok/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/5049ee3f-baf8-4dae-98e7-c14b795553d7-downscaled.jpg"
+            },
+            {
+              "number": 54,
+              "altText": "",
+              "keyWords": "LED Deckenleuchte mit RGB-Funktion Wandleuchten Maße: 30 cm x 7,5 cm • dimmbar per Fernbedienung • mit Nachtlichtfunktion ø 38 cm auch online /?&_3186059000 • stufenlos dimmbar • inkl. Timerfunktion für automatische Zeitsteuerung • ca. 100 Lumen Aktion Aktion 19.99 7.99 LED Lichtleisten 4er-Set Höhe: ca. 27 cm • Sensor reagiert auf Musik und Geräusche mit Leuchteffekten • Kreationen eigener Formen • erweiterbar auf 8 Elemente LED Akku Tischleuchte inkl. Fernbedienung Aktion 12.99 • für Innen und Außen • verschiedene Farben inkl. Warmweiß und Farbmodi einstellbar versch. Farbmodi Aktion 8.99 LED Lichtschlauch mit Textilüberzug • Stufenlos dimmbar mit Memory-Funktion • inkl. Musiksensor und Timerfunktion • RGB Farbwechsel LED Tischleuchte auch online /?&_3186071000 Aktion Länge ca. 3 m • inkl. 1,2 m Kabel mit integriertem Kippschalter • bis zu 470 Lumen • inkl. LED Leuchtmittel 14.99 LED L",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/zb0JU3Q4VNkKYfFdwciI1DHA8N2HU5yniybEk-ptS14/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/18d803ff-bf3c-41bd-964e-2366a2a7c6b6-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/l_ssjBwvaMbV_2NF5wTNHpBlS7zLP1qNKaXHhwa3SUI/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/18d803ff-bf3c-41bd-964e-2366a2a7c6b6-downscaled.jpg"
+            },
+            {
+              "number": 55,
+              "altText": "",
+              "keyWords": "nur online netto-online.de Dein Online-Discounter mit über 100.000 Angeboten Maße je Element: ca. 170 x 180 cm –49% WPC Sichtschutzzaun CALLADO 4 Elemente + 5 Pfosten Online-Kracher • Lärm-, Sonnen-, Windschutz • witterungs- und UV-beständig • Design beidseitig nutzbar • inkl. Pfostenträger zum Einbetonieren nur online /?&_3117891001 Vordach-Haustür CUBIS WPC Terrassendielen SAMANA • Pfosten und Schienen aus Aluminium • inkl. 6 mm Doppelwandige PolycarbonatPlatten • witterungs- und UV-beständig • Komplettset aus 6 Dielen inkl. Unterkonstruktion • (50.- / m²) –29% ab Maße (B x T x H): ab ca. 150 x 150 x 238/258 cm nur online /?&_3116007000 529.– UVP 1.049.– weitere Farben Maße einer Diele: ca. 220 x 14,6 x 2,1 cm ab 349.99 nur online /?&_3117594000 UVP 499.– –56% 99.99 UVP 229.– KW 42 / PoKeDeKiErhTuWoHaBo Maße: ab ca. 120 x 120 x 190 cm Infrarotkabine REDSUN Traditionelle Sauna SHADOW M ",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/FcQVo1TJnNFYb9o8wnBZtsnoa1FfdYPYows_X2I8Tis/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/acc23dc7-ea73-461b-a96f-bfd718c70e1d-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/WU6ynRvoAxfccHg5gE03DzZgBqnuvDI_LPSzenTwvd4/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/acc23dc7-ea73-461b-a96f-bfd718c70e1d-downscaled.jpg"
+            },
+            {
+              "number": 56,
+              "altText": "",
+              "keyWords": "✔ kein Mindestbestellwert ✔ PAYBACK °Punkte sammeln und einlösen ✔ per Rechnung bezahlen Bestell-Hotline: 089 – 700 66 700 (werktags 08:00 – 19:00 Uhr2) Lebensmittel Garten Baumarkt Wohnen Freizeit Haushalt Multimedia Familienbett DILAR • hochwertiges Kiefernholz mit MDF-Lack • stabil und langlebig • wahlweise auch mit Matratze nur online /?&_3196168000 –22% ab 449.99 Gesamtmaße (LxBxH): 276 x 200 x 69 cm UVP 579.– Massagesessel MARINO Garderobenpaneel QUEST • 2 versch. Massagetechniken • 6 voreingestellte Programme • integrierter BluetoothLautsprecher • hochwertiges Kautschukholz • einfache Montage & klappbare Haken nur online nur online /?&_3117827000 /?&_3117796000 –39% –30% 799.– Sitzmaße (H x B x T): ca. 135,4 x 73,5 x 103 cm UVP 1.149.– 169.99 Maße: ca. 55 x 4 x 105 cm UVP 279.– LED Wasserdampfkamin ODENA Akustikpaneel SONIC • versch. Varianten • schnelle und einfache Installation ",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/Gg7-qHaTiS2k6NMTx9iouW7wx5U--QIXxsz0g5WIEA8/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/e0c8c0b1-b1f6-4f32-88fa-ea3affa0b51e-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/-Db18zwJBGHoKwyGcI7-x5Fp4gwRm3J0EsK-evEkTOU/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/e0c8c0b1-b1f6-4f32-88fa-ea3affa0b51e-downscaled.jpg"
+            },
+            {
+              "number": 57,
+              "altText": "",
+              "keyWords": "NET TO-REISEN.DE Balkonspecial 5fach °Punkte Jetzt in der PAYBACK App sichern inkl. Zimmerupgrade Langzeiturlaub KREUZFAHRT AB HAMBURG – METROPOLEN WESTEUROPA ÄGYPTEN – NILKREUZFAHRT & BADEN LANGZEITURLAUB AN DER TÜRKISCHEN RIVIERA • 7 Nächte in der Balkonkabine auf MSC Preziosa • Vollpension an Bord • Hotelservicegebühr i.W.v. 84 € • Netto-Reisen Extra: All Inclusive Getränkepaket Easy i.W.v. 329 € inklusive! • 7 Nächte auf einem 5-Sterne-Nilkreuzfahrtschiff mit Vollpension • 7 Nächte im 4-Sterne Hotel Magic Beach Resort mit All Inclusive Termine 26/27 Preise • Highlights: Felukenfahrt, Zimmerupgrade Januar 27 & Juli ab 699.– – Oktober 26 auf DZ Meerblick im Dezember 26 ab 799.– Badehotel (nach VerFebruar 27 ab 869.– fügbarkeit) • 21 Nächte im 5-Sterne-Hotel Sensitive Premium Resort & Spa • All Inclusive • Highlights: Ausflug nach Antalya, 15 Min. Massage, 20% Ermäßigung auf Wellnessanw",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/E6K_4_IIV7SfpzpBaGnL9dgUkZKFowLSWyF2L5mhoZs/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/50270c11-971a-4e7c-9508-0245ac644339-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/gYVRYJQcsdN_V4tTQvKs2VxN8xXtI6gZyys5STjbPpo/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/50270c11-971a-4e7c-9508-0245ac644339-downscaled.jpg"
+            },
+            {
+              "number": 58,
+              "altText": "",
+              "keyWords": "Do Fr Sa gültig von Donnerstag, 15.10.26 – Samstag, 17.10.26 SUPER WOCHENENDE LED Lichterschweif oder LED Schneeballschweif Maße: ca. Ø 23 x 36 cm • für den Innen- und Außenbereich • mit Timerfunktion • mit 8 Lichteffekten LED Schneeballschweif mit 60 LEDs, batteriebetrieben: Länge max. 1,20 m mit Zuleitung Maße: ca. Ø 17 x 22 cm LED Lichterschweif mit 200 LEDs, netzbetrieben: Länge: ca. 6,90 m mit Zuleitung Länge der Zuleitung: ca. 10 m Länge: ca. 6,7 m auch /?&_3199613000 online Aktion 7.99 je LED Windlicht, 2er Set • für den Innenbereich • mit Timerfunktion • inkl. Batterien LED Galaxietraum auch /?&_3201216000 online • mit 420 LEDs in zwei verschiedenen Farben • mit 5 Lichteffekten • für den Innen- und Außenbereich • mit Timerfunktion • mit Netzteil Aktion 11.11 Preis 4.99 7.99 Aktion LED Papierform • für den Innenbereich • mit 10 warmweißen LEDs • mit Timerfunktion • inkl. Batterien",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/G0HsNQ3H6aGAPxNRUClnUHEU8zXnyYSqzBEwlDnYzd0/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/2ec39f3b-bd01-4360-bb9d-0ae976ce18a6-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/co-yUwq189PtltICG38ddY4kC2Tk61BMu2WVePTA2Jo/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/2ec39f3b-bd01-4360-bb9d-0ae976ce18a6-downscaled.jpg"
+            },
+            {
+              "number": 59,
+              "altText": "",
+              "keyWords": "E V I S U L K EX E T O B E ANG R K TES A -M O T T E N S E IN E D H IM KASSENBEREIC Größen: 39 – 42, 43 – 46 Aktion KW 42 je Thermoartikel 3. 99 Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Preise (inkl. MwSt.) u. Verkaufseinheiten (Stückzahl/Mengeneinheit) können abweichen, zzgl. Versandkosten. online Konkrete Angaben finden Sie beim jeweiligen Artikel im Online-Shop.",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/S1tXKRiercq2Jp4KmMrYcKtgKocwWtumihwNWRuTFoY/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/ad4b2d10-51e6-4fd7-bdcc-f94b8f3498c3-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/kikMzqa1hHVFm8w47vV9Z3LHzlglkdm-JIib8oyLl3s/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/ad4b2d10-51e6-4fd7-bdcc-f94b8f3498c3-downscaled.jpg"
+            },
+            {
+              "number": 60,
+              "altText": "",
+              "keyWords": "E V I S U L K EX E T O B E ANG R K TES A -M O T T E N S E IN E D H IM KASSENBEREIC ca. 8 cm Aktion • 12 Plüschfiguren zum Sammeln • für Kinder ab 3 Jahren *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenzten Angebots schon am ersten Tag ausverkauft sein. je 2. 99 netto-online.de KW 42 Squeezlings Plüschfiguren Serie II",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/Il0TLgvHNCdaXNAawYHSB8rdJ_RW6j3vp9Ee2CosfPQ/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/a7b41d79-ee50-4fdb-9650-93bc8b466ca7-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/4jPCgJhXKqYwM_NKpNVWoxmr3A-ZoVFj_Ky2opsNZIo/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/a7b41d79-ee50-4fdb-9650-93bc8b466ca7-downscaled.jpg"
+            },
+            {
+              "number": 61,
+              "altText": "",
+              "keyWords": "NOCH MEHR ENTDECKEN MIT DEM NEWSLETTER Hier zum Newsletter anmelden! 15€ Shop-Gutschein1 Rabatte & Gutscheine Kracher-Angebote Reisen ab einem Mindestbestellwert von 200 €. Weitere Infos unter netto-online.de/newsletter 1 Alle Angebote auch auf Whatsapp PAYBACK bei Netto - viele Vorteile warten auf dich hier registrieren Hier geht’s weiter, mit mehr Angeboten",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/93Lgf4prweqiFJkHdX0p_YZwgZ4IUiA68x0qJu1kGTM/fit-in/1403x1824/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/060fced4-e2ec-433b-bbf3-20474b6c321e-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/CtcoPVVP8cgsmzligo4sAltwYan6Z2jBtgea8K0VjDo/fit-in/2105x2737/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/060fced4-e2ec-433b-bbf3-20474b6c321e-downscaled.jpg"
+            },
+            {
+              "number": 62,
+              "altText": "",
+              "keyWords": "N O B N E S S KA US-APP NET TO PL Alle PAYBACK o Punkte und Ersparnisse auf einen Blick Netto ONLINE.DE WW W.NETTO- 3,88 500g -0,58 Original Netto ikel Kerrygold Wunsch-ArtFiliale Netto 0000 99 Fil 15% Rabatt 3, W W W.N iale 000 WWW.NETTO-ONLI NE.DE 0 E T K T erryg O-O VKE o99 ld 15% R0, Apfel 2kg EUR NLINE.DE 0g 19500g abatt Original . rt Kerrygo so ld Origina o l 500g Pest . Rabatt Apfel ,99 Wunsch-3,88 15% Artik Mon. Ital Wunsch-Artikel -0 2kg V -0,58 3,88 el KE aliano Pe Mon. It -0,58 o nd Mo Apfel I 2kg VKE tal. GRATIS 3,99 Pe GR TIS M Mon. Ital. Pesto sort. A190g ondo EUR 7,29 GRATIS Mondo Italiano Pe Schone die Umwelt SUMME [3] Bar E UR sto s ort. 1 Itali 0,99 90g ano P e -0,99 rt 1.57€ gespaEUR 7 ,29 .47uEnUk te EUR 107,29 CK4 P R gespart 45 PAYBA1.47 5 PAY EUR SUMME [3] 7,29 3,99 0,99 -0,99 7, 29 –K–U– N–D–E 7,29 –N–B– 7,29 E–L–E –G– –K–U–N–D–E–N–B–E–L–E–G– Bar EUR gesp BACK 0ar",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/nhVFT5c6YjQxnkYAhefmrVlAmlsQKVg5czT7_BUHc44/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/83f8a8dc-107a-4142-9192-b6ee711421fc-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/7OdNakGpV5G_jbSQRmSJYZHYM5L7wvwFFq9MdWk1-0c/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/83f8a8dc-107a-4142-9192-b6ee711421fc-downscaled.jpg"
+            },
+            {
+              "number": 63,
+              "altText": "",
+              "keyWords": "Dein °Punkteglück mit PAYBACK und der Netto plus App Verknüpfe PAYBACK mit deiner Netto plus App und sichere dir alle Vorteile Netto plus App statt Plastikkarte – ganz einfach! Mit jedem Einkauf bei Netto °Punkte sammeln – pro 2 € Einkaufswert einen PAYBACK °Punkt sichern KW 42 PAYBACK Coupons aktivieren und noch mehr °Punkte sichern Gutschein aus den PAYBACK °Punkten in der Netto plus App erstellen und °Punkte direkt in der Filiale oder im Netto Online-Shop einlösen Alle deine digitalen PAYBACK Coupons aktivieren und einlösen Jetzt anmelden! Artikel mitanm diesem Hinweis sind im en! Aktionszeitraum auch bestelleld Jetzt bar unter netto-online.de. Preise (inkl. MwSt.) u. Verkaufseinheiten (Stückzahl/Mengeneinheit) können abweichen, zzgl. Versandkosten. online Konkrete Angaben finden Sie beim jeweiligen Artikel im Online-Shop.",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/LKpWsAFxROsiMC1XulgFs-6ZV1RgQoMQzBjSGpvXxb4/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/f9e3d61d-ccdb-43b5-bc85-c2faf752689c-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/g5GwPvmuoaSCYnj3L62uk5FZOW-G9ig9M9GHgxQVo4I/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/f9e3d61d-ccdb-43b5-bc85-c2faf752689c-downscaled.jpg"
+            },
+            {
+              "number": 64,
+              "altText": "",
+              "keyWords": "NOCH MEHR °PUNKTEN MIT EXTRA VIELEN COUPONS 44FACH °P KW 42 Rabatt auf Duschgel!* Seifen und Duschgels!* eCoupon in der App aktivieren! gültig von 12.10.26 bis 17.10.26 = 22% Einmalig einlösbar ab 2€ Mindestumsatz auf die genannte Warengruppe. Nicht mit anderen Aktionen kombinierbar. *Von der Bepunktung ausgenommen (nicht rabattfähig): Pfand, Tabakwaren, Buch- und Presseerzeugnisse, Tchibo- und Eduscho-Artikel, Pre- und Anfangsmilchnahrung, Gutscheine und Guthabenkarten. Weitere Infos unter: netto-online.de/payback Gültig von 12.10.-17.10.26 eCOUPON NUTZEN Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Preise (inkl. MwSt.) u. Verkaufseinheiten (Stückzahl/Mengeneinheit) können abweichen, zzgl. Versandkosten. online Konkrete Angaben finden Sie beim jeweiligen Artikel im Online-Shop.",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/9ii46yzhwCDL8LyJvKXKRAOwInAT_vL6QmpQU3wJHKA/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/0d7a7695-f706-4dc0-a7f3-30a277f3b30a-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/1vZ7UWX4o1aRTt9i5ts_KoU-vWvHDAHwQeKGKdsjeR4/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/0d7a7695-f706-4dc0-a7f3-30a277f3b30a-downscaled.jpg"
+            },
+            {
+              "number": 65,
+              "altText": "",
+              "keyWords": "nur online netto-online.de Dein Online-Discounter mit über 100.000 Angeboten Infrarotheizung Standgerät - Marmor Gasheizgebläse • Leistung: 1000 Watt • Bilddruck von höchster Qualität (Ultra HD) • auch für die Wandmontage geeignet • mit und ohne Rollen erhältlich • Raumgröße zwischen 100 m² - 300m² beheizbar • Betrieb über Propangas - herkömmliche 5 oder 11 kg Flasche Maße: ca. 47,5 cm x 36 cm Maße: ca. 60 x 120 x 1,8 cm nur online nur online /?&_2278775008 /?&_3257386001 Aktion –18% Online-Kracher Online-Kracher 99.99 ab Artikel ohne Rollen mit Rollen Preis 179.99 189.99 179.99 UVP 219.90 KH-502 Keramikheizer Absauganlage AB-1500CF • zwei Leistungsstufen: 1000 und 2000 Watt • integrierter Überhitzungsschutz • Absaugleistung von ca. 1500 m³/h • robustem Metalllüfterrad • inkl. Feinstaubfilter, Bodensauger und Adapterset KW 42 Gerätemaße: ca. 21 x 16 x 22,5 cm /?&_2185226000 nur online /?",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/dnsU9_KRQmxJlqhdmnEE2yW19jryeWT3-y585asT2o0/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/1bb5ae1d-1eb4-4643-9adf-05f2f7dad7fd-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/h6gIDVT5zzOb2iHwDAJNL1_SQapdFPFiwOHqMtjl8aA/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/1bb5ae1d-1eb4-4643-9adf-05f2f7dad7fd-downscaled.jpg"
+            },
+            {
+              "number": 66,
+              "altText": "",
+              "keyWords": "nur online netto-online.de Dein Online-Discounter mit über 100.000 Angeboten Holzspalter stehend Compact 8t Akku-Kettensäge C-CS254-X-SET S • hochwertiges 10‘‘ / 25,4 cm ProCut-Schwert und -Kette • Schnittgeschwindigkeit von 6 m/s • kraftvolle 7,95 t Spaltkraft • patentierte Spalttechnik • leistungsstarker Motor max. 3150 W Anti-Kickback inkl. Akku und Ladegerät nur online nur online /?&_2510289000 /?&_3100202000 Aktion Aktion Online-Kracher Online-Kracher 599.– 109.99 Wippkreissäge HOS-750 • Motorleistung: 5000 Watt • Sägeblatt-Durchmesser: ca. 700 mm • Schnittleistung: ca. 250 mm Entdecke über 3.500 Baumarktartikel online! nur online /?&_2696938000 –41% Online-Kracher KW 42 699.– UVP 1.199.– *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenzten Angebots schon am ersten Tag ausverkauft sein. netto-online.de",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/yr-3vSJRX5tHuUk9nHPPMEg_NpO473adkaCOwBMyaCo/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/4690b300-ecf9-41b6-885b-8d2d53a8279d-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/6KFx8pVKlZf2dHSHpZkYlYjp9y2052-ZhmkZ1t0BxKE/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/4690b300-ecf9-41b6-885b-8d2d53a8279d-downscaled.jpg"
+            },
+            {
+              "number": 67,
+              "altText": "",
+              "keyWords": "nur online netto-online.de Dein Online-Discounter mit über 100.000 Angeboten Wintergarten Sanremo • eingebaute Dachrinne • 3 abschließbare Schiebetüren • witterungsbeständig ca. 314 x 294 x 310 cm Aluminiumrahmen nur online /?&_2506872000 –10% Online-Kracher 3.579.– UVP 3.999.– Metall Aufbewahrungsbox Limani Mülltonnenbox Namur weitere Farbe • Deckel mit Hubautomatik • Material: Metall, verzinkt, lackiert • aufklappbares Dach mit Gasdruckfeder und Schloss • auch für Fahrräder und Gartengeräte geeignet Gesamtmaße: ca. 200 × 128 × 105 cm Maße: ca. 120 x 53 x 63 cm nur online /?&_2169358000 –27% –25% Online-Kracher Online-Kracher 129.99 149.99 /?&_2550232000 KW 42 Volumen: ca. 380 Liter UVP 179.99 nur online UVP 199.99 Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Preise (inkl. MwSt.) u. Verkaufseinheiten (Stückzahl/Mengeneinheit) können abweichen",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/CWaZVGzqqJnWFPF8s_u31bGI-G60FuQQlKGKQO9nCGc/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/ef83d8f1-5bd4-4855-99ac-8b8b4f396549-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/OdX9mVKwy8gCJzndekyYlhDIKBV8GfL-tNQ1O0--5Mo/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/ef83d8f1-5bd4-4855-99ac-8b8b4f396549-downscaled.jpg"
+            },
+            {
+              "number": 68,
+              "altText": "",
+              "keyWords": "nur online netto-online.de Dein Online-Discounter mit über 100.000 Angeboten Aluminium Flachdach Carport Helsinki weitere Farbe • ca. 6 mm Polycarbonat-Dachplatten • Schneelast bis zu 100 kg/m² • inkl. Regenrinne und Schrauben-Kit • wartungs- und korrosionsfrei • pulverbeschichteter Aluminiumrahmen Bauschubkarre • ca. 85 Liter Kapazität bis ca. 160 kg Tragfähigkeit • Material: Stahlrahmen/ verzinkter Stahl • Reifen: Luftreifen 16`` Gesamtmaß: ca. 140 cm x 60 cm x 58 cm Maße Wanne: ca. 88 cm x 60 cm x 29 cm Maße: ca. 503 x 305 x 232 cm nur online nur online /?&_2173896000 /?&_2609194000 –24% –31% Online-Kracher Online-Kracher 829.– 54.99 UVP 1.099.– UVP 79.95 Entdecke über 9.000 Fahrradgarage Gartenartikel • idealer Unterstand für Fahrrad oder E-Bike • max. Schneelast von ca. 100 kg/m2 online! ca. 203 x 200 x 158 cm inkl. 4 Fahrradständer nur online /?&_2305674000 –47% Online-Kracher KW 4",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/BrQjnGzmGjqgxk-www4LEotzxzMd8zNnJvGUaT8Zlu0/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/a8d94390-eea6-4d5e-b21b-fdaaab982ce1-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/JnibWSDNmHTx5TkN4xRI57kNuJYCgzkpLhv1sH5w2bk/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/a8d94390-eea6-4d5e-b21b-fdaaab982ce1-downscaled.jpg"
+            },
+            {
+              "number": 69,
+              "altText": "",
+              "keyWords": "MEHR E T O B E G AN ereich -B d o fo n o N im e b r e ll te im extra Aufs Klebartikel Klebe Strips 10 Stück, Wieder Ablösbar. Hervorragende und langanhaltende Haftung Spoocky Socks • versch. Motive • mit Glow in the dark Effekt • Vielseitig einsetzbar, hohe Haftkraft • (59.80 / kg) Großen: 27/30, 31/34, 35/38, 43/46 Transparent, Tube Aktion 1. Aktion je 99 Ultra Gel, 3g+33% gratis. Extra stark & extra schnell Mini-Trio flüssig, 3x1g: Zum einfachen, starken & schnellen Verkleben 2. 99 Gibbi Badekugel Hausschuhe für Kinder • 100 g (39.90 / kg) • versch. Motive KW 42 Großen: 25/26, 27/28,29/30 Aktion Aktion 4. 3. 99 99 Artikel mit diesem Hinweis sind im Aktionszeitraum auch bestellbar unter netto-online.de. Preise (inkl. MwSt.) u. Verkaufseinheiten (Stückzahl/Mengeneinheit) können abweichen, zzgl. Versandkosten. online Konkrete Angaben finden Sie beim jeweiligen Artikel im Online-Shop.",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/CwhbvQselzpukTaCPWyyeBcQcBYd49N_tZyClHmGMDI/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/fd971b0e-025a-4f33-abb3-5e60ee4dfaa5-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/ve1vr-eWjWAtrstHejyMwVbatBB3mfxmjkOgxQAyJzs/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/fd971b0e-025a-4f33-abb3-5e60ee4dfaa5-downscaled.jpg"
+            },
+            {
+              "number": 70,
+              "altText": "",
+              "keyWords": "LED Teelichte, 4er Pack Stützstrumpfhose 40den • mit Timer-Funktion • schaltet sich automatisch nach 4 oder 8 Stunden aus • unterstützt bei müden und beanspruchten Beinen Größen M – XL –25% Dauertiefpreis 2.99 3.99 Leuchtmittel Klebestift • versch. Ausführungen • 1 x 43 g oder 3 x 11 g 33 g Viele weitere Leuchtmittel findest du in deiner Filiale (81.16 – 105.76 / kg) Artikel Stützstrumpfhose M oder L Stützstrumpfhose XL Preis App Preis 3.49 2.49 3.95 2.95 Dauertiefpreis ab 3.49 –28% 2.49 Malbuch • versch. Ausführungen Dauertiefpreis Dauertiefpreis 2. je ab 99 3.49 Taftband • versch. Ausführungen 3m Made in Germany *Erhältlich bei Netto City (nicht in allen Sorten). Die abgebildeten Artikel können wegen des begrenzten Angebots schon am ersten Tag ausverkauft sein. Dauertiefpreis Dauertiefpreis 0.99 1.99 Montag – Samstag 12. Oktober 2026 – 17. Oktober 2026 Artikel mit diesem Hinweis sind i",
+              "image": "https://wochenprospekt.netto-online.de/resize/rev-95488569/Igz7QoVeNd-ZpRuvDUOr4xiRyRpfsyDPJOR1nnyJoSM/fit-in/1352x1893/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/94d9742e-390f-404d-9b8f-de8ef339f3c6-downscaled.jpg",
+              "zoom": "https://wochenprospekt.netto-online.de/resize/rev-95488569/9A2sKDEn2qH1-3Z3xdjrTs_XjsWflHKoUc7n1DXf2kw/fit-in/2028x2839/filters:quality(90)/production-revolution-publitas-com/100989/3433958/pages/94d9742e-390f-404d-9b8f-de8ef339f3c6-downscaled.jpg"
+            }
+          ],
+          "missingPageNumbers": [],
+          "pageSource": "Publitas spreads.json",
+          "branchId": "4371",
+          "location": "Thüngersheim",
+          "address": "Am Straßacker 1, 97291 Thüngersheim, Germany"
+        }
+      ]
     }
   ],
   "offers": [
@@ -4439,7 +4951,7 @@
       "sourceId": "1d5e42e7faf2def7a1e6",
       "productLabel": "SNACK IT Salamistangen je 80-g-Packg.",
       "storeName": "Kaufland",
-      "offerPrice": 4.0,
+      "offerPrice": 4,
       "validFrom": "2026-10-11",
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
@@ -5189,7 +5701,7 @@
       "sourceId": "5baf44fab502727c4632",
       "productLabel": "K-CLASSIC Emmentaler am Stück 45 % Fett i. Tr. je 400-g-Packg.",
       "storeName": "Kaufland",
-      "offerPrice": 5.0,
+      "offerPrice": 5,
       "validFrom": "2026-10-11",
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
@@ -6443,7 +6955,7 @@
       "sourceId": "71bfe649de32d1529759",
       "productLabel": "K-WINTER EDITION Adventskalender je 75-g-Packg.",
       "storeName": "Kaufland",
-      "offerPrice": 3.0,
+      "offerPrice": 3,
       "validFrom": "2026-10-11",
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
@@ -7929,7 +8441,7 @@
       "sourceId": "1a00b203df46daf87c6d",
       "productLabel": "GUSTO Maissnack Original je 100-g-Packg.",
       "storeName": "Kaufland",
-      "offerPrice": 2.0,
+      "offerPrice": 2,
       "validFrom": "2026-10-11",
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
@@ -8047,7 +8559,7 @@
       "sourceId": "ba9cb616b99e5e258972",
       "productLabel": "TUC Bake Rolls oder Mini je 120 - 150-g-Packg.",
       "storeName": "Kaufland",
-      "offerPrice": 4.0,
+      "offerPrice": 4,
       "validFrom": "2026-10-11",
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
@@ -8119,7 +8631,7 @@
       "sourceId": "964095986a2c10ea0a95",
       "productLabel": "LED-Eimer »Halloween« je",
       "storeName": "Kaufland",
-      "offerPrice": 2.0,
+      "offerPrice": 2,
       "validFrom": "2026-10-11",
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
@@ -8135,7 +8647,7 @@
       "sourceId": "39f240bfd6f2cafe1c44",
       "productLabel": "Süßigkeitenschale »Halloween« je",
       "storeName": "Kaufland",
-      "offerPrice": 2.0,
+      "offerPrice": 2,
       "validFrom": "2026-10-11",
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
@@ -8151,7 +8663,7 @@
       "sourceId": "2d78892444b750bcd7c2",
       "productLabel": "Totenkopf »Halloween« je",
       "storeName": "Kaufland",
-      "offerPrice": 2.0,
+      "offerPrice": 2,
       "validFrom": "2026-10-11",
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
@@ -8415,7 +8927,7 @@
       "sourceId": "d23fcf393dcc6c779cf2",
       "productLabel": "K-CLASSIC Essigessenz je 400-g-Fl.",
       "storeName": "Kaufland",
-      "offerPrice": 2.0,
+      "offerPrice": 2,
       "validFrom": "2026-10-11",
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
@@ -10264,7 +10776,7 @@
       "sourceId": "7f1670a6d5f5f0ebf90c",
       "productLabel": "Kiwi Gold* je 3er-Schale",
       "storeName": "PENNY",
-      "offerPrice": 1.0,
+      "offerPrice": 1,
       "validFrom": "2026-10-12",
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
@@ -10350,7 +10862,7 @@
       "sourceId": "cf68a6ae078500e78111",
       "productLabel": "Aubergine* je 2 Stück",
       "storeName": "PENNY",
-      "offerPrice": 1.0,
+      "offerPrice": 1,
       "validFrom": "2026-10-12",
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
@@ -10368,7 +10880,7 @@
       "sourceId": "0331e51c5ab6c934d40b",
       "productLabel": "Deutsches Salat-Trio mit Wurzeln* je Stück",
       "storeName": "PENNY",
-      "offerPrice": 1.0,
+      "offerPrice": 1,
       "validFrom": "2026-10-12",
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
@@ -11461,7 +11973,7 @@
       "sourceId": "2fb044619fdea8d72240",
       "productLabel": "BÄCKERKRÖNUNG Berliner* je 3 Stück",
       "storeName": "PENNY",
-      "offerPrice": 1.0,
+      "offerPrice": 1,
       "validFrom": "2026-10-12",
       "validUntil": "2026-10-17",
       "source": "retailerWebsite",
