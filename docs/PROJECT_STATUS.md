@@ -1,3 +1,9 @@
+## Update 16.10.2026 – Offers-Scroll hält kürzere Bildreserve
+
+- Der übergeordnete Angebote-Scroll wärmt nur noch 180 statt 360 Pixel Vorlauf vor.
+- Dadurch startet die nächste Coverzeile weiterhin früh genug, während beim schnellen Scroll weniger dekodierte Bilder außerhalb des sichtbaren Bereichs gehalten werden.
+- Die verschachtelten Coverlisten bleiben bei Cache-Vorlauf 0; Angebots-, Gültigkeits- und Add-to-List-Regeln ändern sich nicht.
+
 ## Update 16.10.2026 – Cover-Scroll hält Offscreen-Karten nicht fest
 
 - Die horizontale Favoritenleiste und das Coverraster deaktivieren automatische Keep-Alives und eigene Vorhaltebereiche; der übergeordnete Scrollpfad kontrolliert die sichtbare Reserve.
