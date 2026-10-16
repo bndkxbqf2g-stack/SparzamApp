@@ -1,5 +1,6 @@
 import '../../models/market_price.dart';
 import '../../services/branch_identity.dart';
+import '../../services/market_price_source_priority.dart';
 import 'market_price_quality.dart';
 
 /// Provides a stable choice when two usable prices have the same quality
@@ -12,8 +13,8 @@ int compareMarketPriceTieBreakers(
   MarketPrice candidate,
   MarketPrice previous,
 ) {
-  final source = _marketPriceSourceRank(candidate.source)
-      .compareTo(_marketPriceSourceRank(previous.source));
+  final source = marketPriceSourcePriority(candidate.source)
+      .compareTo(marketPriceSourcePriority(previous.source));
   if (source != 0) return source;
 
   final adapter = _compareOptionalText(
@@ -52,13 +53,6 @@ int compareMarketPriceTieBreakers(
       ? 1
       : -1;
 }
-
-int _marketPriceSourceRank(MarketPriceSource source) => switch (source) {
-      MarketPriceSource.manual => 0,
-      MarketPriceSource.receipt => 1,
-      MarketPriceSource.prospect => 2,
-      MarketPriceSource.openPrices => 3,
-    };
 
 int _compareOptionalText(String? candidate, String? previous) {
   if (candidate == null && previous == null) return 0;

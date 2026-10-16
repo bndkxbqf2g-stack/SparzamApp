@@ -1,3 +1,14 @@
+## Update 17.10.2026 – Preisquellenrangfolge in Suche und Kandidaten vereinheitlicht
+
+- Marktpreise tragen in Suchvorschlägen und im Variantenfenster jetzt denselben
+  qualitätsbereinigten Vergleichswert wie die Routenprojektion.
+- Bei gleicher Qualität und gleichem Betrag gilt überall die dokumentierte
+  Reihenfolge eigener Preis → Bonpreis → Prospekt → Open Prices; der angezeigte
+  Kassenbetrag bleibt unverändert.
+- Die neue Regression prüft Kandidaten- und Suchranking mit gleich teuren
+  Belegen. Angebote behalten ihre eigene aktuelle Evidenz und werden nicht in
+  reguläre Normalpreise umgedeutet.
+
 ## Update 16.10.2026 – Coverkarten füllen feste Zellen
 
 - Favoritenrail und Coverraster füllen ihre festen Kartenhöhen jetzt vollständig; die weiße Metadatenfläche endet nicht mehr vor der Zellkante.

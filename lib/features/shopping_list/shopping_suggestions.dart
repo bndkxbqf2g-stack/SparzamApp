@@ -16,6 +16,7 @@ import 'receipt_product_price_match.dart';
 import '../../services/quantity_normalizer.dart';
 import '../../services/market_price_comparability.dart';
 import '../../services/branch_identity.dart';
+import '../../services/market_price_source_priority.dart';
 
 class ShoppingSuggestionPrice {
   const ShoppingSuggestionPrice({
@@ -27,6 +28,7 @@ class ShoppingSuggestionPrice {
     this.observedAt,
     this.isOffer = false,
     this.isHistorical = false,
+    this.sourcePriority = 99,
   });
 
   final double price;
@@ -39,6 +41,8 @@ class ShoppingSuggestionPrice {
   final DateTime? observedAt;
   final bool isOffer;
   final bool isHistorical;
+  /// Stable source precedence used after quality and amount ties.
+  final int sourcePriority;
 
   double get comparisonPrice => rankingPrice ?? price;
 
@@ -406,6 +410,7 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
         rankingPrice: effective.finalPrice,
         validUntil: offer.validUntil,
         isOffer: true,
+        sourcePriority: 0,
       ),
     );
   }
@@ -436,6 +441,7 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
         rankingPrice: price.price *
             (1 + marketPriceQuality(price, current).uncertaintyRate),
         observedAt: price.updatedAt,
+        sourcePriority: marketPriceSourcePriority(price.source),
       ),
     );
   }
@@ -467,6 +473,7 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
         sourceLabel: 'Bon-Median',
         observedAt: stat.latestAt,
         isHistorical: true,
+        sourcePriority: marketPriceSourcePriority(MarketPriceSource.receipt),
       ),
     );
   }
@@ -492,6 +499,7 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
           : 'Prospekt-Normalpreis (historisch)',
       observedAt: bestHistory.latestValidUntil,
       isHistorical: true,
+      sourcePriority: marketPriceSourcePriority(MarketPriceSource.prospect),
     );
   }
   quotes.sort((a, b) {
@@ -503,6 +511,8 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
     final byNominalPrice = a.price.compareTo(b.price);
     if (byNominalPrice != 0) return byNominalPrice;
     if (a.isOffer != b.isOffer) return a.isOffer ? -1 : 1;
+    final bySource = a.sourcePriority.compareTo(b.sourcePriority);
+    if (bySource != 0) return bySource;
     return a.storeName.compareTo(b.storeName);
   });
   return quotes.first;
