@@ -423,6 +423,17 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             const SizedBox(height: 8),
+            if (hasMoreVisibleProducts) ...[
+              const SizedBox(height: 4),
+              OutlinedButton.icon(
+                onPressed: loadMoreVisibleProducts,
+                icon: const Icon(Icons.expand_more),
+                label: Text(
+                  'Weitere Produkte laden '
+                  '(${visible.length - pagedVisible.length} verbleibend)',
+                ),
+              ),
+            ],
             for (final product in pagedVisible)
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
@@ -463,17 +474,6 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                   ),
                 ),
               ),
-            if (hasMoreVisibleProducts) ...[
-              const SizedBox(height: 4),
-              OutlinedButton.icon(
-                onPressed: loadMoreVisibleProducts,
-                icon: const Icon(Icons.expand_more),
-                label: Text(
-                  'Weitere Produkte laden '
-                  '(${visible.length - pagedVisible.length} verbleibend)',
-                ),
-              ),
-            ],
           ],
         ),
       );
