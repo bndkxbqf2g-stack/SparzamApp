@@ -1401,7 +1401,7 @@ def fetch_current_kaufda_prospects(
         DEFAULT_TIMEOUT_SECONDS,
     )
     safe_request_delay_seconds = _finite_nonnegative_float(
-        safe_request_delay_seconds,
+        settings.request_delay_seconds,
         DEFAULT_REQUEST_DELAY_SECONDS,
     )
     safe_cache_max_age_hours = _finite_nonnegative_float(
@@ -1435,8 +1435,8 @@ def fetch_current_kaufda_prospects(
                 max_age_hours=safe_cache_max_age_hours,
             )
             if cached is None:
-                if index + 1 < len(queries) and settings.request_delay_seconds:
-                    time.sleep(settings.request_delay_seconds)
+                if index + 1 < len(queries) and safe_request_delay_seconds:
+                    time.sleep(safe_request_delay_seconds)
                 continue
             body, captured_at = cached
             cache_used = True
@@ -1460,7 +1460,7 @@ def fetch_current_kaufda_prospects(
                     settings.cache_path,
                     url,
                     now=reference_now,
-                    max_age_hours=settings.cache_max_age_hours,
+                    max_age_hours=safe_cache_max_age_hours,
                 )
             if cached is not None:
                 try:
