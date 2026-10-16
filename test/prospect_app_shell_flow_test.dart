@@ -232,80 +232,7 @@ void main() {
     SharedPreferencesAsyncPlatform.instance = null;
   });
 
-  testWidgets(
-    'unveränderter Prospektfeed reconciliiert den lokalen Normalpreis nach Speicherverlust',
-    (tester) async {
-      final now = DateTime.now();
-      final record = OfferImportRecord(
-        sourceId: 'netto-reconcile-shell',
-        productLabel: 'Jacobs Kaffee Crema 500 g',
-        storeName: 'Netto',
-        originalPrice: 7.99,
-        offerPrice: 4.99,
-        validFrom: now.subtract(const Duration(days: 1)),
-        validUntil: now.add(const Duration(days: 2)),
-        source: 'retailerWebsite',
-        sourceAdapter: 'kaufda',
-        branchId: 'netto-branch-1',
-        proofRef: 'https://example.test/netto/reconcile',
-        capturedAt: now,
-      );
-      final module = _FakeProspectImportModule(
-        ProspectFeedLoadResult(
-          records: [record],
-          refreshedStores: const ['Netto'],
-          // Older than the resume threshold so the unchanged-feed branch runs.
-          generatedAt: now.subtract(const Duration(hours: 7)),
-          prospects: const <ProspectIssue>[],
-        ),
-        disableCache: true,
-      );
-      final priceStore = _InMemoryPriceObservationStore();
-      final stores = _Stores(
-        shoppingListStore: _InMemoryShoppingListStore(),
-        offerStore: _InMemoryOfferStore(),
-        productCatalogStore: _InMemoryProductCatalogStore(),
-      );
 
-      await tester.pumpWidget(
-        _app(
-          stores,
-          module,
-          initialCustomProducts: const [
-            Product(
-              id: 'test-jacobs-kaffee-crema-500-g',
-              name: 'Jacobs Kaffee Crema 500 g',
-              unit: '500 g',
-              group: 'Kaffee & Snacks',
-            ),
-          ],
-          priceObservationStore: priceStore,
-        ),
-      );
-      for (var attempt = 0;
-          attempt < 20 && priceStore.observations.isEmpty;
-          attempt++) {
-        await tester.pump(const Duration(milliseconds: 50));
-      }
-      expect(priceStore.observations, hasLength(1));
-
-      // Simulate a local reset without changing the feed fingerprint.
-      priceStore.observations = <PriceObservation>[];
-      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
-      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
-      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
-      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
-      for (var attempt = 0;
-          attempt < 20 && priceStore.observations.isEmpty;
-          attempt++) {
-        await tester.pump(const Duration(milliseconds: 50));
-      }
-
-      expect(priceStore.observations, hasLength(1));
-      expect(priceStore.observations.single.kind, PriceObservationKind.regular);
-      expect(priceStore.observations.single.price, 7.99);
-    },
-  );
 
   testWidgets(
     'verzögerter alter Listenstand überschreibt keine neue Nutzereingabe',
@@ -635,6 +562,81 @@ void main() {
       expect(savedOffers.single.locationId, '4371');
       expect(savedOffers.single.region, 'Thüngersheim');
       expect(savedOffers.single.address, issue.address);
+    },
+  );
+
+  testWidgets(
+    'unveränderter Prospektfeed reconciliiert den lokalen Normalpreis nach Speicherverlust',
+    (tester) async {
+      final now = DateTime.now();
+      final record = OfferImportRecord(
+        sourceId: 'netto-reconcile-shell',
+        productLabel: 'Jacobs Kaffee Crema 500 g',
+        storeName: 'Netto',
+        originalPrice: 7.99,
+        offerPrice: 4.99,
+        validFrom: now.subtract(const Duration(days: 1)),
+        validUntil: now.add(const Duration(days: 2)),
+        source: 'retailerWebsite',
+        sourceAdapter: 'kaufda',
+        branchId: 'netto-branch-1',
+        proofRef: 'https://example.test/netto/reconcile',
+        capturedAt: now,
+      );
+      final module = _FakeProspectImportModule(
+        ProspectFeedLoadResult(
+          records: [record],
+          refreshedStores: const ['Netto'],
+          // Older than the resume threshold so the unchanged-feed branch runs.
+          generatedAt: now.subtract(const Duration(hours: 7)),
+          prospects: const <ProspectIssue>[],
+        ),
+        disableCache: true,
+      );
+      final priceStore = _InMemoryPriceObservationStore();
+      final stores = _Stores(
+        shoppingListStore: _InMemoryShoppingListStore(),
+        offerStore: _InMemoryOfferStore(),
+        productCatalogStore: _InMemoryProductCatalogStore(),
+      );
+
+      await tester.pumpWidget(
+        _app(
+          stores,
+          module,
+          initialCustomProducts: const [
+            Product(
+              id: 'test-jacobs-kaffee-crema-500-g',
+              name: 'Jacobs Kaffee Crema 500 g',
+              unit: '500 g',
+              group: 'Kaffee & Snacks',
+            ),
+          ],
+          priceObservationStore: priceStore,
+        ),
+      );
+      for (var attempt = 0;
+          attempt < 20 && priceStore.observations.isEmpty;
+          attempt++) {
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+      expect(priceStore.observations, hasLength(1));
+
+      // Simulate a local reset without changing the feed fingerprint.
+      priceStore.observations = <PriceObservation>[];
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      for (var attempt = 0;
+          attempt < 20 && priceStore.observations.isEmpty;
+          attempt++) {
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+
+      expect(priceStore.observations, hasLength(1));
+      expect(priceStore.observations.single.kind, PriceObservationKind.regular);
+      expect(priceStore.observations.single.price, 7.99);
     },
   );
 }
