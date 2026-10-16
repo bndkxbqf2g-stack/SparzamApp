@@ -1029,6 +1029,12 @@ def _explicit_regular_price(raw, sale, _depth=0):
     for key in _EXPLICIT_REGULAR_CONTAINERS:
         nested = raw.get(key)
         if isinstance(nested, dict):
+            # A semantic container such as regular is already explicit;
+            # allow its bounded presentation value before descending further.
+            if key in ("regular", "previous", "original", "was"):
+                candidate = _json_money(nested)
+                if candidate is not None and candidate >= sale:
+                    return candidate
             candidate = _explicit_regular_price(nested, sale, _depth + 1)
             if candidate is not None:
                 return candidate
