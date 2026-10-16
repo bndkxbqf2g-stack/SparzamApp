@@ -3377,7 +3377,7 @@ NON_FOOD_OFFER_RE = re.compile(
     r"purina|gourmet\s+(?:perle|gold)|vitakraft|sheba|calgon|cosmea|"
     r"viss|wc-frisch|pampers|gillette|emyo|slipeinlagen|hundesnack|hundefutter|backsortiment|"
     r"katzenfutter|tiernahrung|"
-    r"led[-\s][a-z0-9]|flächenlupe|flaechenlupe|süßigkeitenschale|suessigkeitenschale|totenkopf|"
+    r"led[-\s][a-z0-9][a-z0-9-]*|flächenlupe|flaechenlupe|süßigkeitenschale|suessigkeitenschale|totenkopf|"
     r"tasse|kaffeemaschine|filterkaffeemaschine|kaffeepadmaschine|multizerkleinerer|kontaktgrill|"
     r"kochplatte|allesschneider|gemüseschneider|gemueseschneider|fleischwolf|"
     r"weichspüler|weichspueler|dampfbügelstation|dampfbuegelstation|"
