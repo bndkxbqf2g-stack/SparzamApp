@@ -258,15 +258,26 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
                   ),
                   itemBuilder: (context, index) {
                     final issue = issues[index];
-                    return ProspectCoverCard(
-                      key: ValueKey(
-                        'offer-cover-grid-${prospectIssueKey(issue)}',
+                    // Paint the whole sliver tile. Recycled cover content can
+                    // be smaller than the fixed grid extent for one frame; the
+                    // tile must keep the card surface white in that gap.
+                    return SizedBox.expand(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(18),
+                        child: ColoredBox(
+                          color: Colors.white,
+                          child: ProspectCoverCard(
+                            key: ValueKey(
+                              'offer-cover-grid-${prospectIssueKey(issue)}',
+                            ),
+                            issue: issue,
+                            compact: true,
+                            isFavorite: _isFavorite(issue),
+                            onToggleFavorite: () => _toggleFavorite(issue),
+                            onOpen: () => widget.onOpen(issue),
+                          ),
+                        ),
                       ),
-                      issue: issue,
-                      compact: true,
-                      isFavorite: _isFavorite(issue),
-                      onToggleFavorite: () => _toggleFavorite(issue),
-                      onOpen: () => widget.onOpen(issue),
                     );
                   },
                 ),
