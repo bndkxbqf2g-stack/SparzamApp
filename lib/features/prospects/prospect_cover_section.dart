@@ -394,23 +394,23 @@ class ProspectCoverCard extends StatelessWidget {
                                 ),
                                 color: Colors.white,
                                 padding: EdgeInsets.fromLTRB(
-                                  compact ? 10 : 12,
-                                  10,
-                                  compact ? 10 : 12,
-                                  11,
+                                  compact ? 8 : 12,
+                                  compact ? 6 : 10,
+                                  compact ? 8 : 12,
+                                  compact ? 4 : 11,
                                 ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SizedBox(
-                                      height: 32,
+                                      height: compact ? 26 : 32,
                                       child: Text(
                                         issue.storeName,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
                                           color: Color(0xFF27343A),
-                                          fontSize: 16,
+                                          fontSize: compact ? 14 : 16,
                                           fontWeight: FontWeight.w800,
                                         ),
                                       ),
@@ -422,7 +422,7 @@ class ProspectCoverCard extends StatelessWidget {
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
                                           color: Color(0xFF6F7C80),
-                                          fontSize: 12,
+                                          fontSize: compact ? 11 : 12,
                                         ),
                                       ),
                                     if (validity != null)
@@ -430,7 +430,7 @@ class ProspectCoverCard extends StatelessWidget {
                                         validity,
                                         style: const TextStyle(
                                           color: Color(0xFF6F7C80),
-                                          fontSize: 12,
+                                          fontSize: compact ? 11 : 12,
                                         ),
                                       ),
                                     if (prospectSourceLabel(issue)
@@ -444,7 +444,7 @@ class ProspectCoverCard extends StatelessWidget {
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
                                           color: Color(0xFF6F7C80),
-                                          fontSize: 11,
+                                          fontSize: compact ? 10 : 11,
                                         ),
                                       ),
                                     if (prospectPageCoverage(issue)
@@ -458,7 +458,7 @@ class ProspectCoverCard extends StatelessWidget {
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
                                           color: Color(0xFF6F7C80),
-                                          fontSize: 11,
+                                          fontSize: compact ? 10 : 11,
                                         ),
                                       ),
                                     Text(
@@ -469,7 +469,7 @@ class ProspectCoverCard extends StatelessWidget {
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
                                         color: Color(0xFF6F7C80),
-                                        fontSize: 11,
+                                        fontSize: compact ? 10 : 11,
                                       ),
                                     ),
                                   ],
