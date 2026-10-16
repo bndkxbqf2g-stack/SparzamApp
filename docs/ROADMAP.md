@@ -938,3 +938,8 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 
 - [x] Die Prospektmatrix prüft weiterhin belegte Packungs- und Grundpreise, ohne einen einzelnen Tageswert als dauerhaftes Angebot vorauszusetzen.
 - [x] Einheit, Preisbasis und sichere unaufgelöste Mehrfachmengen bleiben im Testfall erhalten.
+## Update 16.10.2026 – Dart-Feedparser für Normalpreise tolerant
+
+- [x] Der Dart-Parser übernimmt dieselben ausdrücklich benannten Vorher-/Streichpreisfelder wie die Quelladapter.
+- [x] UVP-, Rabatt- und beliebige Zahlenfelder bleiben ausgeschlossen; nur ein positiver, expliziter Normalpreis wird gespeichert.
+- [x] Die Parserregression führt die Aliaswerte bis in die reguläre Prospektpreis-Evidenz.

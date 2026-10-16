@@ -762,6 +762,18 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         'wasPriceDisplay',
         'alterPreis',
         'oldPrice',
+        'priceBefore',
+        'previousPrice',
+        'crossedOutPrice',
+        'strikethroughPrice',
+        'wasPriceNumeric',
+        'original_price',
+        'regular_price',
+        'normal_price',
+        'old_price',
+        'previous_price',
+        'crossed_out_price',
+        'strikethrough_price',
       ],
     );
     final originalPrice = _priceValue(originalPriceValue);
