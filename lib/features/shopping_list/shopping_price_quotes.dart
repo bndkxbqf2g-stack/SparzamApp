@@ -12,6 +12,7 @@ import '../catalog/product_family.dart';
 import '../receipt/receipt_observation_builder.dart';
 import '../route/market_price_quality.dart';
 import '../../services/branch_identity.dart';
+import '../../services/market_price_source_priority.dart';
 import '../../services/market_price_comparability.dart';
 import '../../services/quantity_normalizer.dart';
 
@@ -629,11 +630,15 @@ int compareShoppingQuotes(ShoppingQuote a, ShoppingQuote b) =>
 
 int _quoteSourceOrder(ShoppingQuote quote) => switch (quote.kind) {
   ShoppingQuoteKind.offer => 0,
-  ShoppingQuoteKind.receipt ||
-  ShoppingQuoteKind.ownPrice ||
-  ShoppingQuoteKind.prospect ||
-  ShoppingQuoteKind.openPrices => 1,
-  ShoppingQuoteKind.prospectHistory => 2,
+  ShoppingQuoteKind.ownPrice =>
+    1 + marketPriceSourcePriority(MarketPriceSource.manual),
+  ShoppingQuoteKind.receipt =>
+    1 + marketPriceSourcePriority(MarketPriceSource.receipt),
+  ShoppingQuoteKind.prospect =>
+    1 + marketPriceSourcePriority(MarketPriceSource.prospect),
+  ShoppingQuoteKind.openPrices =>
+    1 + marketPriceSourcePriority(MarketPriceSource.openPrices),
+  ShoppingQuoteKind.prospectHistory => 5,
 };
 
 String _money(double value) => value.toStringAsFixed(2).replaceAll('.', ',');

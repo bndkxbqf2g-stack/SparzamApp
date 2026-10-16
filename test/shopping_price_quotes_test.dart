@@ -1068,4 +1068,31 @@ void main() {
     expect(quote.single.kind, ShoppingQuoteKind.offer);
     expect(quote.single.unitPrice, 0.89);
   });
+
+  test('matrix uses shared source precedence for equal adjusted values', () {
+    final matrix = shoppingPriceMatrix(
+      item,
+      prices: [
+        MarketPrice(
+          productId: milk.id,
+          storeName: 'Beispielmarkt',
+          price: 1.00,
+          updatedAt: DateTime(2026, 9, 24),
+          source: MarketPriceSource.openPrices,
+        ),
+        MarketPrice(
+          productId: milk.id,
+          storeName: 'Beispielmarkt',
+          price: 1.00,
+          updatedAt: DateTime(2026, 9, 24),
+          source: MarketPriceSource.receipt,
+        ),
+      ],
+      offers: const [],
+      enabledStores: const ['Beispielmarkt'],
+      now: DateTime(2026, 9, 24),
+    );
+
+    expect(matrix.single.quote?.kind, ShoppingQuoteKind.receipt);
+  });
 }
