@@ -1,3 +1,9 @@
+## Update 16.10.2026 – Routen-Refresh bleibt bei Cachefehlern aktuell
+
+- [x] Ein frischer OSRM-/Straßenmatrix-Abruf bleibt sichtbar, wenn das lokale Schreiben eines Cachepfads fehlschlägt.
+- [x] Matrix- und Distanz-Cache werden unabhängig versucht; die Live-Routenberechnung bleibt von lokaler Persistenz getrennt.
+- [x] Regressionen prüfen den Matrix- und Distanz-Cachefehler ohne Netzwerkanfragen.
+
 ## Update 16.10.2026 – Adapterherkunft pro Angebotszeile
 
 - [x] Der erzeugte offizielle Prospektfeed führt die verwendete Adapterstrecke pro Angebotszeile in sourceAdapter.
