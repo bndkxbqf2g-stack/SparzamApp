@@ -212,6 +212,40 @@ void main() {
     expect(refreshed.stored.single.observedAt, later);
   });
 
+  test('reconciles an unchanged feed after local regular-price loss', () async {
+    var raw = <String>[];
+    final store = PriceObservationStore(
+      readRaw: () async => raw,
+      writeRaw: (values) async => raw = [...values],
+    );
+
+    final first = await persistCurrentProspectRegularPrices(
+      store: store,
+      records: [current],
+      catalogProducts: const [coffee],
+      observedAt: now,
+      now: now,
+    );
+    expect(first.stored, hasLength(1));
+
+    // Simulate a local store reset while the feed fingerprint remains
+    // unchanged in the running shell.
+    raw = <String>[];
+
+    final reconciled = await persistCurrentProspectRegularPrices(
+      store: store,
+      records: [current],
+      catalogProducts: const [coffee],
+      observedAt: now,
+      now: now,
+    );
+
+    expect(reconciled.learned, hasLength(1));
+    expect(reconciled.stored, hasLength(1));
+    expect(reconciled.stored.single.kind, PriceObservationKind.regular);
+    expect(reconciled.stored.single.price, 7.99);
+  });
+
   test(
     'removes legacy automatic prospect offer observations atomically',
     () async {
