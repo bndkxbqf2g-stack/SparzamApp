@@ -387,7 +387,7 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
             ),
             const SizedBox(height: 16),
             TextField(
-              onChanged: (value) => setState(() => query = value),
+              onChanged: updateQuery,
               decoration: const InputDecoration(
                 hintText: 'Produkt, Marke oder Kategorie suchen',
                 prefixIcon: Icon(Icons.search),
