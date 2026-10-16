@@ -91,6 +91,27 @@ void main() {
     );
 
     await _scrollProspects(tester);
+
+    expect(
+      tester
+          .getSize(
+            find.byKey(
+              const ValueKey('prospect-card-grid-ALDI Süd#b384'),
+            ),
+          )
+          .height,
+      300,
+    );
+    expect(
+      tester
+          .getSize(
+            find.byKey(
+              const ValueKey('prospect-details-grid-ALDI Süd#b384'),
+            ),
+          )
+          .height,
+      132,
+    );
     await tester.tap(find.textContaining('ALDI Süd').last);
     await tester.pumpAndSettle();
 
