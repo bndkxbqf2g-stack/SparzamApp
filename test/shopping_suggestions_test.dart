@@ -1995,3 +1995,30 @@ void main() {
 
 
 }
+
+
+  test('same nominal receipt and Open Prices values prefer the receipt source', () {
+    final hint = shoppingSuggestionPriceForProduct(
+      regular,
+      marketPrices: [
+        MarketPrice(
+          productId: regular.id,
+          storeName: 'Lidl',
+          price: 1.00,
+          updatedAt: now,
+          source: MarketPriceSource.openPrices,
+        ),
+        MarketPrice(
+          productId: regular.id,
+          storeName: 'Lidl',
+          price: 1.00,
+          updatedAt: now,
+          source: MarketPriceSource.receipt,
+        ),
+      ],
+      now: now,
+    );
+
+    expect(hint?.sourceLabel, 'Bonpreis');
+    expect(hint?.sourcePriority, 1);
+  });

@@ -6,6 +6,8 @@ import '../../models/receipt_price_stat.dart';
 import '../../services/safe_external_url.dart';
 import '../../services/market_price_comparability.dart';
 import '../../services/branch_identity.dart';
+import '../route/market_price_quality.dart';
+import '../../services/market_price_source_priority.dart';
 import '../catalog/product_identity.dart';
 import '../offers/effective_price.dart';
 import '../offers/offer_import.dart';
@@ -26,6 +28,8 @@ class ShoppingCandidateQuote {
     this.isHistorical = false,
     this.evidenceLabel,
     this.savings,
+    this.rankingPrice,
+    this.sourcePriority = 99,
   });
 
   final String storeName;
@@ -38,6 +42,13 @@ class ShoppingCandidateQuote {
   final bool isHistorical;
   final String? evidenceLabel;
   final double? savings;
+  /// Quality-adjusted value used only to rank evidence. The displayed [price]
+  /// remains the observed checkout amount.
+  final double? rankingPrice;
+  /// Stable source precedence used after quality and amount ties.
+  final int sourcePriority;
+
+  double get comparisonPrice => rankingPrice ?? price;
 }
 
 class ShoppingCandidate {
@@ -59,6 +70,17 @@ class ShoppingCandidate {
   }
 
   bool get hasOffer => quotes.any((quote) => quote.isOffer);
+
+  /// Lowest quality-adjusted value among current quotes. Historical hints are
+  /// used only when no current evidence exists.
+  double? get bestComparisonPrice {
+    final currentQuotes = quotes.where((quote) => !quote.isHistorical);
+    final rankedQuotes = currentQuotes.isNotEmpty ? currentQuotes : quotes;
+    if (rankedQuotes.isEmpty) return null;
+    return rankedQuotes
+        .map((quote) => quote.comparisonPrice)
+        .reduce((a, b) => a < b ? a : b);
+  }
 
   String? get imageUrl {
     for (final quote in quotes) {
@@ -126,7 +148,10 @@ List<ShoppingCandidate> buildShoppingCandidates({
           imageUrl: offer.imageUrl,
           isOffer: true,
           evidenceLabel: offerEvidenceLabel(offer),
-          savings: _verifiedOfferSavings(offer, effective.finalPrice)));
+          savings: _verifiedOfferSavings(offer, effective.finalPrice),
+          rankingPrice: effective.finalPrice,
+          sourcePriority: 0,
+        ));
     }
     for (final price in marketPrices) {
       if (price.productId != product.id ||
@@ -144,6 +169,9 @@ List<ShoppingCandidate> buildShoppingCandidates({
         price: price.price,
         label: price.sourceLabel,
         observedAt: price.updatedAt,
+        rankingPrice: price.price *
+            (1 + marketPriceQuality(price, current).uncertaintyRate),
+        sourcePriority: marketPriceSourcePriority(price.source),
       ));
     }
     final productStats = (identity.isGeneric
@@ -175,6 +203,7 @@ List<ShoppingCandidate> buildShoppingCandidates({
         price: stat.medianPrice,
         label: 'Bon-Median (historisch)',
         observedAt: stat.latestAt,
+        sourcePriority: marketPriceSourcePriority(MarketPriceSource.receipt),
       ));
     }
     final historical = prospectPriceHistory[product.id]?.allSummaries ??
@@ -196,6 +225,7 @@ List<ShoppingCandidate> buildShoppingCandidates({
             : 'Prospekt-Normalpreis (historisch)',
         observedAt: summary.latestValidUntil,
         isHistorical: true,
+        sourcePriority: marketPriceSourcePriority(MarketPriceSource.prospect),
       ));
       // The primary summary is followed by alternatives for the same store.
       // Keep one conservative historical quote per store in the selector.
@@ -203,17 +233,27 @@ List<ShoppingCandidate> buildShoppingCandidates({
     }
     quotes.sort((a, b) {
       if (a.isHistorical != b.isHistorical) return a.isHistorical ? 1 : -1;
-      final price = a.price.compareTo(b.price);
-      if (price != 0) return price;
+      final comparison = a.comparisonPrice.compareTo(b.comparisonPrice);
+      if (comparison != 0) return comparison;
+      final nominal = a.price.compareTo(b.price);
+      if (nominal != 0) return nominal;
       if (a.isOffer != b.isOffer) return a.isOffer ? -1 : 1;
+      final source = a.sourcePriority.compareTo(b.sourcePriority);
+      if (source != 0) return source;
       return a.storeName.compareTo(b.storeName);
     });
     result.add(ShoppingCandidate(product: product, quotes: quotes));
   }
   result.sort((a, b) {
-    final aPrice = a.bestPrice ?? double.infinity;
-    final bPrice = b.bestPrice ?? double.infinity;
+    final aPrice = a.bestComparisonPrice ?? double.infinity;
+    final bPrice = b.bestComparisonPrice ?? double.infinity;
     final priceOrder = aPrice.compareTo(bPrice);
+    if (priceOrder == 0) {
+      final aNominal = a.bestPrice ?? double.infinity;
+      final bNominal = b.bestPrice ?? double.infinity;
+      final nominalOrder = aNominal.compareTo(bNominal);
+      if (nominalOrder != 0) return nominalOrder;
+    }
     if (priceOrder != 0) return priceOrder;
     if (a.hasOffer != b.hasOffer) return a.hasOffer ? -1 : 1;
     return a.product.name.compareTo(b.product.name);

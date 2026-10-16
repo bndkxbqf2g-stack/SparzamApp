@@ -711,3 +711,51 @@ void main() {
     expect(candidates.single.quotes, isEmpty);
   });
 }
+
+
+  test('same nominal price uses deterministic source precedence', () {
+    const product = Product(
+      id: 'source-tie-milk',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'milch',
+    );
+    final candidates = buildShoppingCandidates(
+      request: 'Milch',
+      catalogProducts: const [product],
+      offers: const [],
+      marketPrices: [
+        MarketPrice(
+          productId: product.id,
+          storeName: 'Lidl',
+          price: 1.00,
+          updatedAt: DateTime(2026, 10, 17),
+          source: MarketPriceSource.openPrices,
+        ),
+        MarketPrice(
+          productId: product.id,
+          storeName: 'Lidl',
+          price: 1.00,
+          updatedAt: DateTime(2026, 10, 17),
+          source: MarketPriceSource.receipt,
+        ),
+        MarketPrice(
+          productId: product.id,
+          storeName: 'Lidl',
+          price: 1.00,
+          updatedAt: DateTime(2026, 10, 17),
+          source: MarketPriceSource.manual,
+        ),
+      ],
+      receiptPriceStats: const [],
+      now: DateTime(2026, 10, 17),
+    );
+
+    final quotes = candidates.single.quotes;
+    expect(
+      quotes.map((quote) => quote.sourcePriority).take(3),
+      [0, 1, 3],
+    );
+    expect(candidates.single.bestPrice, 1.00);
+    expect(candidates.single.bestComparisonPrice, 1.00);
+  });
