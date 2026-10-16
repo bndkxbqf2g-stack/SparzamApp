@@ -713,18 +713,26 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
     );
     final manualProduct =
         product == null ? manualProductForProspectOffer(record) : null;
-    final canAdd = onAddProduct != null &&
-        (product != null || manualProduct != null);
+    final regionalProduct = record.regionalOnly
+        ? listOnlyProductForRegionalProspectOffer(record, catalogProducts)
+        : null;
+    final selectableProduct =
+        record.regionalOnly ? regionalProduct : product ?? manualProduct;
+    final listOnlyWithoutBranch =
+        record.regionalOnly && selectableProduct != null;
+    final canAdd = onAddProduct != null && selectableProduct != null;
     final recordKey = record.sourceId.trim().isEmpty
         ? prospectOfferRecordKey(record)
         : record.sourceId.trim();
     return ProspectOfferCard(
       key: ValueKey('prospect-search-offer-$recordKey'),
       record: record,
-      product: product,
+      product: selectableProduct,
       compact: true,
-      requiresManualConfirmation: product == null && manualProduct != null,
-      onAdd: !canAdd ? null : () => onAddProduct!(product ?? manualProduct!),
+      requiresManualConfirmation:
+          listOnlyWithoutBranch || (product == null && manualProduct != null),
+      listOnlyWithoutBranch: listOnlyWithoutBranch,
+      onAdd: !canAdd ? null : () => onAddProduct!(selectableProduct),
     );
   }
 }
@@ -2064,17 +2072,29 @@ class ProspectViewerScreen extends StatelessWidget {
                       final manualProduct = product == null
                           ? manualProductForProspectOffer(record)
                           : null;
+                      final regionalProduct = record.regionalOnly
+                          ? listOnlyProductForRegionalProspectOffer(
+                              record,
+                              catalogProducts,
+                            )
+                          : null;
+                      final selectableProduct = record.regionalOnly
+                          ? regionalProduct
+                          : product ?? manualProduct;
+                      final listOnlyWithoutBranch =
+                          record.regionalOnly && selectableProduct != null;
                       final canAdd = onAddProduct != null &&
-                          (product != null || manualProduct != null);
+                          selectableProduct != null;
                       return ProspectOfferCard(
                         key: ValueKey('prospect-offer-$recordKey'),
                         record: record,
-                        product: product,
-                        requiresManualConfirmation:
-                            product == null && manualProduct != null,
+                        product: selectableProduct,
+                        requiresManualConfirmation: listOnlyWithoutBranch ||
+                            (product == null && manualProduct != null),
+                        listOnlyWithoutBranch: listOnlyWithoutBranch,
                         onAdd: !canAdd
                             ? null
-                            : () => onAddProduct!(product ?? manualProduct!),
+                            : () => onAddProduct!(selectableProduct),
                       );
                     },
                     childCount: groupedItems[category]!.length,

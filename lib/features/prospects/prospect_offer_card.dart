@@ -17,6 +17,7 @@ class ProspectOfferCard extends StatefulWidget {
     this.product,
     this.onAdd,
     this.requiresManualConfirmation = false,
+    this.listOnlyWithoutBranch = false,
     this.compact = false,
   });
 
@@ -24,6 +25,9 @@ class ProspectOfferCard extends StatefulWidget {
   final Product? product;
   final VoidCallback? onAdd;
   final bool requiresManualConfirmation;
+  /// The item has current evidence but no exact branch. It can be added to
+  /// the list after confirmation; it must not be treated as a route offer.
+  final bool listOnlyWithoutBranch;
   final bool compact;
 
   @override
@@ -55,9 +59,14 @@ class _ProspectOfferCardState extends State<ProspectOfferCard> {
         builder: (context) => AlertDialog(
           title: const Text('Artikelidentität prüfen'),
           content: Text(
-            'Die Prospektquelle lässt für „${widget.record.productLabel}“ '
-            'keine eindeutige Katalogvariante zu. Als eigener Artikel mit '
-            'der exakten Bezeichnung in die Einkaufsliste übernehmen?',
+            widget.listOnlyWithoutBranch
+                ? 'Für „${widget.record.productLabel}“ ist aktuell nur ein '
+                    'regionaler Prospektnachweis vorhanden. Als eigenen '
+                    'Artikel ohne Filialpreis in die Einkaufsliste übernehmen?'
+                : 'Die Prospektquelle lässt für „${widget.record.productLabel}“ '
+                    'keine eindeutige Katalogvariante zu. Als eigener Artikel '
+                    'mit der exakten Bezeichnung in die Einkaufsliste '
+                    'übernehmen?',
           ),
           actions: [
             TextButton(
@@ -108,7 +117,9 @@ class _ProspectOfferCardState extends State<ProspectOfferCard> {
               tooltip: widget.onAdd == null
                   ? 'Artikel noch nicht eindeutig zugeordnet'
                   : widget.requiresManualConfirmation
-                  ? 'Bezeichnung prüfen und als Artikel übernehmen'
+                  ? widget.listOnlyWithoutBranch
+                      ? 'Regional prüfen und nur zur Einkaufsliste'
+                      : 'Bezeichnung prüfen und als Artikel übernehmen'
                   : added
                   ? 'Noch einmal zur Einkaufsliste'
                   : 'Zur Einkaufsliste',
@@ -156,7 +167,9 @@ class _ProspectOfferCardState extends State<ProspectOfferCard> {
                       added
                           ? 'Hinzugefügt'
                           : widget.requiresManualConfirmation
-                          ? 'Prüfen & übernehmen'
+                          ? widget.listOnlyWithoutBranch
+                              ? 'Prüfen & nur zur Einkaufsliste'
+                              : 'Prüfen & übernehmen'
                           : 'Zur Einkaufsliste',
                     ),
                   ),

@@ -135,6 +135,34 @@ void main() {
     expect(entries, isEmpty);
   });
 
+  test('regional prospect can be list-only but never routeable', () {
+    final record = OfferImportRecord(
+      sourceId: 'regional-list-only',
+      productLabel: 'Butter 250 g',
+      storeName: 'Lidl',
+      offerPrice: 1.49,
+      validUntil: DateTime(2026, 10, 17),
+      source: 'retailerWebsite',
+      sourceAdapter: 'kaufda',
+      regionalOnly: true,
+      proofRef: 'https://example.test/kaufda/butter',
+    );
+
+    final product = listOnlyProductForRegionalProspectOffer(
+      record,
+      const <Product>[],
+    );
+    final entries = prospectOfferProducts(
+      records: [record],
+      catalogProducts: const <Product>[],
+      now: DateTime(2026, 10, 12),
+    );
+
+    expect(product, isNotNull);
+    expect(product!.name, 'Butter 250 g');
+    expect(entries, isEmpty);
+  });
+
   test('unsafe proof cannot be transferred to the shopping list', () {
     final product = addableProductForProspectOffer(
       OfferImportRecord(

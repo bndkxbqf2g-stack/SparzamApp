@@ -51,6 +51,57 @@ void main() {
     expect(find.text('Hinzugefügt'), findsOneWidget);
   });
 
+  testWidgets('confirms regional prospect as list-only item', (
+    tester,
+  ) async {
+    var added = false;
+    final record = OfferImportRecord(
+      sourceId: 'regional-kaufda-list-only',
+      productLabel: 'Butter 250 g',
+      storeName: 'Lidl',
+      originalPrice: 1.99,
+      offerPrice: 1.49,
+      validUntil: DateTime(2026, 10, 18),
+      source: 'retailerWebsite',
+      sourceAdapter: 'kaufda',
+      regionalOnly: true,
+      proofRef: 'https://example.test/kaufda/butter',
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ProspectOfferCard(
+            record: record,
+            product: const Product(
+              id: 'butter-250',
+              name: 'Butter 250 g',
+              unit: '250 g',
+              group: 'milchprodukte',
+            ),
+            requiresManualConfirmation: true,
+            listOnlyWithoutBranch: true,
+            onAdd: () => added = true,
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Prüfen & nur zur Einkaufsliste'), findsOneWidget);
+    await tester.tap(find.text('Prüfen & nur zur Einkaufsliste'));
+    await tester.pump();
+
+    expect(
+      find.textContaining('nur ein regionaler Prospektnachweis'),
+      findsOneWidget,
+    );
+    await tester.tap(find.text('Als Artikel übernehmen'));
+    await tester.pump();
+
+    expect(added, isTrue);
+    expect(find.text('Hinzugefügt'), findsOneWidget);
+  });
+
   testWidgets('shows the prospect validity start date', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
