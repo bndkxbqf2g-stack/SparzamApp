@@ -348,16 +348,16 @@ class ProspectCoverCard extends StatelessWidget {
 
     final validity = _validity(issue);
     final cardHeight = compact ? 324.0 : 340.0;
-    final titleStyle = const TextStyle(
+    final titleStyle = TextStyle(
       color: const Color(0xFF27343A),
       fontSize: 16.0,
       fontWeight: FontWeight.w800,
     );
-    final primaryMetaStyle = const TextStyle(
+    final primaryMetaStyle = TextStyle(
       color: const Color(0xFF6F7C80),
       fontSize: 12.0,
     );
-    final secondaryMetaStyle = const TextStyle(
+    final secondaryMetaStyle = TextStyle(
       color: const Color(0xFF6F7C80),
       fontSize: 11.0,
     );
