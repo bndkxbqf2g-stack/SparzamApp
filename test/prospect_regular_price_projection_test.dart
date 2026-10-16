@@ -49,7 +49,7 @@ void main() {
 
     expect(marketPricesFromObservations([observation], now: now), isEmpty);
   });
-  test('rejects a legacy prospect offer from the current basis', () {
+  test('keeps a legacy prospect offer marked as offer evidence', () {
     final price = MarketPrice(
       productId: 'coffee-500',
       storeName: 'Lidl',
@@ -64,7 +64,7 @@ void main() {
     expect(price.isProspectOffer, isTrue);
     expect(
       price.isUsable(now: now, openPricesMaxAgeDays: 60),
-      isFalse,
+      isTrue,
     );
   });
   test('keeps a branchless prospect regular price as history only', () {

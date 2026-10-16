@@ -143,6 +143,29 @@ void main() {
       ),
       isEmpty,
     );
+
+    final routeQuote = RoutePriceResolver(
+      const [],
+      marketPrices: [offerPrice],
+      now: DateTime(2026, 10, 13),
+    ).quote(
+      const Store(
+        name: 'Lidl',
+        location: 'Zellingen',
+        branchId: 'lidl-zellingen',
+        distanceKm: 1,
+        prices: <String, double>{},
+      ),
+      ListItem(
+        product: const Product(
+          id: 'milk',
+          name: 'Milch',
+          unit: '1 l',
+          group: 'milch',
+        ),
+      ),
+    );
+    expect(routeQuote, isNull);
   });
   test('planning applies the configured Open Prices age', () {
     final prices = planningMarketPrices(

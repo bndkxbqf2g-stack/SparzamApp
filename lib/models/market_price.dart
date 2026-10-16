@@ -77,8 +77,7 @@ class MarketPrice {
     // A future timestamp is invalid evidence for every source. Manual prices
     // are allowed to stay usable indefinitely, but they still cannot describe
     // a price that has not been observed yet.
-    if (isProspectOffer ||
-        observed.isAfter(today) ||
+    if (observed.isAfter(today) ||
         evidenceConfidence == EvidenceConfidence.probable ||
         evidenceConfidence == EvidenceConfidence.uncertain ||
         !identityConfidence.isFinite ||

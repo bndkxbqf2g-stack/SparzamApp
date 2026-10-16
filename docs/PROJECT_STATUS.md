@@ -1,7 +1,7 @@
 ## Update 17.10.2026 – Direkte Prospekt-Aktionspreise bleiben nicht routbar
 
 - [x] `MarketPrice` kennzeichnet Prospekt-Aktionspreise über Kind und Discount-Metadaten eindeutig.
-- [x] `isUsable` verwirft diese Legacy-/Direktdatensätze zentral, bevor Planung, Route oder Preis-Matrix sie als reguläre Preise verwenden können.
+- [x] Planungs-, Routen- und Preis-Matrix-Auswahl verwerfen diese Legacy-/Direktdatensätze zentral; `isUsable` bleibt für aktuelle Evidenz- und Qualitätsstatistiken unverändert.
 - [x] Regressionen prüfen Projektion, `planningMarketPrices` und sichtbare Einkaufspreise; gültige reguläre Streichpreise bleiben unverändert nutzbar.
 ## Update 17.10.2026 – Preisquellenrangfolge in Suche und Kandidaten vereinheitlicht
 

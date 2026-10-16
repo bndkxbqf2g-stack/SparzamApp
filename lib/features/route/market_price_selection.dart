@@ -115,6 +115,7 @@ Map<String, MarketPrice> _preferredMarketPrices(
 }) {
   final selected = <String, MarketPrice>{};
   for (final price in input) {
+    if (price.isProspectOffer) continue;
     if (!price.price.isFinite || price.price <= 0) continue;
     if (!price.isUsable(
       now: now,

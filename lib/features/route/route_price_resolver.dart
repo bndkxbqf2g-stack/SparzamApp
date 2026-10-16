@@ -232,6 +232,7 @@ List<MarketPrice> _usableMarketPriceCandidates(
 ) => prices
     .where(
       (price) =>
+          !price.isProspectOffer &&
           price.price.isFinite &&
           price.price > 0 &&
           price.isUsable(
