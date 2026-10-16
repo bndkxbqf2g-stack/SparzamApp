@@ -52,6 +52,11 @@ class MarketPrice {
   bool get isManual =>
       source == MarketPriceSource.manual || source == MarketPriceSource.receipt;
 
+  /// A prospect action price remains offer evidence and must never become
+  /// the regular MarketPrice basis used by planning or the price matrix.
+  bool get isProspectOffer =>
+      source == MarketPriceSource.prospect &&
+      (kind == PriceObservationKind.offer || discounted);
   bool get hasComparableBasis =>
       (quantity == null ||
           (quantity!.isFinite && quantity! > 0)) &&

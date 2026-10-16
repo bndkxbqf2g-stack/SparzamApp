@@ -343,7 +343,8 @@ List<ShoppingQuote> shoppingQuotes(
       now: today,
       openPricesMaxAgeDays: openPricesMaxAgeDays,
     );
-    if (price.productId != item.product.id ||
+    if (price.isProspectOffer ||
+        price.productId != item.product.id ||
         !marketPriceMatchesProduct(price, item.product) ||
         !matchesConfiguredBranch(price.storeName, price.sourceLocationId) ||
         _isFutureObservation(price.updatedAt, today) ||

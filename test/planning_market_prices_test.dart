@@ -123,6 +123,50 @@ void main() {
     ]));
   });
 
+  test('planning excludes a legacy prospect offer market price', () {
+    final offerPrice = MarketPrice(
+      productId: 'milk',
+      storeName: 'Lidl',
+      price: 0.79,
+      updatedAt: DateTime(2026, 10, 13),
+      source: MarketPriceSource.prospect,
+      kind: PriceObservationKind.offer,
+      discounted: true,
+      sourceLocationId: 'lidl-zellingen',
+    );
+
+    expect(
+      planningMarketPrices(
+        exactPrices: [offerPrice],
+        familyPrices: const [],
+        now: DateTime(2026, 10, 13),
+      ),
+      isEmpty,
+    );
+
+    final routeQuote = RoutePriceResolver(
+      const [],
+      marketPrices: [offerPrice],
+      now: DateTime(2026, 10, 13),
+    ).quote(
+      const Store(
+        name: 'Lidl',
+        location: 'Zellingen',
+        branchId: 'lidl-zellingen',
+        distanceKm: 1,
+        prices: <String, double>{},
+      ),
+      ListItem(
+        product: const Product(
+          id: 'milk',
+          name: 'Milch',
+          unit: '1 l',
+          group: 'milch',
+        ),
+      ),
+    );
+    expect(routeQuote, isNull);
+  });
   test('planning applies the configured Open Prices age', () {
     final prices = planningMarketPrices(
       exactPrices: [

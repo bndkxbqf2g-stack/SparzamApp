@@ -49,6 +49,24 @@ void main() {
 
     expect(marketPricesFromObservations([observation], now: now), isEmpty);
   });
+  test('keeps a legacy prospect offer marked as offer evidence', () {
+    final price = MarketPrice(
+      productId: 'coffee-500',
+      storeName: 'Lidl',
+      sourceLocationId: 'lidl-branch-1',
+      price: 4.99,
+      updatedAt: now,
+      source: MarketPriceSource.prospect,
+      kind: PriceObservationKind.offer,
+      discounted: true,
+    );
+
+    expect(price.isProspectOffer, isTrue);
+    expect(
+      price.isUsable(now: now, openPricesMaxAgeDays: 60),
+      isTrue,
+    );
+  });
   test('keeps a branchless prospect regular price as history only', () {
     final observation = PriceObservation(
       id: 'prospect|leaflet|lidl|coffee|branchless',
