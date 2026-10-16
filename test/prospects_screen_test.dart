@@ -82,6 +82,26 @@ void main() {
     expect(find.textContaining('1 Angebote geladen'), findsOneWidget);
     expect(find.textContaining('Filiale: B384'), findsOneWidget);
     expect(
+      tester
+          .getSize(
+            find.byKey(
+              const ValueKey('prospect-card-grid-ALDI Süd#B384'),
+            ),
+          )
+          .height,
+      300,
+    );
+    expect(
+      tester
+          .getSize(
+            find.byKey(
+              const ValueKey('prospect-details-grid-ALDI Süd#B384'),
+            ),
+          )
+          .height,
+      132,
+    );
+    expect(
       find.text('Aktuelle Prospekte. Produkte antippen und vormerken.'),
       findsOneWidget,
     );
