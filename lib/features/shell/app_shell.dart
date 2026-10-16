@@ -679,10 +679,19 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
         feed.records,
         now: refreshNow,
       );
-      final catalogForProspectPrices = buildCatalogProducts(customProducts);
+      final baseCatalogForProspectPrices = buildCatalogProducts(customProducts);
       final offerBackedProducts = prospectOfferProducts(
         records: currentRecords,
-        catalogProducts: catalogForProspectPrices,
+        catalogProducts: baseCatalogForProspectPrices,
+        now: refreshNow,
+      );
+      // Persist prices against the same exact-label products that back the
+      // visible offer cards. Unknown verified items therefore retain full
+      // identity confidence immediately instead of waiting for a later
+      // manual list selection to make their regular price routeable.
+      final catalogForProspectPrices = catalogProductsWithProspectOffers(
+        catalogProducts: baseCatalogForProspectPrices,
+        offerProducts: offerBackedProducts,
       );
       // A verified offer with an unknown local catalog identity remains tied
       // to its exact retailer label. Keeping that offer routeable lets the
@@ -827,12 +836,27 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     try {
       await _priceSaves.add(() async {
         if (!_isCurrentDataRevision(revision) || isSuperseded()) return;
+        final refreshNow = DateTime.now();
+        final currentRecords = currentProspectRecords(
+          feed.records,
+          now: refreshNow,
+        );
+        final baseCatalog = buildCatalogProducts(customProducts);
+        final offerBackedProducts = prospectOfferProducts(
+          records: currentRecords,
+          catalogProducts: baseCatalog,
+          now: refreshNow,
+        );
+        final catalogForProspectPrices = catalogProductsWithProspectOffers(
+          catalogProducts: baseCatalog,
+          offerProducts: offerBackedProducts,
+        );
         persistence = await persistCurrentProspectRegularPrices(
           store: priceObservationStore,
           records: feed.records,
-          catalogProducts: buildCatalogProducts(customProducts),
+          catalogProducts: catalogForProspectPrices,
           observedAt: feed.generatedAt,
-          now: DateTime.now(),
+          now: refreshNow,
           refreshedStores: feed.refreshedStores,
         );
       });
