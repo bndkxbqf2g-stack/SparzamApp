@@ -416,7 +416,8 @@ ShoppingSuggestionPrice? shoppingSuggestionPriceForProduct(
   }
 
   for (final price in marketPrices) {
-    if (price.productId != product.id ||
+    if (price.isProspectOffer ||
+        price.productId != product.id ||
         !marketPriceMatchesProduct(price, product) ||
         (enabled.isNotEmpty && !enabled.contains(price.storeName)) ||
         !matchesConfiguredBranch(price.storeName, price.sourceLocationId) ||
