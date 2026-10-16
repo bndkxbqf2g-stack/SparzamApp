@@ -344,6 +344,35 @@ void main() {
     );
   });
 
+  test(
+    'excludes superseded prospect regular observations from current ledger',
+    () {
+      final now = DateTime(2026, 10, 15, 12);
+      final superseded = PriceObservation(
+        id: 'superseded-ledger',
+        productId: 'milk',
+        storeName: 'Lidl',
+        locationId: 'lidl-branch-1',
+        price: 1.99,
+        observedAt: now,
+        source: PriceObservationSource.leaflet,
+        kind: PriceObservationKind.regular,
+        validFrom: DateTime(2026, 10, 13),
+        validUntil: DateTime(2026, 10, 19),
+        proofRef: 'https://example.test/superseded',
+        isCurrent: false,
+      );
+
+      expect(
+        currentProspectRegularPriceObservations(
+          observations: [superseded],
+          now: now,
+        ),
+        isEmpty,
+      );
+    },
+  );
+
   testWidgets('zeigt Preisquellen und veraltete Belege im Preise-Reiter', (
     tester,
   ) async {
