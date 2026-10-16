@@ -203,6 +203,27 @@ class ProspectParserTest(unittest.TestCase):
             "https://example.test/zellingen.jpg",
         )
 
+    def test_source_adapter_metadata_is_added_without_overwriting_provider_value(self):
+        offers = [
+            {"productLabel": "Butter", "sourceAdapter": ""},
+            {"productLabel": "Prospekt", "sourceAdapter": "kaufda_next_data"},
+            {"productLabel": "Milch", "sourceAdapter": None},
+        ]
+
+        enriched = refresh._attach_source_adapter(offers, "structured_api+bring_brochure")
+
+        self.assertEqual(
+            enriched[0]["sourceAdapter"],
+            "structured_api+bring_brochure",
+        )
+        self.assertEqual(enriched[1]["sourceAdapter"], "kaufda_next_data")
+        self.assertEqual(
+            enriched[2]["sourceAdapter"],
+            "structured_api+bring_brochure",
+        )
+        self.assertEqual(offers[0]["sourceAdapter"], "")
+        self.assertIsNot(enriched[0], offers[0])
+
     def test_record_accepts_only_http_images(self):
         invalid = refresh.record(
             "Lidl",
