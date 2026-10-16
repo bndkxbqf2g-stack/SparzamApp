@@ -140,6 +140,28 @@ void main() {
     );
   });
 
+  test('direct prospect offer market prices stay out of shopping quotes', () {
+    final offerPrice = MarketPrice(
+      productId: milk.id,
+      storeName: 'Lidl',
+      price: 0.79,
+      updatedAt: DateTime(2026, 9, 24),
+      source: MarketPriceSource.prospect,
+      kind: PriceObservationKind.offer,
+      discounted: true,
+      sourceLocationId: 'lidl_zellingen',
+    );
+
+    expect(
+      shoppingQuotes(
+        item,
+        prices: [offerPrice],
+        offers: const [],
+        now: DateTime(2026, 9, 24),
+      ),
+      isEmpty,
+    );
+  });
   test('older receipts remain dated observations alongside current offers', () {
     final quotes = shoppingQuotes(
       item,

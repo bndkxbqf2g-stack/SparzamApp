@@ -52,6 +52,11 @@ class MarketPrice {
   bool get isManual =>
       source == MarketPriceSource.manual || source == MarketPriceSource.receipt;
 
+  /// A prospect action price remains offer evidence and must never become
+  /// the regular MarketPrice basis used by planning or the price matrix.
+  bool get isProspectOffer =>
+      source == MarketPriceSource.prospect &&
+      (kind == PriceObservationKind.offer || discounted);
   bool get hasComparableBasis =>
       (quantity == null ||
           (quantity!.isFinite && quantity! > 0)) &&
@@ -72,7 +77,8 @@ class MarketPrice {
     // A future timestamp is invalid evidence for every source. Manual prices
     // are allowed to stay usable indefinitely, but they still cannot describe
     // a price that has not been observed yet.
-    if (observed.isAfter(today) ||
+    if (isProspectOffer ||
+        observed.isAfter(today) ||
         evidenceConfidence == EvidenceConfidence.probable ||
         evidenceConfidence == EvidenceConfidence.uncertain ||
         !identityConfidence.isFinite ||

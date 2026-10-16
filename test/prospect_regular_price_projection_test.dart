@@ -49,6 +49,24 @@ void main() {
 
     expect(marketPricesFromObservations([observation], now: now), isEmpty);
   });
+  test('rejects a legacy prospect offer from the current basis', () {
+    final price = MarketPrice(
+      productId: 'coffee-500',
+      storeName: 'Lidl',
+      locationId: 'lidl-branch-1',
+      price: 4.99,
+      updatedAt: now,
+      source: MarketPriceSource.prospect,
+      kind: PriceObservationKind.offer,
+      discounted: true,
+    );
+
+    expect(price.isProspectOffer, isTrue);
+    expect(
+      price.isUsable(now: now, openPricesMaxAgeDays: 60),
+      isFalse,
+    );
+  });
   test('keeps a branchless prospect regular price as history only', () {
     final observation = PriceObservation(
       id: 'prospect|leaflet|lidl|coffee|branchless',
