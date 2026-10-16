@@ -49,6 +49,26 @@ void main() {
       find.byKey(const ValueKey('offer-cover-open-grid-Lidl')),
       findsOneWidget,
     );
+    expect(
+      tester
+          .getSize(
+            find.byKey(
+              const ValueKey('offer-cover-open-grid-Lidl'),
+            ),
+          )
+          .height,
+      324,
+    );
+    expect(
+      tester
+          .getSize(
+            find.byKey(
+              const ValueKey('offer-cover-open-favorite-Lidl'),
+            ),
+          )
+          .height,
+      340,
+    );
 
     final cover = find.byKey(
       const ValueKey('offer-cover-open-grid-Lidl'),
