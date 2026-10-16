@@ -347,69 +347,94 @@ class ProspectCoverCard extends StatelessWidget {
           child: SizedBox.expand(
             child: Stack(
               children: [
-              Positioned.fill(
-                child: InkWell(
-                  key: ValueKey(
-                    'offer-cover-open-$scope-${prospectIssueKey(issue)}',
-                  ),
-                  onTap: onOpen,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      SizedBox(height: imageHeight, child: image),
-                      Expanded(
-                        child: Container(
-                          key: ValueKey(
-                            'offer-cover-details-$scope-${prospectIssueKey(issue)}',
-                          ),
-                          color: Colors.white,
-                          padding: EdgeInsets.fromLTRB(
-                            compact ? 10 : 12,
-                            10,
-                            compact ? 10 : 12,
-                            11,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: 32,
-                                child: Text(
-                                  issue.storeName,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    color: Color(0xFF27343A),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w800,
+                Positioned.fill(
+                  child: InkWell(
+                    key: ValueKey(
+                      'offer-cover-open-$scope-${prospectIssueKey(issue)}',
+                    ),
+                    onTap: onOpen,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(height: imageHeight, child: image),
+                        Expanded(
+                          child: Container(
+                            key: ValueKey(
+                              'offer-cover-details-$scope-${prospectIssueKey(issue)}',
+                            ),
+                            color: Colors.white,
+                            padding: EdgeInsets.fromLTRB(
+                              compact ? 10 : 12,
+                              10,
+                              compact ? 10 : 12,
+                              11,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: 32,
+                                  child: Text(
+                                    issue.storeName,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: Color(0xFF27343A),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w800,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              if (issue.location?.trim().isNotEmpty == true)
-                                Text(
-                                  issue.location!.trim(),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    color: Color(0xFF6F7C80),
-                                    fontSize: 12,
+                                if (issue.location?.trim().isNotEmpty == true)
+                                  Text(
+                                    issue.location!.trim(),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: Color(0xFF6F7C80),
+                                      fontSize: 12,
+                                    ),
                                   ),
-                                ),
-                              if (validity != null)
-                                Text(
-                                  validity,
-                                  style: const TextStyle(
-                                    color: Color(0xFF6F7C80),
-                                    fontSize: 12,
+                                if (validity != null)
+                                  Text(
+                                    validity,
+                                    style: const TextStyle(
+                                      color: Color(0xFF6F7C80),
+                                      fontSize: 12,
+                                    ),
                                   ),
-                                ),
-                              if (prospectSourceLabel(issue)
-                                  case final sourceLabel?)
-                                Text(
-                                  sourceLabel,
-                                  key: ValueKey(
-                                    'prospect-cover-source-$scope-${prospectIssueKey(issue)}',
+                                if (prospectSourceLabel(issue)
+                                    case final sourceLabel?)
+                                  Text(
+                                    sourceLabel,
+                                    key: ValueKey(
+                                      'prospect-cover-source-$scope-${prospectIssueKey(issue)}',
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: Color(0xFF6F7C80),
+                                      fontSize: 11,
+                                    ),
                                   ),
+                                if (prospectPageCoverage(issue)
+                                    case final pageCoverage?)
+                                  Text(
+                                    pageCoverage,
+                                    key: ValueKey(
+                                      'prospect-cover-pages-$scope-${prospectIssueKey(issue)}',
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: Color(0xFF6F7C80),
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                Text(
+                                  issue.recordCount > 0
+                                      ? '${issue.recordCount} Angebote geladen'
+                                      : 'Prospekt öffnen',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
@@ -417,62 +442,37 @@ class ProspectCoverCard extends StatelessWidget {
                                     fontSize: 11,
                                   ),
                                 ),
-                              if (prospectPageCoverage(issue)
-                                  case final pageCoverage?)
-                                Text(
-                                  pageCoverage,
-                                  key: ValueKey(
-                                    'prospect-cover-pages-$scope-${prospectIssueKey(issue)}',
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    color: Color(0xFF6F7C80),
-                                    fontSize: 11,
-                                  ),
-                                ),
-                              Text(
-                                issue.recordCount > 0
-                                    ? '${issue.recordCount} Angebote geladen'
-                                    : 'Prospekt öffnen',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  color: Color(0xFF6F7C80),
-                                  fontSize: 11,
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Positioned(
-                top: imageHeight + 8,
-                right: compact ? 8 : 10,
-                child: IconButton(
-                  key: ValueKey(
-                    'offer-cover-favorite-$scope-${prospectIssueKey(issue)}',
-                  ),
-                  tooltip: isFavorite
-                      ? '${issue.storeName} aus Favoriten entfernen'
-                      : '${issue.storeName} zu Favoriten hinzufügen',
-                  onPressed: onToggleFavorite,
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints.tightFor(
-                    width: compact ? 32 : 36,
-                    height: compact ? 32 : 36,
-                  ),
-                  color: const Color(0xFFE96A73),
-                  icon: Icon(
-                    isFavorite ? Icons.favorite : Icons.favorite_border,
-                    size: compact ? 20 : 22,
+                Positioned(
+                  top: imageHeight + 8,
+                  right: compact ? 8 : 10,
+                  child: IconButton(
+                    key: ValueKey(
+                      'offer-cover-favorite-$scope-${prospectIssueKey(issue)}',
+                    ),
+                    tooltip: isFavorite
+                        ? '${issue.storeName} aus Favoriten entfernen'
+                        : '${issue.storeName} zu Favoriten hinzufügen',
+                    onPressed: onToggleFavorite,
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints.tightFor(
+                      width: compact ? 32 : 36,
+                      height: compact ? 32 : 36,
+                    ),
+                    color: const Color(0xFFE96A73),
+                    icon: Icon(
+                      isFavorite ? Icons.favorite : Icons.favorite_border,
+                      size: compact ? 20 : 22,
+                    ),
                   ),
                 ),
-              ),
               ],
             ),
           ),
