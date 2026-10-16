@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/catalog/market_price_freshness.dart';
 import 'package:sparzamapp/features/catalog/price_coverage.dart';
 import 'package:sparzamapp/models/market_price.dart';
+import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/product.dart';
 
 void main() {
