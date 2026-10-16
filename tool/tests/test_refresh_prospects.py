@@ -650,6 +650,22 @@ class ProspectParserTest(unittest.TestCase):
         self.assertTrue(all(float(item["offerPrice"]) > 0 for item in offers))
         self.assertTrue(all(item.get("proofRef") for item in offers))
 
+    def test_versioned_feed_regular_prices_are_explicit_and_branch_bound(self):
+        payload = refresh.json.loads(FEED.read_text(encoding="utf-8"))
+        regular = [
+            item for item in payload.get("offers", [])
+            if "originalPrice" in item
+        ]
+
+        self.assertTrue(regular)
+        for item in regular:
+            with self.subTest(product=item.get("productLabel")):
+                self.assertIsInstance(item["originalPrice"], (int, float))
+                self.assertGreater(item["originalPrice"], item["offerPrice"])
+                self.assertTrue(item.get("branchId"))
+                self.assertTrue(item.get("capturedAt"))
+                self.assertTrue(item.get("proofRef"))
+
     def test_versioned_feed_keeps_verified_netto_cover(self):
         payload = refresh.json.loads(FEED.read_text(encoding="utf-8"))
         netto = next(
