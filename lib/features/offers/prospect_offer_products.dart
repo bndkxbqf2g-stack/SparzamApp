@@ -113,6 +113,27 @@ List<Offer> offersFromProspectProducts(
   Iterable<ProspectOfferProduct> entries,
 ) => entries.map((entry) => entry.offer).toList(growable: false);
 
+/// Extends the exact local catalog with the products created for verified
+/// current prospect offers. Unknown labels stay isolated under their
+/// prospect-specific identity, while an existing exact catalog product keeps
+/// its established identity. This shared catalog is used before price
+/// observations are persisted so regular prices can become routeable in the
+/// same refresh that exposes the offer.
+List<Product> catalogProductsWithProspectOffers({
+  required Iterable<Product> catalogProducts,
+  required Iterable<ProspectOfferProduct> offerProducts,
+}) {
+  final result = <Product>[];
+  final seen = <String>{};
+  for (final product in catalogProducts) {
+    if (seen.add(product.id)) result.add(product);
+  }
+  for (final entry in offerProducts) {
+    if (seen.add(entry.product.id)) result.add(entry.product);
+  }
+  return result;
+}
+
 bool _isUsableRecord(OfferImportRecord record, {DateTime? now}) {
   if (record.productLabel.trim().isEmpty ||
       record.storeName.trim().isEmpty ||
