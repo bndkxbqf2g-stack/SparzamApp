@@ -350,7 +350,7 @@ class ProspectCoverCard extends StatelessWidget {
             color: Colors.white,
             child: Material(
               key: ValueKey(
-                'offer-cover-material-${scope}-${prospectIssueKey(issue)}',
+                'offer-cover-material-$scope-${prospectIssueKey(issue)}',
               ),
               type: MaterialType.card,
               color: Colors.white,
