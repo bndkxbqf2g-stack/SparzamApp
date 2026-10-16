@@ -98,4 +98,3 @@ class RoadRouteMatrix {
 
 bool _usableNonNegative(double? value) =>
     value != null && value.isFinite && value >= 0;
-}
