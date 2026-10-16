@@ -332,7 +332,7 @@ String _normalizeReceiptOcrMoneySpacing(String value) {
   // Restrict the rewrite to numeric tokens so product labels remain evidence
   // and are never silently rewritten into a different identity.
   final pattern = RegExp(
-    r'(?<![\${token}])(-?[\${token}@]+)\${token}*([,.])\${token}*([\${token}@])\${token}*([\${token}@])',
+    r'(?<![\w])(-?[\d@]+)\s*([,.])\s*([\d@])\s*([\d@])',
   );
   return value.replaceAllMapped(
     pattern,
