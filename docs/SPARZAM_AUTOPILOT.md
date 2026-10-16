@@ -44,7 +44,7 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
   oder fremden Marktmediane in die Route übertragen
 - [ ] Marktpreis-Konfidenz und Preisbasis vereinheitlichen
 - [ ] Quellpriorität vollständig mit Tests absichern
-- [x] Angebotspreise vs. Normalpreise konsistent behandeln – direkte Legacy-Prospekt-Aktionspreise werden bereits vor Planung, Route und Preis-Matrix ausgeschlossen.
+- [x] Angebotspreise vs. Normalpreise konsistent behandeln – direkte Legacy-Prospekt-Aktionspreise werden bereits vor Planung, Route, Einkaufskandidaten und Preis-Matrix ausgeschlossen.
 - [ ] Angebotsquellen automatisiert importieren: Händler, Bild, Gültigkeit, Produktidentität
 - [x] Angebote per + direkt in die Einkaufsliste übernehmen
 - [x] ausgewiesenen Normalpreis eines Angebots nur als bestätigte Preisbasis speichern

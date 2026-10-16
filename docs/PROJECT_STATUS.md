@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Einkaufskandidaten verwerfen direkte Prospekt-Aktionspreise
+
+- Direkte Legacy-Prospekt-Aktionspreise werden jetzt auch aus der Marktpreis-Schleife der Einkaufskandidaten entfernt.
+- Aktuelle reguläre Prospektpreise bleiben als Preisbeleg sichtbar; aktive Angebote werden weiterhin ausschließlich über das Offer-Modell bewertet.
+- Eine Regression schützt diese Trennung, damit Vorschläge, Preis-Matrix und Route dieselbe Preisbasis verwenden.
+
 ## Update 17.10.2026 – Direkte Prospekt-Aktionspreise bleiben nicht routbar
 
 - [x] `MarketPrice` kennzeichnet Prospekt-Aktionspreise über Kind und Discount-Metadaten eindeutig.

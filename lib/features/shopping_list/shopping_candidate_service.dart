@@ -154,7 +154,8 @@ List<ShoppingCandidate> buildShoppingCandidates({
         ));
     }
     for (final price in marketPrices) {
-      if (price.productId != product.id ||
+      if (price.isProspectOffer ||
+          price.productId != product.id ||
           !marketPriceMatchesProduct(price, product) ||
           !_storeEnabled(price.storeName, enabledStores) ||
           !matchesConfiguredBranch(price.storeName, price.sourceLocationId) ||
