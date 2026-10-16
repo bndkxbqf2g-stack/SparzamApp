@@ -1641,9 +1641,8 @@ class ProspectViewerScreen extends StatelessWidget {
     ProspectPage page, {
     ProspectPageOcrCandidate? initialCandidate,
   }) async {
-    final saveOffer = onSaveOffer;
     final addProduct = onAddProduct;
-    if (saveOffer == null || addProduct == null) return;
+    if (addProduct == null) return;
     final draft = await showProspectPageOfferDialog(
       context,
       initialValidUntil: issue.validUntil,
@@ -1669,7 +1668,25 @@ class ProspectViewerScreen extends StatelessWidget {
       branchId: issue.branchId,
       location: issue.location,
       address: issue.address,
+      // An unscoped page claim may still add the exact typed product to the
+      // shopping list, but it must not become a route price.
+      regionalOnly: issue.branchId?.trim().isNotEmpty != true,
     );
+    final hasExactBranch = issue.branchId?.trim().isNotEmpty == true;
+    if (!hasExactBranch) {
+      addProduct(productForProspectOffer(record, catalogProducts));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Artikel zur Einkaufsliste hinzugefügt. Für einen Routenpreis '
+            'fehlt die exakte Filiale.',
+          ),
+        ),
+      );
+      return;
+    }
+    final saveOffer = onSaveOffer;
+    if (saveOffer == null) return;
     final entries = prospectOfferProducts(
       records: [record],
       catalogProducts: catalogProducts,
