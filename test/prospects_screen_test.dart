@@ -1261,7 +1261,6 @@ void main() {
                 location: 'Würzburg',
                 validFrom: DateTime(2026, 9, 28),
                 validUntil: DateTime(2026, 12, 31),
-                sourceAdapter: 'kaufda',
                 sourceStatus: 'regional_only',
               ),
             ],
