@@ -348,6 +348,19 @@ class ProspectCoverCard extends StatelessWidget {
 
     final validity = _validity(issue);
     final cardHeight = compact ? 300.0 : 340.0;
+    final titleStyle = TextStyle(
+      color: const Color(0xFF27343A),
+      fontSize: compact ? 14.0 : 16.0,
+      fontWeight: FontWeight.w800,
+    );
+    final primaryMetaStyle = TextStyle(
+      color: const Color(0xFF6F7C80),
+      fontSize: compact ? 11.0 : 12.0,
+    );
+    final secondaryMetaStyle = TextStyle(
+      color: const Color(0xFF6F7C80),
+      fontSize: compact ? 10.0 : 11.0,
+    );
     return RepaintBoundary(
       child: SizedBox(
         width: compact ? double.infinity : 214,
@@ -408,11 +421,7 @@ class ProspectCoverCard extends StatelessWidget {
                                         issue.storeName,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          color: Color(0xFF27343A),
-                                          fontSize: compact ? 14 : 16,
-                                          fontWeight: FontWeight.w800,
-                                        ),
+                                        style: titleStyle,
                                       ),
                                     ),
                                     if (issue.location?.trim().isNotEmpty == true)
@@ -420,18 +429,12 @@ class ProspectCoverCard extends StatelessWidget {
                                         issue.location!.trim(),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          color: Color(0xFF6F7C80),
-                                          fontSize: compact ? 11 : 12,
-                                        ),
+                                        style: primaryMetaStyle,
                                       ),
                                     if (validity != null)
                                       Text(
                                         validity,
-                                        style: TextStyle(
-                                          color: Color(0xFF6F7C80),
-                                          fontSize: compact ? 11 : 12,
-                                        ),
+                                        style: primaryMetaStyle,
                                       ),
                                     if (prospectSourceLabel(issue)
                                         case final sourceLabel?)
@@ -442,10 +445,7 @@ class ProspectCoverCard extends StatelessWidget {
                                         ),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          color: Color(0xFF6F7C80),
-                                          fontSize: compact ? 10 : 11,
-                                        ),
+                                        style: secondaryMetaStyle,
                                       ),
                                     if (prospectPageCoverage(issue)
                                         case final pageCoverage?)
@@ -456,10 +456,7 @@ class ProspectCoverCard extends StatelessWidget {
                                         ),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          color: Color(0xFF6F7C80),
-                                          fontSize: compact ? 10 : 11,
-                                        ),
+                                        style: secondaryMetaStyle,
                                       ),
                                     Text(
                                       issue.recordCount > 0
@@ -467,10 +464,7 @@ class ProspectCoverCard extends StatelessWidget {
                                           : 'Prospekt öffnen',
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        color: Color(0xFF6F7C80),
-                                        fontSize: compact ? 10 : 11,
-                                      ),
+                                      style: secondaryMetaStyle,
                                     ),
                                   ],
                                 ),
