@@ -185,22 +185,6 @@ class _OffersScreenState extends State<OffersScreen> {
             onRefresh: widget.onRefreshProspects,
             refreshing: widget.prospectsRefreshing,
           ),
-          if (currentProspectIssues.isNotEmpty || currentRecords.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 12),
-              child: ProspectCoverageCard(
-                coverage: calculateProspectCoverage(
-                  issues: currentProspectIssues,
-                  records: currentRecords,
-                  now: widget.now,
-                  catalogProducts: widget.catalogProducts,
-                  persistedRegularPriceCounts:
-                      widget.persistedRegularPriceCounts,
-                ),
-                regularPricePersistenceStatus:
-                    widget.regularPricePersistenceStatus,
-              ),
-            ),
           const SizedBox(height: 12),
           if (currentProspectIssues.isNotEmpty) ...[
             ProspectCoverSection(
@@ -228,6 +212,21 @@ class _OffersScreenState extends State<OffersScreen> {
             catalogProducts: widget.catalogProducts,
             onAddToShoppingList: widget.onAddToShoppingList,
           ),
+          if (currentProspectIssues.isNotEmpty || currentRecords.isNotEmpty) ...[
+            const SizedBox(height: 18),
+            ProspectCoverageCard(
+              coverage: calculateProspectCoverage(
+                issues: currentProspectIssues,
+                records: currentRecords,
+                now: widget.now,
+                catalogProducts: widget.catalogProducts,
+                persistedRegularPriceCounts:
+                    widget.persistedRegularPriceCounts,
+              ),
+              regularPricePersistenceStatus:
+                  widget.regularPricePersistenceStatus,
+            ),
+          ],
         ],
       ),
     );
