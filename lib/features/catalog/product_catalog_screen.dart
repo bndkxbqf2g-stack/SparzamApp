@@ -11,6 +11,8 @@ import 'price_coverage.dart';
 import 'market_price_editor_screen.dart';
 import 'product_editor_screen.dart';
 
+const _catalogPageSize = 40;
+
 class ProductCatalogScreen extends StatefulWidget {
   const ProductCatalogScreen({
     super.key,
@@ -57,6 +59,7 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
   bool deletingProduct = false;
   bool savingProduct = false;
   List<String> failedProductIds = const [];
+  int visibleProductCount = _catalogPageSize;
 
   @override
   void initState() {
@@ -92,8 +95,28 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
     return items;
   }
 
+  List<Product> get pagedVisible =>
+      visible.take(visibleProductCount).toList(growable: false);
+
+  bool get hasMoreVisibleProducts => visibleProductCount < visible.length;
+
   bool isCustom(Product product) =>
       customProducts.any((item) => item.id == product.id);
+
+  void updateQuery(String value) {
+    setState(() {
+      query = value;
+      visibleProductCount = _catalogPageSize;
+    });
+  }
+
+  void loadMoreVisibleProducts() {
+    if (!hasMoreVisibleProducts) return;
+    setState(() {
+      visibleProductCount =
+          (visibleProductCount + _catalogPageSize).clamp(0, visible.length);
+    });
+  }
 
   Future<void> syncOpenPrices({bool retryFailuresOnly = false}) async {
     if (syncing || !widget.priceDataSettings.openPricesEnabled) return;
@@ -393,8 +416,14 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                 prefixIcon: Icon(Icons.search),
               ),
             ),
-            const SizedBox(height: 16),
-            for (final product in visible)
+            const SizedBox(height: 8),
+            if (visible.isNotEmpty)
+              Text(
+                '${pagedVisible.length} von ${visible.length} Produkten angezeigt',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            const SizedBox(height: 8),
+            for (final product in pagedVisible)
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Card(
@@ -434,6 +463,17 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                   ),
                 ),
               ),
+            if (hasMoreVisibleProducts) ...[
+              const SizedBox(height: 4),
+              OutlinedButton.icon(
+                onPressed: loadMoreVisibleProducts,
+                icon: const Icon(Icons.expand_more),
+                label: Text(
+                  'Weitere Produkte laden '
+                  '(${visible.length - pagedVisible.length} verbleibend)',
+                ),
+              ),
+            ],
           ],
         ),
       );
