@@ -51,6 +51,29 @@ void main() {
     expect(find.text('Hinzugefügt'), findsOneWidget);
   });
 
+  testWidgets('shows the prospect validity start date', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ProspectOfferCard(
+            record: OfferImportRecord(
+              sourceId: 'validity-start',
+              productLabel: 'Butter 250 g',
+              storeName: 'Lidl',
+              offerPrice: 1.49,
+              validFrom: DateTime(2026, 10, 12),
+              validUntil: DateTime(2026, 10, 18),
+              proofRef: 'https://example.test/lidl/validity-start',
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Gültig ab 12.10.2026'), findsOneWidget);
+    expect(find.text('Gültig bis 18.10.2026'), findsOneWidget);
+  });
+
   testWidgets('asks before adding an unresolved prospect identity', (
     tester,
   ) async {
