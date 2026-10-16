@@ -2020,4 +2020,33 @@ void main() {
     expect(hint?.sourceLabel, 'Bonpreis');
     expect(hint?.sourcePriority, 1);
   });
+  test('suggestion price ignores legacy prospect offer market prices', () {
+    final hint = shoppingSuggestionPriceForProduct(
+      regular,
+      marketPrices: [
+        MarketPrice(
+          productId: regular.id,
+          storeName: 'Lidl',
+          price: 0.79,
+          updatedAt: now,
+          source: MarketPriceSource.prospect,
+          kind: PriceObservationKind.offer,
+          discounted: true,
+        ),
+        MarketPrice(
+          productId: regular.id,
+          storeName: 'Lidl',
+          price: 1.99,
+          updatedAt: now,
+          source: MarketPriceSource.prospect,
+          kind: PriceObservationKind.regular,
+        ),
+      ],
+      now: now,
+    );
+
+    expect(hint?.sourceLabel, 'Prospekt');
+    expect(hint?.price, 1.99);
+  });
+
 }

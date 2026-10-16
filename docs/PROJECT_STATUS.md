@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Suchvorschläge verwenden keine direkten Prospekt-Aktionspreise
+
+- Der Suchvorschlags-Preispfad verwirft direkte Legacy-Prospekt-Aktionspreise jetzt vor der sichtbaren Preisermittlung.
+- Reguläre Prospektpreise bleiben als aktuelle Hinweise verfügbar; Angebotspreise stammen weiterhin aus dem getrennten Offer-Modell.
+- Die Regression prüft, dass ein billiger Legacy-Aktionspreis keinen regulären Prospektpreis in Suchvorschlägen überdeckt.
+
 ## Update 17.10.2026 – Einkaufskandidaten verwerfen direkte Prospekt-Aktionspreise
 
 - Direkte Legacy-Prospekt-Aktionspreise werden jetzt auch aus der Marktpreis-Schleife der Einkaufskandidaten entfernt.
