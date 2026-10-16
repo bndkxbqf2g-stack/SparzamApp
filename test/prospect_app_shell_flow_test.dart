@@ -14,6 +14,7 @@ import 'package:sparzamapp/models/mobility_settings.dart';
 import 'package:sparzamapp/models/named_shopping_list.dart';
 import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/models/price_data_settings.dart';
+import 'package:sparzamapp/services/price_observation_store.dart';
 import 'package:sparzamapp/models/price_point.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/purchase_record.dart';
@@ -39,6 +40,10 @@ class _FakeProspectImportModule extends ProspectImportModule {
 
   @override
   Future<ProspectFeedLoadResult> execute({String? startAddress}) async => result;
+
+  @override
+  Future<ProspectFeedLoadResult?> executeCached({String? startAddress}) async =>
+      null;
 }
 
 class _DelayedNamedListStore extends ShoppingListStore {
@@ -144,6 +149,7 @@ Widget _app(
   List<Offer> initialOffers = const <Offer>[],
   List<Product> initialCustomProducts = const <Product>[],
   List<ListItem> initialShoppingList = const <ListItem>[],
+  PriceObservationStore? priceObservationStore,
 }) {
   return MaterialApp(
     home: AppShell(
@@ -160,6 +166,7 @@ Widget _app(
       shoppingListStore: stores.shoppingList,
       diagnosticLogService: DiagnosticLogService(),
       prospectImportModule: module,
+      priceObservationStore: priceObservationStore,
       initialBudget: const BudgetPlan(),
       initialOffers: initialOffers,
       initialMobility: const MobilitySettings(
@@ -189,6 +196,86 @@ void main() {
   tearDown(() {
     SharedPreferencesAsyncPlatform.instance = null;
   });
+
+  testWidgets(
+    'unveränderter Prospektfeed reconciliiert den lokalen Normalpreis nach Speicherverlust',
+    (tester) async {
+      final now = DateTime.now();
+      final record = OfferImportRecord(
+        sourceId: 'netto-reconcile-shell',
+        productLabel: 'Jacobs Kaffee Crema 500 g',
+        storeName: 'Netto',
+        originalPrice: 7.99,
+        offerPrice: 4.99,
+        validFrom: now.subtract(const Duration(days: 1)),
+        validUntil: now.add(const Duration(days: 2)),
+        source: 'retailerWebsite',
+        sourceAdapter: 'kaufda',
+        branchId: 'netto-branch-1',
+        proofRef: 'https://example.test/netto/reconcile',
+        capturedAt: now,
+      );
+      final module = _FakeProspectImportModule(
+        ProspectFeedLoadResult(
+          records: [record],
+          refreshedStores: const ['Netto'],
+          // Older than the resume threshold so the unchanged-feed branch runs.
+          generatedAt: now.subtract(const Duration(hours: 7)),
+          prospects: const <ProspectIssue>[],
+        ),
+      );
+      var raw = <String>[];
+      final priceStore = PriceObservationStore(
+        readRaw: () async => raw,
+        writeRaw: (values) async => raw = [...values],
+      );
+      final stores = _Stores(
+        shoppingListStore: _InMemoryShoppingListStore(),
+        offerStore: _InMemoryOfferStore(),
+        productCatalogStore: _InMemoryProductCatalogStore(),
+      );
+
+      await tester.pumpWidget(
+        _app(
+          stores,
+          module,
+          initialCustomProducts: const [
+            Product(
+              id: 'test-jacobs-kaffee-crema-500-g',
+              name: 'Jacobs Kaffee Crema 500 g',
+              unit: '500 g',
+              group: 'Kaffee & Snacks',
+            ),
+          ],
+          priceObservationStore: priceStore,
+        ),
+      );
+      await tester.runAsync(() async {
+        for (var attempt = 0; attempt < 200; attempt++) {
+          if ((await priceStore.load()).isNotEmpty) return;
+          await Future<void>.delayed(const Duration(milliseconds: 10));
+        }
+      });
+      expect(await priceStore.load(), hasLength(1));
+
+      // Simulate a local reset without changing the feed fingerprint.
+      raw = <String>[];
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pump();
+      await tester.runAsync(() async {
+        for (var attempt = 0; attempt < 200; attempt++) {
+          if ((await priceStore.load()).isNotEmpty) return;
+          await Future<void>.delayed(const Duration(milliseconds: 10));
+        }
+      });
+
+      final reconciled = await priceStore.load();
+      expect(reconciled, hasLength(1));
+      expect(reconciled.single.kind, PriceObservationKind.regular);
+      expect(reconciled.single.price, 7.99);
+    },
+  );
 
   testWidgets(
     'verzögerter alter Listenstand überschreibt keine neue Nutzereingabe',
