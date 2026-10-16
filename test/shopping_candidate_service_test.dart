@@ -757,4 +757,38 @@ void main() {
     expect(candidates.single.bestPrice, 1.00);
     expect(candidates.single.bestComparisonPrice, 1.00);
   });
+  test('candidate selection excludes legacy prospect offers from market price quotes', () {
+    final candidates = buildShoppingCandidates(
+      request: 'Käse',
+      catalogProducts: [gouda],
+      offers: const [],
+      marketPrices: [
+        MarketPrice(
+          productId: gouda.id,
+          storeName: 'Lidl',
+          price: 0.79,
+          updatedAt: now,
+          source: MarketPriceSource.prospect,
+          kind: PriceObservationKind.offer,
+          discounted: true,
+        ),
+        MarketPrice(
+          productId: gouda.id,
+          storeName: 'Lidl',
+          price: 1.99,
+          updatedAt: now,
+          source: MarketPriceSource.prospect,
+          kind: PriceObservationKind.regular,
+        ),
+      ],
+      receiptPriceStats: const [],
+      now: now,
+    );
+
+    expect(candidates, hasLength(1));
+    expect(candidates.single.quotes, hasLength(1));
+    expect(candidates.single.quotes.single.label, 'Prospekt');
+    expect(candidates.single.quotes.single.price, 1.99);
+  });
+
 }
