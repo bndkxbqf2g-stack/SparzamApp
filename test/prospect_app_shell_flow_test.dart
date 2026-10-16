@@ -35,16 +35,24 @@ import 'package:sparzamapp/services/recent_purchase_store.dart';
 import 'package:sparzamapp/services/shopping_list_store.dart';
 
 class _FakeProspectImportModule extends ProspectImportModule {
-  _FakeProspectImportModule(this.result);
+  _FakeProspectImportModule(
+    this.result, {
+    this.disableCache = false,
+  });
 
   final ProspectFeedLoadResult result;
+  final bool disableCache;
 
   @override
   Future<ProspectFeedLoadResult> execute({String? startAddress}) async => result;
 
   @override
-  Future<ProspectFeedLoadResult?> executeCached({String? startAddress}) async =>
-      null;
+  Future<ProspectFeedLoadResult?> executeCached({
+    String? startAddress,
+  }) async {
+    if (disableCache) return null;
+    return super.executeCached(startAddress: startAddress);
+  }
 }
 
 class _DelayedNamedListStore extends ShoppingListStore {
@@ -250,6 +258,7 @@ void main() {
           generatedAt: now.subtract(const Duration(hours: 7)),
           prospects: const <ProspectIssue>[],
         ),
+        disableCache: true,
       );
       final priceStore = _InMemoryPriceObservationStore();
       final stores = _Stores(
