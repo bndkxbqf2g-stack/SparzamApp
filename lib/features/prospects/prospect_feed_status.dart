@@ -257,8 +257,15 @@ List<ProspectCoverage> calculateProspectCoverage({
   Iterable<Product>? catalogProducts,
 }) {
   final currentRecords = now == null
-      ? records.toList(growable: false)
-      : currentProspectRecords(records, now: now);
+      ? records
+          .where(
+            (record) => isFoodProspectRecord(
+              label: record.productLabel,
+              category: record.category,
+            ),
+          )
+          .toList(growable: false)
+      : currentFoodProspectRecords(records, now: now);
   final currentIssues = now == null
       ? issues.toList(growable: false)
       : issues
