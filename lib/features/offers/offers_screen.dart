@@ -86,7 +86,7 @@ class _OffersScreenState extends State<OffersScreen> {
         _currentRecordsDay == day) {
       return _currentRecordsCache ?? const <OfferImportRecord>[];
     }
-    final current = currentProspectRecords(
+    final current = currentFoodProspectRecords(
       widget.prospectRecords,
       now: widget.now,
     );
