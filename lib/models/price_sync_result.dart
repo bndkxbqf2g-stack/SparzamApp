@@ -1,4 +1,5 @@
 import 'market_price.dart';
+import 'price_observation.dart';
 import 'price_point.dart';
 
 class PriceSyncResult {
@@ -11,6 +12,7 @@ class PriceSyncResult {
     required this.productsProcessed,
     required this.cancelled,
     this.failedProductIds = const [],
+    this.observations = const <PriceObservation>[],
   });
 
   final List<MarketPrice> prices;
@@ -21,4 +23,6 @@ class PriceSyncResult {
   final int productsProcessed;
   final bool cancelled;
   final List<String> failedProductIds;
+  /// Complete local observation snapshot written by the same sync operation.
+  final List<PriceObservation> observations;
 }
