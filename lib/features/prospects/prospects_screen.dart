@@ -85,6 +85,9 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
   String? selectedStore;
   var _filtersExpanded = true;
   static const _prospectGridPageSize = 12;
+  // Large feeds should not decode a speculative extra cover row while
+  // the user scrolls; small feeds keep the short lead-in for responsiveness.
+  static const _prospectHeavyFeedThreshold = _prospectGridPageSize * 2;
   var _visibleProspectCount = _prospectGridPageSize;
   final _bringScrollController = ScrollController();
   final _moreProspectsKey = GlobalKey();
@@ -332,9 +335,12 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
         color: _bringBackground,
         child: CustomScrollView(
           controller: _bringScrollController,
-          // Warm a short cover lead-in so a fast swipe can decode the next
-          // row without retaining a full extra prospect page in memory.
-          scrollCacheExtent: const ScrollCacheExtent.pixels(180),
+          // Warm a short cover lead-in for small feeds. Once the current
+          // feed reaches two visible grid pages, avoid speculative image
+          // decodes so long prospect lists stay responsive while scrolling.
+          scrollCacheExtent: ScrollCacheExtent.pixels(
+            visibleProspects.length >= _prospectHeavyFeedThreshold ? 0 : 180,
+          ),
           key: const ValueKey('prospect-bring-scroll'),
           slivers: [
             if (hasSelection)
