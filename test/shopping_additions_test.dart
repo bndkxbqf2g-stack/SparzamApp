@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/shopping_list/shopping_additions.dart';
 import 'package:sparzamapp/features/shopping_list/shopping_list_updates.dart';
+import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/recent_purchase.dart';
 import 'package:sparzamapp/models/replenishment_suggestion.dart';
