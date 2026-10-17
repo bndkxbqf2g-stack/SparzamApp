@@ -12,6 +12,11 @@ class RecentPurchase {
     this.purchaseCount = 1,
     this.totalQuantity = 1,
     this.ean,
+    this.aliases = const <String>[],
+    this.brand,
+    this.packageAmount,
+    this.packageUnit,
+    this.imageUrl,
   });
 
   final String id;
@@ -21,6 +26,11 @@ class RecentPurchase {
   final int purchaseCount;
   final int totalQuantity;
   final String? ean;
+  final List<String> aliases;
+  final String? brand;
+  final double? packageAmount;
+  final String? packageUnit;
+  final String? imageUrl;
 
   double get averageQuantity => totalQuantity / purchaseCount;
 
@@ -30,6 +40,11 @@ class RecentPurchase {
         unit: product.unit,
         group: product.group,
         ean: product.ean,
+        aliases: List<String>.of(product.aliases, growable: false),
+        brand: product.brand,
+        packageAmount: product.packageAmount,
+        packageUnit: product.packageUnit,
+        imageUrl: product.imageUrl,
       );
 
   factory RecentPurchase.fromJson(String value) {
@@ -40,6 +55,10 @@ class RecentPurchase {
     final group = json['group'] as String?;
     final purchaseCount = (json['purchaseCount'] as num?)?.toInt() ?? 1;
     final totalQuantity = (json['totalQuantity'] as num?)?.toInt() ?? 1;
+    final aliases = (json['aliases'] as List<dynamic>?)
+            ?.whereType<String>()
+            .toList(growable: false) ??
+        const <String>[];
     if (id == null ||
         id.trim().isEmpty ||
         name == null ||
@@ -60,6 +79,11 @@ class RecentPurchase {
       purchaseCount: purchaseCount,
       totalQuantity: totalQuantity,
       ean: json['ean'] as String?,
+      aliases: aliases,
+      brand: json['brand'] as String?,
+      packageAmount: (json['packageAmount'] as num?)?.toDouble(),
+      packageUnit: json['packageUnit'] as String?,
+      imageUrl: json['imageUrl'] as String?,
     );
   }
 
@@ -71,11 +95,27 @@ class RecentPurchase {
         'purchaseCount': purchaseCount,
         'totalQuantity': totalQuantity,
         'ean': ean,
+        'aliases': aliases,
+        'brand': brand,
+        'packageAmount': packageAmount,
+        'packageUnit': packageUnit,
+        'imageUrl': imageUrl,
       });
 
   Product toProduct() {
     final known = products.where((product) => product.id == id);
     if (known.isNotEmpty) return known.first;
-    return Product(id: id, name: name, unit: unit, group: group, ean: ean);
+    return Product(
+      id: id,
+      name: name,
+      unit: unit,
+      group: group,
+      ean: ean,
+      aliases: aliases,
+      brand: brand,
+      packageAmount: packageAmount,
+      packageUnit: packageUnit,
+      imageUrl: imageUrl,
+    );
   }
 }
