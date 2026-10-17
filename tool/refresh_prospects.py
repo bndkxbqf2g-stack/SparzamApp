@@ -3898,6 +3898,13 @@ def main(selected_source_ids=None):
                     snippet = before[-150:] + " || " + after[:70]
                 diagnostics = "edeka-sample=" + snippet[:220]
                 raise ValueError("keine sicher extrahierbaren Angebote gefunden; " + diagnostics)
+            if offers and not current_prospect_offers(offers):
+                # A successful transport can still contain only expired,
+                # malformed or non-food rows. Keep the previous validated
+                # branch data instead of publishing an empty current source.
+                raise ValueError(
+                    "keine aktuellen Lebensmittelangebote gefunden"
+                )
             all_offers.extend(offers)
             refreshed_source_count += 1
             sources.append({"id": source_id, "storeName": store, "url": url, "status": "metadata_only" if metadata_only else "ok", "recordCount": len(offers), "mode": source_mode, "capturedAt": captured_at, "prospects": prospects, **source_branch_metadata(source_id)})
