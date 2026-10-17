@@ -733,9 +733,11 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
         offerPersistenceWarning = error.toString();
       }
       if (!_isCurrentDataRevision(revision)) return;
-      final offersById = <String, Offer>{
-        for (final offer in persistedOffers) offer.id: offer,
-        for (final entry in offerBackedProducts) entry.offer.id: entry.offer,
+      final offersByKey = <String, Offer>{
+        for (final offer in persistedOffers)
+          prospectOfferSnapshotKey(offer): offer,
+        for (final entry in offerBackedProducts)
+          prospectOfferSnapshotKey(entry.offer): entry.offer,
       };
 
       ProspectRegularPricePersistenceResult? persistence;
@@ -784,7 +786,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
         prospectRegularPricePersistenceStatus = pricePersistenceWarning == null
             ? ProspectRegularPricePersistenceStatus.succeeded
             : ProspectRegularPricePersistenceStatus.failed;
-        offers = offersById.values.toList(growable: false);
+        offers = offersByKey.values.toList(growable: false);
         prospectProducts = offerBackedProducts
             .map((entry) => entry.product)
             .toList(growable: false);
