@@ -633,5 +633,38 @@ void main() {
 
     expect(quote?.unitPrice, 0.79);
     expect(quote?.observation?.storeName, 'LIDL');
+  });
+  test('indexes route candidates by exact product identity', () {
+    const otherProduct = Product(
+      id: 'other-product',
+      name: 'Andere Ware',
+      unit: '1 Stück',
+      group: 'sonstiges',
+    );
+    final relevant = Offer(
+      id: 'relevant-offer',
+      productId: product.id,
+      storeName: store.name,
+      originalPrice: 2,
+      offerPrice: 1,
+      validUntil: DateTime(2026, 9, 30),
+    );
+    final unrelated = Offer(
+      id: 'unrelated-offer',
+      productId: otherProduct.id,
+      storeName: store.name,
+      originalPrice: 9,
+      offerPrice: 8,
+      validUntil: DateTime(2026, 9, 30),
+    );
+
+    final quote = RoutePriceResolver(
+      [unrelated, relevant],
+      now: DateTime(2026, 9, 24),
+    ).quote(store, ListItem(product: product));
+
+    expect(quote?.offer?.id, relevant.id);
+    expect(quote?.total, 1);
   });
+
 }
