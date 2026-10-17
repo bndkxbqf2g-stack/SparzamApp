@@ -151,6 +151,27 @@ String _prospectOfferBranchContext(OfferImportRecord record) {
   return parts.join('|');
 }
 
+/// Stable cache identity for product resolution of an imported prospect.
+///
+/// Product resolution depends on the exact branch context and on the evidence
+/// fields that decide whether a record is eligible. Keeping those inputs in
+/// the key prevents a long-lived UI cache from reusing an older EAN, package,
+/// price, validity or proof decision for a changed feed row.
+String prospectOfferResolutionKey(OfferImportRecord record) => [
+      prospectOfferRecordKey(record),
+      record.productLabel.trim().toLowerCase(),
+      record.ean?.trim().toLowerCase() ?? '',
+      record.packageSize?.trim().toLowerCase() ?? '',
+      record.offerPrice.toStringAsFixed(4),
+      record.originalPrice?.toStringAsFixed(4) ?? '',
+      record.validFrom?.toIso8601String() ?? '',
+      record.validUntil.toIso8601String(),
+      record.source.trim().toLowerCase(),
+      record.sourceAdapter?.trim().toLowerCase() ?? '',
+      record.proofRef?.trim() ?? '',
+      record.regionalOnly.toString(),
+    ].join('|');
+
 String prospectRecordLocationLabel(
   String storeName,
   Iterable<OfferImportRecord> records, {
