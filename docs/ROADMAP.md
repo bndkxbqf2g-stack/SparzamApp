@@ -758,6 +758,7 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
 - [x] Bildseiten ermöglichen eine geprüfte manuelle Artikelübernahme mit
   Seitenlink, Preis, Gültigkeitsende und bestehender Filialprovenienz.
 - [x] Eine geprüfte Seitenübernahme bleibt auch bei fehlgeschlagener Preisablage als lokaler Einkaufslistenartikel verfügbar; die Preis-/Routenwarnung bleibt sichtbar.
+- [x] Separate Cover-URLs werden im Seitenviewer als Seite 1 vor Interiorseiten ergänzt, wenn die Quellseitenliste erst bei Seite 2 beginnt.
 
 ## Phase D – Alltagstaugliche Datenerfassung
 - Kassenbons möglichst automatisch.
