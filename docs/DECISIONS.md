@@ -1484,3 +1484,22 @@ Familienfeld zu frischen Tomaten wird. Die resultierende Evidenz bleibt eine
 `MarketPriceSource.receipt` und läuft unverändert durch `planningMarketPrices`,
 `RoutePriceResolver` und `RouteOptimizer`; unbestätigte Bon-Produkt-IDs werden
 nicht zu exakten Routenpreisen.
+
+## D176 – Legacy-Rabattbelege bleiben aus der automatischen Preisbasis
+
+Automatische Prospektbelege tragen in aktuellen Formaten `kind=offer`. Ältere
+lokale JSON-Zeilen können dieses Feld jedoch verloren haben und stattdessen nur
+`discounted=true` enthalten. Bei IDs aus dem automatischen Prospekt-Namensraum
+(`prospect|...` oder `offer|import|...`) gilt dieses Rabattmerkmal deshalb
+als ausreichender Bereinigungsnachweis. Reguläre Zeilen mit demselben Namensraum
+und `discounted=false` bleiben erhalten; nutzerbestätigte Belege außerhalb
+dieser IDs werden nicht angetastet.
+
+## D177 – Cache-Preisstatus vor Projektion auf ausstehend setzen
+
+Ein lokal sichtbarer Cache-Feed darf nicht mit dem bestätigten Zähler eines
+vorherigen Feedstands angezeigt werden, während seine regulären Preise erneut
+in `PriceObservationStore` geschrieben werden. Der Shell-Status wechselt daher
+vor dem queued write auf `pending` und setzt den Zähler zurück. Erst der
+erfolgreiche Abschluss bestätigt die aktuelle Anzahl; ein Fehler bleibt
+`failed` und löst keinen Fingerprint-Abschluss aus.
