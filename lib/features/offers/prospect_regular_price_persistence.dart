@@ -125,10 +125,18 @@ Future<ProspectRegularPricePersistenceResult>
   );
 }
 
-bool _isAutomaticProspectOfferObservation(PriceObservation observation) =>
-    observation.kind == PriceObservationKind.offer &&
-    (observation.id.startsWith('prospect|') ||
-        observation.id.startsWith('offer|import|'));
+/// Identifies offer rows written by the legacy automatic prospect
+/// projection. Older schemas did not always preserve [PriceObservation.kind],
+/// but they did retain [discounted]; treat that marker as authoritative for
+/// these namespaced IDs so an old discounted amount cannot become local price
+/// evidence after the next refresh.
+bool _isAutomaticProspectOfferObservation(PriceObservation observation) {
+  final isLegacyProspectId =
+      observation.id.startsWith('prospect|') ||
+      observation.id.startsWith('offer|import|');
+  return isLegacyProspectId &&
+      (observation.kind == PriceObservationKind.offer || observation.discounted);
+}
 String _normalizedProspectStoreKey(String value) => value.trim().toLowerCase();
 
 bool _isCurrentProspectRegular(PriceObservation entry) =>
