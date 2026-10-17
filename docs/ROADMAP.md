@@ -1284,3 +1284,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   älteren historischen Zeilen priorisieren.
 - [x] Begrenzte Historie und globale Obergrenze unverändert beibehalten.
 - [x] Regression für einen aktuellen regulären KaufDA-Beleg ergänzen.
+
+
+## Update 17.10.2026 – KaufDA-Herkunft bei mehreren Filialen
+- [x] Eine eindeutige gemeinsame Adapterherkunft bleibt sichtbar, wenn ein Händler im Feed mehrere Filialen hat.
+- [x] Branchlose KaufDA-Treffer werden dadurch weiterhin als regional erkannt angezeigt und bleiben für Preis-/Routenprojektion gesperrt.
+- [x] Bei gemischten Adaptern oder widersprüchlicher Filialherkunft bleibt die Zuordnung unbekannt.

@@ -509,3 +509,6 @@ Die versionierte Kaufland-Coverregression verwendet jetzt den im Asset
 gespeicherten `generatedAt`-Tag als Referenztag und prüft Start/Ende,
 Coverseite und Branch-ID. Ein später aktualisiertes, weiterhin gültiges
 Prospektfenster erzeugt dadurch keinen falschen CI-Fehler.
+
+
+- KaufDA-Feedparser: `prospect_feed_service_test.dart` prüft jetzt auch mehrere gleichnamige Filialen mit gemeinsamer Adapterkennung. Der branchlose Datensatz behält `sourceAdapter: kaufda`, bleibt `regionalOnly` und erhält weder Filiale noch Standort.

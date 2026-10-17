@@ -228,6 +228,47 @@ void main() {
   });
 
 
+  test('preserves common KaufDA provenance when branch remains ambiguous', () {
+    final result = parseProspectFeed(r'''
+{
+  "sources": [
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "sourceAdapter": "kaufda",
+      "branchId": "lidl-a",
+      "location": "Würzburg"
+    },
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "sourceAdapter": "kaufda",
+      "branchId": "lidl-b",
+      "location": "Zellingen"
+    }
+  ],
+  "offers": [
+    {
+      "sourceId": "ambiguous-kaufda",
+      "productLabel": "Butter 250 g",
+      "storeName": "Lidl",
+      "offerPrice": 1.49,
+      "originalPrice": 1.99,
+      "validUntil": "2026-10-17",
+      "proofRef": "https://example.test/kaufda/ambiguous"
+    }
+  ]
+}
+''');
+
+    final record = result.records.single;
+    expect(record.sourceAdapter, 'kaufda');
+    expect(record.regionalOnly, isTrue);
+    expect(record.branchId, isNull);
+    expect(record.location, isNull);
+    expect(record.address, isNull);
+  });
+
   test('inherits source adapter provenance and keeps explicit overrides', () {
     final result = parseProspectFeed(r'''
 {
