@@ -60,7 +60,9 @@ void main() {
     expect(openedRoute, [true]);
   });
 
-  testWidgets('kennzeichnet Teilroute bei fehlender Preisabdeckung', (tester) async {
+  testWidgets(
+    'kennzeichnet Teilroute bei fehlender Preisabdeckung',
+    (tester) async {
     const milk = Product(
       id: 'partial-route-milk',
       name: 'Milch',
@@ -103,11 +105,15 @@ void main() {
       ),
     );
 
-    expect(find.text('1 von 2 Positionen mit aktuellem Marktpreis'), findsOneWidget);
+    expect(
+      find.text('1 von 2 Positionen mit aktuellem Marktpreis'),
+      findsOneWidget,
+    );
     expect(find.text('Teilroute prüfen'), findsOneWidget);
     await tester.tap(find.text('Teilroute prüfen'));
     expect(openedRoute, 1);
-  });
+    },
+  );
 
   testWidgets('zeigt Herkunft und Datum eines regulären Prospektpreises', (
     tester,
