@@ -513,7 +513,7 @@ void main() {
                   kind: PriceObservationKind.regular,
                   validFrom: DateTime(2026, 10, 13),
                   validUntil: DateTime(2026, 10, 19),
-                  locationId: 'lidl-zellingen',
+                  locationId: 'lidl_zellingen',
                   proofRef: 'https://example.test/ledger',
                 ),
                 PriceObservation(
@@ -527,7 +527,7 @@ void main() {
                   kind: PriceObservationKind.offer,
                   validFrom: DateTime(2026, 10, 13),
                   validUntil: DateTime(2026, 10, 19),
-                  locationId: 'lidl-zellingen',
+                  locationId: 'lidl_zellingen',
                   proofRef: 'https://example.test/ledger',
                 ),
                 PriceObservation(
@@ -540,7 +540,7 @@ void main() {
                   kind: PriceObservationKind.regular,
                   validFrom: DateTime(2026, 9, 28),
                   validUntil: DateTime(2026, 10, 5),
-                  locationId: 'lidl-zellingen',
+                  locationId: 'lidl_zellingen',
                   proofRef: 'https://example.test/expired',
                 ),
               ],
@@ -565,7 +565,7 @@ void main() {
 
       expect(find.text('Jacobs Kaffee Crema 500 g'), findsOneWidget);
       expect(find.text('7,99 €'), findsOneWidget);
-      expect(find.textContaining('Filiale lidl-zellingen'), findsOneWidget);
+      expect(find.textContaining('Filiale lidl_zellingen'), findsOneWidget);
       expect(find.textContaining('Nachweis vorhanden'), findsOneWidget);
       expect(find.text('4,99 €'), findsNothing);
       expect(find.text('6,99 €'), findsNothing);
@@ -782,7 +782,7 @@ void main() {
                     price: 1.19,
                     updatedAt: DateTime(2026, 10, 17),
                     source: MarketPriceSource.manual,
-                    sourceLocationId: 'lidl-zellingen',
+                    sourceLocationId: 'lidl_zellingen',
                     sourceLocationName: branchName,
                   ),
                 ],
