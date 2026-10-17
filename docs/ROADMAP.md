@@ -1588,3 +1588,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Filialprüfung über den gemeinsamen Händlerlabel-Schlüssel ausführen.
 - [x] Exakte Branch-ID weiterhin als harte Grenze behandeln.
 - [x] Regressionen für passende und fremde Filialen mit abweichendem Händlerlabel ergänzen.
+
+## Update 18.10.2026 – Grundpreis aus eindeutiger Prospektmenge
+
+- [x] Prospektkarten berechnen einen sichtbaren Grundpreis, wenn das Label eine eindeutige Menge in g/kg/ml/l oder Stück enthält und die Quelle keinen Grundpreis liefert.
+- [x] Mehrfachpackungen und Bereichs-/Alternativmengen bleiben bei unklarer Basis ohne berechneten Grundpreis; dadurch entsteht keine falsche Vergleichbarkeit.
+- [x] Die Berechnung bleibt eine UI-Darstellung aus dem belegten Angebotspreis und verändert weder PriceObservation noch Routenplanung.
