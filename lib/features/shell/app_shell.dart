@@ -1545,6 +1545,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       if (_isCurrentDataRevision(revision)) {
         marketPrices = result!.prices;
         priceHistory = result!.history;
+        historicalPriceObservations = result!.observations;
       }
     });
     if (!_isCurrentDataRevision(revision) || result == null) {
@@ -1554,8 +1555,8 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     setState(() {
       marketPrices = applied.prices;
       priceHistory = applied.history;
+      historicalPriceObservations = applied.observations;
     });
-    await _loadPriceObservations();
     widget.diagnosticLogService.record(
       category: 'Preisdaten',
       message: price.source == MarketPriceSource.receipt
@@ -1586,6 +1587,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       if (_isCurrentDataRevision(revision)) {
         marketPrices = result!.prices;
         priceHistory = result!.history;
+        historicalPriceObservations = result!.observations;
       }
     });
     if (!_isCurrentDataRevision(revision) || result == null) return;
@@ -1593,8 +1595,8 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     setState(() {
       marketPrices = applied.prices;
       priceHistory = applied.history;
+      historicalPriceObservations = applied.observations;
     });
-    await _loadPriceObservations();
     widget.diagnosticLogService.record(
       category: 'Preisdaten',
       message: '${incoming.length} Preisbelege gemeinsam gespeichert.',
@@ -1684,6 +1686,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
         if (_isCurrentDataRevision(revision)) {
           marketPrices = result!.prices;
           priceHistory = result!.history;
+          historicalPriceObservations = result!.observations;
         }
       });
     } catch (error) {
@@ -1711,9 +1714,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       setState(() {
         marketPrices = applied.prices;
         priceHistory = applied.history;
+        historicalPriceObservations = applied.observations;
       });
     }
-    await _loadPriceObservations();
     widget.diagnosticLogService.record(
       category: 'Open Prices',
       message: applied.cancelled
