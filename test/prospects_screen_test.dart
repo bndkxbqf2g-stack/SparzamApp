@@ -1965,6 +1965,48 @@ Future<void> _scrollProspects(
 
 
 
+  testWidgets('hält doppelte Quell-Seitennummern beim Scrollen getrennt', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectViewerScreen(
+          issue: ProspectIssue(
+            storeName: 'Lidl',
+            title: 'Aktionsprospekt',
+            pages: const [
+              ProspectPage(
+                number: 2,
+                imageUrl: 'https://example.test/page-2-a.jpg',
+              ),
+              ProspectPage(
+                number: 2,
+                imageUrl: 'https://example.test/page-2-b.jpg',
+              ),
+            ],
+          ),
+          records: const [],
+          catalogProducts: const [],
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(
+      find.byKey(const ValueKey('prospect-page-image-2-0')),
+      findsOneWidget,
+    );
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('prospect-page-image-2-1')),
+      500,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(
+      find.byKey(const ValueKey('prospect-page-image-2-1')),
+      findsOneWidget,
+    );
+  });
+
 }
 
 
