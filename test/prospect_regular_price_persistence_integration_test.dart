@@ -79,6 +79,7 @@ void main() {
           productLabel: coffee.name,
           storeName: 'Lidl',
           originalPrice: 7.99,
+          regularPriceSource: 'originalPrice',
           offerPrice: 4.99,
           validFrom: DateTime(2026, 10, 12),
           validUntil: DateTime(2026, 10, 18),
