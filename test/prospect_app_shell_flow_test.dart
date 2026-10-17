@@ -7,6 +7,7 @@ import 'package:shared_preferences_platform_interface/in_memory_shared_preferenc
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/features/shell/app_shell.dart';
+import 'package:sparzamapp/features/prospects/prospect_feed_status.dart';
 import 'package:sparzamapp/models/budget_plan.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
@@ -570,6 +571,7 @@ void main() {
     'unveränderter Prospektfeed reconciliiert den lokalen Normalpreis nach Speicherverlust',
     (tester) async {
       final now = DateTime.now();
+      final capturedAt = now.subtract(const Duration(hours: 7));
       final record = OfferImportRecord(
         sourceId: 'netto-reconcile-shell',
         productLabel: 'Jacobs Kaffee Crema 500 g',
@@ -589,7 +591,7 @@ void main() {
           refreshedStores: const ['Netto'],
           // Older than the resume threshold so the unchanged-feed branch runs.
           generatedAt: null,
-          capturedAt: now,
+          capturedAt: capturedAt,
           prospects: const <ProspectIssue>[],
         ),
         disableCache: true,
@@ -623,6 +625,14 @@ void main() {
       }
       expect(priceStore.observations, hasLength(1));
 
+      await tester.tap(find.text('Prospekte'));
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(
+        find.textContaining(formatProspectFeedTimestamp(capturedAt)),
+        findsOneWidget,
+      );
+      expect(find.text('Feed-Stand unbekannt.'), findsNothing);
+
       // Simulate a local reset without changing the feed fingerprint.
       priceStore.observations = <PriceObservation>[];
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
@@ -638,7 +648,7 @@ void main() {
       expect(priceStore.observations, hasLength(1));
       expect(priceStore.observations.single.kind, PriceObservationKind.regular);
       expect(priceStore.observations.single.price, 7.99);
-      expect(priceStore.observations.single.observedAt, now);
+      expect(priceStore.observations.single.observedAt, capturedAt);
     },
   );
 }

@@ -962,7 +962,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       offers = offersById;
       prospectIssues = feed.prospects;
       prospectFeedFromCache = feed.fromCache;
-      prospectFeedGeneratedAt = feed.generatedAt;
+      prospectFeedGeneratedAt = feed.generatedAt ?? feed.capturedAt;
     });
     _refreshShoppingListProducts();
   }
