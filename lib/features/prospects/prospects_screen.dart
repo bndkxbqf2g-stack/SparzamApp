@@ -778,7 +778,7 @@ Product? _memoizedProspectProduct(
   Iterable<Product> catalogProducts,
   Map<String, Product?> cache,
 ) {
-  final key = prospectOfferRecordKey(record);
+  final key = prospectOfferResolutionKey(record);
   if (cache.containsKey(key)) return cache[key];
   final product = addableProductForProspectOffer(record, catalogProducts);
   cache[key] = product;

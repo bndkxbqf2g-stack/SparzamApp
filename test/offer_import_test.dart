@@ -482,6 +482,48 @@ void main() {
     expect(prospectOfferRecordKey(second), contains('lidl-wuerzburg'));
   });
 
+  test('resolution cache keys include branch and identity evidence', () {
+    final first = OfferImportRecord(
+      sourceId: 'shared-resolution-item',
+      productLabel: 'Butter 250 g',
+      storeName: 'Lidl',
+      offerPrice: 1.29,
+      validUntil: DateTime(2026, 10, 17),
+      branchId: 'lidl-zellingen',
+      ean: '04012345678905',
+      packageSize: '250 g',
+    );
+    final otherBranch = OfferImportRecord(
+      sourceId: 'shared-resolution-item',
+      productLabel: 'Butter 250 g',
+      storeName: 'Lidl',
+      offerPrice: 1.29,
+      validUntil: DateTime(2026, 10, 17),
+      branchId: 'lidl-wuerzburg',
+      ean: '04012345678905',
+      packageSize: '250 g',
+    );
+    final otherIdentity = OfferImportRecord(
+      sourceId: 'shared-resolution-item',
+      productLabel: 'Butter 250 g',
+      storeName: 'Lidl',
+      offerPrice: 1.29,
+      validUntil: DateTime(2026, 10, 17),
+      branchId: 'lidl-zellingen',
+      ean: '04012345678906',
+      packageSize: '250 g',
+    );
+
+    expect(
+      prospectOfferResolutionKey(first),
+      isNot(prospectOfferResolutionKey(otherBranch)),
+    );
+    expect(
+      prospectOfferResolutionKey(first),
+      isNot(prospectOfferResolutionKey(otherIdentity)),
+    );
+  });
+
   test('fallback prospect widget keys distinguish source-id-free records', () {
     final first = OfferImportRecord(
       sourceId: '',
