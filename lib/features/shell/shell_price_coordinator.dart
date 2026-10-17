@@ -1,4 +1,5 @@
 import '../../models/market_price.dart';
+import '../../models/price_observation.dart';
 import '../../models/price_point.dart';
 import '../../models/price_sync_result.dart';
 import '../../models/product.dart';
@@ -13,10 +14,13 @@ class PriceMutationResult {
   const PriceMutationResult({
     required this.prices,
     required this.history,
+    this.observations = const <PriceObservation>[],
   });
 
   final List<MarketPrice> prices;
   final List<PricePoint> history;
+  /// Complete local observation snapshot written with the same mutation.
+  final List<PriceObservation> observations;
 }
 
 class ShellPriceCoordinator {
@@ -52,7 +56,7 @@ class ShellPriceCoordinator {
     required List<PricePoint> history,
   }) async {
     final incoming = prices.toList(growable: false);
-    await observationStore.upsertById(
+    final observations = await observationStore.upsertById(
       incoming.map(observationFromMarketPrice),
     );
     final nextPrices = await marketPriceStore.upsertMany(
@@ -68,6 +72,7 @@ class ShellPriceCoordinator {
     return PriceMutationResult(
       prices: nextPrices,
       history: nextHistory,
+      observations: observations,
     );
   }
 
@@ -93,7 +98,7 @@ class ShellPriceCoordinator {
       onProgress: onProgress,
       shouldCancel: shouldCancel,
     );
-    await observationStore.append(
+    final observations = await observationStore.append(
       synced.prices.map(observationFromMarketPrice),
     );
     final nextPrices = await marketPriceStore.upsertMany(synced.prices, prices);
@@ -110,6 +115,7 @@ class ShellPriceCoordinator {
       productsProcessed: synced.productsProcessed,
       cancelled: synced.cancelled,
       failedProductIds: synced.failedProductIds,
+      observations: observations,
     );
   }
 }
