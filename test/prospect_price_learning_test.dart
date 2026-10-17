@@ -769,7 +769,7 @@ void main() {
         record('wuerzburg', 'lidl-wuerzburg'),
       ],
       catalogProducts: const [],
-      now: now,
+      observedAt: now,
       refreshedStoreScopes: const [
         ProspectRefreshScope(
           storeName: 'Lidl',
