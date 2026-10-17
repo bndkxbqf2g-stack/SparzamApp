@@ -1870,20 +1870,6 @@ void main() {
     );
   });
 
-}
-
-Future<void> _scrollProspects(
-  WidgetTester tester, {
-  double distance = 320,
-}) async {
-  final scrollable = find.byWidgetPredicate(
-    (widget) =>
-        widget is Scrollable && widget.axisDirection == AxisDirection.down,
-  );
-  await tester.drag(scrollable.first, Offset(0, -distance));
-  await tester.pumpAndSettle();
-
-
   testWidgets('keeps a reviewed page item listable when offer save fails', (
     tester,
   ) async {
@@ -1929,6 +1915,20 @@ Future<void> _scrollProspects(
       findsOneWidget,
     );
   });
+}
+
+Future<void> _scrollProspects(
+  WidgetTester tester, {
+  double distance = 320,
+}) async {
+  final scrollable = find.byWidgetPredicate(
+    (widget) =>
+        widget is Scrollable && widget.axisDirection == AxisDirection.down,
+  );
+  await tester.drag(scrollable.first, Offset(0, -distance));
+  await tester.pumpAndSettle();
+
+
 
 }
 
