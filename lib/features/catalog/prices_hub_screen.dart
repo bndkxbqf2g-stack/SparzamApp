@@ -316,6 +316,14 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
           observations: screen.historicalPriceObservations,
           now: screen.now,
         );
+    final reference = screen.now ?? DateTime.now();
+    final offerOnlyProspectCount = screen.offers.where((offer) {
+      if (!offer.id.startsWith('import|') || offer.originalPriceVerified) {
+        return false;
+      }
+      if (offer.validFrom?.isAfter(reference) == true) return false;
+      return !offer.validUntil.isBefore(reference);
+    }).length;
 
     return ListView(
       scrollCacheExtent: ScrollCacheExtent.pixels(0),
@@ -425,6 +433,7 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
             count: screen.prospectRegularPriceCount,
             countsByStore: screen.prospectRegularPriceCountsByStore,
             status: screen.prospectRegularPricePersistenceStatus,
+            offerOnlyCount: offerOnlyProspectCount,
             onRefresh: screen.onRefreshProspects,
           ),
         ],
@@ -472,6 +481,7 @@ class _ProspectRegularPriceDatabaseCard extends StatelessWidget {
     required this.count,
     required this.countsByStore,
     required this.status,
+    required this.offerOnlyCount,
     this.onRefresh,
   });
 
@@ -480,6 +490,7 @@ class _ProspectRegularPriceDatabaseCard extends StatelessWidget {
   final int count;
   final Map<String, int> countsByStore;
   final ProspectRegularPricePersistenceStatus status;
+  final int offerOnlyCount;
   final Future<void> Function()? onRefresh;
 
   @override
@@ -511,6 +522,9 @@ class _ProspectRegularPriceDatabaseCard extends StatelessWidget {
         ? 'Feed-Stand unbekannt.'
         : 'Feed-Stand ${formatProspectFeedTimestamp(generatedAt)}'
             '${fromCache ? ' · lokaler Cache' : ''}.';
+    final offerOnlyLabel = offerOnlyCount == 1
+        ? '1 aktueller Angebotspreis'
+        : '$offerOnlyCount aktuelle Angebotspreise';
 
     return Card(
       key: const ValueKey('prospect-regular-price-database-card'),
@@ -539,6 +553,14 @@ class _ProspectRegularPriceDatabaseCard extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(feedLabel),
+            if (offerOnlyCount > 0) ...[
+              const SizedBox(height: 6),
+              Text(
+                '$offerOnlyLabel ohne belegten Normalpreis bleiben getrennt '
+                'und werden nicht als Preisbasis gespeichert.',
+                style: const TextStyle(fontSize: 12, color: Colors.black54),
+              ),
+            ],
             if (onRefresh != null) ...[
               const SizedBox(height: 10),
               OutlinedButton.icon(
