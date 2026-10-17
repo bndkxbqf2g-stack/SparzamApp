@@ -31,6 +31,7 @@ class PriceDataQuality {
     required this.current,
     required this.notRouteReady,
     required this.currentProspectRegular,
+    required this.unclassifiedProspectEvidence,
     required this.prospectOfferEvidence,
     required this.currentReceipt,
     required this.currentManual,
@@ -42,6 +43,10 @@ class PriceDataQuality {
   final int current;
   final int notRouteReady;
   final int currentProspectRegular;
+
+  /// Prospect rows without an explicit price role remain visible as evidence
+  /// gaps and never count as current regular prices.
+  final int unclassifiedProspectEvidence;
 
   /// Legacy or manually imported prospect offer evidence. It is reported
   /// separately so an offer amount cannot be mistaken for a regular price.
@@ -64,6 +69,7 @@ PriceDataQuality calculatePriceDataQuality(
   var total = 0;
   var current = 0;
   var currentProspectRegular = 0;
+  var unclassifiedProspectEvidence = 0;
   var prospectOfferEvidence = 0;
   var currentReceipt = 0;
   var currentManual = 0;
@@ -86,6 +92,7 @@ PriceDataQuality calculatePriceDataQuality(
     }
     // Unknown prospect rows are evidence gaps, never current regular prices.
     if (!price.isProspectRegularBasis) {
+      unclassifiedProspectEvidence++;
       continue;
     }
 
@@ -121,6 +128,7 @@ PriceDataQuality calculatePriceDataQuality(
     current: current,
     notRouteReady: total - current,
     currentProspectRegular: currentProspectRegular,
+    unclassifiedProspectEvidence: unclassifiedProspectEvidence,
     prospectOfferEvidence: prospectOfferEvidence,
     currentReceipt: currentReceipt,
     currentManual: currentManual,

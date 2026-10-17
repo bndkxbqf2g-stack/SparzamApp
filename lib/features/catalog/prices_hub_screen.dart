@@ -842,6 +842,13 @@ class _PriceDataQualityCard extends StatelessWidget {
                       'Prospekt-Normalpreise ${quality.currentProspectRegular}',
                     ),
                   ),
+                if (quality.unclassifiedProspectEvidence > 0)
+                  Chip(
+                    avatar: const Icon(Icons.help_outline, size: 16),
+                    label: Text(
+                      'Prospektpreise ohne Preisrolle ${quality.unclassifiedProspectEvidence}',
+                    ),
+                  ),
                 if (quality.currentReceipt > 0)
                   Chip(
                     avatar: const Icon(Icons.receipt_long_outlined, size: 16),
