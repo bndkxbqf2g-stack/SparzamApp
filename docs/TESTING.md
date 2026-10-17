@@ -1,3 +1,12 @@
+## Katalogsuche
+
+test/product_catalog_search_test.dart prüft die identitätsbasierte
+Katalogauflösung mit synthetischen Produkten: generische frische Tomaten
+finden getrennte Varianten, Passata bleibt außerhalb dieser Treffer,
+konkrete Milchvarianten werden nicht vermischt und eine EAN bleibt als
+unbekannter Text auffindbar. Es werden keine Live-Daten verwendet.
+
+
 
 ## Batch-Preisfluss
 
