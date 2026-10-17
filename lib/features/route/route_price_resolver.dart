@@ -197,18 +197,11 @@ class RoutePriceResolver {
         ? exact
         : candidates.where((price) => !_hasSourceLocation(price));
     MarketPrice? best;
-    var bestScore = double.infinity;
+    final reference = now ?? DateTime.now();
     for (final price in scoped) {
-      final score = price.price *
-          (1 + marketPriceQuality(price, now ?? DateTime.now()).uncertaintyRate);
-      if (score < bestScore ||
-          (score == bestScore &&
-              (best == null ||
-                  price.updatedAt.isAfter(best.updatedAt) ||
-                  (price.updatedAt.isAtSameMomentAs(best.updatedAt) &&
-                      compareMarketPriceTieBreakers(price, best) < 0)))) {
+      if (best == null ||
+          compareMarketPriceEvidence(price, best!, reference) < 0) {
         best = price;
-        bestScore = score;
       }
     }
     return best;
