@@ -2004,7 +2004,4 @@ Future<void> _scrollProspects(
   );
   await tester.drag(scrollable.first, Offset(0, -distance));
   await tester.pumpAndSettle();
-
-
-
-
+}
