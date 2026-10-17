@@ -57,8 +57,8 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [x] fehlende Preise explizit markieren und direkt zur Preiseingabe führen
 - [x] Produkt×Markt-Matrix als sichtbare Einkaufslisten-/Teststruktur
 - [x] neuester/Median/Quelle/Alter/Vergleichbarkeit je Preis
-- [ ] Einkaufsliste automatisch mit bekannten Daten aktualisieren
-- [ ] Preisänderungen atomar in Planung übernehmen
+- [x] Einkaufsliste automatisch mit bekannten Daten aktualisieren
+- [x] Preisänderungen atomar in Planung übernehmen
 
 ### Phase 4 – Routenoptimierung
 - [x] ein bis drei Märkte
@@ -251,3 +251,7 @@ Die automatische Preisbeobachtung nutzt nun einen belegten
 Ohne einen der beiden Nachweise bleibt der Preis ausgeschlossen; die lokale
 Ladezeit wird nicht als Beobachtungszeit erfunden. Angebots- und reguläre Preise
 bleiben getrennt.
+
+## Update 17.10.2026 – Letzte Käufe bewahren Produktmetadaten
+
+`RecentPurchase` speichert jetzt neben Name, Einheit, Gruppe und EAN auch Aliase, Marken-, Packungs- und Bilddaten sowie Favoriten- und Stammartikelstatus. Lokale alte JSON-Einträge bleiben lesbar; unbekannte selbst angelegte Produkte werden beim erneuten Hinzufügen vollständig rekonstruiert. Die Regression prüft Speichern, Laden, Rekonstruktion und das Legacy-Format.
