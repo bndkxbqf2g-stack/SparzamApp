@@ -72,6 +72,7 @@ void main() {
       group: 'kaffee',
       ean: '04012345678905',
     );
+    final catalogIndex = OfferImportCatalogIndex([product]);
     final result = resolveOfferImport(
       OfferImportRecord(
         sourceId: 'kaufda-ean',
@@ -87,6 +88,7 @@ void main() {
         branchId: 'lidl_zellingen',
       ),
       [product],
+      catalogIndex: catalogIndex,
     );
 
     expect(result.isResolved, isTrue);
