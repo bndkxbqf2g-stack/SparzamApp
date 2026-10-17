@@ -7,18 +7,17 @@ import 'offer_import.dart';
 import 'prospect_product_match.dart';
 import '../prospects/prospect_issue_identity.dart';
 
-/// Learns prospect prices only when the feed supplies an observation time.
+/// Learns prospect prices only when an observation time is supplied.
 ///
-/// A missing feed timestamp is a provenance gap. Treating the load time as the
-/// observation time would make an old or cached legacy feed look fresh in the
-/// price history, so those records stay visible but are not learned.
+/// A feed timestamp is preferred, but a record-level [OfferImportRecord.capturedAt]
+/// is equally valid evidence. A record without either timestamp remains visible
+/// but is not learned; the app never substitutes the local load time.
 List<PriceObservation> datedProspectPriceObservations({
   required Iterable<OfferImportRecord> records,
   required Iterable<Product> catalogProducts,
   DateTime? observedAt,
   Iterable<String>? refreshedStores,
 }) {
-  if (observedAt == null) return const <PriceObservation>[];
   // Feed adapters may differ only in whitespace or letter case. Normalize
   // that presentation detail while keeping distinct store names and aliases
   // separate; no fuzzy or cross-market matching is introduced here.
@@ -135,7 +134,7 @@ bool isLearnableProspectRegularPrice(OfferImportRecord record) {
 List<PriceObservation> prospectPriceObservations({
   required Iterable<OfferImportRecord> records,
   required Iterable<Product> catalogProducts,
-  required DateTime observedAt,
+  DateTime? observedAt,
 }) {
   final catalog = catalogProducts.toList(growable: false);
   final observations = <PriceObservation>[];
@@ -144,6 +143,8 @@ List<PriceObservation> prospectPriceObservations({
     if (source == null || !isEligibleProspectPriceRecord(record)) {
       continue;
     }
+    final observationAt = observationAt;
+    if (observationAt == null) continue;
 
     final normalizedLabel = normalizeIdentityText(record.productLabel);
     if (normalizedLabel.isEmpty) continue;
@@ -193,7 +194,7 @@ List<PriceObservation> prospectPriceObservations({
         quantity: package?.amount,
         unit: package?.unit,
         unitPrice: unitPrice,
-        observedAt: record.capturedAt ?? observedAt,
+        observedAt: observationAt,
         source: source,
         sourceAdapter: record.sourceAdapter,
         kind: PriceObservationKind.offer,
@@ -230,7 +231,7 @@ List<PriceObservation> prospectPriceObservations({
                   amount: package.amount,
                   unit: package.unit,
                 ),
-          observedAt: record.capturedAt ?? observedAt,
+          observedAt: observationAt,
           source: source,
           sourceAdapter: record.sourceAdapter,
           kind: PriceObservationKind.regular,
