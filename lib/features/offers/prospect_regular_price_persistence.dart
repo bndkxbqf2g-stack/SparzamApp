@@ -73,6 +73,59 @@ class ProspectRegularPricePersistenceResult {
   final List<PriceObservation> stored;
 }
 
+/// Converts a manually reviewed prospect-page record into one local regular
+/// price observation. The offer amount is deliberately ignored here: this
+/// helper only accepts an explicitly entered, strictly higher normal price
+/// with a capture time, trusted page proof and an exact branch context.
+PriceObservation? reviewedProspectRegularPriceObservation({
+  required OfferImportRecord record,
+  required Iterable<Product> catalogProducts,
+  DateTime? now,
+}) {
+  final capturedAt = record.capturedAt;
+  if (capturedAt == null) return null;
+  final candidates = currentDatedProspectRegularPriceObservations(
+    records: [record],
+    catalogProducts: catalogProducts,
+    observedAt: capturedAt,
+    now: now,
+  )
+      .where(
+        (entry) =>
+            entry.kind == PriceObservationKind.regular &&
+            entry.locationId?.trim().isNotEmpty == true,
+      )
+      .toList(growable: false);
+  if (candidates.length != 1) return null;
+  final entry = candidates.single;
+  return PriceObservation(
+    id:
+        'manual-page|${record.sourceId}|regular|'
+        '${entry.price.toStringAsFixed(4)}',
+    productId: entry.productId,
+    familyKey: entry.familyKey,
+    variant: entry.variant,
+    ean: entry.ean,
+    storeName: entry.storeName,
+    locationId: entry.locationId,
+    region: entry.region,
+    price: entry.price,
+    quantity: entry.quantity,
+    unit: entry.unit,
+    unitPrice: entry.unitPrice,
+    kind: PriceObservationKind.regular,
+    evidenceConfidence: EvidenceConfidence.manuallyConfirmed,
+    validFrom: entry.validFrom,
+    validUntil: entry.validUntil,
+    observedAt: entry.observedAt,
+    source: entry.source,
+    sourceAdapter: entry.sourceAdapter,
+    identityConfidence: entry.identityConfidence,
+    proofRef: entry.proofRef,
+    discounted: false,
+  );
+}
+
 /// Persists the current regular prospect prices and returns the complete local
 /// observation snapshot.
 ///
@@ -189,6 +242,10 @@ bool _isObservationInRefreshScope(
 }
 
 bool _isCurrentProspectRegular(PriceObservation entry) =>
+    // A manually reviewed page claim is explicit user evidence. Keep it
+    // current until its own validity window expires; an automatic refresh
+    // must not silently supersede it merely because the feed omits the row.
+    entry.evidenceConfidence != EvidenceConfidence.manuallyConfirmed &&
     entry.isCurrent &&
     entry.kind == PriceObservationKind.regular &&
     switch (entry.source) {
