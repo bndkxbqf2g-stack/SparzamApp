@@ -3,6 +3,7 @@ import 'package:sparzamapp/features/route/market_price_selection.dart';
 import 'package:sparzamapp/features/route/route_price_resolver.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
+import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/store.dart';
 
@@ -14,6 +15,7 @@ void main() {
     double amount = 1,
     DateTime? updatedAt,
     double identityConfidence = 1,
+    PriceObservationKind? kind,
     double? quantity,
     String? unit,
     String? sourceLocationId,
@@ -25,6 +27,10 @@ void main() {
         updatedAt: updatedAt ?? now,
         source: source,
         identityConfidence: identityConfidence,
+        kind: kind ??
+            (source == MarketPriceSource.prospect
+                ? PriceObservationKind.regular
+                : PriceObservationKind.unknown),
         quantity: quantity,
         unit: unit,
         sourceLocationId: sourceLocationId,
