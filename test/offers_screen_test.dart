@@ -25,6 +25,51 @@ void main() {
     );
   });
 
+
+  testWidgets('sucht im Angebotstab nach EAN und Packungsgröße', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: OffersScreen(
+          catalogProducts: const <Product>[],
+          now: DateTime(2026, 10, 12),
+          prospectRecords: [
+            OfferImportRecord(
+              sourceId: 'offers-metadata-search',
+              productLabel: 'Butter 250 g',
+              storeName: 'Lidl',
+              branchId: 'lidl-zellingen',
+              offerPrice: 1.49,
+              validUntil: DateTime(2026, 10, 17),
+              proofRef: 'https://example.test/lidl/offers-metadata-search',
+              category: 'Milchprodukte',
+              ean: '4001234567890',
+              packageSize: '250 g',
+              priceByBaseUnit: '5,96 €/kg',
+            ),
+          ],
+        ),
+      ),
+    );
+
+    final search = find.byWidgetPredicate(
+      (widget) =>
+          widget is TextField &&
+          widget.decoration?.hintText == 'Aktuelles Prospekt durchsuchen',
+    );
+    await tester.enterText(search, '4001234567890');
+    await tester.pump();
+
+    expect(find.text('Lidl'), findsOneWidget);
+    await tester.tap(find.text('Lidl'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Milchprodukte'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Butter 250 g'), findsOneWidget);
+  });
+
   testWidgets('zeigt die Datenabdeckung auch im Angebotstab', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
