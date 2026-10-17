@@ -1256,3 +1256,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   ohne URLs oder Identitäten zu erfinden.
 - [x] Regressionen für Non-Food-Taxonomien, Kategoriepfade, Bilder und
   Packungsgrößen ergänzen.
+
+## Update 17.10.2026 – KaufDA-Erfassungszeitpunkt über Suchbegriffe vereinheitlicht
+
+- [x] Händlergruppen aus mehreren KaufDA-Suchbegriffen auf den neuesten
+  erfolgreichen Erfassungszeitpunkt fortschreiben.
+- [x] Gemischte Live-/Cache-Herkunft über \`cacheUsed\` sichtbar halten.
+- [x] Regression für älteren Cache vor späterem Live-Treffer ergänzen.
