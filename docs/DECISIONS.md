@@ -1927,3 +1927,7 @@ Die öffentliche Händlerdarstellung wird einmal in `store_identity.dart` normal
 ## D193 – End-to-End-Nachweis für reguläre Prospektpreise
 
 Ein automatisch gespeicherter regulärer Prospektpreis gilt erst dann als Routenbasis, wenn derselbe Beleg den Weg über `PriceObservationStore`, `marketPricesFromObservations`, `planningMarketPrices` und `RoutePriceResolver` bis zum `RouteOptimizer` besteht. Der temporäre Angebotspreis bleibt aus dieser regulären Planung ausgeschlossen. Der Nachweis bindet zusätzlich die exakte Branch-ID; ein Preis einer gleichnamigen anderen Filiale darf die ausgewählte Route nicht beeinflussen.
+
+## D220 – Letzte Käufe bleiben lokale Produkt-Snapshots
+
+Ein `RecentPurchase` darf für unbekannte, lokal angelegte Produkte die bekannten `Product`-Metadaten als lokalen Snapshot bewahren. Dazu gehören Aliaswerte, EAN, Marke, Packungsbasis, Bild sowie Favoriten- und Stammartikelstatus. Alte JSON-Einträge ohne diese optionalen Felder bleiben gültig. Die Rekonstruktion darf nur bei exakter Produkt-ID den Basiskatalog verwenden; sie errät keine Identität aus einem ähnlichen Namen.
