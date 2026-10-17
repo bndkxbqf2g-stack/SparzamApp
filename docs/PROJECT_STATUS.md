@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Letzte Käufe bewahren Produktmetadaten
+
+- `RecentPurchase` und `RecentPurchaseStore` halten jetzt Aliase, EAN, Marke, Packungsgröße, Bild, Favorit und Stammartikelstatus.
+- Alte Einträge ohne optionale Felder bleiben lesbar; unbekannte Produkte verlieren beim Wiederkauf keine Katalogdaten mehr.
+- `test/shopping_additions_test.dart` prüft den lokalen Speicherrundlauf und die Rückwärtskompatibilität.
+
 ## Update 17.10.2026 – Preisänderungen werden atomar geplant
 
 Manuelle Preisbelege, Batch-Imports und Open-Prices-Sync führen ihren vollständigen lokalen Beobachtungssnapshot jetzt im Mutationsergebnis mit. Der Shell-Stand setzt Beobachtungen, aktuelle Marktpreise und Verlauf gemeinsam; Route und Preis-Matrix können keinen Zwischenstand aus getrennten Writes verwenden.
