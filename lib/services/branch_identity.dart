@@ -1,5 +1,6 @@
 import '../data/stores.dart';
 import '../models/store.dart';
+import 'store_identity.dart';
 
 /// Returns a comparison key for a source/store branch identifier.
 ///
@@ -28,7 +29,7 @@ bool matchesConfiguredBranch(
   final source = canonicalBranchId(sourceLocationId);
   if (source == null) return true;
   final configured = configuredStores
-      .where((store) => store.name == storeName)
+      .where((store) => sameStoreLabel(store.name, storeName))
       .toList(growable: false);
   if (configured.length != 1) return true;
   final branchId = canonicalBranchId(configured.single.branchId);
