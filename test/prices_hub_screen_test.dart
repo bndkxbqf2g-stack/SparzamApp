@@ -757,4 +757,45 @@ void main() {
     );
   });
 
+
+  testWidgets('aktualisiert Prospekt-Normalpreise direkt aus dem Preise-Reiter', (
+    tester,
+  ) async {
+    var refreshes = 0;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PricesHubScreen(
+            onOpenCatalog: () {},
+            onOpenSettings: () {},
+            summary: 'Prospektpreise',
+            prospectFeedGeneratedAt: DateTime(2026, 10, 17, 8, 30),
+            prospectRegularPriceCount: 1,
+            prospectRegularPricePersistenceStatus:
+                ProspectRegularPricePersistenceStatus.succeeded,
+            onRefreshProspects: () async {
+              refreshes++;
+            },
+          ),
+        ),
+      ),
+    );
+
+    final refresh = find.byKey(
+      const ValueKey('prospect-regular-price-refresh'),
+    );
+    expect(refresh, findsOneWidget);
+    await tester.tap(refresh);
+    await tester.pump();
+
+    expect(refreshes, 1);
+    expect(
+      find.textContaining(
+        'Der Abruf speichert danach nur ausdrücklich ausgewiesene',
+      ),
+      findsOneWidget,
+    );
+  });
+
 }
