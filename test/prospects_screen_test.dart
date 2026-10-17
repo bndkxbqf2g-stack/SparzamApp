@@ -633,6 +633,15 @@ void main() {
     expect(find.text('Markt 0'), findsWidgets);
     expect(find.text('Markt 23'), findsNothing);
 
+    final loadMore = find.byKey(
+      const ValueKey('prospect-grid-load-more'),
+    );
+    await tester.ensureVisible(loadMore);
+    await tester.pumpAndSettle();
+    expect(loadMore, findsOneWidget);
+    await tester.tap(loadMore);
+    await tester.pump();
+
     await tester.scrollUntilVisible(
       find.text('Markt 23'),
       450,
