@@ -86,6 +86,7 @@ PriceObservation regularObservationFromOffer(
   observedAt: observedAt,
   source: _offerSource(offer),
   sourceAdapter: offer.sourceAdapter,
+  regularPriceSource: offer.regularPriceSource,
   kind: PriceObservationKind.regular,
   validFrom: offer.validFrom,
   validUntil: offer.validUntil,
