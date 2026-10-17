@@ -1254,7 +1254,7 @@ void main() {
     expect(viewer.scrollCacheExtent, isNotNull);
 
     final preview = tester.widget<Image>(
-      find.byKey(const ValueKey('prospect-page-image-7')),
+      find.byKey(const ValueKey('prospect-page-image-7-0')),
     );
     final provider = preview.image;
     expect(provider, isA<ResizeImage>());
@@ -1318,7 +1318,7 @@ void main() {
     await tester.pump();
 
     await tester.scrollUntilVisible(
-      find.byKey(const ValueKey('prospect-page-image-20')),
+      find.byKey(const ValueKey('prospect-page-image-20-19')),
       600,
       scrollable: find.byType(Scrollable).first,
     );
