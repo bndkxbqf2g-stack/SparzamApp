@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Prospekt-OCR normalisiert getrennte Dezimalstellen
+
+- Die lokale Prospekt-OCR toleriert jetzt auch OCR-Ausgaben wie `1, 99 €`, `1 . 99 €` und `€ 1, 99`.
+- Leerzeichen werden nur innerhalb eines bereits mit `€`/`EUR` markierten Geldtokens entfernt; bare Zahlen bleiben ausgeschlossen.
+- Angebotspreis und ausdrücklich erkannter Vorher-Preis bleiben getrennt und werden weiterhin erst nach Nutzerprüfung übernommen.
+- Eine synthetische Regression schützt den spaced-decimal-Fall.
+
+
 ## Update 17.10.2026 – Prospekt-OCR erkennt beide Währungsrichtungen
 
 - Die lokale Prospekt-OCR akzeptiert jetzt sowohl `1,99 €`/`1,99 EUR` als auch `€ 1,99`/`EUR 1,99`.
