@@ -1784,3 +1784,15 @@ nicht aus dem ersten Suchbegriff ableiten. Jede erfolgreiche Antwort vergleicht
 ihren Erfassungszeitpunkt mit dem bisherigen Gruppenwert; der jüngste Wert wird
 angezeigt. Einzelangebote behalten ihre eigene Provenienz, und ein Cacheanteil
 wird nicht verschwiegen.
+
+## D181 – KaufDA-Gültigkeit und Packungsgröße bleiben explizite Quellfelder
+
+Der optionale KaufDA-Adapter akzeptiert neben direkten `validFrom`/`validUntil`
+auch nur fest benannte, verschachtelte Container (`validity`,
+`validityPeriod`, `dateRange`, `period`, `offerPeriod`) mit Start- und
+Endschlüsseln. Freie Datumsstrings oder beliebige JSON-Navigation werden nicht
+interpretiert; fehlt das Enddatum, wird der Datensatz verworfen.
+
+Eine Mengenstruktur wird nur aus explizitem Betrag und Einheit zu einer
+Packungsangabe zusammengesetzt. Diese Angabe bleibt Quellmetadatum und ändert
+weder Produktidentität noch Branch- oder Preisregeln.
