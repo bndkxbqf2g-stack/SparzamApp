@@ -10,6 +10,12 @@
 - [x] Nicht erneut belegte Normalpreise werden auch bei `Süd/SUED`-Schreibvarianten aus der aktuellen Projektion entfernt.
 - [x] Ein Regressionstest schützt die Trennung von sichtbarem Händlerlabel und exakter Filial-ID.
 
+## Update 17.10.2026 – Prospekt-Import verbindet Händler-Schreibvarianten
+
+- [x] Feed-Metadaten, Coverseiten und Angebotszeilen verwenden einen gemeinsamen Präsentationsschlüssel.
+- [x] Umlaut- und `ae/oe/ue`-Varianten verlieren dadurch keine Filial- oder Seitenbildzuordnung.
+- [x] Eine Parser-Regression prüft Herkunft und Prospektseitenbild bei abweichender Händlerdarstellung.
+
 ## Update 17.10.2026 – Bestätigte Preisabdeckung bleibt aktuell
 
 - [x] Der Status der lokalen Normalpreisspeicherung zählt nur reguläre Beobachtungen mit `isCurrent=true`.
