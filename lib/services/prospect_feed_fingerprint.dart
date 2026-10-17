@@ -47,6 +47,8 @@ String prospectFeedFingerprintFor(
         record.source,
         record.proofRef,
         record.imageUrl,
+        record.imageKind?.name,
+        record.ean,
         record.category,
         record.packageSize,
         record.priceByBaseUnit,
