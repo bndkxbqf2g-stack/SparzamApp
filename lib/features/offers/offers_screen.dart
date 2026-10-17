@@ -401,13 +401,7 @@ class _ProspectOffersState extends State<_ProspectOffers> {
   }
 
   Product? _memoizedProduct(OfferImportRecord record) {
-    final key = [
-      record.sourceId,
-      record.storeName,
-      record.productLabel,
-      record.offerPrice,
-      record.packageSize,
-    ].join('|');
+    final key = prospectOfferResolutionKey(record);
     if (_resolvedProducts.containsKey(key)) {
       return _resolvedProducts[key];
     }
