@@ -1190,7 +1190,7 @@ void main() {
     expect(matrix, hasLength(1));
     expect(matrix.single.storeName, 'ALDI Süd');
     expect(matrix.single.quote?.storeName, 'ALDI SUED');
-  });
+  });
   test('snapshot indexing keeps exact and generic candidates isolated', () {
     const generic = Product(
       id: 'generic-milk-request',
