@@ -333,7 +333,10 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
           for (final row in currentSnapshots.take(8))
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
-              child: _PriceSnapshotTile(snapshot: row),
+              child: _PriceSnapshotTile(
+                key: ValueKey('price-snapshot-${row.item.product.id}'),
+                snapshot: row,
+              ),
             ),
           if (currentSnapshots.length > 8)
             Text(
@@ -888,7 +891,10 @@ class _ListCoverageCard extends StatelessWidget {
 }
 
 class _PriceSnapshotTile extends StatelessWidget {
-  const _PriceSnapshotTile({required this.snapshot});
+  const _PriceSnapshotTile({
+    super.key,
+    required this.snapshot,
+  });
 
   final _PriceSnapshot snapshot;
 
