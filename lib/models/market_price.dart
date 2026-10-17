@@ -13,6 +13,7 @@ class MarketPrice {
     this.sourceLocationName,
     this.sourceLocationId,
     this.sourceAdapter,
+    this.regularPriceSource,
     this.discounted = false,
     this.proofRef,
     this.quantity,
@@ -35,6 +36,9 @@ class MarketPrice {
   /// Optional concrete adapter identity retained when this price is projected
   /// from a PriceObservation.
   final String? sourceAdapter;
+  /// Explicit field that supplied the regular/crossed-out price.
+  /// It remains separate from the technical adapter identity.
+  final String? regularPriceSource;
   final bool discounted;
 
   /// Evidence metadata retained when a price is projected from the central
@@ -152,6 +156,7 @@ class MarketPrice {
         'sourceLocationName': sourceLocationName,
         'sourceLocationId': sourceLocationId,
         'sourceAdapter': sourceAdapter,
+        'regularPriceSource': regularPriceSource,
         'discounted': discounted,
         'proofRef': proofRef,
         'quantity': quantity,
@@ -202,6 +207,7 @@ class MarketPrice {
       sourceLocationName: json['sourceLocationName'] as String?,
       sourceLocationId: json['sourceLocationId'] as String?,
       sourceAdapter: json['sourceAdapter'] as String?,
+      regularPriceSource: json['regularPriceSource'] as String?,
       discounted: json['discounted'] as bool? ?? false,
       proofRef: json['proofRef'] as String?,
       quantity: (json['quantity'] as num?)?.toDouble(),
