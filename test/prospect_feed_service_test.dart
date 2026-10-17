@@ -94,6 +94,7 @@ void main() {
   });
 
 
+
   test('rejects an unknown regular price provenance marker', () {
     final result = parseProspectFeed(r'''
 {
@@ -116,8 +117,6 @@ void main() {
 
     expect(result.records, isEmpty);
   });
-
-
   test('matches source metadata despite store-name formatting', () {
     final result = parseProspectFeed(r'''
 {
