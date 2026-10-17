@@ -495,6 +495,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: ProspectsScreen(
+          key: const ValueKey('package-search'),
           records: [record],
           now: DateTime(2026, 10, 12),
         ),
