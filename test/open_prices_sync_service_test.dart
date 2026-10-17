@@ -8,11 +8,6 @@ import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/services/open_food_facts_product_discovery.dart';
 import 'package:sparzamapp/services/open_prices_sync_service.dart';
 
-
-import 'package:sparzamapp/models/market_price.dart';
-import 'package:sparzamapp/models/product.dart';
-import 'package:sparzamapp/services/open_prices_sync_service.dart';
-
 void main() {
   test('Live-Open-Prices-Batches bleiben klein und Test-Fetcher seriell', () {
     expect(
