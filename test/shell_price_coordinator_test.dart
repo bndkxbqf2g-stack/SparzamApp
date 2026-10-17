@@ -3,6 +3,7 @@ import 'package:shared_preferences_platform_interface/in_memory_shared_preferenc
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:sparzamapp/features/shell/shell_price_coordinator.dart';
 import 'package:sparzamapp/models/market_price.dart';
+import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/price_point.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/services/market_price_store.dart';
@@ -126,4 +127,29 @@ void main() {
     expect(result.prices.single.productId, 'one');
     expect(result.history.single.productId, 'one');
   });
+  test('Prospekt-Aktionspreis wird nicht in den regulären Verlauf geschrieben', () async {
+    final coordinator = ShellPriceCoordinator(
+      marketPriceStore: MarketPriceStore(),
+      priceHistoryStore: PriceHistoryStore(),
+    );
+    final offer = MarketPrice(
+      productId: 'milk',
+      storeName: 'Lidl',
+      price: 0.79,
+      updatedAt: DateTime.now(),
+      source: MarketPriceSource.prospect,
+      kind: PriceObservationKind.offer,
+      discounted: true,
+    );
+
+    final saved = await coordinator.save(
+      price: offer,
+      prices: const [],
+      history: const [],
+    );
+
+    expect(saved.prices, hasLength(1));
+    expect(saved.history, isEmpty);
+  });
+
 }

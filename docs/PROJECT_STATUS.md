@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Legacy-Prospekt-Aktionspreise bleiben aus dem Preisverlauf
+
+- `ShellPriceCoordinator` schreibt direkte Prospekt-Aktionspreise nicht mehr in den regulären `PriceHistoryStore`.
+- Die Evidenz wird weiterhin als Beobachtung und Marktpreis-Datensatz erhalten; nur der Normalpreis-Verlauf bleibt frei von Aktionsbeträgen.
+- Eine Coordinator-Regression schützt diese Persistenzgrenze.
+
 ## Update 17.10.2026 – Aktive Preisoberflächen trennen Angebotsbelege
 
 - Die gemeinsame `usableMarketPrices`-Sicht verwirft direkte Legacy-Prospekt-Aktionspreise, bevor aktive Preisoberflächen und der Preisverlauf sie erhalten.
