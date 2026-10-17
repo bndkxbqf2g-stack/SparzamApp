@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/product.dart';
+import 'package:sparzamapp/services/open_food_facts_product_discovery.dart';
 import 'package:sparzamapp/services/open_prices_sync_service.dart';
 
 void main() {
@@ -17,6 +22,97 @@ void main() {
       openPricesNetworkBatchSize(live: false, configured: 4),
       1,
     );
+  });
+
+  test('Live-EAN-Discovery bleibt begrenzt parallel und geordnet', () async {
+    var inFlight = 0;
+    var maximumInFlight = 0;
+    var requests = 0;
+    final discovery = OpenFoodFactsProductDiscovery(
+      client: MockClient((request) async {
+        inFlight++;
+        requests++;
+        if (inFlight > maximumInFlight) {
+          maximumInFlight = inFlight;
+        }
+        final name = request.url.queryParameters['search_terms']!;
+        await Future<void>.delayed(const Duration(milliseconds: 5));
+        inFlight--;
+        final code = switch (name) {
+          'Tee Sorte A' => '4000000000001',
+          'Tee Sorte B' => '4000000000002',
+          'Tee Sorte C' => '4000000000003',
+          _ => '4000000000004',
+        };
+        return http.Response(
+          jsonEncode({
+            'products': [
+              {
+                'code': code,
+                'product_name': name,
+                'quantity': '1 l',
+              },
+            ],
+          }),
+          200,
+        );
+      }),
+    );
+    final fetched = <String>[];
+    final service = OpenPricesSyncService(
+      productDiscovery: discovery,
+      networkConcurrency: 2,
+      fetcher: (product, _) async {
+        fetched.add(product.id);
+        return const [];
+      },
+    );
+
+    final result = await service.sync(
+      products: const [
+        Product(
+          id: 'a',
+          name: 'Tee Sorte A',
+          unit: '1 l',
+          group: 'getraenke',
+          packageAmount: 1,
+          packageUnit: 'l',
+        ),
+        Product(
+          id: 'b',
+          name: 'Tee Sorte B',
+          unit: '1 l',
+          group: 'getraenke',
+          packageAmount: 1,
+          packageUnit: 'l',
+        ),
+        Product(
+          id: 'c',
+          name: 'Tee Sorte C',
+          unit: '1 l',
+          group: 'getraenke',
+          packageAmount: 1,
+          packageUnit: 'l',
+        ),
+        Product(
+          id: 'd',
+          name: 'Tee Sorte D',
+          unit: '1 l',
+          group: 'getraenke',
+          packageAmount: 1,
+          packageUnit: 'l',
+        ),
+      ],
+      maxAgeDays: 30,
+    );
+    discovery.close();
+
+    expect(requests, 4);
+    expect(maximumInFlight, 2);
+    expect(fetched, ['a', 'b', 'c', 'd']);
+    expect(result.productsWithEan, 4);
+    expect(result.productsProcessed, 4);
+    expect(result.cancelled, isFalse);
   });
 
   test('Bulk-Sync prüft nur Produkte mit EAN', () async {

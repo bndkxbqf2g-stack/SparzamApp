@@ -4270,3 +4270,14 @@ Die zentrale Branch-Prüfung verwendet nun denselben engen Händlerlabel-Schlüs
 - Die End-to-End-Regression in `test/product_resolution_route_e2e_test.dart` speichert einen datierten regulären KaufDA-Prospektpreis lokal, projiziert ihn in `MarketPrice` und `planningMarketPrices` und prüft die anschließende filialgenaue Routenberechnung.
 - Der Angebotspreis bleibt dabei ausschließlich Angebotsbeleg; die Route verwendet den belegten Normalpreis.
 - Eine zweite Regression stellt sicher, dass ein günstigerer Preis einer anderen Filiale nicht in die ausgewählte Filiale übernommen wird.
+
+## Update 17.10.2026 – Open-Prices-EAN-Ermittlung begrenzt parallel
+
+Die optionale Open-Prices-Synchronisierung ermittelt fehlende EANs über den
+öffentlichen Open-Food-Facts-Adapter jetzt in kleinen, deterministischen Batches.
+Die Parallelität folgt derselben engen Obergrenze wie die Preisabfragen; injizierte
+Fixture-Discoverer bleiben seriell, damit Abbruch- und Testreihenfolge stabil
+bleiben. Die Ausgabe wird nach der Batchauswertung in Eingabereihenfolge
+übernommen. Ein Injektionspunkt erlaubt den Offline-/Fixture-Test ohne Live-
+Datenzugriff; entdeckte EANs bleiben weiterhin unbestätigte Evidenz und werden
+nicht automatisch als Routenpreis verwendet.

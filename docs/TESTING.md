@@ -96,7 +96,9 @@ Ein Web-Renderer-/Gerätetest mit echten Händler-CDNs bleibt weiterhin offen.
 ## Update 17.10.2026 – Open-Prices-Batchgrenze
 
 open_prices_sync_service_test.dart deckt weiterhin deduplizierte EANs,
-Fortschritt, Abbruch und Fehlerfortsetzung ab. Der Live-Adapter begrenzt
+Fortschritt, Abbruch und Fehlerfortsetzung ab. Zusätzlich prüft die Regression
+den injizierten Live-Discovery-Pfad mit begrenzter Parallelität und geordneter
+Ausgabe. Der Live-Adapter begrenzt
 parallele Abrufe auf eine kleine konfigurierbare Batchgröße; Reihenfolge,
 Fehlerliste und Fortschritt werden erst nach der geordneten Batchauswertung
 sichtbar. Ein Live-Netzwerktest bleibt ausgeschlossen.
