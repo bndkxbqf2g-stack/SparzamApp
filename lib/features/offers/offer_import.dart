@@ -458,6 +458,6 @@ String prospectOfferWidgetKey(
         prospectOfferRecordKey(candidate) == base,
   );
   return collides
-NaN$base|${prospectOfferResolutionKey(record)}'
-NaN
+      ? '$base|${prospectOfferResolutionKey(record)}'
+      : base;
 }
