@@ -1,3 +1,10 @@
+## Identitätsbasierte Bonkandidaten
+
+`test/product_match_candidates_test.dart` prüft synthetisch abgekürzte
+Milchbezeichnungen gegen mehrere Fettstufen sowie die Trennung von frischen
+Rispentomaten und Passata. Die Kandidaten tragen weiterhin eine Unsicherheits-
+warnung; es gibt keine automatische Bestätigung und keine Live-Abfrage.
+
 ## Open-Prices-Sync-Optimierung
 
 test/open_prices_sync_service_test.dart prüft die Deduplizierung gleicher

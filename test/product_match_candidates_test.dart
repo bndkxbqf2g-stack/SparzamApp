@@ -53,4 +53,63 @@ void main() {
     );
     expect(code.single.relation, CandidateRelation.sameBarcode);
   });
+  test('abbreviated milk labels yield explicit identity candidates', () {
+    final matches = suggestProducts(
+      const ProductQuery(label: 'K.H-Milch'),
+      [
+        const Product(
+          id: 'milk-15',
+          name: 'H-Milch 1,5 %',
+          unit: '1 l',
+          group: 'milch',
+        ),
+        const Product(
+          id: 'milk-35',
+          name: 'H-Milch 3,5 %',
+          unit: '1 l',
+          group: 'milch',
+        ),
+      ],
+    );
+
+    expect(matches.map((candidate) => candidate.product.id), [
+      'milk-15',
+      'milk-35',
+    ]);
+    expect(
+      matches.every(
+        (candidate) =>
+            candidate.relation == CandidateRelation.relatedName &&
+            candidate.cautions.contains('Produktidentität nicht bestätigt'),
+      ),
+      isTrue,
+    );
+  });
+
+  test('identity candidates keep fresh tomato variants away from passata', () {
+    final matches = suggestProducts(
+      const ProductQuery(label: 'Rispen Tomaten'),
+      [
+        const Product(
+          id: 'tomate-rispe',
+          name: 'Rispentomaten',
+          unit: '500 g',
+          group: 'obst_gemuese',
+        ),
+        const Product(
+          id: 'passata',
+          name: 'Passierte Tomaten',
+          unit: '500 g',
+          group: 'vorrat',
+        ),
+      ],
+    );
+
+    expect(matches.map((candidate) => candidate.product.id), ['tomate-rispe']);
+    expect(
+      matches.single.reasons,
+      contains('Kompatible Produktidentität'),
+    );
+  });
+
 }

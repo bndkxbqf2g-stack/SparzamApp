@@ -1,3 +1,10 @@
+## Update 17.10.2026 – Bonkandidaten verwenden Produktidentität
+
+- Bon- und Listenbezeichnungen mit bekannter, nicht generischer Produktidentität schlagen jetzt nur kompatible Katalogvarianten vor.
+- Abkürzungen wie K.H-Milch können die passenden Fettstufen gemeinsam anzeigen; fachlich getrennte Identitäten wie Rispentomaten und Passata bleiben getrennt.
+- Jeder solche Treffer bleibt ein unbestätigter Vorschlag und weist auf Variante und Packungsgröße hin; eine automatische Bestätigung findet nicht statt.
+- Generische Kategorien behalten ihre bisherige Kategorie-Semantik.
+- `test/product_match_candidates_test.dart` deckt Milchvarianten, Identitätsgrund und die Tomaten-/Passata-Grenze mit synthetischen Produkten ab.
 ## Update 17.10.2026 – Open-Prices-Sync vermeidet doppelte Arbeit
 
 - Der Bulk-Sync dedupliziert Kandidaten jetzt nach stabiler Produkt-ID, bevor eine externe Preisabfrage gestartet wird.
