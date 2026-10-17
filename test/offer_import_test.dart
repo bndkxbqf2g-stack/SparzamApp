@@ -473,7 +473,12 @@ void main() {
       branchId: 'lidl-zellingen',
     );
 
-    expect(prospectOfferRecordKey(first), isNot(prospectOfferRecordKey(second)));
+    expect(
+      prospectOfferWidgetKey(first, [first, second]),
+      isNot(prospectOfferWidgetKey(second, [first, second])),
+    );
+    // A unique source ID retains the compact legacy key used by the UI.
+    expect(prospectOfferWidgetKey(first, [first]), prospectOfferRecordKey(first));
   });
 
   test('branch-aware prospect widget keys distinguish exact branches', () {
