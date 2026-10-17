@@ -641,6 +641,14 @@ def _first_http_url(
         direct = _http_url(value)
         if direct:
             return direct
+        if isinstance(value, (list, tuple)):
+            # Product/media fields can be short ordered lists. Traverse only
+            # their bounded members; arbitrary nested JSON is not a URL.
+            for item in value:
+                nested = _first_http_url((item,), depth=depth + 1)
+                if nested:
+                    return nested
+            continue
         if isinstance(value, Mapping):
             for key in (
                 "url",
