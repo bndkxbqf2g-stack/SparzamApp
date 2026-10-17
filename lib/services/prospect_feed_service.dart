@@ -1065,7 +1065,17 @@ class ProspectFeedService {
               ),
             ),
       );
-      if (!hasCurrentRows) continue;
+      final hasPageEvidence = candidate.prospects.any(
+        (issue) =>
+            scopes.any(
+              (scope) => scope.matches(
+                candidateStoreName: issue.storeName,
+                candidateBranchId: issue.branchId,
+              ),
+            ) &&
+            (issue.pages.isNotEmpty || issue.thumbnailUrl != null),
+      );
+      if (!hasCurrentRows && !hasPageEvidence) continue;
       fallback = _newestFeed(fallback, candidate);
     }
     return fallback;
