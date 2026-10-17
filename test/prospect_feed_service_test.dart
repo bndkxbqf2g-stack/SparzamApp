@@ -1751,5 +1751,63 @@ void main() {
   });
 
 
+
+  test('reports successful prospect refreshes per exact branch', () {
+    final result = parseProspectFeed(
+      jsonEncode({
+        'sources': [
+          {
+            'storeName': 'Lidl',
+            'status': 'ok',
+            'branchId': 'lidl-zellingen',
+          },
+          {
+            'storeName': ' lidl ',
+            'status': 'error',
+            'branchId': 'lidl-wuerzburg',
+          },
+        ],
+        'offers': [
+          {
+            'sourceId': 'branch-ok',
+            'productLabel': 'Butter 250 g',
+            'storeName': 'Lidl',
+            'offerPrice': 1.49,
+            'validUntil': '2026-10-22',
+            'branchId': 'LIDL-ZELLINGEN',
+            'proofRef': 'https://example.test/lidl/zellingen',
+          },
+          {
+            'sourceId': 'branch-error',
+            'productLabel': 'Butter 250 g',
+            'storeName': 'Lidl',
+            'offerPrice': 1.59,
+            'validUntil': '2026-10-22',
+            'branchId': 'lidl-wuerzburg',
+            'proofRef': 'https://example.test/lidl/wuerzburg',
+          },
+        ],
+      }),
+    );
+
+    expect(result.refreshedStores, ['Lidl']);
+    expect(result.refreshedStoreScopes, hasLength(1));
+    final scope = result.refreshedStoreScopes.single;
+    expect(
+      scope.matches(
+        candidateStoreName: 'LIDL',
+        candidateBranchId: 'lidl-zellingen',
+      ),
+      isTrue,
+    );
+    expect(
+      scope.matches(
+        candidateStoreName: 'Lidl',
+        candidateBranchId: 'lidl-wuerzburg',
+      ),
+      isFalse,
+    );
+  });
+
 }
 
