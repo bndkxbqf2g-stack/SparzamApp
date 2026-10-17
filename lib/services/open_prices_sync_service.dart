@@ -12,6 +12,15 @@ typedef OpenPricesProductFetcher = Future<List<MarketPrice>> Function(
 );
 typedef OpenPricesProductDiscoverer = Future<Product?> Function(Product product);
 
+/// Returns the bounded concurrency used by the live adapter. Injected
+/// fetchers intentionally stay serial so cancellation and fixture ordering
+/// remain identical to the established test/offline path.
+int openPricesNetworkBatchSize({
+  required bool live,
+  required int configured,
+}) =>
+    live ? configured.clamp(1, 4).toInt() : 1;
+
 class OpenPricesSyncResult {
   const OpenPricesSyncResult({
     required this.productsChecked,
@@ -106,9 +115,10 @@ class OpenPricesSyncService {
     }
 
     final candidates = candidatesById.values.toList(growable: false);
-    final batchSize = customFetcher == null
-        ? networkConcurrency.clamp(1, 4).toInt()
-        : 1;
+    final batchSize = openPricesNetworkBatchSize(
+      live: customFetcher == null,
+      configured: networkConcurrency,
+    );
     var cancelledDuringFetch = false;
 
     try {
