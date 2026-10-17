@@ -862,5 +862,66 @@ void main() {
     expect(issue.pages.single.imageUrl, 'https://example.test/new-page.jpg');
   });
 
+
+  test('keeps a stale local cover without reviving expired offer rows', () {
+    final fallback = parseProspectFeed('''
+{
+  "generatedAt": "2026-10-17T04:15:00Z",
+  "sources": [{
+    "storeName": "Lidl",
+    "status": "ok",
+    "branchId": "lidl-zellingen",
+    "prospects": [{
+      "title": "Lidl Wochenprospekt 12",
+      "validFrom": "2026-10-12",
+      "validUntil": "2026-10-17",
+      "pageSamples": [{
+        "number": 1,
+        "image": "https://example.test/lidl-stale-page.jpg"
+      }]
+    }]
+  }],
+  "offers": [{
+    "sourceId": "expired-page-row",
+    "productLabel": "Milch 1 l",
+    "storeName": "Lidl",
+    "offerPrice": 0.99,
+    "validFrom": "2026-10-12",
+    "validUntil": "2026-10-17",
+    "source": "retailerWebsite",
+    "branchId": "lidl-zellingen",
+    "proofRef": "https://example.test/lidl-stale?page=1"
+  }]
+}
+''');
+    final incoming = parseProspectFeed('''
+{
+  "generatedAt": "2026-10-18T04:15:00Z",
+  "sources": [{
+    "storeName": "Lidl",
+    "status": "ok",
+    "branchId": "lidl-zellingen",
+    "recordCount": 0,
+    "prospects": [{
+      "title": "Lidl Wochenprospekt 18"
+    }]
+  }],
+  "offers": []
+}
+''');
+
+    final guarded = preserveCurrentProspectRowsForEmptySources(
+      incoming: incoming,
+      fallback: fallback,
+      now: DateTime(2026, 10, 18, 12),
+    );
+    final issue = guarded.prospects.single;
+
+    expect(guarded.records, isEmpty);
+    expect(issue.sourceStatus, 'stale_fallback');
+    expect(issue.pages.single.imageUrl, 'https://example.test/lidl-stale-page.jpg');
+    expect(issue.validUntil, DateTime(2026, 10, 17));
+  });
+
 }
 
