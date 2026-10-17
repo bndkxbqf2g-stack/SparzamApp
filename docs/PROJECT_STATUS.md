@@ -1,10 +1,18 @@
-## Update 17.10.2026 – Gezielte Prospektrefreshes fragen Bring nicht ungefragt ab
+## Update 17.10.2026 – Bring-only-Refresh bleibt wirklich einzeln
 
-Bei einem Refresh mit ausgewählten Händlerquellen bleibt der optionale Bring-
-Fallback deaktiviert, sofern er nicht ausdrücklich als `bring` ausgewählt ist.
-Der vollständige geplante Refresh behält Bring als optionalen Fallback; KaufDA
-bleibt separat opt-in. Dadurch lassen sich externe Quellen ohne unnötige
-Netzwerkanfragen einzeln prüfen und abschalten.
+Der CLI-Selektor `bring` veröffentlicht einen ausdrücklich angeforderten
+Bring-Prospekt jetzt auch ohne offiziellen Händlerselektor. Offizielle
+Händlerendpunkte werden dabei nicht nachgeladen; der Feed behält die
+branchlose regionale Evidenz und den `bring_brochure`-Quelladapter. Dadurch
+kann die optionale Quelle schnell isoliert geprüft oder abgeschaltet werden.
+
+ `bring` veröffentlicht einen ausdrücklich angeforderten
+Bring-Prospekt jetzt auch ohne offiziellen Händlerselektor. Offizielle
+Händlerendpunkte werden dabei nicht nachgeladen; der Feed behält die
+branchlose regionale Evidenz und den `bring_brochure`-Quelladapter. Dadurch
+kann die optionale Quelle schnell isoliert geprüft oder abgeschaltet werden.
+
+lten.
 
 ## Update 17.10.2026 – Automatische Prospektpreise haben einen regulär-only Speicherpfad
 
