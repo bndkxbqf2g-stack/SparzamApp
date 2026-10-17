@@ -1,3 +1,7 @@
+## Update 17.10.2026 – Unbekannte Preisverlaufsquellen bleiben Datenlücken
+
+Ein fehlendes `source`-Feld bleibt für alte Verlaufseinträge rückwärtskompatibel als Demo-/Legacywert. Eine ausdrücklich unbekannte Quellenkennung wird dagegen beim Laden verworfen. Dadurch kann ein fremder oder beschädigter historischer Betrag nicht als „Beispieldaten“ erscheinen; gültige Verlaufseinträge bleiben erhalten.
+
 ## Update 17.10.2026 – Unbekannte explizite Preisquellen bleiben Datenlücken
 
 Ein lokaler Marktpreis ohne `source` bleibt für alte Speicherformate rückwärtskompatibel manuell. Sobald ein Datensatz jedoch eine unbekannte Quellenkennung ausdrücklich setzt, verwirft die Deserialisierung den einzelnen Eintrag. Dadurch kann ein beschädigter oder fremder Wert nicht stillschweigend als bestätigter manueller Preis in Matrix oder Route gelangen; der lokale Store überspringt nur diesen Eintrag und lädt die übrigen Daten weiter.
