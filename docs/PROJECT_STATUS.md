@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Preisbelege werden batchweise übernommen
+
+- Receipt-Review und andere Mehrfachimporte können mehrere Preisbelege über einen gemeinsamen Shell-Koordinator speichern.
+- Beobachtung, aktueller Marktpreis und Verlauf werden als ein UI-Snapshot gesetzt; Zwischenstände einzelner Zeilen werden nicht gerendert.
+- Aktionspreise bleiben aus dem regulären Verlauf ausgeschlossen; die Batch-Regression prüft diese Rollen getrennt.
+
 ## Update 17.10.2026 – Preisquellen verwenden eine gemeinsame Evidenzrangfolge
 
 - Planung, Routensauflösung und Bon-Familienpreise teilen jetzt denselben Vergleich für qualitätsbereinigten Betrag, Aktualität und Quellpriorität.

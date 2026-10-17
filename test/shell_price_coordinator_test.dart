@@ -152,4 +152,47 @@ void main() {
     expect(saved.history, isEmpty);
   });
 
+  test('speichert Preisbelege als einen konsistenten Batch', () async {
+    final coordinator = ShellPriceCoordinator(
+      marketPriceStore: MarketPriceStore(),
+      priceHistoryStore: PriceHistoryStore(),
+    );
+    final manual = MarketPrice(
+      productId: 'milk',
+      storeName: 'Lidl',
+      price: 1.19,
+      updatedAt: DateTime(2026, 10, 17),
+    );
+    final receipt = MarketPrice(
+      productId: 'eggs',
+      storeName: 'Kaufland',
+      price: 2.49,
+      updatedAt: DateTime(2026, 10, 17),
+      source: MarketPriceSource.receipt,
+    );
+    final offer = MarketPrice(
+      productId: 'coffee',
+      storeName: 'Lidl',
+      price: 3.99,
+      updatedAt: DateTime(2026, 10, 17),
+      source: MarketPriceSource.prospect,
+      kind: PriceObservationKind.offer,
+      discounted: true,
+    );
+
+    final saved = await coordinator.saveMany(
+      prices: [manual, receipt, offer],
+      currentPrices: const [],
+      history: const [],
+    );
+
+    expect(saved.prices, hasLength(3));
+    expect(saved.history, hasLength(2));
+    expect(saved.history.map((point) => point.productId), containsAll([
+      'milk',
+      'eggs',
+    ]));
+    expect((await coordinator.observationStore.load()), hasLength(3));
+  });
+
 }

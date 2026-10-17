@@ -1551,6 +1551,47 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     return applied.prices;
   }
 
+  /// Applies receipt-review batches as one visible price snapshot.
+  ///
+  /// The individual price editor still uses [saveMarketPrice]. Batch imports
+  /// use this path so list, price history and route inputs advance together.
+  Future<void> saveMarketPrices(Iterable<MarketPrice> prices) async {
+    final incoming = prices.toList(growable: false);
+    if (incoming.isEmpty) return;
+    final revision = _dataRevision;
+    PriceMutationResult? result;
+    await _priceSaves.add(() async {
+      if (!_isCurrentDataRevision(revision)) return;
+      result = await priceCoordinator.saveMany(
+        prices: incoming,
+        currentPrices: marketPrices,
+        history: priceHistory,
+      );
+      if (_isCurrentDataRevision(revision)) {
+        marketPrices = result!.prices;
+        priceHistory = result!.history;
+      }
+    });
+    if (!_isCurrentDataRevision(revision) || result == null) return;
+    final applied = result!;
+    setState(() {
+      marketPrices = applied.prices;
+      priceHistory = applied.history;
+    });
+    await _loadPriceObservations();
+    widget.diagnosticLogService.record(
+      category: 'Preisdaten',
+      message: '${incoming.length} Preisbelege gemeinsam gespeichert.',
+      details: incoming
+          .map(
+            (price) =>
+                '${price.storeName} · ${price.productId} · '
+                '${price.price.toStringAsFixed(2)} €',
+          )
+          .join(' | '),
+    );
+  }
+
   Future<List<MarketPrice>> deleteMarketPrice(
     String productId,
     String storeName,
@@ -2227,6 +2268,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       onResolvePriceGap: openPriceGapEditor,
       onEditPriceData: openPriceDataSettings,
       onSavePrice: saveMarketPrice,
+      onSavePrices: saveMarketPrices,
       onSaveProduct: saveCatalogProduct,
       onReceiptObservationsChanged: _loadReceiptObservations,
       onSaveOffer: saveOffer,

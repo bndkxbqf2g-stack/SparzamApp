@@ -1,3 +1,7 @@
+## D195 – Preis-Review-Batches liefern einen konsistenten Shell-Snapshot
+
+Ein Belegimport kann mehrere bestätigte Preiszeilen erzeugen. Die Shell übergibt diese Zeilen deshalb an `ShellPriceCoordinator.saveMany`, der Beobachtungen, aktuelle Marktpreise und den Verlauf aus demselben Batch aktualisiert. Erst danach werden die Listen-/Routen-Inputs gemeinsam gesetzt. Ein Prospekt-Aktionspreis bleibt dabei ausschließlich Offer-Evidenz und wird nicht in den regulären Preisverlauf projiziert.
+
 ## D194 – Marktpreis-Evidenz wird zentral und deterministisch gerankt
 
 Planung, `RoutePriceResolver` und die Projektion von Bon-Familienpreisen dürfen dieselbe Beobachtung nicht mit leicht unterschiedlichen Regeln auswählen. `compareMarketPriceEvidence` bewertet deshalb zuerst den qualitätsbereinigten Betrag, danach den jüngeren Erfassungszeitpunkt und erst bei vollständigem Gleichstand die dokumentierte Quellpriorität und stabilen Metadaten-Tie-Breaker. Die Auswahl erhält nur bereits validierte Preise; unbestätigte Identitäten und fehlende Packungsbasen bleiben Datenlücken. Exakte Filial-IDs bleiben Teil des Schlüssels.
