@@ -1058,3 +1058,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Angebote- und Prospekte-Reiter durchsuchen neben Name und Kategorie auch vorhandene EAN/GTIN-, Packungsgrößen- und Grundpreisfelder.
 - [x] Die Suche verwendet ausschließlich bereits importierte Quellenwerte; Produktidentität, Preise und Gültigkeitsprüfung bleiben unverändert.
 - [x] Widgetregressionen prüfen EAN- und Packungsgrößensuche in beiden Ansichten.
+
+## Update 17.10.2026 – Prospektpreis-Persistenz migriert und Cache-Status geklärt
+
+- [x] Alte automatische Prospekt-Rabattbelege werden beim lokalen Bereinigungslauf auch erkannt, wenn ältere JSON-Daten kein `kind` mehr enthalten und nur `discounted=true` bewahren.
+- [x] Reguläre Beobachtungen im selben ID-Namensraum bleiben erhalten; manuelle und Bon-Evidenz werden nicht gelöscht.
+- [x] Ein zuerst sichtbarer Cache-Feed zeigt während der lokalen Normalpreis-Projektion ausdrücklich `Speicherung läuft`; alte bestätigte Zähler werden nicht auf den neuen Feed übertragen.
+- [x] Regressionen sichern Migration, Statuswechsel und die unveränderte Trennung von Aktionspreis und regulärer Preisbasis.
