@@ -1,3 +1,13 @@
+## D209 – KaufDA-Quellenkontext ersetzt keinen Angebotsnachweis
+
+Ein KaufDA-Suchergebnis ist ohne eigene Branch-ID nur regionales Händlerangebot.
+Auch wenn ein Quellenobjekt eine konfigurierte Filiale nennt, darf diese
+Metadatenzeile nicht auf jedes Suchergebnis vererbt werden. Nur eine ausdrücklich
+an der Angebotszeile belegte Branch-ID kann den KaufDA-Treffer für Preisprojektion
+und Routenplanung freigeben; die UI darf den regionalen Nachweis weiterhin
+anzeigen. Offizielle Quellen ohne diese KaufDA-Grenze behalten ihre bestehende
+Quellen-Fallback-Logik.
+
 ## D208 – Individuellen Erfassungszeitpunkt vor lokaler Ladezeit bevorzugen
 
 Für automatische Prospektpreisbeobachtungen genügt entweder der globale

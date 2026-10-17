@@ -1017,19 +1017,24 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     final brochurePage = _intValue(value['brochurePage']);
     final offerBranch = _prospectBranchContext(value);
     final explicitBranchId = offerBranch.branchId;
-    final isKaufdaWithoutBranch =
-        explicitSourceAdapter?.trim().toLowerCase() == 'kaufda' &&
-        explicitBranchId == null;
-    // A false/changed-format regional flag cannot promote a publisher-level
-    // KaufDA hit to a branch price. The branch assertion must be present on
-    // the record itself; source-level branch metadata is only a UI fallback.
-    final regionalOnly = isKaufdaWithoutBranch
-        ? true
-        : (parsedRegionalOnly ?? (regionalOnlyValue != null));
     final sourceFallback = sourceMetadataForOffer(
       storeName,
       explicitBranchId,
     );
+    final sourceAdapter =
+        explicitSourceAdapter ?? sourceFallback?.sourceAdapter;
+    final isKaufdaWithoutBranch =
+        sourceAdapter?.trim().toLowerCase() == 'kaufda' &&
+        explicitBranchId == null;
+    // A false/changed-format regional flag cannot promote a publisher-level
+    // KaufDA hit to a branch price. The branch assertion must be present on
+    // the record itself; source-level branch metadata is only a UI fallback.
+    // This guard also applies when the adapter is inherited from the source
+    // metadata; only an explicit record branch assertion can make a KaufDA
+    // result routeable.
+    final regionalOnly = isKaufdaWithoutBranch
+        ? true
+        : (parsedRegionalOnly ?? (regionalOnlyValue != null));
     final recordBranchId = regionalOnly
         ? explicitBranchId
         : (explicitBranchId ?? sourceFallback?.branchId);
@@ -1086,8 +1091,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
           value,
           const ['priceByBaseUnit', 'unitPrice', 'baseUnitPrice'],
         ),
-        sourceAdapter:
-            explicitSourceAdapter ?? sourceFallback?.sourceAdapter,
+        sourceAdapter: sourceAdapter,
         // An unknown explicit regional flag is treated conservatively. It
         // remains visible as diagnostic evidence but cannot become routeable.
         regionalOnly: regionalOnly,

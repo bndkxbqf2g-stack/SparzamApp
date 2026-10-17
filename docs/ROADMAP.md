@@ -1,3 +1,9 @@
+## Update 17.10.2026 – KaufDA-Branchschutz
+
+- [x] Geerbte KaufDA-Adapterkennung ohne explizite Angebots-Filiale regional markieren.
+- [x] Quellen-Filialmetadaten nicht als exakten KaufDA-Nachweis verwenden.
+- [x] Parser-Fixture für den routegesperrten Regionalfall ergänzen.
+
 ## Update 17.10.2026 – Prospektpreise mit Datensatz-Zeitpunkt speichern
 
 - [x] Einen belegten `capturedAt`-Zeitpunkt als Fallback für fehlendes Feed-`generatedAt` verwenden.

@@ -217,6 +217,40 @@ void main() {
     expect(explicit.sourceAdapter, 'kaufda');
   });
 
+  test('keeps inherited KaufDA records regional without an explicit branch', () {
+    final result = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-10-15T04:15:00Z",
+  "sources": [
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "sourceAdapter": "kaufda",
+      "branchId": "lidl-zellingen",
+      "location": "Zellingen"
+    }
+  ],
+  "offers": [
+    {
+      "sourceId": "regional-kaufda",
+      "productLabel": "Butter 250 g",
+      "storeName": "Lidl",
+      "offerPrice": 1.49,
+      "originalPrice": 1.99,
+      "validUntil": "2026-10-17",
+      "proofRef": "https://example.test/kaufda/regional"
+    }
+  ]
+}
+''');
+
+    final record = result.records.single;
+    expect(record.sourceAdapter, 'kaufda');
+    expect(record.regionalOnly, isTrue);
+    expect(record.branchId, isNull);
+    expect(record.location, isNull);
+  });
+
   test('accepts explicit regular-price aliases from feed adapters', () {
     final result = parseProspectFeed(r'''
 {

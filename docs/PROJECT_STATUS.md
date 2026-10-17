@@ -1,3 +1,9 @@
+## Update 17.10.2026 – KaufDA-Branchschutz auch bei geerbter Quellenkennung
+
+- KaufDA-Treffer bleiben regional, wenn die Angebotszeile keine eigene exakte Filial-ID trägt.
+- Eine Filial-ID aus dem Quellenmetadatum wird für KaufDA nicht mehr stillschweigend auf die Zeile vererbt; offizielle Quellen behalten ihre bisherige Fallback-Regel.
+- Die Parser-Regression schützt Herkunft, Branch-ID und den routegesperrten Regionalstatus.
+
 ## Update 17.10.2026 – Datensatz-Capture als Preiszeitpunkt nutzen
 
 - Reguläre Prospektpreise werden jetzt auch gelernt, wenn der Feed keinen globalen `generatedAt`-Zeitpunkt liefert, der einzelne Datensatz aber einen belegten `capturedAt`-Zeitpunkt enthält.
