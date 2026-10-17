@@ -661,7 +661,7 @@ void main() {
             onOpenCatalog: () {},
             onOpenSettings: () {},
             summary: 'Testpreise',
-            shoppingList: const [
+            shoppingList: [
               ListItem(product: expensive),
               ListItem(product: cheap),
             ],
