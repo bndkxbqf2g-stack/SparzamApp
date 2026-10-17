@@ -2089,6 +2089,7 @@ class ProspectViewerScreen extends StatelessWidget {
   Widget _buildPageCard(
     BuildContext context,
     ProspectPage page, {
+    required int pageIndex,
     required bool allowHtmlFallback,
   }) {
     final pageUrl = _officialProspectUri(page.imageUrl)?.toString() ?? '';
@@ -2106,6 +2107,7 @@ class ProspectViewerScreen extends StatelessWidget {
                 : _ProspectPageImage(
                     url: pageUrl,
                     pageNumber: page.number,
+                    pageIndex: pageIndex,
                     allowHtmlFallback: allowHtmlFallback,
                     fallbackBudget: prospectViewerImageFallbackBudget,
                   ),
@@ -2282,6 +2284,7 @@ class ProspectViewerScreen extends StatelessWidget {
                 pageBuilder: (context, page, index) => _buildPageCard(
                   context,
                   page,
+                  pageIndex: index,
                   // Every validated page may use the HTML fallback when
                   // its Canvas image cannot decode. The shared budget below
                   // bounds active platform views and releases each slot when
@@ -2478,12 +2481,14 @@ class _ProspectPageImage extends StatefulWidget {
   const _ProspectPageImage({
     required this.url,
     required this.pageNumber,
+    required this.pageIndex,
     required this.allowHtmlFallback,
     this.fallbackBudget,
   });
 
   final String url;
   final int pageNumber;
+  final int pageIndex;
   final bool allowHtmlFallback;
   final ProspectImageFallbackBudget? fallbackBudget;
 
@@ -2529,7 +2534,12 @@ class _ProspectPageImageState extends State<_ProspectPageImage> {
         : WebHtmlElementStrategy.never;
     return Image.network(
       widget.url,
-      key: ValueKey('prospect-page-image-${widget.pageNumber}'),
+      // Include the rendered index as well as the source number. A stale
+      // cache can contain duplicate page numbers; the image state must stay
+      // unique while the sliver recycles children during scrolling.
+      key: ValueKey(
+        'prospect-page-image-${widget.pageNumber}-${widget.pageIndex}',
+      ),
       // Keep decoded page previews bounded for the long scroll path.
       cacheWidth: 720,
       cacheHeight: 480,
