@@ -1,3 +1,11 @@
+## D213 – Händlerlabel-Normalisierung gilt auch für aktivierte Routenmärkte
+
+Aktivierte Marktfilter dürfen Händler-Schreibvarianten über den gemeinsamen
+Vergleichsschlüssel zusammenführen, damit gespeicherte Auswahl und Kataloglabel
+nicht auseinanderfallen. Die Normalisierung betrifft nur die Händlerebene.
+Branch-ID, Adresse, Preisbeleg und die exakte Preisauflösung bleiben unverändert;
+ein anderer Branch wird dadurch nicht als derselbe Markt behandelt.
+
 ## D212 – Coverage normalisiert Zuordnung, nicht Filialidentität
 
 Die Coverage-Anzeige darf Händler- und Branch-Schreibvarianten über den
