@@ -1,3 +1,10 @@
+## Update 17.10.2026 – Favoritenindex in Prospektansichten
+
+`prospect_favorites_store_test.dart` prüft den konstanten Set-Lookup
+für exakte Branch-Favoriten, die Legacy-Händlerkompatibilität und die
+Isolation eines gleichnamigen anderen Marktes. Die UI-Toggle-Regression bleibt
+bestehen; Cover- und Prospektkarten verwenden denselben Index.
+
 ## Update 17.10.2026 – KaufDA-Batchgrenze
 
 tool/tests/test_kaufda_prospects.py prüft die konfigurierbare Obergrenze,
