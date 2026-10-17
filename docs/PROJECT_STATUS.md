@@ -1,3 +1,20 @@
+## Update 17.10.2026 – Prospekt-/Angebotsstatus ohne wiederholte Scans
+
+Die Prospektansicht übernimmt den regulären Preiszähler aus ihrem bestehenden
+Derived-Snapshot. Die Angebotsansicht cached zusätzlich den aktuellen
+regulären Preiszähler und die datumsabhängige Status-Issue-Liste getrennt von
+der Coverauswahl. Such- und Filter-Rebuilds führen dadurch keine identischen
+Vollscans aus; Gültigkeits- und Filiallogik bleiben unverändert.
+
+## Update 17.10.2026 – Einkaufsliste memoisiert Vorschläge
+
+Die Einkaufsliste berechnet Produktvorschläge und verwandte Interpretationen
+innerhalb eines unveränderten Such-/Quell-Snapshots nur einmal. Der Cache
+invalidiert bei Suchtext, Katalog-, Angebots-, Marktpreis-, Bon- und
+Historienlisten, Präferenzen, bekannten Käufen, Filialfiltern, Altersgrenze und
+Tageswechsel. Die Preis- und Produktidentitätslogik läuft mit demselben
+Zeitpunkt wie zuvor.
+
 ## Update 17.10.2026 – Routenberechnung vermeidet wiederholte Permutationssuche
 
 Der `RouteOptimizer` materialisiert die ausgewählten exakten Filialen einmal und
