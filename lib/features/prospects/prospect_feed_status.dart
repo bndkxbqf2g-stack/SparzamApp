@@ -384,7 +384,8 @@ ProspectCoverage _coverageForStore(
   var offerProofCount = 0;
   var regularPriceCount = 0;
   var regionalOnlyCount = 0;
-  var uncertainProductCount = 0;
+  var uncertainProductCount =
+      catalogProducts == null ? issue?.uncertainProductCount ?? 0 : 0;
   for (final record in records) {
     if (record.imageUrl?.trim().isNotEmpty == true) {
       offerImageCount++;
