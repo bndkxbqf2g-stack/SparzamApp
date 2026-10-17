@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Aktivierte Routenmärkte bei Schreibvarianten
+
+route_preferences_test.dart prüft, dass LIDL und ALDI SUED die konfigurierten
+Lidl- und ALDI Süd-Filialen auswählen. Der Test vergleicht die exakten
+Branch-IDs; die Normalisierung darf keine Filialen zusammenlegen.
+
 ## Update 17.10.2026 – Coverage bei Schreibvarianten
 
 prospect_branch_coverage_test.dart prüft, dass ein LIDL-Datensatz zu einem
