@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Bring-only-Refresh bleibt wirklich einzeln
+
+- [x] Den `bring`-Selektor als eigenständigen gezielten Refresh ausführen.
+- [x] Offizielle Händleradapter bei einem Bring-only-Lauf nicht abfragen.
+- [x] Regionalen Bring-Nachweis und Quellenadapter im Feed erhalten.
+
 ## Update 17.10.2026 – Externe Prospektquellen gezielt abschaltbar
 
 - [x] Bring bei gezielten Händler-Refreshes nur auf ausdrückliche Auswahl
