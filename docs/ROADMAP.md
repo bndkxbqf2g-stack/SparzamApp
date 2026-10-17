@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Unbekannte Preisverlaufsquellen konservativ ablehnen
+
+- [x] Fehlende Quellenfelder alter Preisverlaufseinträge rückwärtskompatibel behandeln.
+- [x] Unbekannte ausdrücklich gesetzte `PricePoint.source`-Werte beim Laden verwerfen.
+- [x] Store-Regression gegen die stille Kennzeichnung als Beispieldaten ergänzen.
+
 ## Update 17.10.2026 – Unbekannte Preisquellen konservativ ablehnen
 
 - [x] Fehlende `source`-Felder alter Marktpreisformate rückwärtskompatibel als manuell lesen.
