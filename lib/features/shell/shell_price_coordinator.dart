@@ -37,10 +37,12 @@ class ShellPriceCoordinator {
   }) async {
     await observationStore.upsertById([observationFromMarketPrice(price)]);
     final nextPrices = await marketPriceStore.upsert(price, prices);
-    final nextHistory = await priceHistoryStore.upsertObservation(
-      priceHistoryPoint(price),
-      history,
-    );
+    final nextHistory = price.isProspectOffer
+        ? history
+        : await priceHistoryStore.upsertObservation(
+            priceHistoryPoint(price),
+            history,
+          );
     return PriceMutationResult(
       prices: nextPrices,
       history: nextHistory,
