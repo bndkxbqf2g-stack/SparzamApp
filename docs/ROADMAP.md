@@ -1324,3 +1324,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Reine Präsentationsvarianten von Händlerlabels im RoutePriceResolver zusammenführen.
 - [x] Exakte Filial-ID weiterhin separat prüfen und nicht über die Labelnormalisierung ersetzen.
 - [x] Regressionen für Angebotspreis und gespeicherten Marktpreis ergänzen.
+
+
+## Update 17.10.2026 – Gemeinsame Händlerlabel-Normalisierung
+
+- [x] RoutePriceResolver und Preis-Marktmatrix verwenden denselben Präsentationsschlüssel.
+- [x] Aktivierte Märkte erkennen Groß-/Kleinschreibung, Diakritika und `ae/oe/ue`-Varianten.
+- [x] UI- und Matrix-Regressionen sichern die konfigurierte Anzeige und den Quelllabel-Nachweis.
