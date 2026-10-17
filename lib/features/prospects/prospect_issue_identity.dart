@@ -1,6 +1,7 @@
 import '../offers/offer_import.dart';
 import '../../services/branch_identity.dart';
 import '../../services/prospect_feed_service.dart';
+import '../../services/store_identity.dart';
 
 /// Stable UI grouping key for one prospect publication and its exact branch.
 ///
@@ -15,6 +16,39 @@ String prospectIssueKey(ProspectIssue issue) => prospectStoreBranchKey(
 
 String prospectRecordKey(OfferImportRecord record) =>
     prospectStoreBranchKey(
+      storeName: record.storeName,
+      branchId: record.branchId,
+    );
+
+/// Comparison key for a retailer label coming from two public feed
+/// sections. Whitespace, case and German diacritics are presentation details;
+/// punctuation is normalized by the shared store-identity helper. This key is
+/// used only for matching metadata, never as a displayed name or a new branch
+/// identity.
+String prospectStoreMatchKey(String value) {
+  final trimmed = value.trim();
+  final normalized = normalizeStoreIdentityText(trimmed);
+  return normalized.isEmpty ? trimmed.toLowerCase() : normalized;
+}
+
+/// Comparison key for an exact prospect branch. A missing branch remains a
+/// store-level key; the helper never invents a location ID.
+String prospectBranchMatchKey({
+  required String storeName,
+  String? branchId,
+}) {
+  final store = prospectStoreMatchKey(storeName);
+  final branch = canonicalBranchId(branchId);
+  return branch == null ? store : '$store#$branch';
+}
+
+String prospectIssueMatchKey(ProspectIssue issue) => prospectBranchMatchKey(
+      storeName: issue.storeName,
+      branchId: issue.branchId,
+    );
+
+String prospectRecordMatchKey(OfferImportRecord record) =>
+    prospectBranchMatchKey(
       storeName: record.storeName,
       branchId: record.branchId,
     );
