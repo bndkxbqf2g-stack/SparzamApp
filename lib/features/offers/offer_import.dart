@@ -470,7 +470,7 @@ List<String> prospectOfferWidgetKeys(
       final base = baseKeys[index];
       return counts[base] == 1
           ? base
-          : '$' + "base|${prospectOfferResolutionKey(snapshot[index])}";
+          : '$base|${prospectOfferResolutionKey(snapshot[index])}';
     },
     growable: false,
   );
