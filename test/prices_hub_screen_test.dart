@@ -60,6 +60,55 @@ void main() {
     expect(openedRoute, [true]);
   });
 
+  testWidgets('kennzeichnet Teilroute bei fehlender Preisabdeckung', (tester) async {
+    const milk = Product(
+      id: 'partial-route-milk',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'Milch',
+    );
+    const coffee = Product(
+      id: 'partial-route-coffee',
+      name: 'Kaffee',
+      unit: '500 g',
+      group: 'Kaffee',
+    );
+    var openedRoute = 0;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PricesHubScreen(
+            onOpenCatalog: () {},
+            onOpenSettings: () {},
+            summary: 'Teilroute',
+            shoppingList: const [
+              ListItem(product: milk),
+              ListItem(product: coffee),
+            ],
+            marketPrices: [
+              MarketPrice(
+                productId: milk.id,
+                storeName: 'Lidl',
+                price: 1.19,
+                updatedAt: DateTime(2026, 10, 18),
+                source: MarketPriceSource.manual,
+              ),
+            ],
+            enabledStoreNames: const ['Lidl'],
+            now: DateTime(2026, 10, 18),
+            onOpenRoute: () => openedRoute++,
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('1 von 2 Positionen mit aktuellem Marktpreis'), findsOneWidget);
+    expect(find.text('Teilroute prüfen'), findsOneWidget);
+    await tester.tap(find.text('Teilroute prüfen'));
+    expect(openedRoute, 1);
+  });
+
   testWidgets('zeigt Herkunft und Datum eines regulären Prospektpreises', (
     tester,
   ) async {
