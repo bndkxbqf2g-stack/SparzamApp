@@ -34,15 +34,37 @@ class ShellPriceCoordinator {
     required MarketPrice price,
     required List<MarketPrice> prices,
     required List<PricePoint> history,
+  }) =>
+      saveMany(
+        prices: [price],
+        currentPrices: prices,
+        history: history,
+      );
+
+  /// Persists a reviewed price batch and returns one coherent UI snapshot.
+  ///
+  /// Receipt review can produce several market prices at once. Keeping the
+  /// observation, current-price and history projections in one coordinator
+  /// operation prevents the shell from rendering an intermediate partial batch.
+  Future<PriceMutationResult> saveMany({
+    required Iterable<MarketPrice> prices,
+    required List<MarketPrice> currentPrices,
+    required List<PricePoint> history,
   }) async {
-    await observationStore.upsertById([observationFromMarketPrice(price)]);
-    final nextPrices = await marketPriceStore.upsert(price, prices);
-    final nextHistory = price.isProspectOffer
-        ? history
-        : await priceHistoryStore.upsertObservation(
-            priceHistoryPoint(price),
-            history,
-          );
+    final incoming = prices.toList(growable: false);
+    await observationStore.upsertById(
+      incoming.map(observationFromMarketPrice),
+    );
+    final nextPrices = await marketPriceStore.upsertMany(
+      incoming,
+      currentPrices,
+    );
+    final nextHistory = await priceHistoryStore.upsertObservations(
+      incoming
+          .where((price) => !price.isProspectOffer)
+          .map(priceHistoryPoint),
+      history,
+    );
     return PriceMutationResult(
       prices: nextPrices,
       history: nextHistory,
