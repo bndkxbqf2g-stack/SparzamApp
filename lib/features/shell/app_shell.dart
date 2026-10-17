@@ -616,13 +616,13 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     final ownsProspectImportModule = widget.prospectImportModule == null;
     if (mounted) setState(() {});
 
+    // A failed live refresh must not leave the persistence card in a
+    // perpetual pending state when no cached feed could be shown.
+    var feedWasShown = false;
     try {
       // Start the local snapshot and the normal refresh together. A slow
       // asset/cache read must never delay the first live result.
       var networkFeedShown = false;
-      // A failed live refresh must not leave the persistence card in a
-      // perpetual pending state when no cached feed could be shown.
-      var feedWasShown = false;
       if (preferCached) {
         unawaited(() async {
           try {
