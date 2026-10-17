@@ -3820,3 +3820,20 @@ ohne dass beliebige Quellzahlen zu Preisbelegen werden.
   Route und MarketPrice.
 - [x] Eine Widget-/Fachregression schützt den Fall eines nach Refresh
   supersedierten, weiterhin gültigen Belegs.
+
+## Update 17.10.2026 – Lokale Prospektpreis-Projektion
+
+Der automatische Prospektpfad speichert weiterhin ausschließlich ausdrücklich belegte
+reguläre beziehungsweise gestrichene Preise mit exakter Filiale. Zwei zusätzliche
+Grenzen sind jetzt abgesichert:
+
+- Alte automatische Rabattbelege mit `discounted=true` werden auch bei fehlendem
+  historischem `kind` aus dem lokalen automatischen Bestand entfernt. Reguläre,
+  manuelle und Bon-Beobachtungen bleiben erhalten.
+- Bei einem zuerst sichtbaren Cache-Feed wird der lokale Speicherstatus vor dem
+  Persistenzlauf auf „Speicherung läuft“ gesetzt. Frühere bestätigte Zähler werden
+  nicht als Bestätigung des neuen Feeds angezeigt.
+
+Die Änderung betrifft weder die gültigen Prospektangebote in der Ansicht noch die
+zeitgebundene Angebotsevidenz; nur die lokale reguläre Preisbasis bleibt
+routefähig.
