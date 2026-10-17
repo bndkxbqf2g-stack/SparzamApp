@@ -242,6 +242,7 @@ void main() {
         productLabel: 'Schmand 200 g',
         storeName: 'Lidl',
         originalPrice: 1.29,
+        regularPriceSource: 'oldPrice',
         offerPrice: 0.89,
         validUntil: DateTime(2026, 9, 30),
         source: 'retailerWebsite',
@@ -256,6 +257,7 @@ void main() {
     expect(result.isResolved, isTrue);
     expect(result.offer!.source, 'retailerWebsite');
     expect(result.offer!.sourceAdapter, 'kaufda');
+    expect(result.offer!.regularPriceSource, 'oldPrice');
     expect(result.offer!.capturedAt, DateTime(2026, 9, 24, 8, 30));
     expect(result.offer!.packageAmount, 200);
     expect(result.offer!.packageUnit, 'g');
@@ -264,6 +266,7 @@ void main() {
     final restored = Offer.fromJson(result.offer!.toJson());
     expect(restored.source, 'retailerWebsite');
     expect(restored.sourceAdapter, 'kaufda');
+    expect(restored.regularPriceSource, 'oldPrice');
     expect(restored.capturedAt, DateTime(2026, 9, 24, 8, 30));
     expect(restored.packageAmount, 200);
     expect(restored.packageUnit, 'g');
