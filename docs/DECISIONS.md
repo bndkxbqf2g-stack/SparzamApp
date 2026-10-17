@@ -1,3 +1,12 @@
+## D205 – Verschachtelte Filialobjekte nur mit explizitem Nachweis verwenden
+
+Öffentliche Feedvarianten dürfen den exakten Markt in einem bekannten
+`branch`-/Filialobjekt statt in flachen Feldern liefern. Der Parser übernimmt
+daraus nur branchbezogene IDs sowie ausdrücklich benannte Orts- und
+Adressfelder. Generische `id`-/`code`-Werte werden ausschließlich innerhalb
+eines expliziten Filialcontainers akzeptiert. Bei gleichnamigen Filialen ohne
+eindeutige Branch-ID bleibt die Zuordnung unbekannt.
+
 ## D204 – Bekannte Aliasfelder in verschachtelten Prospektbildern
 
 Wenn ein öffentliches Bildobjekt statt `url` oder `src` nur ein bekanntes
