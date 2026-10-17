@@ -1,3 +1,10 @@
+## Update 17.10.2026 – Gründe für fehlende Preisbelege
+
+- [x] Fehlende aktuelle Marktzeilen pro Produkt mit einem primären Datenqualitätsgrund erklären.
+- [x] Veraltete, zukünftige, unklare, inkompatible und nicht belegte Quellen getrennt benennen.
+- [x] Einkaufsliste und Preise-Reiter mit Widget- und Matrix-Regressionen absichern.
+- [x] Gap-Gründe als reine Anzeigeinformation von Preis- und Routenfreigabe getrennt halten.
+
 ## Update 17.10.2026 – Preisqualitätslücken und Filialabdeckung
 
 - [x] Nicht routenfähige Preisbelege im Preise-Reiter nach einem primären Grund ausweisen.
