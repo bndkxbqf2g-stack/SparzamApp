@@ -394,6 +394,25 @@ bool isFoodProspectRecord({
           _foodInNonFoodProspectCategory.hasMatch(label));
 }
 
+/// Projects a validated feed to the current food-only surface used by the
+/// visible offers/prospect tabs and automatic prospect-price learning.
+///
+/// The parser already applies this boundary for fresh responses. Keeping the
+/// projection here makes legacy cache and injected test feeds obey the same
+/// rule without changing their stored diagnostic rows.
+List<OfferImportRecord> currentFoodProspectRecords(
+  Iterable<OfferImportRecord> records, {
+  DateTime? now,
+}) =>
+    currentProspectRecords(records, now: now)
+        .where(
+          (record) => isFoodProspectRecord(
+            label: record.productLabel,
+            category: record.category,
+          ),
+        )
+        .toList(growable: false);
+
 const configuredProspectStores = <String>[
   'Lidl',
   'ALDI Süd',
