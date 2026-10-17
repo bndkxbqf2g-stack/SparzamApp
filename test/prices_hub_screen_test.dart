@@ -798,4 +798,51 @@ void main() {
     );
   });
 
+
+  testWidgets('trennt aktuelle Angebotspreise ohne Normalpreis sichtbar ab', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PricesHubScreen(
+            onOpenCatalog: () {},
+            onOpenSettings: () {},
+            summary: 'Prospektpreise',
+            offers: [
+              Offer(
+                id: 'import|leaflet|offer-only|milk',
+                productId: 'offer-only-milk',
+                storeName: 'EDEKA',
+                originalPrice: 0.99,
+                originalPriceVerified: false,
+                offerPrice: 0.99,
+                validFrom: DateTime(2026, 10, 17),
+                validUntil: DateTime(2026, 10, 17),
+                source: 'retailerWebsite',
+                proofRef: 'https://example.test/edeka/milk',
+              ),
+            ],
+            prospectFeedGeneratedAt: DateTime(2026, 10, 17, 8),
+            prospectRegularPriceCount: 1,
+            prospectRegularPricePersistenceStatus:
+                ProspectRegularPricePersistenceStatus.succeeded,
+            now: DateTime(2026, 10, 17, 12),
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      find.textContaining(
+        '1 aktueller Angebotspreis ohne belegten Normalpreis bleiben getrennt',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.textContaining('nicht als Preisbasis gespeichert'),
+      findsOneWidget,
+    );
+  });
+
 }
