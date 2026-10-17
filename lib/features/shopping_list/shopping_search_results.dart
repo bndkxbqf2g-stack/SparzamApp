@@ -152,6 +152,12 @@ class _ProductSuggestionImage extends StatelessWidget {
         width: 44,
         height: 44,
         fit: BoxFit.contain,
+        // Search suggestions can contain many catalog rows; decode only the
+        // small leading thumbnail and keep the web renderer on Canvas.
+        cacheWidth: 96,
+        cacheHeight: 96,
+        filterQuality: FilterQuality.low,
+        webHtmlElementStrategy: WebHtmlElementStrategy.never,
         errorBuilder: (context, error, stackTrace) =>
             const Icon(Icons.image_not_supported_outlined),
       ),
