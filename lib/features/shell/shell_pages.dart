@@ -96,7 +96,8 @@ List<Widget> buildShellPages({
   required Future<List<Product>> Function(Product product) onSaveProduct,
   required Future<void> Function() onReceiptObservationsChanged,
   required Future<List<Offer>> Function(Offer offer) onSaveOffer,
-  required Future<List<Offer>> Function(Offer offer) onDeleteOffer,
+  Future<void> Function(PriceObservation observation)?
+      onSaveProspectRegularPrice,  required Future<List<Offer>> Function(Offer offer) onDeleteOffer,
   required VoidCallback onOpenDiagnostics,
   required Future<void> Function() onExportBackup,
   required Future<void> Function() onImportBackup,
@@ -165,6 +166,7 @@ List<Widget> buildShellPages({
     onDelete: onDeleteOffer,
     catalogProducts: catalogProducts,
     onAddToShoppingList: onAddProduct,
+    onSaveProspectRegularPrice: onSaveProspectRegularPrice,
   ),
   ProspectsScreen(
     records: prospectRecords,
@@ -179,6 +181,7 @@ List<Widget> buildShellPages({
     catalogProducts: catalogProducts,
     onAddProduct: onAddProduct,
     onSaveOffer: onSaveOffer,
+    onSaveProspectRegularPrice: onSaveProspectRegularPrice,
   ),
   PricesHubScreen(
     onOpenCatalog: onOpenCatalog,
