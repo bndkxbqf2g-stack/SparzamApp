@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import '../features/offers/offer_import.dart';
 import 'barcode_normalizer.dart';
 import 'prospect_feed_cache.dart';
+import 'store_identity.dart';
 
 class ProspectFeedLoadResult {
   const ProspectFeedLoadResult({
@@ -230,7 +231,15 @@ String? _optionalNonEmptyString(Object? value) {
   return trimmed.isEmpty ? null : trimmed;
 }
 
-String _prospectStoreMetadataKey(String value) => value.trim().toLowerCase();
+// Feed sections can spell the same retailer with umlauts or ae/oe/ue.
+// This key is metadata-only; displayed labels and branch IDs stay unchanged.
+String _prospectStoreMetadataKey(String value) {
+  final normalized = normalizeStoreIdentityText(value);
+  return normalized
+      .replaceAll('ae', 'a')
+      .replaceAll('oe', 'o')
+      .replaceAll('ue', 'u');
+}
 
 class ProspectFeedService {
   ProspectFeedService({
@@ -891,7 +900,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
 }
 
 String _prospectPageImageKey(String storeName, int pageNumber) =>
-    '${storeName.trim().toLowerCase()}\\u001f$pageNumber';
+    '${_prospectStoreMetadataKey(storeName)}\\u001f$pageNumber';
 
 String? _prospectPageImageForOffer(
   Map<String, List<_ProspectPageImageCandidate>> pagesByStoreAndNumber, {
