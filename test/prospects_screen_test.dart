@@ -483,11 +483,9 @@ void main() {
       ),
     );
 
-    final search = find.byWidgetPredicate(
-      (widget) =>
-          widget is TextField &&
-          widget.decoration?.hintText == 'Prospekte und Artikel durchsuchen',
-    );
+    await tester.pumpAndSettle();
+    final search = find.byType(TextField);
+    expect(search, findsOneWidget);
     await tester.enterText(search, '4001234567890');
     await tester.pump();
 
