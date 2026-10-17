@@ -1884,6 +1884,52 @@ Future<void> _scrollProspects(
   await tester.pumpAndSettle();
 
 
+  testWidgets('keeps a reviewed page item listable when offer save fails', (
+    tester,
+  ) async {
+    Product? added;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectViewerScreen(
+          issue: ProspectIssue(
+            storeName: 'Lidl',
+            title: 'Aktionsprospekt',
+            pages: const [
+              ProspectPage(
+                number: 1,
+                imageUrl: 'https://example.test/lidl/page-1.png',
+              ),
+            ],
+            branchId: 'lidl-zellingen',
+            validFrom: DateTime(2026, 10, 12),
+            validUntil: DateTime(2026, 12, 31),
+          ),
+          records: const [],
+          catalogProducts: const [],
+          onAddProduct: (product) => added = product,
+          onSaveOffer: (_) async => throw StateError('offline'),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Artikel von Seite hinzufügen'));
+    await tester.pumpAndSettle();
+    final fields = find.byType(TextFormField);
+    await tester.enterText(fields.at(0), 'Kaffee Crema 500 g');
+    await tester.enterText(fields.at(1), '4,99');
+    await tester.tap(find.widgetWithText(FilledButton, 'Artikel hinzufügen'));
+    await tester.pumpAndSettle();
+
+    expect(added?.name, 'Kaffee Crema 500 g');
+    expect(
+      find.text(
+        'Artikel zur Einkaufsliste hinzugefügt. Das Angebot konnte nicht '
+        'gespeichert werden.',
+      ),
+      findsOneWidget,
+    );
+  });
+
 }
 
 
