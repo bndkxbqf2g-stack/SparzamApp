@@ -39,6 +39,11 @@ DEFAULT_TIMEOUT_SECONDS = 15.0
 DEFAULT_REQUEST_DELAY_SECONDS = 1.0
 DEFAULT_CACHE_MAX_AGE_HOURS = 12
 MAX_RESPONSE_BYTES = 4 * 1024 * 1024
+# A cache document can contain several bounded search responses. Keep the
+# document itself bounded as well so changing cities/queries cannot grow local
+# storage without limit.
+MAX_CACHE_BYTES = 8 * 1024 * 1024
+MAX_CACHE_ENTRIES = 16
 LOCAL_TIMEZONE = ZoneInfo("Europe/Berlin")
 
 # These are canonical display names already used by SparzamApp.  Aldi Nord,
@@ -1289,6 +1294,67 @@ def _cache_key(url: str) -> str:
     return hashlib.sha256(url.encode("utf-8")).hexdigest()
 
 
+def _cache_timestamp(value: object) -> float | None:
+    if not isinstance(value, str) or not value.strip():
+        return None
+    try:
+        parsed = datetime.fromisoformat(value)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    timestamp = parsed.timestamp()
+    return timestamp if math.isfinite(timestamp) else None
+
+
+def _bounded_cache_payload(
+    payload: Mapping[object, object],
+    *,
+    preferred_key: str,
+) -> dict[str, dict]:
+    candidates: list[tuple[str, dict, float]] = []
+    for key, raw_entry in payload.items():
+        if not isinstance(key, str) or not isinstance(raw_entry, Mapping):
+            continue
+        body = raw_entry.get("body")
+        if not isinstance(body, str):
+            continue
+        try:
+            body_size = len(body.encode("utf-8"))
+        except UnicodeError:
+            continue
+        if body_size > MAX_RESPONSE_BYTES:
+            continue
+        captured_at = _cache_timestamp(raw_entry.get("capturedAt"))
+        if captured_at is None:
+            continue
+        candidates.append((key, dict(raw_entry), captured_at))
+
+    # Keep the just-written URL even if its timestamp is older than another
+    # entry. Remaining slots prefer the newest successfully timestamped body.
+    candidates.sort(
+        key=lambda item: (item[0] == preferred_key, item[2], item[0]),
+        reverse=True,
+    )
+    kept: list[tuple[str, dict, float]] = []
+    for candidate in candidates:
+        if len(kept) >= MAX_CACHE_ENTRIES:
+            break
+        proposed = {key: entry for key, entry, _ in [*kept, candidate]}
+        encoded_size = len(
+            json.dumps(proposed, ensure_ascii=False, separators=(",", ":")).encode(
+                "utf-8"
+            )
+        )
+        # A single source response is already bounded by MAX_RESPONSE_BYTES
+        # and must remain cacheable even when a test/deployment uses a smaller
+        # document budget. Once it is kept, older entries are evicted.
+        if encoded_size > MAX_CACHE_BYTES and kept:
+            continue
+        kept.append(candidate)
+    return {key: entry for key, entry, _ in kept}
+
+
 def _load_cached_body(
     path: Path | None,
     url: str,
@@ -1344,11 +1410,13 @@ def _save_cached_body(path: Path | None, url: str, body: str, captured_at: datet
                 payload = {}
         if not isinstance(payload, dict):
             payload = {}
-        payload[_cache_key(url)] = {
+        cache_key = _cache_key(url)
+        payload[cache_key] = {
             "url": url,
             "capturedAt": captured_at.isoformat(),
             "body": body,
         }
+        payload = _bounded_cache_payload(payload, preferred_key=cache_key)
         # Write beside the target and replace it only after the complete JSON
         # document is on disk. A killed refresh must leave the previous cache
         # readable for the offline fallback.
