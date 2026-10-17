@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Bring-only-Refresh bleibt wirklich einzeln
+
+Der CLI-Selektor `bring` veröffentlicht einen ausdrücklich angeforderten
+Bring-Prospekt jetzt auch ohne offiziellen Händlerselektor. Offizielle
+Händlerendpunkte werden dabei nicht nachgeladen; der Feed behält die
+branchlose regionale Evidenz und den `bring_brochure`-Quelladapter. Dadurch
+kann die optionale Quelle schnell isoliert geprüft oder abgeschaltet werden.
+
 ## Update 17.10.2026 – Gezielte Prospektrefreshes fragen Bring nicht ungefragt ab
 
 Bei einem Refresh mit ausgewählten Händlerquellen bleibt der optionale Bring-
