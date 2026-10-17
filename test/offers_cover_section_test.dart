@@ -18,7 +18,7 @@ void main() {
       pages: const [
         ProspectPage(
           number: 1,
-          imageUrl: 'https://example.test/lidl-cover.jpg',
+          imageUrl: 'https://example.test/lidl-page-1.jpg',
         ),
       ],
       thumbnailUrl: 'https://example.test/lidl-cover.jpg',
@@ -45,6 +45,10 @@ void main() {
     // Both the favorite rail and the grid use the bounded adaptive image;
     // only failed Canvas decodes may opt into the HTML fallback.
     expect(find.byType(ProspectAdaptiveImage), findsNWidgets(2));
+    final firstAdaptive = tester.widget<ProspectAdaptiveImage>(
+      find.byType(ProspectAdaptiveImage).first,
+    );
+    expect(firstAdaptive.fallbackUrl, 'https://example.test/lidl-page-1.jpg');
     expect(
       find.byKey(const ValueKey('offer-cover-open-grid-Lidl')),
       findsOneWidget,
