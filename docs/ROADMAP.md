@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Prospektkarten ohne wiederholte Katalogscans
+
+- [x] Angebotskarten und Suchtreffer an einen Katalogindex des aktuellen Snapshots binden.
+- [x] EAN- und Namensauflösung auch im Seitenviewer wiederverwenden.
+- [x] Regionale List-only-Produkte und unbekannte Labels ohne Identitäts- oder Filialfreigabe belassen.
+
 ## Update 17.10.2026 – Prospektabdeckung effizient berechnen
 
 - [x] Coverage-Signale je Händler in einem Datensatzdurchlauf zählen.
