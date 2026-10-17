@@ -1,3 +1,7 @@
+## D217 – Legacy-Listen übernehmen vollständige Produktmetadaten
+
+Der ältere lokale Schlüssel `shopping_list` bleibt als Lesepfad erhalten, schreibt bei neuen Snapshots aber dieselben vorhandenen optionalen Produktfelder wie das Katalogmodell. Beim Laden fehlen diese Felder bei historischen Einträgen weiterhin ohne Fehler; es werden keine Identitäten, Preise oder Varianten aus unvollständigen Daten erfunden.
+
 ## D216 – Preis-Matrix folgt Aktualität vor Quellenpriorität
 
 Die Marktpreis-Auswahl in Planung und Route bewertet zuerst den
