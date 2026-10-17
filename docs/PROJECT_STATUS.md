@@ -4063,3 +4063,9 @@ Die Fixture-Regression prüft für Kaufland jetzt die belegte Invariante
 „Prospektzeitraum enthält den im Asset gespeicherten `generatedAt`-Tag“,
 statt ein einzelnes historisches Kampagnenfenster zu erzwingen. Dadurch bleibt
 der Cover-/Filialnachweis bei automatischen Asset-Aktualisierungen stabil.
+
+
+## Update 17.10.2026 – KaufDA-Herkunft bei mehreren Filialen erhalten
+- Wenn mehrere gleichnamige Filialen denselben KaufDA-Adapter liefern, übernimmt der Feedparser die gemeinsame Adapterkennung weiterhin.
+- Ohne per Artikel belegte Filial-ID bleibt der Treffer ausdrücklich `regionalOnly`, erhält keine Filiale und wird weder als Preisbeobachtung noch als Routenpreis projiziert.
+- Unterschiedliche Adapter oder unterschiedliche Filialbelege bleiben bewusst unaufgelöst; es wird keine Filiale geraten.
