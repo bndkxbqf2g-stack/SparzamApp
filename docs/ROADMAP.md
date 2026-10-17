@@ -1,3 +1,8 @@
+## Update 17.10.2026 – Prospekt-OCR toleriert Währungsformatvarianten
+
+- [x] Währung vor oder nach dem OCR-Betrag wird erkannt.
+- [x] Bare Zahlen ohne Euro-/EUR-Marker bleiben aus konservativer Angebotsdetektion ausgeschlossen.
+- [x] Mehrere Beträge pro Zeile werden weiterhin als Angebot plus ausdrücklich erkannten Vorher-Preis getrennt.
 ## Update 17.10.2026 – Route-Suche erhält eine harte Marktgrenze
 
 - [x] `RouteOptimizer` übernimmt nur noch Werte zwischen 1 und `maximumSupportedRouteStores`.
