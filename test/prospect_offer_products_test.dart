@@ -118,21 +118,20 @@ void main() {
       proofRef: 'https://example.test/lidl/ambiguous-1',
     );
 
-    final catalog = const [
-        Product(
-          id: 'milk-a',
-          name: 'Milch 1 l',
-          unit: '1 l',
-          group: 'milch',
-        ),
-        Product(
-          id: 'milk-b',
-          name: 'Milch 1 l',
-          unit: '1 l',
-          group: 'milch',
-        ),
-      ],
-    );;
+    const catalog = [
+      Product(
+        id: 'milk-a',
+        name: 'Milch 1 l',
+        unit: '1 l',
+        group: 'milch',
+      ),
+      Product(
+        id: 'milk-b',
+        name: 'Milch 1 l',
+        unit: '1 l',
+        group: 'milch',
+      ),
+    ];
     final product = addableProductForProspectOffer(
       record,
       catalog,
