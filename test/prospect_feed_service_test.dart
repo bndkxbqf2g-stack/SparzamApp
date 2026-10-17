@@ -1334,6 +1334,58 @@ void main() {
     expect(result.records, hasLength(2));
     expect(result.records.map((record) => record.offerPrice), [1.49, 1.39]);
   });
+  test('dedupe merges richer optional evidence without changing price identity', () {
+    final result = parseProspectFeed(r'''
+{
+  "sources": [
+    {"storeName": "Lidl", "status": "ok", "branchId": "lidl-zellingen"}
+  ],
+  "offers": [
+    {
+      "sourceId": "metadata-duplicate",
+      "productLabel": "Butter",
+      "storeName": "Lidl",
+      "offerPrice": 1.49,
+      "originalPrice": 1.99,
+      "validUntil": "2026-10-17",
+      "source": "leaflet"
+    },
+    {
+      "sourceId": "metadata-duplicate",
+      "productLabel": "Butter",
+      "storeName": "Lidl",
+      "offerPrice": 1.49,
+      "originalPrice": 1.99,
+      "validUntil": "2026-10-17",
+      "source": "leaflet",
+      "ean": "4001234567890",
+      "category": "Milchprodukte",
+      "packageSize": "250 g",
+      "priceByBaseUnit": "5,96 €/kg",
+      "imageUrl": "https://example.test/metadata/butter.jpg",
+      "proofRef": "https://example.test/metadata/page",
+      "capturedAt": "2026-10-17T09:00:00Z"
+    }
+  ]
+}
+''');
+
+    expect(result.records, hasLength(1));
+    final record = result.records.single;
+    expect(record.sourceId, 'metadata-duplicate');
+    expect(record.offerPrice, 1.49);
+    expect(record.originalPrice, 1.99);
+    expect(record.ean, '4001234567890');
+    expect(record.category, 'Milchprodukte');
+    expect(record.packageSize, '250 g');
+    expect(record.priceByBaseUnit, '5,96 €/kg');
+    expect(record.imageUrl, 'https://example.test/metadata/butter.jpg');
+    expect(record.imageKind, ProspectImageKind.product);
+    expect(record.proofRef, 'https://example.test/metadata/page');
+    expect(record.regularPriceSource, 'originalPrice');
+    expect(record.capturedAt, DateTime.parse('2026-10-17T09:00:00Z'));
+  });
+
   test('reuses parsed local feed snapshots across cached reads', () async {
     final raw = r'''
 {

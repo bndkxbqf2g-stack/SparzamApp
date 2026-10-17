@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Deduplizierte Prospektzeilen behalten Quellenmetadaten
+
+Identische Prospektzeilen werden weiterhin zu einer Preis-/Identitätszeile
+zusammengeführt. Fehlen im ersten Exemplar Bild, Kategorie, Packungsgröße,
+Grundpreis oder Nachweis, übernimmt der Merge diese optionalen Felder aus
+späteren identischen Quellkopien. Preis, Produktlabel, Branch, Gültigkeit und
+Quellenklasse bleiben am konservativen Dedup-Schlüssel gebunden.
+
 ## Update 17.10.2026 – Routenfilialen werden dedupliziert
 
 Der RouteOptimizer reduziert doppelte Einträge derselben exakten Filiale vor der

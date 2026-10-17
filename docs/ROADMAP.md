@@ -1,3 +1,12 @@
+## Update 17.10.2026 – Reichere Metadaten bei Prospekt-Dubletten
+
+- [x] Identische Feedzeilen weiterhin über Preis-/Identitäts-/Gültigkeits-/
+  Filialschlüssel deduplizieren.
+- [x] Fehlende optionale Bilder, Kategorien, Packungs- und Grundpreisfelder
+  aus späteren identischen Quellkopien ergänzen.
+- [x] Produkt-/Preisidentität sowie Herkunfts- und Gültigkeitsgrenzen in einer
+  Parserregression schützen.
+
 ## Update 17.10.2026 – Routekombinationen bleiben filialgenau
 
 - [x] Doppelte Einträge derselben exakten Filiale vor der Kombinationserzeugung
