@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Artikelbilder aus öffentlichen Listenfeldern
+
+- [x] Produktbilder aus begrenzten öffentlichen Listenformaten (`images`, `imageUrls`, `productImages`, `media`, `assets`) auflösen.
+- [x] Nur absolute HTTP(S)-URLs übernehmen und Produktbild-Provenienz im bestehenden Importmodell beibehalten.
+- [x] Regressionstest für verschachtelte Listen- und `src`-Felder ergänzen.
+
 ## Update 17.10.2026 – OCR trennt Dezimalstellen nicht mehr falsch
 
 - [x] OCR-Geldtokens mit Leerraum um Komma oder Punkt werden normalisiert.

@@ -822,8 +822,13 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
       value['imageURL'],
       value['image_url'],
       value['image'],
+      value['images'],
+      value['imageUrls'],
       value['productImage'],
+      value['productImages'],
       value['product_image'],
+      value['media'],
+      value['assets'],
       value['bild'],
       value['bild_app'],
       value['bild_web130'],
@@ -1043,6 +1048,16 @@ String? _firstHttpUrl(
   for (final value in values) {
     final url = _httpUrlValue(value);
     if (url != null) return url;
+    if (value is List) {
+      // Public feed variants sometimes wrap product images in a short
+      // ordered list. Traverse only the bounded image container; arbitrary
+      // nested JSON is never interpreted as a URL.
+      for (final item in value) {
+        final nested = _firstHttpUrl([item], depth: depth + 1);
+        if (nested != null) return nested;
+      }
+      continue;
+    }
     if (value is Map) {
       final nested = _firstHttpUrl(
         [
@@ -1053,6 +1068,11 @@ String? _firstHttpUrl(
           value['imageURL'],
           value['image_url'],
           value['image'],
+          value['images'],
+          value['imageUrls'],
+          value['productImages'],
+          value['media'],
+          value['assets'],
           value['original'],
           value['large'],
         ],

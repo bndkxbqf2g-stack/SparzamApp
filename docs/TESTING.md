@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Listenförmige Prospekt-Artikelbilder
+
+`prospect_feed_service_test.dart` prüft jetzt ein verschachteltes `images`-
+Listenfeld mit `src`. Der Test erwartet die erste validierte HTTP(S)-URL und
+`ProspectImageKind.product`; Preis- und Gültigkeitsfelder bleiben unverändert.
+
 ## Update 17.10.2026 – Prospekt-OCR mit OCR-getrennten Dezimalstellen
 
 `prospect_page_ocr_test.dart` prüft zusätzlich `1, 99 €` und `2 . 49 €`.

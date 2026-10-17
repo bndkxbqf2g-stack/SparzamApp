@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Prospekt-Artikelbilder aus Listenformaten
+
+- Der Feed-Parser akzeptiert öffentliche Artikelbilder jetzt auch in begrenzten Listenfeldern wie `images`, `imageUrls`, `productImages`, `media` und `assets`.
+- URL- und Bildtyp-Provenienz bleibt erhalten: Ein validiertes Produktbild wird als `ProspectImageKind.product` geführt; ungültige oder nicht-öffentliche Werte werden verworfen.
+- Es gibt keine Änderung an Preis-, Gültigkeits- oder Filialzuordnung. Ein Fixture-Test deckt die Listenauflösung ab.
+
 ## Update 17.10.2026 – Prospekt-OCR normalisiert getrennte Dezimalstellen
 
 - Die lokale Prospekt-OCR toleriert jetzt auch OCR-Ausgaben wie `1, 99 €`, `1 . 99 €` und `€ 1, 99`.

@@ -206,3 +206,11 @@ Packungs- oder Seitenzahlen als Preise zu übernehmen.
 ## Update 17.10.2026 – OCR-Spaces bei Prospektpreisen
 
 Die Prospekt-OCR normalisiert nun getrennte Dezimalstellen innerhalb eines explizit markierten Euro-/EUR-Tokens. Das verbessert die lokale Artikelprüfung bei typischen OCR-Ausgaben, ohne bare Zahlen als Preise zu akzeptieren.
+
+## Update 17.10.2026 – Prospekt-Artikelbilder aus Listenformaten
+
+Der Prospekt-Feed übernimmt Produktbilder nun auch aus begrenzten öffentlichen
+Listenfeldern. Die Auflösung akzeptiert nur validierte HTTP(S)-URLs und hält das
+bestehende Produktbild-/Prospektseiten-Provenienzmodell ein. Preis-, Gültigkeits-
+und Filialdaten bleiben unverändert; die neue Fixture-Abdeckung liegt in
+`test/prospect_feed_service_test.dart`.
