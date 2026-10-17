@@ -237,7 +237,9 @@ List<PriceObservation> prospectPriceObservations({
     // Only a strictly higher original amount is a crossed-out regular price.
     // Equal amounts are still valid offer evidence, but they must never be
     // promoted into automatic regular-price history.
-    if (regular != null && regular > record.offerPrice) {
+    if (regular != null &&
+        regular > record.offerPrice &&
+        isLearnableProspectRegularPrice(record)) {
       observations.add(
         PriceObservation(
           id: '$prefix|regular|${regular.toStringAsFixed(4)}',
