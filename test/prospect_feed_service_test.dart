@@ -1400,5 +1400,39 @@ void main() {
   });
 
 
+
+  test('resolves nested thumbnail aliases in public product image lists', () {
+    final result = parseProspectFeed(
+      jsonEncode({
+        'generatedAt': '2026-10-17T04:15:00Z',
+        'sources': [
+          {
+            'storeName': 'Lidl',
+            'status': 'ok',
+            'branchId': 'lidl-zellingen',
+          },
+        ],
+        'offers': [
+          {
+            'sourceId': 'nested-image-alias',
+            'productLabel': 'Milch 1 l',
+            'storeName': 'Lidl',
+            'offerPrice': 0.99,
+            'validFrom': '2026-10-17',
+            'validUntil': '2026-10-22',
+            'images': [
+              {'thumbnailUrl': 'https://example.test/milk-thumb.jpg'},
+            ],
+            'proofRef': 'https://example.test/lidl/milk',
+          },
+        ],
+      }),
+    );
+
+    expect(result.records.single.imageUrl, 'https://example.test/milk-thumb.jpg');
+    expect(result.records.single.imageKind, ProspectImageKind.product);
+  });
+
+
 }
 

@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Verschachtelte Prospektbild-Aliase
+
+- [x] Häufige Thumbnail-, Cover- und Original-URL-Aliase in bekannten Bildobjekten auflösen.
+- [x] Bildauflösung weiterhin auf absolute HTTP(S)-URLs und feste Rekursionstiefe begrenzen.
+- [x] Verschachteltes `images[].thumbnailUrl` mit einem Parser-Fixture testen.
+
 ## Update 17.10.2026 – Artikelbilder aus öffentlichen Listenfeldern
 
 - [x] Produktbilder aus begrenzten öffentlichen Listenformaten (`images`, `imageUrls`, `productImages`, `media`, `assets`) auflösen.
