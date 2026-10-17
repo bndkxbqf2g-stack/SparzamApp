@@ -1429,7 +1429,7 @@ def _save_cached_body(path: Path | None, url: str, body: str, captured_at: datet
             delete=False,
         ) as temporary:
             temporary_path = Path(temporary.name)
-            temporary.write(json.dumps(payload, ensure_ascii=False))
+            temporary.write(json.dumps(payload, ensure_ascii=False, separators=(",", ":")))
             temporary.flush()
             os.fsync(temporary.fileno())
         os.replace(temporary_path, path)
