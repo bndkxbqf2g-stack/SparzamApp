@@ -1,3 +1,11 @@
+## Update 18.10.2026 – Reguläres Preisfeld bleibt nachvollziehbar
+
+`offer_import_test.dart` und `prospect_offer_products_test.dart` prüfen den
+Marker vom Feed bis zum gespeicherten `Offer`. `prospect_price_learning_test.dart`
+prüft die Weitergabe in die reguläre `PriceObservation`;
+`price_observation_store_test.dart` schützt den JSON-Roundtrip. Der Preise-Reiter
+zeigt das Feld im aktuellen Normalpreisledger an. Alle Fixtures bleiben offline.
+
 ## Update 17.10.2026 – Coverbild-Kandidaten
 
 `offers_cover_section_test.dart` prüft, dass die explizite Thumbnail-URL
