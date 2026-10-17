@@ -1776,3 +1776,11 @@ damit ein Lebensmittelbereich mit dem Zusatz „Pflanzen“ nicht pauschal
 ausgeschlossen wird. Einzelne Pflanzen- oder Haushaltsartikel bleiben durch
 ihren Produkttext bzw. ihre Taxonomie ausgeschlossen. Keine Kategorie wird aus
 einem freien Alias oder einer unsicheren Teilstring-Zuordnung erfunden.
+
+## D180 – KaufDA-Gruppenzeitpunkt folgt dem neuesten Nachweis
+
+Die zusammengefasste KaufDA-Händlerdiagnose darf ihren Aktualitätszeitpunkt
+nicht aus dem ersten Suchbegriff ableiten. Jede erfolgreiche Antwort vergleicht
+ihren Erfassungszeitpunkt mit dem bisherigen Gruppenwert; der jüngste Wert wird
+angezeigt. Einzelangebote behalten ihre eigene Provenienz, und ein Cacheanteil
+wird nicht verschwiegen.
