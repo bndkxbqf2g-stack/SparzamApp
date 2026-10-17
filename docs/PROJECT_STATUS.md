@@ -8,7 +8,6 @@ langen Angebotslisten nicht durch die Originalauflösung der Händlerbilder.
 Viewer-Seiten binden ihren Bildzustand zusätzlich an die gerenderte Position;
 doppelte Seitennummern aus alten oder externen Feeds können beim Recycling der
 Sliver-Kinder daher keinen fremden Seitenzustand übernehmen.
-
 ## Update 17.10.2026 – Separate Coverseiten im Viewer
 
 Wenn ein öffentlicher Prospektfeed eine Cover-URL separat von interioren Seiten ablegt und die Seitenliste erst bei Seite 2 beginnt, ergänzt der Viewer die validierte Coverseite als Seite 1. Vorhandene Seitenzahlen, Nachweise und die progressive Ladegrenze bleiben unverändert.
