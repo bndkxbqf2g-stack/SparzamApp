@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Externe Prospektquellen gezielt abschaltbar
+
+- [x] Bring bei gezielten Händler-Refreshes nur auf ausdrückliche Auswahl
+  (`bring`) aktivieren.
+- [x] Vollständige geplante Refreshes mit optionalen Bring-Credentials
+  unverändert unterstützen.
+- [x] Regression gegen ungefragte Bring-Anfragen bei Einzelquellen ergänzen.
+
 ## Update 17.10.2026 – Regulär-only Speichergrenze für Prospektpreise
 
 - [x] Automatische Prospekt-Upserts an einen eigenen `regular`-only-Pfad binden.
