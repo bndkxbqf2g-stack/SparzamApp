@@ -3,7 +3,6 @@ import '../../models/market_price.dart';
 import '../../models/receipt_observation.dart';
 import '../../models/price_observation.dart';
 import '../catalog/product_identity.dart';
-import '../route/market_price_quality.dart';
 import '../route/market_price_selection.dart';
 import '../../services/quantity_normalizer.dart';
 
@@ -116,17 +115,8 @@ bool _isBetterFamilyPrice(
   MarketPrice candidate,
   MarketPrice previous,
   DateTime now,
-) {
-  final candidateScore = candidate.price *
-      (1 + marketPriceQuality(candidate, now).uncertaintyRate);
-  final previousScore = previous.price *
-      (1 + marketPriceQuality(previous, now).uncertaintyRate);
-  return candidateScore < previousScore ||
-      (candidateScore == previousScore &&
-          (candidate.updatedAt.isAfter(previous.updatedAt) ||
-              (candidate.updatedAt.isAtSameMomentAs(previous.updatedAt) &&
-                  compareMarketPriceTieBreakers(candidate, previous) < 0)));
-}
+) =>
+    compareMarketPriceEvidence(candidate, previous, now) < 0;
 
 double? _comparablePrice(ListItem item, ReceiptObservation observation) {
   final packageAmount = item.product.packageAmount;
