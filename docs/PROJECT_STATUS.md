@@ -4069,3 +4069,11 @@ der Cover-/Filialnachweis bei automatischen Asset-Aktualisierungen stabil.
 - Wenn mehrere gleichnamige Filialen denselben KaufDA-Adapter liefern, übernimmt der Feedparser die gemeinsame Adapterkennung weiterhin.
 - Ohne per Artikel belegte Filial-ID bleibt der Treffer ausdrücklich `regionalOnly`, erhält keine Filiale und wird weder als Preisbeobachtung noch als Routenpreis projiziert.
 - Unterschiedliche Adapter oder unterschiedliche Filialbelege bleiben bewusst unaufgelöst; es wird keine Filiale geraten.
+
+
+## Update 17.10.2026 – Seitensuche für große Prospektfeeds
+- Die Volltextsuche zeigt zunächst höchstens 40 aktuelle Treffer und lädt weitere
+  Ergebnisse erst über „Weitere Artikel laden“ nach.
+- Trefferzahl, Filialzuordnung, Gültigkeitsfilter und Produktauflösung bleiben
+  unverändert; nur die erste Sliver-Materialisierung wird begrenzt.
+- Eine Widgetregression prüft das Nachladen eines 80-Artikel-Feeds.

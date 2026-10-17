@@ -553,6 +553,57 @@ void main() {
     );
   });
 
+  testWidgets('loads additional prospect search pages on demand',
+      (tester) async {
+    final records = [
+      for (var index = 0; index < 80; index++)
+        OfferImportRecord(
+          sourceId: 'paged-search-$index',
+          productLabel: 'Butter $index 250 g',
+          storeName: 'Lidl',
+          offerPrice: 1.99,
+          validFrom: DateTime(2026, 9, 28),
+          validUntil: DateTime(2026, 10, 3),
+          proofRef: 'https://example.test/paged-search/$index',
+        ),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: records,
+          now: DateTime(2026, 9, 30),
+        ),
+      ),
+    );
+
+    final search = find.byWidgetPredicate(
+      (widget) =>
+          widget is TextField &&
+          widget.decoration?.hintText == 'Prospekte und Artikel durchsuchen',
+    );
+    await tester.enterText(search, 'Butter');
+    await tester.pump();
+
+    expect(find.text('80 passende Prospektartikel'), findsOneWidget);
+    final loadMore = find.byKey(
+      const ValueKey('prospect-search-load-more'),
+    );
+    await tester.scrollUntilVisible(
+      loadMore,
+      600,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.ensureVisible(loadMore);
+    await tester.pumpAndSettle();
+    expect(find.text('Weitere Artikel laden (40)'), findsOneWidget);
+
+    await tester.tap(loadMore);
+    await tester.pump();
+
+    expect(loadMore, findsNothing);
+  });
+
   testWidgets('scrolls a larger cover grid without eagerly building every card',
       (tester) async {
     final prospects = [

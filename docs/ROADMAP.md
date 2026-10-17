@@ -1290,3 +1290,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Eine eindeutige gemeinsame Adapterherkunft bleibt sichtbar, wenn ein Händler im Feed mehrere Filialen hat.
 - [x] Branchlose KaufDA-Treffer werden dadurch weiterhin als regional erkannt angezeigt und bleiben für Preis-/Routenprojektion gesperrt.
 - [x] Bei gemischten Adaptern oder widersprüchlicher Filialherkunft bleibt die Zuordnung unbekannt.
+
+
+## Update 17.10.2026 – Prospektsuche paginiert
+- [x] Große Prospektsuchen materialisieren zuerst höchstens 40 Ergebnisartikel.
+- [x] Weitere aktuelle Treffer werden über einen sichtbaren Nachladebutton
+  ergänzt; Suchanzahl und Filial-/Quellenlogik bleiben vollständig.
+- [x] Die Begrenzung reduziert den ersten Layout- und Bildaufwand beim Scrollen.

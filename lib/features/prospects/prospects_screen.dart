@@ -562,7 +562,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
   }
 }
 
-class _ProspectSearchResultsSliver extends StatelessWidget {
+class _ProspectSearchResultsSliver extends StatefulWidget {
   const _ProspectSearchResultsSliver({
     required this.records,
     required this.prospects,
@@ -576,6 +576,46 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
   final List<Product> catalogProducts;
   final ValueChanged<Product>? onAddProduct;
   final String query;
+
+  @override
+  State<_ProspectSearchResultsSliver> createState() =>
+      _ProspectSearchResultsSliverState();
+}
+
+class _ProspectSearchResultsSliverState
+    extends State<_ProspectSearchResultsSliver> {
+  static const _searchPageSize = 40;
+  var _visibleCount = _searchPageSize;
+
+  List<OfferImportRecord> get records => widget.records;
+  List<ProspectIssue> get prospects => widget.prospects;
+  List<Product> get catalogProducts => widget.catalogProducts;
+  ValueChanged<Product>? get onAddProduct => widget.onAddProduct;
+  String get query => widget.query;
+
+  @override
+  void didUpdateWidget(covariant _ProspectSearchResultsSliver oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final oldFirst = oldWidget.records.isEmpty
+        ? null
+        : prospectOfferRecordKey(oldWidget.records.first);
+    final newFirst = widget.records.isEmpty
+        ? null
+        : prospectOfferRecordKey(widget.records.first);
+    final oldLast = oldWidget.records.isEmpty
+        ? null
+        : prospectOfferRecordKey(oldWidget.records.last);
+    final newLast = widget.records.isEmpty
+        ? null
+        : prospectOfferRecordKey(widget.records.last);
+    if (oldWidget.query != widget.query ||
+        oldWidget.records.length != widget.records.length ||
+        oldWidget.prospects.length != widget.prospects.length ||
+        oldFirst != newFirst ||
+        oldLast != newLast) {
+      _visibleCount = _searchPageSize;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -613,8 +653,13 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
       );
     }
 
+    final visibleCount =
+        _visibleCount.clamp(0, matchingRecords.length).toInt();
+    final visibleRecords = matchingRecords
+        .take(visibleCount)
+        .toList(growable: false);
     final byStore = <String, List<OfferImportRecord>>{};
-    for (final record in matchingRecords) {
+    for (final record in visibleRecords) {
       // Use the exact store/branch key for grouping. The row still displays
       // the human-readable retailer name, while two same-name branches keep
       // independent locations and product lists.
@@ -650,6 +695,18 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
       );
       rows.addAll(
         entry.value.map((record) => _ProspectSearchRow.offer(record)),
+      );
+    }
+    if (visibleCount < matchingRecords.length) {
+      rows.add(
+        _ProspectSearchRow.loadMore(
+          remaining: matchingRecords.length - visibleCount,
+          onPressed: () => setState(() {
+            _visibleCount = (_visibleCount + _searchPageSize)
+                .clamp(0, matchingRecords.length)
+                .toInt();
+          }),
+        ),
       );
     }
 
@@ -695,10 +752,24 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
             _ProspectSearchRowKind.offer => Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: _buildOffer(
-                context,
-                row.record!,
-                resolvedProducts,
+                  context,
+                  row.record!,
+                  resolvedProducts,
+                ),
               ),
+            _ProspectSearchRowKind.loadMore => Padding(
+                padding: const EdgeInsets.only(top: 8, bottom: 12),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: OutlinedButton.icon(
+                    key: const ValueKey('prospect-search-load-more'),
+                    onPressed: row.onPressed,
+                    icon: const Icon(Icons.expand_more),
+                    label: Text(
+                      'Weitere Artikel laden (${row.remaining})',
+                    ),
+                  ),
+                ),
               ),
           };
         },
@@ -772,7 +843,7 @@ String? _prospectSearchLocation(
   return issues.single.location?.trim();
 }
 
-enum _ProspectSearchRowKind { heading, description, store, offer }
+enum _ProspectSearchRowKind { heading, description, store, offer, loadMore }
 
 Product? _memoizedProspectProduct(
   OfferImportRecord record,
@@ -790,26 +861,44 @@ class _ProspectSearchRow {
   const _ProspectSearchRow.heading(this.text)
       : kind = _ProspectSearchRowKind.heading,
         location = null,
-        record = null;
+        record = null,
+        remaining = null,
+        onPressed = null;
 
   const _ProspectSearchRow.description(this.text)
       : kind = _ProspectSearchRowKind.description,
         location = null,
-        record = null;
+        record = null,
+        remaining = null,
+        onPressed = null;
 
   const _ProspectSearchRow.store(this.text, {this.location})
       : kind = _ProspectSearchRowKind.store,
-        record = null;
+        record = null,
+        remaining = null,
+        onPressed = null;
 
   const _ProspectSearchRow.offer(this.record)
       : kind = _ProspectSearchRowKind.offer,
         text = null,
-        location = null;
+        location = null,
+        remaining = null,
+        onPressed = null;
+
+  const _ProspectSearchRow.loadMore({
+    required this.remaining,
+    required this.onPressed,
+  })  : kind = _ProspectSearchRowKind.loadMore,
+        text = null,
+        location = null,
+        record = null;
 
   final _ProspectSearchRowKind kind;
   final String? text;
   final String? location;
   final OfferImportRecord? record;
+  final int? remaining;
+  final VoidCallback? onPressed;
 }
 
 List<OfferImportRecord> _matchingProspectRecords(

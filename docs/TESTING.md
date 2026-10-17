@@ -512,3 +512,9 @@ Prospektfenster erzeugt dadurch keinen falschen CI-Fehler.
 
 
 - KaufDA-Feedparser: `prospect_feed_service_test.dart` prüft jetzt auch mehrere gleichnamige Filialen mit gemeinsamer Adapterkennung. Der branchlose Datensatz behält `sourceAdapter: kaufda`, bleibt `regionalOnly` und erhält weder Filiale noch Standort.
+
+
+## Prospektsuche mit vielen Treffern
+Die Widgetregression 'loads additional prospect search pages on demand' prüft,
+dass ein großer aktueller Feed zunächst paginiert erscheint und nach der
+Nutzeraktion vollständig weitergeladen werden kann.

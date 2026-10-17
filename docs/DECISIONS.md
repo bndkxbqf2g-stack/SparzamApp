@@ -1825,3 +1825,11 @@ nicht.
 
 ## D185 – Gemeinsame Quellenherkunft trotz unklarer Filiale
 Wenn gleichnamige Filialen eines Händlers denselben öffentlichen Adapter melden, darf die gemeinsame Adapterkennung an einem branchlosen Angebot erhalten bleiben. Sie ist Provenienz, keine Filialzuordnung: Der Datensatz wird als regional beziehungsweise filiallos markiert und bleibt für aktuelle Preis- und Routenprojektion gesperrt. Sobald Adapter oder Filialherkunft nicht eindeutig gemeinsam sind, bleibt beides unbekannt.
+
+
+## D186 – Große Prospektsuchen werden seitenweise materialisiert
+Die Suche darf die vollständige Trefferzahl berechnen, muss aber nicht alle
+Artikelkarten beim ersten Aufbau als Sliverzeilen materialisieren. Die ersten
+40 Treffer werden angezeigt; weitere aktuelle Treffer werden auf ausdrückliche
+Nutzeraktion nachgeladen. Damit bleibt die Suche vollständig und deterministisch,
+während Bilddekodierung und Widgetaufbau beim schnellen Scrollen begrenzt werden.
