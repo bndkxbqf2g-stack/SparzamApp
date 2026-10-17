@@ -706,6 +706,12 @@ class _ProspectSearchResultsSliverState
       );
     }
 
+    final widgetKeysByRecord = <OfferImportRecord, String>{};
+    final precomputedWidgetKeys = prospectOfferWidgetKeys(records);
+    for (var index = 0; index < records.length; index++) {
+      widgetKeysByRecord[records[index]] = precomputedWidgetKeys[index];
+    }
+
     final visibleCount =
         _visibleCount.clamp(0, matchingRecords.length).toInt();
     final visibleRecords = matchingRecords
@@ -808,6 +814,7 @@ class _ProspectSearchResultsSliverState
                   context,
                   row.record!,
                   resolvedProducts,
+                  widgetKeysByRecord,
                 ),
               ),
             _ProspectSearchRowKind.loadMore => Padding(
@@ -837,6 +844,7 @@ class _ProspectSearchResultsSliverState
     BuildContext context,
     OfferImportRecord record,
     Map<String, Product?> resolvedProducts,
+    Map<OfferImportRecord, String> widgetKeysByRecord,
   ) {
     final product = _memoizedProspectProduct(
       record,
@@ -853,7 +861,8 @@ class _ProspectSearchResultsSliverState
     final listOnlyWithoutBranch =
         record.regionalOnly && selectableProduct != null;
     final canAdd = onAddProduct != null && selectableProduct != null;
-    final recordKey = prospectOfferWidgetKey(record, widget.records);
+    final recordKey =
+        widgetKeysByRecord[record] ?? prospectOfferRecordKey(record);
     return ProspectOfferCard(
       key: ValueKey('prospect-search-offer-$recordKey'),
       record: record,
@@ -2096,6 +2105,19 @@ class ProspectViewerScreen extends StatelessWidget {
             _prospectCategoryOrder(a).compareTo(_prospectCategoryOrder(b)),
       );
 
+    final widgetKeysByCategory =
+        <String, Map<OfferImportRecord, String>>{};
+    for (final category in categories) {
+      final categoryRecords = groupedItems[category]!;
+      final keys = prospectOfferWidgetKeys(categoryRecords);
+      final indexed = <OfferImportRecord, String>{};
+      for (var index = 0; index < categoryRecords.length; index++) {
+        indexed[categoryRecords[index]] = keys[index];
+      }
+      widgetKeysByCategory[category] = indexed;
+    }
+
+
     final header = <Widget>[
       if (issue.location?.trim().isNotEmpty == true)
         Card(
@@ -2227,10 +2249,9 @@ class ProspectViewerScreen extends StatelessWidget {
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
                       final record = groupedItems[category]![index];
-                      final recordKey = prospectOfferWidgetKey(
-                        record,
-                        groupedItems[category]!,
-                      );
+                      final recordKey =
+                          widgetKeysByCategory[category]?[record] ??
+                          prospectOfferRecordKey(record);
                       final product = _memoizedProspectProduct(
                         record,
                         catalogProducts,
