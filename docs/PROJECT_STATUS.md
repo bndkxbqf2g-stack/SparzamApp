@@ -4023,3 +4023,11 @@ Ein Regressionstest prüft die Zusammenführung von \`LIDL-ZELLINGEN\` und
 \`lidl-zellingen\` über Quelle, Prospektseite und Angebot. Die Regel bleibt
 konservativ: fehlende oder unterschiedliche Filial-IDs erzeugen keine
 automatische Zuordnung.
+
+## Update 17.10.2026 – KaufDA-Gruppen behalten den neuesten Erfassungszeitpunkt
+
+Wenn mehrere begrenzte KaufDA-Suchbegriffe dieselbe Händlergruppe liefern,
+verwendet die Gruppierung jetzt den neuesten erfolgreichen \`capturedAt\`-
+Zeitpunkt. Ein älterer Cache-Treffer kann einen späteren Live-Nachweis nicht
+mehr verdecken; \`cacheUsed\` bleibt als gemischte Herkunft sichtbar. Die
+Einzelangebote behalten weiterhin ihren eigenen Erfassungszeitpunkt.
