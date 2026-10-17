@@ -1,3 +1,7 @@
+## D219 – Preisplanung setzt alle Preisprojektionen gemeinsam
+
+Ein Preis-Mutationsergebnis enthält neben aktuellem Marktpreis und Verlauf auch den vollständigen lokalen Beobachtungsstand. Die Shell setzt diese drei Eingänge in einem UI-Snapshot. So bleibt die Route-Projektion deterministisch; Preisrangfolge, Identitätsprüfung, Quellen und die Trennung von Aktionspreisen ändern sich nicht.
+
 ## D218 – Automatischer Listenabgleich bleibt an exakte Produkt-ID gebunden
 
 Ein Katalog- oder Prospekt-Refresh darf bestehende Listeneinträge nur über dieselbe nichtleere Produkt-ID aktualisieren. Die neue Produktinstanz ersetzt ausschließlich Metadaten; Nutzerzustand (Menge, Notiz, Abhaken) bleibt am Listeneintrag. Fehlende oder mehrdeutige Identität erzeugt keinen Ersatz und keine neue Preiszuordnung.
