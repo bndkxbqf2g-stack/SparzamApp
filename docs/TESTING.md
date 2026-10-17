@@ -1,3 +1,8 @@
+## Update 17.10.2026 – Covergruppierung bei Händler-Schreibvarianten
+
+offers_screen_test.dart prüft, dass LIDL und Lidl mit gleicher Filialebene nur
+eine Coverkarte erzeugen. Die Anzeige- und Filtergruppierung nutzt den
+Präsentationsschlüssel; exakte Branch-Kontexte bleiben separat.
 ## Update 17.10.2026 – Angebotsquellenhinweis bei Schreibvarianten
 
 offers_screen_test.dart prüft, dass ein regionaler KaufDA-Datensatz mit
