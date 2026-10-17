@@ -1,3 +1,21 @@
+## Update 17.10.2026 – Filialgenaue Prospektangebote im Cache- und Live-Merge
+
+- [x] Transiente Prospektangebote werden mit Angebots-ID, Händler und exakter Filial-/Ortsherkunft geschlüsselt.
+- [x] Derselbe Quellartikel bleibt dadurch in zwei gleichnamigen Filialen getrennt sichtbar; die Preis- und Routenlogik erhält beide Filialnachweise.
+- [x] Automatisch gespeichert werden weiterhin nur reguläre Prospektpreise; Aktionspreise bleiben flüchtige Offer-Evidenz.
+
+## Update 17.10.2026 – KaufDA-Rohcache begrenzt
+
+- [x] Der optionale Rohantwort-Cache hält höchstens 16 gültige Einträge und 8 MiB.
+- [x] Beschädigte, übergroße und ältere Werte werden beim Schreiben begrenzt entfernt; die Byte-Größe wird nach kompakter Serialisierung geprüft.
+- [x] Die Cache-Grenze verändert keine Händlerabfrage, Gültigkeitsprüfung oder Preisrollen.
+
+## Update 17.10.2026 – Cache-Prospektangebote vor Live-Refresh nutzbar
+
+- [x] Ein validierter Cache-Feed projiziert aktuelle Angebote sofort in den transienten Shell-Snapshot.
+- [x] Einkaufsliste und Routenhinweise können dadurch offline starten, während reguläre Preisbeobachtungen separat lokal persistiert werden.
+- [x] Ein späterer Live-Feed ersetzt den transienten Stand deterministisch.
+
 ## Update 16.10.2026 – Coverkarten füllen feste Zellen
 
 - [x] Favoritenrail und Coverraster füllen ihre festen Kartenhöhen vollständig, damit kein dunkler Leerstreifen unter den Metadaten entsteht.

@@ -1,3 +1,15 @@
+## Update 17.10.2026 – Filialgenaue Prospektangebote im Cache- und Live-Merge
+
+- Transiente Prospektangebote werden beim Aufbau des Cache- und Live-Snapshots jetzt mit Angebots-ID, Händler und exakter Filial-/Ortsherkunft geschlüsselt.
+- Derselbe Quellartikel darf dadurch in zwei gleichnamigen Filialen parallel sichtbar bleiben; manuelle Angebote bleiben unverändert erhalten.
+- Automatisch lokal gespeichert werden weiterhin ausschließlich belegte reguläre beziehungsweise durchgestrichene Prospektpreise.
+
+## Update 17.10.2026 – KaufDA-Rohcache begrenzt
+
+- Der optionale KaufDA-Rohantwort-Cache ist auf 16 gültige Einträge und 8 MiB Gesamtgröße begrenzt.
+- Beim Schreiben werden beschädigte oder übergroße Altwerte entfernt und die neuesten gültigen Einträge bevorzugt; kompakte Byte-Prüfung und Python-Regressionen sichern das Limit.
+- Die Begrenzung betrifft nur Rohantworten und ändert weder die Angebotsgültigkeit noch die getrennte Preis-Persistenz.
+
 ## Update 17.10.2026 – Preisqualität kennzeichnet nicht routenfähige Belege eindeutig
 
 - Die Preise-Übersicht bezeichnet Belege außerhalb der aktuellen Routenbasis jetzt als „nicht routenfähig“.
