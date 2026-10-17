@@ -606,6 +606,11 @@ class KaufdaProspectTest(unittest.TestCase):
                     datetime(2026, 10, 12, 9, tzinfo=timezone.utc),
                 )
 
+            self.assertLessEqual(
+                cache_path.stat().st_size,
+                kaufda.MAX_CACHE_BYTES,
+            )
+
             self.assertIsNone(
                 kaufda._load_cached_body(
                     cache_path,
