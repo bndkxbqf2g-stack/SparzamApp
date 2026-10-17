@@ -1,7 +1,7 @@
 import pathlib
 import tempfile
 import unittest
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from unittest import mock
 
 from tool import kaufda_prospects as kaufda
@@ -560,7 +560,7 @@ class KaufdaProspectTest(unittest.TestCase):
                     cache_path,
                     url,
                     self.html,
-                    datetime(2026, 10, 12, 8 + index, tzinfo=timezone.utc),
+                    datetime(2026, 10, 12, 8, tzinfo=timezone.utc) + timedelta(hours=index),
                 )
 
             payload = kaufda.json.loads(cache_path.read_text(encoding="utf-8"))
