@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Coverbilder erhalten einen validierten Ersatz
+
+- [x] Eine explizite Cover-Thumbnail-URL bleibt der erste Bildkandidat.
+- [x] Bei einem Ladefehler wird höchstens eine bereits validierte Prospektseite
+  als zweiter Kandidat versucht.
+- [x] Erst danach greift das begrenzte HTML-Fallback-Budget; Seiten-, Preis-,
+  Gültigkeits- und Quellenlogik bleiben unverändert.
+
 ## Update 17.10.2026 – Coverfallback nutzt erste gültige Prospektseite
 
 - [x] Coverkarten verwenden eine eigene Thumbnail-URL bevorzugt.

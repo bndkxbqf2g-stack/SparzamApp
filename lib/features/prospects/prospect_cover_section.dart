@@ -358,6 +358,7 @@ class ProspectCoverCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final previewUrl = prospectCoverPreviewUrl(issue);
+    final fallbackUrl = prospectCoverPageFallbackUrl(issue);
     final imageHeight = compact ? 168.0 : 181.0;
     final scope = compact ? 'grid' : 'favorite';
     final image = previewUrl == null
@@ -367,6 +368,7 @@ class ProspectCoverCard extends StatelessWidget {
               'offer-cover-image-$scope-${prospectIssueKey(issue)}',
             ),
             url: previewUrl,
+            fallbackUrl: fallbackUrl,
             // Use one bounded decode size for favorites and the grid so the
             // same cover does not occupy two decoded browser-cache entries.
             cacheWidth: 480,
@@ -549,6 +551,7 @@ class ProspectAdaptiveImage extends StatefulWidget {
     required this.cacheHeight,
     required this.fit,
     required this.placeholder,
+    this.fallbackUrl,
     this.fallbackBudget,
   });
 
@@ -557,6 +560,7 @@ class ProspectAdaptiveImage extends StatefulWidget {
   final int cacheHeight;
   final BoxFit fit;
   final Widget placeholder;
+  final String? fallbackUrl;
   final ProspectImageFallbackBudget? fallbackBudget;
 
   @override
@@ -564,9 +568,13 @@ class ProspectAdaptiveImage extends StatefulWidget {
 }
 
 class _ProspectAdaptiveImageState extends State<ProspectAdaptiveImage> {
+  bool _useAlternateUrl = false;
   bool _useHtmlFallback = false;
   bool _fallbackDenied = false;
   ProspectImageFallbackBudget? _reservedBudget;
+
+  String get _activeUrl =>
+      _useAlternateUrl ? widget.fallbackUrl ?? widget.url : widget.url;
 
   ProspectImageFallbackBudget get _budget =>
       widget.fallbackBudget ?? prospectImageFallbackBudget;
@@ -582,8 +590,10 @@ class _ProspectAdaptiveImageState extends State<ProspectAdaptiveImage> {
   void didUpdateWidget(covariant ProspectAdaptiveImage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.url != widget.url ||
+        oldWidget.fallbackUrl != widget.fallbackUrl ||
         oldWidget.fallbackBudget != widget.fallbackBudget) {
       _releaseFallbackSlot();
+      _useAlternateUrl = false;
       _useHtmlFallback = false;
       _fallbackDenied = false;
     }
@@ -597,9 +607,10 @@ class _ProspectAdaptiveImageState extends State<ProspectAdaptiveImage> {
 
   @override
   Widget build(BuildContext context) {
+    final activeUrl = _activeUrl;
     return Image.network(
-      widget.url,
-      key: ValueKey('prospect-adaptive-image-${widget.url}'),
+      activeUrl,
+      key: ValueKey('prospect-adaptive-image-$activeUrl'),
       cacheWidth: widget.cacheWidth,
       cacheHeight: widget.cacheHeight,
       filterQuality: FilterQuality.low,
@@ -614,6 +625,22 @@ class _ProspectAdaptiveImageState extends State<ProspectAdaptiveImage> {
         return widget.placeholder;
       },
       errorBuilder: (context, error, stackTrace) {
+        final alternateUrl = _safeImageUrl(widget.fallbackUrl);
+        if (!_useAlternateUrl &&
+            alternateUrl != null &&
+            alternateUrl != widget.url) {
+          final primaryUrl = widget.url;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted ||
+                _useAlternateUrl ||
+                widget.url != primaryUrl ||
+                widget.fallbackUrl != alternateUrl) {
+              return;
+            }
+            setState(() => _useAlternateUrl = true);
+          });
+          return widget.placeholder;
+        }
         if (!_useHtmlFallback &&
             !_fallbackDenied &&
             _reservedBudget == null) {
@@ -622,12 +649,12 @@ class _ProspectAdaptiveImageState extends State<ProspectAdaptiveImage> {
             return widget.placeholder;
           }
           _reservedBudget = _budget;
-          final failedUrl = widget.url;
+          final failedUrl = activeUrl;
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!mounted ||
                 _useHtmlFallback ||
                 !prospectImageFallbackMatches(
-                  currentUrl: widget.url,
+                  currentUrl: _activeUrl,
                   failedUrl: failedUrl,
                 )) {
               return;
@@ -714,6 +741,16 @@ String? prospectCoverPreviewUrl(ProspectIssue issue) {
   for (final page in issue.pages) {
     final image = _safeImageUrl(page.imageUrl);
     if (image != null) return image;
+  }
+  return null;
+}
+
+/// Returns a second validated page image to try when the preferred cover fails.
+String? prospectCoverPageFallbackUrl(ProspectIssue issue) {
+  final preview = prospectCoverPreviewUrl(issue);
+  for (final page in issue.pages) {
+    final image = _safeImageUrl(page.imageUrl);
+    if (image != null && image != preview) return image;
   }
   return null;
 }

@@ -1,3 +1,14 @@
+## Update 17.10.2026 – Coverbilder erhalten einen validierten Ersatz
+
+Die Prospekt-Coveransicht verwendet weiterhin bevorzugt das vom Feed gelieferte
+Thumbnail. Scheitert dessen Canvas-Laden, versucht die Karte genau einmal eine
+andere bereits validierte HTTP(S)-Seite des gleichen Prospekts. Erst danach
+wird das begrenzte HTML-Fallback-Budget verwendet. Dadurch kann eine fehlerhafte
+kleine Thumbnail-Transformation nicht mehr allein zu einer leeren Coverkarte
+führen; Filial-, Seiten-, Gültigkeits- und Preisprovenienz bleiben unverändert.
+Die Widget-Regression in `test/offers_cover_section_test.dart` schützt die
+Kandidatenreihenfolge.
+
 ## Update 17.10.2026 – Coverfallback nutzt erste gültige Prospektseite
 
 Coverkarten bevorzugen weiterhin die ausdrücklich gelieferte Thumbnail-URL.
