@@ -553,9 +553,9 @@ class _ProspectCoverageCardState extends State<ProspectCoverageCard> {
         subtitle: Text(
           '${coverage.length} Märkte · $marketsWithOffers mit strukturierten '
           'Angeboten · $marketsWithPages mit Bildseiten · '
-          '$offersWithImages/$totalStructuredOffers mit Bildnachweis '
-          '($offersWithProductImages Artikelbilder · '
-          '$offersWithPageImages Prospektseiten) · '
+          '$offersWithImages/$totalStructuredOffers mit Artikelbildern · '
+          '$offersWithProductImages Artikelbilder · '
+          '$offersWithPageImages Prospektseiten als Bildnachweis · '
           '$offersWithCategories/$totalStructuredOffers mit Kategorien · '
           '$marketsWithValidity mit Gültigkeitszeitraum · '
           '$marketsWithRegularPrices mit Normalpreis · '
