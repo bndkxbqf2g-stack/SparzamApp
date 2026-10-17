@@ -784,7 +784,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
         prospectRegularPricePersistenceStatus = pricePersistenceWarning == null
             ? ProspectRegularPricePersistenceStatus.succeeded
             : ProspectRegularPricePersistenceStatus.failed;
-        offers = offersById;
+        offers = offersById.values.toList(growable: false);
         prospectProducts = offerBackedProducts
             .map((entry) => entry.product)
             .toList(growable: false);
@@ -942,7 +942,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       prospectProducts = offerBackedProducts
           .map((entry) => entry.product)
           .toList(growable: false);
-      offers = offersById.values.toList(growable: false);
+      offers = offersById;
       prospectIssues = feed.prospects;
       prospectFeedFromCache = feed.fromCache;
       prospectFeedGeneratedAt = feed.generatedAt;
