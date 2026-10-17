@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Verschachtelte Prospektgültigkeit normalisieren
+
+- Der Feedparser liest bekannte Datumsbereiche aus `validity`, `validityPeriod`, `dateRange`, `period` und `offerPeriod`.
+- Es werden nur ausdrücklich benannte Start-/Endfelder und ISO-/Datumsstrings akzeptiert; fehlende oder ungültige Enddaten verwerfen den Datensatz weiterhin.
+- Eine Fixture-Regression prüft gültige und malformed verschachtelte Zeiträume für Angebot und Prospekt.
+
 ## Update 17.10.2026 – Verschachtelten Filialkontext normalisieren
 
 - Quellen, Prospektseiten und Angebote übernehmen bekannte verschachtelte Filialobjekte (`branch`, `branchInfo`, `storeBranch`) sowie explizite Standort-/Adressfelder.

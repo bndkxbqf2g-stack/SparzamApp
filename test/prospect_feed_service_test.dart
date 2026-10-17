@@ -1511,5 +1511,66 @@ void main() {
   });
 
 
+
+  test('normalizes explicit nested validity periods without inventing dates', () {
+    final result = parseProspectFeed(
+      jsonEncode({
+        'generatedAt': '2026-10-17T04:15:00Z',
+        'sources': [
+          {
+            'storeName': 'Lidl',
+            'status': 'ok',
+            'branchId': 'lidl-zellingen',
+            'prospects': [
+              {
+                'title': 'Lidl Wochenprospekt',
+                'validity': {
+                  'start': {'date': '2026-10-17'},
+                  'end': '2026-10-22',
+                },
+              },
+            ],
+          },
+        ],
+        'offers': [
+          {
+            'sourceId': 'nested-validity',
+            'productLabel': 'Butter 250 g',
+            'storeName': 'Lidl',
+            'offerPrice': 1.49,
+            'validity': {
+              'from': {'isoDate': '2026-10-17'},
+              'to': '2026-10-22',
+            },
+            'proofRef': 'https://example.test/lidl/butter',
+          },
+          {
+            'sourceId': 'malformed-nested-validity',
+            'productLabel': 'Milch 1 l',
+            'storeName': 'Lidl',
+            'offerPrice': 0.99,
+            'validity': {
+              'from': 'not-a-date',
+              'to': '2026-10-22',
+            },
+            'proofRef': 'https://example.test/lidl/milk',
+          },
+        ],
+      }),
+    );
+
+    expect(result.records, hasLength(1));
+    expect(result.records.single.sourceId, 'nested-validity');
+    expect(result.records.single.validFrom, DateTime(2026, 10, 17));
+    expect(result.records.single.validUntil, DateTime(2026, 10, 22));
+
+    final issue = result.prospects.firstWhere(
+      (entry) => entry.title == 'Lidl Wochenprospekt',
+    );
+    expect(issue.validFrom, DateTime(2026, 10, 17));
+    expect(issue.validUntil, DateTime(2026, 10, 22));
+  });
+
+
 }
 

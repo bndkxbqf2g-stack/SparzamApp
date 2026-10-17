@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Verschachtelte Angebotsgültigkeit
+
+- [x] Bekannte verschachtelte Gültigkeitscontainer für Prospektseiten und Angebote normalisieren.
+- [x] Fehlende, ungültige und widersprüchliche Datumswerte weiterhin konservativ verwerfen.
+- [x] Gültigen Zeitraum und malformed Gegenprobe als Parser-Fixture testen.
+
 ## Update 17.10.2026 – Verschachtelter Filialnachweis
 
 - [x] Bekannte verschachtelte Filialobjekte in Feed-Quelle, Prospekt und Angebot normalisieren.

@@ -1,3 +1,10 @@
+## Update 17.10.2026 – Verschachtelte Gültigkeitszeiträume
+
+`prospect_feed_service_test.dart` prüft einen gültigen verschachtelten
+`validity`-Zeitraum für Angebot und Prospekt sowie einen malformed Startwert.
+Nur der belegte Zeitraum wird übernommen; der malformed Datensatz bleibt
+ausgeschlossen.
+
 ## Update 17.10.2026 – Verschachtelter Filialkontext
 
 `prospect_feed_service_test.dart` prüft einen Feed mit zwei gleichnamigen

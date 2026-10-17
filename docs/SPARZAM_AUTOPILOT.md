@@ -229,3 +229,10 @@ Der Prospektparser normalisiert bekannte verschachtelte Filialobjekte für
 Quellen, Prospekte und Angebote. Die Zuordnung bleibt konservativ und
 branchgenau; gleichnamige Märkte werden ohne eindeutige Branch-ID nicht
 zusammengeführt. Preis-, Gültigkeits- und Identitätsregeln bleiben unverändert.
+
+## Update 17.10.2026 – Verschachtelte Angebotsgültigkeit
+
+Bekannte öffentliche Datumscontainer werden nun für Prospektseiten und
+Angebotsdatensätze normalisiert. Fehlende oder ungültige Enddaten bleiben
+ungültig und werden nicht routefähig. Die bestehende aktuelle-/abgelaufen-
+Filterung und Preisprovenienz bleiben unverändert.
