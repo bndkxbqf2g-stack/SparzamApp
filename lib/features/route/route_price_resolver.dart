@@ -9,7 +9,6 @@ import '../offers/offer_filter.dart';
 import '../shopping_list/shopping_intent.dart';
 import '../../services/branch_identity.dart';
 import '../../services/market_price_comparability.dart';
-import 'market_price_quality.dart';
 import 'market_price_selection.dart';
 
 class RoutePriceQuote {
@@ -197,18 +196,12 @@ class RoutePriceResolver {
         ? exact
         : candidates.where((price) => !_hasSourceLocation(price));
     MarketPrice? best;
-    var bestScore = double.infinity;
+    final reference = now ?? DateTime.now();
     for (final price in scoped) {
-      final score = price.price *
-          (1 + marketPriceQuality(price, now ?? DateTime.now()).uncertaintyRate);
-      if (score < bestScore ||
-          (score == bestScore &&
-              (best == null ||
-                  price.updatedAt.isAfter(best.updatedAt) ||
-                  (price.updatedAt.isAtSameMomentAs(best.updatedAt) &&
-                      compareMarketPriceTieBreakers(price, best) < 0)))) {
+      final previous = best;
+      if (previous == null ||
+          compareMarketPriceEvidence(price, previous, reference) < 0) {
         best = price;
-        bestScore = score;
       }
     }
     return best;

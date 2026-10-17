@@ -29,7 +29,8 @@ int compareMarketPriceTieBreakers(
   );
   if (locationId != 0) return locationId;
 
-  final externalId = _compareOptionalInt(candidate.externalId, previous.externalId);
+  final externalId =
+      _compareOptionalInt(candidate.externalId, previous.externalId);
   if (externalId != 0) return externalId;
 
   final proof = _compareOptionalText(candidate.proofRef, previous.proofRef);
@@ -41,11 +42,13 @@ int compareMarketPriceTieBreakers(
   );
   if (locationName != 0) return locationName;
 
-  final quantity = _compareOptionalDouble(candidate.quantity, previous.quantity);
+  final quantity =
+      _compareOptionalDouble(candidate.quantity, previous.quantity);
   if (quantity != 0) return quantity;
   final unit = _compareOptionalText(candidate.unit, previous.unit);
   if (unit != 0) return unit;
-  final unitPrice = _compareOptionalDouble(candidate.unitPrice, previous.unitPrice);
+  final unitPrice =
+      _compareOptionalDouble(candidate.unitPrice, previous.unitPrice);
   if (unitPrice != 0) return unitPrice;
   return candidate.discounted == previous.discounted
       ? 0
@@ -75,6 +78,29 @@ int _compareOptionalDouble(double? candidate, double? previous) {
   return candidate.compareTo(previous);
 }
 
+/// Compares two already validated market-price observations.
+///
+/// A lower quality-adjusted amount wins first. When the adjusted amounts tie,
+/// the newer observation wins. Only an exact amount-and-age tie reaches the
+/// source precedence and deterministic metadata tie-breakers.
+int compareMarketPriceEvidence(
+  MarketPrice candidate,
+  MarketPrice previous,
+  DateTime now,
+) {
+  final candidateScore = candidate.price *
+      (1 + marketPriceQuality(candidate, now).uncertaintyRate);
+  final previousScore = previous.price *
+      (1 + marketPriceQuality(previous, now).uncertaintyRate);
+  final byScore = candidateScore.compareTo(previousScore);
+  if (byScore != 0) return byScore;
+
+  final byFreshness = previous.updatedAt.compareTo(candidate.updatedAt);
+  if (byFreshness != 0) return byFreshness;
+
+  return compareMarketPriceTieBreakers(candidate, previous);
+}
+
 /// Selects one route-usable price per store/product key using the same
 /// quality-adjusted score everywhere the planning projection needs to collapse
 /// exact history. Source-specific freshness, including the configured
@@ -83,12 +109,13 @@ Map<String, MarketPrice> preferredMarketPricesByKey(
   Iterable<MarketPrice> input,
   DateTime now, {
   int openPricesMaxAgeDays = 60,
-}) => _preferredMarketPrices(
-  input,
-  now,
-  openPricesMaxAgeDays: openPricesMaxAgeDays,
-  keyOf: (price) => price.key,
-);
+}) =>
+    _preferredMarketPrices(
+      input,
+      now,
+      openPricesMaxAgeDays: openPricesMaxAgeDays,
+      keyOf: (price) => price.key,
+    );
 
 /// Keeps separate exact branch observations available for route resolution.
 ///
@@ -99,13 +126,14 @@ Map<String, MarketPrice> preferredMarketPricesByKeyAndLocation(
   Iterable<MarketPrice> input,
   DateTime now, {
   int openPricesMaxAgeDays = 60,
-}) => _preferredMarketPrices(
-  input,
-  now,
-  openPricesMaxAgeDays: openPricesMaxAgeDays,
-  keyOf: (price) =>
-      '${price.key}|${canonicalBranchId(price.sourceLocationId) ?? ''}',
-);
+}) =>
+    _preferredMarketPrices(
+      input,
+      now,
+      openPricesMaxAgeDays: openPricesMaxAgeDays,
+      keyOf: (price) =>
+          '${price.key}|${canonicalBranchId(price.sourceLocationId) ?? ''}',
+    );
 
 Map<String, MarketPrice> _preferredMarketPrices(
   Iterable<MarketPrice> input,
@@ -126,19 +154,8 @@ Map<String, MarketPrice> _preferredMarketPrices(
 
     final key = keyOf(price);
     final previous = selected[key];
-    final score =
-        price.price * (1 + marketPriceQuality(price, now).uncertaintyRate);
-    final previousScore = previous == null
-        ? double.infinity
-        : previous.price *
-            (1 + marketPriceQuality(previous, now).uncertaintyRate);
-
-    if (score < previousScore ||
-        (score == previousScore &&
-            previous != null &&
-            (price.updatedAt.isAfter(previous.updatedAt) ||
-                (price.updatedAt.isAtSameMomentAs(previous.updatedAt) &&
-                    compareMarketPriceTieBreakers(price, previous) < 0)))) {
+    if (previous == null ||
+        compareMarketPriceEvidence(price, previous, now) < 0) {
       selected[key] = price;
     }
   }

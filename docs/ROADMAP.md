@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Quellpriorität und Preisbasis vereinheitlicht
+
+- [x] Eine gemeinsame Evidenzrangfolge wird in Planung, Route und Bon-Familienprojektion verwendet.
+- [x] Konfidenz- und Packungsbasisgrenzen werden vor dem Ranking geprüft; fehlende Evidenz bleibt unbekannt.
+- [x] Input-Reihenfolge, Quellenpriorität und exakte Filialslots sind durch Fixture-Tests abgesichert.
+
 ## Update 17.10.2026 – Händler-Schreibvarianten im Preis-Refresh
 
 - [x] Der Preislernkreis verwendet denselben Normalisierungsschlüssel wie Suche und Coverage.
