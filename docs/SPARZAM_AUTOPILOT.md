@@ -236,3 +236,10 @@ Bekannte öffentliche Datumscontainer werden nun für Prospektseiten und
 Angebotsdatensätze normalisiert. Fehlende oder ungültige Enddaten bleiben
 ungültig und werden nicht routefähig. Die bestehende aktuelle-/abgelaufen-
 Filterung und Preisprovenienz bleiben unverändert.
+
+## Update 17.10.2026 – Strukturierte Kategoriepfade
+
+Bekannte Kategorie-Listen und verschachtelte Pfade werden nun begrenzt für
+Anzeige und Non-Food-Filter normalisiert. Die Kategorie erzeugt keine neue
+Produkt- oder Preisidentität; bestehende Gültigkeits-, Filial- und
+Provenienzregeln bleiben unverändert.
