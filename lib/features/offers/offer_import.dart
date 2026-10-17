@@ -117,9 +117,14 @@ String? canonicalProspectSourceToken(String source) =>
 String prospectOfferRecordKey(OfferImportRecord record) {
   final sourceId = record.sourceId.trim();
   if (sourceId.isNotEmpty) {
-    return [record.storeName.trim(), sourceId].join('|');
+    final branchContext = _prospectOfferBranchContext(record);
+    return [
+      record.storeName.trim(),
+      sourceId,
+      if (branchContext.isNotEmpty) branchContext,
+    ].join('|');
   }
-  return [
+  final key = [
     record.storeName.trim(),
     record.branchId?.trim() ?? '',
     record.productLabel.trim(),
@@ -131,7 +136,19 @@ String prospectOfferRecordKey(OfferImportRecord record) {
     record.brochureId?.trim() ?? '',
     record.brochurePage?.toString() ?? '',
     record.imageUrl?.trim() ?? '',
-  ].join('|');
+  ];
+  final branchContext = _prospectOfferBranchContext(record);
+  if (branchContext.isNotEmpty) key.add(branchContext);
+  return key.join('|');
+}
+
+String _prospectOfferBranchContext(OfferImportRecord record) {
+  final parts = [
+    record.branchId?.trim().toLowerCase() ?? '',
+    record.location?.trim().toLowerCase() ?? '',
+    record.address?.trim().toLowerCase() ?? '',
+  ].where((value) => value.isNotEmpty).toList(growable: false);
+  return parts.join('|');
 }
 
 String prospectRecordLocationLabel(
