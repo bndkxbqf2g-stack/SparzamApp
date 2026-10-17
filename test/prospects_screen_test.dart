@@ -1259,8 +1259,8 @@ void main() {
     final provider = preview.image;
     expect(provider, isA<ResizeImage>());
     final resized = provider as ResizeImage;
-    expect(resized.width, 720);
-    expect(resized.height, 480);
+    expect(resized.width, 560);
+    expect(resized.height, 380);
     expect(preview.loadingBuilder, isNull);
     expect(preview.frameBuilder, isNotNull);
   });
