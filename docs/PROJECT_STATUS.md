@@ -1,3 +1,7 @@
+## Update 17.10.2026 – Preisänderungen werden atomar geplant
+
+Manuelle Preisbelege, Batch-Imports und Open-Prices-Sync führen ihren vollständigen lokalen Beobachtungssnapshot jetzt im Mutationsergebnis mit. Der Shell-Stand setzt Beobachtungen, aktuelle Marktpreise und Verlauf gemeinsam; Route und Preis-Matrix können keinen Zwischenstand aus getrennten Writes verwenden.
+
 ## Update 17.10.2026 – Einkaufsliste aktualisiert bekannte Produktdaten
 
 Nach dem Laden einer lokalen Liste und nach einem validierten Prospekt-Refresh werden Listeneinträge mit derselben exakten Produkt-ID gegen den aktuellen Katalogstand abgeglichen. Neue Marke, Aliase, Packungsgröße und Bild werden übernommen; Menge, Notiz und Abhakstatus bleiben erhalten. Unbekannte IDs werden nicht geraten.
