@@ -636,6 +636,11 @@ void main() {
     final loadMore = find.byKey(
       const ValueKey('prospect-grid-load-more'),
     );
+    await tester.scrollUntilVisible(
+      loadMore,
+      450,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.ensureVisible(loadMore);
     await tester.pumpAndSettle();
     expect(loadMore, findsOneWidget);
