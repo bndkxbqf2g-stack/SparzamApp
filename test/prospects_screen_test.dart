@@ -1915,6 +1915,41 @@ void main() {
       findsOneWidget,
     );
   });
+  testWidgets('shows a separate cover before interior prospect pages', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectViewerScreen(
+          issue: ProspectIssue(
+            storeName: 'Lidl',
+            title: 'Aktionsprospekt',
+            thumbnailUrl: 'https://example.test/lidl/cover.jpg',
+            pages: const [
+              ProspectPage(
+                number: 2,
+                imageUrl: 'https://example.test/lidl/page-2.jpg',
+              ),
+            ],
+          ),
+          records: const [],
+          catalogProducts: const [],
+        ),
+      ),
+    );
+
+    expect(find.text('Seite 1'), findsOneWidget);
+    expect(find.text('Seite 2'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('prospect-page-image-1')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('prospect-page-image-2')),
+      findsOneWidget,
+    );
+  });
+
 }
 
 Future<void> _scrollProspects(
