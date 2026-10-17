@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Route-Suche begrenzt Marktanzahl
+
+- `RouteOptimizer` begrenzt `maxStores` jetzt auf die projektweit unterstützte Marktanzahl.
+- Ungültige oder veraltete Aufrufer können dadurch keine unbeschränkte exponentielle Kombinationserzeugung mehr auslösen.
+- Die bestehende Ein- bis Sechs-Markt-Logik und ihre deterministischen Tie-Breaker bleiben unverändert.
+- Eine Regression prüft die Begrenzung mit einem absichtlich überhöhten Wert.
 ## Update 17.10.2026 – Geänderter Prospektpreis wird historisch
 
 - Der reguläre Prospektpreis-Reconcile markiert eine alte Beobachtung jetzt als historisch, sobald derselbe aktive Filial-/Produkt-Slot einen neuen Preis erhält.

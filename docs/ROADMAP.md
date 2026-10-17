@@ -1,3 +1,8 @@
+## Update 17.10.2026 – Route-Suche erhält eine harte Marktgrenze
+
+- [x] `RouteOptimizer` übernimmt nur noch Werte zwischen 1 und `maximumSupportedRouteStores`.
+- [x] Überhöhte Konfigurationen werden vor der Kombinationserzeugung sicher begrenzt.
+- [x] Die vorhandenen Mehrmarkt- und Tie-Breaker-Regressionen bleiben unverändert.
 ## Update 17.10.2026 – Preis-Reconcile trennt aktuelle und historische Werte
 
 - [x] Preisänderungen im gleichen Produkt-/Filial-Slot historisieren den alten regulären Beleg.

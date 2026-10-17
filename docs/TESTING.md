@@ -1,3 +1,10 @@
+## Route-Suchgrenze
+
+`test/route_preferences_test.dart` prüft, dass ein absichtlich überhöhter
+`maxStores`-Wert auf `maximumSupportedRouteStores` begrenzt wird. Die
+bestehenden Tests für ein bis sechs Märkte prüfen weiterhin die fachliche
+Routenentscheidung.
+
 ## Prospektpreis-Reconcile
 
 `test/prospect_regular_price_persistence_test.dart` prüft eine aktive

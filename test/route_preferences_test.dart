@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/route/route_optimizer.dart';
 import 'package:sparzamapp/models/list_item.dart';
+import 'package:sparzamapp/models/mobility_settings.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/offer.dart';
@@ -78,6 +79,17 @@ void main() {
         enabledStoreNames: enabledStoreNames,
         marketPrices: _baselinePrices(),
       );
+
+  test('begrenzt maxStores auf die unterstützte Marktanzahl', () {
+    final optimizer = RouteOptimizer(
+      items(),
+      const [],
+      marketPrices: _baselinePrices(),
+      maxStores: 99,
+    );
+
+    expect(optimizer.maxStores, maximumSupportedRouteStores);
+  });
 
   test('maxStores begrenzt erzeugte Routen', () {
     final optimizer = RouteOptimizer(
