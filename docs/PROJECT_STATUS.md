@@ -1,3 +1,7 @@
+## Update 17.10.2026 – Prospekt-Scrollcache für große Feeds begrenzt
+
+Der äußere Prospekt-Scrollvorlauf wärmt weiterhin kleine Feeds für schnelle Wischbewegungen vor. Ab zwei sichtbaren Coverseiten wird der Vorlauf auf null gesetzt, damit große Händlerlisten keine zusätzliche Bildreihe dekodieren und den Speicher-/Layoutdruck beim Scrollen erhöhen.
+
 ## Update 17.10.2026 – Capture-Zeit bleibt bei Filialauflösung erhalten
 
 Der `ProspectImportModule` übernimmt beim regionalen Filial-Resolver jetzt auch den vorhandenen `capturedAt`-Zeitpunkt in das neu erzeugte Feed-Ergebnis. Capture-only-Feeds behalten damit ihre Herkunft bis zur Shell und Normalpreis-Persistenz; ein lokaler Ladezeitpunkt wird nicht ergänzt.
