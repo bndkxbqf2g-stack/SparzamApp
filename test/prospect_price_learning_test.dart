@@ -81,6 +81,28 @@ void main() {
     expect(evidence.single.kind, PriceObservationKind.regular);
   });
 
+  test('matches umlaut transliterations in refreshed store scope', () {
+    final evidence = datedProspectRegularPriceObservations(
+      records: [
+        OfferImportRecord(
+          sourceId: 'aldi-sued',
+          productLabel: 'Kaffee 500 g',
+          storeName: 'ALDI Süd',
+          originalPrice: 6.99,
+          offerPrice: 4.99,
+          validUntil: DateTime(2026, 10, 17),
+          proofRef: 'https://example.test/aldi/coffee',
+        ),
+      ],
+      catalogProducts: const [],
+      observedAt: DateTime(2026, 10, 12, 8),
+      refreshedStores: const ['ALDI SUED'],
+    );
+
+    expect(evidence, hasLength(1));
+    expect(evidence.single.storeName, 'ALDI Süd');
+    expect(evidence.single.kind, PriceObservationKind.regular);
+  });
   test('eligibility rejects malformed rows before regular-price persistence', () {
     OfferImportRecord row({
       String sourceId = 'valid',
