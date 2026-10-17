@@ -14,6 +14,7 @@ records as current offers by default.
 
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
 import math
@@ -37,6 +38,8 @@ DEFAULT_CITY = "Wuerzburg"
 DEFAULT_MAX_QUERIES = 8
 DEFAULT_TIMEOUT_SECONDS = 15.0
 DEFAULT_REQUEST_DELAY_SECONDS = 1.0
+DEFAULT_MAX_PARALLEL_QUERIES = 2
+MAX_PARALLEL_QUERIES = 4
 DEFAULT_CACHE_MAX_AGE_HOURS = 12
 MAX_RESPONSE_BYTES = 4 * 1024 * 1024
 # A cache document can contain several bounded search responses. Keep the
@@ -196,6 +199,9 @@ class KaufdaConfig:
     max_queries: int = DEFAULT_MAX_QUERIES
     timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS
     request_delay_seconds: float = DEFAULT_REQUEST_DELAY_SECONDS
+    # Public search requests stay bounded and opt-in. Injected test/offline
+    # fetchers remain serial; only the real HTTP adapter uses this pool.
+    max_parallel_queries: int = DEFAULT_MAX_PARALLEL_QUERIES
     cache_path: Path | None = None
     cache_max_age_hours: int = DEFAULT_CACHE_MAX_AGE_HOURS
     # A branch assertion must come from a separately verified mapping.  A
@@ -271,6 +277,12 @@ def config_from_env(env: Mapping[str, str] | None = None) -> KaufdaConfig:
                 DEFAULT_REQUEST_DELAY_SECONDS,
             ),
         ),
+        max_parallel_queries=_bounded_int(
+            values.get("SPARZAM_KAUFDA_MAX_PARALLEL_QUERIES"),
+            DEFAULT_MAX_PARALLEL_QUERIES,
+            minimum=1,
+            maximum=MAX_PARALLEL_QUERIES,
+        ),
         cache_path=Path(cache_value) if cache_value else None,
         cache_max_age_hours=_positive_int(
             values.get("SPARZAM_KAUFDA_CACHE_MAX_AGE_HOURS"),
@@ -305,6 +317,20 @@ def _branch_mapping(value: str | None) -> dict[str, dict[str, str]]:
             if clean(raw.get(key))
         }
     return result
+
+
+def _bounded_int(
+    value: object,
+    fallback: int,
+    *,
+    minimum: int,
+    maximum: int,
+) -> int:
+    try:
+        parsed = int(value) if value is not None else int("")
+    except (TypeError, ValueError, OverflowError):
+        return fallback
+    return min(max(parsed, minimum), maximum)
 
 
 def _positive_int(value: str | None, fallback: int) -> int:
@@ -1652,6 +1678,59 @@ def _save_cached_body(path: Path | None, url: str, body: str, captured_at: datet
                 pass
 
 
+def _prefetch_kaufda_html(
+    urls: list[str],
+    *,
+    timeout_seconds: float,
+    max_parallel_queries: int,
+    request_delay_seconds: float,
+) -> dict[str, tuple[str | None, str | None]]:
+    """Fetch real kaufDA pages in deterministic, rate-limited batches.
+
+    The parser and cache writer still run in query order. Only the public HTTP
+    requests use a small bounded pool, and injected fetchers never enter it.
+    """
+
+    if not urls:
+        return {}
+    workers = _bounded_int(
+        max_parallel_queries,
+        DEFAULT_MAX_PARALLEL_QUERIES,
+        minimum=1,
+        maximum=MAX_PARALLEL_QUERIES,
+    )
+    delay = _finite_nonnegative_float(
+        request_delay_seconds,
+        DEFAULT_REQUEST_DELAY_SECONDS,
+    )
+    results: dict[str, tuple[str | None, str | None]] = {}
+    for batch_start in range(0, len(urls), workers):
+        batch = urls[batch_start : batch_start + workers]
+        with ThreadPoolExecutor(max_workers=len(batch)) as executor:
+            futures = {
+                url: executor.submit(
+                    fetch_kaufda_html,
+                    url,
+                    timeout_seconds=timeout_seconds,
+                )
+                for url in batch
+            }
+            for url in batch:
+                try:
+                    body = futures[url].result()
+                    if not isinstance(body, str) or not body.strip():
+                        raise ValueError("kaufDA: leere Antwort")
+                    if len(body.encode("utf-8")) > MAX_RESPONSE_BYTES:
+                        raise ValueError("kaufDA: Antwort ist zu groß")
+                except Exception as exc:  # noqa: BLE001 - source is isolated
+                    results[url] = (None, clean(exc)[:240])
+                else:
+                    results[url] = (body, None)
+        if batch_start + len(batch) < len(urls) and delay:
+            time.sleep(delay)
+    return results
+
+
 def _merge_capture_metadata(
     entry: dict[str, object],
     captured_at: datetime,
@@ -1696,9 +1775,32 @@ def fetch_current_kaufda_prospects(
         settings.cache_max_age_hours,
         DEFAULT_CACHE_MAX_AGE_HOURS,
     )
+    max_parallel_queries = _bounded_int(
+        settings.max_parallel_queries,
+        DEFAULT_MAX_PARALLEL_QUERIES,
+        minimum=1,
+        maximum=MAX_PARALLEL_QUERIES,
+    )
     reference_now = now or datetime.now(timezone.utc)
     reference_day = today or reference_now.astimezone(LOCAL_TIMEZONE).date()
     grouped: dict[str, dict] = {}
+    urls = [build_search_url(settings.city, query) for query in queries]
+    prefetched = (
+        _prefetch_kaufda_html(
+            urls,
+            timeout_seconds=safe_timeout_seconds,
+            max_parallel_queries=max_parallel_queries,
+            request_delay_seconds=safe_request_delay_seconds,
+        )
+        if fetcher is None
+        else {}
+    )
+    source_fetcher = fetcher or (
+        lambda target: fetch_kaufda_html(
+            target,
+            timeout_seconds=safe_timeout_seconds,
+        )
+    )
     for index, query in enumerate(queries):
         url = build_search_url(settings.city, query)
         body = None
@@ -1706,9 +1808,16 @@ def fetch_current_kaufda_prospects(
         cache_used = False
         error = None
         try:
-            candidate = (fetcher or (lambda target: fetch_kaufda_html(
-                target, timeout_seconds=safe_timeout_seconds
-            )))(url)
+            prefetched_body, prefetched_error = prefetched.get(
+                url,
+                (None, None),
+            )
+            if url in prefetched:
+                if prefetched_error is not None:
+                    raise ValueError(prefetched_error)
+                candidate = prefetched_body
+            else:
+                candidate = source_fetcher(url)
             if not isinstance(candidate, str) or not candidate.strip():
                 raise ValueError("kaufDA: leere Antwort")
             if len(candidate.encode("utf-8")) > MAX_RESPONSE_BYTES:
@@ -1723,8 +1832,9 @@ def fetch_current_kaufda_prospects(
                 max_age_hours=safe_cache_max_age_hours,
             )
             if cached is None:
-                if index + 1 < len(queries) and safe_request_delay_seconds:
-                    time.sleep(safe_request_delay_seconds)
+                if fetcher is not None and index + 1 < len(queries):
+                    if safe_request_delay_seconds:
+                        time.sleep(safe_request_delay_seconds)
                 continue
             body, captured_at = cached
             cache_used = True
@@ -1872,8 +1982,9 @@ def fetch_current_kaufda_prospects(
             if error:
                 entry["errors"].append(error)
 
-        if index + 1 < len(queries) and safe_request_delay_seconds:
-            time.sleep(safe_request_delay_seconds)
+        if fetcher is not None and index + 1 < len(queries):
+            if safe_request_delay_seconds:
+                time.sleep(safe_request_delay_seconds)
 
     for store, entry in grouped.items():
         entry["offers"] = dedupe_kaufda(entry.get("offers", []))

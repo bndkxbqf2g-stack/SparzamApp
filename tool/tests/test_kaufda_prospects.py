@@ -953,6 +953,42 @@ class KaufdaProspectTest(unittest.TestCase):
             )
 
 
+    def test_env_parallel_query_limit_is_bounded(self):
+        configured = kaufda.config_from_env(
+            {"SPARZAM_KAUFDA_MAX_PARALLEL_QUERIES": "99"}
+        )
+        self.assertEqual(configured.max_parallel_queries, kaufda.MAX_PARALLEL_QUERIES)
+
+        zero = kaufda.config_from_env(
+            {"SPARZAM_KAUFDA_MAX_PARALLEL_QUERIES": "0"}
+        )
+        self.assertEqual(zero.max_parallel_queries, 1)
+
+    def test_live_prefetch_keeps_query_order_and_batch_delay(self):
+        urls = [
+            kaufda.build_search_url("Wuerzburg", f"Query {index}")
+            for index in range(5)
+        ]
+        with mock.patch.object(
+            kaufda,
+            "fetch_kaufda_html",
+            side_effect=lambda _url, timeout_seconds: self.html,
+        ) as fetch:
+            with mock.patch.object(kaufda.time, "sleep") as sleep:
+                result = kaufda._prefetch_kaufda_html(
+                    urls,
+                    timeout_seconds=3,
+                    max_parallel_queries=2,
+                    request_delay_seconds=0.25,
+                )
+
+        self.assertEqual(list(result), urls)
+        self.assertEqual([body for body, error in result.values()], [self.html] * 5)
+        self.assertTrue(all(error is None for _, error in result.values()))
+        self.assertEqual(fetch.call_count, 5)
+        self.assertEqual(sleep.call_count, 2)
+        sleep.assert_has_calls([mock.call(0.25), mock.call(0.25)])
+
     def test_nonfinite_env_timing_values_fall_back(self):
         config = kaufda.config_from_env(
             {
