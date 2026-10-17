@@ -522,23 +522,9 @@ List<ShoppingQuote> shoppingQuotes(
     );
   }
 
-  candidates.sort((a, b) {
-    if (a.isHistorical != b.isHistorical) {
-      return a.isHistorical ? 1 : -1;
-    }
-    // Compare the actual quality-adjusted amount before source kind. A
-    // prospect offer wins for a market only when it is cheaper; the source
-    // label remains the tie-breaker and stays visible in the UI.
-    final byPrice = a.rankingPrice.compareTo(b.rankingPrice);
-    if (byPrice != 0) return byPrice;
-    final sourceOrder = _quoteSourceOrder(a).compareTo(_quoteSourceOrder(b));
-    if (sourceOrder != 0) return sourceOrder;
-    final storeOrder = a.storeName.compareTo(b.storeName);
-    if (storeOrder != 0) return storeOrder;
-    final byLocationId = (a.locationId ?? '').compareTo(b.locationId ?? '');
-    if (byLocationId != 0) return byLocationId;
-    return b.observedAt?.compareTo(a.observedAt ?? today) ?? 0;
-  });
+  // Reuse the matrix comparator so the highlighted quote and each market
+  // row apply the same quality, freshness, offer, and source rules.
+  candidates.sort(compareShoppingQuotes);
   return candidates;
 }
 
@@ -670,18 +656,24 @@ int _compareMatrixQuotes(ShoppingQuote a, ShoppingQuote b) {
   if (a.isHistorical != b.isHistorical) {
     return a.isHistorical ? 1 : -1;
   }
-  if (!a.isHistorical && !b.isHistorical) {
+  final sameOfferKind =
+      (a.kind == ShoppingQuoteKind.offer) ==
+      (b.kind == ShoppingQuoteKind.offer);
+  if (!a.isHistorical && !b.isHistorical && sameOfferKind) {
+    final byQualityAdjustedPrice = a.rankingPrice.compareTo(b.rankingPrice);
+    if (byQualityAdjustedPrice != 0) return byQualityAdjustedPrice;
+    // Route and planning select newer evidence before source precedence.
+    // Keep the matrix on that same rule for equal quality-adjusted values.
+    final byDate = _compareQuoteObservationDate(a, b);
+    if (byDate != 0) return byDate;
+  } else if (!a.isHistorical && !b.isHistorical) {
     final byQualityAdjustedPrice = a.rankingPrice.compareTo(b.rankingPrice);
     if (byQualityAdjustedPrice != 0) return byQualityAdjustedPrice;
   }
   final sourceOrder = _quoteSourceOrder(a).compareTo(_quoteSourceOrder(b));
   if (sourceOrder != 0) return sourceOrder;
-  final aDate = a.observedAt;
-  final bDate = b.observedAt;
-  if (aDate != null || bDate != null) {
-    if (aDate == null) return 1;
-    if (bDate == null) return -1;
-    final byDate = bDate.compareTo(aDate);
+  if (!a.isHistorical && !b.isHistorical && !sameOfferKind) {
+    final byDate = _compareQuoteObservationDate(a, b);
     if (byDate != 0) return byDate;
   }
   final byPrice = a.unitPrice.compareTo(b.unitPrice);
@@ -698,6 +690,15 @@ int _compareMatrixQuotes(ShoppingQuote a, ShoppingQuote b) {
 /// quote without falling back to a source-specific shortcut.
 int compareShoppingQuotes(ShoppingQuote a, ShoppingQuote b) =>
     _compareMatrixQuotes(a, b);
+
+int _compareQuoteObservationDate(ShoppingQuote a, ShoppingQuote b) {
+  final aDate = a.observedAt;
+  final bDate = b.observedAt;
+  if (aDate == null && bDate == null) return 0;
+  if (aDate == null) return 1;
+  if (bDate == null) return -1;
+  return bDate.compareTo(aDate);
+}
 
 int _quoteSourceOrder(ShoppingQuote quote) => switch (quote.kind) {
   ShoppingQuoteKind.offer => 0,
