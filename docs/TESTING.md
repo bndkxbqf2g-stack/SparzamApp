@@ -543,3 +543,8 @@ Die Regressionen in `test/route_price_resolver_test.dart` prüfen getrennt, dass
 ## Preis-Matrix: Händler-Schreibvarianten
 
 Die Regressionen in `test/store_identity_test.dart` und `test/shopping_price_quotes_test.dart` prüfen den gemeinsamen Schlüssel, die Filterung eines `LIDL`-Preises über den aktivierten Markt `Lidl` und die Matrixdarstellung von `ALDI SUED` unter `ALDI Süd`.
+
+
+## Branchprüfung mit Händler-Schreibvarianten
+
+`test/branch_identity_test.dart` prüft passende `LIDL`/`Lidl`- und `ALDI SUED`/`ALDI Süd`-Labels sowie den Ausschluss einer fremden Branch-ID.

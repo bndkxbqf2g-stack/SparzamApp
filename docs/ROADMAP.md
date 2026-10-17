@@ -1331,3 +1331,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] RoutePriceResolver und Preis-Marktmatrix verwenden denselben Präsentationsschlüssel.
 - [x] Aktivierte Märkte erkennen Groß-/Kleinschreibung, Diakritika und `ae/oe/ue`-Varianten.
 - [x] UI- und Matrix-Regressionen sichern die konfigurierte Anzeige und den Quelllabel-Nachweis.
+
+
+## Update 17.10.2026 – Branchschutz bei Händler-Schreibvarianten
+
+- [x] Filialprüfung über den gemeinsamen Händlerlabel-Schlüssel ausführen.
+- [x] Exakte Branch-ID weiterhin als harte Grenze behandeln.
+- [x] Regressionen für passende und fremde Filialen mit abweichendem Händlerlabel ergänzen.
