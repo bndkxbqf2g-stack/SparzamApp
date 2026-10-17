@@ -2228,6 +2228,151 @@ ab Montag, 28.09.26
 
 
 
+    def test_bring_only_refresh_publishes_optional_source_without_official_fetch(self):
+        bring_data = {
+            "Netto": {
+                "offers": [
+                    {
+                        "sourceId": "bring-milk",
+                        "productLabel": "Milch 1 l",
+                        "storeName": "Netto",
+                        "offerPrice": 1.29,
+                        "validFrom": "2026-10-12",
+                        "validUntil": "2026-10-17",
+                        "source": "leaflet",
+                        "proofRef": "https://example.test/bring/page-1",
+                    }
+                ],
+                "prospect": {
+                    "id": "brn:bring-de:offersbrochure:123",
+                    "title": "Netto Angebote",
+                    "url": "https://example.test/bring/123",
+                    "offerStartDate": "2026-10-12",
+                    "offerEndDate": "2026-10-17",
+                    "pageSamples": [
+                        {
+                            "number": 1,
+                            "image": "https://example.test/bring/cover.jpg",
+                        }
+                    ],
+                },
+            }
+        }
+
+        with tempfile.TemporaryDirectory() as directory:
+            output = pathlib.Path(directory) / "current.json"
+            source = (
+                "netto_thuengersheim",
+                "Netto",
+                "https://example.test/netto",
+                "netto",
+            )
+            with (
+                mock.patch.object(refresh, "OUTPUT", output),
+                mock.patch.object(refresh, "SOURCES", (source,)),
+                mock.patch.object(
+                    refresh,
+                    "fetch_current_bring_prospects",
+                    return_value=bring_data,
+                ),
+                mock.patch.object(
+                    refresh,
+                    "fetch",
+                    side_effect=AssertionError(
+                        "official retailer must stay disabled",
+                    ),
+                ),
+                mock.patch.object(
+                    refresh,
+                    "local_today",
+                    return_value=refresh.date(2026, 10, 15),
+                ),
+            ):
+                refresh.main(["bring"])
+
+            payload = refresh.json.loads(output.read_text(encoding="utf-8"))
+            self.assertEqual(len(payload["sources"]), 1)
+            self.assertEqual(payload["sources"][0]["mode"], "bring_brochure_only")
+            self.assertEqual(payload["sources"][0]["storeName"], "Netto")
+            self.assertEqual(payload["offers"][0]["sourceAdapter"], "bring_brochure")
+            self.assertEqual(payload["offers"][0]["productLabel"], "Milch 1 l")
+
+
+
+    def test_non_food_only_refresh_keeps_previous_current_offers(self):
+        previous = {
+            "generatedAt": "2026-10-14T04:15:00Z",
+            "sources": [
+                {
+                    "storeName": "Netto",
+                    "branchId": "4371",
+                    "location": "Thüngersheim",
+                    "address": "Am Straßacker 1, 97291 Thüngersheim, Germany",
+                    "prospects": [],
+                }
+            ],
+            "offers": [
+                {
+                    "sourceId": "netto-previous-milk",
+                    "productLabel": "Milch 1 l",
+                    "storeName": "Netto",
+                    "offerPrice": 1.29,
+                    "validFrom": "2026-10-12",
+                    "validUntil": "2026-10-20",
+                    "source": "retailerWebsite",
+                    "proofRef": "https://example.test/netto/milk",
+                    "branchId": "4371",
+                    "location": "Thüngersheim",
+                    "address": "Am Straßacker 1, 97291 Thüngersheim, Germany",
+                }
+            ],
+        }
+        source = (
+            "netto_thuengersheim",
+            "Netto",
+            "https://example.test/netto",
+            "netto",
+        )
+
+        def parser(_body, _url):
+            return (
+                [
+                    {
+                        "sourceId": "netto-non-food",
+                        "productLabel": "LED-Lichterkette",
+                        "storeName": "Netto",
+                        "offerPrice": 4.99,
+                        "validFrom": "2026-10-12",
+                        "validUntil": "2026-10-20",
+                        "source": "retailerWebsite",
+                        "proofRef": "https://example.test/netto/light",
+                    }
+                ],
+                [],
+            )
+
+        with tempfile.TemporaryDirectory() as directory:
+            output = pathlib.Path(directory) / "current.json"
+            output.write_text(refresh.json.dumps(previous), encoding="utf-8")
+            with (
+                mock.patch.object(refresh, "OUTPUT", output),
+                mock.patch.object(refresh, "SOURCES", (source,)),
+                mock.patch.object(refresh, "PARSERS", {"netto": parser}),
+                mock.patch.object(refresh, "fetch", return_value="fixture"),
+                mock.patch.object(
+                    refresh,
+                    "local_today",
+                    return_value=refresh.date(2026, 10, 15),
+                ),
+            ):
+                refresh.main(["netto_thuengersheim"])
+
+            payload = refresh.json.loads(output.read_text(encoding="utf-8"))
+            netto = next(
+                item for item in payload["sources"] if item["storeName"] == "Netto"
+            )
+            self.assertEqual(netto["status"], "error")
+            self.assertEqual(payload["offers"][0]["productLabel"], "Milch 1 l")
 
     def test_targeted_refresh_skips_optional_bring_fetch(self):
         source = (

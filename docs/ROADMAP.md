@@ -1,3 +1,15 @@
+## Update 17.10.2026 – Leere aktuelle Lebensmittelantworten bleiben im Fallback
+
+- [x] Leere aktuelle Lebensmittelstände nach erfolgreichem Transport erkennen.
+- [x] Abgelaufene, ungültige und Non-Food-only Antworten nicht als neue Preise veröffentlichen.
+- [x] Belegte, weiterhin gültige Vorherdaten filialgenau übernehmen und testen.
+
+## Update 17.10.2026 – Bring-only-Refresh bleibt wirklich einzeln
+
+- [x] Den `bring`-Selektor als eigenständigen gezielten Refresh ausführen.
+- [x] Offizielle Händleradapter bei einem Bring-only-Lauf nicht abfragen.
+- [x] Regionalen Bring-Nachweis und Quellenadapter im Feed erhalten.
+
 ## Update 17.10.2026 – Externe Prospektquellen gezielt abschaltbar
 
 - [x] Bring bei gezielten Händler-Refreshes nur auf ausdrückliche Auswahl

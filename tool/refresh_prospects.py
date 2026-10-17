@@ -3898,6 +3898,13 @@ def main(selected_source_ids=None):
                     snippet = before[-150:] + " || " + after[:70]
                 diagnostics = "edeka-sample=" + snippet[:220]
                 raise ValueError("keine sicher extrahierbaren Angebote gefunden; " + diagnostics)
+            if offers and not current_prospect_offers(offers):
+                # A successful transport can still contain only expired,
+                # malformed or non-food rows. Keep the previous validated
+                # branch data instead of publishing an empty current source.
+                raise ValueError(
+                    "keine aktuellen Lebensmittelangebote gefunden"
+                )
             all_offers.extend(offers)
             refreshed_source_count += 1
             sources.append({"id": source_id, "storeName": store, "url": url, "status": "metadata_only" if metadata_only else "ok", "recordCount": len(offers), "mode": source_mode, "capturedAt": captured_at, "prospects": prospects, **source_branch_metadata(source_id)})
@@ -3953,6 +3960,53 @@ def main(selected_source_ids=None):
                 "prospects": fallback_prospects,
                 **branch,
             })
+
+    # A Bring-only targeted refresh must still publish its fetched evidence
+    # when no official retailer selector accompanies it. Do not fetch the
+    # official retailer endpoints just to attach an optional source.
+    if selected and "bring" in selected and not source_list:
+        for store, data in bring_by_store.items():
+            if not isinstance(data, dict):
+                continue
+            bring_offers = data.get("offers", [])
+            if not isinstance(bring_offers, list):
+                bring_offers = []
+            bring_offers = _attach_capture_timestamp(
+                dedupe(bring_offers),
+                captured_at,
+            )
+            bring_offers = _attach_source_adapter(
+                bring_offers,
+                "bring_brochure",
+            )
+            prospect = data.get("prospect")
+            bring_prospects = (
+                [dict(prospect)]
+                if isinstance(prospect, dict)
+                else []
+            )
+            if not bring_offers and not bring_prospects:
+                continue
+            all_offers.extend(bring_offers)
+            source_id = (
+                "bring_"
+                + re.sub(r"[^a-z0-9]+", "_", store.casefold()).strip("_")
+            )
+            sources.append({
+                "id": source_id,
+                "storeName": store,
+                "url": (
+                    bring_prospects[0].get("url")
+                    if bring_prospects
+                    else "https://production.bringapi.app"
+                ),
+                "status": "ok" if bring_offers else "metadata_only",
+                "recordCount": len(bring_offers),
+                "mode": "bring_brochure_only",
+                "capturedAt": captured_at,
+                "prospects": bring_prospects,
+            })
+            refreshed_source_count += 1
 
     # kaufDA is an explicitly opt-in discovery adapter. Its public search
     # pages identify publishers but do not reliably prove the exact branch;
