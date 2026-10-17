@@ -76,6 +76,39 @@ void main() {
     );
   });
 
+  test('indexed favorites keep branch and legacy matching semantics', () {
+    const zellingen = ProspectIssue(
+      storeName: 'Lidl',
+      branchId: 'lidl-zellingen',
+      title: 'Aktionsprospekt',
+      pages: [],
+    );
+    const wuerzburg = ProspectIssue(
+      storeName: 'Lidl',
+      branchId: 'lidl-wuerzburg',
+      title: 'Aktionsprospekt',
+      pages: [],
+    );
+    final index = ProspectFavoriteIndex.from([
+      prospectFavoriteKey(zellingen),
+    ]);
+
+    expect(index.matches(zellingen), isTrue);
+    expect(index.matches(wuerzburg), isFalse);
+    expect(ProspectFavoriteIndex.from(['Lidl']).matches(zellingen), isTrue);
+    expect(ProspectFavoriteIndex.from(['Lidl']).matches(wuerzburg), isTrue);
+    expect(
+      ProspectFavoriteIndex.from([prospectFavoriteKey(zellingen)])
+          .matches(const ProspectIssue(
+            storeName: 'ALDI Süd',
+            branchId: 'aldi-sued',
+            title: 'Aktionsprospekt',
+            pages: [],
+          )),
+      isFalse,
+    );
+  });
+
   testWidgets('heart toggles a favorite without opening the prospect', (
     tester,
   ) async {

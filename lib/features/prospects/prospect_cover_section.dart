@@ -65,6 +65,7 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
   late final ProspectFavoritesStore _favoriteStore;
   static const _gridPageSize = 12;
   Set<String>? _favoriteStores;
+  var _favoriteIndex = const ProspectFavoriteIndex.empty();
   String? _selectedStore;
   var _visibleGridCount = _gridPageSize;
 
@@ -78,7 +79,11 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
   Future<void> _loadFavorites() async {
     final favorites = await _favoriteStore.load();
     if (!mounted) return;
-    setState(() => _favoriteStores = favorites);
+    setState(() {
+      _favoriteStores = favorites;
+      _favoriteIndex =
+          ProspectFavoriteIndex.from(favorites ?? const <String>[]);
+    });
   }
 
   Future<void> _toggleFavorite(ProspectIssue issue) async {
@@ -96,23 +101,27 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
     } else {
       next.add(exactKey);
     }
-    setState(() => _favoriteStores = next);
+    setState(() {
+      _favoriteStores = next;
+      _favoriteIndex = ProspectFavoriteIndex.from(next);
+    });
     try {
       await _favoriteStore.save(next);
     } catch (_) {
       if (!mounted) return;
-      setState(() => _favoriteStores = previous);
+      setState(() {
+        _favoriteStores = previous;
+        _favoriteIndex =
+            ProspectFavoriteIndex.from(previous ?? const <String>[]);
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Favorit konnte nicht gespeichert werden.')),
       );
     }
   }
 
-  bool _isFavorite(ProspectIssue issue) =>
-      (_favoriteStores ?? const <String>{}).any(
-        (storedKey) =>
-            prospectFavoriteMatches(storedKey: storedKey, issue: issue),
-      );
+  bool _isFavorite(ProspectIssue issue) => _favoriteIndex.matches(issue);
+  
 
   Future<void> _chooseStore() async {
     final storesByKey = <String, String>{};
