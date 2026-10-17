@@ -1277,3 +1277,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Händler- und Angebots-ID-Aliase sowie Händlerobjekte begrenzt erkennen.
 - [x] Verschachtelte Preisobjekte aus bekannten Betragsfeldern normalisieren.
 - [x] Die Erkennung verschachtelter Ergebnislisten mit synthetischen Daten testen.
+
+## Update 17.10.2026 – Aktuelle Preisbasis bei lokaler Begrenzung
+
+- [x] Aktuelle automatische Beobachtungen bei gleicher exakter Quelle vor
+  älteren historischen Zeilen priorisieren.
+- [x] Begrenzte Historie und globale Obergrenze unverändert beibehalten.
+- [x] Regression für einen aktuellen regulären KaufDA-Beleg ergänzen.
