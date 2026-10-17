@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Preisstatus zählt nur aktuelle Normalpreisbelege
+
+- Der bestätigte Speicherstatus zählt reguläre Prospektbelege jetzt nur noch, wenn ihre lokale Beobachtung weiterhin als `isCurrent` markiert ist.
+- Historische, durch einen erfolgreichen Feed-Refresh abgelöste Zeilen bleiben für Nachvollziehbarkeit erhalten, erhöhen aber weder die sichtbare Bestätigung noch die aktuelle Routenbasis.
+- Eine Regression schützt die Übereinstimmung zwischen Persistenzstatus und aktueller MarketPrice-Projektion.
+
 ## Update 17.10.2026 – Produktauflösung nutzt vollständige Belege
 
 - Die Prospekt-Memo-Caches in Angebote- und Prospekte-Reiter verwenden jetzt einen gemeinsamen Schlüssel aus Filiale, Artikelidentität und Validierungsbelegen.
