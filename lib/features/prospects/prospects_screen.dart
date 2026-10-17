@@ -420,7 +420,14 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                       SizedBox(
                         height: 340,
                         child: ListView.separated(
+                          key: const ValueKey('prospect-favorite-rail'),
                           scrollDirection: Axis.horizontal,
+                          // The rail is a bounded preview, so offscreen cover
+                          // cards must not stay alive or warm another image row
+                          // while the parent prospect feed is moving.
+                          scrollCacheExtent: const ScrollCacheExtent.pixels(0),
+                          addAutomaticKeepAlives: false,
+                          addRepaintBoundaries: true,
                           itemCount: favoriteProspects.length,
                           separatorBuilder: (context, index) =>
                               const SizedBox(width: 12),

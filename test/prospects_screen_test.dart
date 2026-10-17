@@ -1679,6 +1679,38 @@ void main() {
     );
   });
 
+
+  testWidgets('begrenzt den Favoritenstreifen beim vertikalen Scrollen', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: const [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Aktionsprospekt',
+              pages: [],
+              thumbnailUrl: 'https://example.test/lidl-cover.jpg',
+            ),
+            ProspectIssue(
+              storeName: 'ALDI Süd',
+              title: 'Aktionsprospekt',
+              pages: [],
+              thumbnailUrl: 'https://example.test/aldi-cover.jpg',
+            ),
+          ],
+        ),
+      ),
+    );
+
+    final rail = tester.widget<ListView>(
+      find.byKey(const ValueKey('prospect-favorite-rail')),
+    );
+    expect(rail.scrollCacheExtent, const ScrollCacheExtent.pixels(0));
+  });
+
   testWidgets('wärmt einen kurzen Prospekt-Scrollvorlauf vor', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
