@@ -101,6 +101,12 @@ FOOD_MARKERS = (
     "saft",
     "getränk",
     "getraenk",
+    "obst",
+    "gemüse",
+    "gemuese",
+    "frucht",
+    "orange",
+    "beere",
 )
 
 NON_FOOD_MARKERS = (
@@ -146,6 +152,11 @@ NON_FOOD_MARKERS = (
     "holzgefäß",
     "holzgefaess",
     "drucker",
+    "orchidee",
+    "haushalt",
+    "küchengerät",
+    "kuechengerät",
+    "kuechengeraet",
     # Composite labels that otherwise inherit a food marker (for example
     # “Kaffee” in “Kaffeemaschine”). These are high-confidence product
     # classes, not a general-purpose identity alias list.
@@ -807,6 +818,27 @@ def _add_page_sample(
     samples.append({"number": page, "image": image} if image else page)
 
 
+def _category_paths(raw: Mapping[str, object]) -> list[tuple[object, ...]]:
+    """Return bounded category paths from both singular and plural fields."""
+
+    result: list[tuple[object, ...]] = []
+    for key in ("categoryPaths", "categoryPath", "category_path"):
+        value = raw.get(key)
+        if not isinstance(value, (list, tuple)) or not value:
+            continue
+        # A single path may itself be a flat list of labels/objects. A plural
+        # field may contain several nested paths; preserve that distinction.
+        if all(not isinstance(item, (list, tuple)) for item in value):
+            result.append(tuple(value))
+            continue
+        result.extend(
+            tuple(path)
+            for path in value
+            if isinstance(path, (list, tuple))
+        )
+    return result
+
+
 def _category_text(raw: Mapping[str, object]) -> str:
     values: list[str] = []
     for key in (
@@ -820,6 +852,7 @@ def _category_text(raw: Mapping[str, object]) -> str:
         "departmentName",
         "warengruppe",
         "sortiment",
+        "taxonomy",
     ):
         value = _source_text(raw.get(key))
         if value:
@@ -830,15 +863,11 @@ def _category_text(raw: Mapping[str, object]) -> str:
             value = _source_text(entry) or clean(entry)
             if value:
                 values.append(value)
-    paths = raw.get("categoryPaths")
-    if isinstance(paths, (list, tuple)):
-        for path in paths:
-            if not isinstance(path, (list, tuple)):
-                continue
-            for entry in path:
-                value = _source_text(entry) or clean(entry)
-                if value:
-                    values.append(value)
+    for path in _category_paths(raw):
+        for entry in path:
+            value = _source_text(entry) or clean(entry)
+            if value:
+                values.append(value)
     return clean(" ".join(values))
 
 
@@ -854,6 +883,7 @@ def _category_label(raw: Mapping[str, object]) -> str:
         "departmentName",
         "warengruppe",
         "sortiment",
+        "taxonomy",
     )
     for key in keys:
         value = _source_text(raw.get(key))
@@ -865,56 +895,53 @@ def _category_label(raw: Mapping[str, object]) -> str:
         values = [value for value in values if value]
         if values:
             return values[-1]
-    paths = raw.get("categoryPaths")
-    if isinstance(paths, (list, tuple)):
-        for path in reversed(paths):
-            if not isinstance(path, (list, tuple)):
-                continue
-            for entry in reversed(path):
-                value = _source_text(entry) or clean(entry)
-                if value:
-                    return value
+    for path in reversed(_category_paths(raw)):
+        for entry in reversed(path):
+            value = _source_text(entry) or clean(entry)
+            if value:
+                return value
     return ""
 
 
 def _is_food(raw: Mapping[str, object], label: str) -> bool:
     category = _category_text(raw).casefold()
-    searchable = clean(
+    text_metadata = clean(
         " ".join(
             str(value or "")
             for value in (
                 label,
                 raw.get("description"),
                 raw.get("brand"),
-                category,
             )
         )
     ).casefold()
-    if any(marker in searchable for marker in NON_FOOD_MARKERS):
+    # Product text is strong evidence for a non-food campaign. Category
+    # labels are evaluated separately because mixed taxonomies such as
+    # “Obst/Gemüse/Pflanzen” are still food sections.
+    if any(marker in text_metadata for marker in NON_FOOD_MARKERS):
         return False
-    if any(marker in category for marker in NON_FOOD_MARKERS):
-        return False
-    if any(marker in category for marker in FOOD_MARKERS):
+    category_is_food = any(marker in category for marker in FOOD_MARKERS)
+    category_is_non_food = any(marker in category for marker in NON_FOOD_MARKERS)
+    if category_is_food:
         return True
-    paths = raw.get("categoryPaths")
-    if isinstance(paths, (list, tuple)) and paths:
+    if category_is_non_food:
+        return False
+    paths = _category_paths(raw)
+    if paths:
         has_food_root = any(
-            isinstance(path, (list, tuple))
-            and any(
-                isinstance(entry, Mapping)
-                and "lebensmittel" in clean(
-                    entry.get("name") or entry.get("label")
-                ).casefold()
-                for entry in path[:1]
-            )
+            isinstance(entry, Mapping)
+            and "lebensmittel" in clean(
+                entry.get("name") or entry.get("label")
+            ).casefold()
             for path in paths
+            for entry in path[:1]
         )
         if has_food_root:
             return True
         # An explicit non-food taxonomy is stronger evidence than a title
         # substring such as “Kaffee” in “Kaffeemaschine”.
         return False
-    return any(marker in searchable for marker in FOOD_MARKERS)
+    return any(marker in text_metadata for marker in FOOD_MARKERS)
 
 
 def _label(raw: Mapping[str, object]) -> str:
@@ -1039,7 +1066,13 @@ def parse_kaufda_html(
                 raw.get("image_url"),
                 raw.get("image"),
                 raw.get("productImage"),
+                raw.get("productImageUrl"),
                 raw.get("product_image"),
+                raw.get("product_image_url"),
+                raw.get("productImages"),
+                raw.get("images"),
+                raw.get("thumbnail"),
+                raw.get("thumbnailUrl"),
                 raw.get("bild"),
                 raw.get("bild_app"),
                 raw.get("bild_web130"),
@@ -1112,6 +1145,9 @@ def parse_kaufda_html(
             raw.get("package"),
             raw.get("packaging"),
             raw.get("quantityLabel"),
+            raw.get("quantityText"),
+            raw.get("size"),
+            raw.get("unitLabel"),
         )
         if package:
             record["packageSize"] = package
