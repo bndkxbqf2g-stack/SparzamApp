@@ -1,3 +1,12 @@
+## D202 – OCR-Spaces nur innerhalb markierter Geldtokens normalisieren
+
+Prospekt-OCR darf Leerzeichen zwischen Ziffern und Dezimaltrennern tolerieren,
+beispielsweise `1, 99 €` oder `€ 1 . 99`. Die Normalisierung greift erst,
+wenn derselbe Token einen `€`- oder `EUR`-Marker trägt. Dadurch werden typische
+OCR-Trennungen repariert, ohne Seitenzahlen, Mengen oder sonstige bare Zahlen
+als Preisbeleg zu übernehmen.
+
+
 ## D201 – Prospekt-OCR akzeptiert Währungspositionen, nicht aber bare Zahlen
 
 Die lokale Prospekt-OCR erkennt einen Betrag nur zusammen mit einem Euro- oder

@@ -1,3 +1,10 @@
+## Update 17.10.2026 – OCR trennt Dezimalstellen nicht mehr falsch
+
+- [x] OCR-Geldtokens mit Leerraum um Komma oder Punkt werden normalisiert.
+- [x] Der Euro-/EUR-Marker bleibt zwingend; unmarkierte Seiten- und Packungszahlen werden nicht zu Angeboten.
+- [x] Angebot und Vorher-Preis behalten ihre getrennte Evidenz.
+
+
 ## Update 17.10.2026 – Prospekt-OCR toleriert Währungsformatvarianten
 
 - [x] Währung vor oder nach dem OCR-Betrag wird erkannt.

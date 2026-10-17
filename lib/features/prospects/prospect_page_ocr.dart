@@ -61,8 +61,8 @@ typedef ProspectPageTextRecognizer = Future<String?> Function(Uint8List bytes);
 
 const _maxProspectPageOcrBytes = 8 * 1024 * 1024;
 final _prospectPageMoney = RegExp(
-  r'(?:€|EUR)\s*(\d{1,3}(?:[.,]\d{1,2})?)|'
-  r'(\d{1,3}(?:[.,]\d{1,2})?)\s*(?:€|EUR)(?!\w)',
+  r'(?:€|EUR)\s*(\d{1,3}(?:\s*[.,]\s*\d{1,2})?)|'
+  r'(\d{1,3}(?:\s*[.,]\s*\d{1,2})?)\s*(?:€|EUR)(?!\w)',
   caseSensitive: false,
 );
 final _prospectPageNonProductLine = RegExp(
@@ -73,7 +73,8 @@ final _prospectPageNonProductLine = RegExp(
 );
 
 /// Parses OCR text into conservative product/price suggestions.
-/// Both `1,99 €` and `€ 1,99` are accepted; a bare number remains ignored.
+/// Both `1,99 €` and `€ 1,99` are accepted. OCR-spaced decimals such as
+/// `1, 99 €` are normalized too; a bare number remains ignored.
 ///
 /// A line without an explicit euro amount is never promoted to a candidate.
 /// Totals, payment lines and common receipt metadata are ignored because they
@@ -91,7 +92,9 @@ List<ProspectPageOcrCandidate> parseProspectPageOcrText(String text) {
     for (final match in matches) {
       final token = match.group(1) ?? match.group(2);
       if (token == null) continue;
-      final normalized = token.replaceAll(',', '.');
+      final normalized = token
+          .replaceAll(RegExp(r'\s+'), '')
+          .replaceAll(',', '.');
       final value = double.tryParse(normalized);
       if (value == null || !value.isFinite || value <= 0 || value > 500) {
         continue;

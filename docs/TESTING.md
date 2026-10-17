@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Prospekt-OCR mit OCR-getrennten Dezimalstellen
+
+`prospect_page_ocr_test.dart` prüft zusätzlich `1, 99 €` und `2 . 49 €`.
+Der Test bestätigt, dass der Parser den Betrag normalisiert, den regulären
+Vorher-Preis getrennt behält und weiterhin einen expliziten Währungsmarker
+verlangt.
+
+
 ## Prospekt-OCR-Währungsformat
 
 `test/prospect_page_ocr_test.dart` prüft zusätzlich eine Zeile mit `€ 1,99`
