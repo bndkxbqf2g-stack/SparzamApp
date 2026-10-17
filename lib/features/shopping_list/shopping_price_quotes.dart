@@ -522,23 +522,9 @@ List<ShoppingQuote> shoppingQuotes(
     );
   }
 
-  candidates.sort((a, b) {
-    if (a.isHistorical != b.isHistorical) {
-      return a.isHistorical ? 1 : -1;
-    }
-    // Compare the actual quality-adjusted amount before source kind. A
-    // prospect offer wins for a market only when it is cheaper; the source
-    // label remains the tie-breaker and stays visible in the UI.
-    final byPrice = a.rankingPrice.compareTo(b.rankingPrice);
-    if (byPrice != 0) return byPrice;
-    final sourceOrder = _quoteSourceOrder(a).compareTo(_quoteSourceOrder(b));
-    if (sourceOrder != 0) return sourceOrder;
-    final storeOrder = a.storeName.compareTo(b.storeName);
-    if (storeOrder != 0) return storeOrder;
-    final byLocationId = (a.locationId ?? '').compareTo(b.locationId ?? '');
-    if (byLocationId != 0) return byLocationId;
-    return b.observedAt?.compareTo(a.observedAt ?? today) ?? 0;
-  });
+  // Reuse the matrix comparator so the highlighted quote and each market
+  // row apply the same quality, freshness, offer, and source rules.
+  candidates.sort(compareShoppingQuotes);
   return candidates;
 }
 
