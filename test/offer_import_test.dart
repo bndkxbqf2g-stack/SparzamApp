@@ -350,7 +350,23 @@ void main() {
       }),
     );
     expect(legacy.evidenceConfidence, isNull);
+
+    expect(
+      () => Offer.fromJson(
+        jsonEncode({
+          'id': 'unknown-confidence',
+          'productId': 'schmand',
+          'storeName': 'Lidl',
+          'originalPrice': 0.89,
+          'offerPrice': 0.69,
+          'validUntil': '2026-09-30T00:00:00.000',
+          'evidenceConfidence': 'futureConfidence',
+        }),
+      ),
+      throwsA(isA<FormatException>()),
+    );
   });
+
   test('legacy offers without package fields remain readable', () {
     final offer = Offer.fromJson(
       jsonEncode({

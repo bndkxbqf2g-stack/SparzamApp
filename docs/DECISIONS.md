@@ -1,3 +1,14 @@
+## D225 – Explizit unbekannte Evidenzstufen bleiben ungültig
+
+Die gemeinsame Evidenzstufen-Deserialisierung behandelt ein fehlendes oder leeres
+`evidenceConfidence`-Feld weiterhin als Legacy-Format ohne automatische
+Vertrauensstufe. Ein vorhandener, unbekannter Token wird dagegen als
+`FormatException` abgelehnt. Dadurch bleiben Offer, MarketPrice und
+PriceObservation konsistent: beschädigte oder fremde Evidenzwerte werden beim
+jeweiligen Store übersprungen, statt als unmarkierte oder bestätigte Quelle in
+Planung und Route weiterzulaufen. Die bestehende Unterscheidung zwischen
+Identitäts- und Quellenvertrauen bleibt unverändert.
+
 ## D224 – Explizite unbekannte Preisverlaufsquellen bleiben ungültig
 
 Die `PricePoint`-Deserialisierung behandelt ein fehlendes oder leeres

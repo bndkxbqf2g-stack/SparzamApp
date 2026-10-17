@@ -1,3 +1,12 @@
+## Update 17.10.2026 – Explizit unbekannte Evidenzstufen bleiben Datenlücken
+
+Ein fehlendes oder leeres `evidenceConfidence`-Feld bleibt für alte lokale
+Formate rückwärtskompatibel unmarkiert. Ein ausdrücklich unbekannter Token wird
+dagegen beim Laden als beschädigter Datensatz verworfen. Das gilt einheitlich
+für Offers, MarketPrices und PriceObservations; kein fremder Evidenzwert kann
+dadurch stillschweigend als vertrauenswürdiger Beleg in Preis-Matrix oder Route
+gelangen.
+
 ## Update 17.10.2026 – Unbekannte Preisverlaufsquellen bleiben Datenlücken
 
 Ein fehlendes `source`-Feld bleibt für alte Verlaufseinträge rückwärtskompatibel als Demo-/Legacywert. Eine ausdrücklich unbekannte Quellenkennung wird dagegen beim Laden verworfen. Dadurch kann ein fremder oder beschädigter historischer Betrag nicht als „Beispieldaten“ erscheinen; gültige Verlaufseinträge bleiben erhalten.

@@ -14,11 +14,16 @@ String evidenceConfidenceLabel(EvidenceConfidence confidence) =>
     };
 
 EvidenceConfidence? parseEvidenceConfidence(Object? value) {
-  if (value is! String) return null;
-  for (final confidence in EvidenceConfidence.values) {
-    if (confidence.name == value) return confidence;
+  if (value == null) return null;
+  if (value is! String) {
+    throw const FormatException('Ungültige Evidenzstufe');
   }
-  return null;
+  final normalized = value.trim();
+  if (normalized.isEmpty) return null;
+  for (final confidence in EvidenceConfidence.values) {
+    if (confidence.name == normalized) return confidence;
+  }
+  throw const FormatException('Unbekannte Evidenzstufe');
 }
 enum PriceObservationSource {
   receipt,

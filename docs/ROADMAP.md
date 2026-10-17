@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Explizit unbekannte Evidenzstufen ablehnen
+
+- [x] Fehlende oder leere Evidenzfelder alter lokaler Formate rückwärtskompatibel lesen.
+- [x] Unbekannte ausdrücklich gesetzte `evidenceConfidence`-Tokens in Offer, MarketPrice und PriceObservation verwerfen.
+- [x] Regression für die gemeinsame Parsergrenze ergänzen und die Vertrauensstufe nicht stillschweigend hochstufen.
+
 ## Update 17.10.2026 – Unbekannte Preisverlaufsquellen konservativ ablehnen
 
 - [x] Fehlende Quellenfelder alter Preisverlaufseinträge rückwärtskompatibel behandeln.
