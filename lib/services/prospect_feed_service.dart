@@ -77,6 +77,147 @@ class ProspectFeedLoadResult {
   }
 }
 
+
+
+bool _isCurrentFoodProspectRecord(
+  OfferImportRecord record, {
+  required DateTime now,
+}) =>
+    isOfferDateRangeActive(
+      validFrom: record.validFrom,
+      validUntil: record.validUntil,
+      now: now,
+    ) &&
+    isFoodProspectRecord(
+      label: record.productLabel,
+      category: record.category,
+    );
+
+/// Preserves still-valid food rows when a successful source response has
+/// temporarily returned no current rows for an otherwise refreshed scope.
+///
+/// This is a transport-quality fallback only. It never revives expired rows,
+/// never fills a source without an explicit successful scope, and keeps the
+/// original row provenance/capture time. The affected prospect is marked as a
+/// current fallback so the UI and diagnostics do not present the old rows as
+/// a fresh source result.
+ProspectFeedLoadResult preserveCurrentProspectRowsForEmptySources({
+  required ProspectFeedLoadResult incoming,
+  ProspectFeedLoadResult? fallback,
+  DateTime? now,
+}) {
+  if (fallback == null) return incoming;
+  final reference = now ?? DateTime.now();
+  final scopes = incoming.refreshedStoreScopes.isNotEmpty
+      ? incoming.refreshedStoreScopes
+      : incoming.refreshedStores
+          .map((storeName) => ProspectRefreshScope(storeName: storeName))
+          .toList(growable: false);
+  if (scopes.isEmpty) return incoming;
+
+  final incomingCurrent = currentProspectRecords(
+    incoming.records,
+    now: reference,
+  )
+      .where((record) => _isCurrentFoodProspectRecord(record, now: reference))
+      .toList(growable: false);
+  final fallbackCurrent = currentProspectRecords(
+    fallback.records,
+    now: reference,
+  )
+      .where((record) => _isCurrentFoodProspectRecord(record, now: reference))
+      .toList(growable: false);
+
+  final additions = <OfferImportRecord>[];
+  final knownKeys = incoming.records.map(prospectOfferRecordKey).toSet();
+  final fallbackCounts = <String, int>{};
+  for (final scope in scopes) {
+    final hasIncomingRows = incomingCurrent.any(
+      (record) => scope.matches(
+        candidateStoreName: record.storeName,
+        candidateBranchId: record.branchId,
+      ),
+    );
+    if (hasIncomingRows) continue;
+
+    final candidates = fallbackCurrent
+        .where(
+          (record) => scope.matches(
+            candidateStoreName: record.storeName,
+            candidateBranchId: record.branchId,
+          ),
+        )
+        .toList(growable: false);
+    if (candidates.isEmpty) continue;
+
+    var addedForScope = 0;
+    for (final record in candidates) {
+      if (!knownKeys.add(prospectOfferRecordKey(record))) continue;
+      additions.add(record);
+      addedForScope++;
+    }
+    if (addedForScope > 0) {
+      fallbackCounts[scope.key] = addedForScope;
+    }
+  }
+  if (additions.isEmpty) return incoming;
+
+  final affectedProspects = incoming.prospects
+      .map(
+        (issue) {
+          var fallbackCount = 0;
+          for (final scope in scopes) {
+            if (!fallbackCounts.containsKey(scope.key) ||
+                !scope.matches(
+                  candidateStoreName: issue.storeName,
+                  candidateBranchId: issue.branchId,
+                )) {
+              continue;
+            }
+            fallbackCount += fallbackCounts[scope.key]!;
+          }
+          if (fallbackCount == 0) return issue;
+          return ProspectIssue(
+            storeName: issue.storeName,
+            title: issue.title,
+            pages: issue.pages,
+            url: issue.url,
+            thumbnailUrl: issue.thumbnailUrl,
+            branchId: issue.branchId,
+            location: issue.location,
+            address: issue.address,
+            sourceAdapter: issue.sourceAdapter,
+            sourceStatus: 'current_fallback',
+            recordCount: issue.recordCount > fallbackCount
+                ? issue.recordCount
+                : fallbackCount,
+            availablePageCount: issue.availablePageCount,
+            loadedPageCount: issue.loadedPageCount,
+            missingPageNumbers: issue.missingPageNumbers,
+            pageStatus: issue.pageStatus,
+            pageCountKnown: issue.pageCountKnown,
+            uncertainProductCount: issue.uncertainProductCount,
+            validFrom: issue.validFrom,
+            validUntil: issue.validUntil,
+          );
+        },
+      )
+      .toList(growable: false);
+
+  return ProspectFeedLoadResult(
+    records: <OfferImportRecord>[
+      ...incoming.records,
+      ...additions,
+    ],
+    refreshedStores: incoming.refreshedStores,
+    refreshedStoreScopes: incoming.refreshedStoreScopes,
+    generatedAt: incoming.generatedAt,
+    capturedAt: incoming.capturedAt,
+    prospects: affectedProspects,
+    fromCache: incoming.fromCache,
+  );
+}
+
 typedef ProspectFeedAssetLoader = Future<String> Function();
 
 class ProspectIssue {
@@ -678,12 +819,19 @@ class ProspectFeedService {
       // A CDN or a temporarily stale publisher response must not replace a
       // newer validated local snapshot. Equal timestamps still prefer the
       // successful live response.
-      final selected = _newestFeed(
-        result,
-        await _loadNewestLocalFeed(),
-      )!;
-      if (identical(selected, result)) {
-        // A cache failure must never hide a valid live feed.
+      final local = await _loadNewestLocalFeed();
+      final selected = _newestFeed(result, local)!;
+      final guarded = identical(selected, result)
+          ? preserveCurrentProspectRowsForEmptySources(
+              incoming: result,
+              fallback: local,
+              now: DateTime.now(),
+            )
+          : selected;
+      if (identical(guarded, result)) {
+        // A cache failure must never hide a valid live feed. A response that
+        // needed current-row fallback is deliberately not cached over the
+        // older validated snapshot.
         try {
           await _cache.save(response.body);
           final metadataCache = _cache is ProspectFeedCaptureMetadataCache
@@ -697,7 +845,7 @@ class ProspectFeedService {
           // The next online refresh can try to repair the cache.
         }
       }
-      return selected;
+      return guarded;
     } catch (error, stackTrace) {
       final local = await _loadNewestLocalFeed();
       if (local != null) return local;
@@ -709,13 +857,68 @@ class ProspectFeedService {
   ///
   /// The cache can be older than the bundled asset after an app update. Read
   /// both sources and compare their feed timestamps so an old device cache
-  /// cannot hide the newer asset.
+  /// cannot hide the newer asset. If the newest local snapshot has an empty
+  /// current source, still-valid rows from another local snapshot are merged
+  /// through the explicit fallback boundary above.
   Future<ProspectFeedLoadResult?> _loadNewestLocalFeed() async {
+    final candidates = await _loadLocalFeeds();
+    final newest = _newestOf(candidates);
+    if (newest == null) return null;
+    final fallback = _localFallbackForEmptyScopes(
+      candidates,
+      incoming: newest,
+      now: DateTime.now(),
+    );
+    return preserveCurrentProspectRowsForEmptySources(
+      incoming: newest,
+      fallback: fallback,
+      now: DateTime.now(),
+    );
+  }
+
+  Future<List<ProspectFeedLoadResult>> _loadLocalFeeds() async {
     final local = await Future.wait<ProspectFeedLoadResult?>([
       _loadCachedFeed(),
       _loadBundledFeed(),
     ]);
-    return _newestFeed(local[0], local[1]);
+    return local.whereType<ProspectFeedLoadResult>().toList(growable: false);
+  }
+
+  ProspectFeedLoadResult? _newestOf(
+    Iterable<ProspectFeedLoadResult> feeds,
+  ) {
+    ProspectFeedLoadResult? newest;
+    for (final feed in feeds) {
+      newest = _newestFeed(newest, feed);
+    }
+    return newest;
+  }
+
+  ProspectFeedLoadResult? _localFallbackForEmptyScopes(
+    Iterable<ProspectFeedLoadResult> candidates, {
+    required ProspectFeedLoadResult incoming,
+    required DateTime now,
+  }) {
+    final scopes = incoming.refreshedStoreScopes.isNotEmpty
+        ? incoming.refreshedStoreScopes
+        : incoming.refreshedStores
+            .map((storeName) => ProspectRefreshScope(storeName: storeName));
+    ProspectFeedLoadResult? fallback;
+    for (final candidate in candidates) {
+      if (identical(candidate, incoming)) continue;
+      final hasCurrentRows = candidate.records.any(
+        (record) => _isCurrentFoodProspectRecord(record, now: now) &&
+            scopes.any(
+              (scope) => scope.matches(
+                candidateStoreName: record.storeName,
+                candidateBranchId: record.branchId,
+              ),
+            ),
+      );
+      if (!hasCurrentRows) continue;
+      fallback = _newestFeed(fallback, candidate);
+    }
+    return fallback;
   }
 
   ProspectFeedLoadResult? _newestFeed(
