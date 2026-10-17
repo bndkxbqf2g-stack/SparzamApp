@@ -118,9 +118,18 @@ String prospectOfferRecordKey(OfferImportRecord record) {
   final sourceId = record.sourceId.trim();
   if (sourceId.isNotEmpty) {
     final branchContext = _prospectOfferBranchContext(record);
+    // Some leaflet providers scope sourceId to a page or brochure rather
+    // than to one article. Keep the product evidence in the widget key so
+    // two rows from the same branch cannot collide while a sliver recycles
+    // cards during a fast scroll.
     return [
       record.storeName.trim(),
       sourceId,
+      record.productLabel.trim(),
+      record.ean?.trim() ?? '',
+      record.packageSize?.trim() ?? '',
+      record.brochureId?.trim() ?? '',
+      record.brochurePage?.toString() ?? '',
       if (branchContext.isNotEmpty) branchContext,
     ].join('|');
   }
@@ -443,4 +452,3 @@ ProspectPackage? _offerPackage(OfferImportRecord record, Product product) {
   }
   return prospectPackage(product.unit);
 }
-
