@@ -1914,9 +1914,12 @@ class ProspectViewerScreen extends StatelessWidget {
     final requiresExactBranch =
         record.sourceAdapter?.trim().toLowerCase() == 'kaufda';
     final hasExactBranch = hasExactOfferRecordBranch(record);
+    // A manually reviewed page item is always listable. Price/route
+    // persistence remains a separate, stricter path below.
+    final listProduct = productForProspectOffer(record, catalogProducts);
     final saveOffer = onSaveOffer;
     if ((requiresExactBranch && !hasExactBranch) || saveOffer == null) {
-      addProduct(productForProspectOffer(record, catalogProducts));
+      addProduct(listProduct);
       final message = requiresExactBranch && !hasExactBranch
           ? 'Artikel zur Einkaufsliste hinzugefügt. Für einen Routenpreis '
               'fehlt die exakte Filiale.'
@@ -1933,11 +1936,12 @@ class ProspectViewerScreen extends StatelessWidget {
       now: now ?? DateTime.now(),
     );
     if (entries.length != 1) {
+      addProduct(listProduct);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-            'Artikel konnte mit diesen Angaben nicht als aktuelles Angebot '
-            'gespeichert werden.',
+            'Artikel zur Einkaufsliste hinzugefügt. Das Angebot konnte '
+            'mit diesen Angaben nicht als aktueller Preisbeleg gespeichert werden.',
           ),
         ),
       );
@@ -1975,8 +1979,14 @@ class ProspectViewerScreen extends StatelessWidget {
       await saveOffer(reviewedOffer);
     } catch (_) {
       if (context.mounted) {
+        addProduct(listProduct);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Angebot konnte nicht gespeichert werden.')),
+          const SnackBar(
+            content: Text(
+              'Artikel zur Einkaufsliste hinzugefügt. Das Angebot konnte nicht '
+              'gespeichert werden.',
+            ),
+          ),
         );
       }
       return;
