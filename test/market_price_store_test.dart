@@ -98,6 +98,19 @@ void main() {
     expect(loaded.single.productId, 'good');
   });
 
+  test('explizit unbekannte Preisquelle wird nicht als manuell gelesen', () {
+    expect(
+      () => MarketPrice.fromJson({
+        'productId': 'future-source',
+        'storeName': 'Lidl',
+        'price': 1.49,
+        'updatedAt': '2026-09-22T00:00:00.000',
+        'source': 'futureSource',
+      }),
+      throwsA(isA<FormatException>()),
+    );
+  });
+
   test('Open Prices überschreibt keinen manuellen Preis', () async {
     final store = MarketPriceStore();
     final manual = MarketPrice(
