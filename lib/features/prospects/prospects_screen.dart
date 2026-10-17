@@ -848,6 +848,9 @@ String _prospectSearchText(OfferImportRecord record) {
     sourceCategory,
     presentProspectCategory(sourceCategory),
     fallbackProspectCategory(record.productLabel),
+    record.ean ?? '',
+    record.packageSize ?? '',
+    record.priceByBaseUnit ?? '',
   ].join(' ').toLowerCase();
 }
 

@@ -458,6 +458,59 @@ void main() {
     expect(added!.id, startsWith('prospect|'));
   });
 
+
+  testWidgets('sucht auch in quellenbezogenen Produktmetadaten', (
+    tester,
+  ) async {
+    final record = OfferImportRecord(
+      sourceId: 'metadata-search',
+      productLabel: 'Butter',
+      storeName: 'Lidl',
+      offerPrice: 1.49,
+      validUntil: DateTime(2026, 10, 17),
+      proofRef: 'https://example.test/lidl/metadata-search',
+      ean: '4001234567890',
+      packageSize: '250 g',
+      priceByBaseUnit: '5,96 €/kg',
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: [record],
+          now: DateTime(2026, 10, 12),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+    final search = find.byType(TextField);
+    expect(search, findsOneWidget);
+    await tester.enterText(search, '4001234567890');
+    await tester.pump();
+
+    expect(find.text('1 passende Prospektartikel'), findsOneWidget);
+    expect(find.text('Butter'), findsOneWidget);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          key: const ValueKey('package-search'),
+          records: [record],
+          now: DateTime(2026, 10, 12),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final packageSearch = find.byType(TextField);
+    expect(packageSearch, findsOneWidget);
+    await tester.enterText(packageSearch, '250 g');
+    await tester.pump();
+
+    expect(find.text('1 passende Prospektartikel'), findsOneWidget);
+    expect(find.text('Butter'), findsOneWidget);
+  });
+
   testWidgets('builds large prospect searches lazily', (tester) async {
     final records = [
       for (var index = 0; index < 120; index++)

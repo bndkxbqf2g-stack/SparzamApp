@@ -1052,3 +1052,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Der ältere Prospekte-Ansichtspfad verwendet für den horizontalen Favoritenstreifen keinen zusätzlichen Scrollvorlauf.
 - [x] Offscreen-Coverkarten werden dort nicht automatisch gehalten; Repaint-Grenzen bleiben aktiv.
 - [x] Eine Widgetregression schützt den begrenzten Cache beim vertikalen Wischen, ohne Prospekt-, Preis- oder Listenlogik zu ändern.
+
+
+## Update 17.10.2026 – Prospektsuche berücksichtigt Quellenmetadaten
+- [x] Angebote- und Prospekte-Reiter durchsuchen neben Name und Kategorie auch vorhandene EAN/GTIN-, Packungsgrößen- und Grundpreisfelder.
+- [x] Die Suche verwendet ausschließlich bereits importierte Quellenwerte; Produktidentität, Preise und Gültigkeitsprüfung bleiben unverändert.
+- [x] Widgetregressionen prüfen EAN- und Packungsgrößensuche in beiden Ansichten.
