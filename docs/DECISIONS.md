@@ -1767,3 +1767,12 @@ Groß-/Kleinschreibung oder umgebendem Leerraum. Der Parser verwendet deshalb
 Prospektseiten und Angeboten. Der rohe Wert bleibt im importierten Datensatz
 erhalten. Punctuation, Aliasbildung und fehlende IDs werden nicht erraten; bei
 mehrdeutigen oder nicht gleichen IDs bleibt die Zuordnung unbekannt.
+
+## D179 – KaufDA-Kategorien bleiben quellgebunden
+
+Der KaufDA-Adapter wertet nur benannte Kategoriepfade und Medienfelder aus.
+Die Lebensmittelentscheidung prüft Produkttext getrennt von Sammelkategorien,
+damit ein Lebensmittelbereich mit dem Zusatz „Pflanzen“ nicht pauschal
+ausgeschlossen wird. Einzelne Pflanzen- oder Haushaltsartikel bleiben durch
+ihren Produkttext bzw. ihre Taxonomie ausgeschlossen. Keine Kategorie wird aus
+einem freien Alias oder einer unsicheren Teilstring-Zuordnung erfunden.
