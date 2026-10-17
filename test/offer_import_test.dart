@@ -455,6 +455,33 @@ void main() {
     expect(prospectOfferRecordKey(lidl), isNot(prospectOfferRecordKey(netto)));
   });
 
+  test('branch-aware prospect widget keys distinguish exact branches', () {
+    final first = OfferImportRecord(
+      sourceId: 'shared-leaflet-item',
+      productLabel: 'Butter 250 g',
+      storeName: 'Lidl',
+      offerPrice: 1.29,
+      validUntil: DateTime(2026, 10, 17),
+      branchId: 'lidl-zellingen',
+      location: 'Zellingen',
+      address: 'Hauptstraße 1, 97225 Zellingen',
+    );
+    final second = OfferImportRecord(
+      sourceId: 'shared-leaflet-item',
+      productLabel: 'Butter 250 g',
+      storeName: 'Lidl',
+      offerPrice: 1.29,
+      validUntil: DateTime(2026, 10, 17),
+      branchId: 'lidl-wuerzburg',
+      location: 'Würzburg',
+      address: 'Musterweg 2, 97070 Würzburg',
+    );
+
+    expect(prospectOfferRecordKey(first), isNot(prospectOfferRecordKey(second)));
+    expect(prospectOfferRecordKey(first), contains('lidl-zellingen'));
+    expect(prospectOfferRecordKey(second), contains('lidl-wuerzburg'));
+  });
+
   test('fallback prospect widget keys distinguish source-id-free records', () {
     final first = OfferImportRecord(
       sourceId: '',
