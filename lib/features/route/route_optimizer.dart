@@ -1,5 +1,6 @@
 import '../../data/stores.dart';
 import '../../models/list_item.dart';
+import '../../models/mobility_settings.dart';
 import '../../models/market_price.dart';
 import '../../models/offer.dart';
 import '../../models/route_plan.dart';
@@ -28,7 +29,7 @@ class RouteOptimizer {
     DateTime? now,
   }) : roadDistances = roadDistances ?? const <String, double>{},
        euroPerKm = _finiteNonNegative(euroPerKm, 0.22),
-       maxStores = maxStores < 1 ? 1 : maxStores,
+       maxStores = maxStores.clamp(1, maximumSupportedRouteStores).toInt(),
        minExtraStoreSavings = _finiteNonNegative(minExtraStoreSavings, 0),
        additionalStoreCost = _finiteNonNegative(additionalStoreCost, 0),
        timeValuePerHour = _finiteNonNegative(timeValuePerHour, 0),
