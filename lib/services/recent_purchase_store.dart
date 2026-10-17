@@ -46,6 +46,7 @@ class RecentPurchaseStore {
     return _queue.schedule(() async {
       final base = await _mergeWithStored(snapshot);
       final previous = base.where((item) => item.id == product.id).firstOrNull;
+      final metadata = RecentPurchase.fromProduct(product);
       final purchase = RecentPurchase(
         id: product.id,
         name: product.name,
@@ -53,7 +54,14 @@ class RecentPurchaseStore {
         group: product.group,
         purchaseCount: (previous?.purchaseCount ?? 0) + 1,
         totalQuantity: (previous?.totalQuantity ?? 0) + quantity,
-        ean: product.ean ?? previous?.ean,
+        ean: metadata.ean ?? previous?.ean,
+        aliases: metadata.aliases.isNotEmpty
+            ? metadata.aliases
+            : previous?.aliases ?? const <String>[],
+        brand: metadata.brand ?? previous?.brand,
+        packageAmount: metadata.packageAmount ?? previous?.packageAmount,
+        packageUnit: metadata.packageUnit ?? previous?.packageUnit,
+        imageUrl: metadata.imageUrl ?? previous?.imageUrl,
       );
 
       final next = <RecentPurchase>[
