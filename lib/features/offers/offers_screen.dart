@@ -656,6 +656,12 @@ class _ProspectOffersState extends State<_ProspectOffers> {
   }
 
   List<ProspectIssue> _sourceNoticeIssues() {
+    final cached = _sourceNoticeCache;
+    if (cached != null &&
+        identical(_sourceNoticeRecordsInput, widget.records) &&
+        identical(_sourceNoticeIssuesInput, widget.issues)) {
+      return cached;
+    }
     final currentCounts = <String, int>{};
     final regionalCounts = <String, int>{};
     final unscopedCounts = <String, int>{};
