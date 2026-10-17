@@ -34,6 +34,7 @@ String prospectFeedFingerprintFor(
   final values = <Object?>[
     'current-day:${currentDay.toIso8601String()}',
     'refreshed-stores:${refreshedStores.join('|')}',
+    'refreshed-store-scopes:${feed.refreshedStoreScopes.map((scope) => scope.key).toList()..sort()}',
     for (final record in feed.records)
       ...[
         record.sourceId,

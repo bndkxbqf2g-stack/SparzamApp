@@ -1,3 +1,14 @@
+## Update 17.10.2026 – Prospekt-Refresh ist filialscharf
+
+Die lokale automatische Preisbasis übernimmt die erfolgreiche Refresh-Scope des
+Feeds jetzt zusätzlich mit exakter Branch-ID. Bei zwei gleichnamigen Händler-
+filialen darf ein erfolgreicher Abruf nur die bestätigte Filiale reconciliieren;
+die bisherige Händlernamen-Liste bleibt als Rückwärtskompatibilität erhalten.
+Die Persistenz schreibt weiterhin ausschließlich den ausgewiesenen regulären
+Normalpreis und nicht den temporären Angebotspreis. Parser-, Lern- und
+Persistenztests decken eine erfolgreiche und eine fehlgeschlagene Filiale
+innerhalb desselben Händlernamens ab.
+
 ## Update 17.10.2026 – Routenfilter normalisiert Händlerlabels
 
 - Aktivierte Marktfilter verwenden jetzt den gemeinsamen Händler-Vergleichsschlüssel.

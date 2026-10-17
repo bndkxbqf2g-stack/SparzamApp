@@ -1,3 +1,13 @@
+## Update 17.10.2026 – Filialscharfer Prospekt-Refresh
+
+- [x] Erfolgreiche Quellrefreshes als ProspectRefreshScope mit Branch-ID
+  weiterreichen.
+- [x] Automatische reguläre Prospektpreise nur innerhalb des bestätigten
+  Filial-Scopes lernen und reconciliieren.
+- [x] Legacy-Aufrufer mit refreshedStores kompatibel halten.
+- [x] Regressionen für zwei gleichnamige Filialen mit unterschiedlichem
+  Refreshstatus ergänzen.
+
 ## Update 17.10.2026 – Händlerlabel-Varianten im Routenfilter
 
 - [x] Aktivierte Märkte über den gemeinsamen Präsentationsschlüssel filtern.

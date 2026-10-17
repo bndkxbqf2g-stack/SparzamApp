@@ -752,6 +752,8 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
             observedAt: feed.generatedAt,
             now: refreshNow,
             refreshedStores: feed.refreshedStores,
+
+            refreshedStoreScopes: feed.refreshedStoreScopes,
           );
         });
       } catch (error) {
@@ -875,6 +877,8 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
           observedAt: feed.generatedAt,
           now: refreshNow,
           refreshedStores: feed.refreshedStores,
+
+          refreshedStoreScopes: feed.refreshedStoreScopes,
         );
       });
     } catch (error) {

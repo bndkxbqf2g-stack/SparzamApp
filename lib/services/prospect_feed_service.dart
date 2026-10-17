@@ -9,17 +9,49 @@ import 'branch_identity.dart';
 import 'prospect_feed_cache.dart';
 import 'store_identity.dart';
 
+/// Describes the exact retailer scope that completed a successful feed
+/// refresh. A missing [branchId] is an explicit store-level scope; a present
+/// branch ID only covers that exact location. This prevents a successful
+/// refresh of one same-name branch from promoting another branch's prices.
+class ProspectRefreshScope {
+  const ProspectRefreshScope({
+    required this.storeName,
+    this.branchId,
+  });
+
+  final String storeName;
+  final String? branchId;
+
+  bool matches({
+    required String candidateStoreName,
+    String? candidateBranchId,
+  }) {
+    if (!sameStoreLabel(candidateStoreName, storeName)) return false;
+    final expectedBranch = canonicalBranchId(branchId);
+    if (expectedBranch == null) return true;
+    final actualBranch = canonicalBranchId(candidateBranchId);
+    return actualBranch != null && actualBranch == expectedBranch;
+  }
+
+  String get key =>
+      '${storeLabelMatchKey(storeName)}#${canonicalBranchId(branchId) ?? ''}';
+}
+
 class ProspectFeedLoadResult {
   const ProspectFeedLoadResult({
     required this.records,
     required this.refreshedStores,
+    this.refreshedStoreScopes = const <ProspectRefreshScope>[],
     this.generatedAt,
     this.prospects = const <ProspectIssue>[],
     this.fromCache = false,
   });
 
   final List<OfferImportRecord> records;
+  /// Legacy store-level refresh labels retained for older callers.
   final List<String> refreshedStores;
+  /// Branch-aware refresh scope derived from source metadata.
+  final List<ProspectRefreshScope> refreshedStoreScopes;
   final DateTime? generatedAt;
   final List<ProspectIssue> prospects;
   final bool fromCache;
@@ -640,6 +672,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
   final sourceValues =
       _listValue(json['sources']);
   final refreshedStores = <String>[];
+  final refreshedStoreScopes = <ProspectRefreshScope>[];
   final availableStores = <String>[...configuredProspectStores];
   final availableStoreUrls = <String, String>{};
   final sourceMetadataByIndex =
@@ -686,11 +719,21 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     if (sourceUrl != null && sourceUrl.trim().isNotEmpty) {
       availableStoreUrls[storeName] = sourceUrl;
     }
-    if (metadata.status == 'ok' &&
-        !refreshedStores.any(
-          (entry) => _prospectStoreMetadataKey(entry) == storeKey,
-        )) {
-      refreshedStores.add(storeName);
+    if (metadata.status == 'ok') {
+      final scope = ProspectRefreshScope(
+        storeName: storeName,
+        branchId: branchId,
+      );
+      if (!refreshedStoreScopes.any((entry) => entry.key == scope.key)) {
+        refreshedStoreScopes.add(scope);
+      }
+      if (!refreshedStores.any(
+        (entry) => _prospectStoreMetadataKey(entry) == storeKey,
+      )) {
+        // Keep the historical store-label projection for callers that do not
+        // understand branch-aware scopes yet.
+        refreshedStores.add(storeName);
+      }
     }
   }
 
@@ -1142,6 +1185,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
   return ProspectFeedLoadResult(
     records: records,
     refreshedStores: refreshedStores,
+    refreshedStoreScopes: refreshedStoreScopes,
     generatedAt: generatedAt,
     prospects: prospects,
     fromCache: fromCache,

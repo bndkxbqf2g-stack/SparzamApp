@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Branch-scharfer Prospekt-Refresh
+
+prospect_feed_service_test.dart prüft, dass ein erfolgreicher und ein
+fehlgeschlagener Same-Name-Branch getrennte Refresh-Scopes erzeugen.
+prospect_price_learning_test.dart und
+prospect_regular_price_persistence_integration_test.dart prüfen, dass nur der
+reguläre Preis der bestätigten Filiale gelernt und lokal gespeichert wird.
+
 ## Update 17.10.2026 – Aktivierte Routenmärkte bei Schreibvarianten
 
 route_preferences_test.dart prüft, dass LIDL und ALDI SUED die konfigurierten

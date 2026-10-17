@@ -80,6 +80,7 @@ class ProspectImportModule {
     return ProspectFeedLoadResult(
       records: feed.records,
       refreshedStores: feed.refreshedStores,
+      refreshedStoreScopes: feed.refreshedStoreScopes,
       generatedAt: feed.generatedAt,
       prospects: prospects,
       fromCache: feed.fromCache,
