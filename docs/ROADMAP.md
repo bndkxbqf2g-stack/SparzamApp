@@ -1,3 +1,10 @@
+## Update 17.10.2026 – Prospekt-Suchcache beim Scrollen
+
+- [x] Produktauflösung in aktuellen Prospektsuchergebnissen über Rebuilds und Nachladen memoisiert.
+- [x] Kollisionssichere Karten-Schlüssel an den unveränderten Record-Snapshot binden.
+- [x] Katalogwechsel als klare Cachegrenze behandeln und bestehende Filial-/Gültigkeitsregeln behalten.
+- [x] Bestehende Such-, Cover-, Seiten- und Einkaufsliste-Regressionen über CI ausführen.
+
 ## Update 17.10.2026 – Gründe für fehlende Preisbelege
 
 - [x] Fehlende aktuelle Marktzeilen pro Produkt mit einem primären Datenqualitätsgrund erklären.
