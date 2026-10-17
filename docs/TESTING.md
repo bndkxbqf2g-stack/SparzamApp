@@ -1,3 +1,10 @@
+## Update 17.10.2026 – Verschachtelter Filialkontext
+
+`prospect_feed_service_test.dart` prüft einen Feed mit zwei gleichnamigen
+Lidl-Filialen und verschachtelten `branch`-Objekten. Quelle, Prospektseite und
+Angebot müssen dieselbe Branch-ID sowie die jeweils belegten Orts- und
+Adressfelder behalten.
+
 ## Update 17.10.2026 – Verschachtelte Bildaliasfelder
 
 `prospect_feed_service_test.dart` prüft zusätzlich `images[].thumbnailUrl`.
