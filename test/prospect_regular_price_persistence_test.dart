@@ -561,6 +561,45 @@ void main() {
     },
   );
 
+  test('reconciles umlaut retailer labels in the refresh scope', () async {
+    final store = memoryStore();
+    final aldi = OfferImportRecord(
+      sourceId: 'aldi-coffee-current',
+      productLabel: coffee.name,
+      storeName: 'ALDI Süd',
+      originalPrice: 7.49,
+      offerPrice: 4.49,
+      validFrom: DateTime(2026, 10, 10),
+      validUntil: DateTime(2026, 10, 17),
+      source: 'retailerWebsite',
+      sourceAdapter: 'kaufda',
+      branchId: 'aldi-branch-1',
+      proofRef: 'https://example.test/kaufda/aldi-coffee',
+      capturedAt: now,
+    );
+
+    final first = await persistCurrentProspectRegularPrices(
+      store: store,
+      records: [aldi],
+      catalogProducts: const [coffee],
+      observedAt: now,
+      now: now,
+      refreshedStores: const ['ALDI SUED'],
+    );
+    expect(first.stored.single.isCurrent, isTrue);
+
+    final refreshed = await persistCurrentProspectRegularPrices(
+      store: store,
+      records: const [],
+      catalogProducts: const [coffee],
+      observedAt: now.add(const Duration(hours: 1)),
+      now: now.add(const Duration(hours: 1)),
+      refreshedStores: const ['ALDI SUED'],
+    );
+
+    expect(refreshed.stored.single.storeName, 'ALDI Süd');
+    expect(refreshed.stored.single.isCurrent, isFalse);
+  });
   test('does not reconcile stores outside the confirmed refresh scope', () async {
     final store = memoryStore();
     final netto = OfferImportRecord(

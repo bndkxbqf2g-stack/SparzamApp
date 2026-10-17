@@ -1,3 +1,13 @@
+## D192 – Reconcile und Lernfilter teilen denselben Händlervergleich
+
+Der Preis-Refresh besteht aus zwei fachlich gekoppelten Schritten: neue reguläre
+Beobachtungen lernen und nicht erneut belegte aktuelle Zeilen historisieren.
+Beide Schritte verwenden deshalb denselben präsentationsbezogenen Händlervergleich
+einschließlich der üblichen `ae/oe/ue`-Transliterationen. Andernfalls könnte ein
+Refresh eine Schreibvariante lernen, aber die andere aktuelle Zeile weiter routen.
+Die gespeicherten Labels, exakten Filial-IDs und append-only Historien bleiben dabei
+unverändert; nur der Scope-Vergleich wird normalisiert.
+
 ## D191 – Händlervergleich im Preis-Refresh teilt die Prospekt-Semantik
 
 Der automatische Lernpfad filtert Beobachtungen anhand der vom Feed als frisch gemeldeten Händler.

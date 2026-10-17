@@ -144,7 +144,9 @@ bool _isAutomaticProspectOfferObservation(PriceObservation observation) {
   return isLegacyProspectId &&
       (observation.kind == PriceObservationKind.offer || observation.discounted);
 }
-String _normalizedProspectStoreKey(String value) => value.trim().toLowerCase();
+// Reconcile with the same presentation-only store key used by the feed and UI.
+// The persisted display label and exact branch ID remain untouched.
+String _normalizedProspectStoreKey(String value) => prospectStoreMatchKey(value);
 
 bool _isCurrentProspectRegular(PriceObservation entry) =>
     entry.isCurrent &&

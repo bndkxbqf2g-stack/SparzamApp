@@ -4,6 +4,12 @@
 - `ALDI Süd` und `ALDI SUED` bleiben dadurch im Refresh-Scope verbunden; sichtbare Händlernamen und exakte Filial-IDs werden nicht verändert.
 - Eine Regression deckt die transliterierte Schreibweise ab; Angebots- und Normalpreisrollen bleiben getrennt.
 
+## Update 17.10.2026 – Reconcile des Preis-Ledgers nutzt Händler-Schreibvarianten
+
+- Beim Ablösen historischer Normalpreiszeilen verwendet der Persistenzschritt jetzt denselben Händlervergleich wie Feed-Refresh und Prospektsuche.
+- Ein Refresh mit `ALDI SUED` markiert daher auch eine gespeicherte Zeile `ALDI Süd` korrekt als historisch, wenn sie nicht erneut belegt wird.
+- Die sichtbare Herkunft, die Filial-ID und die append-only Historie bleiben erhalten.
+
 ## Update 17.10.2026 – Preisstatus zählt nur aktuelle Normalpreisbelege
 
 - Der bestätigte Speicherstatus zählt reguläre Prospektbelege jetzt nur noch, wenn ihre lokale Beobachtung weiterhin als `isCurrent` markiert ist.
