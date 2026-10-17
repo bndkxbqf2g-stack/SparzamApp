@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Preise-Reiter aktualisiert Prospektpreise auf Wunsch
+
+- [x] Der Preise-Reiter kann den aktuellen Prospektfeed direkt anstoßen.
+- [x] Der Refresh verwendet weiterhin den bestehenden automatischen
+  Persistenzpfad und speichert nur ausdrücklich belegte reguläre Normalpreise.
+- [x] Aktionspreise bleiben getrennt; Filial-, Gültigkeits- und Quellenbeleg
+  werden unverändert durch die Preisbeobachtung erhalten.
+
 ## Update 17.10.2026 – Preise-Reiter verarbeitet neue Preisstände
 
 - [x] Quote-Cache von Eingangssignatur und Ergebnis-Signatur trennen.
