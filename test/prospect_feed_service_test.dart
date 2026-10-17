@@ -1886,5 +1886,42 @@ void main() {
     );
   });
 
+  test('currentFoodProspectRecords filters non-food legacy rows', () {
+    final records = [
+      OfferImportRecord(
+        sourceId: 'food',
+        productLabel: 'Milch 1 l',
+        storeName: 'Lidl',
+        offerPrice: 1.19,
+        validUntil: DateTime(2026, 10, 20),
+        category: 'Milchprodukte',
+      ),
+      OfferImportRecord(
+        sourceId: 'non-food',
+        productLabel: 'Shampoo 300 ml',
+        storeName: 'Lidl',
+        offerPrice: 2.99,
+        validUntil: DateTime(2026, 10, 20),
+        category: 'Drogerie',
+      ),
+      OfferImportRecord(
+        sourceId: 'pet-food',
+        productLabel: 'Gourmet Gold 24 x 85 g',
+        storeName: 'Lidl',
+        offerPrice: 4.99,
+        validUntil: DateTime(2026, 10, 20),
+        category: 'Tiernahrung',
+      ),
+    ];
+
+    expect(
+      currentFoodProspectRecords(
+        records,
+        now: DateTime(2026, 10, 17),
+      ).map((record) => record.sourceId),
+      ['food'],
+    );
+  });
+
 }
 

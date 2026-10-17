@@ -686,7 +686,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
         });
       }
 
-      final currentRecords = currentProspectRecords(
+      final currentRecords = currentFoodProspectRecords(
         feed.records,
         now: refreshNow,
       );
@@ -867,7 +867,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       await _priceSaves.add(() async {
         if (!_isCurrentDataRevision(revision) || isSuperseded()) return;
         final refreshNow = DateTime.now();
-        final currentRecords = currentProspectRecords(
+        final currentRecords = currentFoodProspectRecords(
           feed.records,
           now: refreshNow,
         );
@@ -934,7 +934,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   void _showProspectFeed(ProspectFeedLoadResult feed) {
     if (!mounted) return;
     final now = DateTime.now();
-    final currentRecords = currentProspectRecords(feed.records, now: now);
+    final currentRecords = currentFoodProspectRecords(feed.records, now: now);
     final baseCatalog = buildCatalogProducts(customProducts);
     final offerBackedProducts = prospectOfferProducts(
       records: currentRecords,
