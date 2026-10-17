@@ -6,6 +6,7 @@ import '../catalog/product_identity.dart';
 import 'offer_import.dart';
 import 'prospect_product_match.dart';
 import '../prospects/prospect_issue_identity.dart';
+import '../../services/prospect_feed_service.dart';
 
 /// Learns prospect prices only when an observation time is supplied.
 ///
@@ -17,20 +18,24 @@ List<PriceObservation> datedProspectPriceObservations({
   required Iterable<Product> catalogProducts,
   DateTime? observedAt,
   Iterable<String>? refreshedStores,
+  Iterable<ProspectRefreshScope>? refreshedStoreScopes,
 }) {
-  // Feed adapters may differ only in whitespace or letter case. Normalize
-  // that presentation detail while keeping distinct store names and aliases
-  // separate; no fuzzy or cross-market matching is introduced here.
-  final refreshedStoreKeys = refreshedStores
-      ?.map(_prospectStoreKey)
-      .where((store) => store.isNotEmpty)
-      .toSet();
-  final eligibleRecords = refreshedStoreKeys == null
-      ? records
-      : records.where(
-          (record) => refreshedStoreKeys.contains(
-            _prospectStoreKey(record.storeName),
+  // Prefer the branch-aware scope when the feed provides it. The legacy
+  // retailer-label list remains a compatibility fallback for callers and
+  // older fixtures that cannot express branch status.
+  final scopes = refreshedStoreScopes?.toList(growable: false);
+  final eligibleRecords = scopes != null && scopes.isNotEmpty
+      ? records.where(
+          (record) => scopes.any(
+            (scope) => scope.matches(
+              candidateStoreName: record.storeName,
+              candidateBranchId: record.branchId,
+            ),
           ),
+        )
+      : _recordsInLegacyRefreshScope(
+          records,
+          refreshedStores,
         );
   return prospectPriceObservations(
     records: eligibleRecords,
@@ -50,11 +55,13 @@ List<PriceObservation> datedProspectRegularPriceObservations({
   required Iterable<Product> catalogProducts,
   DateTime? observedAt,
   Iterable<String>? refreshedStores,
+  Iterable<ProspectRefreshScope>? refreshedStoreScopes,
 }) => datedProspectPriceObservations(
       records: records,
       catalogProducts: catalogProducts,
       observedAt: observedAt,
       refreshedStores: refreshedStores,
+      refreshedStoreScopes: refreshedStoreScopes,
     )
     .where((entry) => entry.kind == PriceObservationKind.regular)
     .toList(growable: false);
@@ -72,6 +79,7 @@ List<PriceObservation> currentDatedProspectRegularPriceObservations({
   DateTime? observedAt,
   DateTime? now,
   Iterable<String>? refreshedStores,
+  Iterable<ProspectRefreshScope>? refreshedStoreScopes,
 }) {
   final reference = now ?? DateTime.now();
   final current = datedProspectRegularPriceObservations(
@@ -79,6 +87,7 @@ List<PriceObservation> currentDatedProspectRegularPriceObservations({
     catalogProducts: catalogProducts,
     observedAt: observedAt,
     refreshedStores: refreshedStores,
+    refreshedStoreScopes: refreshedStoreScopes,
   );
   // A source can attach an individual capture time that is newer than the
   // feed timestamp. A future capture is provenance-invalid and must not be
@@ -256,11 +265,27 @@ PriceObservationSource? _source(String source) =>
       _ => null,
     };
 
-// Use the same presentation-only key as the prospect UI when the feed tells
-// us which stores were actually refreshed. This keeps `ALDI Süd` and
-// `ALDI SUED` in the same refresh scope without merging exact branches or
-// changing the stored retailer label.
+// Use the same presentation-only key as the prospect UI when the feed
+// does not yet provide branch-aware scope. This keeps ALDI Süd and
+// ALDI SUED in the same legacy refresh scope without changing stored
+// retailer labels or branch IDs.
 String _prospectStoreKey(String value) => prospectStoreMatchKey(value);
+
+Iterable<OfferImportRecord> _recordsInLegacyRefreshScope(
+  Iterable<OfferImportRecord> records,
+  Iterable<String>? refreshedStores,
+) {
+  final refreshedStoreKeys = refreshedStores
+      ?.map(_prospectStoreKey)
+      .where((store) => store.isNotEmpty)
+      .toSet();
+  if (refreshedStoreKeys == null) return records;
+  return records.where(
+    (record) => refreshedStoreKeys.contains(
+      _prospectStoreKey(record.storeName),
+    ),
+  );
+}
 
 bool _isKaufdaEvidence(OfferImportRecord record) {
   if (record.sourceAdapter?.trim().toLowerCase() == 'kaufda') return true;
