@@ -251,7 +251,7 @@ bool _hasProspectValidity(PriceObservation observation) {
 }
 
 bool _isProspectOffer(PriceObservation observation) =>
-    observation.kind == PriceObservationKind.offer &&
+    (observation.kind == PriceObservationKind.offer || observation.discounted) &&
     switch (observation.source) {
       PriceObservationSource.retailer ||
       PriceObservationSource.retailerWebsite ||

@@ -49,6 +49,24 @@ void main() {
 
     expect(marketPricesFromObservations([observation], now: now), isEmpty);
   });
+  test('does not project a discounted legacy prospect observation', () {
+    final observation = PriceObservation(
+      id: 'prospect|leaflet|lidl|coffee|legacy-discounted',
+      productId: 'coffee-500',
+      storeName: 'Lidl',
+      locationId: 'lidl-branch-1',
+      price: 4.99,
+      observedAt: DateTime(2026, 10, 14, 8),
+      source: PriceObservationSource.leaflet,
+      // Legacy rows may have no kind but retain their discounted marker.
+      discounted: true,
+      validFrom: DateTime(2026, 10, 12),
+      validUntil: DateTime(2026, 10, 17),
+      proofRef: 'https://example.test/lidl/coffee',
+    );
+
+    expect(marketPricesFromObservations([observation], now: now), isEmpty);
+  });
   test('keeps a legacy prospect offer marked as offer evidence', () {
     final price = MarketPrice(
       productId: 'coffee-500',

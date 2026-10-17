@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Legacy-Prospektangebote vor der Projektion trennen
+
+- Der Beobachtungsadapter verwirft direkte Prospekt-Angebotszeilen jetzt bereits bei `discounted=true`, auch wenn alte Daten kein `kind=offer` speichern.
+- Solche Zeilen bleiben als Evidenz im Beobachtungsspeicher, gelangen aber nicht in die reguläre `MarketPrice`-Projektion.
+- Eine Adapterregression schützt die Abwärtskompatibilität ohne neue Quelle oder Datenmodellmigration.
+
 ## Update 17.10.2026 – Preisabdeckung trennt Prospekt-Aktionspreise
 
 - Direkte Prospekt-Aktionspreise werden in Katalog- und Marktdeckung nicht mehr als vergleichbare aktuelle Preise gezählt.
