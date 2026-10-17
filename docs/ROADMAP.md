@@ -1317,3 +1317,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Gleichstände werden über Produkt- und Marktnamen deterministisch gelöst.
 - [x] Die Sortierung verändert weder gespeicherte Belege noch die
   Routenberechnung.
+
+
+## Update 17.10.2026 – Routenpreise tolerieren Händler-Schreibvarianten
+
+- [x] Reine Präsentationsvarianten von Händlerlabels im RoutePriceResolver zusammenführen.
+- [x] Exakte Filial-ID weiterhin separat prüfen und nicht über die Labelnormalisierung ersetzen.
+- [x] Regressionen für Angebotspreis und gespeicherten Marktpreis ergänzen.
