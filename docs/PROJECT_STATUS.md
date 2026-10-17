@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Prospektkarten behalten exakte Filialidentität
+
+- Suchkarten verwenden jetzt denselben filialgenauen Schlüssel wie das Prospekt-Grid.
+- Bei gleicher Händler- und Quell-ID bleiben Branch-ID, Ort und Adresse getrennt; der lokale Produktauflösungscache recycelt dadurch keinen Zustand zwischen Filialen.
+- Die Angebotsdaten, Gültigkeitsprüfung und getrennte Preis-Persistenz bleiben unverändert.
+
 ## Update 17.10.2026 – Filialgenaue Prospektangebote im Cache- und Live-Merge
 
 - Transiente Prospektangebote werden beim Aufbau des Cache- und Live-Snapshots jetzt mit Angebots-ID, Händler und exakter Filial-/Ortsherkunft geschlüsselt.
