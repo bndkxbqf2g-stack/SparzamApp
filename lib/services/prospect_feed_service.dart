@@ -164,8 +164,6 @@ ProspectFeedLoadResult preserveCurrentProspectRowsForEmptySources({
       fallbackCounts[scope.key] = addedForScope;
     }
   }
-  if (additions.isEmpty) return incoming;
-
   // A newer source response can keep valid row metadata while omitting page
   // images during a partial publisher refresh. Reuse only a matching local
   // prospect for the exact store/branch scope; never cross-promote a branch.
@@ -187,12 +185,34 @@ ProspectFeedLoadResult preserveCurrentProspectRowsForEmptySources({
     }
   }
 
+  final fallbackPageScopes = <String>{};
+  for (final scope in scopes) {
+    final fallbackIssue = fallbackProspectsByScope[scope.key];
+    if (fallbackIssue == null ||
+        (fallbackIssue.pages.isEmpty && fallbackIssue.thumbnailUrl == null)) {
+      continue;
+    }
+    final hasIncomingPageEvidence = incoming.prospects.any(
+      (issue) =>
+          scope.matches(
+            candidateStoreName: issue.storeName,
+            candidateBranchId: issue.branchId,
+          ) &&
+          (issue.pages.isNotEmpty || issue.thumbnailUrl != null),
+    );
+    if (!hasIncomingPageEvidence) {
+      fallbackPageScopes.add(scope.key);
+    }
+  }
+  if (additions.isEmpty && fallbackPageScopes.isEmpty) return incoming;
+
   final affectedProspects = <ProspectIssue>[
     ...incoming.prospects.map(
       (issue) {
         ProspectRefreshScope? matchedScope;
         for (final scope in scopes) {
-          if (!fallbackCounts.containsKey(scope.key) ||
+          if ((!fallbackCounts.containsKey(scope.key) &&
+                  !fallbackPageScopes.contains(scope.key)) ||
               !scope.matches(
                 candidateStoreName: issue.storeName,
                 candidateBranchId: issue.branchId,
@@ -205,11 +225,13 @@ ProspectFeedLoadResult preserveCurrentProspectRowsForEmptySources({
         if (matchedScope == null) return issue;
 
         final fallbackCount = fallbackCounts[matchedScope.key] ?? 0;
-        if (fallbackCount == 0) return issue;
         final fallbackIssue = fallbackProspectsByScope[matchedScope.key];
-        final useFallbackPages = issue.pages.isEmpty &&
+        final useFallbackPages = fallbackPageScopes.contains(matchedScope.key) &&
+            issue.pages.isEmpty &&
             fallbackIssue != null &&
             fallbackIssue.pages.isNotEmpty;
+        if (fallbackCount == 0 && !useFallbackPages) return issue;
+
         final pages = useFallbackPages
             ? (fallbackIssue?.pages ?? issue.pages)
             : issue.pages;
@@ -235,6 +257,8 @@ ProspectFeedLoadResult preserveCurrentProspectRowsForEmptySources({
         final title = issue.title.trim().toLowerCase() == 'prospekt'
             ? (fallbackIssue?.title ?? issue.title)
             : issue.title;
+        final fallbackStatus =
+            fallbackCount > 0 ? 'current_fallback' : 'stale_fallback';
 
         return ProspectIssue(
           storeName: issue.storeName,
@@ -246,7 +270,7 @@ ProspectFeedLoadResult preserveCurrentProspectRowsForEmptySources({
           location: issue.location ?? fallbackIssue?.location,
           address: issue.address ?? fallbackIssue?.address,
           sourceAdapter: issue.sourceAdapter ?? fallbackIssue?.sourceAdapter,
-          sourceStatus: 'current_fallback',
+          sourceStatus: fallbackStatus,
           recordCount: issue.recordCount > fallbackCount
               ? issue.recordCount
               : fallbackCount,
@@ -266,10 +290,11 @@ ProspectFeedLoadResult preserveCurrentProspectRowsForEmptySources({
   ];
 
   // Keep the visible prospect surface usable even if a malformed feed omitted
-  // the metadata-only issue row for a scope that still received row fallback.
+  // the metadata-only issue row for a scope that received row or page fallback.
   for (final scope in scopes) {
     final fallbackCount = fallbackCounts[scope.key] ?? 0;
-    if (fallbackCount == 0 ||
+    final usePageFallback = fallbackPageScopes.contains(scope.key);
+    if ((fallbackCount == 0 && !usePageFallback) ||
         affectedProspects.any(
           (issue) => scope.matches(
             candidateStoreName: issue.storeName,
@@ -294,7 +319,8 @@ ProspectFeedLoadResult preserveCurrentProspectRowsForEmptySources({
         location: fallbackIssue.location,
         address: fallbackIssue.address,
         sourceAdapter: fallbackIssue.sourceAdapter,
-        sourceStatus: 'current_fallback',
+        sourceStatus:
+            fallbackCount > 0 ? 'current_fallback' : 'stale_fallback',
         recordCount: fallbackCount,
         availablePageCount: fallbackIssue.availablePageCount,
         loadedPageCount: fallbackIssue.loadedPageCount ??
