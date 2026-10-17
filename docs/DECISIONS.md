@@ -1796,3 +1796,11 @@ interpretiert; fehlt das Enddatum, wird der Datensatz verworfen.
 Eine Mengenstruktur wird nur aus explizitem Betrag und Einheit zu einer
 Packungsangabe zusammengesetzt. Diese Angabe bleibt Quellmetadatum und ändert
 weder Produktidentität noch Branch- oder Preisregeln.
+
+## D182 – KaufDA-Aliase bleiben eine begrenzte Quellenkompatibilität
+
+Der KaufDA-Adapter akzeptiert nur dokumentierte bzw. beobachtete öffentliche
+Aliasfelder für Händler, Angebots-ID und Preisobjekte. Die Liste wird nicht
+rekursiv aus beliebigen JSON-Schlüsseln abgeleitet. Ein Alias beeinflusst nur
+die Quellnormalisierung; Branch-, Gültigkeits-, Lebensmittel- und
+Preisrollenregeln bleiben unverändert.

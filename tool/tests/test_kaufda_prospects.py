@@ -103,6 +103,48 @@ class KaufdaProspectTest(unittest.TestCase):
         items = kaufda._items_from_payload(payload)
         self.assertEqual(len(items), 6)
 
+    def test_items_from_payload_accepts_publisher_and_nested_validity_aliases(self):
+        payload = {
+            "results": {
+                "items": [
+                    {
+                        "publisher": {"name": "Lidl"},
+                        "validityPeriod": {
+                            "startDate": "2026-10-12",
+                            "endDate": "2026-10-17",
+                        },
+                    }
+                ]
+            }
+        }
+
+        self.assertEqual(len(kaufda._items_from_payload(payload)), 1)
+
+    def test_parser_accepts_publisher_alias_and_nested_price_object(self):
+        payload = kaufda.extract_next_data(self.html)
+        item = payload["props"]["pageProps"]["pageInformation"]["offers"]["main"]["items"][0]
+        item.pop("publisherName", None)
+        item["publisher"] = {"name": "Lidl"}
+        item.pop("id", None)
+        item["offerId"] = "alias-offer-id"
+        item["prices"]["mainPrice"] = {"amount": "1,29", "currency": "EUR"}
+        item.pop("mainPrice", None)
+        html = (
+            '<script id="__NEXT_DATA__" type="application/json">'
+            + kaufda.json.dumps(payload)
+            + "</script>"
+        )
+
+        offers, _ = kaufda.parse_kaufda_html(
+            html,
+            city="Wuerzburg",
+            query="Butter",
+            today=self.today,
+        )
+
+        self.assertEqual(offers[0]["storeName"], "Lidl")
+        self.assertEqual(offers[0]["offerPrice"], 1.29)
+
     def test_next_data_without_optional_type_attribute_is_supported(self):
         payload = kaufda.extract_next_data(self.html)
         html = (

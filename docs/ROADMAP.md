@@ -1271,3 +1271,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Mengenobjekte mit Betrag und Einheit als Packungsgröße übernehmen.
 - [x] Unvollständige Zeiträume verwerfen und Regressionen für beide Fälle
   ergänzen.
+
+## Update 17.10.2026 – KaufDA öffentliche Feldaliasse
+
+- [x] Händler- und Angebots-ID-Aliase sowie Händlerobjekte begrenzt erkennen.
+- [x] Verschachtelte Preisobjekte aus bekannten Betragsfeldern normalisieren.
+- [x] Die Erkennung verschachtelter Ergebnislisten mit synthetischen Daten testen.

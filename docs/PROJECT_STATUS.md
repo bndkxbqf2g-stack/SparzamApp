@@ -4042,3 +4042,10 @@ ungültig und wird nicht als aktuelles Angebot übernommen.
 Mengenobjekte mit explizitem Betrag und Einheit werden begrenzt zu einer
 Packungsangabe normalisiert. Die Herkunft bleibt im KaufDA-Datensatz; es
 entsteht keine neue Produktidentität und kein Preis ohne belegten Zeitraum.
+
+## Update 17.10.2026 – KaufDA öffentliche Feldaliasse
+
+Der optionale Parser toleriert zusätzlich ausdrücklich benannte Händler- und
+Angebotsfelder, wenn KaufDA diese in einer öffentlichen Antwort umbenennt oder
+verschachtelt. Verschachtelte Preisobjekte werden nur aus bekannten
+Betragsfeldern gelesen; unbekannte JSON-Strukturen bleiben ausgeschlossen.

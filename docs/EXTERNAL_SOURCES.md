@@ -287,3 +287,10 @@ gültiges Start-/Endpaar. Mengenobjekte werden nur bei belegtem Betrag und
 Einheit als Packungsgröße übernommen. Die Ergänzung nutzt keine zusätzliche
 kaufDA-Schnittstelle und ändert die bestehende Abschaltbarkeit, Cachegrenzen
 oder regionale Filialprüfung nicht.
+
+## KaufDA-Parser – öffentliche Feldaliasse
+
+Der optionale Adapter erkennt einige klar benannte öffentliche Händler-,
+Angebots-ID- und Preisfelder auch in verschachtelter Form. Diese Toleranz
+ändert weder die Abschaltbarkeit noch die Cache- und Branchgrenzen und ist
+keine Nutzung einer privaten Händlerfunktion.
