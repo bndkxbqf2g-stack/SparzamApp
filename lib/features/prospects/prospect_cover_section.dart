@@ -115,11 +115,14 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
       );
 
   Future<void> _chooseStore() async {
-    final stores = _uniqueIssues(widget.issues)
-        .map((issue) => issue.storeName)
-        .toSet()
-        .toList()
-      ..sort();
+    final storesByKey = <String, String>{};
+    for (final issue in _uniqueIssues(widget.issues)) {
+      storesByKey.putIfAbsent(
+        prospectStoreMatchKey(issue.storeName),
+        () => issue.storeName,
+      );
+    }
+    final stores = storesByKey.values.toList()..sort();
     final selected = await showModalBottomSheet<String>(
       context: context,
       builder: (context) => SafeArea(
@@ -155,10 +158,16 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
   @override
   Widget build(BuildContext context) {
     final allIssues = _uniqueIssues(widget.issues);
-    final issues = _selectedStore == null
+    final selectedStoreKey = _selectedStore == null
+        ? null
+        : prospectStoreMatchKey(_selectedStore!);
+    final issues = selectedStoreKey == null
         ? allIssues
         : allIssues
-            .where((issue) => issue.storeName == _selectedStore)
+            .where(
+              (issue) =>
+                  prospectStoreMatchKey(issue.storeName) == selectedStoreKey,
+            )
             .toList(growable: false);
     if (issues.isEmpty) return const SizedBox.shrink();
 
@@ -746,9 +755,10 @@ String? prospectPageCoverage(ProspectIssue issue) {
 List<ProspectIssue> _uniqueIssues(Iterable<ProspectIssue> issues) {
   final byStore = <String, ProspectIssue>{};
   for (final issue in issues) {
-    final previous = byStore[prospectIssueKey(issue)];
+    final key = prospectIssueMatchKey(issue);
+    final previous = byStore[key];
     if (previous == null || _issueScore(issue) > _issueScore(previous)) {
-      byStore[prospectIssueKey(issue)] = issue;
+      byStore[key] = issue;
     }
   }
   return byStore.values.toList(growable: false);
