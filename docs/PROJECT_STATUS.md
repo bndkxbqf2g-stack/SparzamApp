@@ -4,6 +4,12 @@
 - Historische, durch einen erfolgreichen Feed-Refresh abgelöste Zeilen bleiben für Nachvollziehbarkeit erhalten, erhöhen aber weder die sichtbare Bestätigung noch die aktuelle Routenbasis.
 - Eine Regression schützt die Übereinstimmung zwischen Persistenzstatus und aktueller MarketPrice-Projektion.
 
+## Update 17.10.2026 – Prospektsuche gleicht Händlerdarstellung sicher ab
+
+- Die Suche und die Coverage-Zählung vergleichen Händlernamen jetzt über den bestehenden normalisierten Store-Schlüssel.
+- Unterschiede in Großschreibung, Leerraum und deutscher Schreibweise verlieren dadurch weder Ort noch Filialstatus; die sichtbare Schreibweise bleibt die des Feeds.
+- Branch-IDs werden weiterhin separat und exakt verglichen; verschiedene Filialen werden nicht zusammengelegt.
+
 ## Update 17.10.2026 – Produktauflösung nutzt vollständige Belege
 
 - Die Prospekt-Memo-Caches in Angebote- und Prospekte-Reiter verwenden jetzt einen gemeinsamen Schlüssel aus Filiale, Artikelidentität und Validierungsbelegen.

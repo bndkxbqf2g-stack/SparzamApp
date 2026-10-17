@@ -9,6 +9,7 @@ import '../offers/prospect_offer_products.dart';
 import 'prospect_category_presentation.dart';
 import 'prospect_cover_section.dart';
 import 'prospect_issue_identity.dart';
+import '../../services/branch_identity.dart';
 import '../../models/product.dart';
 import '../../services/prospect_feed_service.dart';
 import '../offers/offer_filter.dart';
@@ -187,37 +188,37 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
     final currentUnscopedRegionalStoreCounts = <String, int>{};
     for (final record in currentRecords) {
       currentCounts.update(
-        prospectRecordKey(record),
+        prospectRecordMatchKey(record),
         (count) => count + 1,
         ifAbsent: () => 1,
       );
       currentStoreCounts.update(
-        record.storeName,
+        prospectStoreMatchKey(record.storeName),
         (count) => count + 1,
         ifAbsent: () => 1,
       );
       final recordBranch = record.branchId?.trim();
       if (recordBranch == null || recordBranch.isEmpty) {
         currentUnscopedStoreCounts.update(
-          record.storeName,
+          prospectStoreMatchKey(record.storeName),
           (count) => count + 1,
           ifAbsent: () => 1,
         );
       }
       if (record.regionalOnly) {
         currentRegionalCounts.update(
-          prospectRecordKey(record),
+          prospectRecordMatchKey(record),
           (count) => count + 1,
           ifAbsent: () => 1,
         );
         currentRegionalStoreCounts.update(
-          record.storeName,
+          prospectStoreMatchKey(record.storeName),
           (count) => count + 1,
           ifAbsent: () => 1,
         );
         if (recordBranch == null || recordBranch.isEmpty) {
           currentUnscopedRegionalStoreCounts.update(
-            record.storeName,
+            prospectStoreMatchKey(record.storeName),
             (count) => count + 1,
             ifAbsent: () => 1,
           );
@@ -226,21 +227,21 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
     }
     final byIssue = <String, List<ProspectIssue>>{};
     for (final issue in widget.prospects) {
-      byIssue.putIfAbsent(prospectIssueKey(issue), () => []).add(issue);
+      byIssue.putIfAbsent(prospectIssueMatchKey(issue), () => []).add(issue);
     }
     final visibleProspects = <ProspectIssue>[];
     for (final entries in byIssue.values) {
       final issue = entries.first;
       final hasBranch = issue.branchId?.trim().isNotEmpty == true;
-      final issueKey = prospectIssueKey(issue);
+      final issueKey = prospectIssueMatchKey(issue);
       final recordCount = hasBranch
           ? (currentCounts[issueKey] ?? 0) +
-              (currentUnscopedStoreCounts[issue.storeName] ?? 0)
-          : currentStoreCounts[issue.storeName] ?? 0;
+              (currentUnscopedStoreCounts[prospectStoreMatchKey(issue.storeName)] ?? 0)
+          : currentStoreCounts[prospectStoreMatchKey(issue.storeName)] ?? 0;
       final regionalRecordCount = hasBranch
           ? (currentRegionalCounts[issueKey] ?? 0) +
-              (currentUnscopedRegionalStoreCounts[issue.storeName] ?? 0)
-          : currentRegionalStoreCounts[issue.storeName] ?? 0;
+              (currentUnscopedRegionalStoreCounts[prospectStoreMatchKey(issue.storeName)] ?? 0)
+          : currentRegionalStoreCounts[prospectStoreMatchKey(issue.storeName)] ?? 0;
       visibleProspects.add(
         _visibleIssue(
           entries,
@@ -580,7 +581,7 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
   Widget build(BuildContext context) {
     final issuesByStore = <String, List<ProspectIssue>>{};
     for (final issue in prospects) {
-      issuesByStore.putIfAbsent(issue.storeName, () => []).add(issue);
+      issuesByStore.putIfAbsent(prospectStoreMatchKey(issue.storeName), () => []).add(issue);
     }
 
     // A store can have multiple branch-specific records in the shared feed.
@@ -588,7 +589,7 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
     // another branch with the same visible retailer name.
     final matchingRecords = records
         .where((record) {
-          final candidates = issuesByStore[record.storeName];
+          final candidates = issuesByStore[prospectStoreMatchKey(record.storeName)];
           if (candidates == null || candidates.isEmpty) return true;
           return candidates.any(
             (issue) => _prospectRecordBelongsToIssue(record, issue),
@@ -617,7 +618,7 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
       // Use the exact store/branch key for grouping. The row still displays
       // the human-readable retailer name, while two same-name branches keep
       // independent locations and product lists.
-      byStore.putIfAbsent(prospectRecordKey(record), () => []).add(record);
+      byStore.putIfAbsent(prospectRecordMatchKey(record), () => []).add(record);
     }
 
     // Keep product identity resolution out of repeated sliver child builds. The
@@ -746,11 +747,11 @@ ProspectIssue? _prospectSearchIssueForRecord(
   OfferImportRecord record,
   Map<String, List<ProspectIssue>> issuesByStore,
 ) {
-  final candidates = issuesByStore[record.storeName];
+  final candidates = issuesByStore[prospectStoreMatchKey(record.storeName)];
   if (candidates == null || candidates.isEmpty) return null;
-  final recordKey = prospectRecordKey(record);
+  final recordKey = prospectRecordMatchKey(record);
   for (final issue in candidates) {
-    if (prospectIssueKey(issue) == recordKey) return issue;
+    if (prospectIssueMatchKey(issue) == recordKey) return issue;
   }
   final matching = candidates
       .where((issue) => _prospectRecordBelongsToIssue(record, issue))
@@ -821,7 +822,9 @@ List<OfferImportRecord> _matchingProspectRecords(
   final normalized = query.trim().toLowerCase();
   return records
       .where((record) {
-        if (storeName != null && record.storeName != storeName) {
+        if (storeName != null &&
+            prospectStoreMatchKey(record.storeName) !=
+                prospectStoreMatchKey(storeName)) {
           return false;
         }
         if (category != null && _prospectCategoryForRecord(record) != category) {
@@ -860,14 +863,15 @@ List<String> _prospectStores(
   Iterable<OfferImportRecord> records,
   Iterable<ProspectIssue> issues,
 ) {
-  final stores = <String>[];
+  final storesByKey = <String, String>{};
   for (final name in [
     ...issues.map((issue) => issue.storeName),
     ...records.map((record) => record.storeName),
   ]) {
-    if (name.trim().isNotEmpty && !stores.contains(name)) stores.add(name);
+    if (name.trim().isEmpty) continue;
+    storesByKey.putIfAbsent(prospectStoreMatchKey(name), () => name.trim());
   }
-  return stores;
+  return storesByKey.values.toList(growable: false);
 }
 
 class _ProspectCategoryChips extends StatelessWidget {
@@ -1625,7 +1629,10 @@ bool _prospectRecordBelongsToIssue(
   OfferImportRecord record,
   ProspectIssue issue,
 ) {
-  if (record.storeName != issue.storeName) return false;
+  if (prospectStoreMatchKey(record.storeName) !=
+      prospectStoreMatchKey(issue.storeName)) {
+    return false;
+  }
   final issueBranchId = issue.branchId?.trim();
   if (issueBranchId == null || issueBranchId.isEmpty) return true;
   final recordBranchId = record.branchId?.trim();
@@ -1633,7 +1640,7 @@ bool _prospectRecordBelongsToIssue(
   // explicitly different branch is rejected at this UI boundary.
   return recordBranchId == null ||
       recordBranchId.isEmpty ||
-      recordBranchId == issueBranchId;
+      canonicalBranchId(recordBranchId) == canonicalBranchId(issueBranchId);
 }
 
 class ProspectViewerScreen extends StatelessWidget {
