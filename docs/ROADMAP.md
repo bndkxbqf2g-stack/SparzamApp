@@ -1,3 +1,12 @@
+## Update 17.10.2026 – Clientseitiger Fallback für leere Händlerantworten
+
+- [x] Cache- und Asset-Snapshots je erfolgreichem Händler-/Filial-Scope auf
+  aktuelle Lebensmittelzeilen prüfen.
+- [x] Nur noch gültige Vorherdaten mit unveränderter Herkunft und Erfassungszeit
+  in einen leeren aktuellen Scope übernehmen.
+- [x] Abgelaufene, Non-Food-, filialfremde und historische Dubletten ablehnen;
+  der sichtbare Scope wird als current_fallback gekennzeichnet.
+
 ## Update 17.10.2026 – Leere aktuelle Lebensmittelantworten bleiben im Fallback
 
 - [x] Leere aktuelle Lebensmittelstände nach erfolgreichem Transport erkennen.
