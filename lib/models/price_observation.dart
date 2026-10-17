@@ -64,6 +64,7 @@ class PriceObservation {
     this.identityConfidence = 1,
     this.proofRef,
     this.sourceAdapter,
+    this.regularPriceSource,
     this.discounted = false,
     this.isCurrent = true,
   });
@@ -92,6 +93,10 @@ class PriceObservation {
   /// technical source enum remains stable for older consumers while this
   /// field preserves source-specific provenance.
   final String? sourceAdapter;
+  /// Exact field that supplied an explicitly stated regular/crossed-out price.
+  /// It remains separate from [sourceAdapter] so a source adapter cannot be
+  /// mistaken for evidence that a normal price was actually shown.
+  final String? regularPriceSource;
   /// Confidence in product identity only; source and age are scored separately.
   final double identityConfidence;
   final String? proofRef;
@@ -130,6 +135,7 @@ class PriceObservation {
         'observedAt': observedAt.toIso8601String(),
         'source': source.name,
         'sourceAdapter': sourceAdapter,
+        'regularPriceSource': regularPriceSource,
         'identityConfidence': identityConfidence,
         'proofRef': proofRef,
         'discounted': discounted,
@@ -161,6 +167,7 @@ class PriceObservation {
       observedAt: DateTime.parse(json['observedAt'] as String),
       source: source,
       sourceAdapter: json['sourceAdapter'] as String?,
+      regularPriceSource: json['regularPriceSource'] as String?,
       identityConfidence:
           (json['identityConfidence'] as num?)?.toDouble() ??
               (source == PriceObservationSource.receipt ? 0 : 1),
