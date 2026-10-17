@@ -1847,6 +1847,30 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     unawaited(_recordOfferHistory(offer));
     return applied;
   }
+  Future<void> saveProspectRegularPriceObservation(
+    PriceObservation observation,
+  ) async {
+    final revision = _dataRevision;
+    List<PriceObservation>? next;
+    await _priceSaves.add(() async {
+      if (!_isCurrentDataRevision(revision)) return;
+      next = await priceObservationStore.upsertById([observation]);
+    });
+    if (!_isCurrentDataRevision(revision) || next == null) return;
+    final applied = next!;
+    setState(() {
+      historicalPriceObservations = mergePriceObservations(
+        historicalPriceObservations,
+        applied,
+      );
+    });
+    widget.diagnosticLogService.record(
+      category: 'Preisdaten',
+      message: 'Geprüfter Prospekt-Normalpreis gespeichert.',
+      details:
+          '${observation.storeName} · ${observation.price.toStringAsFixed(2)} €',
+    );
+  }
 
   Future<void> _recordOfferHistory(Offer offer) async {
     final revision = _dataRevision;
@@ -2304,6 +2328,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       onSaveProduct: saveCatalogProduct,
       onReceiptObservationsChanged: _loadReceiptObservations,
       onSaveOffer: saveOffer,
+      onSaveProspectRegularPrice: saveProspectRegularPriceObservation,
       onDeleteOffer: deleteOffer,
       priceDataSummary: priceDataSettings.openPricesEnabled
           ? 'Open Prices · max. ${priceDataSettings.openPricesMaxAgeDays} Tage'
