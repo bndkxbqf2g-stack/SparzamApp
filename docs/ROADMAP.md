@@ -1263,3 +1263,11 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   erfolgreichen Erfassungszeitpunkt fortschreiben.
 - [x] Gemischte Live-/Cache-Herkunft über \`cacheUsed\` sichtbar halten.
 - [x] Regression für älteren Cache vor späterem Live-Treffer ergänzen.
+
+## Update 17.10.2026 – KaufDA verschachtelte Gültigkeit und Packungsgröße
+
+- [x] Ausdrücklich benannte verschachtelte Start-/Endfelder aus öffentlichen
+  KaufDA-Daten begrenzt normalisieren.
+- [x] Mengenobjekte mit Betrag und Einheit als Packungsgröße übernehmen.
+- [x] Unvollständige Zeiträume verwerfen und Regressionen für beide Fälle
+  ergänzen.

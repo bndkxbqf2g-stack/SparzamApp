@@ -136,6 +136,56 @@ class KaufdaProspectTest(unittest.TestCase):
             "3er-Schale",
         )
 
+    def test_parser_reads_nested_validity_and_quantity_objects(self):
+        payload = kaufda.extract_next_data(self.html)
+        item = payload["props"]["pageProps"]["pageInformation"]["offers"]["main"]["items"][0]
+        item.pop("validFrom", None)
+        item.pop("validUntil", None)
+        item["validityPeriod"] = {
+            "startDate": "2026-10-12T00:00:00+02:00",
+            "endDate": "2026-10-17",
+        }
+        for key in ("quantity", "packageSize", "packaging", "quantityLabel"):
+            item.pop(key, None)
+        item["quantity"] = {"amount": 250, "unit": "g"}
+        html = (
+            '<script id="__NEXT_DATA__" type="application/json">'
+            + kaufda.json.dumps(payload)
+            + "</script>"
+        )
+
+        offers, _ = kaufda.parse_kaufda_html(
+            html,
+            city="Wuerzburg",
+            query="Butter",
+            today=self.today,
+        )
+
+        self.assertEqual(offers[0]["validFrom"], "2026-10-12")
+        self.assertEqual(offers[0]["validUntil"], "2026-10-17")
+        self.assertEqual(offers[0]["packageSize"], "250 g")
+
+    def test_parser_rejects_nested_validity_without_explicit_end(self):
+        payload = kaufda.extract_next_data(self.html)
+        item = payload["props"]["pageProps"]["pageInformation"]["offers"]["main"]["items"][0]
+        item.pop("validFrom", None)
+        item.pop("validUntil", None)
+        item["validity"] = {"startDate": "2026-10-12"}
+        html = (
+            '<script id="__NEXT_DATA__" type="application/json">'
+            + kaufda.json.dumps(payload)
+            + "</script>"
+        )
+
+        offers, _ = kaufda.parse_kaufda_html(
+            html,
+            city="Wuerzburg",
+            query="Butter",
+            today=self.today,
+        )
+
+        self.assertNotIn("Lidl", [offer["storeName"] for offer in offers])
+
     def test_parser_accepts_singular_category_path_and_image_list_aliases(self):
         payload = kaufda.extract_next_data(self.html)
         item = payload["props"]["pageProps"]["pageInformation"]["offers"]["main"]["items"][0]

@@ -278,3 +278,12 @@ Die KaufDA-Gruppierung bewahrt den neuesten Erfassungszeitpunkt über mehrere
 begrenzte Suchbegriffe. Einzelne Angebote bleiben mit ihrem eigenen
 Erfassungszeitpunkt nachvollziehbar; bei gemischtem Live-/Cache-Stand bleibt
 die Cache-Nutzung als Diagnosesignal erhalten.
+
+## KaufDA-Parser – verschachtelte Gültigkeit und Mengen
+
+Der optionale Adapter liest verschachtelte Gültigkeitsfelder nur aus
+ausdrücklich benannten öffentlichen Schlüsseln und verlangt weiterhin ein
+gültiges Start-/Endpaar. Mengenobjekte werden nur bei belegtem Betrag und
+Einheit als Packungsgröße übernommen. Die Ergänzung nutzt keine zusätzliche
+kaufDA-Schnittstelle und ändert die bestehende Abschaltbarkeit, Cachegrenzen
+oder regionale Filialprüfung nicht.
