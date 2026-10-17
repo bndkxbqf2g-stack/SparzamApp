@@ -99,17 +99,29 @@ void main() {
   });
 
   test('reprocesses when a source EAN changes', () {
+    OfferImportRecord withEan(String ean) {
+      final record = feed.records.single;
+      return OfferImportRecord(
+        sourceId: record.sourceId,
+        productLabel: record.productLabel,
+        storeName: record.storeName,
+        originalPrice: record.originalPrice,
+        offerPrice: record.offerPrice,
+        validFrom: record.validFrom,
+        validUntil: record.validUntil,
+        source: record.source,
+        proofRef: record.proofRef,
+        ean: ean,
+      );
+    }
+
     final first = ProspectFeedLoadResult(
-      records: [
-        feed.records.single.copyWith(ean: '04012345678905'),
-      ],
+      records: [withEan('04012345678905')],
       refreshedStores: feed.refreshedStores,
       generatedAt: feed.generatedAt,
     );
     final second = ProspectFeedLoadResult(
-      records: [
-        feed.records.single.copyWith(ean: '04012345678906'),
-      ],
+      records: [withEan('04012345678906')],
       refreshedStores: feed.refreshedStores,
       generatedAt: feed.generatedAt,
     );
