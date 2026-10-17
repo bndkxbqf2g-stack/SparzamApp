@@ -360,6 +360,41 @@ void main() {
     );
   });
 
+  test('purges legacy discounted prospect rows even when kind is unknown', () async {
+    final store = memoryStore();
+    final legacy = PriceObservation(
+      id: 'prospect|retailerWebsite|Lidl|legacy-discount',
+      productId: coffee.id,
+      storeName: 'Lidl',
+      price: 4.99,
+      observedAt: now,
+      source: PriceObservationSource.retailerWebsite,
+      kind: PriceObservationKind.unknown,
+      discounted: true,
+      locationId: 'lidl-branch-1',
+      proofRef: 'https://example.test/lidl/legacy-discount',
+    );
+    final regular = PriceObservation(
+      id: 'prospect|retailerWebsite|Lidl|legacy-regular',
+      productId: coffee.id,
+      storeName: 'Lidl',
+      price: 7.99,
+      observedAt: now,
+      source: PriceObservationSource.retailerWebsite,
+      kind: PriceObservationKind.regular,
+      locationId: 'lidl-branch-1',
+      proofRef: 'https://example.test/lidl/legacy-regular',
+    );
+    await store.replaceAll([legacy, regular]);
+
+    final purged = await purgeLegacyAutomaticProspectOfferObservations(
+      store: store,
+    );
+
+    expect(purged.any((entry) => entry.id == legacy.id), isFalse);
+    expect(purged.any((entry) => entry.id == regular.id), isTrue);
+  });
+
   test('does not persist without a feed timestamp', () async {
     final store = memoryStore();
     final result = await persistCurrentProspectRegularPrices(
