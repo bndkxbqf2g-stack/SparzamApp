@@ -138,7 +138,7 @@ void main() {
       name: 'Lidl',
       location: 'Ort',
       distanceKm: 1,
-      prices: const <String, double>{},
+      prices: <String, double>{},
     );
     expect(
       RoutePriceResolver(
