@@ -92,6 +92,7 @@ List<Widget> buildShellPages({
   required VoidCallback onEditPriceData,
   required String priceDataSummary,
   required Future<List<MarketPrice>> Function(MarketPrice price) onSavePrice,
+  Future<void> Function(List<MarketPrice> prices)? onSavePrices,
   required Future<List<Product>> Function(Product product) onSaveProduct,
   required Future<void> Function() onReceiptObservationsChanged,
   required Future<List<Offer>> Function(Offer offer) onSaveOffer,
@@ -137,11 +138,12 @@ List<Widget> buildShellPages({
     priceObservations: priceObservations,
     historicalPriceObservations: historicalPriceObservations,
     prospectPriceHistory: prospectPriceHistory,
-    onSavePrices: (prices) async {
-      for (final price in prices) {
-        await onSavePrice(price);
-      }
-    },
+    onSavePrices: onSavePrices ??
+        (prices) async {
+          for (final price in prices) {
+            await onSavePrice(price);
+          }
+        },
     onCreateProduct: onSaveProduct,
     onReceiptObservationsChanged: onReceiptObservationsChanged,
     onResolvePriceGap: onResolvePriceGap,
@@ -225,11 +227,12 @@ List<Widget> buildShellPages({
       onUpdatePurchase: onUpdatePurchase,
       onDeletePurchase: onDeletePurchase,
       catalogProducts: catalogProducts,
-      onSavePrices: (prices) async {
-        for (final price in prices) {
-          await onSavePrice(price);
-        }
-      },
+      onSavePrices: onSavePrices ??
+          (prices) async {
+            for (final price in prices) {
+              await onSavePrice(price);
+            }
+          },
       onCreateProduct: onSaveProduct,
     ),
     profilePage: ProfileScreen(
