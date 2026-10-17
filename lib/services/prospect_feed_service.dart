@@ -935,13 +935,17 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         hasMalformedEan) {
       continue;
     }
-    final category = _firstSourceLabel(
+    final category = _firstProspectCategoryLabel(
       value,
       const [
         'category',
         'categoryName',
         'category_name',
         'productCategory',
+        'productCategories',
+        'categories',
+        'categoryPath',
+        'category_path',
         'warengruppe',
         'sortiment',
       ],
@@ -1299,6 +1303,47 @@ String? _firstHttpUrl(
       );
       if (nested != null) return nested;
     }
+  }
+  return null;
+}
+
+String? _prospectCategoryLabel(Object? value, {int depth = 0}) {
+  if (depth > 2) return null;
+  final direct = _sourceLabelValue(value);
+  if (direct != null) return direct;
+  if (value is List) {
+    final labels = <String>[];
+    for (final item in value) {
+      final label = _prospectCategoryLabel(item, depth: depth + 1);
+      if (label == null || labels.contains(label)) continue;
+      labels.add(label);
+      if (labels.length == 3) break;
+    }
+    return labels.isEmpty ? null : labels.join(' / ');
+  }
+  if (value is Map) {
+    for (final key in const [
+      'category',
+      'categories',
+      'categoryPath',
+      'category_path',
+      'items',
+      'path',
+    ]) {
+      final nested = _prospectCategoryLabel(value[key], depth: depth + 1);
+      if (nested != null) return nested;
+    }
+  }
+  return null;
+}
+
+String? _firstProspectCategoryLabel(
+  Map<String, dynamic> value,
+  Iterable<String> keys,
+) {
+  for (final key in keys) {
+    final label = _prospectCategoryLabel(value[key]);
+    if (label != null) return label;
   }
   return null;
 }
