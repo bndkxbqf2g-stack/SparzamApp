@@ -1,3 +1,11 @@
+## Update 17.10.2026 – KaufDA-Abfragen beschleunigt
+
+- [x] Öffentliche KaufDA-Suchseiten werden in einer kleinen, konfigurierbaren
+  Batch vorab geladen.
+- [x] Parser, Cache, Fehlerfallback und Ergebnisreihenfolge bleiben
+  deterministisch; Test-/Offline-Fetcher bleiben seriell.
+- [x] Die KaufDA-Quelle bleibt opt-in und zwischen Batches rate-limitiert.
+
 ## Update 17.10.2026 – Reguläre Prospektpreise bleiben von Angebotspreisen getrennt
 
 - [x] Der Preise-Reiter zählt aktuelle importierte Angebotspreise ohne belegten
