@@ -866,28 +866,28 @@ class _PriceDataQualityCard extends StatelessWidget {
                   ),
                 if (quality.futureEvidence > 0)
                   Chip(
-                    avatar: const Icon(Icons.event_busy_outlined, size: 16),
+                    avatar: const Icon(Icons.schedule_outlined, size: 16),
                     label: Text(
                       '${quality.futureEvidence} zukünftig',
                     ),
                   ),
                 if (quality.staleEvidence > 0)
                   Chip(
-                    avatar: const Icon(Icons.history_outlined, size: 16),
+                    avatar: const Icon(Icons.history, size: 16),
                     label: Text(
                       '${quality.staleEvidence} veraltet',
                     ),
                   ),
                 if (quality.identityUncertainEvidence > 0)
                   Chip(
-                    avatar: const Icon(Icons.manage_search_outlined, size: 16),
+                    avatar: const Icon(Icons.help_outline, size: 16),
                     label: Text(
                       '${quality.identityUncertainEvidence} Identität unklar',
                     ),
                   ),
                 if (quality.incomparableEvidence > 0)
                   Chip(
-                    avatar: const Icon(Icons.scale_outlined, size: 16),
+                    avatar: const Icon(Icons.info_outline, size: 16),
                     label: Text(
                       '${quality.incomparableEvidence} Mengenbasis fehlt',
                     ),
