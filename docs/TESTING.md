@@ -1,4 +1,8 @@
 
+## Batch-Preisfluss
+
+`test/shell_price_coordinator_test.dart` prüft den Mehrfachimport als einen koordinierten Schreibvorgang: alle Marktpreise und Beobachtungen bleiben erhalten, der Verlauf enthält nur reguläre Preisrollen und die Shell kann danach einen gemeinsamen Snapshot setzen. Es werden keine Live- oder privaten Belegdaten verwendet.
+
 ## Marktpreis-Evidenzrangfolge
 
 `test/market_price_selection_test.dart` prüft die gemeinsame Auswahlregel: qualitätsbereinigter Betrag vor Aktualität, Aktualität vor Quellpriorität, stabile Reihenfolge bei gleichen Quellen, getrennte exakte Filialslots, Ausschluss unbestätigter oder unvollständiger Preisbelege sowie dieselbe Quellenwahl im `RoutePriceResolver`. Die Tests verwenden ausschließlich synthetische Preise und keine Live-Abfragen.
