@@ -840,6 +840,7 @@ int _issueScore(ProspectIssue issue) {
     'ok' => 4,
     'metadata_only' => 3,
     'current_fallback' => 2,
+    'stale_fallback' => 1,
     'regional_only' => 1,
     _ => 0,
   };

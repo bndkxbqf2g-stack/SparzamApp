@@ -1200,16 +1200,24 @@ ProspectIssue _visibleIssue(
       ? null
       : _bestVisibleProspect(currentEntries);
   final selected = current ?? _bestVisibleProspect(entries);
+  final showNonCurrentPages =
+      current == null &&
+      selected.pages.isNotEmpty &&
+      (selected.sourceStatus == 'error' ||
+          selected.sourceStatus == 'stale_fallback');
 
-  // A stale issue may still carry a perfectly valid-looking cover image.
-  // Never expose that image as the current prospect once its period ended:
-  // the card remains useful as a source/status entry, while the old pages
-  // are removed from the visible evidence path.
+  // A source error can still carry a validated cover, and an explicitly
+  // marked stale fallback may keep an older cover visible. Ordinary expired
+  // issues stay hidden so the current card never advertises an old prospect.
+
   final String sourceStatus;
   if (currentRecordCount > 0 &&
       currentRegionalRecordCount == currentRecordCount &&
-      selected.sourceStatus != 'error') {
+      selected.sourceStatus != 'error' &&
+      selected.sourceStatus != 'stale_fallback') {
     sourceStatus = 'regional_only';
+  } else if (selected.sourceStatus == 'stale_fallback') {
+    sourceStatus = 'stale_fallback';
   } else if (currentRecordCount == 0 &&
       selected.sourceStatus != 'error' &&
       selected.sourceStatus != 'regional_only') {
@@ -1224,10 +1232,16 @@ ProspectIssue _visibleIssue(
 
   return ProspectIssue(
     storeName: selected.storeName,
-    title: current?.title ?? 'Aktionsprospekt',
-    pages: current?.pages ?? const <ProspectPage>[],
-    url: current?.url ?? officialProspectUrl(selected.storeName, selected.url),
-    thumbnailUrl: current?.thumbnailUrl,
+    title: current?.title ?? (showNonCurrentPages ? selected.title : 'Aktionsprospekt'),
+    pages: current?.pages ??
+        (showNonCurrentPages ? selected.pages : const <ProspectPage>[]),
+    url: current?.url ??
+        (showNonCurrentPages
+            ? (selected.url ??
+                officialProspectUrl(selected.storeName, selected.url))
+            : officialProspectUrl(selected.storeName, selected.url)),
+    thumbnailUrl:
+        current?.thumbnailUrl ?? (showNonCurrentPages ? selected.thumbnailUrl : null),
     branchId: current?.branchId ?? selected.branchId,
     location: current?.location ?? selected.location,
     address: current?.address ?? selected.address,
@@ -1243,11 +1257,12 @@ ProspectIssue _visibleIssue(
     pageCountKnown: current?.pageCountKnown ?? selected.pageCountKnown,
     uncertainProductCount:
         current?.uncertainProductCount ?? selected.uncertainProductCount,
-    validFrom: current?.validFrom,
-    validUntil: current?.validUntil,
+    validFrom: current?.validFrom ??
+        (showNonCurrentPages ? selected.validFrom : null),
+    validUntil: current?.validUntil ??
+        (showNonCurrentPages ? selected.validUntil : null),
   );
 }
-
 ProspectIssue _bestVisibleProspect(Iterable<ProspectIssue> entries) {
   final sorted = entries.toList(growable: false)
     ..sort(_compareVisibleProspects);
@@ -1298,6 +1313,7 @@ int _prospectStatusRank(String status) => switch (status) {
   'ok' => 4,
   'metadata_only' => 3,
   'current_fallback' => 2,
+  'stale_fallback' => 1,
   'regional_only' => 1,
   _ => 0,
 };
@@ -1795,6 +1811,9 @@ String _prospectCardSummary(ProspectIssue issue) {
   if (issue.sourceStatus == 'current_fallback') {
     summary = '${issue.recordCount} Angebote aus dem letzten geprüften '
         'Prospektstand. Automatische Aktualisierung aktuell nicht verfügbar.';
+  } else if (issue.sourceStatus == 'stale_fallback') {
+    summary = 'Älteres Cover verfügbar; keine aktuell gültigen Angebote '
+        'aus diesem Prospekt freigegeben.';
   } else if (issue.sourceStatus == 'regional_only') {
     summary = 'Nur regional erkannt · Filiale noch nicht bestätigt.';
   } else if (issue.recordCount > 0) {
@@ -1828,6 +1847,10 @@ String _sourceStatusLabel(ProspectIssue issue) {
   if (issue.sourceStatus == 'current_fallback') {
     return 'Der letzte geprüfte Prospektstand wird verwendet; die automatische '
         'Aktualisierung ist aktuell nicht verfügbar.';
+  }
+  if (issue.sourceStatus == 'stale_fallback') {
+    return 'Ein älteres Cover bleibt zum Nachschlagen verfügbar; abgelaufene '
+        'Preise sind nicht als aktuelle Angebote freigegeben.';
   }
   if (issue.sourceStatus == 'error') {
     return 'Automatischer Abruf aktuell nicht verfügbar. '

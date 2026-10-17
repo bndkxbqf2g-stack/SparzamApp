@@ -782,6 +782,8 @@ String _sourceStatusLabel(String status) {
       return 'aktuell';
     case 'current_fallback':
       return 'Fallback';
+    case 'stale_fallback':
+      return 'Älteres Cover';
     case 'metadata_only':
       return 'Metadaten';
     case 'regional_only':

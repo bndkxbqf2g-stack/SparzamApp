@@ -358,6 +358,7 @@ int _prospectIssueScore(ProspectIssue issue) {
     'ok' => 4,
     'metadata_only' => 3,
     'current_fallback' => 2,
+    'stale_fallback' => 1,
     'regional_only' => 1,
     _ => 0,
   };
@@ -768,6 +769,9 @@ class _OfferSourceNotice extends StatelessWidget {
       'current_fallback' =>
         'Der letzte geprüfte Prospektstand wird verwendet; die automatische '
             'Aktualisierung ist aktuell nicht verfügbar.',
+      'stale_fallback' =>
+        'Ein älteres Cover bleibt zum Nachschlagen verfügbar; abgelaufene '
+            'Preise sind nicht als aktuelle Angebote freigegeben.',
       'error' =>
         'Automatischer Abruf aktuell nicht verfügbar. '
             'Der offizielle Prospekt bleibt direkt erreichbar.',
