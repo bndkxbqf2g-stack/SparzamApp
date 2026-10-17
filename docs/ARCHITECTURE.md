@@ -15,6 +15,12 @@ Adapterzeilen mit konkreter `sourceAdapter`-Kennung fehlt der Marker nicht
 stillschweigend. `offerPrice` bleibt davon getrennte, zeitlich gültige
 Aktions-Evidenz und wird nicht als reguläre Preisbasis gespeichert.
 
+Beim Übergang in `Offer` und `PriceObservation` wird der Marker als
+`regularPriceSource` erhalten. `sourceAdapter` beschreibt weiterhin nur die
+technische Herkunft; die beiden Felder dürfen nicht vertauscht werden. Der
+Preise-Reiter zeigt den Marker im aktuellen Normalpreisledger, damit eine
+gespeicherte reguläre Preisbasis bis zum konkreten Feedfeld prüfbar bleibt.
+
 # SparzamApp – Architektur
 
 ## Grundprinzip
