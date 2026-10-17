@@ -51,6 +51,41 @@ void main() {
     },
   );
 
+  test(
+    'start-address enrichment preserves capture-only feed time',
+    () async {
+      final client = MockClient(
+        (_) async => http.Response('''
+{
+  "capturedAt": "2026-10-01T04:15:00Z",
+  "sources": [
+    {
+      "storeName": "ALDI Süd",
+      "status": "ok",
+      "branchId": "B384",
+      "location": "Zellingen",
+      "address": "Würzburger Str. 74, 97225 Zellingen, Germany"
+    }
+  ],
+  "offers": []
+}
+''', 200),
+      );
+
+      final module = ProspectImportModule(
+        client: client,
+        cache: _MemoryProspectFeedCache(),
+      );
+      final result = await module.execute(
+        startAddress: '97225 Zellingen, Germany',
+      );
+
+      expect(result.generatedAt, isNull);
+      expect(result.capturedAt, DateTime.utc(2026, 10, 1, 4, 15));
+      module.close();
+    },
+  );
+
   test('start-address enrichment keeps page coverage diagnostics', () async {
     final client = MockClient(
       (_) async => http.Response('''
