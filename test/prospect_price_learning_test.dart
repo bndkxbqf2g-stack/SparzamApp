@@ -26,6 +26,33 @@ void main() {
     expect(evidence, isEmpty);
   });
 
+  test('uses a record capture time when the feed timestamp is absent', () {
+    final capturedAt = DateTime(2026, 10, 1, 9);
+    final evidence = datedProspectRegularPriceObservations(
+      records: [
+        OfferImportRecord(
+          sourceId: 'record-time',
+          productLabel: 'Kaffee 500 g',
+          storeName: 'Lidl',
+          originalPrice: 6.99,
+          offerPrice: 4.99,
+          validFrom: DateTime(2026, 9, 28),
+          validUntil: DateTime(2026, 10, 3),
+          source: 'leaflet',
+          branchId: 'lidl-zellingen',
+          capturedAt: capturedAt,
+          proofRef: 'https://example.test/lidl/coffee',
+        ),
+      ],
+      catalogProducts: const [],
+    );
+
+    expect(evidence, hasLength(1));
+    expect(evidence.single.kind, PriceObservationKind.regular);
+    expect(evidence.single.price, 6.99);
+    expect(evidence.single.observedAt, capturedAt);
+  });
+
   test(
     'does not learn fallback records from a source that was not refreshed',
     () {
