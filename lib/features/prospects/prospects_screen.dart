@@ -1200,16 +1200,20 @@ ProspectIssue _visibleIssue(
       ? null
       : _bestVisibleProspect(currentEntries);
   final selected = current ?? _bestVisibleProspect(entries);
+  final showStalePages = current == null &&
+      selected.sourceStatus == 'stale_fallback' &&
+      selected.pages.isNotEmpty;
 
-  // A stale issue may still carry a perfectly valid-looking cover image.
-  // Never expose that image as the current prospect once its period ended:
-  // the card remains useful as a source/status entry, while the old pages
-  // are removed from the visible evidence path.
+  // Page-only fallback is explicitly marked so an older cover can remain
+  // browsable while its expired prices stay outside the current offer list.
   final String sourceStatus;
   if (currentRecordCount > 0 &&
       currentRegionalRecordCount == currentRecordCount &&
-      selected.sourceStatus != 'error') {
+      selected.sourceStatus != 'error' &&
+      selected.sourceStatus != 'stale_fallback') {
     sourceStatus = 'regional_only';
+  } else if (selected.sourceStatus == 'stale_fallback') {
+    sourceStatus = 'stale_fallback';
   } else if (currentRecordCount == 0 &&
       selected.sourceStatus != 'error' &&
       selected.sourceStatus != 'regional_only') {
@@ -1224,10 +1228,16 @@ ProspectIssue _visibleIssue(
 
   return ProspectIssue(
     storeName: selected.storeName,
-    title: current?.title ?? 'Aktionsprospekt',
-    pages: current?.pages ?? const <ProspectPage>[],
-    url: current?.url ?? officialProspectUrl(selected.storeName, selected.url),
-    thumbnailUrl: current?.thumbnailUrl,
+    title: current?.title ?? (showStalePages ? selected.title : 'Aktionsprospekt'),
+    pages: current?.pages ??
+        (showStalePages ? selected.pages : const <ProspectPage>[]),
+    url: current?.url ??
+        (showStalePages
+            ? (selected.url ??
+                officialProspectUrl(selected.storeName, selected.url))
+            : officialProspectUrl(selected.storeName, selected.url)),
+    thumbnailUrl:
+        current?.thumbnailUrl ?? (showStalePages ? selected.thumbnailUrl : null),
     branchId: current?.branchId ?? selected.branchId,
     location: current?.location ?? selected.location,
     address: current?.address ?? selected.address,
@@ -1243,11 +1253,12 @@ ProspectIssue _visibleIssue(
     pageCountKnown: current?.pageCountKnown ?? selected.pageCountKnown,
     uncertainProductCount:
         current?.uncertainProductCount ?? selected.uncertainProductCount,
-    validFrom: current?.validFrom,
-    validUntil: current?.validUntil,
+    validFrom: current?.validFrom ??
+        (showStalePages ? selected.validFrom : null),
+    validUntil: current?.validUntil ??
+        (showStalePages ? selected.validUntil : null),
   );
 }
-
 ProspectIssue _bestVisibleProspect(Iterable<ProspectIssue> entries) {
   final sorted = entries.toList(growable: false)
     ..sort(_compareVisibleProspects);
