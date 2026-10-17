@@ -376,6 +376,25 @@ void main() {
     expect(restored.sourceAdapter, 'fixture-adapter');
   });
 
+  test('keeps the regular price field marker through JSON roundtrip', () {
+    final original = PriceObservation(
+      id: 'regular-marker',
+      productId: 'coffee-500',
+      storeName: 'Lidl',
+      price: 7.99,
+      observedAt: DateTime(2026, 10, 15),
+      source: PriceObservationSource.leaflet,
+      kind: PriceObservationKind.regular,
+      regularPriceSource: 'oldPrice',
+      locationId: 'lidl-zellingen',
+      validUntil: DateTime(2026, 10, 19),
+      proofRef: 'https://example.test/regular-marker',
+    );
+    final restored = PriceObservation.fromJson(original.toJson());
+
+    expect(restored.regularPriceSource, 'oldPrice');
+  });
+
   test(
     'exact observation history projects every supported price for routing',
     () {
