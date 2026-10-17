@@ -267,7 +267,11 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
       openPricesMaxAgeDays: screen.openPricesMaxAgeDays,
       now: screen.now,
     );
-    final current = snapshots.where((row) => row.quote != null).length;
+    final currentSnapshots = snapshots
+        .where((row) => row.quote != null)
+        .toList(growable: false)
+      ..sort(_compareCurrentPriceSnapshots);
+    final current = currentSnapshots.length;
     final historical = snapshots.where((row) => row.hasHistorical).length;
     final missing = snapshots.length - current;
     final coverage = snapshots.isEmpty ? 0.0 : current / snapshots.length;
@@ -326,14 +330,14 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
             ),
           ),
           const SizedBox(height: 8),
-          for (final row in snapshots.where((row) => row.quote != null).take(8))
+          for (final row in currentSnapshots.take(8))
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: _PriceSnapshotTile(snapshot: row),
             ),
-          if (current > 8)
+          if (currentSnapshots.length > 8)
             Text(
-              'Weitere ${current - 8} Positionen findest du direkt in der Einkaufsliste.',
+              'Weitere ${currentSnapshots.length - 8} Positionen findest du direkt in der Einkaufsliste.',
               style: Theme.of(context).textTheme.bodySmall,
             ),
         ],
@@ -1139,4 +1143,22 @@ class _PriceSnapshot {
   final ListItem item;
   final ShoppingQuote? quote;
   final bool hasHistorical;
+}
+
+int _compareCurrentPriceSnapshots(_PriceSnapshot a, _PriceSnapshot b) {
+  final priceA = a.quote?.rankingPrice ?? double.infinity;
+  final priceB = b.quote?.rankingPrice ?? double.infinity;
+  final byPrice = priceA.compareTo(priceB);
+  if (byPrice != 0) return byPrice;
+
+  final byProduct = a.item.product.name.toLowerCase().compareTo(
+        b.item.product.name.toLowerCase(),
+      );
+  if (byProduct != 0) return byProduct;
+
+  final byStore = a.quote!.storeName.toLowerCase().compareTo(
+        b.quote!.storeName.toLowerCase(),
+      );
+  if (byStore != 0) return byStore;
+  return a.item.product.id.compareTo(b.item.product.id);
 }
