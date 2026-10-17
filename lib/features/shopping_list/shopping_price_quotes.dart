@@ -290,7 +290,7 @@ class _ShoppingSourceIndex<T> {
     for (final key in keys) {
       positions.addAll(_positionsByKey[key] ?? const <int>[]);
     }
-    if (positions.isEmpty) return const <T>[];
+    if (positions.isEmpty) return List<T>.empty(growable: false);
     final ordered = positions.toList()..sort();
     return [for (final index in ordered) _values[index]];
   }
