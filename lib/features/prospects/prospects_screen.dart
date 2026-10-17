@@ -853,7 +853,7 @@ class _ProspectSearchResultsSliverState
     final listOnlyWithoutBranch =
         record.regionalOnly && selectableProduct != null;
     final canAdd = onAddProduct != null && selectableProduct != null;
-    final recordKey = prospectOfferRecordKey(record);
+    final recordKey = prospectOfferWidgetKey(record, widget.records);
     return ProspectOfferCard(
       key: ValueKey('prospect-search-offer-$recordKey'),
       record: record,
@@ -2227,7 +2227,10 @@ class ProspectViewerScreen extends StatelessWidget {
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
                       final record = groupedItems[category]![index];
-                      final recordKey = prospectOfferRecordKey(record);
+                      final recordKey = prospectOfferWidgetKey(
+                        record,
+                        groupedItems[category]!,
+                      );
                       final product = _memoizedProspectProduct(
                         record,
                         catalogProducts,
@@ -2556,4 +2559,3 @@ Uri? _officialProspectUri(String? value) {
   }
   return uri;
 }
-

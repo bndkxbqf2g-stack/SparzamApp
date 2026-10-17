@@ -455,6 +455,32 @@ void main() {
     expect(prospectOfferRecordKey(lidl), isNot(prospectOfferRecordKey(netto)));
   });
 
+  test('source-scoped rows keep distinct product widget keys', () {
+    final first = OfferImportRecord(
+      sourceId: 'shared-page-item',
+      productLabel: 'Butter 250 g',
+      storeName: 'Lidl',
+      offerPrice: 1.29,
+      validUntil: DateTime(2026, 10, 17),
+      branchId: 'lidl-zellingen',
+    );
+    final second = OfferImportRecord(
+      sourceId: 'shared-page-item',
+      productLabel: 'Milch 1 l',
+      storeName: 'Lidl',
+      offerPrice: 0.99,
+      validUntil: DateTime(2026, 10, 17),
+      branchId: 'lidl-zellingen',
+    );
+
+    expect(
+      prospectOfferWidgetKey(first, [first, second]),
+      isNot(prospectOfferWidgetKey(second, [first, second])),
+    );
+    // A unique source ID retains the compact legacy key used by the UI.
+    expect(prospectOfferWidgetKey(first, [first]), prospectOfferRecordKey(first));
+  });
+
   test('branch-aware prospect widget keys distinguish exact branches', () {
     final first = OfferImportRecord(
       sourceId: 'shared-leaflet-item',
@@ -573,4 +599,3 @@ void main() {
     );
   });
 }
-

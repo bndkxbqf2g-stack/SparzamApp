@@ -443,4 +443,21 @@ ProspectPackage? _offerPackage(OfferImportRecord record, Product product) {
   }
   return prospectPackage(product.unit);
 }
-
+/// Keeps widget keys stable for the existing single-row contract while
+/// disambiguating providers that reuse one source ID for several articles in
+/// the same branch. The caller supplies the current sibling snapshot so a
+/// unique source ID keeps its compact legacy key.
+String prospectOfferWidgetKey(
+  OfferImportRecord record,
+  Iterable<OfferImportRecord> siblings,
+) {
+  final base = prospectOfferRecordKey(record);
+  final collides = siblings.any(
+    (candidate) =>
+        !identical(candidate, record) &&
+        prospectOfferRecordKey(candidate) == base,
+  );
+  return collides
+      ? '$base|${prospectOfferResolutionKey(record)}'
+      : base;
+}
