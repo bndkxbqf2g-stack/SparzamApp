@@ -103,9 +103,16 @@ Future<ProspectRegularPricePersistenceResult>
       ?.map(_normalizedProspectStoreKey)
       .where((value) => value.isNotEmpty)
       .toSet();
-  final currentKeys = refreshedStoreKeys == null
-      ? null
-      : learned.map(_prospectRegularCurrentKey).toSet();
+  // Reconcile by the stable product/branch slot, but keep the incoming
+  // observation ID as the marker for the current value. A changed price or
+  // validity period receives a new ID; the former observation must then become
+  // historical even though its slot is still present in the refreshed feed.
+  final currentIdsByKey = <String, Set<String>>{};
+  for (final entry in learned) {
+    currentIdsByKey
+        .putIfAbsent(_prospectRegularCurrentKey(entry), () => <String>{})
+        .add(entry.id);
+  }
   final stored = await store.upsertById(
     learned,
     // Remove legacy automatic offer observations even when a cache lacks a
@@ -116,11 +123,14 @@ Future<ProspectRegularPricePersistenceResult>
     // superseded rows for historical inspection.
     rewriteExisting: (existing) {
       if (refreshedStoreKeys == null ||
-          currentKeys == null ||
           !_isCurrentProspectRegular(existing) ||
           !refreshedStoreKeys
-              .contains(_normalizedProspectStoreKey(existing.storeName)) ||
-          currentKeys.contains(_prospectRegularCurrentKey(existing))) {
+              .contains(_normalizedProspectStoreKey(existing.storeName))) {
+        return existing;
+      }
+      final currentIds =
+          currentIdsByKey[_prospectRegularCurrentKey(existing)];
+      if (currentIds != null && currentIds.contains(existing.id)) {
         return existing;
       }
       return _withProspectCurrent(existing, false);
