@@ -187,37 +187,37 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
     final currentUnscopedRegionalStoreCounts = <String, int>{};
     for (final record in currentRecords) {
       currentCounts.update(
-        prospectRecordKey(record),
+        prospectRecordMatchKey(record),
         (count) => count + 1,
         ifAbsent: () => 1,
       );
       currentStoreCounts.update(
-        record.storeName,
+        prospectStoreMatchKey(record.storeName),
         (count) => count + 1,
         ifAbsent: () => 1,
       );
       final recordBranch = record.branchId?.trim();
       if (recordBranch == null || recordBranch.isEmpty) {
         currentUnscopedStoreCounts.update(
-          record.storeName,
+          prospectStoreMatchKey(record.storeName),
           (count) => count + 1,
           ifAbsent: () => 1,
         );
       }
       if (record.regionalOnly) {
         currentRegionalCounts.update(
-          prospectRecordKey(record),
+          prospectRecordMatchKey(record),
           (count) => count + 1,
           ifAbsent: () => 1,
         );
         currentRegionalStoreCounts.update(
-          record.storeName,
+          prospectStoreMatchKey(record.storeName),
           (count) => count + 1,
           ifAbsent: () => 1,
         );
         if (recordBranch == null || recordBranch.isEmpty) {
           currentUnscopedRegionalStoreCounts.update(
-            record.storeName,
+            prospectStoreMatchKey(record.storeName),
             (count) => count + 1,
             ifAbsent: () => 1,
           );
@@ -226,21 +226,21 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
     }
     final byIssue = <String, List<ProspectIssue>>{};
     for (final issue in widget.prospects) {
-      byIssue.putIfAbsent(prospectIssueKey(issue), () => []).add(issue);
+      byIssue.putIfAbsent(prospectIssueMatchKey(issue), () => []).add(issue);
     }
     final visibleProspects = <ProspectIssue>[];
     for (final entries in byIssue.values) {
       final issue = entries.first;
       final hasBranch = issue.branchId?.trim().isNotEmpty == true;
-      final issueKey = prospectIssueKey(issue);
+      final issueKey = prospectIssueMatchKey(issue);
       final recordCount = hasBranch
           ? (currentCounts[issueKey] ?? 0) +
-              (currentUnscopedStoreCounts[issue.storeName] ?? 0)
-          : currentStoreCounts[issue.storeName] ?? 0;
+              (currentUnscopedStoreCounts[prospectStoreMatchKey(issue.storeName)] ?? 0)
+          : currentStoreCounts[prospectStoreMatchKey(issue.storeName)] ?? 0;
       final regionalRecordCount = hasBranch
           ? (currentRegionalCounts[issueKey] ?? 0) +
-              (currentUnscopedRegionalStoreCounts[issue.storeName] ?? 0)
-          : currentRegionalStoreCounts[issue.storeName] ?? 0;
+              (currentUnscopedRegionalStoreCounts[prospectStoreMatchKey(issue.storeName)] ?? 0)
+          : currentRegionalStoreCounts[prospectStoreMatchKey(issue.storeName)] ?? 0;
       visibleProspects.add(
         _visibleIssue(
           entries,
