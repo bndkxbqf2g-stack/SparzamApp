@@ -135,6 +135,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   Map<String, ProspectPriceHistorySummary>? _suggestionsHistoryInput;
   List<String>? _suggestionsStoresInput;
   int? _suggestionsMaxAgeDays;
+  DateTime? _suggestionsDay;
   List<Product>? _relatedInterpretationsCache;
   List<Product>? _relatedSuggestionsInput;
   String? _relatedQuery;
@@ -188,6 +189,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
 
   List<Product> get suggestions {
     final query = controller.text;
+    final now = DateTime.now();
+    final day = DateTime(now.year, now.month, now.day);
     final stores = widget.mobility.enabledStoreNames;
     final cached = _suggestionsCache;
     if (cached != null &&
@@ -208,7 +211,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         identical(_suggestionsReceiptStatsInput, receiptPriceStats) &&
         identical(_suggestionsHistoryInput, widget.prospectPriceHistory) &&
         identical(_suggestionsStoresInput, stores) &&
-        _suggestionsMaxAgeDays == widget.openPricesMaxAgeDays) {
+        _suggestionsMaxAgeDays == widget.openPricesMaxAgeDays &&
+        _suggestionsDay == day) {
       return cached;
     }
 
@@ -224,6 +228,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       prospectPriceHistory: widget.prospectPriceHistory,
       enabledStores: stores,
       openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
+      now: now,
     );
     _suggestionsCache = next;
     _suggestionsQuery = query;
@@ -238,6 +243,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     _suggestionsHistoryInput = widget.prospectPriceHistory;
     _suggestionsStoresInput = stores;
     _suggestionsMaxAgeDays = widget.openPricesMaxAgeDays;
+    _suggestionsDay = day;
     return next;
   }
 
