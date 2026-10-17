@@ -769,6 +769,9 @@ class _OfferSourceNotice extends StatelessWidget {
       'current_fallback' =>
         'Der letzte geprüfte Prospektstand wird verwendet; die automatische '
             'Aktualisierung ist aktuell nicht verfügbar.',
+      'stale_fallback' =>
+        'Ein älteres Cover bleibt zum Nachschlagen verfügbar; abgelaufene '
+            'Preise sind nicht als aktuelle Angebote freigegeben.',
       'error' =>
         'Automatischer Abruf aktuell nicht verfügbar. '
             'Der offizielle Prospekt bleibt direkt erreichbar.',
