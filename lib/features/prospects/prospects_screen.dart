@@ -1200,11 +1200,15 @@ ProspectIssue _visibleIssue(
       ? null
       : _bestVisibleProspect(currentEntries);
   final selected = current ?? _bestVisibleProspect(entries);
-  final showNonCurrentPages = current == null && selected.pages.isNotEmpty;
+  final showNonCurrentPages =
+      current == null &&
+      selected.pages.isNotEmpty &&
+      (selected.sourceStatus == 'error' ||
+          selected.sourceStatus == 'stale_fallback');
 
-  // Covers remain browsable when the source has no currently valid rows.
-  // Their dates and status stay visible, while expired prices remain outside
-  // the current offer list.
+  // A source error can still carry a validated cover, and an explicitly
+  // marked stale fallback may keep an older cover visible. Ordinary expired
+  // issues stay hidden so the current card never advertises an old prospect.
 
   final String sourceStatus;
   if (currentRecordCount > 0 &&
