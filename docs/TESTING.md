@@ -1,3 +1,7 @@
+## Update 17.10.2026 – Einkaufslisten-Metadaten-Roundtrip
+
+`scan_to_list_flow_test.dart` prüft jetzt zusätzlich Aliase, Favoriten-/Stammartikelstatus, Marke, Packungsmenge/-einheit und Bild nach dem Speichern und Laden über den Legacy-Schlüssel. Der Test verwendet ausschließlich synthetische lokale Daten.
+
 ## Update 17.10.2026 – Frische vor Quellenpriorität in der Preis-Matrix
 
 'shopping_price_quotes_test.dart' prüft, dass bei gleichem
