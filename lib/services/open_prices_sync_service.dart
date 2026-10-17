@@ -12,6 +12,16 @@ typedef OpenPricesProductFetcher = Future<List<MarketPrice>> Function(
 );
 typedef OpenPricesProductDiscoverer = Future<Product?> Function(Product product);
 
+/// Returns the bounded concurrency used by the live adapter. Injected
+/// fetchers intentionally stay serial so cancellation and fixture ordering
+/// remain identical to the established test/offline path.
+int openPricesNetworkBatchSize({
+  required bool live,
+  required int configured,
+}) =>
+    live ? configured.clamp(1, 4).toInt() : 1;
+
+
 class OpenPricesSyncResult {
   const OpenPricesSyncResult({
     required this.productsChecked,
@@ -33,10 +43,19 @@ class OpenPricesSyncResult {
 }
 
 class OpenPricesSyncService {
-  const OpenPricesSyncService({this.fetcher, this.discoverer});
+  const OpenPricesSyncService({
+    this.fetcher,
+    this.discoverer,
+    this.networkConcurrency = 2,
+  }) : assert(networkConcurrency > 0);
 
   final OpenPricesProductFetcher? fetcher;
   final OpenPricesProductDiscoverer? discoverer;
+
+  /// Limits simultaneous live Open Prices requests. Custom fetchers stay
+  /// sequential so tests and injected providers keep their established
+  /// cancellation/order semantics.
+  final int networkConcurrency;
 
   Future<OpenPricesSyncResult> sync({
     required List<Product> products,
@@ -97,31 +116,62 @@ class OpenPricesSyncService {
     }
 
     final candidates = candidatesById.values.toList(growable: false);
+    final batchSize = openPricesNetworkBatchSize(
+      live: customFetcher == null,
+      configured: networkConcurrency,
+    );
+    var cancelledDuringFetch = false;
 
     try {
-      for (var index = 0; index < candidates.length; index++) {
-        if (shouldCancel?.call() == true) break;
-        try {
-          final found = customFetcher != null
-              ? await customFetcher(candidates[index], maxAgeDays)
-              : await service!.fetchRecentPrices(
-                  product: candidates[index],
-                  stores: stores,
-                );
-          // A discovered barcode is useful retrieval evidence, but it is not
-          // yet a user-confirmed exact identity. Keep those prices out of the
-          // exact route-price stream until the identity is confirmed.
-          if (!discoveredIds.contains(candidates[index].id)) {
+      for (var start = 0;
+          start < candidates.length;
+          start += batchSize) {
+        if (shouldCancel?.call() == true) {
+          cancelledDuringFetch = true;
+          break;
+        }
+        final end = (start + batchSize < candidates.length)
+            ? start + batchSize
+            : candidates.length;
+        final batch = candidates.sublist(start, end);
+        // Future.wait preserves the input order, so the result and progress
+        // stream stay deterministic even while the bounded network requests
+        // overlap.
+        final fetched = await Future.wait<List<MarketPrice>?>([
+          for (final candidate in batch)
+            () async {
+              try {
+                return customFetcher != null
+                    ? await customFetcher(candidate, maxAgeDays)
+                    : await service!.fetchRecentPrices(
+                        product: candidate,
+                        stores: stores,
+                      );
+              } catch (_) {
+                return null;
+              }
+            }(),
+        ]);
+        for (var offset = 0; offset < batch.length; offset++) {
+          final candidate = batch[offset];
+          final found = fetched[offset];
+          if (found == null) {
+            failures.add(candidate.id);
+          } else if (!discoveredIds.contains(candidate.id)) {
+            // A discovered barcode is useful retrieval evidence, but it is
+            // not yet a user-confirmed exact identity. Keep those prices out
+            // of the exact route-price stream until the identity is confirmed.
             result.addAll(found);
           }
-        } catch (_) {
-          failures.add(candidates[index].id);
+          processed++;
+          onProgress?.call(processed, candidates.length);
         }
-        processed++;
-        onProgress?.call(processed, candidates.length);
-
-        if (customFetcher == null && index < candidates.length - 1 &&
-            shouldCancel?.call() != true) {
+        if (shouldCancel?.call() == true) {
+          cancelledDuringFetch = true;
+          break;
+        }
+        if (customFetcher == null && end < candidates.length) {
+          // Keep the live source's request rate bounded between batches.
           await Future<void>.delayed(const Duration(milliseconds: 250));
         }
       }
@@ -129,14 +179,15 @@ class OpenPricesSyncService {
       service?.close();
       discovery?.close();
     }
-
     return OpenPricesSyncResult(
       productsChecked: products.length,
       productsWithEan: candidates.length,
       pricesFound: result.length,
       prices: result,
       productsProcessed: processed,
-      cancelled: cancelledDuringDiscovery || processed < candidates.length,
+      cancelled: cancelledDuringDiscovery ||
+          cancelledDuringFetch ||
+          processed < candidates.length,
       failedProductIds: failures,
     );
   }

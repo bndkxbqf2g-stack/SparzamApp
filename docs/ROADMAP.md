@@ -111,6 +111,9 @@
 ## Update 17.10.2026 – Open-Prices-Sync wird bei großen Katalogen sparsamer
 
 - [x] Kandidaten mit derselben Produkt-ID werden vor externen Abfragen dedupliziert.
+- [x] Der Live-Abgleich bündelt externe Open-Prices-Anfragen in einer kleinen,
+  deterministischen Batch und hält Fortschritt sowie Fehlerliste in
+  Katalogreihenfolge; eingespritzte Test-/Offline-Fetcher bleiben seriell.
 - [x] Abbruchsignale greifen bereits in der optionalen Barcode-/Produktentdeckung.
 - [x] Die bestehende Identitätsgrenze für entdeckte EANs und der lokale Cache bleiben unverändert.
 

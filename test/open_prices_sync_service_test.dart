@@ -4,6 +4,21 @@ import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/services/open_prices_sync_service.dart';
 
 void main() {
+  test('Live-Open-Prices-Batches bleiben klein und Test-Fetcher seriell', () {
+    expect(
+      openPricesNetworkBatchSize(live: true, configured: 0),
+      1,
+    );
+    expect(
+      openPricesNetworkBatchSize(live: true, configured: 8),
+      4,
+    );
+    expect(
+      openPricesNetworkBatchSize(live: false, configured: 4),
+      1,
+    );
+  });
+
   test('Bulk-Sync prüft nur Produkte mit EAN', () async {
     final seen = <String>[];
     final service = OpenPricesSyncService(
