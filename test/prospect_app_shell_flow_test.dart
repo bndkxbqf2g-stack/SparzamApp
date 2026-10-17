@@ -244,7 +244,7 @@ void main() {
   testWidgets(
     'Cached-Prospektangebote sind sofort für die Einkaufsliste verfügbar',
     (tester) async {
-      tester.view.physicalSize = const Size(800, 1000);
+      tester.view.physicalSize = const Size(800, 2400);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
@@ -298,15 +298,10 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 50));
 
-      await tester.scrollUntilVisible(
-        find.text(product.name),
-        260,
-        scrollable: find.byWidgetPredicate(
-          (widget) =>
-              widget is Scrollable &&
-              widget.axisDirection == AxisDirection.down,
-        ),
-      );
+      // The enlarged viewport keeps the single product card mounted without
+      // relying on an open-ended scroll search in the widget harness.
+      await tester.pump();
+      expect(find.text(product.name), findsOneWidget);
       expect(find.textContaining('Angebot Netto'), findsOneWidget);
       // Cached automatic offers are usable in memory but are never durable
       // user offers; only the regular price persistence path writes locally.
