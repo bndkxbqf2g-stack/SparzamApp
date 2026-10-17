@@ -166,47 +166,148 @@ ProspectFeedLoadResult preserveCurrentProspectRowsForEmptySources({
   }
   if (additions.isEmpty) return incoming;
 
-  final affectedProspects = incoming.prospects
-      .map(
-        (issue) {
-          var fallbackCount = 0;
-          for (final scope in scopes) {
-            if (!fallbackCounts.containsKey(scope.key) ||
-                !scope.matches(
-                  candidateStoreName: issue.storeName,
-                  candidateBranchId: issue.branchId,
-                )) {
-              continue;
-            }
-            fallbackCount += fallbackCounts[scope.key]!;
+  // A newer source response can keep valid row metadata while omitting page
+  // images during a partial publisher refresh. Reuse only a matching local
+  // prospect for the exact store/branch scope; never cross-promote a branch.
+  final fallbackProspectsByScope = <String, ProspectIssue>{};
+  for (final scope in scopes) {
+    for (final issue in fallback.prospects) {
+      if (!scope.matches(
+        candidateStoreName: issue.storeName,
+        candidateBranchId: issue.branchId,
+      )) {
+        continue;
+      }
+      final current = fallbackProspectsByScope[scope.key];
+      if (current == null ||
+          issue.pages.length > current.pages.length ||
+          (current.thumbnailUrl == null && issue.thumbnailUrl != null)) {
+        fallbackProspectsByScope[scope.key] = issue;
+      }
+    }
+  }
+
+  final affectedProspects = <ProspectIssue>[
+    ...incoming.prospects.map(
+      (issue) {
+        ProspectRefreshScope? matchedScope;
+        for (final scope in scopes) {
+          if (!fallbackCounts.containsKey(scope.key) ||
+              !scope.matches(
+                candidateStoreName: issue.storeName,
+                candidateBranchId: issue.branchId,
+              )) {
+            continue;
           }
-          if (fallbackCount == 0) return issue;
-          return ProspectIssue(
-            storeName: issue.storeName,
-            title: issue.title,
-            pages: issue.pages,
-            url: issue.url,
-            thumbnailUrl: issue.thumbnailUrl,
-            branchId: issue.branchId,
-            location: issue.location,
-            address: issue.address,
-            sourceAdapter: issue.sourceAdapter,
-            sourceStatus: 'current_fallback',
-            recordCount: issue.recordCount > fallbackCount
-                ? issue.recordCount
-                : fallbackCount,
-            availablePageCount: issue.availablePageCount,
-            loadedPageCount: issue.loadedPageCount,
-            missingPageNumbers: issue.missingPageNumbers,
-            pageStatus: issue.pageStatus,
-            pageCountKnown: issue.pageCountKnown,
-            uncertainProductCount: issue.uncertainProductCount,
-            validFrom: issue.validFrom,
-            validUntil: issue.validUntil,
-          );
-        },
-      )
-      .toList(growable: false);
+          matchedScope = scope;
+          break;
+        }
+        if (matchedScope == null) return issue;
+
+        final fallbackCount = fallbackCounts[matchedScope.key] ?? 0;
+        if (fallbackCount == 0) return issue;
+        final fallbackIssue = fallbackProspectsByScope[matchedScope.key];
+        final useFallbackPages = issue.pages.isEmpty &&
+            fallbackIssue != null &&
+            fallbackIssue.pages.isNotEmpty;
+        final pages = useFallbackPages
+            ? (fallbackIssue?.pages ?? issue.pages)
+            : issue.pages;
+        final fallbackThumbnail = fallbackIssue?.thumbnailUrl ??
+            (fallbackIssue == null || fallbackIssue.pages.isEmpty
+                ? null
+                : fallbackIssue.pages.first.imageUrl);
+        final pageStatus = useFallbackPages &&
+                issue.pageStatus.trim().toLowerCase() == 'unknown'
+            ? (fallbackIssue?.pageStatus ?? issue.pageStatus)
+            : issue.pageStatus;
+        final loadedPageCount = useFallbackPages &&
+                (issue.loadedPageCount == null || issue.loadedPageCount == 0)
+            ? (fallbackIssue?.loadedPageCount ?? pages.length)
+            : issue.loadedPageCount;
+        final missingPageNumbers = useFallbackPages &&
+                issue.missingPageNumbers.isEmpty
+            ? (fallbackIssue?.missingPageNumbers ??
+                issue.missingPageNumbers)
+            : issue.missingPageNumbers;
+        final pageCountKnown = issue.pageCountKnown ||
+            (useFallbackPages && fallbackIssue?.pageCountKnown == true);
+        final title = issue.title.trim().toLowerCase() == 'prospekt'
+            ? (fallbackIssue?.title ?? issue.title)
+            : issue.title;
+
+        return ProspectIssue(
+          storeName: issue.storeName,
+          title: title,
+          pages: pages,
+          url: issue.url ?? fallbackIssue?.url,
+          thumbnailUrl: issue.thumbnailUrl ?? fallbackThumbnail,
+          branchId: issue.branchId,
+          location: issue.location ?? fallbackIssue?.location,
+          address: issue.address ?? fallbackIssue?.address,
+          sourceAdapter: issue.sourceAdapter ?? fallbackIssue?.sourceAdapter,
+          sourceStatus: 'current_fallback',
+          recordCount: issue.recordCount > fallbackCount
+              ? issue.recordCount
+              : fallbackCount,
+          availablePageCount:
+              issue.availablePageCount ?? fallbackIssue?.availablePageCount,
+          loadedPageCount: loadedPageCount,
+          missingPageNumbers: missingPageNumbers,
+          pageStatus: pageStatus,
+          pageCountKnown: pageCountKnown,
+          uncertainProductCount:
+              issue.uncertainProductCount ?? fallbackIssue?.uncertainProductCount,
+          validFrom: issue.validFrom ?? fallbackIssue?.validFrom,
+          validUntil: issue.validUntil ?? fallbackIssue?.validUntil,
+        );
+      },
+    ),
+  ];
+
+  // Keep the visible prospect surface usable even if a malformed feed omitted
+  // the metadata-only issue row for a scope that still received row fallback.
+  for (final scope in scopes) {
+    final fallbackCount = fallbackCounts[scope.key] ?? 0;
+    if (fallbackCount == 0 ||
+        affectedProspects.any(
+          (issue) => scope.matches(
+            candidateStoreName: issue.storeName,
+            candidateBranchId: issue.branchId,
+          ),
+        )) {
+      continue;
+    }
+    final fallbackIssue = fallbackProspectsByScope[scope.key];
+    if (fallbackIssue == null) continue;
+    affectedProspects.add(
+      ProspectIssue(
+        storeName: fallbackIssue.storeName,
+        title: fallbackIssue.title,
+        pages: fallbackIssue.pages,
+        url: fallbackIssue.url,
+        thumbnailUrl: fallbackIssue.thumbnailUrl ??
+            (fallbackIssue.pages.isEmpty
+                ? null
+                : fallbackIssue.pages.first.imageUrl),
+        branchId: fallbackIssue.branchId,
+        location: fallbackIssue.location,
+        address: fallbackIssue.address,
+        sourceAdapter: fallbackIssue.sourceAdapter,
+        sourceStatus: 'current_fallback',
+        recordCount: fallbackCount,
+        availablePageCount: fallbackIssue.availablePageCount,
+        loadedPageCount: fallbackIssue.loadedPageCount ??
+            fallbackIssue.pages.length,
+        missingPageNumbers: fallbackIssue.missingPageNumbers,
+        pageStatus: fallbackIssue.pageStatus,
+        pageCountKnown: fallbackIssue.pageCountKnown,
+        uncertainProductCount: fallbackIssue.uncertainProductCount,
+        validFrom: fallbackIssue.validFrom,
+        validUntil: fallbackIssue.validUntil,
+      ),
+    );
+  }
 
   return ProspectFeedLoadResult(
     records: <OfferImportRecord>[
