@@ -2596,7 +2596,23 @@ class _ProspectPageImageState extends State<_ProspectPageImage> {
 }
 
 List<ProspectPage> _viewerPages(ProspectIssue issue) {
-  if (issue.pages.isNotEmpty) return issue.pages;
+  if (issue.pages.isNotEmpty) {
+    final pages = issue.pages;
+    // Some public feeds expose a cover separately and only include the
+    // interior samples in `pages` (starting at page 2). Keep the source
+    // page numbers intact and add the cover as the missing first page.
+    final hasFirstPage = pages.any((page) => page.number == 1);
+    if (hasFirstPage) return pages;
+    final thumbnail = issue.thumbnailUrl?.trim();
+    final cover = thumbnail == null || thumbnail.isEmpty
+        ? null
+        : _officialProspectUri(thumbnail)?.toString();
+    if (cover == null || cover == pages.first.imageUrl.trim()) return pages;
+    return [
+      ProspectPage(number: 1, imageUrl: cover),
+      ...pages,
+    ];
+  }
   final thumbnail = issue.thumbnailUrl?.trim();
   if (thumbnail == null || thumbnail.isEmpty) {
     return const <ProspectPage>[];
