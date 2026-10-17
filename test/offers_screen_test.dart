@@ -479,6 +479,41 @@ void main() {
     expect(find.textContaining('nur regional erkannt'), findsOneWidget);
     expect(find.textContaining('für die Route gesperrt'), findsOneWidget);
   });
+
+  testWidgets('normalisiert Händlernamen für Regionalhinweise', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: OffersScreen(
+          catalogProducts: const <Product>[],
+          now: DateTime(2026, 10, 12),
+          prospectRecords: [
+            OfferImportRecord(
+              sourceId: 'regional-store-label',
+              productLabel: 'Butter 250 g',
+              storeName: 'LIDL',
+              offerPrice: 1.29,
+              validUntil: DateTime(2026, 10, 17),
+              sourceAdapter: 'kaufda',
+              regionalOnly: true,
+              proofRef: 'https://www.kaufda.de/Wuerzburg/Angebote/Butter',
+            ),
+          ],
+          prospectIssues: const [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Offizieller Prospekt',
+              pages: <ProspectPage>[],
+              sourceStatus: 'ok',
+              recordCount: 1,
+            ),
+          ],
+        ),
+      ),
+    );
+
+    expect(find.textContaining('nur regional erkannt'), findsOneWidget);
+  });
+
   testWidgets('lädt große Coverlisten seitenweise', (tester) async {
     final issues = [
       for (var index = 1; index <= 13; index++)
