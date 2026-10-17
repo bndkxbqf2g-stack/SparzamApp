@@ -161,6 +161,13 @@ class ShoppingPriceBadge extends StatelessWidget {
                     height: 130,
                     width: double.infinity,
                     fit: BoxFit.contain,
+                    // The detail sheet is still a bounded preview. Decode at
+                    // a predictable size so opening several price matrices
+                    // cannot retain full-resolution product artwork.
+                    cacheWidth: 520,
+                    cacheHeight: 260,
+                    filterQuality: FilterQuality.low,
+                    webHtmlElementStrategy: WebHtmlElementStrategy.never,
                     errorBuilder: (context, error, stackTrace) =>
                         const SizedBox.shrink(),
                   ),
