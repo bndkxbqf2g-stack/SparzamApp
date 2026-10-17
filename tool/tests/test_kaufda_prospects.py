@@ -507,6 +507,48 @@ class KaufdaProspectTest(unittest.TestCase):
         self.assertEqual(result["Lidl"]["prospects"][0]["status"], "current")
         self.assertEqual(result["Lidl"]["prospects"][0]["branchId"], "lidl_zellingen")
 
+    def test_grouped_capture_uses_newest_live_query_after_cache(self):
+        with tempfile.TemporaryDirectory() as directory:
+            cache_path = pathlib.Path(directory) / "kaufda.json"
+            cached_url = kaufda.build_search_url("Wuerzburg", "Butter")
+            cache_path.write_text(
+                kaufda.json.dumps(
+                    {
+                        kaufda._cache_key(cached_url): {
+                            "url": cached_url,
+                            "capturedAt": "2026-10-12T07:00:00+00:00",
+                            "body": self.html,
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            config = kaufda.KaufdaConfig(
+                enabled=True,
+                city="Wuerzburg",
+                queries=("Butter", "Milch"),
+                request_delay_seconds=0,
+                cache_path=cache_path,
+            )
+
+            def fetch(url):
+                if url.endswith("/Butter"):
+                    raise OSError("first query offline")
+                return self.html
+
+            result = kaufda.fetch_current_kaufda_prospects(
+                config,
+                fetcher=fetch,
+                today=self.today,
+                now=datetime(2026, 10, 12, 8, tzinfo=timezone.utc),
+            )
+
+            self.assertEqual(
+                result["Lidl"]["capturedAt"],
+                "2026-10-12T08:00:00+00:00",
+            )
+            self.assertTrue(result["Lidl"]["cacheUsed"])
+
     def test_multi_publisher_metadata_stays_with_its_publisher(self):
         result = kaufda.fetch_current_kaufda_prospects(
             kaufda.KaufdaConfig(
