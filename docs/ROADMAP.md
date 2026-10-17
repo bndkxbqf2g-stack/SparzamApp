@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Coverfallback nutzt erste gültige Prospektseite
+
+- [x] Coverkarten verwenden eine eigene Thumbnail-URL bevorzugt.
+- [x] Fehlt sie, wird die erste validierte HTTP(S)-Seite mit Bild als Cover
+  verwendet; leere oder ungültige frühere Seiten erzeugen keinen Platzhalter.
+- [x] Seitenreihenfolge, Seitenzahlen, Quellen- und Gültigkeitsnachweise bleiben
+  unverändert.
+
 ## Update 17.10.2026 – Erfassungszeitpunkt im Preisbeleg sichtbar
 
 - [x] Aktuelle gespeicherte Prospekt-Normalpreise zeigen neben Filiale,
