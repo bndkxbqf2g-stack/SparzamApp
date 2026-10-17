@@ -3,10 +3,66 @@ import 'package:sparzamapp/features/route/route_optimizer.dart';
 import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/features/offers/prospect_offer_products.dart';
 import 'package:sparzamapp/models/list_item.dart';
+import 'package:sparzamapp/models/offer.dart';
 import 'package:sparzamapp/models/product.dart';
 
 void main() {
   final current = DateTime(2026, 9, 30);
+
+  test('cached feed merge keeps manual offers and replaces automatic imports', () {
+    final manual = Offer(
+      id: 'manual-milk',
+      productId: 'milk',
+      storeName: 'Netto',
+      originalPrice: 1.29,
+      offerPrice: 1.29,
+      validUntil: DateTime(2026, 10, 2),
+    );
+    final staleImport = Offer(
+      id: 'import|retailerWebsite|old|milk',
+      productId: 'milk',
+      storeName: 'Netto',
+      originalPrice: 1.29,
+      offerPrice: 0.99,
+      validUntil: DateTime(2026, 9, 29),
+      source: 'retailerWebsite',
+    );
+    final currentImport = Offer(
+      id: 'import|retailerWebsite|current|milk',
+      productId: 'milk',
+      storeName: 'Netto',
+      originalPrice: 1.29,
+      offerPrice: 0.89,
+      validUntil: DateTime(2026, 10, 2),
+      source: 'retailerWebsite',
+    );
+    final merged = mergeTransientProspectOffers(
+      existingOffers: [manual, staleImport],
+      importedOffers: [
+        ProspectOfferProduct(
+          const Product(
+            id: 'milk',
+            name: 'Milch 1 l',
+            unit: '1 l',
+            group: 'milch',
+          ),
+          currentImport,
+        ),
+      ],
+    );
+
+    expect(merged.map((offer) => offer.id), [
+      'manual-milk',
+      'import|retailerWebsite|current|milk',
+    ]);
+    expect(merged.singleWhere((offer) => offer.id == 'manual-milk'), manual);
+    expect(
+      merged.singleWhere(
+        (offer) => offer.id == 'import|retailerWebsite|current|milk',
+      ).offerPrice,
+      0.89,
+    );
+  });
 
   test('ambiguous verified offer gets an explicit-label review product', () {
     final record = OfferImportRecord(
