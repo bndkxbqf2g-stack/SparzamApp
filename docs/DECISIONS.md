@@ -1821,3 +1821,7 @@ automatisch aktualisiert. Die Kaufland-Coverprüfung verwendet deshalb
 `generatedAt` als Referenztag und prüft weiterhin Zeitraum, Seite 1 und
 exakte Filiale. Die Produktionsdaten- und Preisregeln ändern sich dadurch
 nicht.
+
+
+## D185 – Gemeinsame Quellenherkunft trotz unklarer Filiale
+Wenn gleichnamige Filialen eines Händlers denselben öffentlichen Adapter melden, darf die gemeinsame Adapterkennung an einem branchlosen Angebot erhalten bleiben. Sie ist Provenienz, keine Filialzuordnung: Der Datensatz wird als regional beziehungsweise filiallos markiert und bleibt für aktuelle Preis- und Routenprojektion gesperrt. Sobald Adapter oder Filialherkunft nicht eindeutig gemeinsam sind, bleibt beides unbekannt.
