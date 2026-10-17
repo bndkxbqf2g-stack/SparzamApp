@@ -185,3 +185,9 @@ ProductIdentity-Kompatibilität, um passende Varianten vorzuschlagen. Treffer
 ohne Barcode bleiben ausdrücklich unbestätigt und zeigen den Prüfbedarf für
 Variante und Packungsgröße. Generische Kategorien und fachlich getrennte
 Produktfamilien behalten ihre bisherige konservative Auflösung.
+## Update 17.10.2026 – Historische und aktuelle Prospektpreise sauber trennen
+
+Beim automatischen Reconcile wird ein alter regulärer Preis jetzt historisch,
+wenn derselbe exakte Produkt-/Filial-Slot mit einer neuen Beobachtungs-ID
+wiederkommt. Die aktuelle Route sieht dadurch nur den neuesten belegten Wert,
+während der Preisverlauf beide Beobachtungen nachvollziehbar behält.
