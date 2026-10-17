@@ -21,6 +21,11 @@ technische Herkunft; die beiden Felder dürfen nicht vertauscht werden. Der
 Preise-Reiter zeigt den Marker im aktuellen Normalpreisledger, damit eine
 gespeicherte reguläre Preisbasis bis zum konkreten Feedfeld prüfbar bleibt.
 
+`MarketPrice` übernimmt diesen Marker beim JSON-Roundtrip und bei der
+Projektion aus `PriceObservation`. Damit bleibt die Feldherkunft auch in
+Preis-Matrix und Routenprojektion verfügbar; `sourceAdapter` bleibt die
+technische Quellkennung.
+
 # SparzamApp – Architektur
 
 ## Grundprinzip
