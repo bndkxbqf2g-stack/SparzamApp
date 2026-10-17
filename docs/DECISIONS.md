@@ -1,3 +1,16 @@
+## D187 – Prospektkarten verwenden eine filialgenaue Widget-Identität
+
+Ein technischer Quellartikel darf nicht allein anhand seiner ID als Flutter-Widget-Identität
+dienen, weil dieselbe ID auf Prospekt- oder Kampagnenebene in mehreren gleichnamigen
+Filialen vorkommen kann. Der Schlüssel für Suchkarten, Artikelkarten und die lokale
+Produktauflösung kombiniert deshalb Händler und Quell-ID mit vorhandener Branch-ID, Ort
+und Adresse. Ohne Quell-ID bleibt der bestehende sichtbare Fallback erhalten und ergänzt
+die vorhandene Filialherkunft.
+
+So können virtuelle Listen Karten recyceln, ohne den Add-to-List-Zustand oder eine
+aufgelöste Produktvariante zwischen exakten Märkten zu übertragen. Das ändert weder
+Offer-/Preisrollen noch die Gültigkeits- und Filialregeln der Datenpipeline.
+
 ## D186 – Transiente Prospektangebote verwenden exakte Filialschlüssel
 
 Ein Prospekt-Quellartikel darf nicht anhand seiner technischen Angebots-ID allein
