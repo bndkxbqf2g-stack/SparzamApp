@@ -65,12 +65,14 @@ class ProspectsScreen extends StatefulWidget {
 class _ProspectDerivedData {
   const _ProspectDerivedData({
     required this.currentRecords,
+    required this.regularPriceCount,
     required this.categories,
     required this.stores,
     required this.visibleProspects,
   });
 
   final List<OfferImportRecord> currentRecords;
+  final int regularPriceCount;
   final List<String> categories;
   final List<String> stores;
   final List<ProspectIssue> visibleProspects;
@@ -195,7 +197,11 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
     final currentRegionalStoreCounts = <String, int>{};
     final currentUnscopedStoreCounts = <String, int>{};
     final currentUnscopedRegionalStoreCounts = <String, int>{};
+    var regularPriceCount = 0;
     for (final record in currentRecords) {
+      if (hasLearnableProspectRegularPrice(record)) {
+        regularPriceCount++;
+      }
       currentCounts.update(
         prospectRecordMatchKey(record),
         (count) => count + 1,
@@ -262,6 +268,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
     }
     final next = _ProspectDerivedData(
       currentRecords: currentRecords,
+      regularPriceCount: regularPriceCount,
       categories: _prospectCategories(currentRecords),
       stores: _prospectStores(currentRecords, widget.prospects),
       visibleProspects: visibleProspects,
@@ -411,10 +418,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                       generatedAt: widget.generatedAt,
                       now: widget.now,
                       fromCache: widget.fromCache,
-                      regularPriceCount: widget.regularPriceCount ??
-                          currentRecords
-                          .where(hasLearnableProspectRegularPrice)
-                          .length,
+                      regularPriceCount: widget.regularPriceCount ?? derived.regularPriceCount,
                       regularPricePersistenceStatus:
                           widget.regularPricePersistenceStatus,
                       onRefresh: widget.onRefreshProspects,
