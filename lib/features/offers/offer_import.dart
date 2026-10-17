@@ -447,6 +447,34 @@ ProspectPackage? _offerPackage(OfferImportRecord record, Product product) {
 /// disambiguating providers that reuse one source ID for several articles in
 /// the same branch. The caller supplies the current sibling snapshot so a
 /// unique source ID keeps its compact legacy key.
+
+/// Computes collision-aware widget keys once for a whole feed snapshot.
+///
+/// The UI builds only visible sliver children while the feed can contain many
+/// records. Precomputing base-key counts keeps key generation linear in the
+/// snapshot size instead of scanning every sibling list for every card.
+List<String> prospectOfferWidgetKeys(
+  Iterable<OfferImportRecord> records,
+) {
+  final snapshot = records.toList(growable: false);
+  final baseKeys = snapshot
+      .map(prospectOfferRecordKey)
+      .toList(growable: false);
+  final counts = <String, int>{};
+  for (final base in baseKeys) {
+    counts[base] = (counts[base] ?? 0) + 1;
+  }
+  return List<String>.generate(
+    snapshot.length,
+    (index) {
+      final base = baseKeys[index];
+      return counts[base] == 1
+          ? base
+          : '$base|${prospectOfferResolutionKey(snapshot[index])}';
+    },
+    growable: false,
+  );
+}
 String prospectOfferWidgetKey(
   OfferImportRecord record,
   Iterable<OfferImportRecord> siblings,
