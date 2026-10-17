@@ -131,6 +131,12 @@ String? canonicalProspectRegularPriceSource(String? value) {
     'previous_price' => 'previous_price',
     'crossed_out_price' => 'crossed_out_price',
     'strikethrough_price' => 'strikethrough_price',
+    // A manually reviewed page claim keeps its own provenance marker. It is
+    // explicit user evidence, never an inferred adapter field.
+    'manualpage' => 'manualPage',
+    'manual_page' => 'manual_page',
+    'manualreview' => 'manualReview',
+    'manual_review' => 'manual_review',
     'secondaryprice' => 'secondaryPrice',
     'spare' => 'spare',
     _ => null,
