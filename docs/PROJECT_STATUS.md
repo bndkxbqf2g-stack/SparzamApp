@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Preise-Reiter mit direktem Prospektpreis-Refresh
+
+Der Preise-Reiter bietet jetzt einen direkten Refresh für den aktuellen
+Prospektfeed. Der bestehende Shell-Refresh verarbeitet danach nur ausdrücklich
+ausgewiesene reguläre Normalpreise und schreibt sie mit Filial-, Gültigkeits-
+und Quellenbeleg in die lokale Preisbeobachtung. Aktionspreise bleiben von
+diesem Speicherpfad getrennt.
+
 ## Update 17.10.2026 – Seitenviewer mit begrenztem Bild-Fallback
 
 Der Prospektseitenviewer lässt nun jede validierte Seite den HTML-Fallback

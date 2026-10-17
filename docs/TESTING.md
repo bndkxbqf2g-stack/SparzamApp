@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Preise-Reiter-Refresh
+
+prices_hub_screen_test.dart prüft den direkten Refresh-Knopf für den
+Prospektpreisstand. Der Test stellt sicher, dass der Callback ausgelöst wird
+und die Oberfläche ausdrücklich nur reguläre Normalpreise als Speicherziel
+beschreibt; die bestehende Trennung von Angebots- und Normalpreis bleibt damit
+sichtbar.
+
 ## Update 17.10.2026 – Seitenviewer-Fallback
 
 prospect_image_fallback_budget_test.dart prüft weiterhin das begrenzte,

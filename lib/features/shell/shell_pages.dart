@@ -200,6 +200,7 @@ List<Widget> buildShellPages({
     catalogProducts: catalogProducts,
     onOpenList: onOpenList,
     onOpenRoute: onOpenRoute,
+    onRefreshProspects: onRefreshProspects,
     onResolvePriceGap: onResolvePriceGap,
   ),
   MoreScreen(
