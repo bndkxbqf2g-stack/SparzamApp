@@ -7,6 +7,14 @@ wird beim ersten erfolgreichen Frame oder beim Recycling der Seite freigegeben.
 Damit bleiben auch spätere Seiten sichtbar, ohne den langen Scrollpfad mit
 unbegrenzten Browser-Views zu belasten.
 
+## Update 17.10.2026 – Open-Prices-Abgleich mit begrenzten Batches
+
+Der Live-Abgleich fragt externe EANs jetzt in deterministischen Zweier-Batches
+ab. Future.wait übernimmt die Netzwerklast begrenzt, die Ausgabe und
+Fortschrittsmeldungen bleiben in Katalogreihenfolge. Eingespritzte Fetcher
+bleiben seriell, damit Test- und Offlinepfade ihre Abbruchsemantik behalten;
+Fehler einzelner EANs blockieren weiterhin keine folgenden Produkte.
+
 ## Update 17.10.2026 – Preise-Reiter aktualisiert neue Preisbelege
 
 Der Preise-Reiter trennt jetzt den Eingangssnapshot vom berechneten
