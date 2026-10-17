@@ -1,3 +1,12 @@
+## Update 17.10.2026 – Leere aktuelle Lebensmittelantworten bleiben im Fallback
+
+Ein technisch erfolgreicher Händlerabruf mit ausschließlich abgelaufenen,
+ungültigen oder als Non-Food erkannten Zeilen wird nicht als leerer aktueller
+Filialstand veröffentlicht. Der Refresh markiert die Quelle als fehlerhaft und
+übernimmt nur noch belegte, weiterhin gültige Vorherdaten. Dadurch bleiben
+temporäre Parser-/Quellformatänderungen sichtbar, ohne aktuelle Preise zu
+erfinden oder eine Filiale still zu leeren.
+
 ## Update 17.10.2026 – Bring-only-Refresh bleibt wirklich einzeln
 
 Der CLI-Selektor `bring` veröffentlicht einen ausdrücklich angeforderten
