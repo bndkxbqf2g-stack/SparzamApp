@@ -355,6 +355,8 @@ class _ProspectOffersState extends State<_ProspectOffers> {
   List<OfferImportRecord>? _groupedInput;
   String? _groupedQuery;
   final _groupedCache = <String, Map<String, List<OfferImportRecord>>>{};
+  List<OfferImportRecord>? _widgetKeyInput;
+  Map<OfferImportRecord, String>? _widgetKeyCache;
 
   @override
   void didUpdateWidget(covariant _ProspectOffers oldWidget) {
@@ -389,6 +391,20 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     _searchIndexCache = index;
     return index;
   }
+  Map<OfferImportRecord, String> _widgetKeys() {
+    if (identical(_widgetKeyInput, widget.records)) {
+      return _widgetKeyCache ?? const <OfferImportRecord, String>{};
+    }
+    final keys = prospectOfferWidgetKeys(widget.records);
+    final indexed = <OfferImportRecord, String>{};
+    for (var index = 0; index < widget.records.length; index++) {
+      indexed[widget.records[index]] = keys[index];
+    }
+    _widgetKeyInput = widget.records;
+    _widgetKeyCache = indexed;
+    return indexed;
+  }
+
   Map<String, List<OfferImportRecord>> _filteredRecordsByStore(
     String normalizedQuery,
   ) {
@@ -567,7 +583,7 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     final onAdd = widget.onAddToShoppingList;
     final canAdd = onAdd != null && selectableProduct != null;
     return ProspectOfferCard(
-      key: ValueKey('prospect-offer-${prospectOfferWidgetKey(record, widget.records)}'),
+      key: ValueKey('prospect-offer-${_widgetKeys()[record] ?? prospectOfferRecordKey(record)}'),
       record: record,
       product: selectableProduct,
       compact: true,
