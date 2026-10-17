@@ -272,3 +272,9 @@ Bereich wie „Obst/Gemüse/Pflanzen“ bleibt für Lebensmittel nutzbar, währe
 Haushalts- und Pflanzenartikel im Produkttext ausgeschlossen werden. Die
 Änderung erweitert keine Händlerrechte und übernimmt weiterhin weder fremden
 Quellcode noch Markenmedien.
+
+
+Die KaufDA-Gruppierung bewahrt den neuesten Erfassungszeitpunkt über mehrere
+begrenzte Suchbegriffe. Einzelne Angebote bleiben mit ihrem eigenen
+Erfassungszeitpunkt nachvollziehbar; bei gemischtem Live-/Cache-Stand bleibt
+die Cache-Nutzung als Diagnosesignal erhalten.
