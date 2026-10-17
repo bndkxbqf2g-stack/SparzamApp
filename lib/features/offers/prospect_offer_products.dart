@@ -25,7 +25,7 @@ List<ProspectOfferProduct> prospectOfferProducts({
     final product = productForProspectOffer(record, catalog);
     final offer = _offerForProduct(record, product, now: now);
     if (offer == null) continue;
-    final key = '${offer.storeName}|${offer.id}';
+    final key = prospectOfferSnapshotKey(offer);
     result.putIfAbsent(key, () => ProspectOfferProduct(product, offer));
   }
   return result.values.toList(growable: false);
@@ -123,6 +123,19 @@ class ProspectOfferProduct {
   final Offer offer;
 }
 
+/// Stable key for a transient prospect offer.
+///
+/// A provider's source ID is often scoped to a leaflet rather than to one
+/// branch. Retain the exact store context so two same-name branches cannot
+/// overwrite each other during a feed refresh.
+String prospectOfferSnapshotKey(Offer offer) => [
+      offer.id.trim(),
+      offer.storeName.trim().toLowerCase(),
+      offer.locationId?.trim().toLowerCase() ?? '',
+      offer.region?.trim().toLowerCase() ?? '',
+      offer.address?.trim().toLowerCase() ?? '',
+    ].join('\u001f');
+
 /// Builds the transient offer snapshot for a validated current prospect
 /// feed. Existing automatic imports are discarded so a refreshed feed cannot
 /// retain expired rows, while manual/user-reviewed offers remain available.
@@ -132,14 +145,15 @@ List<Offer> mergeTransientProspectOffers({
   required Iterable<Offer> existingOffers,
   required Iterable<ProspectOfferProduct> importedOffers,
 }) {
-  final byId = <String, Offer>{
+  final bySnapshotKey = <String, Offer>{
     for (final offer in existingOffers)
-      if (!offer.id.startsWith('import|')) offer.id: offer,
+      if (!offer.id.startsWith('import|'))
+        prospectOfferSnapshotKey(offer): offer,
   };
   for (final entry in importedOffers) {
-    byId[entry.offer.id] = entry.offer;
+    bySnapshotKey[prospectOfferSnapshotKey(entry.offer)] = entry.offer;
   }
-  return byId.values.toList(growable: false);
+  return bySnapshotKey.values.toList(growable: false);
 }
 
 /// Keeps source-backed offers attached to their exact prospect product,
