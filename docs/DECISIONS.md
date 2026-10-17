@@ -1,3 +1,7 @@
+## D218 – Automatischer Listenabgleich bleibt an exakte Produkt-ID gebunden
+
+Ein Katalog- oder Prospekt-Refresh darf bestehende Listeneinträge nur über dieselbe nichtleere Produkt-ID aktualisieren. Die neue Produktinstanz ersetzt ausschließlich Metadaten; Nutzerzustand (Menge, Notiz, Abhaken) bleibt am Listeneintrag. Fehlende oder mehrdeutige Identität erzeugt keinen Ersatz und keine neue Preiszuordnung.
+
 ## D217 – Legacy-Listen übernehmen vollständige Produktmetadaten
 
 Der ältere lokale Schlüssel `shopping_list` bleibt als Lesepfad erhalten, schreibt bei neuen Snapshots aber dieselben vorhandenen optionalen Produktfelder wie das Katalogmodell. Beim Laden fehlen diese Felder bei historischen Einträgen weiterhin ohne Fehler; es werden keine Identitäten, Preise oder Varianten aus unvollständigen Daten erfunden.
