@@ -583,6 +583,7 @@ void main() {
       expect(priceStore.observations, hasLength(1));
       expect(priceStore.observations.single.kind, PriceObservationKind.regular);
       expect(priceStore.observations.single.price, 3.99);
+      expect(priceStore.observations.single.identityConfidence, 1);
       expect(priceStore.observations.single.evidenceConfidence,
           EvidenceConfidence.manuallyConfirmed);
       expect(priceStore.observations.single.locationId, '4371');
