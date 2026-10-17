@@ -726,6 +726,104 @@ void main() {
 
     expect(PriceObservation.fromJson(legacy).isCurrent, isTrue);
   });
+  test('speichert einen manuell geprüften Seiten-Normalpreis separat', () async {
+    final observation = reviewedProspectRegularPriceObservation(
+      record: current.copyWith(sourceId: 'manual-page-test'),
+      catalogProducts: const [coffee],
+      now: now,
+    );
+
+    expect(observation, isNotNull);
+    expect(observation!.id, startsWith('manual-page|manual-page-test|regular|'));
+    expect(observation.kind, PriceObservationKind.regular);
+    expect(observation.price, 7.99);
+    expect(observation.evidenceConfidence, EvidenceConfidence.manuallyConfirmed);
+    expect(observation.discounted, isFalse);
+    expect(observation.locationId, 'lidl-branch-1');
+    expect(observation.proofRef, current.proofRef);
+    expect(isKnownProspectRegularPriceSource('manualPage'), isTrue);
+  });
+
+  test('verwirft Seiten-Normalpreise ohne Nachweis, Zeitstempel oder Filiale', () {
+    final noProof = OfferImportRecord(
+      sourceId: 'manual-page-no-proof',
+      productLabel: coffee.name,
+      storeName: 'Lidl',
+      originalPrice: 7.99,
+      regularPriceSource: 'manualPage',
+      offerPrice: 4.99,
+      validFrom: DateTime(2026, 10, 10),
+      validUntil: DateTime(2026, 10, 17),
+      source: 'leaflet',
+      branchId: 'lidl-branch-1',
+      capturedAt: now,
+    );
+    final noBranch = OfferImportRecord(
+      sourceId: 'manual-page-no-branch',
+      productLabel: coffee.name,
+      storeName: 'Lidl',
+      originalPrice: 7.99,
+      regularPriceSource: 'manualPage',
+      offerPrice: 4.99,
+      validFrom: DateTime(2026, 10, 10),
+      validUntil: DateTime(2026, 10, 17),
+      source: 'leaflet',
+      sourceAdapter: 'kaufda',
+      proofRef: 'https://example.test/kaufda/manual-page-no-branch',
+      capturedAt: now,
+    );
+    final noCapture = noProof.copyWith(sourceId: 'manual-page-no-capture');
+
+    expect(
+      reviewedProspectRegularPriceObservation(
+        record: noProof,
+        catalogProducts: const [coffee],
+        now: now,
+      ),
+      isNull,
+    );
+    expect(
+      reviewedProspectRegularPriceObservation(
+        record: noBranch,
+        catalogProducts: const [coffee],
+        now: now,
+      ),
+      isNull,
+    );
+    expect(
+      reviewedProspectRegularPriceObservation(
+        record: noCapture.copyWith(capturedAt: null),
+        catalogProducts: const [coffee],
+        now: now,
+      ),
+      isNull,
+    );
+  });
+
+  test('manueller Seiten-Normalpreis bleibt bei Feed-Reconciliation geschützt', () async {
+    final store = memoryStore();
+    final manual = reviewedProspectRegularPriceObservation(
+      record: current.copyWith(sourceId: 'manual-page-persistent'),
+      catalogProducts: const [coffee],
+      now: now,
+    );
+    expect(manual, isNotNull);
+    await store.upsertById([manual!]);
+
+    final refreshed = await persistCurrentProspectRegularPrices(
+      store: store,
+      records: const [],
+      catalogProducts: const [coffee],
+      observedAt: now.add(const Duration(hours: 1)),
+      now: now.add(const Duration(hours: 1)),
+      refreshedStores: const ['Lidl'],
+    );
+
+    expect(refreshed.stored, hasLength(1));
+    expect(refreshed.stored.single.evidenceConfidence,
+        EvidenceConfidence.manuallyConfirmed);
+    expect(refreshed.stored.single.isCurrent, isTrue);
+  });
 }
 
 
