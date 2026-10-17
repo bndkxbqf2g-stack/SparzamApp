@@ -247,6 +247,32 @@ void main() {
     expect(evidence.single.discounted, isFalse);
   });
 
+  test('adapter rows without explicit regular price provenance stay out of persistence', () {
+    final record = OfferImportRecord(
+      sourceId: 'kaufda-without-regular-source',
+      productLabel: 'Butter 250 g',
+      storeName: 'Lidl',
+      originalPrice: 2.49,
+      offerPrice: 1.99,
+      validFrom: DateTime(2026, 10, 12),
+      validUntil: DateTime(2026, 10, 17),
+      source: 'retailerWebsite',
+      sourceAdapter: 'kaufda',
+      branchId: 'lidl-zellingen',
+      proofRef: 'https://www.kaufda.de/Wuerzburg/Angebote/Butter',
+    );
+
+    expect(isLearnableProspectRegularPrice(record), isFalse);
+    expect(
+      prospectPriceObservations(
+        records: [record],
+        catalogProducts: const [],
+        observedAt: DateTime(2026, 10, 12, 8),
+      ),
+      isEmpty,
+    );
+  });
+
   const coffee = Product(
     id: 'coffee-500',
     name: 'Jacobs Kaffee Crema 500 g',
@@ -390,6 +416,7 @@ void main() {
           productLabel: coffee.name,
           storeName: 'Netto',
           originalPrice: 8,
+          regularPriceSource: 'originalPrice',
           offerPrice: 5,
           validFrom: DateTime(2026, 9, 28),
           validUntil: DateTime(2026, 9, 30),

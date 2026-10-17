@@ -47,6 +47,7 @@ void main() {
       "brochurePage": "4",
       "publisherId": "lidl",
       "originalPrice": 0.89,
+      "regularPriceSource": "regularPrice",
       "branchId": "B384",
       "validFrom": "2026-09-21",
       "validUntil": "2026-09-26",
@@ -70,6 +71,7 @@ void main() {
     expect(result.records, hasLength(2));
     expect(result.refreshedStores, ['ALDI Süd']);
     expect(result.records.first.originalPrice, 0.89);
+    expect(result.records.first.regularPriceSource, 'regularPrice');
     expect(result.records.first.category, 'Milchprodukte');
     expect(result.records.first.packageSize, '200 g');
     expect(result.records.first.priceByBaseUnit, '3,45 €/kg');
@@ -92,6 +94,29 @@ void main() {
   });
 
 
+
+  test('rejects an unknown regular price provenance marker', () {
+    final result = parseProspectFeed(r'''
+{
+  "offers": [
+    {
+      "sourceId": "uvp-marker",
+      "productLabel": "Butter 250 g",
+      "storeName": "Lidl",
+      "offerPrice": 1.49,
+      "originalPrice": 1.99,
+      "regularPriceSource": "uvp",
+      "validUntil": "2026-10-17",
+      "source": "retailerWebsite",
+      "sourceAdapter": "structured_api",
+      "proofRef": "https://example.test/lidl/butter"
+    }
+  ]
+}
+''');
+
+    expect(result.records, isEmpty);
+  });
   test('matches source metadata despite store-name formatting', () {
     final result = parseProspectFeed(r'''
 {

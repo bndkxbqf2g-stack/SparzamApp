@@ -125,6 +125,8 @@ bool isEligibleProspectPriceRecord(OfferImportRecord record) {
       (record.originalPrice == null ||
           (record.originalPrice!.isFinite &&
               record.originalPrice! >= record.offerPrice)) &&
+      (record.originalPrice == null ||
+          isKnownProspectRegularPriceSource(record.regularPriceSource)) &&
       (record.validFrom == null ||
           !record.validUntil.isBefore(record.validFrom!));
 }
@@ -135,9 +137,23 @@ bool isEligibleProspectPriceRecord(OfferImportRecord record) {
 bool isLearnableProspectRegularPrice(OfferImportRecord record) {
   if (!isEligibleProspectPriceRecord(record)) return false;
   final regular = record.originalPrice;
-  return regular != null &&
-      regular.isFinite &&
-      regular > record.offerPrice;
+  if (regular == null || !regular.isFinite || regular <= record.offerPrice) {
+    return false;
+  }
+  // Fresh adapter feeds carry the exact normalized field that supplied the
+  // crossed-out amount. A missing marker on a legacy, manually constructed
+  // record remains readable, but it is not enough for automatic persistence
+  // once a concrete adapter identity is present.
+  final adapter = record.sourceAdapter?.trim();
+  final source = record.regularPriceSource?.trim();
+  if (adapter != null &&
+      adapter.isNotEmpty &&
+      (source == null || source.isEmpty)) {
+    return false;
+  }
+  return source == null ||
+      source.isEmpty ||
+      canonicalProspectRegularPriceSource(source) != null;
 }
 
 List<PriceObservation> prospectPriceObservations({

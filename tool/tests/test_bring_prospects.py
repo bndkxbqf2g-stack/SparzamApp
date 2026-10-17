@@ -132,6 +132,7 @@ class BringProspectTest(unittest.TestCase):
                 )
                 self.assertIsNotNone(record)
                 self.assertEqual(record["originalPrice"], 1.09)
+                self.assertEqual(record["regularPriceSource"], alias)
 
         lower_than_sale = bring._discount_record(
             "Lidl",

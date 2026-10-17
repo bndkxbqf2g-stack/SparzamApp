@@ -353,6 +353,7 @@ class KaufdaProspectTest(unittest.TestCase):
             today=self.today,
         )
         self.assertEqual(offers[0]["originalPrice"], 1.79)
+        self.assertEqual(offers[0]["regularPriceSource"], "secondaryPrice")
 
         uvp_shape = regular_price_shape.replace(
             '"secondaryPriceIsUVP": false',
@@ -418,6 +419,7 @@ class KaufdaProspectTest(unittest.TestCase):
         self.assertEqual(offer["packageSize"], "250 g")
         self.assertEqual(offer["priceByBaseUnit"], "5,16 €/kg")
         self.assertEqual(offer["originalPrice"], 1.79)
+        self.assertEqual(offer["regularPriceSource"], "regularPrice")
 
     def test_parser_rejects_non_http_image_aliases(self):
         payload = kaufda.extract_next_data(self.html)

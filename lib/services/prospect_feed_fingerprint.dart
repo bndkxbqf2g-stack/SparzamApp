@@ -41,6 +41,7 @@ String prospectFeedFingerprintFor(
         record.productLabel,
         record.storeName,
         record.originalPrice,
+        record.regularPriceSource,
         record.offerPrice,
         record.validFrom?.toIso8601String(),
         record.validUntil.toIso8601String(),

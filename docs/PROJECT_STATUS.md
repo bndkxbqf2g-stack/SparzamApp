@@ -1,3 +1,10 @@
+## Update 17.10.2026 – Herkunft des regulären Prospektpreises bleibt erhalten
+
+- [x] Neue Prospektadapter führen mit `regularPriceSource` das ausdrücklich gelesene Feld für den Streich-/Normalpreis mit.
+- [x] Der Dart-Feed verwirft unbekannte Herkunftsmarker und leitet bei älteren normalisierten Feedzeilen nur aus der allow-list ab.
+- [x] Automatische Preisbeobachtungen verlangen bei konkreter Adapterkennung den Herkunftsmarker; Angebotsbeträge und UVP-/unbekannte Marker gelangen nicht in die reguläre Preisbasis.
+- [x] KaufDA-, Bring- und offizielle Refresh-Parser sowie ihre anonymisierten Fixtures bewahren diese Provenienz bis zur lokalen `PriceObservation`.
+
 ## Update 17.10.2026 – Prospektkarten teilen den Katalogindex
 
 Die aktuellen Angebotskarten, Suchtreffer und der Seitenviewer verwenden pro

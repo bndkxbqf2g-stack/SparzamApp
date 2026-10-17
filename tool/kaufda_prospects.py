@@ -687,18 +687,19 @@ def _is_uvp_marker(value: object) -> bool:
     }
 
 
-def _explicit_regular_price(
+def _explicit_regular_price_with_source(
     raw: Mapping[str, object] | None,
     sale: float,
-) -> float | None:
-    """Read only explicitly named previous/regular price fields.
+) -> tuple[float | None, str | None]:
+    """Return a stated regular amount together with its source field.
 
-    Discount rates, UVP/list prices and arbitrary numeric fields remain
-    outside this helper.  A source format change therefore cannot invent a
-    comparable regular price.
+    Only explicitly named previous/regular fields are considered. Discount
+    rates, UVP/list prices and arbitrary numeric fields remain outside this
+    helper. The field name is carried into the Sparzam feed so the app can
+    audit which amount was persisted.
     """
     if not isinstance(raw, Mapping):
-        return None
+        return None, None
     for key in (
         "streichpreis",
         "wasPriceDisplay",
@@ -711,8 +712,15 @@ def _explicit_regular_price(
     ):
         candidate = _regular_price_value(raw.get(key))
         if candidate is not None and candidate >= sale:
-            return candidate
-    return None
+            return candidate, key
+    return None, None
+
+
+def _explicit_regular_price(
+    raw: Mapping[str, object] | None,
+    sale: float,
+) -> float | None:
+    return _explicit_regular_price_with_source(raw, sale)[0]
 
 
 def canonical_publisher(value: object) -> str | None:
@@ -1296,13 +1304,17 @@ def parse_kaufda_html(
             "regionalOnly": not exact_branch,
         }
         regular_price = None
+        regular_price_source = None
         for price_source in (
             raw,
             prices,
             raw.get("price"),
             raw.get("pricing"),
         ):
-            regular_price = _explicit_regular_price(price_source, offer_price)
+            regular_price, regular_price_source = _explicit_regular_price_with_source(
+                price_source,
+                offer_price,
+            )
             if regular_price is not None:
                 break
         secondary_price = _parse_price(prices.get("secondaryPrice"))
@@ -1322,8 +1334,11 @@ def parse_kaufda_html(
             and not secondary_is_uvp
         ):
             regular_price = secondary_price
+            regular_price_source = "secondaryPrice"
         if regular_price is not None:
             record["originalPrice"] = round(regular_price, 2)
+            if regular_price_source:
+                record["regularPriceSource"] = regular_price_source
         publisher_id = clean(raw.get("publisherId") or raw.get("publisherID"))
         if publisher_id:
             record["publisherId"] = publisher_id
