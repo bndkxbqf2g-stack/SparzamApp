@@ -1,3 +1,12 @@
+## Update 17.10.2026 – Frische vor Quellenpriorität in der Preis-Matrix
+
+'shopping_price_quotes_test.dart' prüft, dass bei gleichem
+qualitätsbereinigtem Betrag der neuere Open-Prices-Beleg vor einem älteren
+Receipt-Beleg in der Marktzeile und im hervorgehobenen Einkaufslistenpreis
+erscheint. Angebots- und historische Preisregeln bleiben durch die vorhandenen
+Tests abgedeckt. CI 5579 (Flutter CI) lief mit Analyse, vollständigen
+Flutter-Tests und Web-Release-Build erfolgreich durch.
+
 ## Update 17.10.2026 – Prospekt-/Angebotsstatus-Cache
 
 Die bestehenden `prospects_screen_test.dart`- und
