@@ -192,8 +192,17 @@ class _CandidateImage extends StatelessWidget {
     }
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
-      child: Image.network(image, width: 52, height: 52, fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) =>
+      child: Image.network(
+        image,
+        width: 52,
+        height: 52,
+        fit: BoxFit.contain,
+        // Candidate sheets are bounded, but can still show dozens of rows.
+        cacheWidth: 112,
+        cacheHeight: 112,
+        filterQuality: FilterQuality.low,
+        webHtmlElementStrategy: WebHtmlElementStrategy.never,
+        errorBuilder: (context, error, stackTrace) =>
               const Icon(Icons.image_not_supported_outlined)),
     );
   }
