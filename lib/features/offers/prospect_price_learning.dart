@@ -5,6 +5,7 @@ import '../../services/barcode_normalizer.dart';
 import '../catalog/product_identity.dart';
 import 'offer_import.dart';
 import 'prospect_product_match.dart';
+import '../prospects/prospect_issue_identity.dart';
 
 /// Learns prospect prices only when the feed supplies an observation time.
 ///
@@ -254,7 +255,11 @@ PriceObservationSource? _source(String source) =>
       _ => null,
     };
 
-String _prospectStoreKey(String value) => value.trim().toLowerCase();
+// Use the same presentation-only key as the prospect UI when the feed tells
+// us which stores were actually refreshed. This keeps `ALDI Süd` and
+// `ALDI SUED` in the same refresh scope without merging exact branches or
+// changing the stored retailer label.
+String _prospectStoreKey(String value) => prospectStoreMatchKey(value);
 
 bool _isKaufdaEvidence(OfferImportRecord record) {
   if (record.sourceAdapter?.trim().toLowerCase() == 'kaufda') return true;
