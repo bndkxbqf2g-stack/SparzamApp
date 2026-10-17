@@ -476,3 +476,10 @@ Die Prospektparser-Regression prüft zusätzlich die gemeinsame Branch-Identitä
 Leerraum werden beim Vergleich toleriert; Filialwert, Ort und Adresse bleiben
 als Herkunftsdaten erhalten. Eine andere oder fehlende Branch-ID darf weiterhin
 kein Seitenbild oder Quellenmetadatum übernehmen.
+
+
+\`tool/tests/test_kaufda_prospects.py\` prüft zusätzlich gemischte
+Lebensmittel-Taxonomien wie \`Obst__Gemuese__Pflanzen\`, singuläre
+\`categoryPath\`-Felder sowie Produktbildlisten und Mengen-Aliase. Echte
+Haushalts-/Pflanzenartikel bleiben ausgeschlossen; Bild- und Kategorieangaben
+werden nur aus expliziten Quellfeldern übernommen.
