@@ -89,8 +89,21 @@ class RouteOptimizer {
       enabledStoreNames.isEmpty ||
       enabledStoreNames.any((name) => sameStoreLabel(name, store.name));
 
-  List<Store> get availableStores =>
-      storeCatalog.where(isStoreEnabled).toList(growable: false);
+  /// Returns enabled exact branches once, preserving catalog order.
+  ///
+  /// Feed merges can contain the same branch more than once (for example after
+  /// a retailer label or source refresh change). Treating those duplicate rows
+  /// as separate route stops inflates combination counts and can make a route
+  /// appear to use the same market twice.
+  List<Store> get availableStores {
+    final seen = <String>{};
+    final result = <Store>[];
+    for (final store in storeCatalog) {
+      if (!isStoreEnabled(store)) continue;
+      if (seen.add(routeStoreIdentityKey(store))) result.add(store);
+    }
+    return List<Store>.unmodifiable(result);
+  }
 
   double basketCost(Store store, Iterable<ListItem> selectedItems) {
     return selectedItems.fold<double>(
@@ -101,7 +114,10 @@ class RouteOptimizer {
 
   OptimizedTravelRoute travelRoute(Iterable<Store> selectedStores) {
     final stores = selectedStores.toList(growable: false);
-    final key = stores.map(_travelRouteStoreKey).join('\u001e');
+    // The route solver evaluates the optimal order itself, so the selected
+    // store set is the cache identity independent of caller order.
+    final cacheParts = stores.map(_travelRouteStoreKey).toList()..sort();
+    final key = cacheParts.join('\u001e');
     final cached = _travelRouteCache[key];
     if (cached != null) return cached;
 
@@ -288,10 +304,16 @@ class RouteOptimizer {
 
         final addedStores = candidate.stores.length - current.stores.length;
         final requiredSavings = minExtraStoreSavings * addedStores;
-        if (current.planningScore - candidate.planningScore >
-            requiredSavings) {
-          current = candidate;
-        }
+        final planningBenefit =
+            current.planningScore - candidate.planningScore;
+        // A configured positive threshold is inclusive: exactly the stated
+        // minimum is enough to justify the additional stops. With no threshold
+        // configured, retain the fewer-store tie-breaker and require a real
+        // improvement instead of accepting an equal plan.
+        final meetsMinimum = requiredSavings > 0
+            ? planningBenefit >= requiredSavings
+            : planningBenefit > 0;
+        if (meetsMinimum) current = candidate;
       }
       recommended = current;
     }
