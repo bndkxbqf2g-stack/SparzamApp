@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Preise-Reiter trennt unbelegte Angebotspreise
+
+Der Preise-Reiter weist jetzt zusätzlich aus, wie viele aktuelle importierte
+Angebotspreise keinen ausdrücklich belegten Normalpreis besitzen. Diese Werte
+bleiben als Angebotsnachweis sichtbar, werden aber nicht als reguläre
+Preisgrundlage gespeichert. Die Anzeige ergänzt damit die bestehende
+Filial-/Quellenübersicht der gespeicherten Normalpreise.
+
 ## Update 17.10.2026 – Preise-Reiter mit direktem Prospektpreis-Refresh
 
 Der Preise-Reiter bietet jetzt einen direkten Refresh für den aktuellen

@@ -1,3 +1,12 @@
+## Update 17.10.2026 – Reguläre Prospektpreise bleiben von Angebotspreisen getrennt
+
+- [x] Der Preise-Reiter zählt aktuelle importierte Angebotspreise ohne belegten
+  Normalpreis separat.
+- [x] Die Anzeige macht sichtbar, dass diese Angebotspreise nicht in die
+  reguläre Preisbasis geschrieben werden.
+- [x] Die bestehende Speicherung von Streichpreisen, Filiale, Gültigkeit und
+  Quellenbeleg bleibt unverändert.
+
 ## Update 17.10.2026 – Preise-Reiter aktualisiert Prospektpreise auf Wunsch
 
 - [x] Der Preise-Reiter kann den aktuellen Prospektfeed direkt anstoßen.

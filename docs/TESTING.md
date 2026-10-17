@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Angebotspreise ohne Normalpreis
+
+prices_hub_screen_test.dart prüft, dass ein aktueller importierter Angebotspreis
+mit unverifiziertem Normalpreis sichtbar als getrennte Evidenz erscheint und
+nicht als gespeicherte reguläre Preisbasis beschrieben wird.
+
 ## Update 17.10.2026 – Preise-Reiter-Refresh
 
 prices_hub_screen_test.dart prüft den direkten Refresh-Knopf für den
