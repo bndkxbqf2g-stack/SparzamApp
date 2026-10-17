@@ -924,6 +924,17 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       catalogProducts: baseCatalog,
       now: now,
     );
+    // Apply the validated feed to the in-memory offer snapshot immediately.
+    // This makes a cached/offline launch useful for list quotes and route
+    // hints without persisting automatic offer prices into the user store.
+    final transientOffers = offersFromProspectProducts(offerBackedProducts);
+    final retainedOffers = offers
+        .where((offer) => !offer.id.startsWith('import|'))
+        .toList(growable: false);
+    final offersById = <String, Offer>{
+      for (final offer in retainedOffers) offer.id: offer,
+      for (final offer in transientOffers) offer.id: offer,
+    };
     setState(() {
       // The visible offer area only receives currently valid prospect records;
       // the feed remains the source of truth for provenance and cache status.
@@ -935,6 +946,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       prospectProducts = offerBackedProducts
           .map((entry) => entry.product)
           .toList(growable: false);
+      offers = offersById.values.toList(growable: false);
       prospectIssues = feed.prospects;
       prospectFeedFromCache = feed.fromCache;
       prospectFeedGeneratedAt = feed.generatedAt;
