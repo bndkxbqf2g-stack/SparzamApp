@@ -52,6 +52,13 @@ class ShoppingPriceBadge extends StatelessWidget {
         shoppingPriceMatrixFromQuotes(
           quotes,
           enabledStores: enabledStores,
+          gapReasons: shoppingPriceGapReasons(
+            item,
+            prices: prices,
+            offers: offers,
+            enabledStores: enabledStores,
+            openPricesMaxAgeDays: openPricesMaxAgeDays,
+          ),
         );
     final pricedMarkets = matrix.where((entry) => entry.hasCurrentQuote).length;
     final historicalMarkets = matrix
@@ -213,8 +220,21 @@ class ShoppingPriceBadge extends StatelessWidget {
                           color: Colors.amber.shade800,
                         ),
                         title: Text(entry.storeName),
-                        subtitle: const Text(
-                          'Kein aktueller, vergleichbarer Preisbeleg',
+                        subtitle: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Kein aktueller, vergleichbarer Preisbeleg',
+                            ),
+                            Text(
+                              entry.gapLabel,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ],
                         ),
                         trailing: const Text(
                           'fehlt',
