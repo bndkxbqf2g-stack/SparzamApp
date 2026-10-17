@@ -758,6 +758,55 @@ void main() {
   });
 
 
+  testWidgets(
+    'aktualisiert Marktprovenienz im Quote-Snapshot',
+    (tester) async {
+      const product = Product(
+        id: 'price-hub-provenance-milk',
+        name: 'Milch',
+        unit: '1 l',
+        group: 'Milch',
+      );
+
+      Widget app(String branchName) => MaterialApp(
+            home: Scaffold(
+              body: PricesHubScreen(
+                onOpenCatalog: () {},
+                onOpenSettings: () {},
+                summary: 'Provenienz',
+                shoppingList: [ListItem(product: product)],
+                marketPrices: [
+                  MarketPrice(
+                    productId: product.id,
+                    storeName: 'Lidl',
+                    price: 1.19,
+                    updatedAt: DateTime(2026, 10, 17),
+                    source: MarketPriceSource.manual,
+                    sourceLocationId: 'lidl_zellingen',
+                    sourceLocationName: branchName,
+                  ),
+                ],
+                enabledStoreNames: const ['Lidl'],
+                now: DateTime(2026, 10, 17),
+              ),
+            ),
+          );
+
+      await tester.pumpWidget(app('Zellingen'));
+      final card = find.byKey(
+        const ValueKey('price-comparison-price-hub-provenance-milk'),
+      );
+      await tester.tap(card);
+      await tester.pump();
+      expect(find.textContaining('Filiale Zellingen'), findsOneWidget);
+
+      await tester.pumpWidget(app('Würzburg'));
+      await tester.pump();
+      expect(find.textContaining('Filiale Würzburg'), findsOneWidget);
+      expect(find.textContaining('Filiale Zellingen'), findsNothing);
+    },
+  );
+
   testWidgets('aktualisiert Prospekt-Normalpreise direkt aus dem Preise-Reiter', (
     tester,
   ) async {
