@@ -1,3 +1,13 @@
+## D198 – Bonkandidaten nutzen Identitätskompatibilität ohne Bestätigung
+
+Die Kandidatensuche darf eine bekannte, nicht generische ProductIdentity verwenden,
+um Belegkürzel und Produktvarianten derselben Familie vorzuschlagen. Ein Treffer
+wird nur aufgenommen, wenn die Identität kompatibel ist oder die bestehende
+offene H-Milch-Auswahl greift. Barcodegleichheit bleibt die einzige direkte
+Identitätsbestätigung; alle anderen Treffer bleiben Vorschläge mit einem Hinweis
+auf Variante und Packungsgröße. Generische Kategorien verwenden weiterhin nur
+Kategoriebeziehungen, damit eine breite Bezeichnung keine konkrete Preisidentität
+erfindet.
 ## D197 – Open-Prices-Bulk-Sync dedupliziert nur die Abfrage, nicht die Identität
 
 Der optionale Open-Prices-Bulk-Sync führt dieselbe Produkt-ID höchstens einmal
