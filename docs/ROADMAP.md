@@ -1237,3 +1237,12 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Reguläre Beobachtungen im selben ID-Namensraum bleiben erhalten; manuelle und Bon-Evidenz werden nicht gelöscht.
 - [x] Ein zuerst sichtbarer Cache-Feed zeigt während der lokalen Normalpreis-Projektion ausdrücklich `Speicherung läuft`; alte bestätigte Zähler werden nicht auf den neuen Feed übertragen.
 - [x] Regressionen sichern Migration, Statuswechsel und die unveränderte Trennung von Aktionspreis und regulärer Preisbasis.
+
+## Update 17.10.2026 – Prospektparser-Filialgrenze vereinheitlicht
+
+- [x] Filial-IDs aus Quellenmetadaten, Prospektseiten und Angebotszeilen über
+  \`canonicalBranchId\` zusammenführen, wenn nur Leerraum oder Groß-/Kleinschreibung
+  abweichen.
+- [x] Originale Filialwerte für Nachweis und Anzeige erhalten; unbekannte oder
+  abweichende Filialen bleiben getrennt.
+- [x] Regression für Quelle, Ort, Adresse und Prospektseitenbild ergänzt.
