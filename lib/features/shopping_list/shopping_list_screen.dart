@@ -607,6 +607,12 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   Widget build(BuildContext context) {
     final grouped = itemsByGroup;
     final snapshot = quoteSnapshot;
+    final currentRouteCount = widget.items.where((item) {
+      return snapshot.quotesFor(item).any((quote) => !quote.isHistorical);
+    }).length;
+    final routeLabel = currentRouteCount == widget.items.length
+        ? 'Sparroute prüfen'
+        : 'Teilroute prüfen';
 
     return Column(
       children: [
@@ -646,7 +652,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 FilledButton.icon(
                   onPressed: widget.onOpenRoute,
                   icon: const Icon(Icons.route_outlined),
-                  label: const Text('Sparroute prüfen'),
+                  label: Text(routeLabel),
                 ),
                 const SizedBox(height: 4),
                 const Text(
