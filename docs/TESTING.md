@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Verschachtelte Bildaliasfelder
+
+`prospect_feed_service_test.dart` prüft zusätzlich `images[].thumbnailUrl`.
+Der Test stellt sicher, dass nur die validierte URL übernommen und weiterhin als
+`ProspectImageKind.product` klassifiziert wird.
+
 ## Update 17.10.2026 – Listenförmige Prospekt-Artikelbilder
 
 `prospect_feed_service_test.dart` prüft jetzt ein verschachteltes `images`-
