@@ -580,7 +580,7 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
   Widget build(BuildContext context) {
     final issuesByStore = <String, List<ProspectIssue>>{};
     for (final issue in prospects) {
-      issuesByStore.putIfAbsent(issue.storeName, () => []).add(issue);
+      issuesByStore.putIfAbsent(prospectStoreMatchKey(issue.storeName), () => []).add(issue);
     }
 
     // A store can have multiple branch-specific records in the shared feed.
@@ -588,7 +588,7 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
     // another branch with the same visible retailer name.
     final matchingRecords = records
         .where((record) {
-          final candidates = issuesByStore[record.storeName];
+          final candidates = issuesByStore[prospectStoreMatchKey(record.storeName)];
           if (candidates == null || candidates.isEmpty) return true;
           return candidates.any(
             (issue) => _prospectRecordBelongsToIssue(record, issue),
@@ -617,7 +617,7 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
       // Use the exact store/branch key for grouping. The row still displays
       // the human-readable retailer name, while two same-name branches keep
       // independent locations and product lists.
-      byStore.putIfAbsent(prospectRecordKey(record), () => []).add(record);
+      byStore.putIfAbsent(prospectRecordMatchKey(record), () => []).add(record);
     }
 
     // Keep product identity resolution out of repeated sliver child builds. The
@@ -746,11 +746,11 @@ ProspectIssue? _prospectSearchIssueForRecord(
   OfferImportRecord record,
   Map<String, List<ProspectIssue>> issuesByStore,
 ) {
-  final candidates = issuesByStore[record.storeName];
+  final candidates = issuesByStore[prospectStoreMatchKey(record.storeName)];
   if (candidates == null || candidates.isEmpty) return null;
-  final recordKey = prospectRecordKey(record);
+  final recordKey = prospectRecordMatchKey(record);
   for (final issue in candidates) {
-    if (prospectIssueKey(issue) == recordKey) return issue;
+    if (prospectIssueMatchKey(issue) == recordKey) return issue;
   }
   final matching = candidates
       .where((issue) => _prospectRecordBelongsToIssue(record, issue))
@@ -821,7 +821,9 @@ List<OfferImportRecord> _matchingProspectRecords(
   final normalized = query.trim().toLowerCase();
   return records
       .where((record) {
-        if (storeName != null && record.storeName != storeName) {
+        if (storeName != null &&
+            prospectStoreMatchKey(record.storeName) !=
+                prospectStoreMatchKey(storeName)) {
           return false;
         }
         if (category != null && _prospectCategoryForRecord(record) != category) {
@@ -860,14 +862,15 @@ List<String> _prospectStores(
   Iterable<OfferImportRecord> records,
   Iterable<ProspectIssue> issues,
 ) {
-  final stores = <String>[];
+  final storesByKey = <String, String>{};
   for (final name in [
     ...issues.map((issue) => issue.storeName),
     ...records.map((record) => record.storeName),
   ]) {
-    if (name.trim().isNotEmpty && !stores.contains(name)) stores.add(name);
+    if (name.trim().isEmpty) continue;
+    storesByKey.putIfAbsent(prospectStoreMatchKey(name), () => name.trim());
   }
-  return stores;
+  return storesByKey.values.toList(growable: false);
 }
 
 class _ProspectCategoryChips extends StatelessWidget {
@@ -1625,7 +1628,10 @@ bool _prospectRecordBelongsToIssue(
   OfferImportRecord record,
   ProspectIssue issue,
 ) {
-  if (record.storeName != issue.storeName) return false;
+  if (prospectStoreMatchKey(record.storeName) !=
+      prospectStoreMatchKey(issue.storeName)) {
+    return false;
+  }
   final issueBranchId = issue.branchId?.trim();
   if (issueBranchId == null || issueBranchId.isEmpty) return true;
   final recordBranchId = record.branchId?.trim();
@@ -1633,7 +1639,7 @@ bool _prospectRecordBelongsToIssue(
   // explicitly different branch is rejected at this UI boundary.
   return recordBranchId == null ||
       recordBranchId.isEmpty ||
-      recordBranchId == issueBranchId;
+      canonicalBranchId(recordBranchId) == canonicalBranchId(issueBranchId);
 }
 
 class ProspectViewerScreen extends StatelessWidget {
