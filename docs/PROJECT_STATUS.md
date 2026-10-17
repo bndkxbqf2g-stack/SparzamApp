@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Produktauflösung nutzt vollständige Belege
+
+- Die Prospekt-Memo-Caches in Angebote- und Prospekte-Reiter verwenden jetzt einen gemeinsamen Schlüssel aus Filiale, Artikelidentität und Validierungsbelegen.
+- Änderungen an EAN, Packungsgröße, Preis, Gültigkeit, Quelle oder Nachweis können dadurch keinen alten Auflösungstreffer wiederverwenden.
+- Die Katalogauflösung, Angebots-/Preispersistenz und Routenlogik bleiben fachlich unverändert.
+
 ## Update 17.10.2026 – Prospektkarten behalten exakte Filialidentität
 
 - Suchkarten verwenden jetzt denselben filialgenauen Schlüssel wie das Prospekt-Grid.
