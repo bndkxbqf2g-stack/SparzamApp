@@ -807,7 +807,7 @@ class _PriceDataQualityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final stores = quality.currentByStore.entries.toList()
+    final storeLocations = quality.currentByStoreLocation.entries.toList()
       ..sort((a, b) {
         final byCount = b.value.compareTo(a.value);
         return byCount != 0 ? byCount : a.key.compareTo(b.key);
@@ -864,6 +864,48 @@ class _PriceDataQualityCard extends StatelessWidget {
                     avatar: const Icon(Icons.public_outlined, size: 16),
                     label: Text('Open Prices ${quality.currentOpenPrices}'),
                   ),
+                if (quality.futureEvidence > 0)
+                  Chip(
+                    avatar: const Icon(Icons.schedule_outlined, size: 16),
+                    label: Text(
+                      '${quality.futureEvidence} zukünftig',
+                    ),
+                  ),
+                if (quality.staleEvidence > 0)
+                  Chip(
+                    avatar: const Icon(Icons.history, size: 16),
+                    label: Text(
+                      '${quality.staleEvidence} veraltet',
+                    ),
+                  ),
+                if (quality.identityUncertainEvidence > 0)
+                  Chip(
+                    avatar: const Icon(Icons.help_outline, size: 16),
+                    label: Text(
+                      '${quality.identityUncertainEvidence} Identität unklar',
+                    ),
+                  ),
+                if (quality.incomparableEvidence > 0)
+                  Chip(
+                    avatar: const Icon(Icons.info_outline, size: 16),
+                    label: Text(
+                      '${quality.incomparableEvidence} Mengenbasis fehlt',
+                    ),
+                  ),
+                if (quality.invalidAmountEvidence > 0)
+                  Chip(
+                    avatar: const Icon(Icons.price_check_outlined, size: 16),
+                    label: Text(
+                      '${quality.invalidAmountEvidence} ungültiger Betrag',
+                    ),
+                  ),
+                if (quality.lowConfidenceEvidence > 0)
+                  Chip(
+                    avatar: const Icon(Icons.warning_amber_outlined, size: 16),
+                    label: Text(
+                      '${quality.lowConfidenceEvidence} unsichere Belege',
+                    ),
+                  ),
                 if (quality.notRouteReady > 0)
                   Chip(
                     avatar: const Icon(Icons.schedule_outlined, size: 16),
@@ -880,21 +922,21 @@ class _PriceDataQualityCard extends StatelessWidget {
                   ),
               ],
             ),
-            if (stores.isNotEmpty) ...[
+            if (storeLocations.isNotEmpty) ...[
               const SizedBox(height: 8),
               Text(
-                'Aktuell je Markt',
+                'Aktuell je Markt/Filiale',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
               ),
               const SizedBox(height: 4),
               Text(
-                stores
+                storeLocations
                     .take(6)
                     .map((entry) => '${entry.key}: ${entry.value}')
                     .join(' · '),
-                maxLines: 2,
+                maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
             ],

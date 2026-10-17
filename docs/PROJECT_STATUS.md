@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Preisqualitätslücken nach Ursache und Filiale
+
+Der Preise-Reiter zeigt bei nicht routenfähigen Marktpreisbelegen jetzt den
+primären Grund (zukünftig, veraltet, Identität, Mengenbasis, Betrag oder
+Vertrauensstufe) separat. Aktuelle Belege werden zusätzlich nach belegter
+Filiale gruppiert; ein fehlender Filialnachweis bleibt als Händlerzeile
+sichtbar. Die zentrale Route- und Preiszulassung bleibt unverändert.
+
 ## Update 17.10.2026 – Unklassifizierte Prospektpreise im Preise-Reiter sichtbar
 
 Der Preise-Reiter kennzeichnet Prospekt-MarketPrices ohne explizite Preisrolle jetzt

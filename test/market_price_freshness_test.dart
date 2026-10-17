@@ -332,4 +332,81 @@ void main() {
     expect(quality.unclassifiedProspectEvidence, 1);
   });
 
+  test('Datenqualität erklärt Frische, Identität und Vergleichbarkeit', () {
+    final prices = [
+      MarketPrice(
+        productId: 'current',
+        storeName: 'Lidl',
+        price: 1.19,
+        updatedAt: now,
+        source: MarketPriceSource.openPrices,
+        sourceLocationId: 'LIDL-THUENGERSHEIM',
+      ),
+      MarketPrice(
+        productId: 'future',
+        storeName: 'Lidl',
+        price: 1.29,
+        updatedAt: DateTime(2026, 10, 18),
+        source: MarketPriceSource.receipt,
+      ),
+      MarketPrice(
+        productId: 'stale',
+        storeName: 'Lidl',
+        price: 1.39,
+        updatedAt: DateTime(2026, 7, 1),
+        source: MarketPriceSource.openPrices,
+      ),
+      MarketPrice(
+        productId: 'uncertain',
+        storeName: 'Lidl',
+        price: 1.49,
+        updatedAt: now,
+        source: MarketPriceSource.openPrices,
+        identityConfidence: 0.5,
+      ),
+      MarketPrice(
+        productId: 'incomparable',
+        storeName: 'Lidl',
+        price: 1.59,
+        updatedAt: now,
+        source: MarketPriceSource.openPrices,
+        quantity: 1000,
+      ),
+      MarketPrice(
+        productId: 'invalid',
+        storeName: 'Lidl',
+        price: 0,
+        updatedAt: now,
+        source: MarketPriceSource.receipt,
+      ),
+      MarketPrice(
+        productId: 'low-confidence',
+        storeName: 'Lidl',
+        price: 1.79,
+        updatedAt: now,
+        source: MarketPriceSource.manual,
+        evidenceConfidence: EvidenceConfidence.uncertain,
+      ),
+    ];
+
+    final quality = calculatePriceDataQuality(
+      prices,
+      openPricesMaxAgeDays: 60,
+      now: now,
+    );
+
+    expect(quality.current, 1);
+    expect(quality.notRouteReady, 6);
+    expect(quality.futureEvidence, 1);
+    expect(quality.staleEvidence, 1);
+    expect(quality.identityUncertainEvidence, 1);
+    expect(quality.incomparableEvidence, 1);
+    expect(quality.invalidAmountEvidence, 1);
+    expect(quality.lowConfidenceEvidence, 1);
+    expect(
+      quality.currentByStoreLocation['Lidl · LIDL-THUENGERSHEIM'],
+      1,
+    );
+  });
+
 }

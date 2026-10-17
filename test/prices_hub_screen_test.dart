@@ -925,4 +925,77 @@ void main() {
     );
   });
 
+  testWidgets('erklärt Preisdatenlücken und exakte Filiale', (tester) async {
+    final now = DateTime(2026, 10, 17);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PricesHubScreen(
+            onOpenCatalog: () {},
+            onOpenSettings: () {},
+            summary: 'Preisqualität',
+            marketPrices: [
+              MarketPrice(
+                productId: 'current',
+                storeName: 'Lidl',
+                price: 1.19,
+                updatedAt: now,
+                source: MarketPriceSource.manual,
+                sourceLocationId: 'LIDL-THUENGERSHEIM',
+              ),
+              MarketPrice(
+                productId: 'future',
+                storeName: 'Lidl',
+                price: 1.29,
+                updatedAt: DateTime(2026, 10, 18),
+                source: MarketPriceSource.receipt,
+              ),
+              MarketPrice(
+                productId: 'stale',
+                storeName: 'Lidl',
+                price: 1.39,
+                updatedAt: DateTime(2026, 8, 1),
+                source: MarketPriceSource.openPrices,
+              ),
+              MarketPrice(
+                productId: 'uncertain',
+                storeName: 'Lidl',
+                price: 1.49,
+                updatedAt: now,
+                source: MarketPriceSource.openPrices,
+                identityConfidence: 0.5,
+              ),
+              MarketPrice(
+                productId: 'incomparable',
+                storeName: 'Lidl',
+                price: 1.59,
+                updatedAt: now,
+                source: MarketPriceSource.openPrices,
+                quantity: 1000,
+              ),
+              MarketPrice(
+                productId: 'low-confidence',
+                storeName: 'Lidl',
+                price: 1.79,
+                updatedAt: now,
+                source: MarketPriceSource.manual,
+                evidenceConfidence: EvidenceConfidence.uncertain,
+              ),
+            ],
+            now: now,
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('1 von 6 Belegen sind aktuell und für die Routenplanung zugelassen.'), findsOneWidget);
+    expect(find.text('1 zukünftig'), findsOneWidget);
+    expect(find.text('1 veraltet'), findsOneWidget);
+    expect(find.text('1 Identität unklar'), findsOneWidget);
+    expect(find.text('1 Mengenbasis fehlt'), findsOneWidget);
+    expect(find.text('1 unsichere Belege'), findsOneWidget);
+    expect(find.text('Aktuell je Markt/Filiale'), findsOneWidget);
+    expect(find.textContaining('Lidl · LIDL-THUENGERSHEIM: 1'), findsOneWidget);
+  });
+
 }

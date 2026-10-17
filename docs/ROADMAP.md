@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Preisqualitätslücken und Filialabdeckung
+
+- [x] Nicht routenfähige Preisbelege im Preise-Reiter nach einem primären Grund ausweisen.
+- [x] Aktuelle Belege zusätzlich anhand der belegten Filial-ID gruppieren.
+- [x] Regressionen für Frische, Identität, Mengenbasis, Vertrauensstufe und Filialdarstellung ergänzen.
+
 ## Update 17.10.2026 – Atomarer Preis-Snapshot für Planung
 
 - [x] Beobachtungssnapshot aus Einzelpreis, Batch und Open Prices im Coordinator zurückgeben.

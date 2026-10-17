@@ -1,3 +1,14 @@
+## D220 – Preisqualitätslücken bleiben einzeln nachvollziehbar
+
+Die Preisübersicht zählt nicht routenfähige Marktpreisbelege weiterhin getrennt
+von aktueller Abdeckung. Für die Anzeige wird pro Beleg genau ein primärer
+Grund gewählt: ungültiger Betrag, Zukunftsdatum, unsichere Identität,
+fehlende Vergleichsbasis, unsichere Evidenz oder abgelaufene Quelle.
+Prospekt-Angebote und unklassifizierte Prospektpreise behalten ihre eigenen
+Kategorien. Aktuelle Abdeckung kann zusätzlich die belegte Branch-ID anzeigen;
+die Gruppierung erzeugt keinen neuen Preis- oder Filialnachweis und verändert
+keine Route-Eligibility.
+
 ## D219 – Preisplanung setzt alle Preisprojektionen gemeinsam
 
 Ein Preis-Mutationsergebnis enthält neben aktuellem Marktpreis und Verlauf auch den vollständigen lokalen Beobachtungsstand. Die Shell setzt diese drei Eingänge in einem UI-Snapshot. So bleibt die Route-Projektion deterministisch; Preisrangfolge, Identitätsprüfung, Quellen und die Trennung von Aktionspreisen ändern sich nicht.
