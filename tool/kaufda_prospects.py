@@ -401,6 +401,40 @@ def extract_next_data(html_text: str) -> dict:
     return payload
 
 
+_PUBLISHER_KEYS = (
+    "publisherName",
+    "publisher",
+    "retailerName",
+    "retailer",
+    "merchantName",
+    "merchant",
+)
+
+_VALIDITY_KEYS = (
+    "validFrom",
+    "validUntil",
+    "validity",
+    "validityPeriod",
+    "dateRange",
+    "period",
+    "offerPeriod",
+)
+
+
+def _looks_like_offer_item(value: object) -> bool:
+    if not isinstance(value, Mapping):
+        return False
+    return any(value.get(key) is not None for key in (*_PUBLISHER_KEYS, *_VALIDITY_KEYS))
+
+
+def _publisher_text(raw: Mapping[str, object]) -> str:
+    for key in _PUBLISHER_KEYS:
+        value = _source_text(raw.get(key))
+        if value:
+            return value
+    return ""
+
+
 def _items_from_payload(payload: Mapping[str, object]) -> list[dict]:
     current: object = payload
     for key in (
@@ -434,8 +468,7 @@ def _items_from_payload(payload: Mapping[str, object]) -> list[dict]:
                     and any(
                         isinstance(item, Mapping)
                         and (
-                            item.get("publisherName") is not None
-                            or item.get("validFrom") is not None
+                            _looks_like_offer_item(item)
                         )
                         for item in child
                     )
@@ -551,6 +584,12 @@ def _validity_dates(raw: Mapping[str, object]) -> tuple[date | None, date | None
 
 
 def _parse_price(value: object) -> float | None:
+    if isinstance(value, Mapping):
+        for key in ("amount", "value", "price", "formatted", "text"):
+            parsed = _parse_price(value.get(key))
+            if parsed is not None:
+                return parsed
+        return None
     if isinstance(value, (int, float)) and not isinstance(value, bool):
         number = float(value)
         return number if number > 0 else None
@@ -1135,7 +1174,7 @@ def parse_kaufda_html(
     regional_only_counts: dict[str, int] = {}
 
     for raw in raw_items:
-        publisher = canonical_publisher(raw.get("publisherName"))
+        publisher = canonical_publisher(_publisher_text(raw))
         if publisher is None:
             skipped["unknown_publisher"] += 1
             continue
@@ -1143,7 +1182,12 @@ def parse_kaufda_html(
         label = _label(raw)
         prices = raw.get("prices")
         prices = prices if isinstance(prices, Mapping) else {}
-        offer_price = _parse_price(prices.get("mainPrice") or raw.get("mainPrice"))
+        offer_price = _parse_price(
+            prices.get("mainPrice")
+            or raw.get("mainPrice")
+            or raw.get("offerPrice")
+            or raw.get("salePrice")
+        )
         valid_from, valid_until = _validity_dates(raw)
         if not label or offer_price is None or valid_from is None or valid_until is None:
             skipped["invalid"] += 1
@@ -1155,7 +1199,12 @@ def parse_kaufda_html(
             skipped["non_food"] += 1
             continue
 
-        item_id = clean(raw.get("id"))
+        item_id = clean(
+            raw.get("id")
+            or raw.get("offerId")
+            or raw.get("contentId")
+            or raw.get("itemId")
+        )
         if not item_id:
             item_id = hashlib.sha256(
                 f"{publisher}|{label}|{offer_price}|{valid_from}|{valid_until}".encode(
@@ -1249,7 +1298,7 @@ def parse_kaufda_html(
             regular_price = secondary_price
         if regular_price is not None:
             record["originalPrice"] = round(regular_price, 2)
-        publisher_id = clean(raw.get("publisherId"))
+        publisher_id = clean(raw.get("publisherId") or raw.get("publisherID"))
         if publisher_id:
             record["publisherId"] = publisher_id
         if image:
@@ -1346,7 +1395,7 @@ def parse_kaufda_html(
             {
                 publisher
                 for publisher in (
-                    canonical_publisher(item.get("publisherName"))
+                    canonical_publisher(_publisher_text(item))
                     for item in raw_items
                 )
                 if publisher
