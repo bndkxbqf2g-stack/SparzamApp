@@ -1,3 +1,10 @@
+## Update 17.10.2026 – Coverbild-Kandidaten
+
+`offers_cover_section_test.dart` prüft, dass die explizite Thumbnail-URL
+bevorzugt bleibt und eine andere validierte Prospektseite als Ersatzkandidat
+am adaptiven Bild anliegt. Der Test erzeugt keine Netzwerkanfrage und verändert
+keine Preis- oder Filialdaten.
+
 ## Update 17.10.2026 – Cache-Grenze für große Angebote-Feeds
 
 offers_screen_test.dart prüft den 180-Pixel-Vorlauf für kleine Feeds und die
