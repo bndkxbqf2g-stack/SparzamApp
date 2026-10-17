@@ -719,6 +719,35 @@ void main() {
     },
   );
 
+  testWidgets('begrenzt den äußeren Cache bei großen Prospektfeeds', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: OffersScreen(
+          now: DateTime(2026, 10, 12),
+          catalogProducts: const <Product>[],
+          prospectRecords: [
+            for (var index = 0; index < 48; index++)
+              OfferImportRecord(
+                sourceId: 'heavy-cache-$index',
+                productLabel: 'Milch $index 1 l',
+                storeName: 'Lidl',
+                offerPrice: 0.99,
+                validUntil: DateTime(2026, 10, 18),
+                proofRef: 'https://example.test/heavy-cache/$index',
+              ),
+          ],
+        ),
+      ),
+    );
+
+    final scroll = tester.widget<ListView>(
+      find.byKey(const ValueKey('offers-scroll')),
+    );
+    expect(scroll.scrollCacheExtent, const ScrollCacheExtent.pixels(0));
+  });
+
 }
 
 
