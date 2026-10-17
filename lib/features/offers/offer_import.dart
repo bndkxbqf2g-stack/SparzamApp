@@ -118,18 +118,9 @@ String prospectOfferRecordKey(OfferImportRecord record) {
   final sourceId = record.sourceId.trim();
   if (sourceId.isNotEmpty) {
     final branchContext = _prospectOfferBranchContext(record);
-    // Some leaflet providers scope sourceId to a page or brochure rather
-    // than to one article. Keep the product evidence in the widget key so
-    // two rows from the same branch cannot collide while a sliver recycles
-    // cards during a fast scroll.
     return [
       record.storeName.trim(),
       sourceId,
-      record.productLabel.trim(),
-      record.ean?.trim() ?? '',
-      record.packageSize?.trim() ?? '',
-      record.brochureId?.trim() ?? '',
-      record.brochurePage?.toString() ?? '',
       if (branchContext.isNotEmpty) branchContext,
     ].join('|');
   }
@@ -248,207 +239,21 @@ bool hasTrustedOfferEvidence(Offer offer) {
   final confidence = offer.evidenceConfidence;
   if (confidence == EvidenceConfidence.probable ||
       confidence == EvidenceConfidence.uncertain) {
-    return false;
-  }
-  if (offer.source.trim().toLowerCase() == 'manual') return true;
-  return hasTrustedOfferProofReference(offer.proofRef);
-}
-
-/// KaufDA search results are publisher-level evidence unless the adapter
-/// supplied an explicit branch assertion. This also protects legacy persisted
-/// Offers created before `regionalOnly` was enforced at import time.
-bool hasExactOfferBranch(Offer offer) {
-  if (offer.sourceAdapter?.trim().toLowerCase() != 'kaufda') return true;
-  return offer.locationId?.trim().isNotEmpty == true;
-}
-
-/// Repeat the branch assertion at the record boundary so a changed or legacy
-/// `regionalOnly: false` flag cannot promote a publisher-level KaufDA result.
-bool hasExactOfferRecordBranch(OfferImportRecord record) {
-  if (record.sourceAdapter?.trim().toLowerCase() != 'kaufda') return true;
-  return record.branchId?.trim().isNotEmpty == true;
-}
-
-class OfferImportResolution {
-  const OfferImportResolution({
-    required this.record,
-    this.product,
-    this.offer,
-    this.reason,
-  });
-
-  final OfferImportRecord record;
-  final Product? product;
-  final Offer? offer;
-  final String? reason;
-
-  bool get isResolved => product != null && offer != null;
-}
-
-OfferImportResolution resolveOfferImport(
+/// Keeps widget keys stable for the existing single-row contract while
+/// disambiguating providers that reuse one source ID for several articles in
+/// the same branch. The caller supplies the current sibling snapshot so a
+/// unique source ID keeps its compact legacy key.
+String prospectOfferWidgetKey(
   OfferImportRecord record,
-  Iterable<Product> catalogProducts,
+  Iterable<OfferImportRecord> siblings,
 ) {
-  // A publisher-level KaufDA result is useful for discovery, but without an
-  // explicit branch assertion it must never become an Offer. Keeping this
-  // gate here closes direct callers that do not pass through the prospect
-  // tile builder's regional filter.
-  if (record.regionalOnly || !hasExactOfferRecordBranch(record)) {
-    return OfferImportResolution(record: record, reason: 'regional_only');
-  }
-  if (!_validPrices(record)) {
-    return OfferImportResolution(record: record, reason: 'invalid_price');
-  }
-  if (record.validFrom != null && record.validUntil.isBefore(record.validFrom!)) {
-    return OfferImportResolution(record: record, reason: 'invalid_validity');
-  }
-
-  final normalizedLabel = normalizeIdentityText(record.productLabel);
-  final products = catalogProducts.toList(growable: false);
-  final sourceEanText = record.ean?.trim() ?? '';
-  final sourceEan = sourceEanText.isEmpty
-      ? null
-      : normalizeBarcode(sourceEanText);
-  if (sourceEanText.isNotEmpty && sourceEan == null) {
-    return OfferImportResolution(record: record, reason: 'invalid_ean');
-  }
-
-  final Product? product;
-  if (sourceEan != null) {
-    // A source-provided GTIN is stronger than a display label, but only one
-    // catalog product may carry it. Conflicts and missing codes stay reviewable.
-    final eanMatches = products
-        .where(
-          (candidate) => normalizeBarcode(candidate.ean ?? '') == sourceEan,
-        )
-        .toList(growable: false);
-    if (eanMatches.length != 1) {
-      return OfferImportResolution(
-        record: record,
-        reason: eanMatches.isEmpty ? 'ean_mismatch' : 'ambiguous_identity',
-      );
-    }
-    product = eanMatches.single;
-  } else {
-    // Only the canonical product name may short-circuit identity resolution.
-    // Generic aliases such as "Milch" can intentionally belong to multiple
-    // variants and must therefore remain ambiguous.
-    final exact = products
-        .where((product) =>
-            normalizeIdentityText(product.name) == normalizedLabel)
-        .toList();
-
-    final strictExact = exactProspectProduct(
-      record.productLabel,
-      products,
-      packageSize: record.packageSize,
-    );
-    if (strictExact != null) {
-      product = strictExact;
-    } else if (exact.length == 1) {
-      product = exact.single;
-    } else if (exact.length > 1) {
-      return OfferImportResolution(record: record, reason: 'ambiguous_identity');
-    } else {
-      final request = identifyProduct(record.productLabel);
-      if (!request.isKnown) {
-        return OfferImportResolution(record: record, reason: 'unknown_identity');
-      }
-      final compatible = products.where((candidate) {
-        final identities = [candidate.name, ...candidate.aliases]
-            .map(identifyProduct)
-            .where((identity) => identity.isKnown);
-        return identities.any(
-          (identity) => compatibleProductIdentity(request, identity),
-        );
-      }).toList();
-      if (compatible.length != 1) {
-        return OfferImportResolution(
-          record: record,
-          reason: compatible.isEmpty ? 'unknown_identity' : 'ambiguous_identity',
-        );
-      }
-      product = compatible.single;
-    }
-  }
-
-  if (!_matchesRecordPackage(record, product)) {
-    return OfferImportResolution(record: record, reason: 'package_mismatch');
-  }
-
-  if (record.source.trim().toLowerCase() != 'manual' &&
-      !hasTrustedOfferProofReference(record.proofRef)) {
-    return OfferImportResolution(record: record, reason: 'missing_proof');
-  }
-
-  final package = _offerPackage(record, product);
-  final packagePrice = package == null
-      ? null
-      : normalizedUnitPrice(
-          price: record.offerPrice,
-          amount: package.amount,
-          unit: package.unit,
-        );
-
-  final canonicalSource =
-      canonicalProspectSourceToken(record.source) ?? record.source;
-  final offer = Offer(
-    id: 'import|$canonicalSource|${record.sourceId}|${product.id}',
-    productId: product.id,
-    storeName: record.storeName,
-    originalPrice: record.originalPrice ?? record.offerPrice,
-    originalPriceVerified: record.originalPrice != null,
-    offerPrice: record.offerPrice,
-    validFrom: record.validFrom,
-    validUntil: record.validUntil,
-    source: canonicalSource,
-    sourceAdapter: record.sourceAdapter,
-    capturedAt: record.capturedAt,
-    proofRef: record.proofRef,
-    imageUrl: record.imageUrl,
-    packageAmount: package?.amount,
-    packageUnit: package?.unit,
-    unitPrice: packagePrice,
-    locationId: record.branchId,
-    region: record.location,
-    address: record.address,
+  final base = prospectOfferRecordKey(record);
+  final collides = siblings.any(
+    (candidate) =>
+        !identical(candidate, record) &&
+        prospectOfferRecordKey(candidate) == base,
   );
-  return OfferImportResolution(record: record, product: product, offer: offer);
-}
-
-bool _validPrices(OfferImportRecord record) {
-  final regular = record.originalPrice;
-  return record.offerPrice.isFinite &&
-      record.offerPrice > 0 &&
-      (regular == null ||
-          (regular.isFinite && regular > 0 && record.offerPrice <= regular));
-}
-
-bool _matchesRecordPackage(OfferImportRecord record, Product product) {
-  final packageText = record.packageSize?.trim().isNotEmpty == true
-      ? record.packageSize!.trim()
-      : record.productLabel;
-  if (!_containsPackageEvidence(packageText)) return true;
-
-  final observed = prospectPackage(packageText);
-  if (observed == null) return false;
-  final expected = product.packageAmount != null && product.packageUnit != null
-      ? (amount: product.packageAmount!, unit: product.packageUnit!)
-      : prospectPackage(product.unit);
-  return expected != null && sameProspectPackage(observed, expected);
-}
-
-bool _containsPackageEvidence(String value) => RegExp(
-      r'(?:\d+(?:[,.]\d+)?\s*(?:kg|g|mg|ml|cl|l|stk\.?|st\.?|stück|stueck)\b|'
-      r'\d+\s*er\s*[- ]?(?:schale|pack(?:ung)?|becher|dose|flasche)\b)',
-      caseSensitive: false,
-    ).hasMatch(value);
-
-ProspectPackage? _offerPackage(OfferImportRecord record, Product product) {
-  final fromRecord = prospectPackage(record.packageSize ?? record.productLabel);
-  if (fromRecord != null) return fromRecord;
-  if (product.packageAmount != null && product.packageUnit != null) {
-    return (amount: product.packageAmount!, unit: product.packageUnit!);
-  }
-  return prospectPackage(product.unit);
+  return collides
+      ? '\$base|\$\{prospectOfferResolutionKey(record)\}'
+      : base;
 }
