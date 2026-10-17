@@ -533,3 +533,8 @@ Seiten laden“ verwendet und danach die letzte Seite erreichen kann.
 Die Widgetregression 'sortiert aktuelle Preis-Hinweise nach dem günstigsten Wert'
 setzt die Einkaufsliste absichtlich in teurer Reihenfolge und prüft, dass die
 kompakte Hinweisleiste den günstigeren aktuellen Preis zuerst zeigt.
+
+
+## Routenpreis-Resolver: Händler-Schreibvarianten
+
+Die Regressionen in `test/route_price_resolver_test.dart` prüfen getrennt, dass eine Angebotszeile mit `ALDI SUED` an `ALDI Süd` gefunden wird und ein Marktpreis mit `LIDL` an `Lidl` gefunden wird. Beide Tests führen weiterhin eine exakte Branch-ID-Prüfung aus.
