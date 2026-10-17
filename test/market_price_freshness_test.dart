@@ -295,4 +295,26 @@ void main() {
     expect(usable.single.kind, PriceObservationKind.regular);
   });
 
+  test('unknown prospect evidence is not route-ready', () {
+    final unknown = MarketPrice(
+      productId: 'milk',
+      storeName: 'Lidl',
+      price: 1.29,
+      updatedAt: now,
+      source: MarketPriceSource.prospect,
+    );
+
+    expect(unknown.isProspectRegularBasis, isFalse);
+    // Freshness alone does not promote an unclassified prospect amount.
+    expect(unknown.isUsable(now: now, openPricesMaxAgeDays: 60), isTrue);
+    expect(
+      usableMarketPrices(
+        [unknown],
+        openPricesMaxAgeDays: 60,
+        now: now,
+      ),
+      isEmpty,
+    );
+  });
+
 }
