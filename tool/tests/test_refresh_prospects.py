@@ -778,8 +778,15 @@ class ProspectParserTest(unittest.TestCase):
             source for source in payload["sources"] if source["storeName"] == "Kaufland"
         )
         prospect = kaufland["prospects"][0]
-        self.assertEqual(prospect["offerStartDate"], "2026-10-12")
-        self.assertEqual(prospect["offerEndDate"], "2026-10-17")
+        reference_day = refresh.datetime.fromisoformat(
+            payload["generatedAt"].replace("Z", "+00:00")
+        ).date()
+        offer_start = refresh.date.fromisoformat(prospect["offerStartDate"])
+        offer_end = refresh.date.fromisoformat(prospect["offerEndDate"])
+        # The versioned asset is refreshed independently of the test run. Keep
+        # the invariant deterministic without pinning one live campaign window.
+        self.assertLessEqual(offer_start, reference_day)
+        self.assertGreaterEqual(offer_end, reference_day)
         self.assertEqual(prospect["pageSamples"][0]["number"], 1)
         self.assertEqual(prospect["branchId"], "DE5103")
 
