@@ -67,7 +67,7 @@ class OfferEvidence extends StatelessWidget {
                         .colorScheme
                         .surfaceContainerHighest,
                     child: const Text(
-                      'Prospektbild\\nnicht verfügbar',
+                      'Prospektbild\nnicht verfügbar',
                       textAlign: TextAlign.center,
                     ),
                   ),
