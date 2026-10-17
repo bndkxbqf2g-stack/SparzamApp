@@ -90,7 +90,8 @@ class OpenPricesSyncService {
       ownsDiscovery = true;
     }
 
-    final candidatesById = <String, Product>{    final discoveredIds = <String>{};
+    final candidatesById = <String, Product>{};
+    final discoveredIds = <String>{};
     var cancelledDuringDiscovery = false;
     final discoveryIsLive = discovery != null && customDiscoverer == null;
     final discoveryBatchSize = openPricesNetworkBatchSize(
