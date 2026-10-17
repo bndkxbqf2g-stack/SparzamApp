@@ -317,12 +317,30 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
           now: screen.now,
         );
     final reference = screen.now ?? DateTime.now();
+    final referenceDay = DateTime(
+      reference.year,
+      reference.month,
+      reference.day,
+    );
     final offerOnlyProspectCount = screen.offers.where((offer) {
       if (!offer.id.startsWith('import|') || offer.originalPriceVerified) {
         return false;
       }
-      if (offer.validFrom?.isAfter(reference) == true) return false;
-      return !offer.validUntil.isBefore(reference);
+      final validFrom = offer.validFrom;
+      if (validFrom != null) {
+        final validFromDay = DateTime(
+          validFrom.year,
+          validFrom.month,
+          validFrom.day,
+        );
+        if (validFromDay.isAfter(referenceDay)) return false;
+      }
+      final validUntilDay = DateTime(
+        offer.validUntil.year,
+        offer.validUntil.month,
+        offer.validUntil.day,
+      );
+      return !validUntilDay.isBefore(referenceDay);
     }).length;
 
     return ListView(
