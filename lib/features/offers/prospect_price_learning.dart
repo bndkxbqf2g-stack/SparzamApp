@@ -143,7 +143,7 @@ List<PriceObservation> prospectPriceObservations({
     if (source == null || !isEligibleProspectPriceRecord(record)) {
       continue;
     }
-    final observationAt = observationAt;
+    final observationAt = record.capturedAt ?? observedAt;
     if (observationAt == null) continue;
 
     final normalizedLabel = normalizeIdentityText(record.productLabel);
