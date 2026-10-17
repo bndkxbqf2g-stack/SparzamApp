@@ -1,3 +1,13 @@
+## D216 – Preis-Matrix folgt Aktualität vor Quellenpriorität
+
+Die Marktpreis-Auswahl in Planung und Route bewertet zuerst den
+qualitätsbereinigten Betrag, dann den Beobachtungszeitpunkt und erst bei
+Gleichstand die Quellenpriorität. Die Preis-Matrix und der hervorgehobene
+Einkaufslistenpreis verwenden denselben Comparator, damit UI und Route bei
+gleichwertiger Evidenz nicht unterschiedliche Beobachtungen bevorzugen.
+Angebote behalten ihre eigene Preis-/Gültigkeitslogik; diese Entscheidung
+ändert weder Preisbelege noch externe Quellen.
+
 ## D215 – Preise-Rechner-Cache folgt dem Eingangssnapshot
 
 Der Preise-Reiter darf seinen abgeleiteten Quote-Snapshot nur solange

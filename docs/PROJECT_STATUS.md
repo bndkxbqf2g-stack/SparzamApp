@@ -1,3 +1,12 @@
+## Update 17.10.2026 – Preis-Matrix folgt der gemeinsamen Frischeauswahl
+
+Die Preis-Matrix und der hervorgehobene Einkaufslistenpreis verwenden jetzt
+dieselbe Reihenfolge wie Planung und Route: qualitätsbereinigter Betrag,
+Aktualität und erst danach Quellenpriorität. Gleich bewertete aktuelle
+Nicht-Angebotspreise zeigen dadurch den neueren Beleg; Angebots-, Historien-,
+Filial- und Mengenregeln bleiben unverändert. Es gibt keine Änderung am
+Datenmodell oder an externen Quellen.
+
 ## Update 17.10.2026 – Prospekt-/Angebotsstatus ohne wiederholte Scans
 
 Die Prospektansicht übernimmt den regulären Preiszähler aus ihrem bestehenden

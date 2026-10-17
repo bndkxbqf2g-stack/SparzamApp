@@ -1,3 +1,10 @@
+## Update 17.10.2026 – Preisqualität in Matrix und Highlight vereinheitlicht
+
+- [x] Gleich bewertete aktuelle Nicht-Angebotspreise zuerst nach Beobachtungsalter auswählen.
+- [x] Quellenpriorität nur nach Qualität und Aktualität als Tie-Breaker verwenden.
+- [x] Hervorgehobenen Einkaufslistenpreis und Marktzeile über denselben Comparator führen.
+- [x] Regression für Matrix und hervorgehobenen Preis ergänzen.
+
 ## Update 17.10.2026 – Prospekt-/Angebotsstatus beschleunigt
 
 - [x] Regulären Preiszähler im bestehenden Prospekt-Derived-Snapshot halten.
