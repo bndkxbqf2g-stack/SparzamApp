@@ -1267,6 +1267,49 @@ void main() {
     );
   });
 
+  test('joins retailer spelling variants for source metadata and page images', () {
+    final result = parseProspectFeed(r'''
+{
+  "generatedAt": "2026-10-16T04:15:00Z",
+  "sources": [
+    {
+      "storeName": "ALDI Süd",
+      "status": "ok",
+      "branchId": "aldi-branch-1",
+      "location": "Würzburg",
+      "prospects": [
+        {
+          "title": "ALDI Wochenprospekt",
+          "offerStartDate": "2026-10-12",
+          "offerEndDate": "2026-10-17",
+          "pageSamples": [
+            {"number": 1, "image": "https://example.test/aldi-page.jpg"}
+          ]
+        }
+      ]
+    }
+  ],
+  "offers": [
+    {
+      "sourceId": "variant-store-label",
+      "productLabel": "Butter 250 g",
+      "storeName": "ALDI SUED",
+      "offerPrice": 1.49,
+      "validUntil": "2026-10-17",
+      "brochurePage": 1,
+      "source": "retailerWebsite",
+      "proofRef": "https://example.test/aldi/butter"
+    }
+  ]
+}
+''');
+
+    final record = result.records.single;
+    expect(record.branchId, 'aldi-branch-1');
+    expect(record.location, 'Würzburg');
+    expect(record.imageUrl, 'https://example.test/aldi-page.jpg');
+    expect(record.imageKind, ProspectImageKind.prospectPage);
+  });
   test('distinguishes product images from prospect-page evidence', () {
     final result = parseProspectFeed(r'''
 {
