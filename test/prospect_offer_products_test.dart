@@ -107,7 +107,6 @@ void main() {
       containsAll(['lidl-a', 'lidl-b']),
     );
   });
-
   test('ambiguous verified offer gets an explicit-label review product', () {
     final record = OfferImportRecord(
       sourceId: 'ambiguous-1',
