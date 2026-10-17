@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Kleine Prospektkacheln dekodieren maßvoll
+
+Kompakte Angebotskacheln werden mit 192×192 statt 360×360 Pixeln dekodiert,
+weil sie im Listenlayout nur 88 Pixel groß sind. Die größere Auflösung bleibt
+für die ausführliche Kachel erhalten; Quellen-, Preis-, Gültigkeits- und
+Listenlogik ändern sich nicht.
 ## Update 17.10.2026 – Angebotsbilder bleiben beim Scrollen begrenzt
 
 Angebotskarten und ihre Evidenz-Miniaturen dekodieren externe Bilder jetzt mit
