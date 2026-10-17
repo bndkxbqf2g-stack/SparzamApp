@@ -300,22 +300,29 @@ String? _prospectNestedBranchValue(
   Iterable<String> keys, {
   required bool allowGenericId,
 }) {
-  final containers = <String>[
-    if (allowGenericId) ...const ['branch', 'branchInfo', 'storeBranch'],
-    ...const ['storeLocation', 'locationInfo', 'store', 'location'],
-  ];
-  for (final containerKey in containers) {
-    final nested = value[containerKey];
-    if (nested is! Map) continue;
-    final candidateKeys = allowGenericId
-        ? keys
-        : keys.where((key) => !const ['id', 'code'].contains(key));
-    for (final key in candidateKeys) {
-      final candidate = _prospectBranchScalar(nested[key]);
-      if (candidate != null) return candidate;
+  String? readFrom(Iterable<String> containerKeys, bool includeGenericId) {
+    for (final containerKey in containerKeys) {
+      final nested = value[containerKey];
+      if (nested is! Map) continue;
+      final candidateKeys = includeGenericId
+          ? keys
+          : keys.where((key) => !const ['id', 'code'].contains(key));
+      for (final key in candidateKeys) {
+        final candidate = _prospectBranchScalar(nested[key]);
+        if (candidate != null) return candidate;
+      }
     }
+    return null;
   }
-  return null;
+
+  return readFrom(
+        const ['branch', 'branchInfo', 'storeBranch'],
+        allowGenericId,
+      ) ??
+      readFrom(
+        const ['storeLocation', 'locationInfo', 'store', 'location'],
+        false,
+      );
 }
 
 _ProspectBranchContext _prospectBranchContext(Map<String, dynamic> value) {
