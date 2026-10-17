@@ -28,7 +28,15 @@ String prospectRecordKey(OfferImportRecord record) =>
 String prospectStoreMatchKey(String value) {
   final trimmed = value.trim();
   final normalized = normalizeStoreIdentityText(trimmed);
-  return normalized.isEmpty ? trimmed.toLowerCase() : normalized;
+  if (normalized.isEmpty) return trimmed.toLowerCase();
+
+  // Public feeds alternate between literal umlauts and the common ae/oe/ue
+  // spelling. Collapse those transliterations only for metadata matching so
+  // ALDI Süd and ALDI SUED stay one retailer while branch IDs remain exact.
+  return normalized
+      .replaceAll('ae', 'a')
+      .replaceAll('oe', 'o')
+      .replaceAll('ue', 'u');
 }
 
 /// Comparison key for an exact prospect branch. A missing branch remains a
