@@ -38,4 +38,10 @@ void main() {
     expect(matchesConfiguredBranch('Lidl', 'lidl-wuerzburg'), isFalse);
     expect(matchesConfiguredBranch('Lidl', null), isTrue);
   });
+
+  test('keeps exact branches when retailer labels vary', () {
+    expect(matchesConfiguredBranch('LIDL', 'lidl_zellingen'), isTrue);
+    expect(matchesConfiguredBranch('LIDL', 'lidl_wuerzburg'), isFalse);
+    expect(matchesConfiguredBranch('ALDI SUED', 'B384'), isTrue);
+  });
 }
