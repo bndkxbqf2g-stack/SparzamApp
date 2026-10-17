@@ -1,3 +1,9 @@
+## D211 – Covergruppierung normalisiert nur die Händlerdarstellung
+
+Die Coverübersicht darf Händlerlabels für die UI-Gruppierung über den gemeinsamen
+Präsentationsschlüssel zusammenführen. Der Match-Schlüssel enthält weiterhin die
+kanonische Branch-ID; gleichnamige Filialen bleiben deshalb getrennt. Diese
+Normalisierung verändert weder Preis-, Angebots- noch Routingidentitäten.
 ## D210 – Händlerlabel nur für UI-Hinweise normalisieren
 
 Die Angebotsübersicht darf Händlerbezeichnungen aus getrennten öffentlichen

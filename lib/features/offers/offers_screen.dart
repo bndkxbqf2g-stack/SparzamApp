@@ -271,7 +271,7 @@ List<ProspectIssue> _currentProspectIssues(
         )) {
       continue;
     }
-    final key = prospectIssueKey(issue);
+    final key = prospectIssueMatchKey(issue);
     final previous = byStore[key];
     if (previous == null ||
         _prospectIssueScore(issue) > _prospectIssueScore(previous)) {
