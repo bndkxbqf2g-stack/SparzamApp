@@ -57,6 +57,24 @@ void main() {
     );
   });
 
+  test('doppelte exakte Filialen blähen die Routenkombinationen nicht auf', () {
+    final duplicateCatalog = <Store>[
+      ...catalog,
+      catalog.first,
+    ];
+    final optimizer = RouteOptimizer(
+      [ListItem(product: product)],
+      const [],
+      storeCatalog: duplicateCatalog,
+      enabledStoreNames: duplicateCatalog.map((store) => store.name).toList(),
+      maxStores: 6,
+      euroPerKm: 0,
+    );
+
+    expect(optimizer.availableStores, hasLength(6));
+    expect(optimizer.storeCombinations(), hasLength(63));
+  });
+
   test('MobilitySettings akzeptiert sechs Märkte aus dem lokalen Format', () {
     final settings = MobilitySettings.fromJson({'maxStores': 6});
     expect(settings.maxStores, 6);
