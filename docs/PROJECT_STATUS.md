@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Kategoriepfade aus Listenfeldern
+
+- Der Prospektparser übernimmt bekannte Kategoriepfade aus `categories`, `productCategories`, `categoryPath` und verschachtelten Kategorieobjekten.
+- Mehrere belegte Labels werden begrenzt und deterministisch als Kategoriepfad verbunden; die Lebensmittel-/Non-Food-Sperre nutzt denselben Nachweis.
+- Eine Fixture-Regression prüft einen Lebensmittelpfad und einen Tierbedarfsdatensatz.
+
 ## Update 17.10.2026 – Verschachtelte Prospektgültigkeit normalisieren
 
 - Der Feedparser liest bekannte Datumsbereiche aus `validity`, `validityPeriod`, `dateRange`, `period` und `offerPeriod`.
