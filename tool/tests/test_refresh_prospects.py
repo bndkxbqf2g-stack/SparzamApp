@@ -284,6 +284,94 @@ class ProspectParserTest(unittest.TestCase):
         )
         self.assertEqual(with_regular["regularPriceSource"], "originalPrice")
 
+    def test_record_preserves_valid_source_ean_and_metadata(self):
+        item = refresh.record(
+            "Lidl",
+            "Kaffee",
+            1.99,
+            refresh.date(2026, 10, 12),
+            refresh.date(2026, 10, 17),
+            "https://example.test/coffee",
+            ean="4006381333931",
+            source_package_size="500 g",
+            source_base_unit_price="3,98 €/kg",
+        )
+        self.assertEqual(item["ean"], "4006381333931")
+        self.assertEqual(item["packageSize"], "500 g")
+        self.assertEqual(item["priceByBaseUnit"], "3,98 €/kg")
+
+        invalid = refresh.record(
+            "Lidl",
+            "Kaffee 500 g",
+            1.99,
+            refresh.date(2026, 10, 12),
+            refresh.date(2026, 10, 17),
+            "https://example.test/invalid",
+            ean="1234567890123",
+        )
+        self.assertNotIn("ean", invalid)
+
+    def test_source_metadata_requires_named_fields_and_rejects_ambiguous_quantities(self):
+        raw = {
+            "identifiers": {"gtin": "4006381333931"},
+            "quantity": {"value": "500", "unit": "g"},
+            "baseUnitPrice": "3,98 €/kg",
+            "sku": "4006381333931",
+        }
+        self.assertEqual(refresh._source_ean(raw), "4006381333931")
+        self.assertEqual(refresh._source_package_size(raw), "500 g")
+        self.assertEqual(refresh._source_base_unit_price(raw), "3,98 €/kg")
+        self.assertIsNone(refresh._source_ean({"sku": "4006381333931"}))
+        self.assertIsNone(
+            refresh._source_package_size({"quantity": "160 g - 175 g"})
+        )
+
+    def test_structured_adapters_keep_explicit_ean_package_and_base_price(self):
+        aldi_payload = """
+        {
+          "meta": {"pagination": {"totalCount": 1}},
+          "data": [{
+            "brandName": "MILSANI",
+            "name": "H-Milch",
+            "ean": "4006381333931",
+            "packageSize": "1 l",
+            "price": {
+              "amountRelevant": 99,
+              "baseUnitPrice": "0,99 €/l"
+            }
+          }]
+        }
+        """
+        aldi_offers, _ = refresh.parse_aldi_api_page(
+            aldi_payload,
+            refresh.date(2026, 10, 12),
+        )
+        self.assertEqual(aldi_offers[0]["ean"], "4006381333931")
+        self.assertEqual(aldi_offers[0]["packageSize"], "1 l")
+        self.assertEqual(aldi_offers[0]["priceByBaseUnit"], "0,99 €/l")
+
+        edeka_payload = """
+        {
+          "gueltig_von": "2026-10-12",
+          "gueltig_bis": "2026-10-17",
+          "docs": [{
+            "angebotid": 77,
+            "titel": "H-Milch",
+            "preis": 0.99,
+            "gtin": "4006381333931",
+            "quantity": {"value": "1", "unit": "l"},
+            "prices": {"baseUnitPrice": "0,99 €/l"}
+          }]
+        }
+        """
+        edeka_offers, _ = refresh.parse_edeka_api(
+            edeka_payload,
+            "https://www.edeka.de/maerkte/023738/",
+        )
+        self.assertEqual(edeka_offers[0]["ean"], "4006381333931")
+        self.assertEqual(edeka_offers[0]["packageSize"], "1 l")
+        self.assertEqual(edeka_offers[0]["priceByBaseUnit"], "0,99 €/l")
+
     def test_record_uses_total_multipack_quantity(self):
         item = refresh.record(
             "PENNY",
