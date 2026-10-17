@@ -1,3 +1,13 @@
+## D221 – Fehlende Marktzeilen erhalten einen display-only Primärgrund
+
+Die Produkt×Markt-Matrix erhält für jede Zeile ohne aktuelle, vergleichbare
+Evidenz genau einen vorrangigen Grund. Die Klassifikation betrachtet nur bereits
+vorhandene Rohbelege und markiert zum Beispiel abgelaufene/future Zeiträume,
+unsichere Identität, inkompatible Packungsbasis, fehlende exakte Filiale,
+ungültige Beträge und nicht vertrauenswürdige Angebote. Sie verändert weder die
+zentrale Quote-Auflösung noch Route-Eligibility, speichert keinen neuen Preis
+und verwendet noEvidence, wenn kein klassifizierbarer Beleg vorliegt.
+
 ## D220 – Preisqualitätslücken bleiben einzeln nachvollziehbar
 
 Die Preisübersicht zählt nicht routenfähige Marktpreisbelege weiterhin getrennt
