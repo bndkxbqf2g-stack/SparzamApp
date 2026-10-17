@@ -1,3 +1,11 @@
+## Prospektpreis-Reconcile
+
+`test/prospect_regular_price_persistence_test.dart` prüft eine aktive
+Preisänderung im selben Produkt-/Filial-Slot. Der alte reguläre Beleg bleibt
+gespeichert, wird historisch markiert und der neue Beleg bleibt als einziger
+aktueller Wert routefähig. Unveränderte Wiederholungen aktualisieren dagegen
+weiterhin dieselbe Beobachtungs-ID.
+
 ## Identitätsbasierte Bonkandidaten
 
 `test/product_match_candidates_test.dart` prüft synthetisch abgekürzte

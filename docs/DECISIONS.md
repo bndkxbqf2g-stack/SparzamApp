@@ -1,3 +1,12 @@
+## D199 – Aktuelle Prospektpreise werden über Beobachtungs-IDs abgegrenzt
+
+Der Reconcile-Schlüssel beschreibt den fachlichen Produkt-/Filial-Slot,
+aber nicht die konkrete Beobachtung. Erhält ein aktiver Slot einen neuen
+Preis oder Gültigkeitszeitraum, erhält die neue Beobachtung eine neue ID und
+der vorherige Beleg wird auf `isCurrent=false` gesetzt. Nur wenn dieselbe
+Beobachtungs-ID erneut belegt wird, bleibt sie aktuell und erhält den neuen
+Erfassungszeitpunkt. So bleibt die append-only Historie erhalten, während
+die Routenprojektion keine zwei aktuellen Preiswerte für denselben Slot meldet.
 ## D198 – Bonkandidaten nutzen Identitätskompatibilität ohne Bestätigung
 
 Die Kandidatensuche darf eine bekannte, nicht generische ProductIdentity verwenden,

@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Geänderter Prospektpreis wird historisch
+
+- Der reguläre Prospektpreis-Reconcile markiert eine alte Beobachtung jetzt als historisch, sobald derselbe aktive Filial-/Produkt-Slot einen neuen Preis erhält.
+- Unveränderte Beobachtungen behalten ihre ID und ihren aktuellen Status; ein Feed ohne Treffer historisiert weiterhin den gesamten bestätigten Händler-Scope.
+- Die Preisprojektion erhält damit genau eine aktuelle reguläre Beobachtung je Slot, während der alte Wert für Verlauf und Nachvollziehbarkeit erhalten bleibt.
+- Eine Regression deckt die Änderung von 7,99 € auf 8,49 € mit synthetischen KaufDA-Daten ab.
 ## Update 17.10.2026 – Bonkandidaten verwenden Produktidentität
 
 - Bon- und Listenbezeichnungen mit bekannter, nicht generischer Produktidentität schlagen jetzt nur kompatible Katalogvarianten vor.

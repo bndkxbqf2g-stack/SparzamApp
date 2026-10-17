@@ -232,6 +232,52 @@ void main() {
     expect(second.stored.single.price, 7.99);
   });
 
+  test('marks a changed active price historical while keeping the new one current', () async {
+    final store = memoryStore();
+    final first = await persistCurrentProspectRegularPrices(
+      store: store,
+      records: [current],
+      catalogProducts: const [coffee],
+      observedAt: now,
+      now: now,
+      refreshedStores: const ['Lidl'],
+    );
+    expect(first.stored.single.isCurrent, isTrue);
+
+    final changed = OfferImportRecord(
+      sourceId: 'kaufda-coffee-price-change',
+      productLabel: current.productLabel,
+      storeName: current.storeName,
+      originalPrice: 8.49,
+      offerPrice: 5.49,
+      validFrom: current.validFrom,
+      validUntil: current.validUntil,
+      source: current.source,
+      sourceAdapter: current.sourceAdapter,
+      branchId: current.branchId,
+      proofRef: 'https://example.test/kaufda/coffee-price-change',
+      capturedAt: now.add(const Duration(hours: 6)),
+    );
+    final refreshed = await persistCurrentProspectRegularPrices(
+      store: store,
+      records: [changed],
+      catalogProducts: const [coffee],
+      observedAt: changed.capturedAt,
+      now: changed.capturedAt,
+      refreshedStores: const ['Lidl'],
+    );
+
+    expect(refreshed.stored, hasLength(2));
+    final currentRows =
+        refreshed.stored.where((entry) => entry.isCurrent).toList();
+    expect(currentRows, hasLength(1));
+    expect(currentRows.single.price, 8.49);
+    expect(
+      refreshed.stored.singleWhere((entry) => entry.price == 7.99).isCurrent,
+      isFalse,
+    );
+  });
+
   test('refreshes the observation timestamp on repeated evidence', () async {
     final store = memoryStore();
     final first = await persistCurrentProspectRegularPrices(

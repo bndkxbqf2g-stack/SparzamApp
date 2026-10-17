@@ -1,3 +1,8 @@
+## Update 17.10.2026 – Preis-Reconcile trennt aktuelle und historische Werte
+
+- [x] Preisänderungen im gleichen Produkt-/Filial-Slot historisieren den alten regulären Beleg.
+- [x] Die neue Beobachtungs-ID bleibt aktuell; unveränderte IDs werden weiterhin nur aktualisiert statt dupliziert.
+- [x] Die Regression prüft, dass die lokale Projektion nach einer Preisänderung genau einen aktuellen Wert behält.
 ## Update 17.10.2026 – Bonauflösung schlägt kompatible Identitäten vor
 
 - [x] Nicht generische Belegbezeichnungen verwenden die zentrale Produktidentität für Kandidatenvorschläge.
