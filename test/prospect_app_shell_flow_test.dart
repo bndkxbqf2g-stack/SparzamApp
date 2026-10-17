@@ -582,14 +582,14 @@ void main() {
         sourceAdapter: 'kaufda',
         branchId: 'netto-branch-1',
         proofRef: 'https://example.test/netto/reconcile',
-        capturedAt: now,
       );
       final module = _FakeProspectImportModule(
         ProspectFeedLoadResult(
           records: [record],
           refreshedStores: const ['Netto'],
           // Older than the resume threshold so the unchanged-feed branch runs.
-          generatedAt: now.subtract(const Duration(hours: 7)),
+          generatedAt: null,
+          capturedAt: now,
           prospects: const <ProspectIssue>[],
         ),
         disableCache: true,
@@ -638,6 +638,7 @@ void main() {
       expect(priceStore.observations, hasLength(1));
       expect(priceStore.observations.single.kind, PriceObservationKind.regular);
       expect(priceStore.observations.single.price, 7.99);
+      expect(priceStore.observations.single.observedAt, now);
     },
   );
 }
