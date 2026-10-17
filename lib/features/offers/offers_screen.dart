@@ -75,6 +75,8 @@ class _OffersScreenState extends State<OffersScreen> {
   List<ProspectIssue>? _currentIssuesInput;
   DateTime? _currentIssuesDay;
   List<ProspectIssue>? _currentIssuesCache;
+  List<ProspectIssue>? _currentStatusIssuesInput;
+  DateTime? _currentStatusIssuesDay;
 
   List<OfferImportRecord> _currentRecords() {
     final day = offerFilterDay(widget.now);
@@ -101,8 +103,8 @@ class _OffersScreenState extends State<OffersScreen> {
 
   List<ProspectIssue> _currentStatusIssues() {
     final day = offerFilterDay(widget.now);
-    if (identical(_currentIssuesInput, widget.prospectIssues) &&
-        _currentIssuesDay == day) {
+    if (identical(_currentStatusIssuesInput, widget.prospectIssues) &&
+        _currentStatusIssuesDay == day) {
       return _currentStatusIssuesCache ?? const <ProspectIssue>[];
     }
     final current = _currentProspectStatusIssues(
@@ -110,8 +112,8 @@ class _OffersScreenState extends State<OffersScreen> {
       now: widget.now,
     );
     _currentStatusIssuesCache = current;
-    _currentIssuesInput = widget.prospectIssues;
-    _currentIssuesDay = day;
+    _currentStatusIssuesInput = widget.prospectIssues;
+    _currentStatusIssuesDay = day;
     return current;
   }
 
