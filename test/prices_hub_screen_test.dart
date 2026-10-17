@@ -542,6 +542,7 @@ void main() {
                   source: PriceObservationSource.leaflet,
                   sourceAdapter: 'kaufda',
                   kind: PriceObservationKind.regular,
+                  regularPriceSource: 'oldPrice',
                   evidenceConfidence: EvidenceConfidence.manuallyConfirmed,
                   validFrom: DateTime(2026, 10, 13),
                   validUntil: DateTime(2026, 10, 19),
@@ -599,6 +600,7 @@ void main() {
       expect(find.text('7,99 €'), findsOneWidget);
       expect(find.textContaining('Filiale lidl-zellingen'), findsOneWidget);
       expect(find.textContaining('Erfasst 15.10.2026'), findsOneWidget);
+      expect(find.textContaining('Normalpreisfeld oldPrice'), findsOneWidget);
       expect(find.textContaining('Nachweis vorhanden'), findsOneWidget);
       expect(find.textContaining('Evidenz MANUELL BESTÄTIGT'), findsOneWidget);
       expect(find.text('4,99 €'), findsNothing);

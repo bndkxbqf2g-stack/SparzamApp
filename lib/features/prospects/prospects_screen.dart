@@ -2037,6 +2037,7 @@ class ProspectViewerScreen extends StatelessWidget {
       validUntil: entry.offer.validUntil,
       source: entry.offer.source,
       sourceAdapter: entry.offer.sourceAdapter,
+      regularPriceSource: entry.offer.regularPriceSource,
       capturedAt: entry.offer.capturedAt,
       proofRef: entry.offer.proofRef,
       imageUrl: entry.offer.imageUrl,

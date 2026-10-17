@@ -477,6 +477,9 @@ OfferImportResolution resolveOfferImport(
     validUntil: record.validUntil,
     source: canonicalSource,
     sourceAdapter: record.sourceAdapter,
+    regularPriceSource: canonicalProspectRegularPriceSource(
+      record.regularPriceSource,
+    ),
     capturedAt: record.capturedAt,
     proofRef: record.proofRef,
     imageUrl: record.imageUrl,

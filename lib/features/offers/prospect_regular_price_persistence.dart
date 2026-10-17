@@ -290,6 +290,7 @@ PriceObservation _withProspectCurrent(
       observedAt: entry.observedAt,
       source: entry.source,
       sourceAdapter: entry.sourceAdapter,
+      regularPriceSource: entry.regularPriceSource,
       identityConfidence: entry.identityConfidence,
       proofRef: entry.proofRef,
       discounted: entry.discounted,
