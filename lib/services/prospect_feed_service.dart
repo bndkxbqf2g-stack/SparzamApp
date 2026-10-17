@@ -357,6 +357,87 @@ _ProspectBranchContext _prospectBranchContext(Map<String, dynamic> value) {
   );
 }
 
+const _prospectStartDateKeys = <String>[
+  'validFrom',
+  'valid_from',
+  'offerStartDate',
+  'offer_start_date',
+  'startDate',
+  'start_date',
+  'from',
+  'start',
+];
+
+const _prospectEndDateKeys = <String>[
+  'validUntil',
+  'valid_until',
+  'offerEndDate',
+  'offer_end_date',
+  'endDate',
+  'end_date',
+  'expiresAt',
+  'expires_at',
+  'to',
+  'end',
+];
+
+const _prospectValidityContainers = <String>[
+  'validity',
+  'validityPeriod',
+  'validity_period',
+  'dateRange',
+  'date_range',
+  'period',
+  'offerPeriod',
+  'offer_period',
+];
+
+Object? _prospectValidityValue(
+  Map<String, dynamic> value, {
+  required bool start,
+}) {
+  final keys = start ? _prospectStartDateKeys : _prospectEndDateKeys;
+  for (final key in keys) {
+    final candidate = value[key];
+    if (candidate != null) return candidate;
+  }
+  for (final containerKey in _prospectValidityContainers) {
+    final nested = value[containerKey];
+    if (nested is! Map) continue;
+    for (final key in keys) {
+      final candidate = nested[key];
+      if (candidate != null) return candidate;
+    }
+  }
+  return null;
+}
+
+String? _prospectDateText(Object? value, {int depth = 0}) {
+  if (depth > 2) return null;
+  if (value is String) {
+    final trimmed = value.trim();
+    return trimmed.isEmpty ? null : trimmed;
+  }
+  if (value is DateTime) return value.toIso8601String();
+  if (value is Map) {
+    for (final key in const [
+      'date',
+      'value',
+      'iso',
+      'isoDate',
+      'timestamp',
+      'from',
+      'to',
+      'start',
+      'end',
+    ]) {
+      final nested = _prospectDateText(value[key], depth: depth + 1);
+      if (nested != null) return nested;
+    }
+  }
+  return null;
+}
+
 // Feed sections can spell the same retailer with umlauts or ae/oe/ue.
 // This key is metadata-only; displayed labels and branch IDs stay unchanged.
 String _prospectStoreMetadataKey(String value) {
@@ -684,13 +765,15 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
       // dates, branch context and an official link before they provide page
       // images; dropping those fields makes a current source look unknown.
       final issueValidFrom = DateTime.tryParse(
-        _stringValue(raw['offerStartDate']) ??
-            _stringValue(raw['startDate']) ??
+        _prospectDateText(
+              _prospectValidityValue(raw, start: true),
+            ) ??
             '',
       );
       final issueValidUntil = DateTime.tryParse(
-        _stringValue(raw['offerEndDate']) ??
-            _stringValue(raw['endDate']) ??
+        _prospectDateText(
+              _prospectValidityValue(raw, start: false),
+            ) ??
             '',
       );
       final rawBranch = _prospectBranchContext(raw);
@@ -816,11 +899,11 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     // formatted strings need an explicit EUR/€ marker so arbitrary text or
     // locale-ambiguous numeric strings cannot become a price.
     final offerPrice = _offerPriceValue(offerPriceValue);
-    final validUntilValue = value['validUntil'];
-    final validUntilText = _stringValue(validUntilValue);
+    final validUntilValue = _prospectValidityValue(value, start: false);
+    final validUntilText = _prospectDateText(validUntilValue);
     final validUntil = DateTime.tryParse(validUntilText ?? '');
-    final validFromValue = value['validFrom'];
-    final validFromText = _stringValue(validFromValue);
+    final validFromValue = _prospectValidityValue(value, start: true);
+    final validFromText = _prospectDateText(validFromValue);
     final validFrom = DateTime.tryParse(validFromText ?? '');
     final hasMalformedValidFrom = validFromValue != null &&
         (validFromText == null ||
