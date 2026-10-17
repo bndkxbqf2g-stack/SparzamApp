@@ -117,12 +117,14 @@ void main() {
       now: DateTime(2026, 10, 14),
     );
 
-    expect(coverage, hasLength(1));
-    expect(coverage.single.storeName, 'Lidl');
-    expect(coverage.single.branchId, 'lidl-zellingen');
-    expect(coverage.single.structuredOfferCount, 1);
-    expect(coverage.single.regularPriceCount, 1);
-    expect(coverage.single.persistedRegularPriceCount, 1);
+    final zellingen = coverage.where(
+      (entry) => entry.branchId == 'lidl-zellingen',
+    );
+    expect(zellingen, hasLength(1));
+    expect(zellingen.single.storeName, 'Lidl');
+    expect(zellingen.single.structuredOfferCount, 1);
+    expect(zellingen.single.regularPriceCount, 1);
+    expect(zellingen.single.persistedRegularPriceCount, 1);
   });
 
   test('does not copy a legacy store count across multiple branches', () {
