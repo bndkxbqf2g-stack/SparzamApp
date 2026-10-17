@@ -98,6 +98,28 @@ void main() {
     );
   });
 
+  test('reprocesses when a source EAN changes', () {
+    final first = ProspectFeedLoadResult(
+      records: [
+        feed.records.single.copyWith(ean: '04012345678905'),
+      ],
+      refreshedStores: feed.refreshedStores,
+      generatedAt: feed.generatedAt,
+    );
+    final second = ProspectFeedLoadResult(
+      records: [
+        feed.records.single.copyWith(ean: '04012345678906'),
+      ],
+      refreshedStores: feed.refreshedStores,
+      generatedAt: feed.generatedAt,
+    );
+
+    expect(
+      prospectFeedFingerprintFor(first, now: DateTime(2026, 10, 14)),
+      isNot(prospectFeedFingerprintFor(second, now: DateTime(2026, 10, 14))),
+    );
+  });
+
   test('reprocesses when prospect adapter provenance changes', () {
     final first = ProspectFeedLoadResult(
       records: const [],
