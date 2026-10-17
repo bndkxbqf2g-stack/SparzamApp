@@ -571,6 +571,7 @@ void main() {
     'unveränderter Prospektfeed reconciliiert den lokalen Normalpreis nach Speicherverlust',
     (tester) async {
       final now = DateTime.now();
+      final capturedAt = now.subtract(const Duration(hours: 7));
       final record = OfferImportRecord(
         sourceId: 'netto-reconcile-shell',
         productLabel: 'Jacobs Kaffee Crema 500 g',
@@ -590,7 +591,7 @@ void main() {
           refreshedStores: const ['Netto'],
           // Older than the resume threshold so the unchanged-feed branch runs.
           generatedAt: null,
-          capturedAt: now,
+          capturedAt: capturedAt,
           prospects: const <ProspectIssue>[],
         ),
         disableCache: true,
@@ -627,7 +628,7 @@ void main() {
       await tester.tap(find.text('Prospekte'));
       await tester.pump(const Duration(milliseconds: 500));
       expect(
-        find.textContaining(formatProspectFeedTimestamp(now)),
+        find.textContaining(formatProspectFeedTimestamp(capturedAt)),
         findsOneWidget,
       );
       expect(find.text('Feed-Stand unbekannt.'), findsNothing);
@@ -647,7 +648,7 @@ void main() {
       expect(priceStore.observations, hasLength(1));
       expect(priceStore.observations.single.kind, PriceObservationKind.regular);
       expect(priceStore.observations.single.price, 7.99);
-      expect(priceStore.observations.single.observedAt, now);
+      expect(priceStore.observations.single.observedAt, capturedAt);
     },
   );
 }
