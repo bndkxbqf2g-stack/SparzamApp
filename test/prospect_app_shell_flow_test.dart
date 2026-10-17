@@ -56,6 +56,20 @@ class _FakeProspectImportModule extends ProspectImportModule {
   }
 }
 
+class _ThrowingProspectImportModule extends ProspectImportModule {
+  @override
+  Future<ProspectFeedLoadResult> execute({String? startAddress}) async {
+    throw StateError('offline');
+  }
+
+  @override
+  Future<ProspectFeedLoadResult?> executeCached({
+    String? startAddress,
+  }) async {
+    return null;
+  }
+}
+
 class _DelayedNamedListStore extends ShoppingListStore {
   _DelayedNamedListStore(this.result);
 
@@ -652,4 +666,35 @@ void main() {
       expect(priceStore.observations.single.observedAt, capturedAt);
     },
   );
+  testWidgets(
+    'zeigt nach fehlgeschlagenem Prospektabruf einen klaren Fehlerstatus',
+    (tester) async {
+      final stores = _Stores(
+        shoppingListStore: _InMemoryShoppingListStore(),
+        offerStore: _InMemoryOfferStore(),
+        productCatalogStore: _InMemoryProductCatalogStore(),
+      );
+
+      await tester.pumpWidget(
+        _app(stores, _ThrowingProspectImportModule()),
+      );
+      // The startup refresh runs in the background. A bounded pump is enough
+      // to deliver the failed future without waiting for unrelated timers.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      await tester.tap(find.text('Prospekte'));
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text('Prospektstand noch nicht geladen'), findsOneWidget);
+      expect(
+        find.textContaining(
+          'Speicherstatus unbekannt; reguläre Normalpreise wurden in diesem Lauf nicht bestätigt.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.byTooltip('Prospekte aktualisieren'), findsOneWidget);
+    },
+  );
+
 }
