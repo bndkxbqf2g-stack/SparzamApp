@@ -190,7 +190,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
       return cached;
     }
 
-    final currentRecords = currentProspectRecords(
+    final currentRecords = currentFoodProspectRecords(
       widget.records,
       now: widget.now,
     );
