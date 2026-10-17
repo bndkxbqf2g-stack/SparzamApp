@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Preisqualität kennzeichnet nicht routenfähige Belege eindeutig
+
+- Die Preise-Übersicht bezeichnet Belege außerhalb der aktuellen Routenbasis jetzt als „nicht routenfähig“.
+- Dadurch werden veraltete/unkomplette Daten und separat ausgewiesene Prospekt-Angebotsevidenz nicht sprachlich vermischt.
+- Preisfilter, Zähler und Routenlogik bleiben unverändert; der Widgettest schützt nur die verständliche Statusanzeige.
+
 ## Update 17.10.2026 – Legacy-Prospektangebote vor der Projektion trennen
 
 - Der Beobachtungsadapter verwirft direkte Prospekt-Angebotszeilen jetzt bereits bei `discounted=true`, auch wenn alte Daten kein `kind=offer` speichern.

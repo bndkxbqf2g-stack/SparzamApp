@@ -411,7 +411,7 @@ void main() {
     expect(find.byKey(const ValueKey('price-data-quality-card')), findsOneWidget);
     expect(find.text('1 von 2 Belegen sind aktuell und für die Routenplanung zugelassen.'), findsOneWidget);
     expect(find.text('Prospekt-Normalpreise 1'), findsOneWidget);
-    expect(find.text('1 veraltet oder unvollständig'), findsOneWidget);
+    expect(find.text('1 nicht routenfähig'), findsOneWidget);
     expect(find.textContaining('Lidl: 1'), findsOneWidget);
   });
 
