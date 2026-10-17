@@ -82,7 +82,7 @@ void main() {
             onOpenCatalog: () {},
             onOpenSettings: () {},
             summary: 'Teilroute',
-            shoppingList: const [
+            shoppingList: [
               ListItem(product: milk),
               ListItem(product: coffee),
             ],
