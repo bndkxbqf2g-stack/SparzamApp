@@ -470,3 +470,9 @@ während die jeweils aktive Periode mit ihrer Gültigkeit erhalten bleibt.
 Die Preisquellen-Regression prüft außerdem die Projektion einer aktuell gültigen
 regulären Prospektbeobachtung als Prospektpreis und stellt sicher, dass eine
 Prospekt-Angebotsbeobachtung nicht als regulärer MarketPrice erscheint.
+
+Die Prospektparser-Regression prüft zusätzlich die gemeinsame Branch-Identität
+über Quelle, Prospektseite und Angebot. Groß-/Kleinschreibung und umgebender
+Leerraum werden beim Vergleich toleriert; Filialwert, Ort und Adresse bleiben
+als Herkunftsdaten erhalten. Eine andere oder fehlende Branch-ID darf weiterhin
+kein Seitenbild oder Quellenmetadatum übernehmen.
