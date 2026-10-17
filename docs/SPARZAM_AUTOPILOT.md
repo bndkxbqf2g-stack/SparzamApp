@@ -202,3 +202,7 @@ Prospektseiten können Beträge mit dem Eurozeichen vor oder nach der Zahl
 liefern. Beide Formen werden erkannt, während bare Zahlen weiterhin keine
 Angebotsposition erzeugen. So bleibt die OCR schnell nutzbar, ohne
 Packungs- oder Seitenzahlen als Preise zu übernehmen.
+
+## Update 17.10.2026 – OCR-Spaces bei Prospektpreisen
+
+Die Prospekt-OCR normalisiert nun getrennte Dezimalstellen innerhalb eines explizit markierten Euro-/EUR-Tokens. Das verbessert die lokale Artikelprüfung bei typischen OCR-Ausgaben, ohne bare Zahlen als Preise zu akzeptieren.
