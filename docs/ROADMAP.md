@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Prospektpreise mit Datensatz-Zeitpunkt speichern
+
+- [x] Einen belegten `capturedAt`-Zeitpunkt als Fallback für fehlendes Feed-`generatedAt` verwenden.
+- [x] Zeitlose Datensätze weiterhin aus der automatischen Preisbasis ausschließen.
+- [x] End-to-End-Regression für Lernen, Speicherung und regulären Preis ergänzen.
+
 ## Update 17.10.2026 – Strukturierte Kategoriepfade
 
 - [x] Listenförmige und verschachtelte Kategoriepfade aus bekannten Feedfeldern normalisieren.
