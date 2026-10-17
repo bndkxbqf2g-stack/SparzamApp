@@ -1,3 +1,13 @@
+## D197 – Open-Prices-Bulk-Sync dedupliziert nur die Abfrage, nicht die Identität
+
+Der optionale Open-Prices-Bulk-Sync führt dieselbe Produkt-ID höchstens einmal
+zur Abfrage aus und behält die erste Kataloginstanz für deterministische
+Ergebnisse. Ein während der Discovery gesetztes Abbruchsignal beendet die
+Ermittlung früh und kennzeichnet den Lauf als abgebrochen. Preise einer nur
+entdeckten EAN bleiben weiterhin aus der exakten Routenprojektion ausgeschlossen;
+die Optimierung verändert daher weder Identitäts- noch Preisvertrauensregeln.
+
+
 ## D196 – Katalogsuche bleibt identitätsbasiert
 
 Die Produktkatalogansicht verwendet für bekannte Suchbegriffe die zentrale

@@ -1,3 +1,10 @@
+## Open-Prices-Sync-Optimierung
+
+test/open_prices_sync_service_test.dart prüft die Deduplizierung gleicher
+Produkt-IDs und den Abbruch während der EAN-Discovery. Die Tests verwenden
+nur synthetische Produkte und Fetcher; es gibt keine Live-Abfrage.
+
+
 ## Katalogsuche
 
 test/product_catalog_search_test.dart prüft die identitätsbasierte

@@ -59,11 +59,24 @@ class OpenPricesSyncService {
       discovery = OpenFoodFactsProductDiscovery();
     }
 
-    final candidates = <Product>[];
+    final candidatesById = <String, Product>{};
     final discoveredIds = <String>{};
+    var cancelledDuringDiscovery = false;
+
+    void addCandidate(Product candidate) {
+      // A catalog can contain the same product ID in the base and custom
+      // layers. One request is enough; keeping the first entry preserves the
+      // caller's deterministic source order.
+      candidatesById.putIfAbsent(candidate.id, () => candidate);
+    }
+
     for (final product in products) {
+      if (shouldCancel?.call() == true) {
+        cancelledDuringDiscovery = true;
+        break;
+      }
       if (product.ean != null && normalizeBarcode(product.ean!) != null) {
-        candidates.add(product);
+        addCandidate(product);
         continue;
       }
       try {
@@ -75,13 +88,15 @@ class OpenPricesSyncService {
         if (resolved != null &&
             resolved.ean != null &&
             normalizeBarcode(resolved.ean!) != null) {
-          candidates.add(resolved);
+          addCandidate(resolved);
           discoveredIds.add(resolved.id);
         }
       } catch (_) {
         failures.add(product.id);
       }
     }
+
+    final candidates = candidatesById.values.toList(growable: false);
 
     try {
       for (var index = 0; index < candidates.length; index++) {
@@ -121,7 +136,7 @@ class OpenPricesSyncService {
       pricesFound: result.length,
       prices: result,
       productsProcessed: processed,
-      cancelled: processed < candidates.length,
+      cancelled: cancelledDuringDiscovery || processed < candidates.length,
       failedProductIds: failures,
     );
   }

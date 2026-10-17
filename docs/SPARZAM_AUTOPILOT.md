@@ -170,3 +170,10 @@ den abgeleiteten Familienpfad. Bekannte Suchbegriffe liefern nur kompatible
 Varianten als primäre Treffer; freie Texte können weiterhin Marke, Kategorie,
 Alias und EAN durchsuchen. Der Pfad bleibt eine Anzeigehilfe und bestätigt
 keinen Preis.
+
+## Update 17.10.2026 – Open-Prices-Bulk-Sync
+
+Der optionale Sync fragt gleiche Produkt-IDs in einem Kataloglauf nur einmal
+ab und beendet die Discovery bei einem Abbruchsignal früh. Das reduziert
+unnötige externe Abfragen, ohne entdeckte EANs automatisch als bestätigte
+Produktidentität oder Routenpreis zu behandeln.

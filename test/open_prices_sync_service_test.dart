@@ -206,4 +206,53 @@ void main() {
     expect(result.pricesFound, 0);
   });
 
+  test('Doppelte Produkt-IDs werden nur einmal abgefragt', () async {
+    final seen = <String>[];
+    final service = OpenPricesSyncService(
+      fetcher: (product, _) async {
+        seen.add(product.id);
+        return const [];
+      },
+    );
+
+    final result = await service.sync(
+      products: const [
+        Product(id: 'same', name: 'Basis', unit: 'Stk', group: 'x', ean: '1'),
+        Product(id: 'same', name: 'Duplikat', unit: 'Stk', group: 'x', ean: '2'),
+      ],
+      maxAgeDays: 30,
+    );
+
+    expect(seen, ['same']);
+    expect(result.productsWithEan, 1);
+    expect(result.productsProcessed, 1);
+    expect(result.cancelled, isFalse);
+  });
+
+  test('Abbruch stoppt die Barcode-Ermittlung vor dem nächsten Produkt', () async {
+    final discovered = <String>[];
+    var checks = 0;
+    final service = OpenPricesSyncService(
+      discoverer: (product) async {
+        discovered.add(product.id);
+        return product.copyWith(ean: '4000000000001');
+      },
+      fetcher: (_, _) async => const [],
+    );
+
+    final result = await service.sync(
+      products: const [
+        Product(id: 'one', name: 'Eins', unit: 'Stk', group: 'x'),
+        Product(id: 'two', name: 'Zwei', unit: 'Stk', group: 'x'),
+      ],
+      maxAgeDays: 30,
+      shouldCancel: () => ++checks > 1,
+    );
+
+    expect(discovered, ['one']);
+    expect(result.productsWithEan, 1);
+    expect(result.productsProcessed, 0);
+    expect(result.cancelled, isTrue);
+  });
+
 }
