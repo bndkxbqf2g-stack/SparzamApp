@@ -214,3 +214,11 @@ Listenfeldern. Die Auflösung akzeptiert nur validierte HTTP(S)-URLs und hält d
 bestehende Produktbild-/Prospektseiten-Provenienzmodell ein. Preis-, Gültigkeits-
 und Filialdaten bleiben unverändert; die neue Fixture-Abdeckung liegt in
 `test/prospect_feed_service_test.dart`.
+
+## Update 17.10.2026 – Verschachtelte Prospektbild-Aliase
+
+Der öffentliche Prospektparser akzeptiert bekannte Thumbnail-, Cover- und
+Original-URL-Aliase in den bereits begrenzten Bildobjekten. Die
+HTTP(S)-Validierung, Bildprovenienz sowie Preis-, Gültigkeits- und Filiallogik
+bleiben unverändert. Die Regression liegt in
+`test/prospect_feed_service_test.dart`.
