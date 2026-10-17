@@ -18,8 +18,15 @@ void main() {
       id: 'own-milk',
       name: 'Milch',
       group: 'Molkerei',
-      unit: 'l',
+      unit: '1 l',
+      aliases: ['Kuhmilch'],
+      isFavorite: true,
+      isStaple: true,
       ean: '1234567890123',
+      brand: 'Hofmilch',
+      packageAmount: 1,
+      packageUnit: 'l',
+      imageUrl: 'https://cdn.example.test/milk.jpg',
     );
     final scanned = productForBarcode(' 1234567890123 ', [product]);
     expect(scanned, same(product));
@@ -37,6 +44,13 @@ void main() {
     expect(restored.single.quantity, 2);
     expect(restored.single.note, 'Bio');
     expect(restored.single.checked, isTrue);
+    expect(restored.single.product.aliases, ['Kuhmilch']);
+    expect(restored.single.product.isFavorite, isTrue);
+    expect(restored.single.product.isStaple, isTrue);
+    expect(restored.single.product.brand, 'Hofmilch');
+    expect(restored.single.product.packageAmount, 1);
+    expect(restored.single.product.packageUnit, 'l');
+    expect(restored.single.product.imageUrl, 'https://cdn.example.test/milk.jpg');
     expect(productForBarcode('   ', [product]), isNull);
   });
 }
