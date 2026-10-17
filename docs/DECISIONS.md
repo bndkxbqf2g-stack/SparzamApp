@@ -7,6 +7,16 @@ finden, sondern muss denselben aktuellen Status prüfen, den die MarketPrice-Pro
 Routen verwendet. So wird ein historischer Normalpreis sichtbar gehalten, aber nicht erneut
 als aktuelle Preisabdeckung gezählt.
 
+## D190 – Händlerdarstellung wird nur für Metadatenvergleich normalisiert
+
+Öffentliche Prospektquellen können denselben Händler in Großschreibung, mit
+abweichendem Leerraum oder deutscher Schreibvariante melden. Such-, Coverage-
+und Issue-Matching verwenden deshalb einen gemeinsamen normalisierten
+Vergleichsschlüssel. Der sichtbare Händlername bleibt unverändert; die exakte
+Branch-ID bleibt ein separater Schlüssel und wird nicht durch die
+Händlernormalisierung ersetzt. So kann eine Darstellung variieren, ohne
+Filialen oder Produktidentitäten zu verschmelzen.
+
 ## D188 – Produktauflösungscaches enthalten ihre Validierungsgrundlage
 
 Ein UI-Cache für die Zuordnung eines Prospektartikels zu einem lokalen Produkt darf
