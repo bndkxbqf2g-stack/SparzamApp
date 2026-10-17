@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Open-Prices-Sync vermeidet doppelte Arbeit
+
+- Der Bulk-Sync dedupliziert Kandidaten jetzt nach stabiler Produkt-ID, bevor eine externe Preisabfrage gestartet wird.
+- Ein Nutzerabbruch wird bereits während der optionalen EAN-Ermittlung geprüft; die Ergebnisflags unterscheiden diesen Abbruch von einem vollständigen Lauf.
+- Die erste Kataloginstanz bleibt deterministisch maßgeblich; Preise entdeckter, noch nicht bestätigter Produkte bleiben weiterhin aus der exakten Route ausgeschlossen.
+- Neue Regressionen decken doppelte IDs und Abbruch vor dem nächsten Discovery-Schritt ab.
+
+
 ## Update 17.10.2026 – Katalogansicht nutzt Produktidentität und Familienpfad
 
 - Die Produktkatalogsuche verwendet jetzt dieselbe Identitätslogik wie Einkaufsliste und Bonauflösung.
