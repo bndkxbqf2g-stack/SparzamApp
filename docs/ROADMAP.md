@@ -1,3 +1,8 @@
+## Update 17.10.2026 – Coverübersicht gruppiert Schreibvarianten
+
+- [x] Coverkarten über den normalisierten Händler-/Filialschlüssel deduplizieren.
+- [x] Händlerfilter bei abweichender Schreibweise zusammenführen.
+- [x] Regression für LIDL/Lidl ergänzen.
 ## Update 17.10.2026 – Händler-Schreibvarianten in Angebotsquellenhinweisen
 
 - [x] Quellhinweise über den gemeinsamen Händlervergleichsschlüssel zuordnen.
