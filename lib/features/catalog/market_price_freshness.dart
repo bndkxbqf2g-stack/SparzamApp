@@ -11,6 +11,7 @@ List<MarketPrice> usableMarketPrices(
       .where(
         (price) =>
             !price.isProspectOffer &&
+            price.isProspectRegularBasis &&
             price.isUsable(
               now: today,
               openPricesMaxAgeDays: openPricesMaxAgeDays,
@@ -81,6 +82,10 @@ PriceDataQuality calculatePriceDataQuality(
     // never a current route-ready price. Keep it out of both the current
     // count and the per-store coverage just like usableMarketPrices().
     if (price.isProspectOffer) {
+      continue;
+    }
+    // Unknown prospect rows are evidence gaps, never current regular prices.
+    if (!price.isProspectRegularBasis) {
       continue;
     }
 
