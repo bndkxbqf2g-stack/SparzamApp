@@ -62,6 +62,14 @@ class RoutePriceResolver {
   final Map<String, MarketPrice> marketPrices;
   final List<MarketPrice> _marketPriceCandidates;
 
+  // Route alternatives revisit the same product across several branches. Keep
+  // source rows grouped by exact product identity so each quote only scans
+  // the candidates that can match it.
+  late final Map<String, List<Offer>> _offersByProductId =
+      _indexByProduct(offers, (offer) => offer.productId);
+  late final Map<String, List<MarketPrice>> _marketPricesByProductId =
+      _indexByProduct(_marketPriceCandidates, (price) => price.productId);
+
   // The optimizer evaluates each market/product/quantity combination more
   // than once while building alternatives. Quotes are immutable for one
   // resolver instance, including null results for missing evidence.
@@ -134,7 +142,7 @@ class RoutePriceResolver {
 
   Offer? _bestOffer(Store store, Product product, int quantity) {
     final today = now ?? DateTime.now();
-    final matches = offers.where(
+    final matches = (_offersByProductId[product.id] ?? const <Offer>[]).where(
       (offer) =>
           offer.productId == product.id &&
           sameStoreLabel(offer.storeName, store.name) &&
@@ -181,7 +189,8 @@ class RoutePriceResolver {
   }
 
   MarketPrice? _bestMarketPrice(Store store, Product product) {
-    final candidates = _marketPriceCandidates.where(
+    final candidates =
+        (_marketPricesByProductId[product.id] ?? const <MarketPrice>[]).where(
       (price) =>
           price.productId == product.id &&
           sameStoreLabel(price.storeName, store.name) &&
@@ -218,6 +227,20 @@ String _quoteCacheKey(Store store, ListItem item) => [
   item.product.id,
   item.quantity.toString(),
 ].join('\\u0000');
+
+Map<String, List<T>> _indexByProduct<T>(
+  Iterable<T> values,
+  String Function(T value) productId,
+) {
+  final grouped = <String, List<T>>{};
+  for (final value in values) {
+    grouped.putIfAbsent(productId(value), () => <T>[]).add(value);
+  }
+  return <String, List<T>>{
+    for (final entry in grouped.entries)
+      entry.key: List<T>.unmodifiable(entry.value),
+  };
+}
 
 List<MarketPrice> _usableMarketPriceCandidates(
   Iterable<MarketPrice> prices,
