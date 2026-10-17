@@ -177,3 +177,11 @@ Der optionale Sync fragt gleiche Produkt-IDs in einem Kataloglauf nur einmal
 ab und beendet die Discovery bei einem Abbruchsignal früh. Das reduziert
 unnötige externe Abfragen, ohne entdeckte EANs automatisch als bestätigte
 Produktidentität oder Routenpreis zu behandeln.
+
+## Update 17.10.2026 – Bonkandidaten bleiben identitäts- und unsicherheitsbewusst
+
+Die Bonauflösung nutzt für bekannte, nicht generische Bezeichnungen jetzt
+ProductIdentity-Kompatibilität, um passende Varianten vorzuschlagen. Treffer
+ohne Barcode bleiben ausdrücklich unbestätigt und zeigen den Prüfbedarf für
+Variante und Packungsgröße. Generische Kategorien und fachlich getrennte
+Produktfamilien behalten ihre bisherige konservative Auflösung.
