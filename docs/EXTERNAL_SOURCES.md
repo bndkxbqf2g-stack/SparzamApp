@@ -262,3 +262,13 @@ wiederholt diese Sperre für ältere Cache-/Asset-Stände.
 - Für eine langfristige Produktion ist ein selbst betriebener bzw. vertraglich
   gesicherter Routing-/Datenprovider zu konfigurieren. Das ist eine
   Betriebsentscheidung und kein Grund, den fachlichen Optimierer zu ersetzen.
+
+## KaufDA-Parser – Taxonomie- und Medienalias
+
+Der optionale SparzamApp-eigene KaufDA-Adapter berücksichtigt zusätzlich
+singuläre \`categoryPath\`-Formen und explizite Produktbildlisten. Die
+Lebensmittelprüfung trennt Produkttext von Sammelkategorien: Ein offizieller
+Bereich wie „Obst/Gemüse/Pflanzen“ bleibt für Lebensmittel nutzbar, während
+Haushalts- und Pflanzenartikel im Produkttext ausgeschlossen werden. Die
+Änderung erweitert keine Händlerrechte und übernimmt weiterhin weder fremden
+Quellcode noch Markenmedien.

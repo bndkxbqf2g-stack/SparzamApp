@@ -1246,3 +1246,13 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Originale Filialwerte für Nachweis und Anzeige erhalten; unbekannte oder
   abweichende Filialen bleiben getrennt.
 - [x] Regression für Quelle, Ort, Adresse und Prospektseitenbild ergänzt.
+
+## Update 17.10.2026 – KaufDA-Taxonomie und Artikelbilder
+
+- [x] Singuläre und plurale KaufDA-Kategoriepfade begrenzt auswerten.
+- [x] Gemischte Lebensmittel-Taxonomien wie Obst/Gemüse/Pflanzen nicht wegen
+  eines Sammelbegriffs verwerfen.
+- [x] Explizite Produktbildlisten und zusätzliche Mengenfelder übernehmen,
+  ohne URLs oder Identitäten zu erfinden.
+- [x] Regressionen für Non-Food-Taxonomien, Kategoriepfade, Bilder und
+  Packungsgrößen ergänzen.
