@@ -1,3 +1,13 @@
+## D222 – Prospekt-Suchauflösung bleibt an den Feed-Snapshot gebunden
+
+Die aktuelle Prospektsuche darf bei Filterwechseln, Sliver-Rebuilds und
+Nachladen dieselbe unveränderte Recordfolge wiederverwenden. Deshalb werden
+aufwendige Produktauflösungen und kollisionssichere Widget-Schlüssel im
+Such-Sliver-Status memoisiert. Ein neuer Katalogstand leert nur den
+Identitätscache; ein anderer Record-Snapshot erzeugt neue Schlüssel. Die
+Regel verändert keine Produktidentität, Filialzuordnung, Gültigkeit oder
+Einkaufslistenaktion.
+
 ## D221 – Fehlende Marktzeilen erhalten einen display-only Primärgrund
 
 Die Produkt×Markt-Matrix erhält für jede Zeile ohne aktuelle, vergleichbare
