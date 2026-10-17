@@ -71,6 +71,7 @@ class _OffersScreenState extends State<OffersScreen> {
   List<OfferImportRecord>? _currentRecordsInput;
   DateTime? _currentRecordsDay;
   List<OfferImportRecord>? _currentRecordsCache;
+  int? _currentRecordsRegularPriceCount;
   List<ProspectIssue>? _currentIssuesInput;
   DateTime? _currentIssuesDay;
   List<ProspectIssue>? _currentIssuesCache;
@@ -85,11 +86,36 @@ class _OffersScreenState extends State<OffersScreen> {
       widget.prospectRecords,
       now: widget.now,
     );
+    var regularPriceCount = 0;
+    for (final record in current) {
+      if (hasLearnableProspectRegularPrice(record)) {
+        regularPriceCount++;
+      }
+    }
+    _currentRecordsRegularPriceCount = regularPriceCount;
     _currentRecordsInput = widget.prospectRecords;
     _currentRecordsDay = day;
     _currentRecordsCache = current;
     return current;
   }
+
+  List<ProspectIssue> _currentStatusIssues() {
+    final day = offerFilterDay(widget.now);
+    if (identical(_currentIssuesInput, widget.prospectIssues) &&
+        _currentIssuesDay == day) {
+      return _currentStatusIssuesCache ?? const <ProspectIssue>[];
+    }
+    final current = _currentProspectStatusIssues(
+      widget.prospectIssues,
+      now: widget.now,
+    );
+    _currentStatusIssuesCache = current;
+    _currentIssuesInput = widget.prospectIssues;
+    _currentIssuesDay = day;
+    return current;
+  }
+
+  List<ProspectIssue>? _currentStatusIssuesCache;
 
   List<ProspectIssue> _currentIssues() {
     final day = offerFilterDay(widget.now);
@@ -179,7 +205,8 @@ class _OffersScreenState extends State<OffersScreen> {
             now: widget.now,
             fromCache: widget.fromCache,
             regularPriceCount: widget.regularPriceCount ??
-                currentRecords.where(hasLearnableProspectRegularPrice).length,
+                _currentRecordsRegularPriceCount ??
+                0,
             regularPricePersistenceStatus:
                 widget.regularPricePersistenceStatus,
             onRefresh: widget.onRefreshProspects,
@@ -204,10 +231,7 @@ class _OffersScreenState extends State<OffersScreen> {
           const SizedBox(height: 14),
           _ProspectOffers(
             records: currentRecords,
-            issues: _currentProspectStatusIssues(
-              widget.prospectIssues,
-              now: widget.now,
-            ),
+            issues: _currentStatusIssues(),
             query: query,
             catalogProducts: widget.catalogProducts,
             onAddToShoppingList: widget.onAddToShoppingList,
