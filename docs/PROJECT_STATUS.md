@@ -1,3 +1,6 @@
+## Update 17.10.2026 – Separate Coverseiten im Viewer
+
+Wenn ein öffentlicher Prospektfeed eine Cover-URL separat von interioren Seiten ablegt und die Seitenliste erst bei Seite 2 beginnt, ergänzt der Viewer die validierte Coverseite als Seite 1. Vorhandene Seitenzahlen, Nachweise und die progressive Ladegrenze bleiben unverändert.
 ## Update 17.10.2026 – Geprüfte Seitenartikel bleiben listbar
 
 Der Seitenviewer übernimmt einen manuell geprüften Artikel jetzt auch dann in die lokale Einkaufsliste, wenn der optionale Angebots-/Preisbeleg wegen fehlender Filiale, unbekannter Identität oder eines temporären Speicherfehlers nicht abgelegt werden kann. Die strengere Preis- und Routenfreigabe bleibt getrennt; die Oberfläche zeigt den konkreten Grund an.
