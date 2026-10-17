@@ -60,17 +60,20 @@ class OfferEvidence extends StatelessWidget {
                   cacheHeight: 192,
                   filterQuality: FilterQuality.low,
                   errorBuilder: (context, error, stackTrace) => Container(
-                  height: 72,
-                  width: 140,
-                  alignment: Alignment.center,
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    height: 72,
+                    width: 140,
+                    alignment: Alignment.center,
+                    color: Theme.of(context)
+                        .colorScheme
+                        .surfaceContainerHighest,
                     child: const Text(
-                      'Prospektbild\nnicht verfügbar',
+                      'Prospektbild\\nnicht verfügbar',
                       textAlign: TextAlign.center,
                     ),
                   ),
                 ),
               ),
+            ),
           ),
         ],
       ],
