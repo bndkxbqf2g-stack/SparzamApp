@@ -7,6 +7,7 @@ import 'package:shared_preferences_platform_interface/in_memory_shared_preferenc
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/features/shell/app_shell.dart';
+import 'package:sparzamapp/features/prospects/prospect_feed_status.dart';
 import 'package:sparzamapp/models/budget_plan.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
@@ -622,6 +623,14 @@ void main() {
         await tester.pump(const Duration(milliseconds: 50));
       }
       expect(priceStore.observations, hasLength(1));
+
+      await tester.tap(find.text('Prospekte'));
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(
+        find.textContaining(formatProspectFeedTimestamp(now)),
+        findsOneWidget,
+      );
+      expect(find.text('Feed-Stand unbekannt.'), findsNothing);
 
       // Simulate a local reset without changing the feed fingerprint.
       priceStore.observations = <PriceObservation>[];
