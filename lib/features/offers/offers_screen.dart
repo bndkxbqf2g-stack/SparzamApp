@@ -746,7 +746,6 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     _sourceNoticeIssuesInput = widget.issues;
     _sourceNoticeCache = next;
     return next;
-
   }
 }
 
