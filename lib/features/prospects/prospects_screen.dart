@@ -1309,6 +1309,7 @@ int _prospectStatusRank(String status) => switch (status) {
   'ok' => 4,
   'metadata_only' => 3,
   'current_fallback' => 2,
+  'stale_fallback' => 1,
   'regional_only' => 1,
   _ => 0,
 };
@@ -1806,6 +1807,9 @@ String _prospectCardSummary(ProspectIssue issue) {
   if (issue.sourceStatus == 'current_fallback') {
     summary = '${issue.recordCount} Angebote aus dem letzten geprüften '
         'Prospektstand. Automatische Aktualisierung aktuell nicht verfügbar.';
+  } else if (issue.sourceStatus == 'stale_fallback') {
+    summary = 'Älteres Cover verfügbar; keine aktuell gültigen Angebote '
+        'aus diesem Prospekt freigegeben.';
   } else if (issue.sourceStatus == 'regional_only') {
     summary = 'Nur regional erkannt · Filiale noch nicht bestätigt.';
   } else if (issue.recordCount > 0) {
@@ -1839,6 +1843,10 @@ String _sourceStatusLabel(ProspectIssue issue) {
   if (issue.sourceStatus == 'current_fallback') {
     return 'Der letzte geprüfte Prospektstand wird verwendet; die automatische '
         'Aktualisierung ist aktuell nicht verfügbar.';
+  }
+  if (issue.sourceStatus == 'stale_fallback') {
+    return 'Ein älteres Cover bleibt zum Nachschlagen verfügbar; abgelaufene '
+        'Preise sind nicht als aktuelle Angebote freigegeben.';
   }
   if (issue.sourceStatus == 'error') {
     return 'Automatischer Abruf aktuell nicht verfügbar. '
