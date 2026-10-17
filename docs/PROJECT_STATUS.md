@@ -5,6 +5,9 @@ begrenzter Cache-Größe und niedriger Filterqualität. Beide Bildflächen sind
 eigene Repaint-Grenzen; die Preis-, Quellen-, Gültigkeits- und
 Einkaufslistenlogik bleibt unverändert. Dadurch wächst der Bildspeicher bei
 langen Angebotslisten nicht durch die Originalauflösung der Händlerbilder.
+Viewer-Seiten binden ihren Bildzustand zusätzlich an die gerenderte Position;
+doppelte Seitennummern aus alten oder externen Feeds können beim Recycling der
+Sliver-Kinder daher keinen fremden Seitenzustand übernehmen.
 
 ## Update 17.10.2026 – Separate Coverseiten im Viewer
 
