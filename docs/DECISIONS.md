@@ -1,3 +1,16 @@
+## D188 – Produktauflösungscaches enthalten ihre Validierungsgrundlage
+
+Ein UI-Cache für die Zuordnung eines Prospektartikels zu einem lokalen Produkt darf
+nicht nur die technische Quell-ID verwenden. Die Auflösung prüft neben Händler und
+exakter Filiale auch EAN, Packungsgröße, Preis, Gültigkeitszeitraum, Quelle,
+Adapter, Nachweis und den Regionalstatus. Diese Felder werden deshalb gemeinsam
+mit der branch-sicheren Record-Identität im Memo-Schlüssel geführt.
+
+So kann ein geänderter oder korrigierter Feeddatensatz keinen früheren positiven
+oder negativen Katalogtreffer übernehmen. Die Regel betrifft nur die lokale
+Memoisierung; Datenmodell, Offer-/MarketPrice-Rollen und RouteOptimizer bleiben
+unverändert.
+
 ## D187 – Prospektkarten verwenden eine filialgenaue Widget-Identität
 
 Ein technischer Quellartikel darf nicht allein anhand seiner ID als Flutter-Widget-Identität
