@@ -10,7 +10,9 @@ typedef OpenPricesProductFetcher = Future<List<MarketPrice>> Function(
   Product product,
   int maxAgeDays,
 );
-typedef OpenPricesProductDiscoverer = Future<Product?> Function(Product product);/// Returns the bounded concurrency used by the live adapter. Injected
+typedef OpenPricesProductDiscoverer = Future<Product?> Function(Product product);
+
+/// Returns the bounded concurrency used by the live adapter. Injected
 /// fetchers intentionally stay serial so cancellation and fixture ordering
 /// remain identical to the established test/offline path.
 int openPricesNetworkBatchSize({
