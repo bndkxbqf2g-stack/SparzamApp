@@ -67,6 +67,7 @@ class PricesHubScreen extends StatefulWidget {
 
 class _PricesHubScreenState extends State<PricesHubScreen> {
   int? _snapshotSignatureValue;
+  int? _quoteSnapshotSignature;
   List<_PriceSnapshot>? _snapshotCache;
   ShoppingPriceQuoteSnapshot? _quoteSnapshotCache;
   List<ListItem>? _signatureShoppingListInput;
@@ -74,6 +75,7 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
   List<Offer>? _signatureOffersInput;
   List<Product>? _signatureCatalogProductsInput;
   Map<String, ProspectPriceHistorySummary>? _signatureHistoryInput;
+  List<PriceObservation>? _signatureHistoricalPriceObservationsInput;
   List<String>? _signatureEnabledStoresInput;
   int? _signatureMaxAgeDays;
   DateTime? _signatureDay;
@@ -96,6 +98,10 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
           widget.catalogProducts,
         ) &&
         identical(_signatureHistoryInput, widget.prospectPriceHistory) &&
+        identical(
+          _signatureHistoricalPriceObservationsInput,
+          widget.historicalPriceObservations,
+        ) &&
         identical(_signatureEnabledStoresInput, widget.enabledStoreNames) &&
         _signatureMaxAgeDays == widget.openPricesMaxAgeDays &&
         _signatureDay == day &&
@@ -169,6 +175,19 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
         add(summary.observationCount);
       }
     }
+    add(widget.historicalPriceObservations.length);
+    for (final observation in widget.historicalPriceObservations) {
+      add(observation.id);
+      add(observation.productId);
+      add(observation.storeName);
+      add(observation.locationId);
+      add(observation.price);
+      add(observation.observedAt.millisecondsSinceEpoch);
+      add(observation.validFrom?.millisecondsSinceEpoch);
+      add(observation.validUntil?.millisecondsSinceEpoch);
+      add(observation.kind.name);
+      add(observation.isCurrent);
+    }
     add(widget.enabledStoreNames.join('|'));
     add(widget.openPricesMaxAgeDays);
     add(widget.prospectFeedGeneratedAt?.millisecondsSinceEpoch);
@@ -189,6 +208,8 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
     _signatureOffersInput = widget.offers;
     _signatureCatalogProductsInput = widget.catalogProducts;
     _signatureHistoryInput = widget.prospectPriceHistory;
+    _signatureHistoricalPriceObservationsInput =
+        widget.historicalPriceObservations;
     _signatureEnabledStoresInput = widget.enabledStoreNames;
     _signatureMaxAgeDays = widget.openPricesMaxAgeDays;
     _signatureDay = day;
@@ -206,7 +227,7 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
   ShoppingPriceQuoteSnapshot _quoteSnapshot() {
     final signature = _snapshotSignature();
     final cached = _quoteSnapshotCache;
-    if (cached != null && _snapshotSignatureValue == signature) {
+    if (cached != null && _quoteSnapshotSignature == signature) {
       return cached;
     }
     final next = shoppingPriceQuoteSnapshot(
@@ -220,6 +241,7 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
       now: widget.now,
     );
     _snapshotSignatureValue = signature;
+    _quoteSnapshotSignature = signature;
     _quoteSnapshotCache = next;
     _snapshotCache = null;
     return next;
