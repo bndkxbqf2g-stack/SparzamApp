@@ -64,6 +64,50 @@ void main() {
     );
   });
 
+  test('keeps same source item in separate exact branches', () {
+    const milk = Product(
+      id: 'milk-1l',
+      name: 'Milch 1 l',
+      unit: '1 l',
+      group: 'milch',
+    );
+    final entries = prospectOfferProducts(
+      records: [
+        for (final branch in ['lidl-a', 'lidl-b'])
+          OfferImportRecord(
+            sourceId: 'same-leaflet-item',
+            productLabel: 'Milch 1 l',
+            storeName: 'Lidl',
+            branchId: branch,
+            location: branch == 'lidl-a' ? 'Thüngersheim' : 'Würzburg',
+            offerPrice: branch == 'lidl-a' ? 0.89 : 0.99,
+            validUntil: DateTime(2026, 10, 2),
+            source: 'retailerWebsite',
+            proofRef: 'https://example.test/lidl/same-leaflet-item',
+          ),
+      ],
+      catalogProducts: const [milk],
+      now: current,
+    );
+
+    expect(entries, hasLength(2));
+    expect(entries.map((entry) => entry.offer.id).toSet(), hasLength(1));
+    expect(
+      entries.map((entry) => entry.offer.locationId),
+      containsAll(['lidl-a', 'lidl-b']),
+    );
+
+    final merged = mergeTransientProspectOffers(
+      existingOffers: const [],
+      importedOffers: entries,
+    );
+    expect(merged, hasLength(2));
+    expect(
+      merged.map((offer) => offer.locationId),
+      containsAll(['lidl-a', 'lidl-b']),
+    );
+  });
+
   test('ambiguous verified offer gets an explicit-label review product', () {
     final record = OfferImportRecord(
       sourceId: 'ambiguous-1',
