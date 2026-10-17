@@ -1900,3 +1900,8 @@ Die öffentliche Händlerdarstellung wird einmal in `store_identity.dart` normal
 ## D192 – Händlerlabel-Normalisierung darf Branchschutz nicht umgehen
 
 `matchesConfiguredBranch` verwendet den gemeinsamen Präsentationsschlüssel nur, um die konfigurierte Händlerzeile zu finden. Danach bleibt die kanonische Branch-ID-Prüfung unverändert. Ein Label wie `LIDL` kann damit `Lidl` zugeordnet werden, aber niemals eine fremde Lidl-Filiale freischalten.
+
+
+## D193 – End-to-End-Nachweis für reguläre Prospektpreise
+
+Ein automatisch gespeicherter regulärer Prospektpreis gilt erst dann als Routenbasis, wenn derselbe Beleg den Weg über `PriceObservationStore`, `marketPricesFromObservations`, `planningMarketPrices` und `RoutePriceResolver` bis zum `RouteOptimizer` besteht. Der temporäre Angebotspreis bleibt aus dieser regulären Planung ausgeschlossen. Der Nachweis bindet zusätzlich die exakte Branch-ID; ein Preis einer gleichnamigen anderen Filiale darf die ausgewählte Route nicht beeinflussen.

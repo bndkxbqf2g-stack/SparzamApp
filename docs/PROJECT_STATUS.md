@@ -4145,3 +4145,9 @@ Preisabdeckung und Marktmatrix verwenden jetzt denselben engen Store-Identity-He
 ## Update 17.10.2026 – Filialprüfung folgt Händlerlabel-Normalisierung
 
 Die zentrale Branch-Prüfung verwendet nun denselben engen Händlerlabel-Schlüssel wie Route und Preis-Matrix. Dadurch werden Varianten wie `LIDL` korrekt gegen die konfigurierte Lidl-Filiale geprüft; eine abweichende Filial-ID bleibt ausgeschlossen.
+
+
+## Update 17.10.2026 – Regulärer Prospektpreis bis zur Routenplanung
+- Die End-to-End-Regression in `test/product_resolution_route_e2e_test.dart` speichert einen datierten regulären KaufDA-Prospektpreis lokal, projiziert ihn in `MarketPrice` und `planningMarketPrices` und prüft die anschließende filialgenaue Routenberechnung.
+- Der Angebotspreis bleibt dabei ausschließlich Angebotsbeleg; die Route verwendet den belegten Normalpreis.
+- Eine zweite Regression stellt sicher, dass ein günstigerer Preis einer anderen Filiale nicht in die ausgewählte Filiale übernommen wird.

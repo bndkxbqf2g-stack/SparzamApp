@@ -569,3 +569,8 @@ Die Regressionen in `test/store_identity_test.dart` und `test/shopping_price_quo
 ## Branchprüfung mit Händler-Schreibvarianten
 
 `test/branch_identity_test.dart` prüft passende `LIDL`/`Lidl`- und `ALDI SUED`/`ALDI Süd`-Labels sowie den Ausschluss einer fremden Branch-ID.
+
+
+## Prospektpreis bis zur Route
+
+`test/product_resolution_route_e2e_test.dart` prüft den vollständigen lokalen Datenfluss eines datierten regulären Prospektpreises: Persistenz, Projektion, Planpreis und filialgenaue Routenempfehlung. Die Regression erwartet den gekreuzten Normalpreis und schließt den Angebotspreis aus. Eine zweite Prüfung weist einen Preis mit fremder Branch-ID zurück.

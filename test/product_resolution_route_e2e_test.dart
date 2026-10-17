@@ -1,10 +1,20 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:sparzamapp/features/route/route_optimizer.dart';
 import 'package:sparzamapp/features/shopping_list/planning_market_prices.dart';
 import 'package:sparzamapp/features/shopping_list/receipt_family_market_prices.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/receipt_observation.dart';
+import 'package:sparzamapp/services/prospect_feed_service.dart';
+import 'package:sparzamapp/services/price_observation_store.dart';
+import 'package:sparzamapp/services/market_price_observation_adapter.dart';
+import 'package:sparzamapp/models/store.dart';
+import 'package:sparzamapp/models/price_observation.dart';
+import 'package:sparzamapp/models/market_price.dart';
+import 'package:sparzamapp/features/offers/prospect_regular_price_persistence.dart';
+import 'package:sparzamapp/features/offers/offer_import.dart';
 
 void main() {
   test('confirmed receipt product flows from identity to route calculation', () {
@@ -114,4 +124,154 @@ void main() {
     expect(route.unassigned, isEmpty);
     expect(route.stores.single.name, 'Lidl');
   });
+  test(
+    'persisted regular prospect price flows through projection and exact-branch routing',
+    () async {
+      final now = DateTime(2026, 10, 15, 12);
+      const coffee = Product(
+        id: 'route-prospect-coffee-500',
+        name: 'Jacobs Kaffee Crema 500 g',
+        unit: '500 g',
+        group: 'Kaffee & Snacks',
+        packageAmount: 500,
+        packageUnit: 'g',
+      );
+      final record = OfferImportRecord(
+        sourceId: 'route-prospect-coffee',
+        productLabel: coffee.name,
+        storeName: 'Lidl',
+        originalPrice: 7.99,
+        offerPrice: 4.99,
+        validFrom: DateTime(2026, 10, 12),
+        validUntil: DateTime(2026, 10, 17),
+        source: 'retailerWebsite',
+        sourceAdapter: 'KaufDA',
+        branchId: 'lidl-wuerzburg',
+        location: 'Würzburg',
+        proofRef: 'https://www.kaufda.de/prospekt/route-prospect-coffee',
+        capturedAt: now,
+      );
+      SharedPreferencesAsyncPlatform.instance =
+          InMemorySharedPreferencesAsync.empty();
+      addTearDown(() => SharedPreferencesAsyncPlatform.instance = null);
+      var raw = <String>[];
+      final store = PriceObservationStore(
+        readRaw: () async => List<String>.of(raw),
+        writeRaw: (values) async => raw = List<String>.of(values),
+      );
+
+      final persisted = await persistCurrentProspectRegularPrices(
+        store: store,
+        records: [record],
+        catalogProducts: const [coffee],
+        observedAt: now,
+        now: now,
+        refreshedStoreScopes: const [
+          ProspectRefreshScope(
+            storeName: 'Lidl',
+            branchId: 'lidl-wuerzburg',
+          ),
+        ],
+      );
+      final projected = marketPricesFromObservations(
+        persisted.stored,
+        products: const [coffee],
+        now: now,
+      );
+      final planning = planningMarketPrices(
+        exactPrices: projected,
+        familyPrices: const [],
+        now: now,
+      );
+      const selectedBranch = Store(
+        name: 'Lidl',
+        branchId: 'lidl-wuerzburg',
+        location: 'Würzburg',
+        distanceKm: 1,
+        prices: <String, double>{},
+      );
+      final route = RouteOptimizer(
+        [ListItem(product: coffee)],
+        const [],
+        storeCatalog: const [selectedBranch],
+        enabledStoreNames: const ['Lidl'],
+        marketPrices: planning,
+        maxStores: 1,
+        euroPerKm: 0,
+        now: now,
+      ).bestSingleStorePlan();
+
+      expect(persisted.learned, hasLength(1));
+      expect(persisted.learned.single.kind, PriceObservationKind.regular);
+      expect(persisted.learned.single.price, 7.99);
+      expect(persisted.learned.single.price, isNot(4.99));
+      expect(persisted.stored.single.locationId, selectedBranch.branchId);
+      expect(projected, hasLength(1));
+      expect(projected.single.source, MarketPriceSource.prospect);
+      expect(projected.single.sourceLocationId, selectedBranch.branchId);
+      expect(planning.single.price, 7.99);
+      expect(route, isNotNull);
+      expect(route!.unassigned, isEmpty);
+      expect(route.stores.single.branchId, selectedBranch.branchId);
+      expect(route.basket, closeTo(7.99, 0.0001));
+    },
+  );
+
+  test('a price from another branch cannot enter the selected route', () {
+    const coffee = Product(
+      id: 'route-branch-coffee',
+      name: 'Jacobs Kaffee Crema 500 g',
+      unit: '500 g',
+      group: 'Kaffee & Snacks',
+      packageAmount: 500,
+      packageUnit: 'g',
+    );
+    const selectedBranch = Store(
+      name: 'Lidl',
+      branchId: 'lidl-wuerzburg',
+      location: 'Würzburg',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    final projected = marketPricesFromObservations(
+      [
+        PriceObservation(
+          id: 'wrong-branch',
+          productId: coffee.id,
+          storeName: 'Lidl',
+          locationId: 'lidl-zellingen',
+          region: 'Zellingen',
+          price: 0.99,
+          quantity: 500,
+          unit: 'g',
+          observedAt: DateTime(2026, 10, 15),
+          source: PriceObservationSource.leaflet,
+          kind: PriceObservationKind.regular,
+          validFrom: DateTime(2026, 10, 12),
+          validUntil: DateTime(2026, 10, 17),
+          proofRef: 'leaflet:lidl:route-branch',
+        ),
+      ],
+      products: const [coffee],
+      now: DateTime(2026, 10, 15),
+    );
+    final route = RouteOptimizer(
+      [ListItem(product: coffee)],
+      const [],
+      storeCatalog: const [selectedBranch],
+      enabledStoreNames: const ['Lidl'],
+      marketPrices: planningMarketPrices(
+        exactPrices: projected,
+        familyPrices: const [],
+        now: DateTime(2026, 10, 15),
+      ),
+      maxStores: 1,
+      euroPerKm: 0,
+      now: DateTime(2026, 10, 15),
+    ).bestSingleStorePlan();
+
+    expect(projected.single.sourceLocationId, 'lidl-zellingen');
+    expect(route, isNull);
+  });
+
 }
