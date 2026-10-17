@@ -1,3 +1,16 @@
+## Update 17.10.2026 – Prospekt-/Angebotsstatus beschleunigt
+
+- [x] Regulären Preiszähler im bestehenden Prospekt-Derived-Snapshot halten.
+- [x] Statushinweise der Angebotsansicht mit eigenem Listen-/Tages-Schlüssel cachen.
+- [x] Coverauswahl und Statushinweise getrennt invalidieren.
+
+## Update 17.10.2026 – Einkaufsvorschläge beschleunigt
+
+- [x] Wiederholte Vorschlagsberechnung während eines UI-Rebuilds memoisierten.
+- [x] Verwandte Interpretationen an den identischen Vorschlagssnapshot binden.
+- [x] Tageswechsel sowie alle preis- und produktrelevanten Eingangslisten als Cachegrenzen verwenden.
+- [x] Bestehende Eingabe-, Preis- und Identitätsregressionen über die vollständige CI ausführen.
+
 ## Update 17.10.2026 – Routenberechnung beschleunigt
 
 - [x] Wiederholte Fahrtrouten pro `RouteOptimizer`-Snapshot cachen.
