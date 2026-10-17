@@ -154,6 +154,7 @@ void main() {
           productLabel: 'Jacobs Kaffee Crema 500 g',
           storeName: 'Netto',
           originalPrice: 8,
+          regularPriceSource: 'regularPrice',
           offerPrice: 5,
           validFrom: DateTime(2026, 9, 28),
           validUntil: DateTime(2026, 10, 2),
@@ -172,6 +173,7 @@ void main() {
     expect(entries.single.product.unit, '500 g');
     expect(entries.single.offer.productId, entries.single.product.id);
     expect(entries.single.offer.originalPriceVerified, isTrue);
+    expect(entries.single.offer.regularPriceSource, 'regularPrice');
     expect(entries.single.offer.proofRef, contains('netto/coffee'));
     expect(entries.single.offer.address, 'Am Markt 1, 97291 Thüngersheim');
   });
