@@ -598,4 +598,45 @@ void main() {
       'import|retailerWebsite|canonical-source|schmand',
     );
   });
+
+  test('precomputes collision-aware widget keys for a feed snapshot', () {
+    final rows = [
+      OfferImportRecord(
+        sourceId: 'shared-item',
+        productLabel: 'Butter 250 g',
+        storeName: 'Lidl',
+        offerPrice: 1.29,
+        validUntil: DateTime(2026, 10, 17),
+        branchId: 'lidl-zellingen',
+      ),
+      OfferImportRecord(
+        sourceId: 'shared-item',
+        productLabel: 'Milch 1 l',
+        storeName: 'Lidl',
+        offerPrice: 0.99,
+        validUntil: DateTime(2026, 10, 17),
+        branchId: 'lidl-zellingen',
+      ),
+      OfferImportRecord(
+        sourceId: 'unique-item',
+        productLabel: 'Schmand 200 g',
+        storeName: 'Lidl',
+        offerPrice: 0.69,
+        validUntil: DateTime(2026, 10, 17),
+        branchId: 'lidl-zellingen',
+      ),
+    ];
+    final keys = prospectOfferWidgetKeys(rows);
+
+    expect(keys, hasLength(rows.length));
+    expect(keys[0], isNot(keys[1]));
+    expect(keys[2], prospectOfferRecordKey(rows[2]));
+    expect(
+      keys,
+      rows
+          .map((record) => prospectOfferWidgetKey(record, rows))
+          .toList(growable: false),
+    );
+  });
+
 }
