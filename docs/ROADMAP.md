@@ -1040,3 +1040,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 
 ## Update 17.10.2026 – Bildherkunft in Prospektangeboten
 - [x] Prospektangebote unterscheiden jetzt zwischen einem vom Adapter gelieferten Artikelbild und einem als Nachweis verwendeten Prospektseitenbild. Die Abdeckungsanzeige und Angebotskarten zeigen diese Herkunft ausdrücklich; fehlende oder ältere Bilddaten bleiben dadurch sichtbar.
+
+
+## Update 17.10.2026 – Produktmetadaten-Abdeckung in Prospektangeboten
+- [x] Die Prospektabdeckung weist vorhandene EAN/GTIN-, Packungsgrößen- und Grundpreisfelder je aktuellem Angebot getrennt aus.
+- [x] Fehlende Metadaten bleiben als sichtbare Lücke erhalten; aus Produktnamen werden keine EANs oder Packungsgrößen erfunden.
+- [x] Die Zusatzanzeige ändert weder Produktidentität noch Preis-/Routenprojektion und ist mit Parser- und Widgetregressionen abgesichert.
