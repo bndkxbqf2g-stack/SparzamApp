@@ -1,3 +1,14 @@
+## D214 – Erfolgreiche Prospekt-Refreshes werden branch-scharf reconciliiert
+
+Ein Feed kann mehrere Filialen desselben Händlers enthalten. Der alte
+refreshedStores-Labelstatus war dafür zu grob und konnte eine fehlerhafte
+Filiale in den automatischen Reconcile-Lauf einbeziehen. Der Parser erzeugt
+deshalb zusätzlich ProspectRefreshScope-Einträge: Ein Scope mit Branch-ID
+gilt nur für diese kanonische Filiale, ein Scope ohne Branch-ID bleibt
+ausdrücklich händlerweit. Alte Aufrufer dürfen weiterhin die Label-Liste
+verwenden. Die Preisbeobachtung bleibt append-only; nur der aktuelle
+branchgleiche Datensatz wird reconciliiert.
+
 ## D213 – Händlerlabel-Normalisierung gilt auch für aktivierte Routenmärkte
 
 Aktivierte Marktfilter dürfen Händler-Schreibvarianten über den gemeinsamen
