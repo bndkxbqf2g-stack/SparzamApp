@@ -1,3 +1,7 @@
+## Update 17.10.2026 – Listen-Metadaten werden nach Feed-Updates aktualisiert
+
+Der neue Helper in \`shopping_list_updates.dart\` wird durch einen lokalen Test mit geänderter Marke, Packungsgröße, Alias und Bild geprüft. Die Regression bestätigt, dass Menge, Notiz und Abhakstatus erhalten bleiben; Netzwerkanfragen und echte Nutzerdaten werden nicht verwendet.
+
 ## Update 17.10.2026 – Einkaufslisten-Metadaten-Roundtrip
 
 `scan_to_list_flow_test.dart` prüft jetzt zusätzlich Aliase, Favoriten-/Stammartikelstatus, Marke, Packungsmenge/-einheit und Bild nach dem Speichern und Laden über den Legacy-Schlüssel. Der Test verwendet ausschließlich synthetische lokale Daten.
