@@ -776,6 +776,8 @@ class _ProspectRegularPriceLedgerRow extends StatelessWidget {
       'bis ${_priceLedgerDate(observation.validUntil!)}',
       if (observation.sourceAdapter?.trim().isNotEmpty == true)
         'Quelle ${observation.sourceAdapter!.trim()}',
+      if (observation.evidenceConfidence != null)
+        'Evidenz ${evidenceConfidenceLabel(observation.evidenceConfidence!)}',
       'Nachweis vorhanden',
     ].join(' · ');
     final name = product?.name ?? observation.productId ?? 'Produkt unbekannt';
