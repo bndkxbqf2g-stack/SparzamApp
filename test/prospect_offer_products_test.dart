@@ -10,7 +10,7 @@ void main() {
   final current = DateTime(2026, 9, 30);
 
   test('cached feed merge keeps manual offers and replaces automatic imports', () {
-    const manual = Offer(
+    final manual = Offer(
       id: 'manual-milk',
       productId: 'milk',
       storeName: 'Netto',
@@ -18,7 +18,7 @@ void main() {
       offerPrice: 1.29,
       validUntil: DateTime(2026, 10, 2),
     );
-    const staleImport = Offer(
+    final staleImport = Offer(
       id: 'import|retailerWebsite|old|milk',
       productId: 'milk',
       storeName: 'Netto',
@@ -27,7 +27,7 @@ void main() {
       validUntil: DateTime(2026, 9, 29),
       source: 'retailerWebsite',
     );
-    const currentImport = Offer(
+    final currentImport = Offer(
       id: 'import|retailerWebsite|current|milk',
       productId: 'milk',
       storeName: 'Netto',
