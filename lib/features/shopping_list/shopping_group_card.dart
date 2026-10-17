@@ -403,6 +403,12 @@ class _ProductImage extends StatelessWidget {
           : Image.network(
               imageUrl,
               fit: BoxFit.contain,
+              // Shopping-list tiles are rebuilt while groups are expanded.
+              // Keep decoded product images bounded to the tile surface.
+              cacheWidth: 512,
+              cacheHeight: 256,
+              filterQuality: FilterQuality.low,
+              webHtmlElementStrategy: WebHtmlElementStrategy.never,
               errorBuilder: (context, error, stackTrace) => Icon(
                 Icons.local_grocery_store_outlined,
                 size: 42,
