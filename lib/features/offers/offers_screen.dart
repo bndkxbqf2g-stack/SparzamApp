@@ -354,6 +354,9 @@ class _ProspectOffersState extends State<_ProspectOffers> {
         record.storeName,
         sourceCategory,
         presentProspectCategory(sourceCategory),
+        record.ean ?? '',
+        record.packageSize ?? '',
+        record.priceByBaseUnit ?? '',
       ].join(' ').toLowerCase();
     }
     _searchIndexInput = widget.records;
