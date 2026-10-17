@@ -556,6 +556,50 @@ void main() {
     );
   });
 
+  testWidgets('fasst Cover-Schreibvarianten zusammen', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: OffersScreen(
+          catalogProducts: const <Product>[],
+          prospectIssues: [
+            ProspectIssue(
+              storeName: 'LIDL',
+              title: 'Aktionsprospekt',
+              pages: [
+                ProspectPage(
+                  number: 1,
+                  imageUrl: 'https://example.test/lidl-cover.png',
+                ),
+              ],
+              sourceStatus: 'ok',
+            ),
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Metadatenprospekt',
+              pages: [
+                ProspectPage(
+                  number: 1,
+                  imageUrl: 'https://example.test/lidl-metadata-cover.png',
+                ),
+              ],
+              sourceStatus: 'metadata_only',
+            ),
+          ],
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(
+      find.byKey(const ValueKey('offer-cover-open-grid-LIDL')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('offer-cover-open-grid-Lidl')),
+      findsNothing,
+    );
+  });
+
   testWidgets('trennt Artikelgruppen gleichnamiger Filialen', (tester) async {
     final records = [
       OfferImportRecord(
