@@ -122,6 +122,23 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   List<ReceiptPriceStat> receiptPriceStats = const <ReceiptPriceStat>[];
   List<Product> receiptCandidates = const <Product>[];
 
+  List<Product>? _suggestionsCache;
+  String? _suggestionsQuery;
+  List<RecentPurchase>? _suggestionsKnownItemsInput;
+  List<RecentPurchase>? _suggestionsRecentPurchasesInput;
+  Map<String, String>? _suggestionsPreferredProductsInput;
+  List<Product>? _suggestionsCatalogInput;
+  List<Product>? _suggestionsReceiptCandidatesInput;
+  List<Offer>? _suggestionsOffersInput;
+  List<MarketPrice>? _suggestionsMarketPricesInput;
+  List<ReceiptPriceStat>? _suggestionsReceiptStatsInput;
+  Map<String, ProspectPriceHistorySummary>? _suggestionsHistoryInput;
+  List<String>? _suggestionsStoresInput;
+  int? _suggestionsMaxAgeDays;
+  List<Product>? _relatedInterpretationsCache;
+  List<Product>? _relatedSuggestionsInput;
+  String? _relatedQuery;
+
   @override
   void initState() {
     super.initState();
@@ -169,19 +186,60 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     });
   }
 
-  List<Product> get suggestions => buildSuggestions(
-    query: controller.text,
-    knownItems: knownItems,
-    recentPurchases: widget.recentPurchases,
-    preferredProductByGroup: widget.preferredProductByGroup,
-    catalogProducts: [...widget.catalogProducts, ...receiptCandidates],
-    offers: widget.offers,
-    marketPrices: widget.marketPrices,
-    receiptPriceStats: receiptPriceStats,
-    prospectPriceHistory: widget.prospectPriceHistory,
-    enabledStores: widget.mobility.enabledStoreNames,
-    openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
-  );
+  List<Product> get suggestions {
+    final query = controller.text;
+    final stores = widget.mobility.enabledStoreNames;
+    final cached = _suggestionsCache;
+    if (cached != null &&
+        _suggestionsQuery == query &&
+        identical(_suggestionsKnownItemsInput, knownItems) &&
+        identical(_suggestionsRecentPurchasesInput, widget.recentPurchases) &&
+        identical(
+          _suggestionsPreferredProductsInput,
+          widget.preferredProductByGroup,
+        ) &&
+        identical(_suggestionsCatalogInput, widget.catalogProducts) &&
+        identical(
+          _suggestionsReceiptCandidatesInput,
+          receiptCandidates,
+        ) &&
+        identical(_suggestionsOffersInput, widget.offers) &&
+        identical(_suggestionsMarketPricesInput, widget.marketPrices) &&
+        identical(_suggestionsReceiptStatsInput, receiptPriceStats) &&
+        identical(_suggestionsHistoryInput, widget.prospectPriceHistory) &&
+        identical(_suggestionsStoresInput, stores) &&
+        _suggestionsMaxAgeDays == widget.openPricesMaxAgeDays) {
+      return cached;
+    }
+
+    final next = buildSuggestions(
+      query: query,
+      knownItems: knownItems,
+      recentPurchases: widget.recentPurchases,
+      preferredProductByGroup: widget.preferredProductByGroup,
+      catalogProducts: [...widget.catalogProducts, ...receiptCandidates],
+      offers: widget.offers,
+      marketPrices: widget.marketPrices,
+      receiptPriceStats: receiptPriceStats,
+      prospectPriceHistory: widget.prospectPriceHistory,
+      enabledStores: stores,
+      openPricesMaxAgeDays: widget.openPricesMaxAgeDays,
+    );
+    _suggestionsCache = next;
+    _suggestionsQuery = query;
+    _suggestionsKnownItemsInput = knownItems;
+    _suggestionsRecentPurchasesInput = widget.recentPurchases;
+    _suggestionsPreferredProductsInput = widget.preferredProductByGroup;
+    _suggestionsCatalogInput = widget.catalogProducts;
+    _suggestionsReceiptCandidatesInput = receiptCandidates;
+    _suggestionsOffersInput = widget.offers;
+    _suggestionsMarketPricesInput = widget.marketPrices;
+    _suggestionsReceiptStatsInput = receiptPriceStats;
+    _suggestionsHistoryInput = widget.prospectPriceHistory;
+    _suggestionsStoresInput = stores;
+    _suggestionsMaxAgeDays = widget.openPricesMaxAgeDays;
+    return next;
+  }
 
   ShoppingSuggestionPrice? suggestionPriceFor(Product product) =>
       shoppingSuggestionPriceForProduct(
@@ -211,13 +269,26 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         priceFor: suggestionPriceFor,
       );
 
-  List<Product> get relatedInterpretations =>
-      buildRelatedProductInterpretations(
-        query: controller.text,
-        primarySuggestions: suggestions,
-        catalogProducts: [...widget.catalogProducts, ...receiptCandidates],
-        priceFor: suggestionPriceFor,
-      );
+  List<Product> get relatedInterpretations {
+    final query = controller.text;
+    final primary = suggestions;
+    final cached = _relatedInterpretationsCache;
+    if (cached != null &&
+        _relatedQuery == query &&
+        identical(_relatedSuggestionsInput, primary)) {
+      return cached;
+    }
+    final next = buildRelatedProductInterpretations(
+      query: query,
+      primarySuggestions: primary,
+      catalogProducts: [...widget.catalogProducts, ...receiptCandidates],
+      priceFor: suggestionPriceFor,
+    );
+    _relatedQuery = query;
+    _relatedSuggestionsInput = primary;
+    _relatedInterpretationsCache = next;
+    return next;
+  }
 
   ShoppingPriceQuoteSnapshot? _quoteSnapshot;
   List<ListItem>? _quoteSnapshotItems;
