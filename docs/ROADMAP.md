@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Bestätigte Preisabdeckung bleibt aktuell
+
+- [x] Der Status der lokalen Normalpreisspeicherung zählt nur reguläre Beobachtungen mit `isCurrent=true`.
+- [x] Abgelöste historische Belege bleiben im Ledger, werden aber nicht als aktuelle Bestätigung oder Routenpreis gemeldet.
+- [x] Eine Regression schützt die gemeinsame Grenze von Persistenzstatus und Preisprojektion.
+
 ## Update 17.10.2026 – Evidenzsichere Produktauflösung
 
 - [x] Angebote- und Prospekte-Reiter teilen einen validierungsrelevanten Memo-Schlüssel.

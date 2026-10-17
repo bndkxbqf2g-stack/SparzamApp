@@ -1,3 +1,12 @@
+## D189 – Persistenzstatus folgt der aktuellen Preisprojektion
+
+Der lokale Prospektpreis-Ledger bleibt append-only: Ein erfolgreicher Feed-Refresh darf einen
+abgelösten regulären Beleg als historische Zeile behalten und mit `isCurrent=false` markieren.
+Die UI-Bestätigung der automatischen Speicherung darf deshalb nicht nur die Beobachtungs-ID
+finden, sondern muss denselben aktuellen Status prüfen, den die MarketPrice-Projektion für
+Routen verwendet. So wird ein historischer Normalpreis sichtbar gehalten, aber nicht erneut
+als aktuelle Preisabdeckung gezählt.
+
 ## D188 – Produktauflösungscaches enthalten ihre Validierungsgrundlage
 
 Ein UI-Cache für die Zuordnung eines Prospektartikels zu einem lokalen Produkt darf

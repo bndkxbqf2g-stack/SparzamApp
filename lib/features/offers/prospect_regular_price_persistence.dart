@@ -25,8 +25,15 @@ ProspectRegularPricePersistenceSummary
   required Iterable<PriceObservation> learned,
   required Iterable<PriceObservation> stored,
 }) {
+  // A row may remain in the append-only local history after a successful
+  // refresh supersedes it. Only the current projection is a confirmed
+  // coverage result; matching an old ID alone would make the UI report a
+  // price that route planning already excludes.
   final persistedIds = stored
-      .where((entry) => entry.kind == PriceObservationKind.regular)
+      .where(
+        (entry) =>
+            entry.kind == PriceObservationKind.regular && entry.isCurrent,
+      )
       .map((entry) => entry.id)
       .toSet();
   final countsByBranch = <String, int>{};
