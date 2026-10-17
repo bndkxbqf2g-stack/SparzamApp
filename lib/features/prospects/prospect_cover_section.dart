@@ -68,6 +68,18 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
   var _favoriteIndex = const ProspectFavoriteIndex.empty();
   String? _selectedStore;
   var _visibleGridCount = _gridPageSize;
+  List<ProspectIssue>? _uniqueIssuesInput;
+  List<ProspectIssue>? _uniqueIssuesCache;
+
+  List<ProspectIssue> _uniqueIssueList() {
+    if (identical(_uniqueIssuesInput, widget.issues)) {
+      return _uniqueIssuesCache ?? const <ProspectIssue>[];
+    }
+    final next = _uniqueIssues(widget.issues);
+    _uniqueIssuesInput = widget.issues;
+    _uniqueIssuesCache = next;
+    return next;
+  }
 
   @override
   void initState() {
@@ -125,7 +137,7 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
 
   Future<void> _chooseStore() async {
     final storesByKey = <String, String>{};
-    for (final issue in _uniqueIssues(widget.issues)) {
+    for (final issue in _uniqueIssueList()) {
       storesByKey.putIfAbsent(
         prospectStoreMatchKey(issue.storeName),
         () => issue.storeName,
@@ -166,7 +178,7 @@ class _ProspectCoverSectionState extends State<ProspectCoverSection> {
 
   @override
   Widget build(BuildContext context) {
-    final allIssues = _uniqueIssues(widget.issues);
+    final allIssues = _uniqueIssueList();
     final selectedStoreKey = _selectedStore == null
         ? null
         : prospectStoreMatchKey(_selectedStore!);
