@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import '../features/offers/offer_import.dart';
+import '../features/offers/offer_filter.dart';
 import 'barcode_normalizer.dart';
 import 'branch_identity.dart';
 import 'prospect_feed_cache.dart';
