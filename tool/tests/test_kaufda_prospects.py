@@ -1,7 +1,7 @@
 import pathlib
 import tempfile
 import unittest
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from unittest import mock
 
 from tool import kaufda_prospects as kaufda
@@ -550,6 +550,78 @@ class KaufdaProspectTest(unittest.TestCase):
                 max_age_hours=12,
             )
             self.assertEqual(cached_body, self.html)
+
+    def test_cache_document_keeps_newest_entries_with_entry_limit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            cache_path = pathlib.Path(directory) / "kaufda.json"
+            for index in range(kaufda.MAX_CACHE_ENTRIES + 2):
+                url = kaufda.build_search_url("Wuerzburg", f"Query {index}")
+                kaufda._save_cached_body(
+                    cache_path,
+                    url,
+                    self.html,
+                    datetime(2026, 10, 12, 8, tzinfo=timezone.utc) + timedelta(hours=index),
+                )
+
+            payload = kaufda.json.loads(cache_path.read_text(encoding="utf-8"))
+            self.assertLessEqual(len(payload), kaufda.MAX_CACHE_ENTRIES)
+            oldest = kaufda.build_search_url("Wuerzburg", "Query 0")
+            newest = kaufda.build_search_url(
+                "Wuerzburg", f"Query {kaufda.MAX_CACHE_ENTRIES + 1}"
+            )
+            self.assertIsNone(
+                kaufda._load_cached_body(
+                    cache_path,
+                    oldest,
+                    now=datetime(2026, 10, 14, 8, tzinfo=timezone.utc),
+                    max_age_hours=48,
+                )
+            )
+            self.assertIsNotNone(
+                kaufda._load_cached_body(
+                    cache_path,
+                    newest,
+                    now=datetime(2026, 10, 14, 8, tzinfo=timezone.utc),
+                    max_age_hours=48,
+                )
+            )
+
+    def test_cache_document_keeps_newest_body_with_byte_limit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            cache_path = pathlib.Path(directory) / "kaufda.json"
+            with mock.patch.object(kaufda, "MAX_CACHE_BYTES", 512):
+                first_url = kaufda.build_search_url("Wuerzburg", "first")
+                second_url = kaufda.build_search_url("Wuerzburg", "second")
+                body = "x" * 300
+                kaufda._save_cached_body(
+                    cache_path,
+                    first_url,
+                    body,
+                    datetime(2026, 10, 12, 8, tzinfo=timezone.utc),
+                )
+                kaufda._save_cached_body(
+                    cache_path,
+                    second_url,
+                    body,
+                    datetime(2026, 10, 12, 9, tzinfo=timezone.utc),
+                )
+
+            self.assertIsNone(
+                kaufda._load_cached_body(
+                    cache_path,
+                    first_url,
+                    now=datetime(2026, 10, 12, 10, tzinfo=timezone.utc),
+                    max_age_hours=12,
+                )
+            )
+            cached = kaufda._load_cached_body(
+                cache_path,
+                second_url,
+                now=datetime(2026, 10, 12, 10, tzinfo=timezone.utc),
+                max_age_hours=12,
+            )
+            self.assertIsNotNone(cached)
+            self.assertEqual(cached[0], body)
 
     def test_cache_write_failure_keeps_previous_document_readable(self):
         with tempfile.TemporaryDirectory() as directory:
