@@ -488,3 +488,9 @@ werden nur aus expliziten Quellfeldern übernommen.
 Die KaufDA-Regression prüft zusätzlich den neuesten Gruppenzeitpunkt: Ein
 älterer Cache-Treffer vor einer späteren Live-Antwort darf den gruppierten
 \`capturedAt\`-Wert nicht verjüngen; \`cacheUsed\` bleibt wahr.
+
+Die KaufDA-Regression prüft zusätzlich verschachtelte
+`validityPeriod.startDate/endDate`-Felder und Mengenobjekte mit Betrag/Einheit.
+Ein Datensatz mit nur einem verschachtelten Startdatum wird als ungültig
+ausgeschlossen. Der Test verwendet ausschließlich die versionierte synthetische
+Fixture.
