@@ -152,8 +152,11 @@ void main() {
     );
     expect(find.byType(Image), findsNWidgets(2));
     final renderedImages = tester.widgetList<Image>(find.byType(Image)).toList();
+    final resizedProviders = renderedImages
+        .map((image) => image.image)
+        .whereType<ResizeImage>();
     expect(
-      renderedImages.map((image) => image.cacheWidth),
+      resizedProviders.map((provider) => provider.width),
       containsAll(<int?>[520, 108]),
     );
     expect(
