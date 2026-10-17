@@ -48,6 +48,28 @@ void main() {
     );
   });
 
+  testWidgets('shows pending local persistence separately', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectFeedStatusCard(
+          generatedAt: DateTime(2026, 10, 1, 12, 2),
+          now: DateTime(2026, 10, 1, 12, 3),
+          regularPriceCount: 0,
+          regularPricePersistenceStatus:
+              ProspectRegularPricePersistenceStatus.pending,
+        ),
+      ),
+    );
+
+    expect(find.text('Aktueller Prospektstand'), findsOneWidget);
+    expect(
+      find.textContaining(
+        'Speicherstatus wird nach dem aktuellen Feed-Lauf geprüft.',
+      ),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('marks an old cached prospect feed as stale', (tester) async {
     await tester.pumpWidget(
       MaterialApp(

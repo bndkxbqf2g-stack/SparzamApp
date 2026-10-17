@@ -832,6 +832,21 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     int revision, {
     required bool Function() isSuperseded,
   }) async {
+    // Cached feeds are shown before their regular-price projection finishes.
+    // Reset the previous confirmation while this write is pending so the
+    // status card never presents an older feed's count as confirmed for the
+    // newly visible snapshot. A live refresh may supersede this pass before
+    // the queued write completes.
+    if (_isCurrentDataRevision(revision) &&
+        !isSuperseded() &&
+        mounted) {
+      setState(() {
+        prospectRegularPriceCount = 0;
+        prospectRegularPriceCountsByStore = const <String, int>{};
+        prospectRegularPricePersistenceStatus =
+            ProspectRegularPricePersistenceStatus.pending;
+      });
+    }
     ProspectRegularPricePersistenceResult? persistence;
     try {
       await _priceSaves.add(() async {
