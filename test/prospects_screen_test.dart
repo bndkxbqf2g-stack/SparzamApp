@@ -1706,10 +1706,7 @@ void main() {
     );
 
     final rail = tester.widget<ListView>(
-      find.byWidgetPredicate(
-        (widget) =>
-            widget is ListView && widget.scrollDirection == Axis.horizontal,
-      ),
+      find.byKey(const ValueKey('prospect-favorite-rail')),
     );
     expect(rail.scrollCacheExtent, const ScrollCacheExtent.pixels(0));
   });
