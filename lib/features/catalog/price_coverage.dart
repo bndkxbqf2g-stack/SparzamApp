@@ -54,7 +54,7 @@ List<StorePriceCoverage> calculateStorePriceCoverage(
   };
   // Direct prospect offers remain evidence only. They must not make a store
   // look covered by a current comparable price.
-  final eligiblePrices = prices.where((price) => !price.isProspectOffer);
+  final eligiblePrices = prices.where((price) => !price.isProspectOffer && price.isProspectRegularBasis);
   final result = names.map((name) {
     final matches = eligiblePrices.where((price) {
       if (price.storeName != name) return false;
@@ -106,7 +106,7 @@ PriceCoverage calculatePriceCoverage(
   // comparable current prices for catalog coverage.
   final catalogPrices = prices.where(
     (price) =>
-        !price.isProspectOffer && productById.containsKey(price.productId),
+        !price.isProspectOffer && price.isProspectRegularBasis && productById.containsKey(price.productId),
   );
   final incompatiblePrices = catalogPrices.where((price) {
     final product = productById[price.productId]!;
