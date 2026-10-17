@@ -353,7 +353,7 @@ void main() {
         productId: 'stale',
         storeName: 'Lidl',
         price: 1.39,
-        updatedAt: DateTime(2026, 8, 1),
+        updatedAt: DateTime(2026, 7, 1),
         source: MarketPriceSource.openPrices,
       ),
       MarketPrice(
