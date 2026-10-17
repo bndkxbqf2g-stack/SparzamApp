@@ -567,7 +567,7 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     final onAdd = widget.onAddToShoppingList;
     final canAdd = onAdd != null && selectableProduct != null;
     return ProspectOfferCard(
-      key: ValueKey('prospect-offer-${prospectOfferRecordKey(record)}'),
+      key: ValueKey('prospect-offer-${prospectOfferWidgetKey(record, widget.records)}'),
       record: record,
       product: selectableProduct,
       compact: true,
