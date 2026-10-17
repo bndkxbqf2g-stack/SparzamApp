@@ -65,7 +65,10 @@ class ShellPriceCoordinator {
     );
     final nextHistory = await priceHistoryStore.upsertObservations(
       incoming
-          .where((price) => !price.isProspectOffer)
+          .where(
+            (price) =>
+                !price.isProspectOffer && price.isProspectRegularBasis,
+          )
           .map(priceHistoryPoint),
       history,
     );
