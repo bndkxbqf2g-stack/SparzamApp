@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Erfassungszeitpunkt im Preisbeleg sichtbar
+
+- [x] Aktuelle gespeicherte Prospekt-Normalpreise zeigen neben Filiale,
+  Gültigkeit, Quelle und Evidenz auch den belegten Erfassungszeitpunkt.
+- [x] Die Darstellung bleibt rein informativ und verändert weder Preisrolle,
+  Aktualitätsprüfung noch Routenfreigabe.
+- [x] Die Preise-Reiter-Regression prüft die sichtbare Erfassungsangabe.
+
 ## Update 17.10.2026 – Clientseitiger Fallback für leere Händlerantworten
 
 - [x] Cache- und Asset-Snapshots je erfolgreichem Händler-/Filial-Scope auf

@@ -1,3 +1,12 @@
+## Update 17.10.2026 – Erfassungszeitpunkt im Preisbeleg sichtbar
+
+Der Preise-Reiter zeigt aktuelle gespeicherte Prospekt-Normalpreise jetzt mit
+dem beobachteten Erfassungsdatum. Damit sind Filiale, Gültigkeitszeitraum,
+Quelladapter, Evidenzstufe und Aktualität gemeinsam sichtbar. Die Angabe ist
+eine reine Herkunftsinformation; die bestehende Frische-, Identitäts- und
+Routenprüfung bleibt unverändert. Die Widget-Regression in
+`test/prices_hub_screen_test.dart` schützt die Darstellung.
+
 ## Update 17.10.2026 – Leere Livequellen verdrängen keinen gültigen lokalen Prospektstand
 
 Der mobile Feed-Service vergleicht Cache- und Asset-Snapshots nicht nur nach

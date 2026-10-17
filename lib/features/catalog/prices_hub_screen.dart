@@ -774,6 +774,7 @@ class _ProspectRegularPriceLedgerRow extends StatelessWidget {
       if (observation.validFrom != null)
         'ab ${_priceLedgerDate(observation.validFrom!)}',
       'bis ${_priceLedgerDate(observation.validUntil!)}',
+      'Erfasst ${_priceLedgerDate(observation.observedAt)}',
       if (observation.sourceAdapter?.trim().isNotEmpty == true)
         'Quelle ${observation.sourceAdapter!.trim()}',
       if (observation.evidenceConfidence != null)
