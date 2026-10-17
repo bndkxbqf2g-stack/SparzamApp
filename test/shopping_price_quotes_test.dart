@@ -1119,6 +1119,42 @@ void main() {
   });
 
 
+  test(
+    'matrix and highlighted quote prefer newer equal-quality evidence',
+    () {
+      final quotes = shoppingQuotes(
+        item,
+        prices: [
+          MarketPrice(
+            productId: milk.id,
+            storeName: 'ALDI Süd',
+            price: 1.00,
+            updatedAt: DateTime(2026, 9, 22),
+            source: MarketPriceSource.receipt,
+          ),
+          MarketPrice(
+            productId: milk.id,
+            storeName: 'ALDI Süd',
+            price: 1.00,
+            updatedAt: DateTime(2026, 9, 24),
+            source: MarketPriceSource.openPrices,
+          ),
+        ],
+        offers: const [],
+        enabledStores: const ['ALDI Süd'],
+        now: DateTime(2026, 9, 24),
+      );
+
+      expect(quotes.first.kind, ShoppingQuoteKind.openPrices);
+
+      final matrix = shoppingPriceMatrixFromQuotes(
+        quotes,
+        enabledStores: const ['ALDI Süd'],
+      );
+      expect(matrix.single.quote?.kind, ShoppingQuoteKind.openPrices);
+    },
+  );
+
   test('accepts retailer label variants from enabled stores', () {
     final quote = shoppingQuotes(
       item,
@@ -1154,7 +1190,7 @@ void main() {
     expect(matrix, hasLength(1));
     expect(matrix.single.storeName, 'ALDI Süd');
     expect(matrix.single.quote?.storeName, 'ALDI SUED');
-  });
+  });
   test('snapshot indexing keeps exact and generic candidates isolated', () {
     const generic = Product(
       id: 'generic-milk-request',
