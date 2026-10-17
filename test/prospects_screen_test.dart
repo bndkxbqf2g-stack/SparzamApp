@@ -594,6 +594,8 @@ void main() {
       600,
       scrollable: find.byType(Scrollable).first,
     );
+    await tester.ensureVisible(loadMore);
+    await tester.pumpAndSettle();
     expect(find.text('Weitere Artikel laden (40)'), findsOneWidget);
 
     await tester.tap(loadMore);
