@@ -169,7 +169,7 @@ PriceDataQuality calculatePriceDataQuality(
     final locationId = price.sourceLocationId?.trim();
     final storeLocation = locationId == null || locationId.isEmpty
         ? price.storeName
-        : price.storeName + ' · ' + locationId;
+        : '${price.storeName} · $locationId';
     currentByStoreLocation.update(
       storeLocation,
       (count) => count + 1,
