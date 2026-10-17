@@ -137,7 +137,7 @@ class RoutePriceResolver {
     final matches = offers.where(
       (offer) =>
           offer.productId == product.id &&
-          _sameRouteStoreLabel(offer.storeName, store.name) &&
+          sameStoreLabel(offer.storeName, store.name) &&
           offerMatchesProduct(offer, product) &&
           _offerBelongsToStore(offer, store) &&
           hasExactOfferBranch(offer) &&
@@ -184,7 +184,7 @@ class RoutePriceResolver {
     final candidates = _marketPriceCandidates.where(
       (price) =>
           price.productId == product.id &&
-          _sameRouteStoreLabel(price.storeName, store.name) &&
+          sameStoreLabel(price.storeName, store.name) &&
           marketPriceMatchesProduct(price, product),
     );
     final branchId = canonicalBranchId(store.branchId);
@@ -268,23 +268,4 @@ int _compareOfferText(String? candidate, String? previous) {
   if (candidate == null) return 1;
   if (previous == null) return -1;
   return candidate.trim().toLowerCase().compareTo(previous.trim().toLowerCase());
-}
-
-
-
-
-/// Matches only presentation-level retailer spelling differences.
-///
-/// Store branches remain protected by the exact branch comparison in
-/// [_offerBelongsToStore] and [_bestMarketPrice]. This helper does not merge
-/// arbitrary aliases or substrings; it only aligns case, punctuation,
-/// diacritics, and the common ae/oe/ue transliterations used by public feeds.
-bool _sameRouteStoreLabel(String candidate, String configured) {
-  String key(String value) => normalizeStoreIdentityText(value)
-      .replaceAll('ae', 'a')
-      .replaceAll('oe', 'o')
-      .replaceAll('ue', 'u');
-  final candidateKey = key(candidate);
-  final configuredKey = key(configured);
-  return candidateKey.isNotEmpty && candidateKey == configuredKey;
 }
