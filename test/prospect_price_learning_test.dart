@@ -5,6 +5,7 @@ import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/market_price.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/services/market_price_observation_adapter.dart';
+import 'package:sparzamapp/services/prospect_feed_service.dart';
 
 void main() {
   test('does not date prospect prices when the feed timestamp is missing', () {
@@ -745,4 +746,42 @@ void main() {
     expect(first.single.source, PriceObservationSource.retailerWebsite);
     expect(second.single.source, PriceObservationSource.retailerWebsite);
   });
+
+  test('learns regular prices only from refreshed exact branches', () {
+    final now = DateTime(2026, 10, 17, 12);
+    OfferImportRecord record(String id, String branch) => OfferImportRecord(
+          sourceId: id,
+          productLabel: 'Butter 250 g',
+          storeName: 'Lidl',
+          offerPrice: 1.49,
+          originalPrice: 1.99,
+          validFrom: DateTime(2026, 10, 12),
+          validUntil: DateTime(2026, 10, 18),
+          source: 'retailerWebsite',
+          branchId: branch,
+          proofRef: 'https://example.test/lidl/$branch',
+          capturedAt: now,
+        );
+
+    final regular = datedProspectRegularPriceObservations(
+      records: [
+        record('zellingen', 'lidl-zellingen'),
+        record('wuerzburg', 'lidl-wuerzburg'),
+      ],
+      catalogProducts: const [],
+      now: now,
+      refreshedStoreScopes: const [
+        ProspectRefreshScope(
+          storeName: 'Lidl',
+          branchId: 'LIDL-ZELLINGEN',
+        ),
+      ],
+    );
+
+    expect(regular, hasLength(1));
+    expect(regular.single.locationId, 'lidl-zellingen');
+    expect(regular.single.kind, PriceObservationKind.regular);
+    expect(regular.single.price, 1.99);
+  });
+
 }
