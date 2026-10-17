@@ -4,6 +4,12 @@
 - [x] Abgelöste historische Belege bleiben im Ledger, werden aber nicht als aktuelle Bestätigung oder Routenpreis gemeldet.
 - [x] Eine Regression schützt die gemeinsame Grenze von Persistenzstatus und Preisprojektion.
 
+## Update 17.10.2026 – Prospekt-Suchpfad bleibt bei Händlerformatvarianten filialgenau
+
+- [x] Suche, Filialabdeckung und sichtbare Prospektgruppen verwenden einen gemeinsamen normalisierten Händlervergleich.
+- [x] Groß-/Kleinschreibung, Leerraum und deutsche Schreibvarianten ändern keine bestehende Filial-ID.
+- [x] Eine Regression schützt die Normalisierung ohne Zusammenlegung verschiedener Branches.
+
 ## Update 17.10.2026 – Evidenzsichere Produktauflösung
 
 - [x] Angebote- und Prospekte-Reiter teilen einen validierungsrelevanten Memo-Schlüssel.
