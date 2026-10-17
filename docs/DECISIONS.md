@@ -1,3 +1,7 @@
+## D194 – Marktpreis-Evidenz wird zentral und deterministisch gerankt
+
+Planung, `RoutePriceResolver` und die Projektion von Bon-Familienpreisen dürfen dieselbe Beobachtung nicht mit leicht unterschiedlichen Regeln auswählen. `compareMarketPriceEvidence` bewertet deshalb zuerst den qualitätsbereinigten Betrag, danach den jüngeren Erfassungszeitpunkt und erst bei vollständigem Gleichstand die dokumentierte Quellpriorität und stabilen Metadaten-Tie-Breaker. Die Auswahl erhält nur bereits validierte Preise; unbestätigte Identitäten und fehlende Packungsbasen bleiben Datenlücken. Exakte Filial-IDs bleiben Teil des Schlüssels.
+
 ## D193 – Feed-Join normalisiert Händlerdarstellung ohne Datenidentität zu ändern
 
 Der Feedparser verbindet Source-Metadaten, Prospektseiten und Angebotszeilen über einen
