@@ -116,6 +116,10 @@ bool isEligibleProspectPriceRecord(OfferImportRecord record) {
       record.storeName.trim().isNotEmpty &&
       record.productLabel.trim().isNotEmpty &&
       !record.regionalOnly &&
+      isFoodProspectRecord(
+        label: record.productLabel,
+        category: record.category,
+      ) &&
       (record.ean?.trim().isNotEmpty != true ||
           normalizeBarcode(record.ean!.trim()) != null) &&
       hasExactOfferRecordBranch(record) &&
