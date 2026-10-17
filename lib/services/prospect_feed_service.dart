@@ -900,7 +900,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
 }
 
 String _prospectPageImageKey(String storeName, int pageNumber) =>
-    '${normalizeStoreIdentityText(storeName)}\\u001f$pageNumber';
+    '${_prospectStoreMetadataKey(storeName)}\\u001f$pageNumber';
 
 String? _prospectPageImageForOffer(
   Map<String, List<_ProspectPageImageCandidate>> pagesByStoreAndNumber, {
