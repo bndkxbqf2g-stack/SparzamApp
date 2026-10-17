@@ -4031,3 +4031,14 @@ verwendet die Gruppierung jetzt den neuesten erfolgreichen \`capturedAt\`-
 Zeitpunkt. Ein älterer Cache-Treffer kann einen späteren Live-Nachweis nicht
 mehr verdecken; \`cacheUsed\` bleibt als gemischte Herkunft sichtbar. Die
 Einzelangebote behalten weiterhin ihren eigenen Erfassungszeitpunkt.
+
+## Update 17.10.2026 – KaufDA verschachtelte Gültigkeit und Packungsgröße
+
+Der optionale KaufDA-Parser liest Gültigkeitszeiträume jetzt auch aus
+ausdrücklich benannten verschachtelten Feldern wie `validityPeriod.startDate`
+und `validityPeriod.endDate`. Ein fehlendes oder ungültiges Ende bleibt
+ungültig und wird nicht als aktuelles Angebot übernommen.
+
+Mengenobjekte mit explizitem Betrag und Einheit werden begrenzt zu einer
+Packungsangabe normalisiert. Die Herkunft bleibt im KaufDA-Datensatz; es
+entsteht keine neue Produktidentität und kein Preis ohne belegten Zeitraum.
