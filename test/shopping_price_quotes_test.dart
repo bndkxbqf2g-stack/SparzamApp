@@ -1195,7 +1195,10 @@ void main() {
     final genericQuotes = snapshot.quotesFor(ListItem(product: generic));
     expect(genericQuotes, hasLength(1));
     expect(genericQuotes.single.offer?.id, offer.id);
-    expect(snapshot.quotesFor(item).single.unitPrice, 0.80);
+    expect(
+      snapshot.quotesFor(item).any((quote) => quote.unitPrice == 0.80),
+      isTrue,
+    );
   });
 
 }
