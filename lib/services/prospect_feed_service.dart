@@ -130,7 +130,10 @@ ProspectFeedLoadResult preserveCurrentProspectRowsForEmptySources({
       .toList(growable: false);
 
   final additions = <OfferImportRecord>[];
-  final knownKeys = incoming.records.map(prospectOfferRecordKey).toSet();
+  // Historical or malformed incoming rows must not block a still-valid
+  // fallback row with the same source ID. A current incoming row already
+  // short-circuits its scope above, so only current keys belong here.
+  final knownKeys = incomingCurrent.map(prospectOfferRecordKey).toSet();
   final fallbackCounts = <String, int>{};
   for (final scope in scopes) {
     final hasIncomingRows = incomingCurrent.any(
