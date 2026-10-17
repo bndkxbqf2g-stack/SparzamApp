@@ -1,3 +1,14 @@
+## Regulärer Prospektpreis und Quellenfeld
+
+Ein importierter Prospektdatensatz darf einen regulären Preis nur aus einem
+ausdrücklich benannten Streich-/Normalpreisfeld ableiten. Das optionale Feld
+`OfferImportRecord.regularPriceSource` bewahrt den konkreten Alias (zum Beispiel
+`regularPrice`, `oldPrice` oder `secondaryPrice`) bis zur
+`PriceObservation`. Die Feedgrenze verwirft unbekannte Marker; bei neuen
+Adapterzeilen mit konkreter `sourceAdapter`-Kennung fehlt der Marker nicht
+stillschweigend. `offerPrice` bleibt davon getrennte, zeitlich gültige
+Aktions-Evidenz und wird nicht als reguläre Preisbasis gespeichert.
+
 # SparzamApp – Architektur
 
 ## Grundprinzip

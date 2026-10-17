@@ -273,6 +273,16 @@ class ProspectParserTest(unittest.TestCase):
         )
         self.assertEqual(item["packageSize"], "250 g")
         self.assertEqual(item["priceByBaseUnit"], "7,96 €/kg")
+        with_regular = refresh.record(
+            "Lidl",
+            "Butter 250 g",
+            1.99,
+            refresh.date(2026, 10, 12),
+            refresh.date(2026, 10, 17),
+            "https://example.test/butter",
+            original=2.49,
+        )
+        self.assertEqual(with_regular["regularPriceSource"], "originalPrice")
 
     def test_record_uses_total_multipack_quantity(self):
         item = refresh.record(

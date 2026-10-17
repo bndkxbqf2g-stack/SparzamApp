@@ -35,6 +35,7 @@ class OfferImportRecord {
     this.category,
     this.packageSize,
     this.priceByBaseUnit,
+    this.regularPriceSource,
     this.sourceAdapter,
     this.regionalOnly = false,
     this.brochureId,
@@ -76,6 +77,11 @@ class OfferImportRecord {
   final String? packageSize;
   final String? priceByBaseUnit;
 
+  /// Exact source field that supplied an explicitly stated regular/crossed-out
+  /// price. It is optional for legacy records; new adapters should preserve it
+  /// so automatic regular-price persistence remains auditable.
+  final String? regularPriceSource;
+
   /// Optional adapter identity and regional/leaflet context. A regional-only
   /// result is diagnostic evidence and must not be treated as an exact branch
   /// price by route planning.
@@ -96,6 +102,48 @@ class OfferImportRecord {
 
   /// Source-provided branch address kept with the exact offer record.
   final String? address;
+}
+ 
+/// Canonical source-field names for an explicitly stated regular/crossed-out
+/// prospect price. Unknown values remain null so an adapter cannot silently
+/// relabel a UVP, discount or unrelated numeric field as a regular price.
+String? canonicalProspectRegularPriceSource(String? value) {
+  final normalized = value?.trim().toLowerCase();
+  if (normalized == null || normalized.isEmpty) return null;
+  return switch (normalized) {
+    'streichpreis' => 'streichpreis',
+    'waspricedisplay' => 'wasPriceDisplay',
+    'wasprice' => 'wasPrice',
+    'originalprice' => 'originalPrice',
+    'regularprice' => 'regularPrice',
+    'normalprice' => 'normalPrice',
+    'alterpreis' => 'alterPreis',
+    'oldprice' => 'oldPrice',
+    'pricebefore' => 'priceBefore',
+    'previousprice' => 'previousPrice',
+    'crossedoutprice' => 'crossedOutPrice',
+    'strikethroughprice' => 'strikethroughPrice',
+    'waspricenumeric' => 'wasPriceNumeric',
+    'original_price' => 'original_price',
+    'regular_price' => 'regular_price',
+    'normal_price' => 'normal_price',
+    'old_price' => 'old_price',
+    'previous_price' => 'previous_price',
+    'crossed_out_price' => 'crossed_out_price',
+    'strikethrough_price' => 'strikethrough_price',
+    'secondaryprice' => 'secondaryPrice',
+    'spare' => 'spare',
+    _ => null,
+  };
+}
+
+/// Returns whether a non-empty source marker is one of the explicit regular
+/// price fields understood by the feed boundary.
+bool isKnownProspectRegularPriceSource(String? value) {
+  final raw = value?.trim();
+  return raw == null ||
+      raw.isEmpty ||
+      canonicalProspectRegularPriceSource(raw) != null;
 }
 
 /// Reusable catalog indexes for batch prospect resolution.
@@ -162,6 +210,7 @@ String prospectOfferRecordKey(OfferImportRecord record) {
     record.ean?.trim() ?? '',
     record.offerPrice.toStringAsFixed(2),
     record.originalPrice?.toStringAsFixed(2) ?? '',
+    record.regularPriceSource?.trim().toLowerCase() ?? '',
     record.validFrom?.toIso8601String() ?? '',
     record.validUntil.toIso8601String(),
     record.brochureId?.trim() ?? '',
@@ -195,6 +244,7 @@ String prospectOfferResolutionKey(OfferImportRecord record) => [
       record.packageSize?.trim().toLowerCase() ?? '',
       record.offerPrice.toStringAsFixed(4),
       record.originalPrice?.toStringAsFixed(4) ?? '',
+      record.regularPriceSource?.trim().toLowerCase() ?? '',
       record.validFrom?.toIso8601String() ?? '',
       record.validUntil.toIso8601String(),
       record.source.trim().toLowerCase(),

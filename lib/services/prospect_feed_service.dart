@@ -1189,11 +1189,23 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
       ],
     );
     final originalPrice = _priceValue(originalPriceValue);
+    final explicitRegularPriceSource =
+        _optionalNonEmptyString(value['regularPriceSource']);
+    final inferredRegularPriceSource =
+        _inferProspectRegularPriceSource(value);
+    final rawRegularPriceSource =
+        explicitRegularPriceSource ?? inferredRegularPriceSource;
+    final regularPriceSource = originalPrice == null
+        ? null
+        : canonicalProspectRegularPriceSource(rawRegularPriceSource);
     final hasMalformedOriginalPrice = originalPriceValue != null &&
         (originalPrice == null ||
             !originalPrice.isFinite ||
             originalPrice <= 0);
-    if (hasMalformedOriginalPrice) continue;
+    final hasMalformedRegularPriceSource = originalPrice != null &&
+        rawRegularPriceSource != null &&
+        regularPriceSource == null;
+    if (hasMalformedOriginalPrice || hasMalformedRegularPriceSource) continue;
     final regionalOnlyValue = value['regionalOnly'];
     final parsedRegionalOnly = _boolValue(regionalOnlyValue);
     final explicitSourceAdapter = _optionalNonEmptyString(
@@ -1257,6 +1269,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         storeName: storeName,
         ean: ean,
         originalPrice: originalPrice,
+        regularPriceSource: regularPriceSource,
         offerPrice: offerPrice,
         validFrom: validFrom,
         validUntil: validUntil,
@@ -1308,6 +1321,37 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     prospects: prospects,
     fromCache: fromCache,
   );
+}
+
+String? _inferProspectRegularPriceSource(Map<String, dynamic> value) {
+  const keys = <String>[
+    'originalPrice',
+    'streichpreis',
+    'regularPrice',
+    'normalPrice',
+    'wasPrice',
+    'wasPriceDisplay',
+    'alterPreis',
+    'oldPrice',
+    'priceBefore',
+    'previousPrice',
+    'crossedOutPrice',
+    'strikethroughPrice',
+    'wasPriceNumeric',
+    'original_price',
+    'regular_price',
+    'normal_price',
+    'old_price',
+    'previous_price',
+    'crossed_out_price',
+    'strikethrough_price',
+    'secondaryPrice',
+    'spare',
+  ];
+  for (final key in keys) {
+    if (value[key] != null) return key;
+  }
+  return null;
 }
 
 String _prospectPageImageKey(String storeName, int pageNumber) =>

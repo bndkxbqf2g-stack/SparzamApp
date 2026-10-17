@@ -434,6 +434,7 @@ def record(
     original=None,
     image=None,
     category=None,
+    original_source=None,
 ):
     result = {
         "sourceId": stable_id(store, proof, label + str(offer_price)),
@@ -447,6 +448,9 @@ def record(
     }
     if original is not None and original >= offer_price:
         result["originalPrice"] = round(float(original), 2)
+        result["regularPriceSource"] = clean(
+            original_source or "originalPrice"
+        )
     validated_image = _source_image({"image": image}) if image else None
     if validated_image:
         result["imageUrl"] = validated_image
@@ -939,7 +943,18 @@ def parse_aldi(html_text, base_url):
             label = price_re.sub("", label)
         label = clean(label)
         if len(label) >= 3:
-            offers.append(record("ALDI Süd", label, offer_price, valid_from, valid_until, proof, original))
+            offers.append(
+                record(
+                    "ALDI Süd",
+                    label,
+                    offer_price,
+                    valid_from,
+                    valid_until,
+                    proof,
+                    original,
+                    original_source="spare" if original is not None else None,
+                )
+            )
     return dedupe(offers), []
 
 EDEKA_API_URL = "https://www.edeka.de/eh/service/eh/offers"
@@ -3345,7 +3360,7 @@ def dedupe(offers):
         else:
             selected, supplement = item, previous
         merged = dict(selected)
-        for field in ("imageUrl", "category", "packageSize", "priceByBaseUnit", "brochureId", "brochurePage", "publisherId"):
+        for field in ("imageUrl", "category", "packageSize", "priceByBaseUnit", "regularPriceSource", "brochureId", "brochurePage", "publisherId"):
             if not clean(merged.get(field)) and clean(supplement.get(field)):
                 merged[field] = supplement[field]
         # Keep a verified struck-through price when only the duplicate carries
