@@ -544,11 +544,11 @@ void main() {
 
     expect(find.text('120 passende Prospektartikel'), findsOneWidget);
     expect(
-      find.byKey(const ValueKey('prospect-search-offer-search-0')),
+      find.byKey(const ValueKey('prospect-search-offer-Lidl|search-0')),
       findsOneWidget,
     );
     expect(
-      find.byKey(const ValueKey('prospect-search-offer-search-119')),
+      find.byKey(const ValueKey('prospect-search-offer-Lidl|search-119')),
       findsNothing,
     );
   });
