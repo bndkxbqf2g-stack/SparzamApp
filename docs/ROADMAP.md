@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Händlerlabel-Varianten im Routenfilter
+
+- [x] Aktivierte Märkte über den gemeinsamen Präsentationsschlüssel filtern.
+- [x] LIDL/Lidl und ALDI SUED/ALDI Süd mit einer Regression absichern.
+- [x] Exakte Filialidentität und Branch-IDs unverändert lassen.
+
 ## Update 17.10.2026 – Coverage bei Händler-Schreibvarianten
 
 - [x] Issues und Angebotszeilen über den gemeinsamen Match-Schlüssel zusammenführen.
