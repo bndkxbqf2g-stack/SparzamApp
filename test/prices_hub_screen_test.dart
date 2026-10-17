@@ -297,7 +297,8 @@ void main() {
           price: 3.99,
           updatedAt: DateTime(2026, 10, 13),
           source: MarketPriceSource.prospect,
-          kind: PriceObservationKind.offer,
+          // Legacy rows may omit kind but retain the discounted marker.
+          discounted: true,
         ),
         MarketPrice(
           productId: 'bread',
