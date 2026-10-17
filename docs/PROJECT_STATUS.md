@@ -1,3 +1,13 @@
+## Update 17.10.2026 – Routenberechnung vermeidet wiederholte Permutationssuche
+
+Der `RouteOptimizer` materialisiert die ausgewählten exakten Filialen einmal und
+cached das deterministische `OptimizedTravelRoute`-Ergebnis innerhalb seines
+unveränderten Eingabesnapshots. Die Signatur enthält die bestehende
+Filialidentität und `distanceKm`; damit bleiben gleiche Händlernamen,
+Branch-IDs und Distanzänderungen getrennt. Der Fallback behält seine bisherige
+Reihenfolge, während vollständige Straßenmatrizen wiederholte
+Permutationssuchen vermeiden.
+
 ## Update 17.10.2026 – Favoritenindex für flüssigeres Prospekt-Scrollen
 
 Die Prospekt-Coveransicht und die vollständige Prospektübersicht indexieren
