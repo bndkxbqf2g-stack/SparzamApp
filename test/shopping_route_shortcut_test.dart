@@ -16,7 +16,7 @@ void main() {
 
   tearDown(() => SharedPreferencesAsyncPlatform.instance = null);
 
-  testWidgets('gefüllte Einkaufsliste öffnet direkt die Sparroute', (
+  testWidgets('gefüllte Einkaufsliste kennzeichnet fehlende Preise', (
     tester,
   ) async {
     const product = Product(
@@ -53,7 +53,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final shortcut = find.text('Sparroute prüfen');
+    final shortcut = find.text('Teilroute prüfen');
     expect(shortcut, findsOneWidget);
     await tester.tap(shortcut);
     expect(opened, 1);

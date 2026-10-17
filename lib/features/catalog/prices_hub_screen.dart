@@ -1041,7 +1041,9 @@ class _ListCoverageCard extends StatelessWidget {
                       child: FilledButton.tonalIcon(
                         onPressed: onOpenRoute,
                         icon: const Icon(Icons.route_outlined),
-                        label: const Text('Route prüfen'),
+                        label: Text(
+                          missing > 0 ? 'Teilroute prüfen' : 'Route prüfen',
+                        ),
                       ),
                     ),
                 ],

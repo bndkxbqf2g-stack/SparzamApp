@@ -1594,3 +1594,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Prospektkarten berechnen einen sichtbaren Grundpreis, wenn das Label eine eindeutige Menge in g/kg/ml/l oder Stück enthält und die Quelle keinen Grundpreis liefert.
 - [x] Mehrfachpackungen und Bereichs-/Alternativmengen bleiben bei unklarer Basis ohne berechneten Grundpreis; dadurch entsteht keine falsche Vergleichbarkeit.
 - [x] Die Berechnung bleibt eine UI-Darstellung aus dem belegten Angebotspreis und verändert weder PriceObservation noch Routenplanung.
+
+## Update 18.10.2026 – Teilrouten im Preise- und Listen-Reiter sichtbar
+
+- [x] Einstiegsschaltflächen weisen bei fehlenden aktuellen Preisen ausdrücklich auf eine Teilroute hin.
+- [x] Bei vollständiger Preisabdeckung bleiben die bisherigen Route-/Sparroute-Bezeichnungen erhalten.
+- [x] Die Anzeige ändert keine Preis- oder Routenentscheidung; die bestehende Datenlücken- und Kostenaufschlüsselung bleibt maßgeblich.
