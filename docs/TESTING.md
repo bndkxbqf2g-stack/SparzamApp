@@ -506,6 +506,6 @@ drei neuere historische Zeilen vorhanden sind. Die globale automatische
 Obergrenze bleibt unverändert.
 
 Die versionierte Kaufland-Coverregression verwendet jetzt den im Asset
-gespeicherten `generatedAt)-Tag als Referenztag und prüft Start/Ende,
+gespeicherten `generatedAt`-Tag als Referenztag und prüft Start/Ende,
 Coverseite und Branch-ID. Ein später aktualisiertes, weiterhin gültiges
 Prospektfenster erzeugt dadurch keinen falschen CI-Fehler.
