@@ -1323,7 +1323,7 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     expect(
-      find.byKey(const ValueKey('prospect-page-image-20')),
+      find.byKey(const ValueKey('prospect-page-image-20-19')),
       findsOneWidget,
     );
   });
@@ -1941,28 +1941,14 @@ void main() {
     expect(find.text('Seite 1'), findsOneWidget);
     expect(find.text('Seite 2'), findsOneWidget);
     expect(
-      find.byKey(const ValueKey('prospect-page-image-1')),
+      find.byKey(const ValueKey('prospect-page-image-1-0')),
       findsOneWidget,
     );
     expect(
-      find.byKey(const ValueKey('prospect-page-image-2')),
+      find.byKey(const ValueKey('prospect-page-image-2-1')),
       findsOneWidget,
     );
   });
-
-}
-
-Future<void> _scrollProspects(
-  WidgetTester tester, {
-  double distance = 320,
-}) async {
-  final scrollable = find.byWidgetPredicate(
-    (widget) =>
-        widget is Scrollable && widget.axisDirection == AxisDirection.down,
-  );
-  await tester.drag(scrollable.first, Offset(0, -distance));
-  await tester.pumpAndSettle();
-
 
 
   testWidgets('hält doppelte Quell-Seitennummern beim Scrollen getrennt', (
@@ -2006,7 +1992,19 @@ Future<void> _scrollProspects(
       findsOneWidget,
     );
   });
-
 }
+
+Future<void> _scrollProspects(
+  WidgetTester tester, {
+  double distance = 320,
+}) async {
+  final scrollable = find.byWidgetPredicate(
+    (widget) =>
+        widget is Scrollable && widget.axisDirection == AxisDirection.down,
+  );
+  await tester.drag(scrollable.first, Offset(0, -distance));
+  await tester.pumpAndSettle();
+
+
 
 
