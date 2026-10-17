@@ -14,6 +14,7 @@ class Offer {
     this.validFrom,
     this.source = 'manual',
     this.sourceAdapter,
+    this.regularPriceSource,
     this.capturedAt,
     this.proofRef,
     this.imageUrl,
@@ -50,6 +51,9 @@ class Offer {
   /// `source == retailerWebsite`, while this field preserves the adapter
   /// that produced the evidence.
   final String? sourceAdapter;
+  /// Exact source field that supplied the explicitly stated regular/crossed-out
+  /// price. Legacy offers may omit this marker.
+  final String? regularPriceSource;
   /// Timestamp supplied by the adapter when this offer was captured. It is
   /// optional for legacy/manual offers and is evidence metadata only; validity
   /// still comes from [validFrom]/[validUntil].
@@ -122,6 +126,7 @@ class Offer {
       validFrom: DateTime.tryParse(json['validFrom'] as String? ?? ''),
       source: json['source'] as String? ?? 'manual',
       sourceAdapter: json['sourceAdapter'] as String?,
+      regularPriceSource: json['regularPriceSource'] as String?,
       capturedAt: DateTime.tryParse(json['capturedAt'] as String? ?? ''),
       proofRef: json['proofRef'] as String?,
       imageUrl: json['imageUrl'] as String?,
@@ -175,6 +180,7 @@ class Offer {
         'validFrom': validFrom?.toIso8601String(),
         'source': source,
         'sourceAdapter': sourceAdapter,
+        'regularPriceSource': regularPriceSource,
         'capturedAt': capturedAt?.toIso8601String(),
         'proofRef': proofRef,
         'imageUrl': imageUrl,
