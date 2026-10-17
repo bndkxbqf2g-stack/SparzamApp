@@ -1,3 +1,11 @@
+## Update 17.10.2026 – KaufDA-Suchabfragen mit begrenzten Batches
+
+Der optionale KaufDA-Adapter lädt öffentliche Suchseiten jetzt in kleinen,
+deterministischen Zweier-Batches vor. Parser, Cache-Schreibvorgang und
+Händlergruppierung bleiben in Suchreihenfolge; injizierte Test-/Offline-Fetcher
+bleiben seriell. Die Quelle bleibt standardmäßig deaktiviert, und zwischen
+Batches gilt weiterhin die konfigurierte Anfragepause.
+
 ## Update 17.10.2026 – Preise-Reiter trennt unbelegte Angebotspreise
 
 Der Preise-Reiter weist jetzt zusätzlich aus, wie viele aktuelle importierte
