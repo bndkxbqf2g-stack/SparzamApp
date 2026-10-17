@@ -620,6 +620,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       // Start the local snapshot and the normal refresh together. A slow
       // asset/cache read must never delay the first live result.
       var networkFeedShown = false;
+      // A failed live refresh must not leave the persistence card in a
+      // perpetual pending state when no cached feed could be shown.
+      var feedWasShown = false;
       if (preferCached) {
         unawaited(() async {
           try {
@@ -630,6 +633,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                 _isCurrentDataRevision(revision) &&
                 cached != null) {
               _showProspectFeed(cached);
+              feedWasShown = true;
               // A cached/bundled feed is already validated and may be the
               // only available stand during an offline launch. Persist its
               // explicitly stated regular prices as well; the live refresh
@@ -655,6 +659,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       networkFeedShown = true;
       if (!_isCurrentDataRevision(revision)) return;
       _showProspectFeed(feed);
+      feedWasShown = true;
       final refreshNow = DateTime.now();
       final feedFingerprint = prospectFeedFingerprintFor(
         feed,
@@ -830,6 +835,14 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
             '${persistenceWarnings.isEmpty ? '' : ' · ${persistenceWarnings.join(' · ')}'}',
       );
     } catch (error) {
+      if (_isCurrentDataRevision(revision) && !feedWasShown && mounted) {
+        setState(() {
+          prospectRegularPriceCount = 0;
+          prospectRegularPriceCountsByStore = const <String, int>{};
+          prospectRegularPricePersistenceStatus =
+              ProspectRegularPricePersistenceStatus.failed;
+        });
+      }
       widget.diagnosticLogService.record(
         category: 'Prospekte',
         message: 'Automatischer Prospektabruf fehlgeschlagen.',
