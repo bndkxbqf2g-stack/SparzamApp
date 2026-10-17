@@ -1,3 +1,14 @@
+## Update 17.10.2026 – Leere Livequellen verdrängen keinen gültigen lokalen Prospektstand
+
+Der mobile Feed-Service vergleicht Cache- und Asset-Snapshots nicht nur nach
+Zeitstempel, sondern bewahrt bei einem erfolgreichen Händler-/Filial-Scope auch
+aktuelle Lebensmittelzeilen aus einer älteren validierten Quelle, wenn die neue
+Antwort leer, abgelaufen oder ausschließlich Non-Food ist. Die übernommenen
+Zeilen behalten ihre ursprüngliche Herkunft und Erfassungszeit; die Quelle wird
+im UI als Fallback markiert. Historische oder ungültige Zeilen mit derselben
+sourceId blockieren diesen aktuellen Fallback nicht. Abgelaufene oder
+filialfremde Daten werden nie wiederbelebt.
+
 ## Update 17.10.2026 – Leere aktuelle Lebensmittelantworten bleiben im Fallback
 
 Ein technisch erfolgreicher Händlerabruf mit ausschließlich abgelaufenen,
