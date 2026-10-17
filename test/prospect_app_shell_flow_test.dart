@@ -38,18 +38,24 @@ class _FakeProspectImportModule extends ProspectImportModule {
   _FakeProspectImportModule(
     this.result, {
     this.disableCache = false,
+    this.cachedResult,
+    this.executeFuture,
   });
 
   final ProspectFeedLoadResult result;
   final bool disableCache;
+  final ProspectFeedLoadResult? cachedResult;
+  final Future<ProspectFeedLoadResult>? executeFuture;
 
   @override
-  Future<ProspectFeedLoadResult> execute({String? startAddress}) async => result;
+  Future<ProspectFeedLoadResult> execute({String? startAddress}) =>
+      executeFuture ?? Future<ProspectFeedLoadResult>.value(result);
 
   @override
   Future<ProspectFeedLoadResult?> executeCached({
     String? startAddress,
   }) async {
+    if (cachedResult != null) return cachedResult;
     if (disableCache) return null;
     return super.executeCached(startAddress: startAddress);
   }
@@ -234,6 +240,82 @@ void main() {
   });
 
 
+
+  testWidgets(
+    'Cached-Prospektangebote sind sofort für die Einkaufsliste verfügbar',
+    (tester) async {
+      tester.view.physicalSize = const Size(800, 1000);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final now = DateTime.now();
+      final product = Product(
+        id: 'cached-milk-1l',
+        name: 'Frische Milch 1 l',
+        unit: '1 l',
+        group: 'Milch',
+        packageAmount: 1,
+        packageUnit: 'l',
+      );
+      final record = OfferImportRecord(
+        sourceId: 'cached-milk-offer',
+        productLabel: product.name,
+        storeName: 'Netto',
+        originalPrice: 1.29,
+        offerPrice: 0.89,
+        validFrom: now.subtract(const Duration(days: 1)),
+        validUntil: now.add(const Duration(days: 2)),
+        source: 'retailerWebsite',
+        proofRef: 'https://example.test/netto/cached-milk',
+        packageSize: '1 l',
+      );
+      final feed = ProspectFeedLoadResult(
+        records: [record],
+        refreshedStores: const ['Netto'],
+        generatedAt: now,
+        fromCache: true,
+      );
+      final liveGate = Completer<ProspectFeedLoadResult>();
+      final stores = _Stores(
+        shoppingListStore: _InMemoryShoppingListStore(),
+        offerStore: _InMemoryOfferStore(),
+      );
+      final module = _FakeProspectImportModule(
+        feed,
+        cachedResult: feed,
+        executeFuture: liveGate.future,
+      );
+
+      await tester.pumpWidget(
+        _app(
+          stores,
+          module,
+          initialCustomProducts: [product],
+          initialShoppingList: [ListItem(product: product)],
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+
+      await tester.scrollUntilVisible(
+        find.text(product.name),
+        260,
+        scrollable: find.byWidgetPredicate(
+          (widget) =>
+              widget is Scrollable &&
+              widget.axisDirection == AxisDirection.down,
+        ),
+      );
+      expect(find.textContaining('Angebot Netto'), findsOneWidget);
+      // Cached automatic offers are usable in memory but are never durable
+      // user offers; only the regular price persistence path writes locally.
+      expect(await stores.offers.load(), isEmpty);
+
+      liveGate.complete(feed);
+      await tester.pump(const Duration(milliseconds: 100));
+    },
+  );
 
   testWidgets(
     'verzögerter alter Listenstand überschreibt keine neue Nutzereingabe',
