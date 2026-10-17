@@ -564,7 +564,9 @@ void main() {
           final offers = await stores.offers.load();
           if (items.isNotEmpty &&
               offers.isNotEmpty &&
-              priceStore.observations.isNotEmpty) return;
+              priceStore.observations.isNotEmpty) {
+            return;
+          }
           await Future<void>.delayed(const Duration(milliseconds: 25));
         }
       });
