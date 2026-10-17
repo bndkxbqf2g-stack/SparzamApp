@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Routen-Cache
+
+`route_planning_cache_test.dart` prüft, dass wiederholte Aufrufe derselben
+geordneten Filialauswahl dasselbe `OptimizedTravelRoute`-Ergebnis verwenden.
+Die Signatur enthält die exakte Filialidentität und Distanz; bestehende
+Routen-, Preis- und Tie-Breaker-Regressionen bleiben unverändert. CI führt
+weiterhin Analyse, Flutter-Tests und den Web-Release-Build aus.
+
 ## Update 17.10.2026 – Favoritenindex in Prospektansichten
 
 `prospect_favorites_store_test.dart` prüft den konstanten Set-Lookup
