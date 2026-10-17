@@ -1,3 +1,6 @@
+## Update 17.10.2026 – Geprüfte Seitenartikel bleiben listbar
+
+Der Seitenviewer übernimmt einen manuell geprüften Artikel jetzt auch dann in die lokale Einkaufsliste, wenn der optionale Angebots-/Preisbeleg wegen fehlender Filiale, unbekannter Identität oder eines temporären Speicherfehlers nicht abgelegt werden kann. Die strengere Preis- und Routenfreigabe bleibt getrennt; die Oberfläche zeigt den konkreten Grund an.
 ## Update 17.10.2026 – Herkunft des regulären Prospektpreises bleibt erhalten
 
 - [x] Neue Prospektadapter führen mit `regularPriceSource` das ausdrücklich gelesene Feld für den Streich-/Normalpreis mit.
