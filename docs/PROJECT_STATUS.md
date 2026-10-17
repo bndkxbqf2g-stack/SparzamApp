@@ -1,3 +1,8 @@
+## Update 17.10.2026 – Coverage verbindet Händler-Schreibvarianten
+
+- Die Prospektabdeckung verbindet Issues, Angebotszeilen und gespeicherte Branch-Zähler über den bestehenden Präsentationsschlüssel.
+- Abweichende Händler- oder Branch-Schreibweisen erzeugen dadurch keine getrennte leere Coverage-Karte.
+- Die sichtbare Händlerbezeichnung bleibt die belegte Feeddarstellung; Preise und exakte Filialidentität werden nicht verändert.
 ## Update 17.10.2026 – Coverübersicht normalisiert Händlerlabels
 
 - Die Coverübersicht gruppiert gleichnamige Händlerlabels über den bestehenden Präsentationsschlüssel.

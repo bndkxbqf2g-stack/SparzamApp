@@ -1,3 +1,10 @@
+## D212 – Coverage normalisiert Zuordnung, nicht Filialidentität
+
+Die Coverage-Anzeige darf Händler- und Branch-Schreibvarianten über den
+gemeinsamen Vergleichsschlüssel zusammenführen. Die angezeigte Bezeichnung
+bleibt aus dem belegten Feed, und die kanonische Branch-ID bleibt im Schlüssel.
+Persistierte Zähler werden nur über denselben Schlüssel verglichen; daraus
+entsteht kein neuer Preis- oder Routingnachweis.
 ## D211 – Covergruppierung normalisiert nur die Händlerdarstellung
 
 Die Coverübersicht darf Händlerlabels für die UI-Gruppierung über den gemeinsamen

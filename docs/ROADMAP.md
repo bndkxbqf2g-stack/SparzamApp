@@ -1,3 +1,8 @@
+## Update 17.10.2026 – Coverage bei Händler-Schreibvarianten
+
+- [x] Issues und Angebotszeilen über den gemeinsamen Match-Schlüssel zusammenführen.
+- [x] Persistierte Branch-Zähler auch bei abweichender Händler-/Branch-Schreibweise auflösen.
+- [x] Coverage-Regression für LIDL/Lidl ergänzen.
 ## Update 17.10.2026 – Coverübersicht gruppiert Schreibvarianten
 
 - [x] Coverkarten über den normalisierten Händler-/Filialschlüssel deduplizieren.

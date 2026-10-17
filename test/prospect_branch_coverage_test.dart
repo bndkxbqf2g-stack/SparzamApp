@@ -82,6 +82,51 @@ void main() {
     expect(wuerzburg.location, 'Würzburg');
   });
 
+  test('matches coverage across retailer label variants', () {
+    final coverage = calculateProspectCoverage(
+      issues: [
+        ProspectIssue(
+          storeName: 'Lidl',
+          title: 'Zellingen',
+          pages: const [],
+          branchId: 'lidl-zellingen',
+          location: 'Zellingen',
+          sourceStatus: 'ok',
+          validFrom: DateTime(2026, 10, 12),
+          validUntil: DateTime(2026, 10, 18),
+        ),
+      ],
+      records: [
+        OfferImportRecord(
+          sourceId: 'lidl-uppercase-butter',
+          productLabel: 'Butter 250 g',
+          storeName: 'LIDL',
+          branchId: 'LIDL-ZELLINGEN',
+          location: 'Zellingen',
+          originalPrice: 2.49,
+          offerPrice: 1.99,
+          validFrom: DateTime(2026, 10, 12),
+          validUntil: DateTime(2026, 10, 18),
+          source: 'leaflet',
+          proofRef: 'https://example.test/lidl/zellingen/butter',
+        ),
+      ],
+      persistedRegularPriceCounts: const {
+        'Lidl#lidl-zellingen': 1,
+      },
+      now: DateTime(2026, 10, 14),
+    );
+
+    final zellingen = coverage.where(
+      (entry) => entry.branchId == 'lidl-zellingen',
+    );
+    expect(zellingen, hasLength(1));
+    expect(zellingen.single.storeName, 'Lidl');
+    expect(zellingen.single.structuredOfferCount, 1);
+    expect(zellingen.single.regularPriceCount, 1);
+    expect(zellingen.single.persistedRegularPriceCount, 1);
+  });
+
   test('does not copy a legacy store count across multiple branches', () {
     final coverage = calculateProspectCoverage(
       issues: [

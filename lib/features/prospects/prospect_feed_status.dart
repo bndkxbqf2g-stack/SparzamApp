@@ -266,24 +266,33 @@ List<ProspectCoverage> calculateProspectCoverage({
             .toList(growable: false);
 
   final issuesByKey = <String, ProspectIssue>{};
+  final recordsByKey = <String, List<OfferImportRecord>>{};
+  final displayNamesByKey = <String, String>{};
   final branchKeysByStore = <String, Set<String>>{};
   for (final issue in currentIssues) {
-    final key = prospectIssueKey(issue);
+    final key = prospectIssueMatchKey(issue);
     issuesByKey.putIfAbsent(key, () => issue);
+    displayNamesByKey.putIfAbsent(key, () => issue.storeName);
     if (issue.branchId?.trim().isNotEmpty == true) {
       branchKeysByStore
-          .putIfAbsent(issue.storeName, () => <String>{})
+          .putIfAbsent(
+            prospectStoreMatchKey(issue.storeName),
+            () => <String>{},
+          )
           .add(key);
     }
   }
 
-  final recordsByKey = <String, List<OfferImportRecord>>{};
   for (final record in currentRecords) {
-    final key = prospectRecordKey(record);
+    final key = prospectRecordMatchKey(record);
     recordsByKey.putIfAbsent(key, () => []).add(record);
+    displayNamesByKey.putIfAbsent(key, () => record.storeName);
     if (record.branchId?.trim().isNotEmpty == true) {
       branchKeysByStore
-          .putIfAbsent(record.storeName, () => <String>{})
+          .putIfAbsent(
+            prospectStoreMatchKey(record.storeName),
+            () => <String>{},
+          )
           .add(key);
     }
   }
@@ -293,7 +302,7 @@ List<ProspectCoverage> calculateProspectCoverage({
   // unknown so one location cannot inherit another location's evidence.
   for (final entry in branchKeysByStore.entries) {
     if (entry.value.length != 1) continue;
-    final legacyKey = prospectStoreBranchKey(storeName: entry.key);
+    final legacyKey = prospectBranchMatchKey(storeName: entry.key);
     final legacyRecords = recordsByKey.remove(legacyKey);
     if (legacyRecords == null) continue;
     final exactKey = entry.value.single;
@@ -302,10 +311,16 @@ List<ProspectCoverage> calculateProspectCoverage({
 
   // Keep configured store placeholders for markets without a branch assertion,
   // but suppress the old store-only placeholder when exact branch cards exist.
+  final configuredStoreKeys = <String>[];
+  for (final store in configuredProspectStores) {
+    final key = prospectStoreMatchKey(store);
+    displayNamesByKey.putIfAbsent(key, () => store);
+    if (!(branchKeysByStore[key]?.isNotEmpty ?? false)) {
+      configuredStoreKeys.add(key);
+    }
+  }
   final stores = <String>[
-    ...configuredProspectStores.where(
-      (store) => !(branchKeysByStore[store]?.isNotEmpty ?? false),
-    ),
+    ...configuredStoreKeys,
     ...issuesByKey.keys,
     ...recordsByKey.keys,
   ];
@@ -317,8 +332,7 @@ List<ProspectCoverage> calculateProspectCoverage({
   return [
     for (final coverageKey in uniqueStores)
       _coverageForStore(
-        issuesByKey[coverageKey]?.storeName ??
-            _coverageStoreName(coverageKey),
+        displayNamesByKey[coverageKey] ?? _coverageStoreName(coverageKey),
         issuesByKey[coverageKey],
         recordsByKey[coverageKey] ?? const <OfferImportRecord>[],
         persistedRegularPriceCounts == null
@@ -326,8 +340,7 @@ List<ProspectCoverage> calculateProspectCoverage({
             : _persistedCoverageCount(
                 persistedRegularPriceCounts,
                 coverageKey,
-                issuesByKey[coverageKey]?.storeName ??
-                    _coverageStoreName(coverageKey),
+                displayNamesByKey[coverageKey] ?? _coverageStoreName(coverageKey),
                 branchKeysByStore,
               ),
         catalogProducts,
@@ -448,20 +461,47 @@ int? _persistedCoverageCount(
   String storeName,
   Map<String, Set<String>> branchKeysByStore,
 ) {
-  final exact = counts[key];
+  final exact = _persistedCountForKey(counts, key);
   if (exact != null) return exact;
-  final branchKeys = branchKeysByStore[storeName] ?? const <String>{};
+  final branchKeys =
+      branchKeysByStore[prospectStoreMatchKey(storeName)] ??
+      const <String>{};
   // Legacy store-only maps remain safe when this feed has at most one exact
   // branch for that retailer. A successful persistence run has a complete
   // count map, so a missing single-branch entry means zero.
   if (branchKeys.length <= 1) {
-    return counts[storeName] ?? 0;
+    return _persistedCountForKey(
+          counts,
+          prospectStoreMatchKey(storeName),
+        ) ??
+        0;
   }
   // A branch-aware map can omit a zero-count branch. Once any exact key is
   // present, an absent exact key is therefore a confirmed zero. A legacy
   // store-only map with multiple branches remains unknown.
-  if (branchKeys.any(counts.containsKey)) return 0;
+  if (branchKeys.any((branchKey) =>
+      _persistedCountForKey(counts, branchKey) != null)) {
+    return 0;
+  }
   return null;
+}
+
+int? _persistedCountForKey(Map<String, int> counts, String key) {
+  final direct = counts[key];
+  if (direct != null) return direct;
+  for (final entry in counts.entries) {
+    if (_coverageMatchKey(entry.key) == key) return entry.value;
+  }
+  return null;
+}
+
+String _coverageMatchKey(String key) {
+  final separator = key.indexOf('#');
+  if (separator < 0) return prospectStoreMatchKey(key);
+  return prospectBranchMatchKey(
+    storeName: key.substring(0, separator),
+    branchId: key.substring(separator + 1),
+  );
 }
 
 String? _firstRecordValue(
