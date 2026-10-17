@@ -12,6 +12,7 @@ import '../catalog/product_family.dart';
 import '../receipt/receipt_observation_builder.dart';
 import '../route/market_price_quality.dart';
 import '../../services/branch_identity.dart';
+import '../../services/store_identity.dart';
 import '../../services/market_price_source_priority.dart';
 import '../../services/market_price_comparability.dart';
 import '../../services/quantity_normalizer.dart';
@@ -354,7 +355,7 @@ List<ShoppingQuote> shoppingQuotes(
         !price.price.isFinite ||
         price.price <= 0 ||
         (enabledStores.isNotEmpty &&
-            !enabledStores.contains(price.storeName))) {
+            !_containsStoreLabel(enabledStores, price.storeName))) {
       continue;
     }
     candidates.add(
@@ -391,7 +392,7 @@ List<ShoppingQuote> shoppingQuotes(
         !matchesConfiguredBranch(offer.storeName, offer.locationId) ||
         !hasExactOfferBranch(offer) ||
         (enabledStores.isNotEmpty &&
-            !enabledStores.contains(offer.storeName)) ||
+            !_containsStoreLabel(enabledStores, offer.storeName)) ||
         !isOfferDateRangeActive(
           validFrom: offer.validFrom,
           validUntil: offer.validUntil,
@@ -439,18 +440,19 @@ List<ShoppingQuote> shoppingQuotes(
       in prospectPriceHistory[item.product.id]?.allSummaries ??
           const <ProspectPriceHistorySummary>[]) {
     if (summary.storeName.trim().isEmpty ||
-        storesWithCurrentQuote.contains(summary.storeName) ||
+        _containsStoreLabel(storesWithCurrentQuote, summary.storeName) ||
         (enabledStores.isNotEmpty &&
-            !enabledStores.contains(summary.storeName)) ||
+            !_containsStoreLabel(enabledStores, summary.storeName)) ||
         !summary.medianPrice.isFinite ||
         summary.medianPrice <= 0 ||
         !summary.latestValidUntil.isBefore(today)) {
       continue;
     }
-    final previous = historicalByStore[summary.storeName];
+    final summaryKey = storeLabelMatchKey(summary.storeName);
+    final previous = historicalByStore[summaryKey];
     if (previous == null ||
         _compareHistoricalSummaries(summary, previous) < 0) {
-      historicalByStore[summary.storeName] = summary;
+      historicalByStore[summaryKey] = summary;
     }
   }
   for (final summary in historicalByStore.values) {
@@ -506,6 +508,9 @@ bool _offerMatchesShoppingItem(
   }
   return offerMatchesProduct(offer, candidate);
 }
+
+bool _containsStoreLabel(Iterable<String> labels, String candidate) =>
+    labels.any((label) => sameStoreLabel(label, candidate));
 
 extension<T> on Iterable<T> {
   T? get firstOrNull => isEmpty ? null : first;
@@ -564,10 +569,19 @@ List<ShoppingPriceMatrixEntry> shoppingPriceMatrixFromQuotes(
   final configuredNames = enabledStores.isEmpty
       ? stores.map((store) => store.name).toList(growable: false)
       : enabledStores;
-  final names = <String>{
-    ...configuredNames,
-    ...quotes.map((quote) => quote.storeName),
-  };
+  final names = <String>[];
+  void addName(String candidate) {
+    if (names.every((known) => !sameStoreLabel(known, candidate))) {
+      names.add(candidate);
+    }
+  }
+
+  for (final name in configuredNames) {
+    addName(name);
+  }
+  for (final quote in quotes) {
+    addName(quote.storeName);
+  }
   final configuredOrder = <String, int>{
     for (var index = 0; index < configuredNames.length; index++)
       configuredNames[index]: index,
@@ -575,7 +589,7 @@ List<ShoppingPriceMatrixEntry> shoppingPriceMatrixFromQuotes(
 
   final result = names.map((storeName) {
     final storeQuotes = quotes
-        .where((quote) => quote.storeName == storeName)
+        .where((quote) => sameStoreLabel(quote.storeName, storeName))
         .toList(growable: false);
     if (storeQuotes.isEmpty) {
       return ShoppingPriceMatrixEntry(storeName: storeName);

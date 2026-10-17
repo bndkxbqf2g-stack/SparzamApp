@@ -538,3 +538,8 @@ kompakte Hinweisleiste den günstigeren aktuellen Preis zuerst zeigt.
 ## Routenpreis-Resolver: Händler-Schreibvarianten
 
 Die Regressionen in `test/route_price_resolver_test.dart` prüfen getrennt, dass eine Angebotszeile mit `ALDI SUED` an `ALDI Süd` gefunden wird und ein Marktpreis mit `LIDL` an `Lidl` gefunden wird. Beide Tests führen weiterhin eine exakte Branch-ID-Prüfung aus.
+
+
+## Preis-Matrix: Händler-Schreibvarianten
+
+Die Regressionen in `test/store_identity_test.dart` und `test/shopping_price_quotes_test.dart` prüfen den gemeinsamen Schlüssel, die Filterung eines `LIDL`-Preises über den aktivierten Markt `Lidl` und die Matrixdarstellung von `ALDI SUED` unter `ALDI Süd`.

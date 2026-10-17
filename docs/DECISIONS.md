@@ -1861,3 +1861,8 @@ RouteOptimizer bleiben unverändert.
 ## D190 – Händlerlabels nur präsentationsbezogen normalisieren
 
 Der RoutePriceResolver verwendet für Händlerlabels denselben engen Präsentationsrahmen wie die öffentlichen Feed-Metadaten: Groß-/Kleinschreibung, Satzzeichen, Diakritika und `ae/oe/ue` werden angeglichen. Die Normalisierung erzeugt keine Aliasliste und entscheidet keine Filialidentität. Ein Angebot oder Marktpreis bleibt zusätzlich an die exakte Produkt-ID, Gültigkeit und – sofern vorhanden – die kanonische Filial-ID gebunden.
+
+
+## D191 – Gemeinsamer Händlerlabel-Schlüssel für Route und Preis-Matrix
+
+Die öffentliche Händlerdarstellung wird einmal in `store_identity.dart` normalisiert und von RoutePriceResolver sowie ShoppingPriceMatrix verwendet. Der Schlüssel ist nur für Händlerlabel-Vergleiche bestimmt. Die Matrix zeigt bei aktivierten Märkten den konfigurierten Namen, behält im Quote aber den Quelllabel-Nachweis. Produkt-ID, Gültigkeit, Beleg und exakte Filiale werden nicht durch diese Normalisierung ersetzt.

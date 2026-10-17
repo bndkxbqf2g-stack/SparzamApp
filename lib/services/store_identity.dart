@@ -27,3 +27,21 @@ String normalizeStoreIdentityText(String value) => value
     .replaceAll('ü', 'u')
     .replaceAll('ß', 'ss')
     .replaceAll(RegExp(r'[^a-z0-9]+'), '');
+
+
+/// Canonical comparison key for public retailer labels.
+///
+/// This deliberately normalizes only presentation differences. It does not
+/// resolve arbitrary aliases or infer a branch identity; callers still need
+/// their existing exact branch and product checks.
+String storeLabelMatchKey(String value) => normalizeStoreIdentityText(value)
+    .replaceAll('ae', 'a')
+    .replaceAll('oe', 'o')
+    .replaceAll('ue', 'u');
+
+/// Matches retailer labels that differ only in public presentation spelling.
+bool sameStoreLabel(String candidate, String configured) {
+  final candidateKey = storeLabelMatchKey(candidate);
+  final configuredKey = storeLabelMatchKey(configured);
+  return candidateKey.isNotEmpty && candidateKey == configuredKey;
+}

@@ -14,4 +14,11 @@ void main() {
     expect(canonicalStoreName('Lidl-Museum', stores), isNull);
     expect(canonicalStoreName('Unbekannter Markt', stores), isNull);
   });
+
+  test('matches only presentation-level retailer spellings', () {
+    expect(sameStoreLabel('LIDL', 'Lidl'), isTrue);
+    expect(sameStoreLabel('ALDI SUED', 'ALDI Süd'), isTrue);
+    expect(storeLabelMatchKey('ALDI Süd'), 'aldisud');
+    expect(sameStoreLabel('Lidl-Museum', 'Lidl'), isFalse);
+  });
 }

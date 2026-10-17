@@ -4107,3 +4107,8 @@ der Cover-/Filialnachweis bei automatischen Asset-Aktualisierungen stabil.
 ## Update 17.10.2026 – Händlerlabel-Normalisierung im Routenpreis
 
 Der Routenpreis-Resolver gleicht nun reine Darstellungsvarianten wie Groß-/Kleinschreibung, Diakritika, Satzzeichen und `ae/oe/ue`-Transliterationen ab. Angebots- und Marktpreiszeilen mit `LIDL`/`Lidl` oder `ALDI SUED`/`ALDI Süd` werden dadurch wieder dem konfigurierten Markt zugeordnet. Exakte Filial-IDs, Produktidentität, Gültigkeit und Quellenprüfung bleiben unverändert. Zwei Resolver-Regressionen decken Angebote und Marktpreise getrennt ab.
+
+
+## Update 17.10.2026 – Preisabdeckung teilt Händlerlabel-Normalisierung
+
+Preisabdeckung und Marktmatrix verwenden jetzt denselben engen Store-Identity-Helper wie der Routenpreis-Resolver. Varianten wie `LIDL`/`Lidl` oder `ALDI SUED`/`ALDI Süd` werden innerhalb aktivierter Märkte zusammengeführt; die sichtbare konfigurierte Bezeichnung bleibt erhalten und exakte Filial-/Produktprüfungen bleiben aktiv.
