@@ -233,7 +233,7 @@ ProspectFeedLoadResult preserveCurrentProspectRowsForEmptySources({
         if (fallbackCount == 0 && !useFallbackPages) return issue;
 
         final pages = useFallbackPages
-            ? (fallbackIssue?.pages ?? issue.pages)
+            ? fallbackIssue.pages
             : issue.pages;
         final fallbackThumbnail = fallbackIssue?.thumbnailUrl ??
             (fallbackIssue == null || fallbackIssue.pages.isEmpty
@@ -241,19 +241,18 @@ ProspectFeedLoadResult preserveCurrentProspectRowsForEmptySources({
                 : fallbackIssue.pages.first.imageUrl);
         final pageStatus = useFallbackPages &&
                 issue.pageStatus.trim().toLowerCase() == 'unknown'
-            ? (fallbackIssue?.pageStatus ?? issue.pageStatus)
+            ? (fallbackIssue.pageStatus)
             : issue.pageStatus;
         final loadedPageCount = useFallbackPages &&
                 (issue.loadedPageCount == null || issue.loadedPageCount == 0)
-            ? (fallbackIssue?.loadedPageCount ?? pages.length)
+            ? (fallbackIssue.loadedPageCount ?? pages.length)
             : issue.loadedPageCount;
         final missingPageNumbers = useFallbackPages &&
                 issue.missingPageNumbers.isEmpty
-            ? (fallbackIssue?.missingPageNumbers ??
-                issue.missingPageNumbers)
+            ? (fallbackIssue.missingPageNumbers)
             : issue.missingPageNumbers;
         final pageCountKnown = issue.pageCountKnown ||
-            (useFallbackPages && fallbackIssue?.pageCountKnown == true);
+            (useFallbackPages && fallbackIssue.pageCountKnown == true);
         final title = issue.title.trim().toLowerCase() == 'prospekt'
             ? (fallbackIssue?.title ?? issue.title)
             : issue.title;
