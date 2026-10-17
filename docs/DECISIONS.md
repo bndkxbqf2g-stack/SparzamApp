@@ -1,3 +1,11 @@
+## D204 – Bekannte Aliasfelder in verschachtelten Prospektbildern
+
+Wenn ein öffentliches Bildobjekt statt `url` oder `src` nur ein bekanntes
+Thumbnail-, Cover- oder Originalfeld liefert, darf der bestehende begrenzte
+Bildparser dieses Feld verwenden. Die Liste bleibt auf bekannte Container und
+absolute HTTP(S)-URLs beschränkt; unbekannte Objekte werden nicht durchsucht und
+erzeugen keine Bild- oder Preisidentität.
+
 ## D203 – Begrenzte Auflösung von Listenfeldern für Prospekt-Artikelbilder
 
 Öffentliche Feedvarianten dürfen ein Artikelbild als kurze Liste von URL- oder
