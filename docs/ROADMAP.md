@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Preisänderungen atomar in Liste und Route übernehmen
+
+- [x] Mehrfachbelege werden über einen gemeinsamen Koordinator in Beobachtung, Marktpreis und Verlauf projiziert.
+- [x] Die Shell setzt nach einem Batch genau einen neuen Preis-/Routen-Snapshot.
+- [x] Aktionspreise bleiben getrennt und werden nicht als reguläre Verlaufspreise gespeichert.
+
 ## Update 17.10.2026 – Quellpriorität und Preisbasis vereinheitlicht
 
 - [x] Eine gemeinsame Evidenzrangfolge wird in Planung, Route und Bon-Familienprojektion verwendet.
