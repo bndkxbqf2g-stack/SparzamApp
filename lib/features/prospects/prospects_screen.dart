@@ -1200,13 +1200,12 @@ ProspectIssue _visibleIssue(
       ? null
       : _bestVisibleProspect(currentEntries);
   final selected = current ?? _bestVisibleProspect(entries);
-  final showStalePages = current == null &&
-      selected.pages.isNotEmpty &&
-      (selected.sourceStatus == 'stale_fallback' ||
-          selected.sourceStatus == 'error');
+  final showNonCurrentPages = current == null && selected.pages.isNotEmpty;
 
-  // Page-only fallback is explicitly marked so an older cover can remain
-  // browsable while its expired prices stay outside the current offer list.
+  // Covers remain browsable when the source has no currently valid rows.
+  // Their dates and status stay visible, while expired prices remain outside
+  // the current offer list.
+
   final String sourceStatus;
   if (currentRecordCount > 0 &&
       currentRegionalRecordCount == currentRecordCount &&
@@ -1229,16 +1228,16 @@ ProspectIssue _visibleIssue(
 
   return ProspectIssue(
     storeName: selected.storeName,
-    title: current?.title ?? (showStalePages ? selected.title : 'Aktionsprospekt'),
+    title: current?.title ?? (showNonCurrentPages ? selected.title : 'Aktionsprospekt'),
     pages: current?.pages ??
-        (showStalePages ? selected.pages : const <ProspectPage>[]),
+        (showNonCurrentPages ? selected.pages : const <ProspectPage>[]),
     url: current?.url ??
-        (showStalePages
+        (showNonCurrentPages
             ? (selected.url ??
                 officialProspectUrl(selected.storeName, selected.url))
             : officialProspectUrl(selected.storeName, selected.url)),
     thumbnailUrl:
-        current?.thumbnailUrl ?? (showStalePages ? selected.thumbnailUrl : null),
+        current?.thumbnailUrl ?? (showNonCurrentPages ? selected.thumbnailUrl : null),
     branchId: current?.branchId ?? selected.branchId,
     location: current?.location ?? selected.location,
     address: current?.address ?? selected.address,
@@ -1255,9 +1254,9 @@ ProspectIssue _visibleIssue(
     uncertainProductCount:
         current?.uncertainProductCount ?? selected.uncertainProductCount,
     validFrom: current?.validFrom ??
-        (showStalePages ? selected.validFrom : null),
+        (showNonCurrentPages ? selected.validFrom : null),
     validUntil: current?.validUntil ??
-        (showStalePages ? selected.validUntil : null),
+        (showNonCurrentPages ? selected.validUntil : null),
   );
 }
 ProspectIssue _bestVisibleProspect(Iterable<ProspectIssue> entries) {
