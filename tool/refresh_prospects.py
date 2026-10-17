@@ -3954,6 +3954,53 @@ def main(selected_source_ids=None):
                 **branch,
             })
 
+    # A Bring-only targeted refresh must still publish its fetched evidence
+    # when no official retailer selector accompanies it. Do not fetch the
+    # official retailer endpoints just to attach an optional source.
+    if selected and "bring" in selected and not source_list:
+        for store, data in bring_by_store.items():
+            if not isinstance(data, dict):
+                continue
+            bring_offers = data.get("offers", [])
+            if not isinstance(bring_offers, list):
+                bring_offers = []
+            bring_offers = _attach_capture_timestamp(
+                dedupe(bring_offers),
+                captured_at,
+            )
+            bring_offers = _attach_source_adapter(
+                bring_offers,
+                "bring_brochure",
+            )
+            prospect = data.get("prospect")
+            bring_prospects = (
+                [dict(prospect)]
+                if isinstance(prospect, dict)
+                else []
+            )
+            if not bring_offers and not bring_prospects:
+                continue
+            all_offers.extend(bring_offers)
+            source_id = (
+                "bring_"
+                + re.sub(r"[^a-z0-9]+", "_", store.casefold()).strip("_")
+            )
+            sources.append({
+                "id": source_id,
+                "storeName": store,
+                "url": (
+                    bring_prospects[0].get("url")
+                    if bring_prospects
+                    else "https://production.bringapi.app"
+                ),
+                "status": "ok" if bring_offers else "metadata_only",
+                "recordCount": len(bring_offers),
+                "mode": "bring_brochure_only",
+                "capturedAt": captured_at,
+                "prospects": bring_prospects,
+            })
+            refreshed_source_count += 1
+
     # kaufDA is an explicitly opt-in discovery adapter. Its public search
     # pages identify publishers but do not reliably prove the exact branch;
     # only records with an explicitly configured branch mapping become
