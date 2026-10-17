@@ -307,5 +307,39 @@ void main() {
     expect(find.textContaining('Nachweis vorhanden'), findsNWidgets(2));
     expect(find.text('0,95 €'), findsOneWidget);
   });
+  testWidgets('Preisfenster erklärt veraltete Preisbelege', (tester) async {
+    const product = Product(
+      id: 'stale-badge-milk',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'milch',
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ShoppingPriceBadge(
+            item: ListItem(product: product),
+            prices: [
+              MarketPrice(
+                productId: product.id,
+                storeName: 'Lidl',
+                price: 1.09,
+                updatedAt: DateTime(2020, 1, 1),
+                source: MarketPriceSource.openPrices,
+              ),
+            ],
+            offers: const <Offer>[],
+            enabledStores: const <String>['Lidl'],
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.textContaining('Noch kein belegter Marktpreis'));
+    await tester.pumpAndSettle();
+    expect(find.text('Beleg veraltet oder abgelaufen'), findsOneWidget);
+  });
+
 }
 

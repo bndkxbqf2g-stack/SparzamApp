@@ -998,4 +998,46 @@ void main() {
     expect(find.textContaining('Lidl · LIDL-THUENGERSHEIM: 1'), findsOneWidget);
   });
 
+  testWidgets('Preise-Reiter erklärt fehlenden aktuellen Marktpreis', (
+    tester,
+  ) async {
+    const product = Product(
+      id: 'gap-hub-milk',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'milch',
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PricesHubScreen(
+            onOpenCatalog: () {},
+            onOpenSettings: () {},
+            summary: 'Preisqualität',
+            shoppingList: [ListItem(product: product)],
+            marketPrices: [
+              MarketPrice(
+                productId: product.id,
+                storeName: 'Lidl',
+                price: 1.09,
+                updatedAt: DateTime(2020, 1, 1),
+                source: MarketPriceSource.openPrices,
+              ),
+            ],
+            enabledStoreNames: const ['Lidl'],
+            now: DateTime(2026, 9, 24),
+          ),
+        ),
+      ),
+    );
+
+    final card = find.byKey(
+      const ValueKey('price-comparison-gap-hub-milk'),
+    );
+    await tester.tap(card);
+    await tester.pumpAndSettle();
+    expect(find.text('Beleg veraltet oder abgelaufen'), findsOneWidget);
+  });
+
 }

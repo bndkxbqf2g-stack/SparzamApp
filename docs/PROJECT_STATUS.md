@@ -1,3 +1,12 @@
+## Update 17.10.2026 – Fehlende Marktpreise erklären den primären Datenfehler
+
+Die Preis-Matrix kennzeichnet eine fehlende aktuelle Zeile jetzt mit einem
+primären, display-only Grund: keine passende Quelle, veralteter oder zukünftiger
+Beleg, unsichere Identität, inkompatible Packungsbasis, fehlender Filialnachweis,
+ungültiger Betrag oder nicht belastbarer Angebotsnachweis. Die Erläuterung bleibt
+von der Route-Eligibility getrennt und verbessert die nächste manuelle
+Datenkorrektur, ohne Preise zu erfinden.
+
 ## Update 17.10.2026 – Preisqualitätslücken nach Ursache und Filiale
 
 Der Preise-Reiter zeigt bei nicht routenfähigen Marktpreisbelegen jetzt den
