@@ -265,6 +265,9 @@ List<PriceObservation> prospectPriceObservations({
           observedAt: observationAt,
           source: source,
           sourceAdapter: record.sourceAdapter,
+          regularPriceSource: canonicalProspectRegularPriceSource(
+            record.regularPriceSource,
+          ),
           kind: PriceObservationKind.regular,
           validFrom: record.validFrom,
           validUntil: record.validUntil,
