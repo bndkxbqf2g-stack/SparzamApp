@@ -1,3 +1,12 @@
+## Update 18.10.2026 – Reguläres Preisfeld bleibt bis zur lokalen Beobachtung erhalten
+
+`OfferImportRecord.regularPriceSource` wird beim Übergang in ein gespeichertes
+`Offer` und in die `PriceObservation` übernommen. Das optionale Feld bleibt vom
+technischen `sourceAdapter` getrennt und nennt ausschließlich das ausdrücklich
+verwendete Streich-/Normalpreisfeld. JSON-Roundtrips, automatische reguläre
+Prospektpreisablage und der Preise-Reiter bewahren diesen Marker; der
+Aktionspreis bleibt weiterhin eigene, nicht als Normalpreis verwendbare Evidenz.
+
 ## Update 17.10.2026 – Offizielle Prospektfeeds bewahren explizite Produktmetadaten
 
 Die strukturierten ALDI-, EDEKA-, Kaufland-, Lidl-, PENNY- und REWE-Adapter
