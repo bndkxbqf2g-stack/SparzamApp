@@ -9,6 +9,7 @@ import '../offers/prospect_offer_products.dart';
 import 'prospect_category_presentation.dart';
 import 'prospect_cover_section.dart';
 import 'prospect_issue_identity.dart';
+import '../../services/branch_identity.dart';
 import '../../models/product.dart';
 import '../../services/prospect_feed_service.dart';
 import '../offers/offer_filter.dart';
