@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Preislernkreis erkennt Händler-Schreibvarianten
+
+- Der automatische Normalpreis-Lernpfad verwendet jetzt denselben präsentationsbezogenen Händlervergleich wie die Prospektsuche.
+- `ALDI Süd` und `ALDI SUED` bleiben dadurch im Refresh-Scope verbunden; sichtbare Händlernamen und exakte Filial-IDs werden nicht verändert.
+- Eine Regression deckt die transliterierte Schreibweise ab; Angebots- und Normalpreisrollen bleiben getrennt.
+
 ## Update 17.10.2026 – Preisstatus zählt nur aktuelle Normalpreisbelege
 
 - Der bestätigte Speicherstatus zählt reguläre Prospektbelege jetzt nur noch, wenn ihre lokale Beobachtung weiterhin als `isCurrent` markiert ist.

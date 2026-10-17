@@ -1,3 +1,12 @@
+## D191 – Händlervergleich im Preis-Refresh teilt die Prospekt-Semantik
+
+Der automatische Lernpfad filtert Beobachtungen anhand der vom Feed als frisch gemeldeten Händler.
+Dieser Vergleich verwendet denselben Präsentationsschlüssel wie Suche und Coverage: Leerraum,
+Großschreibung und die üblichen deutschen `ae/oe/ue`-Transliterationen sind Darstellungsdetails.
+Der Schlüssel wird nicht gespeichert und ersetzt weder den sichtbaren Namen noch die exakte Filial-ID.
+So kann ein Refresh `ALDI SUED` zuverlässig auf Datensätze mit `ALDI Süd` anwenden, ohne
+verschiedene Filialen, Produktvarianten oder Preisrollen zu verschmelzen.
+
 ## D189 – Persistenzstatus folgt der aktuellen Preisprojektion
 
 Der lokale Prospektpreis-Ledger bleibt append-only: Ein erfolgreicher Feed-Refresh darf einen
