@@ -1,3 +1,10 @@
+## Update 17.10.2026 – Capture-Zeitpunkt bleibt offline erhalten
+
+Der Prospektcache speichert den HTTP-Zeitpunkt separat und bindet ihn an den
+identischen Feedtext. Der Offline-Start kann deshalb weiterhin nur mit einem
+belegten Quellenzeitpunkt automatisch reguläre Prospektpreise speichern;
+veraltete Metadaten werden bei einem anderen Feedtext verworfen.
+
 ## Update 17.10.2026 – HTTP-Zeitstempel als Prospekt-Fallback
 
 prospect_feed_cache_test.dart prüft jetzt Last-Modified und Date für
