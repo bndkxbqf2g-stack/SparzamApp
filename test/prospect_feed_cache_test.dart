@@ -739,5 +739,125 @@ void main() {
     );
   });
 
+
+  test('restores validated fallback prospect pages for an empty newer source', () {
+    final fallback = parseProspectFeed('''
+{
+  "generatedAt": "2026-10-16T04:15:00Z",
+  "sources": [{
+    "storeName": "Lidl",
+    "status": "ok",
+    "branchId": "lidl-zellingen",
+    "prospects": [{
+      "title": "Lidl Wochenprospekt 15",
+      "url": "https://example.test/lidl-old",
+      "thumbnailUrl": "https://example.test/lidl-old-cover.jpg",
+      "validFrom": "2026-10-15",
+      "validUntil": "2026-10-21",
+      "availablePageCount": 1,
+      "loadedPageCount": 1,
+      "pageStatus": "complete",
+      "pageCountKnown": true,
+      "pageSamples": [{
+        "number": 1,
+        "image": "https://example.test/lidl-old-page.jpg"
+      }]
+    }]
+  }],
+  "offers": [{
+    "sourceId": "fallback-page-row",
+    "productLabel": "Milch 1 l",
+    "storeName": "Lidl",
+    "offerPrice": 0.99,
+    "validFrom": "2026-10-15",
+    "validUntil": "2026-10-21",
+    "source": "retailerWebsite",
+    "branchId": "lidl-zellingen",
+    "proofRef": "https://example.test/lidl-old?page=1"
+  }]
+}
+''');
+    final incoming = parseProspectFeed('''
+{
+  "generatedAt": "2026-10-17T04:15:00Z",
+  "sources": [{
+    "storeName": "Lidl",
+    "status": "ok",
+    "branchId": "lidl-zellingen",
+    "recordCount": 0,
+    "prospects": [{
+      "title": "Lidl Wochenprospekt 17",
+      "validFrom": "2026-10-17",
+      "validUntil": "2026-10-22",
+      "availablePageCount": 8,
+      "loadedPageCount": 0,
+      "pageCountKnown": true
+    }]
+  }],
+  "offers": []
+}
+''');
+
+    final guarded = preserveCurrentProspectRowsForEmptySources(
+      incoming: incoming,
+      fallback: fallback,
+      now: DateTime(2026, 10, 17, 12),
+    );
+    final issue = guarded.prospects.single;
+
+    expect(guarded.records.single.sourceId, 'fallback-page-row');
+    expect(issue.sourceStatus, 'current_fallback');
+    expect(issue.title, 'Lidl Wochenprospekt 17');
+    expect(issue.url, 'https://example.test/lidl-old');
+    expect(issue.thumbnailUrl, 'https://example.test/lidl-old-cover.jpg');
+    expect(issue.pages.single.imageUrl, 'https://example.test/lidl-old-page.jpg');
+    expect(issue.availablePageCount, 8);
+    expect(issue.loadedPageCount, 1);
+    expect(issue.pageStatus, 'complete');
+    expect(issue.pageCountKnown, isTrue);
+    expect(issue.validFrom, DateTime(2026, 10, 17));
+    expect(issue.validUntil, DateTime(2026, 10, 22));
+  });
+
+  test('keeps newer prospect pages when row fallback fills an empty source', () {
+    final fallback = parseProspectFeed(
+      _feed(
+        validUntil: '2026-10-21',
+        generatedAt: '2026-10-16T04:15:00Z',
+      ).replaceFirst(
+        '"sources": [{"storeName": "Lidl", "status": "ok"}]',
+        '"sources": [{"storeName": "Lidl", "status": "ok", "branchId": "lidl-zellingen", "prospects": [{"pageSamples": [{"number": 1, "image": "https://example.test/old-page.jpg"}]}]}]',
+      ),
+    );
+    final incoming = parseProspectFeed('''
+{
+  "generatedAt": "2026-10-17T04:15:00Z",
+  "sources": [{
+    "storeName": "Lidl",
+    "status": "ok",
+    "branchId": "lidl-zellingen",
+    "recordCount": 0,
+    "prospects": [{
+      "pageSamples": [{
+        "number": 1,
+        "image": "https://example.test/new-page.jpg"
+      }]
+    }]
+  }],
+  "offers": []
+}
+''');
+
+    final guarded = preserveCurrentProspectRowsForEmptySources(
+      incoming: incoming,
+      fallback: fallback,
+      now: DateTime(2026, 10, 17, 12),
+    );
+
+    final issue = guarded.prospects.single;
+    expect(issue.sourceStatus, 'current_fallback');
+    expect(issue.pages.single.imageUrl, 'https://example.test/new-page.jpg');
+  });
+
 }
 
