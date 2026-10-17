@@ -115,6 +115,9 @@ void main() {
           imageUrl: 'https://example.test/milch',
           proofRef: 'https://example.test/milch-proof',
           category: 'Milchprodukte',
+          ean: '4001234567890',
+          packageSize: '1 l',
+          priceByBaseUnit: '0,95 €/l',
         ),
         OfferImportRecord(
           sourceId: 'edeka-1',
@@ -150,6 +153,9 @@ void main() {
     expect(aldi.structuredOfferCount, 1);
     expect(aldi.offerImageCount, 1);
     expect(aldi.offerCategoryCount, 1);
+    expect(aldi.offerEanCount, 1);
+    expect(aldi.offerPackageSizeCount, 1);
+    expect(aldi.offerBasePriceCount, 1);
     expect(aldi.offerProofCount, 1);
     expect(aldi.pageCount, 1);
     expect(aldi.hasBranch, isTrue);
@@ -370,6 +376,9 @@ void main() {
           branchId: 'B1',
           proofRef: 'https://example.test/aldi/milch',
           category: 'Milchprodukte',
+          ean: '4001234567890',
+          packageSize: '1 l',
+          priceByBaseUnit: '0,95 €/l',
         ),
       ],
     );
@@ -392,6 +401,9 @@ void main() {
     expect(find.textContaining('1 mit Originalnachweis'), findsOneWidget);
     expect(find.textContaining('0/1 mit Artikelbildern'), findsOneWidget);
     expect(find.textContaining('1/1 mit Kategorien'), findsOneWidget);
+    expect(find.textContaining('1/1 mit EAN'), findsOneWidget);
+    expect(find.textContaining('1/1 mit Packungsgröße'), findsOneWidget);
+    expect(find.textContaining('1/1 mit Grundpreis'), findsOneWidget);
     expect(find.text('ALDI Süd'), findsNothing);
     await tester.tap(find.text('Datenabdeckung der aktuellen Prospekte'));
     await tester.pumpAndSettle();
