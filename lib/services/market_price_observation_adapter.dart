@@ -74,10 +74,11 @@ List<MarketPrice> marketPricesFromObservations(
             _matchesProductPackage(entry, productsById[entry.productId]) &&
             _hasProspectValidity(entry) &&
             // A successful feed refresh can retain superseded rows for
-            // history; only current prospect regular evidence may route.
-            (entry.kind != PriceObservationKind.regular ||
-                !_isProspectSource(entry.source) ||
-                entry.isCurrent) &&
+            // history; only current, explicitly regular prospect evidence
+            // may become a routeable MarketPrice.
+            (!_isProspectSource(entry.source) ||
+                (entry.kind == PriceObservationKind.regular &&
+                    entry.isCurrent)) &&
             _hasExactProspectBranch(entry) &&
             _projectsToLegacyMarketPrice(entry.source) &&
             !_isProspectOffer(entry),

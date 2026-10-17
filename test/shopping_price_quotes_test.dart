@@ -958,6 +958,7 @@ void main() {
           price: 1.09,
           updatedAt: DateTime(2026, 9, 24),
           source: MarketPriceSource.prospect,
+          kind: PriceObservationKind.regular,
         ),
         MarketPrice(
           productId: secondProduct.id,
@@ -965,6 +966,7 @@ void main() {
           price: 1.79,
           updatedAt: DateTime(2026, 9, 24),
           source: MarketPriceSource.prospect,
+          kind: PriceObservationKind.regular,
           quantity: 250,
           unit: 'g',
           unitPrice: 7.16,
@@ -993,6 +995,7 @@ void main() {
           price: 1.19,
           updatedAt: DateTime(2026, 9, 24),
           source: MarketPriceSource.prospect,
+          kind: PriceObservationKind.regular,
           sourceLocationId: 'lidl_zellingen',
           sourceLocationName: 'Zellingen',
         ),

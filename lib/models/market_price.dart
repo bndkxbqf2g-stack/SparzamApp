@@ -57,6 +57,13 @@ class MarketPrice {
   bool get isProspectOffer =>
       source == MarketPriceSource.prospect &&
       (kind == PriceObservationKind.offer || discounted);
+  /// A prospect amount is routeable only when the source explicitly
+  /// classified it as a regular price. Legacy/unknown prospect rows remain
+  /// evidence for review but cannot become a planning basis.
+  bool get isProspectRegularBasis =>
+      source != MarketPriceSource.prospect ||
+      kind == PriceObservationKind.regular;
+
   bool get hasComparableBasis =>
       (quantity == null ||
           (quantity!.isFinite && quantity! > 0)) &&

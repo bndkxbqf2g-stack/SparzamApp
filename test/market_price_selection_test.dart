@@ -3,6 +3,7 @@ import 'package:sparzamapp/features/route/market_price_selection.dart';
 import 'package:sparzamapp/features/route/route_price_resolver.dart';
 import 'package:sparzamapp/models/list_item.dart';
 import 'package:sparzamapp/models/market_price.dart';
+import 'package:sparzamapp/models/price_observation.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/store.dart';
 
@@ -14,6 +15,7 @@ void main() {
     double amount = 1,
     DateTime? updatedAt,
     double identityConfidence = 1,
+    PriceObservationKind? kind,
     double? quantity,
     String? unit,
     String? sourceLocationId,
@@ -25,6 +27,10 @@ void main() {
         updatedAt: updatedAt ?? now,
         source: source,
         identityConfidence: identityConfidence,
+        kind: kind ??
+            (source == MarketPriceSource.prospect
+                ? PriceObservationKind.regular
+                : PriceObservationKind.unknown),
         quantity: quantity,
         unit: unit,
         sourceLocationId: sourceLocationId,
@@ -112,6 +118,36 @@ void main() {
 
     expect(preferredMarketPricesByKey([uncertain], now), isEmpty);
     expect(preferredMarketPricesByKey([missingUnit], now), isEmpty);
+  });
+
+  test('unknown prospect evidence stays a route data gap', () {
+    final unknown = price(
+      source: MarketPriceSource.prospect,
+      kind: PriceObservationKind.unknown,
+    );
+
+    expect(preferredMarketPricesByKey([unknown], now), isEmpty);
+
+    const product = Product(
+      id: 'milk',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'milch',
+    );
+    const store = Store(
+      name: 'Lidl',
+      location: 'Ort',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    expect(
+      RoutePriceResolver(
+        const [],
+        marketPrices: [unknown],
+        now: now,
+      ).quote(store, ListItem(product: product)),
+      isNull,
+    );
   });
 
   test('route resolver uses the same source precedence independent of input order', () {

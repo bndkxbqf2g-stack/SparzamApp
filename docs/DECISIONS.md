@@ -1927,3 +1927,13 @@ Die öffentliche Händlerdarstellung wird einmal in `store_identity.dart` normal
 ## D193 – End-to-End-Nachweis für reguläre Prospektpreise
 
 Ein automatisch gespeicherter regulärer Prospektpreis gilt erst dann als Routenbasis, wenn derselbe Beleg den Weg über `PriceObservationStore`, `marketPricesFromObservations`, `planningMarketPrices` und `RoutePriceResolver` bis zum `RouteOptimizer` besteht. Der temporäre Angebotspreis bleibt aus dieser regulären Planung ausgeschlossen. Der Nachweis bindet zusätzlich die exakte Branch-ID; ein Preis einer gleichnamigen anderen Filiale darf die ausgewählte Route nicht beeinflussen.
+
+## D194 – Unklassifizierte Prospektpreise bleiben Datenlücken
+
+Ein `MarketPrice` aus der Prospektquelle ist nur dann route- und planungsfähig,
+wenn die zugrunde liegende Beobachtung ausdrücklich als `regular` klassifiziert
+wurde. Angebotspreise und Beobachtungen ohne Preisrolle bleiben als Nachweis
+beziehungsweise Unsicherheit sichtbar, werden aber weder in die aktuelle
+Preisabdeckung noch in Historie, Shopping-Vorschläge oder den
+`RoutePriceResolver` übernommen. Das schützt Altformate ohne `kind` davor,
+einen nicht belegten Betrag als reguläre Preisbasis auszugeben.

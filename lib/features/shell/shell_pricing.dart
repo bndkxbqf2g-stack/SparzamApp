@@ -12,6 +12,7 @@ List<MarketPrice> activePrices(
         .where(
           (price) =>
               !price.isProspectOffer &&
+              price.isProspectRegularBasis &&
               price.source != MarketPriceSource.openPrices &&
               price.isUsable(
                 now: DateTime.now(),

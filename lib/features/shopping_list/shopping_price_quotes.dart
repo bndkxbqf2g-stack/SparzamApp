@@ -401,6 +401,7 @@ List<ShoppingQuote> shoppingQuotes(
       openPricesMaxAgeDays: openPricesMaxAgeDays,
     );
     if (price.isProspectOffer ||
+        !price.isProspectRegularBasis ||
         price.productId != item.product.id ||
         !marketPriceMatchesProduct(price, item.product) ||
         !matchesConfiguredBranch(price.storeName, price.sourceLocationId) ||
