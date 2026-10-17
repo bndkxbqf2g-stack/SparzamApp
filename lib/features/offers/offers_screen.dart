@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/offer.dart';
 import '../../models/price_point.dart';
+import '../../models/price_observation.dart';
 import '../../models/product.dart';
 import 'offer_import.dart';
 import '../prospects/prospect_offer_card.dart';
@@ -36,6 +37,7 @@ class OffersScreen extends StatefulWidget {
     this.regularPricePersistenceStatus =
         ProspectRegularPricePersistenceStatus.standalone,
     this.persistedRegularPriceCounts,
+    this.onSaveProspectRegularPrice,
   });
 
   // Kept for the shell/route data contract. The Angebote tab deliberately
@@ -60,6 +62,8 @@ class OffersScreen extends StatefulWidget {
   final ProspectRegularPricePersistenceStatus regularPricePersistenceStatus;
   /// Per-store counts confirmed by local price-observation persistence.
   final Map<String, int>? persistedRegularPriceCounts;
+  final Future<void> Function(PriceObservation observation)?
+      onSaveProspectRegularPrice;
 
   @override
   State<OffersScreen> createState() => _OffersScreenState();
@@ -197,6 +201,7 @@ class _OffersScreenState extends State<OffersScreen> {
           onAddProduct: widget.onAddToShoppingList,
           now: widget.now,
           onSaveOffer: widget.onSave,
+          onSaveProspectRegularPrice: widget.onSaveProspectRegularPrice,
         ),
       ),
     );

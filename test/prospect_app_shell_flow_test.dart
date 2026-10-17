@@ -493,6 +493,7 @@ void main() {
         validFrom: now.subtract(const Duration(days: 1)),
         validUntil: now.add(const Duration(days: 2)),
       );
+      final priceStore = _InMemoryPriceObservationStore();
       final stores = _Stores(
         shoppingListStore: _InMemoryShoppingListStore(),
         offerStore: _InMemoryOfferStore(),
@@ -507,7 +508,13 @@ void main() {
         ),
       );
 
-      await tester.pumpWidget(_app(stores, module));
+      await tester.pumpWidget(
+        _app(
+          stores,
+          module,
+          priceObservationStore: priceStore,
+        ),
+      );
       await tester.pump(const Duration(milliseconds: 500));
       await tester.runAsync(
         () => Future<void>.delayed(const Duration(milliseconds: 250)),
@@ -555,7 +562,11 @@ void main() {
         for (var attempt = 0; attempt < 200; attempt++) {
           final items = await stores.shoppingList.load();
           final offers = await stores.offers.load();
-          if (items.isNotEmpty && offers.isNotEmpty) return;
+          if (items.isNotEmpty &&
+              offers.isNotEmpty &&
+              priceStore.observations.isNotEmpty) {
+            return;
+          }
           await Future<void>.delayed(const Duration(milliseconds: 25));
         }
       });
@@ -569,6 +580,16 @@ void main() {
             savedOffers.toString(),
       );
       expect(savedItems, hasLength(1));
+      expect(priceStore.observations, hasLength(1));
+      expect(priceStore.observations.single.kind, PriceObservationKind.regular);
+      expect(priceStore.observations.single.price, 3.99);
+      expect(priceStore.observations.single.evidenceConfidence,
+          EvidenceConfidence.manuallyConfirmed);
+      expect(priceStore.observations.single.locationId, '4371');
+      expect(
+        priceStore.observations.single.proofRef,
+        'https://example.test/netto/page-1-large.png',
+      );
       expect(savedOffers.single.source, 'leaflet');
       expect(savedItems.single.product.name, 'Käsesticks 300 g');
       expect(
