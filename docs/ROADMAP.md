@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Prospektabdeckung effizient berechnen
+
+- [x] Coverage-Signale je Händler in einem Datensatzdurchlauf zählen.
+- [x] EAN- und exakte Namensauflösung über einen gemeinsamen Katalogindex wiederverwenden.
+- [x] Bestehende Unsicherheits-, Filial- und Preisregeln unverändert über CI prüfen.
+
 ## Update 17.10.2026 – Explizit unbekannte Evidenzstufen ablehnen
 
 - [x] Fehlende oder leere Evidenzfelder alter lokaler Formate rückwärtskompatibel lesen.

@@ -1,3 +1,12 @@
+## D226 – Coverage und Katalogauflösung teilen ihren Snapshot
+
+Die Prospekt-Coverage darf für jede Händlerkarte nicht dieselben Datensätze
+mehrfach zählen und den Katalog für jede Zeile neu normalisieren. Deshalb werden
+die Coverage-Signale in einem Durchlauf gesammelt und EAN-/Namensschlüssel eines
+unveränderten Katalogsnapshots einmalig indiziert. Die Indexsicht ist nur eine
+beschleunigte Suchstruktur; Produktidentität, Varianten-, Packungs-, Nachweis-
+und Filialregeln bleiben dieselben wie bei der Einzelauflösung.
+
 ## D225 – Explizit unbekannte Evidenzstufen bleiben ungültig
 
 Die gemeinsame Evidenzstufen-Deserialisierung behandelt ein fehlendes oder leeres

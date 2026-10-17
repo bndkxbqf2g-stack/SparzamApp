@@ -97,6 +97,37 @@ class OfferImportRecord {
   /// Source-provided branch address kept with the exact offer record.
   final String? address;
 }
+
+/// Reusable catalog indexes for batch prospect resolution.
+///
+/// Prospect coverage and search surfaces may resolve many records against the
+/// same catalog snapshot. Keeping normalized EAN/name buckets here avoids
+/// rescanning and renormalizing the full catalog for every row while preserving
+/// the existing ambiguity rules.
+class OfferImportCatalogIndex {
+  OfferImportCatalogIndex(Iterable<Product> catalogProducts)
+      : products = catalogProducts.toList(growable: false) {
+    for (final product in products) {
+      final ean = normalizeBarcode(product.ean ?? '');
+      if (ean != null) {
+        _byEan.putIfAbsent(ean, () => <Product>[]).add(product);
+      }
+      final name = normalizeIdentityText(product.name);
+      if (name.isNotEmpty) {
+        _byName.putIfAbsent(name, () => <Product>[]).add(product);
+      }
+    }
+  }
+
+  final List<Product> products;
+  final Map<String, List<Product>> _byEan = <String, List<Product>>{};
+  final Map<String, List<Product>> _byName = <String, List<Product>>{};
+
+  Iterable<Product> byEan(String ean) => _byEan[ean] ?? const <Product>[];
+
+  Iterable<Product> byName(String name) => _byName[name] ?? const <Product>[];
+}
+
 /// Canonicalizes only source tokens already understood by the prospect
 /// pipeline. Unknown labels stay null so external adapters cannot silently
 /// create a new price source.
@@ -278,8 +309,9 @@ class OfferImportResolution {
 
 OfferImportResolution resolveOfferImport(
   OfferImportRecord record,
-  Iterable<Product> catalogProducts,
-) {
+  Iterable<Product> catalogProducts, {
+  OfferImportCatalogIndex? catalogIndex,
+}) {
   // A publisher-level KaufDA result is useful for discovery, but without an
   // explicit branch assertion it must never become an Offer. Keeping this
   // gate here closes direct callers that do not pass through the prospect
@@ -295,7 +327,8 @@ OfferImportResolution resolveOfferImport(
   }
 
   final normalizedLabel = normalizeIdentityText(record.productLabel);
-  final products = catalogProducts.toList(growable: false);
+  final index = catalogIndex ?? OfferImportCatalogIndex(catalogProducts);
+  final products = index.products;
   final sourceEanText = record.ean?.trim() ?? '';
   final sourceEan = sourceEanText.isEmpty
       ? null
@@ -308,11 +341,8 @@ OfferImportResolution resolveOfferImport(
   if (sourceEan != null) {
     // A source-provided GTIN is stronger than a display label, but only one
     // catalog product may carry it. Conflicts and missing codes stay reviewable.
-    final eanMatches = products
-        .where(
-          (candidate) => normalizeBarcode(candidate.ean ?? '') == sourceEan,
-        )
-        .toList(growable: false);
+    final eanMatches =
+        index.byEan(sourceEan).toList(growable: false);
     if (eanMatches.length != 1) {
       return OfferImportResolution(
         record: record,
@@ -324,10 +354,7 @@ OfferImportResolution resolveOfferImport(
     // Only the canonical product name may short-circuit identity resolution.
     // Generic aliases such as "Milch" can intentionally belong to multiple
     // variants and must therefore remain ambiguous.
-    final exact = products
-        .where((product) =>
-            normalizeIdentityText(product.name) == normalizedLabel)
-        .toList();
+    final exact = index.byName(normalizedLabel).toList(growable: false);
 
     final strictExact = exactProspectProduct(
       record.productLabel,

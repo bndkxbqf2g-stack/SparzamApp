@@ -1,3 +1,12 @@
+## Update 17.10.2026 – Prospektabdeckung zählt in einem Durchlauf
+
+Die Coverage-Berechnung der aktuellen Prospekte zählt Bilder, Kategorien,
+Nachweise, Mengen, Normalpreise und Filiallosigkeit jetzt in einem gemeinsamen
+Datensatzdurchlauf. Eine optionale normalisierte Katalogsicht wird pro Feedstand
+einmal aufgebaut und für EAN-/Namensauflösung wiederverwendet. Anzeige,
+Unsicherheitsgründe, Branchschutz und Preisregeln bleiben unverändert; große
+Feeds vermeiden dabei wiederholte Katalogscans.
+
 ## Update 17.10.2026 – Explizit unbekannte Evidenzstufen bleiben Datenlücken
 
 Ein fehlendes oder leeres `evidenceConfidence`-Feld bleibt für alte lokale
