@@ -470,7 +470,11 @@ int? _persistedCoverageCount(
   // branch for that retailer. A successful persistence run has a complete
   // count map, so a missing single-branch entry means zero.
   if (branchKeys.length <= 1) {
-    return counts[storeName] ?? 0;
+    return _persistedCountForKey(
+          counts,
+          prospectStoreMatchKey(storeName),
+        ) ??
+        0;
   }
   // A branch-aware map can omit a zero-count branch. Once any exact key is
   // present, an absent exact key is therefore a confirmed zero. A legacy
