@@ -312,6 +312,34 @@ void main() {
     );
   });
 
+  test('aktivierte Märkte tolerieren Händler-Schreibvarianten', () {
+    const lidl = Store(
+      name: 'Lidl',
+      branchId: 'lidl-zellingen',
+      location: 'Zellingen',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    const aldi = Store(
+      name: 'ALDI Süd',
+      branchId: 'aldi-zellingen',
+      location: 'Zellingen',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    final optimizer = RouteOptimizer(
+      const [],
+      const [],
+      storeCatalog: const [lidl, aldi],
+      enabledStoreNames: const ['LIDL', 'ALDI SUED'],
+    );
+
+    expect(
+      optimizer.availableStores.map((store) => store.branchId),
+      ['lidl-zellingen', 'aldi-zellingen'],
+    );
+  });
+
   test('vollständiger Warenkorb schlägt billigere unvollständige Route', () {
     const secondItem = Product(
       id: 'nur_edeka',
