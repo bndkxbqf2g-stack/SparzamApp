@@ -4,7 +4,6 @@ offers_screen_test.dart prüft, dass ein regionaler KaufDA-Datensatz mit
 LIDL als Angebotslabel und Lidl als Prospektlabel auch bei Quellstatus
 ok den Regionalhinweis zeigt. Die Normalisierung betrifft nur die
 Hinweiszählung; Branch- und Routenidentität bleiben unverändert.
-
 ## Update 17.10.2026 – KaufDA-Regionalgrenze
 
 `prospect_feed_service_test.dart` prüft, dass eine KaufDA-Kennung aus den
