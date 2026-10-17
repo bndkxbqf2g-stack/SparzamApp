@@ -2553,8 +2553,10 @@ class _ProspectPageImageState extends State<_ProspectPageImage> {
         'prospect-page-image-${widget.pageNumber}-${widget.pageIndex}',
       ),
       // Keep decoded page previews bounded for the long scroll path.
-      cacheWidth: 720,
-      cacheHeight: 480,
+      // The viewer renders a 240 px high preview; 560×380 keeps it sharp
+      // on high-density screens without retaining a full-size page bitmap.
+      cacheWidth: 560,
+      cacheHeight: 380,
       fit: BoxFit.contain,
       filterQuality: FilterQuality.low,
       // Canvas is the cheap path. A platform-view fallback is created only
