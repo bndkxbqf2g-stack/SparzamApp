@@ -131,6 +131,64 @@ void main() {
     );
   });
 
+
+  test('joins branch metadata case-insensitively without crossing branches', () {
+    final result = parseProspectFeed(r'''
+{
+  "sources": [
+    {
+      "storeName": "LIDL",
+      "status": "ok",
+      "sourceAdapter": "structured_api",
+      "branchId": "LIDL-ZELLINGEN",
+      "location": "Zellingen",
+      "address": "Branch street 1",
+      "prospects": [
+        {
+          "title": "Lidl Wochenprospekt",
+          "branchId": "lidl-zellingen",
+          "offerStartDate": "2026-10-12",
+          "offerEndDate": "2026-10-17",
+          "pageSamples": [
+            {
+              "number": 1,
+              "image": "https://cdn.example/lidl/page-1.jpg"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "offers": [
+    {
+      "sourceId": "branch-case",
+      "productLabel": "Butter 250 g",
+      "storeName": "lidl",
+      "offerPrice": 1.49,
+      "validFrom": "2026-10-12",
+      "validUntil": "2026-10-17",
+      "brochurePage": 1,
+      "branchId": " LIDL-ZELLINGEN ",
+      "proofRef": "https://example.test/lidl/butter"
+    }
+  ]
+}
+''');
+
+    final record = result.records.single;
+    expect(record.branchId, 'LIDL-ZELLINGEN');
+    expect(record.sourceAdapter, 'structured_api');
+    expect(record.location, 'Zellingen');
+    expect(record.address, 'Branch street 1');
+    expect(record.imageUrl, 'https://cdn.example/lidl/page-1.jpg');
+    final issue = result.prospects.singleWhere(
+      (item) => item.storeName == 'LIDL',
+    );
+    expect(issue.branchId, 'lidl-zellingen');
+    expect(issue.location, 'Zellingen');
+    expect(issue.address, 'Branch street 1');
+  });
+
   test('keeps formatted same-name branches ambiguous without a branch id', () {
     final result = parseProspectFeed(r'''
 {

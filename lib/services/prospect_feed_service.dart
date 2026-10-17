@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import '../features/offers/offer_import.dart';
 import 'barcode_normalizer.dart';
+import 'branch_identity.dart';
 import 'prospect_feed_cache.dart';
 import 'store_identity.dart';
 
@@ -700,9 +701,13 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     final entries =
         sourceEntriesByStore[_prospectStoreMetadataKey(storeName)];
     if (entries == null || entries.isEmpty) return null;
-    if (branchId != null) {
+    final requestedBranchId = canonicalBranchId(branchId);
+    if (requestedBranchId != null) {
       final matches = entries
-          .where((entry) => entry.branchId == branchId)
+          .where(
+            (entry) =>
+                canonicalBranchId(entry.branchId) == requestedBranchId,
+          )
           .toList(growable: false);
       return matches.length == 1 ? matches.single : null;
     }
@@ -780,9 +785,10 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
       final rawBranchId = rawBranch.branchId;
       final rawLocation = rawBranch.location;
       final rawAddress = rawBranch.address;
-      final inheritsSourceContext = rawBranchId == null ||
-          (sourceMetadata.branchId != null &&
-              rawBranchId == sourceMetadata.branchId);
+      final rawBranchKey = canonicalBranchId(rawBranchId);
+      final sourceBranchKey = canonicalBranchId(sourceMetadata.branchId);
+      final inheritsSourceContext = rawBranchKey == null ||
+          (sourceBranchKey != null && rawBranchKey == sourceBranchKey);
       final issueBranchId = rawBranchId ?? sourceMetadata.branchId;
       final issue = ProspectIssue(
         storeName: storeName,
@@ -1137,10 +1143,10 @@ String? _prospectPageImageForOffer(
   final candidates =
       pagesByStoreAndNumber[_prospectPageImageKey(storeName, pageNumber)];
   if (candidates == null || candidates.isEmpty) return null;
-  final normalizedBranchId = branchId?.trim();
-  if (normalizedBranchId == null || normalizedBranchId.isEmpty) return null;
+  final normalizedBranchId = canonicalBranchId(branchId);
+  if (normalizedBranchId == null) return null;
   for (final candidate in candidates) {
-    if (candidate.branchId?.trim() != normalizedBranchId) continue;
+    if (canonicalBranchId(candidate.branchId) != normalizedBranchId) continue;
     final startsAfterOffer =
         candidate.validFrom != null && candidate.validFrom!.isAfter(validUntil);
     final endsBeforeOffer =
