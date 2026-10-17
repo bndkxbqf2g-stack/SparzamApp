@@ -1155,4 +1155,48 @@ void main() {
     expect(matrix.single.storeName, 'ALDI Süd');
     expect(matrix.single.quote?.storeName, 'ALDI SUED');
   });
+
+  test('snapshot indexing keeps exact and generic candidates isolated', () {
+    const generic = Product(
+      id: 'generic-milk-request',
+      name: 'Milch',
+      unit: 'Packung',
+      group: 'milch',
+    );
+    final unrelatedOffer = Offer(
+      id: 'unrelated-offer',
+      productId: 'coffee',
+      storeName: 'Lidl',
+      originalPrice: 4.99,
+      offerPrice: 3.99,
+      validUntil: DateTime(2026, 9, 30),
+    );
+    final snapshot = shoppingPriceQuoteSnapshot(
+      [ListItem(product: generic), item],
+      prices: [
+        MarketPrice(
+          productId: milk.id,
+          storeName: 'Lidl',
+          price: 1.19,
+          updatedAt: DateTime(2026, 9, 24),
+        ),
+        MarketPrice(
+          productId: 'coffee',
+          storeName: 'Lidl',
+          price: 4.49,
+          updatedAt: DateTime(2026, 9, 24),
+        ),
+      ],
+      offers: [unrelatedOffer, offer],
+      catalogProducts: const [milk],
+      enabledStores: const ['Lidl'],
+      now: DateTime(2026, 9, 24),
+    );
+
+    final genericQuotes = snapshot.quotesFor(ListItem(product: generic));
+    expect(genericQuotes, hasLength(1));
+    expect(genericQuotes.single.offer?.id, offer.id);
+    expect(snapshot.quotesFor(item).single.unitPrice, 0.80);
+  });
+
 }
