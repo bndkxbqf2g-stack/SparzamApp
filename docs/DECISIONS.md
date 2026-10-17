@@ -1,3 +1,12 @@
+## D224 – Explizite unbekannte Preisverlaufsquellen bleiben ungültig
+
+Die `PricePoint`-Deserialisierung behandelt ein fehlendes oder leeres
+`source`-Feld weiterhin als Legacy-/Demoformat. Ein vorhandener, aber
+unbekannter Quellenwert wird dagegen verworfen. So kann historische Anzeige
+oder Backup einen fremden Betrag nicht stillschweigend als „Beispieldaten“
+kennzeichnen; der lokale Verlauf überspringt nur den einzelnen fehlerhaften
+Eintrag.
+
 ## D223 – Explizite unbekannte Preisquellen erzeugen keine manuelle Evidenz
 
 Die lokale Marktpreis-Deserialisierung behandelt ein fehlendes oder leeres
