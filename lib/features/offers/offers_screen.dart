@@ -560,27 +560,27 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     final unscopedRegionalCounts = <String, int>{};
     for (final record in widget.records) {
       currentCounts.update(
-        prospectRecordKey(record),
+        prospectRecordMatchKey(record),
         (count) => count + 1,
         ifAbsent: () => 1,
       );
       final recordBranch = record.branchId?.trim();
       if (recordBranch == null || recordBranch.isEmpty) {
         unscopedCounts.update(
-          record.storeName,
+          prospectStoreMatchKey(record.storeName),
           (count) => count + 1,
           ifAbsent: () => 1,
         );
       }
       if (record.regionalOnly) {
         regionalCounts.update(
-          prospectRecordKey(record),
+          prospectRecordMatchKey(record),
           (count) => count + 1,
           ifAbsent: () => 1,
         );
         if (recordBranch == null || recordBranch.isEmpty) {
           unscopedRegionalCounts.update(
-            record.storeName,
+            prospectStoreMatchKey(record.storeName),
             (count) => count + 1,
             ifAbsent: () => 1,
           );
@@ -590,15 +590,16 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     final visible = <String, ProspectIssue>{};
     for (final issue in widget.issues) {
       final hasBranch = issue.branchId?.trim().isNotEmpty == true;
-      final issueKey = prospectIssueKey(issue);
+      final issueKey = prospectIssueMatchKey(issue);
+      final issueStoreKey = prospectStoreMatchKey(issue.storeName);
       final count = hasBranch
           ? (currentCounts[issueKey] ?? 0) +
-              (unscopedCounts[issue.storeName] ?? 0)
-          : currentCounts[issue.storeName] ?? 0;
+              (unscopedCounts[issueStoreKey] ?? 0)
+          : currentCounts[issueStoreKey] ?? 0;
       final regionalCount = hasBranch
           ? (regionalCounts[issueKey] ?? 0) +
-              (unscopedRegionalCounts[issue.storeName] ?? 0)
-          : regionalCounts[issue.storeName] ?? 0;
+              (unscopedRegionalCounts[issueStoreKey] ?? 0)
+          : regionalCounts[issueStoreKey] ?? 0;
       final usesCurrentFallback = issue.sourceStatus == 'error' && count > 0;
       final needsRegionalNotice = issue.sourceStatus == 'regional_only' ||
           (count > 0 && regionalCount == count);

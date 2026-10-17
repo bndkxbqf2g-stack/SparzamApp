@@ -1,3 +1,8 @@
+## Update 17.10.2026 – Händler-Schreibvarianten in Angebotsquellenhinweisen
+
+- [x] Quellhinweise über den gemeinsamen Händlervergleichsschlüssel zuordnen.
+- [x] Regionalstatus bei abweichender Schreibweise sichtbar halten.
+- [x] Widget-Regression für LIDL/Lidl ergänzen.
 ## Update 17.10.2026 – KaufDA-Branchschutz
 
 - [x] Geerbte KaufDA-Adapterkennung ohne explizite Angebots-Filiale regional markieren.
