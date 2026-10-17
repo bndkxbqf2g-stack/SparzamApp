@@ -357,8 +357,7 @@ class ProspectCoverCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final previewUrl = _safeImageUrl(issue.thumbnailUrl) ??
-        (issue.pages.isEmpty ? null : _safeImageUrl(issue.pages.first.imageUrl));
+    final previewUrl = prospectCoverPreviewUrl(issue);
     final imageHeight = compact ? 168.0 : 181.0;
     final scope = compact ? 'grid' : 'favorite';
     final image = previewUrl == null
@@ -703,6 +702,20 @@ class _EmptyFavorites extends StatelessWidget {
           ),
         ),
       );
+}
+
+/// Returns the first validated image that can represent a prospect cover.
+
+/// A dedicated thumbnail wins; otherwise the first valid page image is used.
+/// The fallback does not change page numbering or create a new source record.
+String? prospectCoverPreviewUrl(ProspectIssue issue) {
+  final thumbnail = _safeImageUrl(issue.thumbnailUrl);
+  if (thumbnail != null) return thumbnail;
+  for (final page in issue.pages) {
+    final image = _safeImageUrl(page.imageUrl);
+    if (image != null) return image;
+  }
+  return null;
 }
 
 Widget _coverPlaceholder() => const ColoredBox(
