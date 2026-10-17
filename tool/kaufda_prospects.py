@@ -1490,6 +1490,20 @@ def _save_cached_body(path: Path | None, url: str, body: str, captured_at: datet
                 pass
 
 
+def _merge_capture_metadata(
+    entry: dict[str, object],
+    captured_at: datetime,
+    cache_used: bool,
+) -> None:
+    """Keep the newest successful evidence timestamp for one retailer."""
+
+    captured_timestamp = captured_at.timestamp()
+    current_timestamp = _cache_timestamp(entry.get("capturedAt"))
+    if current_timestamp is None or captured_timestamp > current_timestamp:
+        entry["capturedAt"] = captured_at.isoformat()
+    entry["cacheUsed"] = bool(entry.get("cacheUsed")) or cache_used
+
+
 def fetch_current_kaufda_prospects(
     config: KaufdaConfig | None = None,
     *,
@@ -1630,7 +1644,7 @@ def fetch_current_kaufda_prospects(
                 address = clean(branch.get("address"))
                 if address:
                     offer["address"] = address
-            grouped.setdefault(
+            entry = grouped.setdefault(
                 store,
                 {
                     "offers": [],
@@ -1644,7 +1658,9 @@ def fetch_current_kaufda_prospects(
                     "errors": [],
                     "branch": dict(branch or {}),
                 },
-            )["offers"].append(offer)
+            )
+            _merge_capture_metadata(entry, captured_at, cache_used)
+            entry["offers"].append(offer)
 
         # Retain source diagnostics even when every result was regional.
         for store in metadata.get("publishers", []):
@@ -1663,6 +1679,7 @@ def fetch_current_kaufda_prospects(
                     "branch": dict(settings.branch_for(store) or {}),
                 },
             )
+            _merge_capture_metadata(entry, captured_at, cache_used)
             publisher_counts = metadata.get("publisherCounts", {})
             regional_only_counts = metadata.get("regionalOnlyCounts", {})
             entry["rawItemCount"] += int(publisher_counts.get(store, 0))
