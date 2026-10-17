@@ -728,9 +728,7 @@ class _ProspectSearchResultsSliver extends StatelessWidget {
     final listOnlyWithoutBranch =
         record.regionalOnly && selectableProduct != null;
     final canAdd = onAddProduct != null && selectableProduct != null;
-    final recordKey = record.sourceId.trim().isEmpty
-        ? prospectOfferRecordKey(record)
-        : record.sourceId.trim();
+    final recordKey = prospectOfferRecordKey(record);
     return ProspectOfferCard(
       key: ValueKey('prospect-search-offer-$recordKey'),
       record: record,
@@ -780,10 +778,7 @@ Product? _memoizedProspectProduct(
   Iterable<Product> catalogProducts,
   Map<String, Product?> cache,
 ) {
-  final sourceId = record.sourceId.trim();
-  final key = sourceId.isEmpty
-      ? '${record.storeName}|${record.productLabel}|${record.offerPrice}|${record.validUntil.toIso8601String()}'
-      : sourceId;
+  final key = prospectOfferRecordKey(record);
   if (cache.containsKey(key)) return cache[key];
   final product = addableProductForProspectOffer(record, catalogProducts);
   cache[key] = product;
