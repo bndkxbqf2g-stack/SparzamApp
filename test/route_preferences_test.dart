@@ -129,6 +129,29 @@ void main() {
     expect(relaxed.bestPlan()!.stores.length, 2);
   });
 
+  test('genau der Mindestvorteil rechtfertigt den zusätzlichen Markt', () {
+    RouteOptimizer create({double minExtraStoreSavings = 0}) =>
+        RouteOptimizer(
+          items(),
+          const [],
+          marketPrices: _baselinePrices(),
+          euroPerKm: 0,
+          maxStores: 2,
+          minExtraStoreSavings: minExtraStoreSavings,
+        );
+
+    final unrestricted = create();
+    final single = unrestricted.bestSingleStorePlan()!;
+    final twoStores = unrestricted.alternatives().firstWhere(
+      (plan) => plan.stores.length == 2,
+    );
+    final exactBenefit = single.planningScore - twoStores.planningScore;
+    expect(exactBenefit, greaterThan(0));
+
+    final exactThreshold = create(minExtraStoreSavings: exactBenefit);
+    expect(exactThreshold.bestPlan()!.stores.length, 2);
+  });
+
   test(
     'zusätzlicher Markt muss seinen Mindestvorteil nach Fahrtkosten erreichen',
     () {
