@@ -1,3 +1,10 @@
+## Update 17.10.2026 – KaufDA-Batchgrenze
+
+tool/tests/test_kaufda_prospects.py prüft die konfigurierbare Obergrenze,
+deterministische URL-Reihenfolge und die Pause zwischen öffentlichen
+KaufDA-Batches. Tests verwenden ausschließlich ein anonymisiertes HTML-Fixture;
+es gibt keine Live-Abfrage.
+
 ## Update 17.10.2026 – Angebotspreise ohne Normalpreis
 
 prices_hub_screen_test.dart prüft, dass ein aktueller importierter Angebotspreis
