@@ -435,6 +435,9 @@ def record(
     image=None,
     category=None,
     original_source=None,
+    ean=None,
+    source_package_size=None,
+    source_base_unit_price=None,
 ):
     result = {
         "sourceId": stable_id(store, proof, label + str(offer_price)),
@@ -457,11 +460,27 @@ def record(
     category = clean(category or "")
     if category:
         result["category"] = category
-    package_size, base_unit_price = package_metadata(label, offer_price)
-    if package_size:
-        result["packageSize"] = package_size
-    if base_unit_price:
-        result["priceByBaseUnit"] = base_unit_price
+    normalized_ean = _normalize_ean(ean)
+    if normalized_ean:
+        result["ean"] = normalized_ean
+    explicit_package = package_hint(source_package_size) if source_package_size else None
+    explicit_base_price = (
+        _format_source_base_price(source_base_unit_price)
+        if source_base_unit_price
+        else None
+    )
+    if explicit_package:
+        result["packageSize"] = explicit_package
+        if explicit_base_price is None:
+            _, explicit_base_price = package_metadata(explicit_package, offer_price)
+    if explicit_base_price:
+        result["priceByBaseUnit"] = explicit_base_price
+    if not explicit_package:
+        package_size, base_unit_price = package_metadata(label, offer_price)
+        if package_size:
+            result["packageSize"] = package_size
+        if not explicit_base_price and base_unit_price:
+            result["priceByBaseUnit"] = base_unit_price
     return result
 
 
@@ -868,6 +887,12 @@ def parse_aldi_api_page(json_text, promotion_day):
             regular,
             image,
             _source_category(item),
+            ean=_source_ean(item),
+            source_package_size=_source_package_size(item),
+            source_base_unit_price=(
+                _source_base_unit_price(item)
+                or _source_base_unit_price(price)
+            ),
         ))
 
     return dedupe(offers), int(total_count or len(data))
@@ -1184,6 +1209,14 @@ def parse_edeka_api(json_text, base_url):
             regular,
             image,
             _source_category(doc),
+            ean=_source_ean(doc),
+            source_package_size=_source_package_size(doc),
+            source_base_unit_price=(
+                _source_base_unit_price(doc)
+                or _source_base_unit_price(doc.get("price"))
+                or _source_base_unit_price(doc.get("prices"))
+                or _source_base_unit_price(doc.get("pricing"))
+            ),
         ))
     return dedupe(offers), []
 
@@ -1830,6 +1863,9 @@ def parse_kaufland_api(html_text, base_url, available_ids=None, today=None):
                     regular,
                     image,
                     category_name,
+                    ean=_source_ean(raw),
+                    source_package_size=_source_package_size(raw),
+                    source_base_unit_price=_source_base_unit_price(raw),
                 ))
 
     return dedupe(offers), []
@@ -2110,6 +2146,12 @@ def parse_lidl_store_offers(json_text, proof_url=LIDL_ZELLINGEN_STORE_PAGE):
             _lidl_regular_price(raw, sale),
             image,
             _source_category(raw),
+            ean=_source_ean(raw),
+            source_package_size=_source_package_size(raw),
+            source_base_unit_price=(
+                _source_base_unit_price(raw)
+                or _source_base_unit_price(box)
+            ),
         ))
 
     return dedupe(offers), []
@@ -2575,6 +2617,12 @@ def parse_penny_api(json_text, base_url, valid_from, valid_until, category=None)
             regular,
             image,
             category,
+            ean=_source_ean(tile),
+            source_package_size=_source_package_size(tile),
+            source_base_unit_price=(
+                _source_base_unit_price(tile)
+                or _source_base_unit_price(rendition)
+            ),
         ))
     return dedupe(offers), []
 
@@ -3245,6 +3293,331 @@ def _source_image(raw, *keys):
     return None
 
 
+
+
+_SOURCE_EAN_KEYS = (
+    "ean",
+    "EAN",
+    "ean13",
+    "ean_13",
+    "gtin",
+    "GTIN",
+    "gtin13",
+    "gtin13Code",
+    "gtin14",
+    "gtin_13",
+    "gtin_14",
+    "barcode",
+    "barCode",
+    "barcodeNumber",
+    "barcode_number",
+    "productEan",
+    "productEAN",
+    "productGtin",
+    "productGTIN",
+)
+_SOURCE_EAN_CONTAINERS = (
+    "product",
+    "article",
+    "item",
+    "identifiers",
+    "identification",
+    "barcodeInfo",
+    "barcode_info",
+    "gtinInfo",
+    "gtin_info",
+)
+
+
+def _normalize_ean(value):
+    """Normalize and checksum-check an explicitly supplied EAN/GTIN."""
+    if value is None or isinstance(value, bool):
+        return None
+    if isinstance(value, float) and not value.is_integer():
+        return None
+    text = clean(str(value))
+    digits = re.sub(r"[\s-]", "", text)
+    if not re.fullmatch(r"(?:\d{8}|\d{12}|\d{13}|\d{14})", digits):
+        return None
+    checksum = int(digits[-1])
+    total = 0
+    multiplier = 3
+    for digit in reversed(digits[:-1]):
+        total += int(digit) * multiplier
+        multiplier = 4 - multiplier
+    return digits if (10 - (total % 10)) % 10 == checksum else None
+
+
+def _source_ean(raw, *keys):
+    """Read one valid code from explicitly named source identifier fields."""
+    if not isinstance(raw, dict):
+        return None
+    direct_keys = tuple(keys) or _SOURCE_EAN_KEYS
+
+    def read(value, depth=0):
+        if depth > 2:
+            return None
+        if isinstance(value, (str, int, float)) and not isinstance(value, bool):
+            return _normalize_ean(value)
+        if isinstance(value, list):
+            for item in value[:8]:
+                candidate = read(item, depth + 1)
+                if candidate:
+                    return candidate
+            return None
+        if not isinstance(value, dict):
+            return None
+        for key in (*_SOURCE_EAN_KEYS, "value", "code", "number"):
+            if key not in value:
+                continue
+            candidate = read(value[key], depth + 1)
+            if candidate:
+                return candidate
+        for key in _SOURCE_EAN_CONTAINERS:
+            if key not in value:
+                continue
+            candidate = read(value[key], depth + 1)
+            if candidate:
+                return candidate
+        return None
+
+    for key in direct_keys:
+        if key in raw:
+            candidate = read(raw[key], 1)
+            if candidate:
+                return candidate
+    for key in _SOURCE_EAN_CONTAINERS:
+        if key in raw:
+            candidate = read(raw[key], 1)
+            if candidate:
+                return candidate
+    return None
+
+
+_SOURCE_PACKAGE_KEYS = (
+    "packageSize",
+    "package_size",
+    "packaging",
+    "quantityLabel",
+    "quantity_label",
+    "quantityText",
+    "quantity_text",
+    "quantity",
+    "package",
+    "pack",
+    "unitQuantity",
+    "unit_quantity",
+    "netQuantity",
+    "net_quantity",
+    "netContent",
+    "net_content",
+    "content",
+    "size",
+)
+
+
+def _source_descriptor(value, depth=0):
+    """Read a bounded source quantity/display value without guessing."""
+    if depth > 2:
+        return None
+    if isinstance(value, str):
+        candidate = clean(value)
+        return candidate or None
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return None
+    if isinstance(value, list):
+        for item in value[:8]:
+            candidate = _source_descriptor(item, depth + 1)
+            if candidate:
+                return candidate
+        return None
+    if not isinstance(value, dict):
+        return None
+
+    amount = None
+    for key in ("amount", "quantity", "netQuantity", "net_quantity", "value", "size"):
+        candidate = value.get(key)
+        if isinstance(candidate, (int, float)) and not isinstance(candidate, bool):
+            amount = candidate
+            break
+        if isinstance(candidate, str) and re.fullmatch(r"\d+(?:[,.]\d+)?", clean(candidate)):
+            amount = clean(candidate)
+            break
+    unit = None
+    for key in ("unit", "unitName", "unit_name", "uom", "baseUnit", "base_unit"):
+        candidate = _source_descriptor(value.get(key), depth + 1)
+        if candidate:
+            unit = candidate
+            break
+    if amount is not None and unit:
+        return clean(f"{amount} {unit}")
+
+    for key in (
+        "display",
+        "formatted",
+        "formattedValue",
+        "formatted_value",
+        "text",
+        "label",
+        "quantityLabel",
+        "packageSize",
+        "package_size",
+        "value",
+    ):
+        if key not in value:
+            continue
+        candidate = _source_descriptor(value[key], depth + 1)
+        if candidate:
+            return candidate
+    for key in (
+        "quantity",
+        "package",
+        "packaging",
+        "content",
+        "netContent",
+        "net_content",
+    ):
+        if key not in value:
+            continue
+        candidate = _source_descriptor(value[key], depth + 1)
+        if candidate:
+            return candidate
+    return None
+
+
+def _source_package_size(raw, *keys):
+    """Return one unambiguous explicitly supplied package quantity."""
+    if not isinstance(raw, dict):
+        return None
+    candidates = tuple(keys) or _SOURCE_PACKAGE_KEYS
+    for key in candidates:
+        if key not in raw:
+            continue
+        descriptor = _source_descriptor(raw[key])
+        package = package_hint(descriptor)
+        if package:
+            return package
+    return None
+
+
+_SOURCE_BASE_PRICE_KEYS = (
+    "priceByBaseUnit",
+    "price_by_base_unit",
+    "baseUnitPrice",
+    "base_unit_price",
+    "unitPrice",
+    "unit_price",
+    "pricePerUnit",
+    "price_per_unit",
+    "basePrice",
+    "base_price",
+    "unitPriceText",
+    "unit_price_text",
+)
+
+
+def _source_unit(value):
+    text = clean(str(value or "")).casefold()
+    text = re.sub(r"^€?\s*/?\s*|^pro\s+", "", text)
+    return {
+        "kg": "kg",
+        "kilogramm": "kg",
+        "kilogram": "kg",
+        "g": "g",
+        "gramm": "g",
+        "gram": "g",
+        "l": "l",
+        "liter": "l",
+        "litre": "l",
+        "ml": "ml",
+        "milliliter": "ml",
+        "millilitre": "ml",
+        "stk": "Stk",
+        "st": "Stk",
+        "stück": "Stk",
+        "piece": "Stk",
+    }.get(text)
+
+
+def _format_source_base_price(value, depth=0):
+    """Normalize a source-provided base price only when its unit is explicit."""
+    if depth > 2:
+        return None
+    if isinstance(value, str):
+        text = clean(value)
+        patterns = (
+            r"(?P<amount>\d+[,.]\d{1,4})\s*€?\s*(?:/|pro)\s*(?P<unit>kg|kilogramm|g|gramm|l|liter|ml|milliliter|stk\.?|st\.?|stück)\b",
+            r"€\s*/?\s*(?P<unit>kg|kilogramm|g|gramm|l|liter|ml|milliliter|stk\.?|st\.?|stück)\s*(?P<amount>\d+[,.]\d{1,4})\b",
+        )
+        for pattern in patterns:
+            match = re.search(pattern, text, flags=re.I)
+            if match:
+                unit = _source_unit(match.group("unit"))
+                if unit:
+                    amount = float(match.group("amount").replace(",", "."))
+                    if amount > 0:
+                        return f"{amount:.2f}".replace(".", ",") + " €/" + unit
+        return None
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return None
+    if isinstance(value, list):
+        for item in value[:8]:
+            candidate = _format_source_base_price(item, depth + 1)
+            if candidate:
+                return candidate
+        return None
+    if not isinstance(value, dict):
+        return None
+
+    amount = None
+    for key in ("amount", "value", "numeric", "numericValue", "price"):
+        candidate = _json_money(value.get(key))
+        if candidate is not None and candidate > 0:
+            amount = candidate
+            break
+    unit = None
+    for key in ("unit", "baseUnit", "base_unit", "unitName", "unit_name", "uom"):
+        candidate = _source_unit(value.get(key))
+        if candidate:
+            unit = candidate
+            break
+    if amount is not None and unit:
+        return f"{amount:.2f}".replace(".", ",") + " €/" + unit
+
+    for key in (
+        "display",
+        "formatted",
+        "formattedValue",
+        "formatted_value",
+        "text",
+        "label",
+        "priceByBaseUnit",
+        "baseUnitPrice",
+        "unitPrice",
+        "basePrice",
+    ):
+        if key not in value:
+            continue
+        candidate = _format_source_base_price(value[key], depth + 1)
+        if candidate:
+            return candidate
+    return None
+
+
+def _source_base_unit_price(raw, *keys):
+    """Return one explicit source base-price label, or unknown."""
+    if not isinstance(raw, dict):
+        return None
+    candidates = tuple(keys) or _SOURCE_BASE_PRICE_KEYS
+    for key in candidates:
+        if key not in raw:
+            continue
+        candidate = _format_source_base_price(raw[key])
+        if candidate:
+            return candidate
+    return None
+
+
 def parse_rewe_api(json_text, base_url):
     payload = json.loads(json_text)
     data = payload.get("data", {}) if isinstance(payload, dict) else {}
@@ -3288,6 +3661,12 @@ def parse_rewe_api(json_text, base_url):
             offers.append(record(
                 "REWE", label, sale, valid_from, valid_until, proof, regular,
                 image, _source_category(category),
+                ean=_source_ean(item),
+                source_package_size=_source_package_size(item),
+                source_base_unit_price=(
+                    _source_base_unit_price(item)
+                    or _source_base_unit_price(price_data)
+                ),
             ))
     return dedupe(offers), []
 
