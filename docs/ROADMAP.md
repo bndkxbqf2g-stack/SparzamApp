@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Branch-sichere Prospektkarten
+
+- [x] Suchkarten, Grid-Karten und die lokale Produktauflösung verwenden denselben Schlüssel aus Händler, Quell-ID und vorhandener Filial-/Ortsherkunft.
+- [x] Gleiche Quellartikel aus gleichnamigen Filialen bleiben beim Lazy-Scroll getrennt und behalten unabhängige Add-to-List-Zustände.
+- [x] Eine Regression prüft zwei Branches mit identischer Quell-ID; Analyse, Volltests und Web-Build laufen im CI.
+
 ## Update 17.10.2026 – Filialgenaue Prospektangebote im Cache- und Live-Merge
 
 - [x] Transiente Prospektangebote werden mit Angebots-ID, Händler und exakter Filial-/Ortsherkunft geschlüsselt.
