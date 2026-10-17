@@ -1,3 +1,13 @@
+## D223 – Explizite unbekannte Preisquellen erzeugen keine manuelle Evidenz
+
+Die lokale Marktpreis-Deserialisierung behandelt ein fehlendes oder leeres
+`source`-Feld weiterhin als Legacy-Format für einen manuell eingegebenen Preis.
+Ein vorhandener, aber unbekannter Quellenwert wird dagegen als ungültiger
+Eintrag verworfen. So bleiben alte lokale Daten lesbar, ohne fremde oder
+beschädigte Quellenkennung stillschweigend als bestätigte Planungsbasis zu
+interpretieren. Der Store überspringt den einzelnen fehlerhaften Datensatz und
+bewahrt die übrigen gültigen Preise.
+
 ## D222 – Prospekt-Suchauflösung bleibt an den Feed-Snapshot gebunden
 
 Die aktuelle Prospektsuche darf bei Filterwechseln, Sliver-Rebuilds und
