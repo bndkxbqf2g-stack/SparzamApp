@@ -6,6 +6,7 @@ import '../../models/offer.dart';
 import '../../models/price_observation.dart';
 import '../offers/offer_import.dart';
 import '../offers/prospect_offer_products.dart';
+import '../offers/prospect_regular_price_persistence.dart';
 import 'prospect_category_presentation.dart';
 import 'prospect_cover_section.dart';
 import 'prospect_issue_identity.dart';
@@ -36,6 +37,7 @@ class ProspectsScreen extends StatefulWidget {
         ProspectRegularPricePersistenceStatus.standalone,
     this.persistedRegularPriceCounts,
     this.onSaveOffer,
+    this.onSaveProspectRegularPrice,
     this.favoriteStore,
   });
 
@@ -56,6 +58,8 @@ class ProspectsScreen extends StatefulWidget {
   /// Null keeps standalone coverage on an explicitly unknown status.
   final Map<String, int>? persistedRegularPriceCounts;
   final Future<List<Offer>> Function(Offer offer)? onSaveOffer;
+  final Future<void> Function(PriceObservation observation)?
+      onSaveProspectRegularPrice;
   final ProspectFavoritesStore? favoriteStore;
 
   @override
@@ -627,6 +631,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
           onAddProduct: widget.onAddProduct,
           now: widget.now,
           onSaveOffer: widget.onSaveOffer,
+          onSaveProspectRegularPrice: widget.onSaveProspectRegularPrice,
         ),
       ),
     );
@@ -1875,6 +1880,7 @@ class ProspectViewerScreen extends StatelessWidget {
     this.onAddProduct,
     this.now,
     this.onSaveOffer,
+    this.onSaveProspectRegularPrice,
     this.ocrRunner,
   });
 
@@ -1884,6 +1890,8 @@ class ProspectViewerScreen extends StatelessWidget {
   final ValueChanged<Product>? onAddProduct;
   final DateTime? now;
   final Future<List<Offer>> Function(Offer offer)? onSaveOffer;
+  final Future<void> Function(PriceObservation observation)?
+      onSaveProspectRegularPrice;
   final Future<ProspectPageOcrResult> Function(ProspectPage page)? ocrRunner;
 
   Future<void> _addPageOffer(
@@ -1907,6 +1915,8 @@ class ProspectViewerScreen extends StatelessWidget {
       productLabel: draft.productLabel,
       storeName: issue.storeName,
       originalPrice: draft.originalPrice,
+      regularPriceSource:
+          draft.originalPrice == null ? null : 'manualPage',
       offerPrice: draft.offerPrice,
       validFrom: issue.validFrom,
       validUntil: draft.validUntil,
@@ -1929,14 +1939,36 @@ class ProspectViewerScreen extends StatelessWidget {
     // A manually reviewed page item is always listable. Price/route
     // persistence remains a separate, stricter path below.
     final listProduct = productForProspectOffer(record, catalogProducts);
+    var regularPriceSaveFailed = false;
+    final saveRegularPrice = onSaveProspectRegularPrice;
+    if (saveRegularPrice != null) {
+      final observation = reviewedProspectRegularPriceObservation(
+        record: record,
+        catalogProducts: catalogProducts,
+        now: now ?? capturedAt,
+      );
+      if (observation != null) {
+        try {
+          await saveRegularPrice(observation);
+        } catch (_) {
+          // The user action remains useful as a list/offer action even when
+          // local price storage is temporarily unavailable.
+          regularPriceSaveFailed = true;
+        }
+      }
+    }
+    if (!context.mounted) return;
     final saveOffer = onSaveOffer;
     if ((requiresExactBranch && !hasExactBranch) || saveOffer == null) {
       addProduct(listProduct);
       final message = requiresExactBranch && !hasExactBranch
           ? 'Artikel zur Einkaufsliste hinzugefügt. Für einen Routenpreis '
               'fehlt die exakte Filiale.'
-          : 'Artikel zur Einkaufsliste hinzugefügt. Das Angebot konnte '
-              'ohne Speicherverbindung nicht abgelegt werden.';
+          : regularPriceSaveFailed
+              ? 'Artikel zur Einkaufsliste hinzugefügt. Der geprüfte Normalpreis '
+                  'konnte lokal nicht gespeichert werden.'
+              : 'Artikel zur Einkaufsliste hinzugefügt. Das Angebot konnte '
+                  'ohne Speicherverbindung nicht abgelegt werden.';
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(message)),
       );
