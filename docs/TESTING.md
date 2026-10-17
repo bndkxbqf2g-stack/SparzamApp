@@ -1,3 +1,7 @@
+
+## Marktpreis-Evidenzrangfolge
+
+`test/market_price_selection_test.dart` prüft die gemeinsame Auswahlregel: qualitätsbereinigter Betrag vor Aktualität, Aktualität vor Quellpriorität, stabile Reihenfolge bei gleichen Quellen, getrennte exakte Filialslots, Ausschluss unbestätigter oder unvollständiger Preisbelege sowie dieselbe Quellenwahl im `RoutePriceResolver`. Die Tests verwenden ausschließlich synthetische Preise und keine Live-Abfragen.
 # Tests und Qualitätssicherung
 
 ## Aktueller CI-Vertrag
