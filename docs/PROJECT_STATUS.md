@@ -4102,3 +4102,8 @@ der Cover-/Filialnachweis bei automatischen Asset-Aktualisierungen stabil.
   unverändert; die Sortierung beeinflusst keine Marktpreis- oder Routenprojektion.
 - Eine Widgetregression prüft, dass ein günstigerer Listenartikel vor einem
   teureren Hinweis erscheint.
+
+
+## Update 17.10.2026 – Händlerlabel-Normalisierung im Routenpreis
+
+Der Routenpreis-Resolver gleicht nun reine Darstellungsvarianten wie Groß-/Kleinschreibung, Diakritika, Satzzeichen und `ae/oe/ue`-Transliterationen ab. Angebots- und Marktpreiszeilen mit `LIDL`/`Lidl` oder `ALDI SUED`/`ALDI Süd` werden dadurch wieder dem konfigurierten Markt zugeordnet. Exakte Filial-IDs, Produktidentität, Gültigkeit und Quellenprüfung bleiben unverändert. Zwei Resolver-Regressionen decken Angebote und Marktpreise getrennt ab.

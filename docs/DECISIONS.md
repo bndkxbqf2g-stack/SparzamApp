@@ -1856,3 +1856,8 @@ Preisangebot verwendeten Vergleichswert aufsteigend sortiert. Produktname,
 Marktname und Produkt-ID lösen Gleichstände stabil. Die Sortierung ist reine
 Darstellung; aktuelle Marktpreise, Quellen, Gültigkeiten und der
 RouteOptimizer bleiben unverändert.
+
+
+## D190 – Händlerlabels nur präsentationsbezogen normalisieren
+
+Der RoutePriceResolver verwendet für Händlerlabels denselben engen Präsentationsrahmen wie die öffentlichen Feed-Metadaten: Groß-/Kleinschreibung, Satzzeichen, Diakritika und `ae/oe/ue` werden angeglichen. Die Normalisierung erzeugt keine Aliasliste und entscheidet keine Filialidentität. Ein Angebot oder Marktpreis bleibt zusätzlich an die exakte Produkt-ID, Gültigkeit und – sofern vorhanden – die kanonische Filial-ID gebunden.
