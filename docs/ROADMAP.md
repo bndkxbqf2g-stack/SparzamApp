@@ -1046,3 +1046,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Die Prospektabdeckung weist vorhandene EAN/GTIN-, Packungsgrößen- und Grundpreisfelder je aktuellem Angebot getrennt aus.
 - [x] Fehlende Metadaten bleiben als sichtbare Lücke erhalten; aus Produktnamen werden keine EANs oder Packungsgrößen erfunden.
 - [x] Die Zusatzanzeige ändert weder Produktidentität noch Preis-/Routenprojektion und ist mit Parser- und Widgetregressionen abgesichert.
+
+
+## Update 17.10.2026 – Favoritenstreifen im Prospekte-Reiter begrenzt
+- [x] Der ältere Prospekte-Ansichtspfad verwendet für den horizontalen Favoritenstreifen keinen zusätzlichen Scrollvorlauf.
+- [x] Offscreen-Coverkarten werden dort nicht automatisch gehalten; Repaint-Grenzen bleiben aktiv.
+- [x] Eine Widgetregression schützt den begrenzten Cache beim vertikalen Wischen, ohne Prospekt-, Preis- oder Listenlogik zu ändern.
