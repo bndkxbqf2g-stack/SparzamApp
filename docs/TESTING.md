@@ -483,3 +483,8 @@ Lebensmittel-Taxonomien wie \`Obst__Gemuese__Pflanzen\`, singuläre
 \`categoryPath\`-Felder sowie Produktbildlisten und Mengen-Aliase. Echte
 Haushalts-/Pflanzenartikel bleiben ausgeschlossen; Bild- und Kategorieangaben
 werden nur aus expliziten Quellfeldern übernommen.
+
+
+Die KaufDA-Regression prüft zusätzlich den neuesten Gruppenzeitpunkt: Ein
+älterer Cache-Treffer vor einer späteren Live-Antwort darf den gruppierten
+\`capturedAt\`-Wert nicht verjüngen; \`cacheUsed\` bleibt wahr.
