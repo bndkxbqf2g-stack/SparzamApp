@@ -442,6 +442,13 @@ void main() {
     expect(evidence.every((item) => item.proofRef != null), isTrue);
     expect(evidence.every((item) => item.sourceAdapter == 'KaufDA'), isTrue);
     expect(
+      evidence
+          .where((item) => item.kind == PriceObservationKind.regular)
+          .single
+          .regularPriceSource,
+      'originalPrice',
+    );
+    expect(
       evidence.every((item) => item.validUntil == DateTime(2026, 9, 30)),
       isTrue,
     );
