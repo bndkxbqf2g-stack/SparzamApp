@@ -632,4 +632,34 @@ void main() {
     expect(find.textContaining('Speicherung läuft'), findsOneWidget);
     expect(find.textContaining('gespeichert'), findsNothing);
   });
+  test('reports whether an offer image is a product or page fallback', () {
+    final coverage = calculateProspectCoverage(
+      issues: const <ProspectIssue>[],
+      records: [
+        OfferImportRecord(
+          sourceId: 'product-image',
+          productLabel: 'Butter 250 g',
+          storeName: 'Lidl',
+          offerPrice: 1.49,
+          validUntil: DateTime(2026, 10, 17),
+          imageUrl: 'https://example.test/butter.jpg',
+          imageKind: ProspectImageKind.product,
+        ),
+        OfferImportRecord(
+          sourceId: 'page-image',
+          productLabel: 'Milch 1 l',
+          storeName: 'Lidl',
+          offerPrice: 0.99,
+          validUntil: DateTime(2026, 10, 17),
+          imageUrl: 'https://example.test/page.jpg',
+          imageKind: ProspectImageKind.prospectPage,
+        ),
+      ],
+    ).firstWhere((entry) => entry.storeName == 'Lidl');
+
+    expect(coverage.offerImageCount, 2);
+    expect(coverage.offerProductImageCount, 1);
+    expect(coverage.offerPageImageCount, 1);
+  });
+
 }

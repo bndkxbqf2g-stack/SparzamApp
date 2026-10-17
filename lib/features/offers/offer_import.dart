@@ -8,6 +8,16 @@ import '../../services/prospect_branch_resolver.dart';
 import '../../services/quantity_normalizer.dart';
 import '../../services/barcode_normalizer.dart';
 
+/// Identifies what an imported prospect image actually represents.
+///
+/// A page image is useful evidence for an offer, but it is not a product
+/// photograph. Keeping the distinction prevents the UI and later imports from
+/// presenting a whole leaflet page as a precise article image.
+enum ProspectImageKind {
+  product,
+  prospectPage,
+}
+
 class OfferImportRecord {
   const OfferImportRecord({
     required this.sourceId,
@@ -20,6 +30,7 @@ class OfferImportRecord {
     this.source = 'leaflet',
     this.proofRef,
     this.imageUrl,
+    this.imageKind,
     this.ean,
     this.category,
     this.packageSize,
@@ -45,6 +56,10 @@ class OfferImportRecord {
   final String source;
   final String? proofRef;
   final String? imageUrl;
+
+  /// Provenance of [imageUrl]. Null keeps legacy feed rows explicit as
+  /// unknown instead of guessing whether the source supplied a product photo.
+  final ProspectImageKind? imageKind;
 
   /// Optional source-provided GTIN/EAN. It is only used for exact catalog
   /// matching; a missing or conflicting code never creates a new identity.
