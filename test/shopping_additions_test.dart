@@ -38,8 +38,6 @@ void main() {
 
     expect(productsForRecentPurchase(purchase), hasLength(1));
   });
-}
-
 
   test('aktualisiert bekannte Listeneinträge ohne Nutzerzustand zu verlieren', () {
     const oldProduct = Product(
@@ -79,3 +77,4 @@ void main() {
     expect(refreshed.single.note, 'kalt');
     expect(refreshed.single.checked, isTrue);
   });
+}
