@@ -120,6 +120,7 @@ class MarketPrice {
           ? 'Bonpreis' : 'historischer Bonpreis';
     }
     if (source == MarketPriceSource.prospect) {
+      if (!isProspectRegularBasis) return 'Prospektpreis ohne Preisrolle';
       return isUsable(now: now, openPricesMaxAgeDays: openPricesMaxAgeDays)
           ? 'Prospektpreis' : 'historischer Prospektpreis';
     }
