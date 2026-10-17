@@ -233,8 +233,13 @@ String? _optionalNonEmptyString(Object? value) {
 
 // Feed sections can spell the same retailer with umlauts or ae/oe/ue.
 // This key is metadata-only; displayed labels and branch IDs stay unchanged.
-String _prospectStoreMetadataKey(String value) =>
-    normalizeStoreIdentityText(value);
+String _prospectStoreMetadataKey(String value) {
+  final normalized = normalizeStoreIdentityText(value);
+  return normalized
+      .replaceAll('ae', 'a')
+      .replaceAll('oe', 'o')
+      .replaceAll('ue', 'u');
+}
 
 class ProspectFeedService {
   ProspectFeedService({
