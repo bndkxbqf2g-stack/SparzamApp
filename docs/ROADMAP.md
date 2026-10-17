@@ -1,3 +1,10 @@
+## Update 17.10.2026 – Routenberechnung beschleunigt
+
+- [x] Wiederholte Fahrtrouten pro `RouteOptimizer`-Snapshot cachen.
+- [x] Filialidentität und `distanceKm` in die Cache-Signatur aufnehmen.
+- [x] Fallback-Reihenfolge und deterministische Straßenmatrix-Auswahl unverändert lassen.
+- [x] Regression für wiederholte Fahrtrouten ergänzen.
+
 ## Update 17.10.2026 – Prospektfavoriten ohne lineare Wiederholungssuche
 
 - [x] Favoritenschlüssel für Coveransicht und Prospektübersicht als lokalen Set-Index halten.
