@@ -523,3 +523,8 @@ Nutzeraktion vollständig weitergeladen werden kann.
 ## Prospekt-Coverraster mit vielen Märkten
 Die Widgetregression 'scrolls a larger cover grid without eagerly building every card'
 lädt die nächste Coverstufe explizit und prüft anschließend das letzte Cover.
+
+## Prospektviewer mit vielen Seiten
+Die Widgetregression 'builds long prospect page lists lazily' prüft, dass ein
+langer Viewer zunächst weniger Seitenbilder materialisiert, den Button „Weitere
+Seiten laden“ verwendet und danach die letzte Seite erreichen kann.
