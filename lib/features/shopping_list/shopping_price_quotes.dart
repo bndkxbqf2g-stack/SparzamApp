@@ -26,6 +26,47 @@ enum ShoppingQuoteKind {
   prospectHistory,
 }
 
+enum ShoppingPriceGapReason {
+  /// No source row was available for the exact product and market.
+  noEvidence,
+
+  /// A source row exists, but its observation or offer window is over.
+  staleEvidence,
+
+  /// A source row is dated after the reference day.
+  futureEvidence,
+
+  /// The product identity or evidence confidence is not strong enough.
+  identityUncertain,
+
+  /// An explicit package or unit basis cannot be compared to the product.
+  incomparablePackage,
+
+  /// An offer exists, but its source proof is not trusted for display/planning.
+  untrustedOffer,
+
+  /// The source did not identify the configured branch precisely.
+  missingExactBranch,
+
+  /// The source contains a non-positive or non-finite amount.
+  invalidAmount,
+}
+
+extension ShoppingPriceGapReasonLabel on ShoppingPriceGapReason {
+  String get label => switch (this) {
+    ShoppingPriceGapReason.noEvidence => 'Keine passende Preisquelle',
+    ShoppingPriceGapReason.staleEvidence => 'Beleg veraltet oder abgelaufen',
+    ShoppingPriceGapReason.futureEvidence => 'Beleg liegt in der Zukunft',
+    ShoppingPriceGapReason.identityUncertain =>
+      'Produktidentität oder Vertrauen unklar',
+    ShoppingPriceGapReason.incomparablePackage =>
+      'Packungs- oder Einheitenbasis nicht vergleichbar',
+    ShoppingPriceGapReason.untrustedOffer => 'Angebotsnachweis nicht belastbar',
+    ShoppingPriceGapReason.missingExactBranch => 'Exakte Filiale fehlt',
+    ShoppingPriceGapReason.invalidAmount => 'Preisangabe ungültig',
+  };
+}
+
 class ShoppingQuote {
   const ShoppingQuote({
     required this.storeName,
@@ -236,10 +277,22 @@ class ShoppingQuote {
 /// one of the six configured markets), but no current, comparable evidence is
 /// available for this exact product identity.
 class ShoppingPriceMatrixEntry {
-  const ShoppingPriceMatrixEntry({required this.storeName, this.quote});
+  const ShoppingPriceMatrixEntry({
+    required this.storeName,
+    this.quote,
+    this.gapReason = ShoppingPriceGapReason.noEvidence,
+  });
 
   final String storeName;
   final ShoppingQuote? quote;
+  /// Primary explanation shown when no current comparable quote exists.
+  ///
+  /// This is display metadata only. It never turns an observation into a
+  /// route price and defaults to [ShoppingPriceGapReason.noEvidence] for
+  /// callers that only have an already-resolved quote list.
+  final ShoppingPriceGapReason gapReason;
+
+  String get gapLabel => gapReason.label;
 
   bool get hasQuote => quote != null;
 
@@ -365,6 +418,15 @@ ShoppingPriceQuoteSnapshot shoppingPriceQuoteSnapshot(
           shoppingPriceMatrixFromQuotes(
             quotes,
             enabledStores: enabledStores,
+            gapReasons: shoppingPriceGapReasons(
+              entry.value,
+              prices: prices,
+              offers: offers,
+              catalogProducts: catalogProducts,
+              enabledStores: enabledStores,
+              openPricesMaxAgeDays: openPricesMaxAgeDays,
+              now: now,
+            ),
           ),
         );
   }
@@ -596,7 +658,143 @@ List<ShoppingPriceMatrixEntry> shoppingPriceMatrix(
   return shoppingPriceMatrixFromQuotes(
     quotes,
     enabledStores: enabledStores,
+    gapReasons: shoppingPriceGapReasons(
+      item,
+      prices: prices,
+      offers: offers,
+      catalogProducts: catalogProducts,
+      enabledStores: enabledStores,
+      openPricesMaxAgeDays: openPricesMaxAgeDays,
+      now: now,
+    ),
   );
+}
+
+/// Explains the primary reason a configured market has no current comparable
+/// quote for [item]. This is intentionally a display-only classification:
+/// all route and price eligibility rules remain in [shoppingQuotes].
+Map<String, ShoppingPriceGapReason> shoppingPriceGapReasons(
+  ListItem item, {
+  required List<MarketPrice> prices,
+  required List<Offer> offers,
+  List<Product> catalogProducts = const <Product>[],
+  List<String> enabledStores = const [],
+  int openPricesMaxAgeDays = 60,
+  DateTime? now,
+}) {
+  final today = now ?? DateTime.now();
+  final configuredNames = enabledStores.isEmpty
+      ? stores.map((store) => store.name).toList(growable: false)
+      : enabledStores;
+  final names = <String>[];
+  void addName(String candidate) {
+    if (names.every((known) => !sameStoreLabel(known, candidate))) {
+      names.add(candidate);
+    }
+  }
+
+  for (final name in configuredNames) {
+    addName(name);
+  }
+  for (final price in prices) {
+    if (price.productId == item.product.id) addName(price.storeName);
+  }
+  for (final offer in offers) {
+    if (_offerMatchesShoppingItem(offer, item.product, catalogProducts)) {
+      addName(offer.storeName);
+    }
+  }
+
+  final result = <String, ShoppingPriceGapReason>{};
+  for (final storeName in names) {
+    final reasons = <ShoppingPriceGapReason>{};
+    for (final price in prices) {
+      if (price.productId != item.product.id ||
+          !sameStoreLabel(price.storeName, storeName)) {
+        continue;
+      }
+      if (!price.price.isFinite || price.price <= 0) {
+        reasons.add(ShoppingPriceGapReason.invalidAmount);
+      } else if (_isFutureObservation(price.updatedAt, today)) {
+        reasons.add(ShoppingPriceGapReason.futureEvidence);
+      } else if (price.isProspectOffer || !price.isProspectRegularBasis) {
+        reasons.add(ShoppingPriceGapReason.untrustedOffer);
+      } else if (!price.identityConfidence.isFinite ||
+          price.identityConfidence < 1 ||
+          price.evidenceConfidence == EvidenceConfidence.probable ||
+          price.evidenceConfidence == EvidenceConfidence.uncertain) {
+        reasons.add(ShoppingPriceGapReason.identityUncertain);
+      } else if (!marketPriceMatchesProduct(price, item.product) ||
+          !price.hasComparableBasis) {
+        reasons.add(ShoppingPriceGapReason.incomparablePackage);
+      } else if (!matchesConfiguredBranch(
+        price.storeName,
+        price.sourceLocationId,
+      )) {
+        reasons.add(ShoppingPriceGapReason.missingExactBranch);
+      } else if (!price.isUsable(
+        now: today,
+        openPricesMaxAgeDays: openPricesMaxAgeDays,
+      ) &&
+          price.source != MarketPriceSource.receipt) {
+        reasons.add(ShoppingPriceGapReason.staleEvidence);
+      }
+    }
+
+    for (final offer in offers) {
+      if (!sameStoreLabel(offer.storeName, storeName) ||
+          !_offerMatchesShoppingItem(offer, item.product, catalogProducts)) {
+        continue;
+      }
+      if (!offer.offerPrice.isFinite ||
+          offer.offerPrice <= 0 ||
+          !offer.originalPrice.isFinite ||
+          offer.originalPrice <= 0) {
+        reasons.add(ShoppingPriceGapReason.invalidAmount);
+      } else if (offer.validFrom != null &&
+          _isFutureObservation(offer.validFrom!, today)) {
+        reasons.add(ShoppingPriceGapReason.futureEvidence);
+      } else if (!isOfferDateRangeActive(
+        validFrom: offer.validFrom,
+        validUntil: offer.validUntil,
+        now: today,
+      )) {
+        reasons.add(ShoppingPriceGapReason.staleEvidence);
+      } else if (!hasExactOfferBranch(offer)) {
+        reasons.add(ShoppingPriceGapReason.missingExactBranch);
+      } else if (!hasTrustedOfferEvidence(offer) || isSampleOffer(offer)) {
+        reasons.add(ShoppingPriceGapReason.untrustedOffer);
+      } else if (!offerMatchesProduct(offer, item.product) &&
+          !isGenericFamilyRequest(item.product.name)) {
+        reasons.add(ShoppingPriceGapReason.incomparablePackage);
+      }
+    }
+
+    const priority = <ShoppingPriceGapReason>[
+      ShoppingPriceGapReason.invalidAmount,
+      ShoppingPriceGapReason.futureEvidence,
+      ShoppingPriceGapReason.staleEvidence,
+      ShoppingPriceGapReason.identityUncertain,
+      ShoppingPriceGapReason.incomparablePackage,
+      ShoppingPriceGapReason.missingExactBranch,
+      ShoppingPriceGapReason.untrustedOffer,
+    ];
+    result[storeName] = priority.firstWhere(
+      reasons.contains,
+      orElse: () => ShoppingPriceGapReason.noEvidence,
+    );
+  }
+  return result;
+}
+
+ShoppingPriceGapReason _gapReasonForStore(
+  Map<String, ShoppingPriceGapReason> gapReasons,
+  String storeName,
+) {
+  for (final entry in gapReasons.entries) {
+    if (sameStoreLabel(entry.key, storeName)) return entry.value;
+  }
+  return ShoppingPriceGapReason.noEvidence;
 }
 
 /// Builds the product × market matrix from an already resolved quote list.
@@ -607,6 +805,7 @@ List<ShoppingPriceMatrixEntry> shoppingPriceMatrix(
 List<ShoppingPriceMatrixEntry> shoppingPriceMatrixFromQuotes(
   Iterable<ShoppingQuote> inputQuotes, {
   List<String> enabledStores = const [],
+  Map<String, ShoppingPriceGapReason> gapReasons = const {},
 }) {
   final quotes = inputQuotes.toList(growable: false);
   final configuredNames = enabledStores.isEmpty
@@ -635,7 +834,10 @@ List<ShoppingPriceMatrixEntry> shoppingPriceMatrixFromQuotes(
         .where((quote) => sameStoreLabel(quote.storeName, storeName))
         .toList(growable: false);
     if (storeQuotes.isEmpty) {
-      return ShoppingPriceMatrixEntry(storeName: storeName);
+      return ShoppingPriceMatrixEntry(
+        storeName: storeName,
+        gapReason: _gapReasonForStore(gapReasons, storeName),
+      );
     }
     final sorted = [...storeQuotes]..sort(_compareMatrixQuotes);
     return ShoppingPriceMatrixEntry(storeName: storeName, quote: sorted.first);
