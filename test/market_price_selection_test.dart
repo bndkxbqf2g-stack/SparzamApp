@@ -120,6 +120,36 @@ void main() {
     expect(preferredMarketPricesByKey([missingUnit], now), isEmpty);
   });
 
+  test('unknown prospect evidence stays a route data gap', () {
+    final unknown = price(
+      source: MarketPriceSource.prospect,
+      kind: PriceObservationKind.unknown,
+    );
+
+    expect(preferredMarketPricesByKey([unknown], now), isEmpty);
+
+    const product = Product(
+      id: 'milk',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'milch',
+    );
+    const store = Store(
+      name: 'Lidl',
+      location: 'Ort',
+      distanceKm: 1,
+      prices: const <String, double>{},
+    );
+    expect(
+      RoutePriceResolver(
+        const [],
+        marketPrices: [unknown],
+        now: now,
+      ).quote(store, ListItem(product: product)),
+      isNull,
+    );
+  });
+
   test('route resolver uses the same source precedence independent of input order', () {
     const product = Product(
       id: 'milk',
