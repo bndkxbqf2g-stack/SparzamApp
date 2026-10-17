@@ -1,3 +1,12 @@
+## Update 17.10.2026 – Prospekt-Suchergebnisse behalten Identitäts- und Schlüsselcaches
+
+Die aktuellen Prospekt-Suchergebnisse halten die aufwendige Produktidentitätsauflösung
+und die kollisionssicheren Karten-Schlüssel jetzt über Rebuilds, Filterwechsel und
+Nachladen hinweg. Der Cache wird bei einem neuen Katalogstand geleert; Treffer,
+Filialbindung, Gültigkeitsfilter und die direkte Übernahme in die Einkaufsliste
+bleiben unverändert. Dadurch muss schnelles Scrollen nicht wiederholt den gesamten
+Katalog für bereits geprüfte Artikel durchsuchen.
+
 ## Update 17.10.2026 – Fehlende Marktpreise erklären den primären Datenfehler
 
 Die Preis-Matrix kennzeichnet eine fehlende aktuelle Zeile jetzt mit einem
