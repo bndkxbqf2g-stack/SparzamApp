@@ -1,3 +1,12 @@
+## Update 17.10.2026 – Katalogansicht nutzt Produktidentität und Familienpfad
+
+- Die Produktkatalogsuche verwendet jetzt dieselbe Identitätslogik wie Einkaufsliste und Bonauflösung.
+- Ein bekannter Oberbegriff zeigt kompatible Varianten; fachlich getrennte Interpretationen wie frische Tomaten und Passata bleiben aus den primären Treffern heraus.
+- EAN, Marke, Kategorie und eigene Aliaswerte bleiben als textuelle Fallback-Suche verfügbar.
+- Jede Katalogzeile zeigt den abgeleiteten Pfad Familie › Variante; Preise und Identitätsbestätigungen werden dadurch nicht verändert.
+- test/product_catalog_search_test.dart deckt Varianten, getrennte Konservenidentität und EAN-Suche mit synthetischen Produkten ab.
+
+
 ## Update 17.10.2026 – Preisbelege werden batchweise übernommen
 
 - Receipt-Review und andere Mehrfachimporte können mehrere Preisbelege über einen gemeinsamen Shell-Koordinator speichern.

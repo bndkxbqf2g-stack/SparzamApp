@@ -51,8 +51,8 @@ SparzamApp gilt erst als produktreif, wenn die Kernpipeline Bon/OCR → Produkti
 - [x] UI klar zwischen historischem Hinweis und route-tauglichem Planungspreis unterscheiden
 
 ### Phase 3 – Einkaufslisten- und Preis-Matrix
-- [ ] hierarchischen Produktkatalog aus Oberbegriff → Produktfamilie → Variante aufbauen
-- [ ] Suchbegriff zeigt alle passenden Interpretationen (z. B. Tomate → frisch/Rispe/Party, getrennt von Tomatenmark/-sauce)
+- [x] hierarchischen Produktkatalog aus Oberbegriff → Produktfamilie → Variante aufbauen
+- [x] Suchbegriff zeigt alle passenden Interpretationen (z. B. Tomate → frisch/Rispe/Party, getrennt von Tomatenmark/-sauce)
 - [ ] für jede Position alle belastbaren Marktpreise aufbauen
 - [x] fehlende Preise explizit markieren und direkt zur Preiseingabe führen
 - [x] Produkt×Markt-Matrix als sichtbare Einkaufslisten-/Teststruktur
@@ -162,3 +162,11 @@ simuliert. 70 von 72 Produktzeilen erhalten eine passende preisfreie Auswahl;
 zwei undurchsichtige Händlercodes bleiben zur Review offen. Die Suchrangfolge nutzt
 erkennbare Labelbestandteile nur als Hinweis und macht daraus weder eine
 bestätigte Produktidentität noch einen Preis.
+
+## Update 17.10.2026 – Produktkatalog-Suche
+
+Die Katalogansicht übernimmt jetzt die zentrale Produktidentität und zeigt
+den abgeleiteten Familienpfad. Bekannte Suchbegriffe liefern nur kompatible
+Varianten als primäre Treffer; freie Texte können weiterhin Marke, Kategorie,
+Alias und EAN durchsuchen. Der Pfad bleibt eine Anzeigehilfe und bestätigt
+keinen Preis.

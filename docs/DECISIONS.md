@@ -1,3 +1,14 @@
+## D196 – Katalogsuche bleibt identitätsbasiert
+
+Die Produktkatalogansicht verwendet für bekannte Suchbegriffe die zentrale
+ProductIdentity-Kompatibilität. Damit werden Varianten innerhalb einer
+Familie gemeinsam gefunden, während verwandte, aber preislich nicht
+austauschbare Produkte als separate Interpretation nicht in die primäre
+Trefferliste gelangen. Unbekannte freie Texte dürfen weiterhin Marke, Gruppe,
+Alias und EAN durchsuchen. Der angezeigte Familienpfad ist eine
+Präsentationsableitung und bestätigt weder Produktidentität noch Preis.
+
+
 ## D195 – Preis-Review-Batches liefern einen konsistenten Shell-Snapshot
 
 Ein Belegimport kann mehrere bestätigte Preiszeilen erzeugen. Die Shell übergibt diese Zeilen deshalb an `ShellPriceCoordinator.saveMany`, der Beobachtungen, aktuelle Marktpreise und den Verlauf aus demselben Batch aktualisiert. Erst danach werden die Listen-/Routen-Inputs gemeinsam gesetzt. Ein Prospekt-Aktionspreis bleibt dabei ausschließlich Offer-Evidenz und wird nicht in den regulären Preisverlauf projiziert.

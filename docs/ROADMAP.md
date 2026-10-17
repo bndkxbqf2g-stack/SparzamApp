@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Produktkatalog erhält dieselbe Identitätshierarchie
+
+- [x] Katalogtreffer werden über die zentrale Produktidentität auf kompatible Varianten begrenzt.
+- [x] Familienpfad und Variante sind in der Katalogzeile sichtbar; Preis- und Routenidentität bleiben getrennt.
+- [x] Unbekannte Suchtexte verwenden weiterhin Marke, Kategorie, Alias und EAN als Fallback.
+- [x] Regressionen prüfen frische Tomaten gegen Passata sowie konkrete Milchvarianten.
+
+
 ## Update 17.10.2026 – Preisänderungen atomar in Liste und Route übernehmen
 
 - [x] Mehrfachbelege werden über einen gemeinsamen Koordinator in Beobachtung, Marktpreis und Verlauf projiziert.
