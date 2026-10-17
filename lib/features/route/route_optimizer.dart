@@ -79,6 +79,12 @@ class RouteOptimizer {
   RoutePlan? _bestSingleStorePlanCache;
   var _bestSingleStorePlanComputed = false;
 
+  // Route alternatives call the same travel calculation repeatedly. Keep the
+  // immutable result per ordered exact-store set so complete road matrices do
+  // not enumerate the same permutations again.
+  final Map<String, OptimizedTravelRoute> _travelRouteCache =
+      <String, OptimizedTravelRoute>{};
+
   bool isStoreEnabled(Store store) =>
       enabledStoreNames.isEmpty ||
       enabledStoreNames.any((name) => sameStoreLabel(name, store.name));
@@ -93,14 +99,22 @@ class RouteOptimizer {
     );
   }
 
-  OptimizedTravelRoute travelRoute(Iterable<Store> selectedStores) =>
-      optimizeTravelRoute(
-        selectedStores,
-        roadMatrix: roadMatrix,
-        fallbackDistances: roadDistances,
-        euroPerKm: euroPerKm,
-        timeValuePerHour: timeValuePerHour,
-      );
+  OptimizedTravelRoute travelRoute(Iterable<Store> selectedStores) {
+    final stores = selectedStores.toList(growable: false);
+    final key = stores.map(_travelRouteStoreKey).join('\u001e');
+    final cached = _travelRouteCache[key];
+    if (cached != null) return cached;
+
+    final computed = optimizeTravelRoute(
+      stores,
+      roadMatrix: roadMatrix,
+      fallbackDistances: roadDistances,
+      euroPerKm: euroPerKm,
+      timeValuePerHour: timeValuePerHour,
+    );
+    _travelRouteCache[key] = computed;
+    return computed;
+  }
 
   double travelCost(Iterable<Store> selectedStores) =>
       travelRoute(selectedStores).distanceKm * euroPerKm;
@@ -316,6 +330,12 @@ class RouteOptimizer {
     final bKey = b.stores.map(routeStoreIdentityKey).join('|');
     return aKey.compareTo(bKey);
   }
+}
+
+String _travelRouteStoreKey(Store store) {
+  final identity = routeStoreIdentityKey(store);
+  final distance = store.distanceKm.toString();
+  return '${identity.length}:$identity:${distance.length}:$distance';
 }
 
 double _finiteNonNegative(double value, double fallback) =>
