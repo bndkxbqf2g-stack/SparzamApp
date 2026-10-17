@@ -69,13 +69,13 @@ void main() {
     const products = [
       Product(
         id: 'milk-35',
-        name: 'Vollmilch 3,5 %',
+        name: 'H-Milch 3,5 %',
         unit: '1 l',
         group: 'milch',
       ),
       Product(
         id: 'milk-15',
-        name: 'Vollmilch 1,5 %',
+        name: 'H-Milch 1,5 %',
         unit: '1 l',
         group: 'milch',
       ),
