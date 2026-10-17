@@ -1,3 +1,7 @@
+## Update 17.10.2026 – Capture-Zeit bleibt bei Filialauflösung erhalten
+
+Der `ProspectImportModule` übernimmt beim regionalen Filial-Resolver jetzt auch den vorhandenen `capturedAt`-Zeitpunkt in das neu erzeugte Feed-Ergebnis. Capture-only-Feeds behalten damit ihre Herkunft bis zur Shell und Normalpreis-Persistenz; ein lokaler Ladezeitpunkt wird nicht ergänzt.
+
 ## Update 17.10.2026 – Capture-only Feed-Stand sichtbar
 
 Wenn ein geprüfter Prospektfeed nur einen belastbaren Transportzeitpunkt (`capturedAt`) und kein eigenes `generatedAt` liefert, verwendet die Shell diesen Zeitpunkt jetzt auch für Feed-Status, Preise-Tab und Refresh-Altersprüfung. Die lokale Preis-Persistenz und der Nachweisvertrag bleiben unverändert; ein lokaler Ladezeitpunkt wird weiterhin nicht erfunden.
