@@ -356,5 +356,32 @@ void main() {
     expect(resized.height, 192);
   });
 
+  testWidgets('begrenzt Prospektangebotsbilder auf die Kachelgröße', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ProspectOfferCard(
+            record: OfferImportRecord(
+              sourceId: 'grid-image-budget',
+              productLabel: 'Butter 250 g',
+              storeName: 'Lidl',
+              offerPrice: 1.49,
+              validUntil: DateTime(2026, 10, 18),
+              imageUrl: 'https://example.test/lidl/butter-grid.jpg',
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final image = tester.widget<Image>(find.byType(Image));
+    expect(image.image, isA<ResizeImage>());
+    final resized = image.image as ResizeImage;
+    expect(resized.width, 480);
+    expect(resized.height, 300);
+  });
+
 }
 
