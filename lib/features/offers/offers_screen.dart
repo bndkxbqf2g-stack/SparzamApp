@@ -574,7 +574,7 @@ class _ProspectOffersState extends State<_ProspectOffers> {
       }
       if (record.regionalOnly) {
         regionalCounts.update(
-          prospectRecordKey(record),
+          prospectRecordMatchKey(record),
           (count) => count + 1,
           ifAbsent: () => 1,
         );
