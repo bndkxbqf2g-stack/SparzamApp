@@ -8,6 +8,7 @@ import '../../models/price_data_settings.dart';
 import '../../models/price_sync_result.dart';
 import '../../services/barcode_normalizer.dart';
 import 'price_coverage.dart';
+import 'product_catalog_search.dart';
 import 'market_price_editor_screen.dart';
 import 'product_editor_screen.dart';
 
@@ -80,20 +81,10 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
 
   List<Product> get allProducts => [...demo.products, ...customProducts];
 
-  List<Product> get visible {
-    final q = query.trim().toLowerCase();
-    final items = allProducts.where((product) {
-      if (q.isEmpty) return true;
-      return [
-        product.name,
-        product.brand ?? '',
-        product.group,
-        ...product.aliases,
-      ].any((value) => value.toLowerCase().contains(q));
-    }).toList();
-    items.sort((a, b) => a.name.compareTo(b.name));
-    return items;
-  }
+  List<Product> get visible => buildProductCatalogSearchResults(
+        query: query,
+        products: allProducts,
+      );
 
   List<Product> get pagedVisible =>
       visible.take(visibleProductCount).toList(growable: false);
@@ -446,6 +437,7 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                     ),
                     title: Text(product.name),
                     subtitle: Text([
+                      productHierarchyLabel(product).path,
                       if ((product.brand ?? '').isNotEmpty) product.brand!,
                       product.packageAmount != null && product.packageUnit != null
                           ? '${product.packageAmount} ${product.packageUnit}'
