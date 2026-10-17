@@ -494,3 +494,8 @@ Die KaufDA-Regression prüft zusätzlich verschachtelte
 Ein Datensatz mit nur einem verschachtelten Startdatum wird als ungültig
 ausgeschlossen. Der Test verwendet ausschließlich die versionierte synthetische
 Fixture.
+
+Die KaufDA-Regression deckt zusätzlich Händlerobjekte, verschachtelte
+Ergebnislisten und ein bekanntes Preisobjekt mit Betrag/Währung ab. Es werden
+keine Live-Anfragen ausgeführt; die vorhandene HTML-Fixture wird nur im Test
+umbenannt bzw. verschachtelt.
