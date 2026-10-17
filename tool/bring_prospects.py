@@ -284,6 +284,7 @@ def _discount_record(
         return None
 
     original = None
+    original_source = None
     # Only explicit crossed-out/previous-price fields qualify as a regular
     # price.  Do not infer one from discounts, percentages, UVPs, or arbitrary
     # numeric fields; the candidate must also be at least the sale price.
@@ -312,6 +313,7 @@ def _discount_record(
         candidate = _money_eur(discount.get(key))
         if candidate is not None and candidate >= sale:
             original = candidate
+            original_source = key
             break
 
     image = _image_url(discount.get("imageUrl") or discount.get("image"))
@@ -327,6 +329,8 @@ def _discount_record(
     }
     if original is not None:
         record["originalPrice"] = original
+        if original_source:
+            record["regularPriceSource"] = original_source
     if image:
         record["imageUrl"] = image
     return record
