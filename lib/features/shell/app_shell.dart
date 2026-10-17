@@ -760,7 +760,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
             store: priceObservationStore,
             records: feed.records,
             catalogProducts: catalogForProspectPrices,
-            observedAt: feed.generatedAt,
+            observedAt: feed.generatedAt ?? feed.capturedAt,
             now: refreshNow,
             refreshedStores: feed.refreshedStores,
 
@@ -885,7 +885,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
           store: priceObservationStore,
           records: feed.records,
           catalogProducts: catalogForProspectPrices,
-          observedAt: feed.generatedAt,
+          observedAt: feed.generatedAt ?? feed.capturedAt,
           now: refreshNow,
           refreshedStores: feed.refreshedStores,
 

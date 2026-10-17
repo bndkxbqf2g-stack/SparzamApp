@@ -1,3 +1,12 @@
+## Update 17.10.2026 – Prospektpreise mit belastbarem Transportzeitpunkt
+
+Fehlt einem öffentlichen Prospektfeed das eigene generatedAt, übernimmt der
+Import nur einen expliziten Last-Modified- oder Date-Zeitpunkt der
+HTTP-Antwort als capturedAt. Dieser Zeitpunkt wird an die bestehende
+Regularpreis-Pipeline weitergereicht; die lokale Uhr wird nie als
+Quellenzeitpunkt erfunden. Feeds ohne belastbaren Zeitpunkt bleiben sichtbar,
+werden aber nicht automatisch als Preisbeleg gespeichert.
+
 ## Update 17.10.2026 – Letzte Käufe bewahren Produktmetadaten
 
 - `RecentPurchase` und `RecentPurchaseStore` halten jetzt Aliase, EAN, Marke, Packungsgröße, Bild, Favorit und Stammartikelstatus.

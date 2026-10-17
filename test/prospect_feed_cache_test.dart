@@ -24,11 +24,17 @@ class _MemoryProspectFeedCache implements ProspectFeedCache {
 }
 
 class _FakeClient extends http.BaseClient {
-  _FakeClient({this.body, this.statusCode = 200, this.error});
+  _FakeClient({
+    this.body,
+    this.statusCode = 200,
+    this.error,
+    this.headers = const <String, String>{},
+  });
 
   final String? body;
   final int statusCode;
   final Object? error;
+  final Map<String, String> headers;
   http.BaseRequest? lastRequest;
   var requestCount = 0;
 
@@ -40,6 +46,7 @@ class _FakeClient extends http.BaseClient {
     return http.StreamedResponse(
       Stream<List<int>>.value(utf8.encode(body ?? '')),
       statusCode,
+      headers: headers,
       request: request,
     );
   }
@@ -255,6 +262,51 @@ void main() {
       ),
       isTrue,
     );
+  });
+
+  test('uses Last-Modified when a feed has no generatedAt', () async {
+    final body = _feed(validUntil: '2026-10-18').replaceFirst(
+      '  "generatedAt": "2026-09-30T04:15:00Z",\n',
+      '',
+    );
+    final service = ProspectFeedService(
+      client: _FakeClient(
+        body: body,
+        headers: const {
+          'last-modified': 'Sat, 17 Oct 2026 04:15:00 GMT',
+        },
+      ),
+      cache: _MemoryProspectFeedCache(),
+      bundledLoader: () async => throw StateError('asset unavailable'),
+    );
+
+    final result = await service.load();
+
+    expect(result.generatedAt, isNull);
+    expect(result.capturedAt, DateTime.utc(2026, 10, 17, 4, 15));
+    expect(result.records, hasLength(1));
+  });
+
+  test('uses Date when Last-Modified is absent', () async {
+    final body = _feed(validUntil: '2026-10-18').replaceFirst(
+      '  "generatedAt": "2026-09-30T04:15:00Z",\n',
+      '',
+    );
+    final service = ProspectFeedService(
+      client: _FakeClient(
+        body: body,
+        headers: const {
+          'date': 'Sat, 17 Oct 2026 04:15:00 GMT',
+        },
+      ),
+      cache: _MemoryProspectFeedCache(),
+      bundledLoader: () async => throw StateError('asset unavailable'),
+    );
+
+    final result = await service.load();
+
+    expect(result.generatedAt, isNull);
+    expect(result.capturedAt, DateTime.utc(2026, 10, 17, 4, 15));
   });
 
   test('ein paralleler Read wartet auf einen Prospekt-Cache-Write', () async {

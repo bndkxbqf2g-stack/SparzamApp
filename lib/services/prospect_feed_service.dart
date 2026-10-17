@@ -43,6 +43,7 @@ class ProspectFeedLoadResult {
     required this.refreshedStores,
     this.refreshedStoreScopes = const <ProspectRefreshScope>[],
     this.generatedAt,
+    this.capturedAt,
     this.prospects = const <ProspectIssue>[],
     this.fromCache = false,
   });
@@ -53,8 +54,27 @@ class ProspectFeedLoadResult {
   /// Branch-aware refresh scope derived from source metadata.
   final List<ProspectRefreshScope> refreshedStoreScopes;
   final DateTime? generatedAt;
+  /// Transport/source capture time used only when the feed has no generatedAt.
+  /// It is populated from an explicit feed field or an HTTP response date;
+  /// the app never substitutes the local clock.
+  final DateTime? capturedAt;
   final List<ProspectIssue> prospects;
   final bool fromCache;
+
+  /// Returns a copy with a source/transport capture time while preserving the
+  /// validated feed payload and its original provenance.
+  ProspectFeedLoadResult withCapturedAt(DateTime? value) {
+    if (capturedAt == value) return this;
+    return ProspectFeedLoadResult(
+      records: records,
+      refreshedStores: refreshedStores,
+      refreshedStoreScopes: refreshedStoreScopes,
+      generatedAt: generatedAt,
+      capturedAt: value,
+      prospects: prospects,
+      fromCache: fromCache,
+    );
+  }
 }
 
 typedef ProspectFeedAssetLoader = Future<String> Function();
@@ -481,6 +501,72 @@ String _prospectStoreMetadataKey(String value) {
       .replaceAll('ue', 'u');
 }
 
+
+
+DateTime? _httpResponseCapturedAt(Map<String, String> headers) {
+  for (final headerName in const ['last-modified', 'date']) {
+    String? raw;
+    for (final entry in headers.entries) {
+      if (entry.key.toLowerCase() == headerName) {
+        raw = entry.value;
+        break;
+      }
+    }
+    final parsed = _parseHttpHeaderDate(raw);
+    if (parsed != null) return parsed;
+  }
+  return null;
+}
+
+DateTime? _parseHttpHeaderDate(String? value) {
+  final trimmed = value?.trim();
+  if (trimmed == null || trimmed.isEmpty) return null;
+
+  final iso = DateTime.tryParse(trimmed);
+  if (iso != null &&
+      (trimmed.endsWith('Z') ||
+          RegExp(r'[+-]\d{2}:?\d{2}$').hasMatch(trimmed))) {
+    return iso.toUtc();
+  }
+
+  final match = RegExp(
+    r'^(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s*'
+    r'(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})\s+'
+    r'(\d{2}):(\d{2}):(\d{2})\s+(?:GMT|UTC)$',
+    caseSensitive: false,
+  ).firstMatch(trimmed);
+  if (match == null) return null;
+
+  const months = <String, int>{
+    'jan': 1,
+    'feb': 2,
+    'mar': 3,
+    'apr': 4,
+    'may': 5,
+    'jun': 6,
+    'jul': 7,
+    'aug': 8,
+    'sep': 9,
+    'oct': 10,
+    'nov': 11,
+    'dec': 12,
+  };
+  final month = months[match.group(2)!.toLowerCase()];
+  if (month == null) return null;
+  try {
+    return DateTime.utc(
+      int.parse(match.group(3)!),
+      month,
+      int.parse(match.group(1)!),
+      int.parse(match.group(4)!),
+      int.parse(match.group(5)!),
+      int.parse(match.group(6)!),
+    );
+  } on FormatException {
+    return null;
+  }
+}
+
 class ProspectFeedService {
   ProspectFeedService({
     http.Client? client,
@@ -583,7 +669,12 @@ class ProspectFeedService {
       if (response.statusCode < 200 || response.statusCode >= 300) {
         throw StateError('Prospektfeed HTTP ${response.statusCode}');
       }
-      final result = _parse(response.body, fromCache: false);
+      final parsed = _parse(response.body, fromCache: false);
+      // Prefer an explicit feed timestamp. The response header is a
+      // transport/source capture fallback only; local clock time is never used.
+      final result = parsed.capturedAt == null
+          ? parsed.withCapturedAt(_httpResponseCapturedAt(response.headers))
+          : parsed;
       // A CDN or a temporarily stale publisher response must not replace a
       // newer validated local snapshot. Equal timestamps still prefer the
       // successful live response.
@@ -627,8 +718,8 @@ class ProspectFeedService {
     if (first == null) return second;
     if (second == null) return first;
 
-    final firstAt = first.generatedAt;
-    final secondAt = second.generatedAt;
+    final firstAt = first.generatedAt ?? first.capturedAt;
+    final secondAt = second.generatedAt ?? second.capturedAt;
     if (firstAt == null) return secondAt == null ? first : second;
     if (secondAt == null) return first;
     return firstAt.isBefore(secondAt) ? second : first;
@@ -668,6 +759,9 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
 
   final generatedAt = DateTime.tryParse(
     _stringValue(json['generatedAt']) ?? '',
+  );
+  final capturedAt = DateTime.tryParse(
+    _stringValue(json['capturedAt']) ?? '',
   );
   final sourceValues =
       _listValue(json['sources']);
@@ -1187,6 +1281,7 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     refreshedStores: refreshedStores,
     refreshedStoreScopes: refreshedStoreScopes,
     generatedAt: generatedAt,
+    capturedAt: capturedAt,
     prospects: prospects,
     fromCache: fromCache,
   );

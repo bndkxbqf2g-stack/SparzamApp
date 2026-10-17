@@ -1,3 +1,11 @@
+## Update 17.10.2026 – HTTP-Zeitstempel als Prospekt-Fallback
+
+prospect_feed_cache_test.dart prüft jetzt Last-Modified und Date für
+Feeds ohne generatedAt. Diese expliziten Antwortzeitpunkte werden als
+capturedAt an die automatische Speicherung weitergereicht; die lokale Uhr
+wird nicht als Quellenzeitpunkt eingesetzt. Offline-/Cachepfad und reguläre
+Preisregeln bleiben unverändert.
+
 ## Update 17.10.2026 – Preis-Mutation liefert Beobachtungssnapshot
 
 Der Test shell_price_coordinator_test.dart prüft jetzt, dass Einzelpreis, Batch und Open-Prices-Sync neben Marktpreis und Verlauf auch den vollständigen gespeicherten Beobachtungsstand liefern. CI 5631 lief mit Analyse, Flutter-Tests und Web-Release-Build erfolgreich.
