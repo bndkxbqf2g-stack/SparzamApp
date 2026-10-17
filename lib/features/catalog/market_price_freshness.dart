@@ -71,8 +71,9 @@ PriceDataQuality calculatePriceDataQuality(
 
   for (final price in prices) {
     total++;
-    if (price.source == MarketPriceSource.prospect &&
-        price.kind == PriceObservationKind.offer) {
+    if (price.isProspectOffer) {
+      // Covers both current records with kind=offer and legacy rows whose
+      // discounted flag is the only available offer marker.
       prospectOfferEvidence++;
     }
 
