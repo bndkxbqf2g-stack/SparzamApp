@@ -79,6 +79,17 @@ void main() {
         marketPrices: _baselinePrices(),
       );
 
+  test('begrenzt maxStores auf die unterstützte Marktanzahl', () {
+    final optimizer = RouteOptimizer(
+      items(),
+      const [],
+      marketPrices: _baselinePrices(),
+      maxStores: 99,
+    );
+
+    expect(optimizer.maxStores, maximumSupportedRouteStores);
+  });
+
   test('maxStores begrenzt erzeugte Routen', () {
     final optimizer = RouteOptimizer(
       items(),
