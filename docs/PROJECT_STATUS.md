@@ -1,3 +1,13 @@
+## Update 17.10.2026 – Coverfallback nutzt erste gültige Prospektseite
+
+Coverkarten bevorzugen weiterhin die ausdrücklich gelieferte Thumbnail-URL.
+Wenn diese fehlt, wählen sie jetzt die erste validierte HTTP(S)-Bildseite aus
+der vorhandenen Seitenliste. Dadurch bleiben Coverseiten sichtbar, auch wenn
+ein Feed eine leere oder bildlose erste Seitennummer liefert. Die Funktion
+ändert weder Seitenzählung noch Gültigkeit, Filialbezug, Quellenprovenienz oder
+Preislogik; die Regression in `test/prospects_screen_test.dart` prüft den
+Fallback.
+
 ## Update 17.10.2026 – Erfassungszeitpunkt im Preisbeleg sichtbar
 
 Der Preise-Reiter zeigt aktuelle gespeicherte Prospekt-Normalpreise jetzt mit
