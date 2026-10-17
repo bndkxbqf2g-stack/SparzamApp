@@ -492,7 +492,18 @@ void main() {
     expect(find.text('1 passende Prospektartikel'), findsOneWidget);
     expect(find.text('Butter'), findsOneWidget);
 
-    await tester.enterText(search, '250 g');
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: [record],
+          now: DateTime(2026, 10, 12),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final packageSearch = find.byType(TextField);
+    expect(packageSearch, findsOneWidget);
+    await tester.enterText(packageSearch, '250 g');
     await tester.pump();
 
     expect(find.text('1 passende Prospektartikel'), findsOneWidget);
