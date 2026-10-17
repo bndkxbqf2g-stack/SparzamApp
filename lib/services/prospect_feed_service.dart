@@ -94,14 +94,14 @@ bool _isCurrentFoodProspectRecord(
       category: record.category,
     );
 
-/// Preserves still-valid food rows when a successful source response has
-/// temporarily returned no current rows for an otherwise refreshed scope.
+/// Preserves still-valid food rows and validated page evidence when a
+/// source response is temporarily incomplete for an otherwise refreshed scope.
 ///
 /// This is a transport-quality fallback only. It never revives expired rows,
 /// never fills a source without an explicit successful scope, and keeps the
-/// original row provenance/capture time. The affected prospect is marked as a
-/// current fallback so the UI and diagnostics do not present the old rows as
-/// a fresh source result.
+/// original row provenance/capture time. Page-only fallback is marked
+/// separately so the UI can show an older cover without treating its prices as
+/// current data.
 ProspectFeedLoadResult preserveCurrentProspectRowsForEmptySources({
   required ProspectFeedLoadResult incoming,
   ProspectFeedLoadResult? fallback,
