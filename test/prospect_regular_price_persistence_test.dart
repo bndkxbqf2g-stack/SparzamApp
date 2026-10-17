@@ -390,7 +390,7 @@ void main() {
     },
   );
 
-  test('removes legacy prospect offers without a feed timestamp', () async {
+  test('removes legacy prospect offers while using record capture time', () async {
     final store = memoryStore();
     final legacy = prospectPriceObservations(
       records: [current],
@@ -406,7 +406,8 @@ void main() {
       now: now,
     );
 
-    expect(result.learned, isEmpty);
+    expect(result.learned, hasLength(1));
+    expect(result.learned.single.kind, PriceObservationKind.regular);
     expect(
       result.stored.where(
         (entry) =>
@@ -456,7 +457,7 @@ void main() {
     expect(purged.any((entry) => entry.id == regular.id), isTrue);
   });
 
-  test('does not persist without a feed timestamp', () async {
+  test('persists from record capture time without a feed timestamp', () async {
     final store = memoryStore();
     final result = await persistCurrentProspectRegularPrices(
       store: store,
@@ -465,8 +466,10 @@ void main() {
       now: now,
     );
 
-    expect(result.learned, isEmpty);
-    expect(result.stored, isEmpty);
+    expect(result.learned, hasLength(1));
+    expect(result.learned.single.observedAt, now);
+    expect(result.stored, hasLength(1));
+    expect(result.stored.single.kind, PriceObservationKind.regular);
   });
   test('persists only a formatted regular amount from the parsed feed', () async {
     final feed = parseProspectFeed(r'''
