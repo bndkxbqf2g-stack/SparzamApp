@@ -518,3 +518,8 @@ Prospektfenster erzeugt dadurch keinen falschen CI-Fehler.
 Die Widgetregression 'loads additional prospect search pages on demand' prüft,
 dass ein großer aktueller Feed zunächst paginiert erscheint und nach der
 Nutzeraktion vollständig weitergeladen werden kann.
+
+
+## Prospekt-Coverraster mit vielen Märkten
+Die Widgetregression 'scrolls a larger cover grid without eagerly building every card'
+lädt die nächste Coverstufe explizit und prüft anschließend das letzte Cover.
