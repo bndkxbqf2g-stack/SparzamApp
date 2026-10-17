@@ -1,3 +1,12 @@
+## Update 17.10.2026 – Prospektkarten teilen den Katalogindex
+
+Die aktuellen Angebotskarten, Suchtreffer und der Seitenviewer verwenden pro
+unverändertem Katalogstand eine gemeinsame EAN-/Namenssicht. Dadurch werden
+beim Nachladen und Scrollen nicht mehr für jede Karte dieselben Katalogzeilen
+neu normalisiert. Unklare Varianten, Packungsgrößen, Filialen und Nachweise
+bleiben weiterhin gesperrt; die Indexierung ist ausschließlich eine
+beschleunigte Suchstruktur.
+
 ## Update 17.10.2026 – Prospektabdeckung zählt in einem Durchlauf
 
 Die Coverage-Berechnung der aktuellen Prospekte zählt Bilder, Kategorien,

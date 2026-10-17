@@ -19,10 +19,15 @@ List<ProspectOfferProduct> prospectOfferProducts({
   DateTime? now,
 }) {
   final catalog = catalogProducts.toList(growable: false);
+  final catalogIndex = OfferImportCatalogIndex(catalog);
   final result = <String, ProspectOfferProduct>{};
   for (final record in records) {
     if (!_isUsableRecord(record, now: now)) continue;
-    final product = productForProspectOffer(record, catalog);
+    final product = productForProspectOffer(
+      record,
+      catalog,
+      catalogIndex: catalogIndex,
+    );
     final offer = _offerForProduct(record, product, now: now);
     if (offer == null) continue;
     final key = prospectOfferSnapshotKey(offer);
@@ -33,8 +38,9 @@ List<ProspectOfferProduct> prospectOfferProducts({
 
 Product productForProspectOffer(
   OfferImportRecord record,
-  Iterable<Product> catalogProducts,
-) {
+  Iterable<Product> catalogProducts, {
+  OfferImportCatalogIndex? catalogIndex,
+}) {
   final sourceEanText = record.ean?.trim() ?? '';
   final sourceEan = sourceEanText.isEmpty
       ? null
@@ -42,15 +48,40 @@ Product productForProspectOffer(
   if (sourceEan != null) {
     // Do not let a conflicting source code fall back to a similarly named
     // catalog product. It remains an exact-label review item instead.
-    return exactProspectProductByEan(record.ean, catalogProducts) ??
-        _offerBackedProduct(record);
+    final exactEan = catalogIndex == null
+        ? exactProspectProductByEan(record.ean, catalogProducts)
+        : _exactIndexedProductByEan(catalogIndex, sourceEan);
+    return exactEan ?? _offerBackedProduct(record);
   }
-  return exactProspectProduct(
-        record.productLabel,
-        catalogProducts,
-        packageSize: record.packageSize,
-      ) ??
-      _offerBackedProduct(record);
+  final indexedNames =
+      catalogIndex?.byName(normalizeIdentityText(record.productLabel));
+  final exactProduct = exactProspectProduct(
+    record.productLabel,
+    indexedNames == null || indexedNames.isEmpty
+        ? catalogProducts
+        : indexedNames,
+    packageSize: record.packageSize,
+  );
+  // Package-suffixed labels may intentionally match a catalog core name, so
+  // retry the full snapshot only when the narrow exact-name bucket did not
+  // resolve the package basis.
+  final resolved = exactProduct ??
+      (indexedNames == null || indexedNames.isEmpty
+          ? null
+          : exactProspectProduct(
+              record.productLabel,
+              catalogProducts,
+              packageSize: record.packageSize,
+            ));
+  return resolved ?? _offerBackedProduct(record);
+}
+
+Product? _exactIndexedProductByEan(
+  OfferImportCatalogIndex index,
+  String sourceEan,
+) {
+  final matches = index.byEan(sourceEan).toList(growable: false);
+  return matches.length == 1 ? matches.single : null;
 }
 
 /// Returns the exact catalog identity or a safe, exact-label fallback for a
@@ -58,13 +89,22 @@ Product productForProspectOffer(
 /// stay unavailable instead of being added under the wrong product.
 Product? addableProductForProspectOffer(
   OfferImportRecord record,
-  Iterable<Product> catalogProducts,
-) {
+  Iterable<Product> catalogProducts, {
+  OfferImportCatalogIndex? catalogIndex,
+}) {
   if (!_hasVerifiedOfferEvidence(record)) return null;
-  final resolution = resolveOfferImport(record, catalogProducts);
+  final resolution = resolveOfferImport(
+    record,
+    catalogProducts,
+    catalogIndex: catalogIndex,
+  );
   if (resolution.product != null) return resolution.product;
   if (resolution.reason != 'unknown_identity') return null;
-  return productForProspectOffer(record, catalogProducts);
+  return productForProspectOffer(
+    record,
+    catalogProducts,
+    catalogIndex: catalogIndex,
+  );
 }
 
 /// Returns an exact-label product for an explicit user review when a
@@ -83,13 +123,18 @@ Product? manualProductForProspectOffer(OfferImportRecord record) {
 /// [MarketPrice], or route price.
 Product? listOnlyProductForRegionalProspectOffer(
   OfferImportRecord record,
-  Iterable<Product> catalogProducts,
-) {
+  Iterable<Product> catalogProducts, {
+  OfferImportCatalogIndex? catalogIndex,
+}) {
   if (!record.regionalOnly ||
       !_hasVerifiedOfferEvidence(record, requireExactBranch: false)) {
     return null;
   }
-  return productForProspectOffer(record, catalogProducts);
+  return productForProspectOffer(
+    record,
+    catalogProducts,
+    catalogIndex: catalogIndex,
+  );
 }
 
 bool _hasVerifiedOfferEvidence(

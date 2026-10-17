@@ -347,6 +347,7 @@ class _ProspectOffersState extends State<_ProspectOffers> {
   final expandedCategories = <String>{};
   final _visibleCategoryCounts = <String, int>{};
   final _resolvedProducts = <String, Product?>{};
+  OfferImportCatalogIndex? _catalogIndex;
   List<OfferImportRecord>? _searchIndexInput;
   Map<OfferImportRecord, String>? _searchIndexCache;
   List<OfferImportRecord>? _filteredInput;
@@ -363,6 +364,7 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     super.didUpdateWidget(oldWidget);
     if (!identical(oldWidget.catalogProducts, widget.catalogProducts)) {
       _resolvedProducts.clear();
+      _catalogIndex = OfferImportCatalogIndex(widget.catalogProducts);
     }
     if (!identical(oldWidget.records, widget.records) ||
         oldWidget.query != widget.query) {
@@ -447,9 +449,11 @@ class _ProspectOffersState extends State<_ProspectOffers> {
     if (_resolvedProducts.containsKey(key)) {
       return _resolvedProducts[key];
     }
+    _catalogIndex ??= OfferImportCatalogIndex(widget.catalogProducts);
     final product = addableProductForProspectOffer(
       record,
       widget.catalogProducts,
+      catalogIndex: _catalogIndex,
     );
     _resolvedProducts[key] = product;
     return product;
@@ -574,6 +578,7 @@ class _ProspectOffersState extends State<_ProspectOffers> {
         ? listOnlyProductForRegionalProspectOffer(
             record,
             widget.catalogProducts,
+            catalogIndex: _catalogIndex,
           )
         : null;
     final selectableProduct =

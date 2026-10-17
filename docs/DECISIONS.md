@@ -1,3 +1,12 @@
+## D227 – Prospektkarten teilen nur eine beschleunigte Identitätssicht
+
+Die Prospektübersicht, die Suche und der Seitenviewer dürfen bei jedem
+sichtbaren Artikel nicht erneut den gesamten Katalog normalisieren. Sie teilen
+deshalb einen Index des unveränderten Katalogsnapshots für EAN und exakte
+Namensschlüssel. Dieser Index entscheidet keine neue Identität: Paketbasis,
+Varianten, Nachweis, Gültigkeit und Filialschutz laufen weiterhin durch die
+bestehenden Resolver. Bei einem neuen Katalogobjekt wird der Index verworfen.
+
 ## D226 – Coverage und Katalogauflösung teilen ihren Snapshot
 
 Die Prospekt-Coverage darf für jede Händlerkarte nicht dieselben Datensätze

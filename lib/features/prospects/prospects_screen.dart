@@ -651,6 +651,7 @@ class _ProspectSearchResultsSliverState
   // widget keys tied to the record contents instead of the current build.
   final _resolvedProducts = <String, Product?>{};
   List<Product>? _resolvedProductsCatalogInput;
+  OfferImportCatalogIndex? _catalogIndex;
   List<OfferImportRecord>? _widgetKeyInput;
   Map<OfferImportRecord, String>? _widgetKeyCache;
 
@@ -685,6 +686,7 @@ class _ProspectSearchResultsSliverState
     if (identical(_resolvedProductsCatalogInput, catalogProducts)) return;
     _resolvedProducts.clear();
     _resolvedProductsCatalogInput = catalogProducts;
+    _catalogIndex = OfferImportCatalogIndex(catalogProducts);
   }
 
   List<OfferImportRecord> get records => widget.records;
@@ -699,6 +701,7 @@ class _ProspectSearchResultsSliverState
     if (!identical(oldWidget.catalogProducts, widget.catalogProducts)) {
       _resolvedProducts.clear();
       _resolvedProductsCatalogInput = widget.catalogProducts;
+      _catalogIndex = OfferImportCatalogIndex(widget.catalogProducts);
     }
     final oldFirst = oldWidget.records.isEmpty
         ? null
@@ -897,11 +900,16 @@ class _ProspectSearchResultsSliverState
       record,
       catalogProducts,
       resolvedProducts,
+      catalogIndex: _catalogIndex,
     );
     final manualProduct =
         product == null ? manualProductForProspectOffer(record) : null;
     final regionalProduct = record.regionalOnly
-        ? listOnlyProductForRegionalProspectOffer(record, catalogProducts)
+        ? listOnlyProductForRegionalProspectOffer(
+            record,
+            catalogProducts,
+            catalogIndex: _catalogIndex,
+          )
         : null;
     final selectableProduct =
         record.regionalOnly ? regionalProduct : product ?? manualProduct;
@@ -957,11 +965,16 @@ enum _ProspectSearchRowKind { heading, description, store, offer, loadMore }
 Product? _memoizedProspectProduct(
   OfferImportRecord record,
   Iterable<Product> catalogProducts,
-  Map<String, Product?> cache,
-) {
+  Map<String, Product?> cache, {
+  OfferImportCatalogIndex? catalogIndex,
+}) {
   final key = prospectOfferResolutionKey(record);
   if (cache.containsKey(key)) return cache[key];
-  final product = addableProductForProspectOffer(record, catalogProducts);
+  final product = addableProductForProspectOffer(
+    record,
+    catalogProducts,
+    catalogIndex: catalogIndex,
+  );
   cache[key] = product;
   return product;
 }
@@ -2146,6 +2159,7 @@ class ProspectViewerScreen extends StatelessWidget {
           .add(record);
     }
     final resolvedProducts = <String, Product?>{};
+    final catalogIndex = OfferImportCatalogIndex(catalogProducts);
     final categories = groupedItems.keys.toList()
       ..sort(
         (a, b) =>
@@ -2303,6 +2317,7 @@ class ProspectViewerScreen extends StatelessWidget {
                         record,
                         catalogProducts,
                         resolvedProducts,
+                        catalogIndex: catalogIndex,
                       );
                       final manualProduct = product == null
                           ? manualProductForProspectOffer(record)
@@ -2311,6 +2326,7 @@ class ProspectViewerScreen extends StatelessWidget {
                           ? listOnlyProductForRegionalProspectOffer(
                               record,
                               catalogProducts,
+                              catalogIndex: catalogIndex,
                             )
                           : null;
                       final selectableProduct = record.regionalOnly
