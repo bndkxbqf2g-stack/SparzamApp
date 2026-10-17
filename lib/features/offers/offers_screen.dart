@@ -399,6 +399,9 @@ class _ProspectOffersState extends State<_ProspectOffers> {
   final _groupedCache = <String, Map<String, List<OfferImportRecord>>>{};
   List<OfferImportRecord>? _widgetKeyInput;
   Map<OfferImportRecord, String>? _widgetKeyCache;
+  List<OfferImportRecord>? _sourceNoticeRecordsInput;
+  List<ProspectIssue>? _sourceNoticeIssuesInput;
+  List<ProspectIssue>? _sourceNoticeCache;
 
   @override
   void didUpdateWidget(covariant _ProspectOffers oldWidget) {
@@ -642,6 +645,23 @@ class _ProspectOffersState extends State<_ProspectOffers> {
 
   List<Widget> _sourceNotices() {
     if (widget.query.trim().isNotEmpty) return const <Widget>[];
+    final issues = _sourceNoticeIssues();
+    return [
+      for (final issue in issues)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: _OfferSourceNotice(issue: issue),
+        ),
+    ];
+  }
+
+  List<ProspectIssue> _sourceNoticeIssues() {
+    final cached = _sourceNoticeCache;
+    if (cached != null &&
+        identical(_sourceNoticeRecordsInput, widget.records) &&
+        identical(_sourceNoticeIssuesInput, widget.issues)) {
+      return cached;
+    }
     final currentCounts = <String, int>{};
     final regionalCounts = <String, int>{};
     final unscopedCounts = <String, int>{};
@@ -721,13 +741,11 @@ class _ProspectOffersState extends State<_ProspectOffers> {
         ),
       );
     }
-    return [
-      for (final issue in visible.values)
-        Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: _OfferSourceNotice(issue: issue),
-        ),
-    ];
+    final next = visible.values.toList(growable: false);
+    _sourceNoticeRecordsInput = widget.records;
+    _sourceNoticeIssuesInput = widget.issues;
+    _sourceNoticeCache = next;
+    return next;
   }
 }
 
