@@ -1301,6 +1301,18 @@ void main() {
         .length;
     expect(renderedPageImages, lessThan(pages.length));
 
+    final loadMore = find.byKey(
+      const ValueKey('prospect-viewer-load-more'),
+    );
+    await tester.scrollUntilVisible(
+      loadMore,
+      600,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.ensureVisible(loadMore);
+    await tester.tap(loadMore);
+    await tester.pump();
+
     await tester.scrollUntilVisible(
       find.byKey(const ValueKey('prospect-page-image-20')),
       600,

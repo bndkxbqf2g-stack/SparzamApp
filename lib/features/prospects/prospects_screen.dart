@@ -2172,15 +2172,13 @@ class ProspectViewerScreen extends StatelessWidget {
           if (pages.isNotEmpty)
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-              sliver: SliverList.builder(
-                itemCount: pages.length,
-                itemBuilder: (context, index) => _buildPageCard(
+              sliver: _ProspectPagesSliver(
+                pages: pages,
+                pageBuilder: (context, page, index) => _buildPageCard(
                   context,
-                  pages[index],
+                  page,
                   allowHtmlFallback: prospectPageHtmlFallbackAllowed(index),
                 ),
-                addAutomaticKeepAlives: false,
-                addRepaintBoundaries: true,
               ),
             ),
           if (items.isNotEmpty) ...[
@@ -2266,6 +2264,84 @@ class ProspectViewerScreen extends StatelessWidget {
           const SliverToBoxAdapter(child: SizedBox(height: 24)),
         ],
       ),
+    );
+  }
+}
+
+
+const _prospectViewerPageBatchSize = 12;
+
+/// Keeps long prospect viewers responsive by materializing a bounded first
+/// batch and adding the remaining page cards only after an explicit action.
+/// The source still owns the complete validated page list; this only controls
+/// the UI build window and never changes page numbers or evidence.
+class _ProspectPagesSliver extends StatefulWidget {
+  const _ProspectPagesSliver({
+    required this.pages,
+    required this.pageBuilder,
+  });
+
+  final List<ProspectPage> pages;
+  final Widget Function(
+    BuildContext context,
+    ProspectPage page,
+    int index,
+  ) pageBuilder;
+
+  @override
+  State<_ProspectPagesSliver> createState() => _ProspectPagesSliverState();
+}
+
+class _ProspectPagesSliverState extends State<_ProspectPagesSliver> {
+  var _visiblePageCount = _prospectViewerPageBatchSize;
+
+  @override
+  void didUpdateWidget(covariant _ProspectPagesSliver oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.pages, widget.pages)) {
+      _visiblePageCount = _prospectViewerPageBatchSize;
+    }
+  }
+
+  void _loadMore() {
+    if (_visiblePageCount >= widget.pages.length) return;
+    setState(() {
+      final next = _visiblePageCount + _prospectViewerPageBatchSize;
+      _visiblePageCount =
+          next < widget.pages.length ? next : widget.pages.length;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final visibleCount = _visiblePageCount < widget.pages.length
+        ? _visiblePageCount
+        : widget.pages.length;
+    final remaining = widget.pages.length - visibleCount;
+    final itemCount = visibleCount + (remaining > 0 ? 1 : 0);
+
+    return SliverList.builder(
+      itemCount: itemCount,
+      itemBuilder: (context, index) {
+        if (index < visibleCount) {
+          return widget.pageBuilder(
+            context,
+            widget.pages[index],
+            index,
+          );
+        }
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: OutlinedButton.icon(
+            key: const ValueKey('prospect-viewer-load-more'),
+            onPressed: _loadMore,
+            icon: const Icon(Icons.expand_more),
+            label: Text('Weitere Seiten laden ($remaining)'),
+          ),
+        );
+      },
+      addAutomaticKeepAlives: false,
+      addRepaintBoundaries: true,
     );
   }
 }

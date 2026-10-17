@@ -1304,3 +1304,9 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Weitere aktuelle Prospekte bleiben über einen sichtbaren Nachladebutton
   erreichbar; Favoriten und Seitenviewer werden nicht verändert.
 - [x] Der begrenzte erste Rasteraufbau reduziert Bilddekodierung und Scrollarbeit.
+
+## Update 17.10.2026 – Prospektseiten progressiv laden
+- [x] Der Seitenviewer baut zunächst höchstens zwölf Seitenkarten auf.
+- [x] Weitere validierte Seiten bleiben über eine sichtbare Nutzeraktion
+  erreichbar; Seitenzahlen und Quellenbelege werden nicht verändert.
+- [x] Die lange Viewer-Regression deckt das Nachladen bis zur letzten Seite ab.

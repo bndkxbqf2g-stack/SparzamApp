@@ -4086,3 +4086,10 @@ der Cover-/Filialnachweis bei automatischen Asset-Aktualisierungen stabil.
   nur die erste Rasterstufe wird begrenzt.
 - Die bestehende große Rasterregression prüft das explizite Nachladen vor dem
   Scrollen zum letzten Cover.
+
+## Update 17.10.2026 – Prospektseiten im Viewer stufenweise laden
+- Der Seitenviewer materialisiert zunächst höchstens zwölf Seitenkarten und
+  lädt weitere validierte Seiten erst über „Weitere Seiten laden“ nach.
+- Seitenzahl, Bildnachweis, OCR- und Artikelübernahme bleiben unverändert; die
+  Begrenzung steuert ausschließlich Widgetaufbau und Bilddekodierung.
+- Die lange Viewer-Regression prüft den Nachladepfad bis zur letzten Seite.
