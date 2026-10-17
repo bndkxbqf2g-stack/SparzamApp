@@ -1330,13 +1330,8 @@ class _ProspectCard extends StatelessWidget {
     // Include the exact branch in child keys so lazy grid recycling cannot
     // reuse an image or action from another same-name market.
     final issueKey = prospectIssueKey(issue);
-    final thumbnail = _officialProspectUri(issue.thumbnailUrl)?.toString();
-    String? previewUrl;
-    if (thumbnail != null && thumbnail.isNotEmpty) {
-      previewUrl = thumbnail;
-    } else if (issue.pages.isNotEmpty) {
-      previewUrl = _officialProspectUri(issue.pages.first.imageUrl)?.toString();
-    }
+    final previewUrl = prospectCoverPreviewUrl(issue);
+    final fallbackUrl = prospectCoverPageFallbackUrl(issue);
     final imageHeight = compact ? 168.0 : 181.0;
     final validity = _prospectValidityLabel(issue);
     final cover = previewUrl == null
@@ -1346,6 +1341,7 @@ class _ProspectCard extends StatelessWidget {
               'prospect-cover-image-${compact ? "grid" : "favorite"}-$issueKey',
             ),
             url: previewUrl,
+            fallbackUrl: fallbackUrl,
             // Use one bounded decode size for both cover layouts to avoid
             // duplicate decoded images while the user scrolls quickly.
             cacheWidth: 480,
