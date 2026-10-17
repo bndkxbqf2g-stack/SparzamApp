@@ -1,3 +1,18 @@
+## Update 17.10.2026 – Prospekt-/Angebotsstatus-Cache
+
+Die bestehenden `prospects_screen_test.dart`- und
+`offers_screen_test.dart`-Widgettests prüfen weiterhin aktuelle, abgelaufene,
+regionale und fehlgeschlagene Feedzustände. Der neue Cache verwendet getrennte
+Schlüssel für Coverauswahl und Statushinweise; CI bestätigt Analyse,
+Fluttertests und Web-Build.
+
+## Update 17.10.2026 – Einkaufsvorschlags-Cache
+
+Die vorhandenen Shopping-Flow-, Such- und Produktidentitätstests laufen mit der
+memoisierten Vorschlagsberechnung. Der Cache wird bei geändertem Suchtext,
+Quelllisten oder Tagesgrenze neu aufgebaut; ein Tageswechsel verhindert
+veraltete Angebots-/Preisvorschläge.
+
 ## Update 17.10.2026 – Routen-Cache
 
 `route_planning_cache_test.dart` prüft, dass wiederholte Aufrufe derselben
