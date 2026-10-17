@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Seitenviewer-Fallback
+
+prospect_image_fallback_budget_test.dart prüft weiterhin das begrenzte,
+freigebende Plattform-View-Budget. Der Seitenviewer verwendet dieses Budget
+für alle validierten Seiten statt einer festen Seitenindex-Grenze; dadurch kann
+auch eine später geladene Seite nach einem Canvas/CORS-Fehler sichtbar werden.
+Ein Web-Renderer-/Gerätetest mit echten Händler-CDNs bleibt weiterhin offen.
+
 ## Update 17.10.2026 – Preise-Reiter nach Preisrefresh
 
 prices_hub_screen_test.dart prüft, dass ein neuer Marktpreis nach einem
