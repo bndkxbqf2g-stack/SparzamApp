@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Regulär-only Speichergrenze für Prospektpreise
+
+- [x] Automatische Prospekt-Upserts an einen eigenen `regular`-only-Pfad binden.
+- [x] Angebotspreise und rabattierte Beobachtungen an dieser Grenze verwerfen.
+- [x] Regression für reguläre, Angebots- und rabattierte Beobachtungen ergänzen.
+
 ## Update 17.10.2026 – Reichere Metadaten bei Prospekt-Dubletten
 
 - [x] Identische Feedzeilen weiterhin über Preis-/Identitäts-/Gültigkeits-/
