@@ -1,3 +1,10 @@
+## Update 17.10.2026 – Preise-Reiter nach Preisrefresh
+
+prices_hub_screen_test.dart prüft, dass ein neuer Marktpreis nach einem
+Widget-Update die alte Preisempfehlung ersetzt. Die Snapshot-Invalidierung
+berücksichtigt außerdem die gespeicherten PriceObservations, damit die
+Prospekt-Normalpreis-Ledgeranzeige nicht an einem alten Cache hängt.
+
 ## Update 17.10.2026 – Branch-scharfer Prospekt-Refresh
 
 prospect_feed_service_test.dart prüft, dass ein erfolgreicher und ein
