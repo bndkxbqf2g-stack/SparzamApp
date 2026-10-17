@@ -49,6 +49,26 @@ class KaufdaProspectTest(unittest.TestCase):
                 "Kaffee 500 g",
             )
         )
+        self.assertFalse(
+            kaufda._is_food(
+                {
+                    "categoryPath": [
+                        {"name": "Haushalt"},
+                        {"name": "Küchengeräte"},
+                    ]
+                },
+                "Kaffee",
+            )
+        )
+        self.assertTrue(
+            kaufda._is_food(
+                {"category": "02_Obst__Gemuese__Pflanzen"},
+                "Orangen",
+            )
+        )
+        self.assertFalse(
+            kaufda._is_food({"category": "Pflanzen"}, "Orchidee")
+        )
 
     def test_known_non_food_campaign_labels_stay_out_of_kaufda_results(self):
         self.assertFalse(
@@ -115,6 +135,41 @@ class KaufdaProspectTest(unittest.TestCase):
             kaufda._package_hint("Obst", "3er-Schale"),
             "3er-Schale",
         )
+
+    def test_parser_accepts_singular_category_path_and_image_list_aliases(self):
+        payload = kaufda.extract_next_data(self.html)
+        item = payload["props"]["pageProps"]["pageInformation"]["offers"]["main"]["items"][0]
+        for key in ("category", "categoryName", "productCategory", "description"):
+            item.pop(key, None)
+        for key in ("quantity", "packageSize", "packaging", "quantityLabel"):
+            item.pop(key, None)
+        item["categoryPath"] = [
+            {"name": "Lebensmittel und Getränke"},
+            {"name": "Milchprodukte"},
+        ]
+        item["quantityText"] = "250 g"
+        item.pop("offerImages", None)
+        item["images"] = [{"src": "https://img.example.test/alias-butter.jpg"}]
+        html = (
+            '<script id="__NEXT_DATA__" type="application/json">'
+            + kaufda.json.dumps(payload)
+            + "</script>"
+        )
+
+        offers, _ = kaufda.parse_kaufda_html(
+            html,
+            city="Wuerzburg",
+            query="Butter",
+            today=self.today,
+        )
+
+        offer = offers[0]
+        self.assertEqual(
+            offer["imageUrl"],
+            "https://img.example.test/alias-butter.jpg",
+        )
+        self.assertEqual(offer["category"], "Milchprodukte")
+        self.assertEqual(offer["packageSize"], "250 g")
 
     def test_parser_keeps_current_food_offers_and_provenance(self):
         offers, metadata = kaufda.parse_kaufda_html(
