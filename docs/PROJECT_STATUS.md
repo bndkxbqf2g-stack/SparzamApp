@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Händler-Schreibvarianten in Angebotsquellenhinweisen
+
+- Die Angebotsübersicht vergleicht Händlerlabels für Quellhinweise jetzt über den gemeinsamen Präsentationsschlüssel.
+- Unterschiedliche Groß-/Kleinschreibung, Leerraum und ae/oe/ue-Schreibweisen erzeugen dadurch keinen falschen Status „keine aktuellen Daten“.
+- Exakte Filial- und Branch-Identitäten bleiben unverändert; die Normalisierung dient ausschließlich der UI-Zuordnung.
+
 ## Update 17.10.2026 – KaufDA-Branchschutz auch bei geerbter Quellenkennung
 
 - KaufDA-Treffer bleiben regional, wenn die Angebotszeile keine eigene exakte Filial-ID trägt.
