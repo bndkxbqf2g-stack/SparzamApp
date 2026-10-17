@@ -638,4 +638,68 @@ void main() {
     },
   );
 
+  testWidgets('sortiert aktuelle Preis-Hinweise nach dem günstigsten Wert', (
+    tester,
+  ) async {
+    const expensive = Product(
+      id: 'price-hub-sort-expensive',
+      name: 'Teures Produkt',
+      unit: '1 Stück',
+      group: 'Test',
+    );
+    const cheap = Product(
+      id: 'price-hub-sort-cheap',
+      name: 'Günstiges Produkt',
+      unit: '1 Stück',
+      group: 'Test',
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PricesHubScreen(
+            onOpenCatalog: () {},
+            onOpenSettings: () {},
+            summary: 'Testpreise',
+            shoppingList: const [
+              ListItem(product: expensive),
+              ListItem(product: cheap),
+            ],
+            marketPrices: [
+              MarketPrice(
+                productId: expensive.id,
+                storeName: 'Lidl',
+                price: 9.99,
+                updatedAt: DateTime(2026, 10, 15),
+                source: MarketPriceSource.manual,
+              ),
+              MarketPrice(
+                productId: cheap.id,
+                storeName: 'Lidl',
+                price: 1.49,
+                updatedAt: DateTime(2026, 10, 15),
+                source: MarketPriceSource.manual,
+              ),
+            ],
+            enabledStoreNames: const ['Lidl'],
+            now: DateTime(2026, 10, 15),
+          ),
+        ),
+      ),
+    );
+
+    final cheapTile = find.byKey(
+      const ValueKey('price-snapshot-price-hub-sort-cheap'),
+    );
+    final expensiveTile = find.byKey(
+      const ValueKey('price-snapshot-price-hub-sort-expensive'),
+    );
+    expect(cheapTile, findsOneWidget);
+    expect(expensiveTile, findsOneWidget);
+    expect(
+      tester.getTopLeft(cheapTile).dy,
+      lessThan(tester.getTopLeft(expensiveTile).dy),
+    );
+  });
+
 }
