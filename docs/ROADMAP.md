@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Bekannte Produktdaten in der Einkaufsliste
+
+- [x] Exakte Produkt-IDs nach Listenladen und Prospekt-Refresh gegen den lokalen Katalog abgleichen.
+- [x] Produktmetadaten aktualisieren, ohne Menge, Notiz oder Abhakstatus zu verlieren.
+- [x] Keine Ersetzung bei unbekannten oder mehrdeutigen IDs; Regression für den Metadaten-Refresh ergänzen.
+
 ## Update 17.10.2026 – Produktmetadaten in lokalen Listen
 
 - [x] Legacy-Listen speichern die vorhandenen Produktfelder vollständig.

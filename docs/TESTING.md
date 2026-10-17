@@ -1,3 +1,7 @@
+## Update 17.10.2026 – Listen-Metadaten werden nach Feed-Updates aktualisiert
+
+Der neue Helper in `shopping_list_updates.dart` wird durch einen lokalen Test mit geänderter Marke, Packungsgröße, Alias und Bild geprüft. Die Regression bestätigt, dass Menge, Notiz und Abhakstatus erhalten bleiben; Netzwerkanfragen und echte Nutzerdaten werden nicht verwendet.
+
 ## Update 17.10.2026 – Einkaufslisten-Metadaten-Roundtrip
 
 `scan_to_list_flow_test.dart` prüft jetzt zusätzlich Aliase, Favoriten-/Stammartikelstatus, Marke, Packungsmenge/-einheit und Bild nach dem Speichern und Laden über den Legacy-Schlüssel. Der Test verwendet ausschließlich synthetische lokale Daten.
@@ -579,16 +583,16 @@ als Herkunftsdaten erhalten. Eine andere oder fehlende Branch-ID darf weiterhin
 kein Seitenbild oder Quellenmetadatum übernehmen.
 
 
-\`tool/tests/test_kaufda_prospects.py\` prüft zusätzlich gemischte
-Lebensmittel-Taxonomien wie \`Obst__Gemuese__Pflanzen\`, singuläre
-\`categoryPath\`-Felder sowie Produktbildlisten und Mengen-Aliase. Echte
+`tool/tests/test_kaufda_prospects.py` prüft zusätzlich gemischte
+Lebensmittel-Taxonomien wie `Obst__Gemuese__Pflanzen`, singuläre
+`categoryPath`-Felder sowie Produktbildlisten und Mengen-Aliase. Echte
 Haushalts-/Pflanzenartikel bleiben ausgeschlossen; Bild- und Kategorieangaben
 werden nur aus expliziten Quellfeldern übernommen.
 
 
 Die KaufDA-Regression prüft zusätzlich den neuesten Gruppenzeitpunkt: Ein
 älterer Cache-Treffer vor einer späteren Live-Antwort darf den gruppierten
-\`capturedAt\`-Wert nicht verjüngen; \`cacheUsed\` bleibt wahr.
+`capturedAt`-Wert nicht verjüngen; `cacheUsed` bleibt wahr.
 
 Die KaufDA-Regression prüft zusätzlich verschachtelte
 `validityPeriod.startDate/endDate`-Felder und Mengenobjekte mit Betrag/Einheit.
