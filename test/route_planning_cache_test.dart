@@ -55,6 +55,22 @@ void main() {
     expect(routeItemInputSignature([item]), isNot(before));
   });
 
+  test('wiederholte Fahrtrouten verwenden dasselbe Ergebnisobjekt', () {
+    const secondStore = Store(
+      name: 'ALDI Süd',
+      location: 'Würzburg',
+      branchId: 'aldi-wuerzburg',
+      distanceKm: 3,
+      prices: <String, double>{},
+    );
+    final optimizer = RouteOptimizer(const [], const []);
+
+    final first = optimizer.travelRoute([store, secondStore]);
+    final second = optimizer.travelRoute([store, secondStore]);
+
+    expect(second, same(first));
+  });
+
   test('Route-Ergebnisse bleiben bei wiederholten Zugriffen stabil', () {
     final optimizer = RouteOptimizer(
       [ListItem(product: product)],
