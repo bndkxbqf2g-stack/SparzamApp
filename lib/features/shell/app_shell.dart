@@ -379,6 +379,16 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       )
       .toList();
 
+  void _refreshShoppingListProducts() {
+    final refreshed = refreshShoppingListProducts(
+      items: shoppingList,
+      catalogProducts: catalogProducts,
+    );
+    if (identical(refreshed, shoppingList) || !mounted) return;
+    setState(() => shoppingList = refreshed);
+    persistShoppingListWithFeedback();
+  }
+
   Future<void> _loadNamedShoppingLists() async {
     final revision = _dataRevision;
     final listMutationRevision = _shoppingListMutationRevision;
@@ -429,6 +439,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       activeShoppingListId = loaded.first.id;
       shoppingList = _copyItems(loaded.first.items);
     });
+    _refreshShoppingListProducts();
   }
 
   Future<void> _loadRoadDistances() async {
@@ -953,6 +964,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       prospectFeedFromCache = feed.fromCache;
       prospectFeedGeneratedAt = feed.generatedAt;
     });
+    _refreshShoppingListProducts();
   }
 
   Future<void> _loadReceiptObservations() async {
