@@ -686,6 +686,13 @@ class ProspectFeedService {
         // A cache failure must never hide a valid live feed.
         try {
           await _cache.save(response.body);
+          final metadataCache = _cache is ProspectFeedCaptureMetadataCache
+              ? _cache as ProspectFeedCaptureMetadataCache
+              : null;
+          final capturedAt = result.capturedAt;
+          if (metadataCache != null && capturedAt != null) {
+            await metadataCache.saveCapturedAt(response.body, capturedAt);
+          }
         } catch (_) {
           // The next online refresh can try to repair the cache.
         }
@@ -734,7 +741,23 @@ class ProspectFeedService {
     }
     if (raw == null || raw.trim().isEmpty) return null;
     try {
-      return _parse(raw, fromCache: true);
+      final parsed = _parse(raw, fromCache: true);
+      if (parsed.generatedAt != null || parsed.capturedAt != null) {
+        return parsed;
+      }
+      final metadataCache = _cache is ProspectFeedCaptureMetadataCache
+          ? _cache as ProspectFeedCaptureMetadataCache
+          : null;
+      if (metadataCache != null) {
+        try {
+          return parsed.withCapturedAt(
+            await metadataCache.loadCapturedAt(raw),
+          );
+        } catch (_) {
+          // A metadata read failure must not hide a valid cached feed.
+        }
+      }
+      return parsed;
     } catch (_) {
       return null;
     }
