@@ -1,3 +1,6 @@
+## Separate Coverseite im Seitenviewer
+
+`ProspectIssue.thumbnailUrl` darf eine eigenständige Coverseite sein. Wenn die validierten Seitenproben keine Seite 1 enthalten, ergänzt der Viewer diese URL als erste Vorschaudarstellung und lässt die übrigen Quellseitenzahlen unverändert. Die Ergänzung erzeugt keine Produkt-, Preis- oder Quellenidentität.
 ## Geprüfte Seitenartikel und Preisablage
 
 Die Aktion „Artikel von Seite hinzufügen“ ist zweistufig: Eine manuell bestätigte Produktbezeichnung darf lokal in die Einkaufsliste gelangen, während Offer-/Preis-/Routenpersistenz weiterhin exakte Filiale, Nachweis und aktuelle Gültigkeit verlangt. Schlägt diese zweite Stufe fehl, bleibt der Artikel listbar und der Fehler wird angezeigt; kein unbestätigter Preis wird erzeugt.
