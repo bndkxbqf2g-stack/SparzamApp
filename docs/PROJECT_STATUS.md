@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Favoritenindex für flüssigeres Prospekt-Scrollen
+
+Die Prospekt-Coveransicht und die vollständige Prospektübersicht indexieren
+persistierte Favoritenschlüssel jetzt einmal pro Lade- oder Toggle-Zustand.
+Branch-scharfe Schlüssel bleiben isoliert; alte händlerweite Favoriten werden
+weiter als Rückwärtskompatibilität erkannt. Der Index ändert weder Preis-,
+Angebots- noch Quellenlogik.
+
 ## Update 17.10.2026 – KaufDA-Suchabfragen mit begrenzten Batches
 
 Der optionale KaufDA-Adapter lädt öffentliche Suchseiten jetzt in kleinen,

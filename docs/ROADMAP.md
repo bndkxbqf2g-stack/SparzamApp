@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Prospektfavoriten ohne lineare Wiederholungssuche
+
+- [x] Favoritenschlüssel für Coveransicht und Prospektübersicht als lokalen Set-Index halten.
+- [x] Exakte Branch-Favoriten und Legacy-Händlerfavoriten unverändert auflösen.
+- [x] Regression für Branch-Isolation, Legacy-Fallback und falsche Händlerzuordnung ergänzen.
+
 ## Update 17.10.2026 – KaufDA-Abfragen beschleunigt
 
 - [x] Öffentliche KaufDA-Suchseiten werden in einer kleinen, konfigurierbaren
