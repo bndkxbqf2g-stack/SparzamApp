@@ -2017,6 +2017,7 @@ class ProspectViewerScreen extends StatelessWidget {
                     url: pageUrl,
                     pageNumber: page.number,
                     allowHtmlFallback: allowHtmlFallback,
+                    fallbackBudget: prospectViewerImageFallbackBudget,
                   ),
           ),
           Padding(
@@ -2177,7 +2178,11 @@ class ProspectViewerScreen extends StatelessWidget {
                 pageBuilder: (context, page, index) => _buildPageCard(
                   context,
                   page,
-                  allowHtmlFallback: prospectPageHtmlFallbackAllowed(index),
+                  // Every validated page may use the HTML fallback when
+                  // its Canvas image cannot decode. The shared budget below
+                  // bounds active platform views and releases each slot when
+                  // a recycled page leaves the tree.
+                  allowHtmlFallback: true,
                 ),
               ),
             ),
@@ -2348,23 +2353,31 @@ class _ProspectPagesSliverState extends State<_ProspectPagesSliver> {
 
 const prospectPageHtmlFallbackBudget = 2;
 
-/// Only the first two pages may create an HTML platform view after a Canvas
-/// decode failure. Long prospect viewers keep later pages on the cheap Canvas
-/// path so a CDN/CORS problem cannot create dozens of platform views while
-/// the user scrolls.
+/// Retained as a deterministic helper for callers that want to reserve the
+/// first two page slots. The viewer itself uses the releasing shared budget
+/// below, so later pages can also recover from a Canvas/CORS failure after the
+/// user scrolls them into view.
 bool prospectPageHtmlFallbackAllowed(int pageIndex) =>
     pageIndex >= 0 && pageIndex < prospectPageHtmlFallbackBudget;
+
+/// A page viewer may have a different failure pattern from the cover rail.
+/// Keep its platform-view allowance separate and release slots when pages are
+/// recycled, so scrolling through a long prospect cannot accumulate views.
+final prospectViewerImageFallbackBudget =
+    ProspectImageFallbackBudget(maxActiveFallbacks: prospectPageHtmlFallbackBudget);
 
 class _ProspectPageImage extends StatefulWidget {
   const _ProspectPageImage({
     required this.url,
     required this.pageNumber,
     required this.allowHtmlFallback,
+    this.fallbackBudget,
   });
 
   final String url;
   final int pageNumber;
   final bool allowHtmlFallback;
+  final ProspectImageFallbackBudget? fallbackBudget;
 
   @override
   State<_ProspectPageImage> createState() => _ProspectPageImageState();
@@ -2372,14 +2385,33 @@ class _ProspectPageImage extends StatefulWidget {
 
 class _ProspectPageImageState extends State<_ProspectPageImage> {
   bool _useHtmlFallback = false;
+  ProspectImageFallbackBudget? _reservedBudget;
+
+  ProspectImageFallbackBudget get _budget =>
+      widget.fallbackBudget ?? prospectViewerImageFallbackBudget;
+
+  void _releaseFallbackSlot() {
+    final budget = _reservedBudget;
+    if (budget == null) return;
+    budget.release();
+    _reservedBudget = null;
+  }
 
   @override
   void didUpdateWidget(covariant _ProspectPageImage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.url != widget.url ||
-        oldWidget.allowHtmlFallback != widget.allowHtmlFallback) {
+        oldWidget.allowHtmlFallback != widget.allowHtmlFallback ||
+        oldWidget.fallbackBudget != widget.fallbackBudget) {
+      _releaseFallbackSlot();
       _useHtmlFallback = false;
     }
+  }
+
+  @override
+  void dispose() {
+    _releaseFallbackSlot();
+    super.dispose();
   }
 
   @override
@@ -2403,7 +2435,16 @@ class _ProspectPageImageState extends State<_ProspectPageImage> {
       // available. A loadingBuilder reacts to every network chunk and can
       // trigger repeated rebuilds while a long page list is being scrolled.
       frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-        if (wasSynchronouslyLoaded || frame != null) return child;
+        if (wasSynchronouslyLoaded || frame != null) {
+          if (_useHtmlFallback) {
+            // Release after the browser element has produced its first frame;
+            // a successful fallback no longer consumes a concurrency slot.
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) _releaseFallbackSlot();
+            });
+          }
+          return child;
+        }
         return const ColoredBox(
           color: Color(0xFFEAF0F1),
           child: Center(
@@ -2417,7 +2458,13 @@ class _ProspectPageImageState extends State<_ProspectPageImage> {
             child: Icon(Icons.broken_image_outlined, size: 48),
           );
         }
-        if (!_useHtmlFallback) {
+        if (!_useHtmlFallback && _reservedBudget == null) {
+          if (!_budget.tryAcquire()) {
+            return const Center(
+              child: Icon(Icons.broken_image_outlined, size: 48),
+            );
+          }
+          _reservedBudget = _budget;
           final failedUrl = widget.url;
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!mounted ||
@@ -2439,6 +2486,7 @@ class _ProspectPageImageState extends State<_ProspectPageImage> {
     );
   }
 }
+
 List<ProspectPage> _viewerPages(ProspectIssue issue) {
   if (issue.pages.isNotEmpty) return issue.pages;
   final thumbnail = issue.thumbnailUrl?.trim();
