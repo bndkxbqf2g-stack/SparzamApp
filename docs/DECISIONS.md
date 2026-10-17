@@ -1,3 +1,12 @@
+## D210 – Händlerlabel nur für UI-Hinweise normalisieren
+
+Die Angebotsübersicht darf Händlerbezeichnungen aus getrennten öffentlichen
+Feedabschnitten für die Anzeige eines Quellenhinweises über den gemeinsamen
+Präsentationsschlüssel zusammenführen. Das verändert weder sichtbare Namen noch
+exakte Branch-IDs und erzeugt keinen Preis- oder Filialnachweis. Die
+Normalisierung ist deshalb auf die UI-Zählung begrenzt; Routing und
+Preisprojektion verwenden weiterhin ihre exakten Identitätsregeln.
+
 ## D209 – KaufDA-Quellenkontext ersetzt keinen Angebotsnachweis
 
 Ein KaufDA-Suchergebnis ist ohne eigene Branch-ID nur regionales Händlerangebot.
