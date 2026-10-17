@@ -477,6 +477,79 @@ def parse_date(value: object) -> date | None:
     return None
 
 
+_VALIDITY_CONTAINER_KEYS = (
+    "validity",
+    "validityPeriod",
+    "dateRange",
+    "period",
+    "offerPeriod",
+)
+
+_VALIDITY_FROM_KEYS = (
+    "validFrom",
+    "fromDate",
+    "startDate",
+    "dateFrom",
+    "from",
+    "start",
+)
+
+_VALIDITY_UNTIL_KEYS = (
+    "validUntil",
+    "untilDate",
+    "endDate",
+    "dateUntil",
+    "toDate",
+    "to",
+    "end",
+)
+
+
+def _date_from_named_value(value: object) -> date | None:
+    if isinstance(value, Mapping):
+        # A nested {date: ...} object is still explicit source evidence; no
+        # arbitrary object traversal is allowed.
+        for key in ("date", "value", "text"):
+            parsed = parse_date(value.get(key))
+            if parsed is not None:
+                return parsed
+        return None
+    return parse_date(value)
+
+
+def _date_from_mapping(
+    value: object,
+    keys: tuple[str, ...],
+) -> date | None:
+    if not isinstance(value, Mapping):
+        return None
+    for key in keys:
+        parsed = _date_from_named_value(value.get(key))
+        if parsed is not None:
+            return parsed
+    return None
+
+
+def _validity_dates(raw: Mapping[str, object]) -> tuple[date | None, date | None]:
+    """Read direct or explicitly nested public validity fields.
+
+    Missing or malformed end dates remain invalid at the caller boundary.
+    Free-form date strings and arbitrary nested keys are deliberately ignored.
+    """
+
+    valid_from = _date_from_mapping(raw, _VALIDITY_FROM_KEYS)
+    valid_until = _date_from_mapping(raw, _VALIDITY_UNTIL_KEYS)
+    for key in _VALIDITY_CONTAINER_KEYS:
+        container = raw.get(key)
+        if valid_from is None:
+            valid_from = _date_from_mapping(container, _VALIDITY_FROM_KEYS)
+        if valid_until is None:
+            valid_until = _date_from_mapping(container, _VALIDITY_UNTIL_KEYS)
+        if valid_from is not None and valid_until is not None:
+            break
+    return valid_from, valid_until
+
+
 def _parse_price(value: object) -> float | None:
     if isinstance(value, (int, float)) and not isinstance(value, bool):
         number = float(value)
@@ -671,21 +744,62 @@ def _first_http_url(
     return ""
 
 
+def _package_parts(value: object, *, depth: int = 0) -> list[str]:
+    if depth > 2:
+        return []
+    if isinstance(value, (list, tuple)):
+        parts: list[str] = []
+        for item in value[:8]:
+            parts.extend(_package_parts(item, depth=depth + 1))
+        return parts
+    if isinstance(value, Mapping):
+        parts: list[str] = []
+        amount = None
+        for key in ("amount", "quantity", "count", "value"):
+            candidate = value.get(key)
+            if candidate is not None and not isinstance(candidate, (Mapping, list, tuple)):
+                amount = candidate
+                break
+        unit = None
+        for key in ("unit", "unitLabel", "measurementUnit", "unit_name"):
+            candidate = value.get(key)
+            if candidate is not None:
+                unit = _source_text(candidate) or clean(candidate)
+                if unit:
+                    break
+        if amount is not None and unit:
+            parts.append(f"{clean(amount)} {unit}")
+        for key in (
+            "packageSize",
+            "quantityText",
+            "size",
+            "label",
+            "text",
+            "formatted",
+            "value",
+            "quantity",
+            "package",
+            "packaging",
+        ):
+            candidate = value.get(key)
+            if candidate is None or candidate is amount:
+                continue
+            parts.extend(_package_parts(candidate, depth=depth + 1))
+        if not parts:
+            rendered = _source_text(value)
+            if rendered:
+                parts.append(rendered)
+        return parts
+    rendered = _source_text(value)
+    if not rendered:
+        rendered = clean(value)
+    return [rendered] if rendered else []
+
+
 def _package_hint(*values: object) -> str | None:
     parts: list[str] = []
     for value in values:
-        if isinstance(value, (list, tuple)):
-            parts.extend(
-                rendered
-                for item in value
-                if (rendered := _source_text(item))
-            )
-            continue
-        rendered = _source_text(value)
-        if not rendered and not isinstance(value, Mapping):
-            rendered = clean(value)
-        if rendered:
-            parts.append(rendered)
+        parts.extend(_package_parts(value))
     match = _PACKAGE_RE.search(clean(" ".join(parts)))
     return match.group(0) if match else None
 
@@ -1030,8 +1144,7 @@ def parse_kaufda_html(
         prices = raw.get("prices")
         prices = prices if isinstance(prices, Mapping) else {}
         offer_price = _parse_price(prices.get("mainPrice") or raw.get("mainPrice"))
-        valid_from = parse_date(raw.get("validFrom"))
-        valid_until = parse_date(raw.get("validUntil"))
+        valid_from, valid_until = _validity_dates(raw)
         if not label or offer_price is None or valid_from is None or valid_until is None:
             skipped["invalid"] += 1
             continue
