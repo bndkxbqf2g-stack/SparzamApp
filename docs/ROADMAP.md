@@ -1,3 +1,15 @@
+## Update 17.10.2026 – Quellgebundene Produktmetadaten im Prospektfeed
+
+- [x] Offizielle strukturierte Händleradapter übernehmen explizit gelieferte
+  EAN/GTIN-/Barcodefelder mit Prüfzifferprüfung; SKU- und unbekannte IDs bleiben
+  ausgeschlossen.
+- [x] Eindeutige Packungsgrößen und Grundpreise aus benannten Quellfeldern
+  werden bis in den versionierten Feed weitergereicht.
+- [x] Mehrdeutige Mengen und ungültige Codes bleiben unbekannt; bestehende
+  Label-Fallbacks bleiben konservativ.
+- [x] Regressionen für Record-, ALDI- und EDEKA-Auflösung ergänzt; kein
+  produktiver Live-Datensatz wurde erzeugt.
+
 ## Update 17.10.2026 – Coverbilder erhalten einen validierten Ersatz
 
 - [x] Eine explizite Cover-Thumbnail-URL bleibt der erste Bildkandidat.
