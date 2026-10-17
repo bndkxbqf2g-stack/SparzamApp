@@ -138,7 +138,7 @@ class OpenPricesSyncService {
             }
             if (discovery != null) {
               try {
-                return await discovery!.discover(product);
+                return await discovery.discover(product);
               } catch (_) {
                 failed[index] = true;
                 return null;
