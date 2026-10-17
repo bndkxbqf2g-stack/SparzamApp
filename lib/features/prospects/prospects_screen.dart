@@ -1939,12 +1939,21 @@ class ProspectViewerScreen extends StatelessWidget {
     // A manually reviewed page item is always listable. Price/route
     // persistence remains a separate, stricter path below.
     final listProduct = productForProspectOffer(record, catalogProducts);
+    // The exact-label fallback is the same concrete product that will be
+    // added to the list. Include it during review-price resolution so an
+    // otherwise unknown page item receives identity confidence 1 instead of
+    // being saved as an unrouteable identity-uncertain observation.
+    final reviewCatalog = <Product>[
+      ...catalogProducts,
+      if (!catalogProducts.any((product) => product.id == listProduct.id))
+        listProduct,
+    ];
     var regularPriceSaveFailed = false;
     final saveRegularPrice = onSaveProspectRegularPrice;
     if (saveRegularPrice != null) {
       final observation = reviewedProspectRegularPriceObservation(
         record: record,
-        catalogProducts: catalogProducts,
+        catalogProducts: reviewCatalog,
         now: now ?? capturedAt,
       );
       if (observation != null) {
