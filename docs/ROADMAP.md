@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Bonauflösung schlägt kompatible Identitäten vor
+
+- [x] Nicht generische Belegbezeichnungen verwenden die zentrale Produktidentität für Kandidatenvorschläge.
+- [x] Varianten und Packungsgrößen bleiben als prüfpflichtige Kandidaten sichtbar; kein Vorschlag wird automatisch bestätigt.
+- [x] Fachlich getrennte Familien wie frische Tomaten und Passata werden aus den primären Treffern ausgeschlossen.
+- [x] Generische Kategorien behalten ihre bisherige Kategorieauflösung.
 ## Update 17.10.2026 – Open-Prices-Sync wird bei großen Katalogen sparsamer
 
 - [x] Kandidaten mit derselben Produkt-ID werden vor externen Abfragen dedupliziert.
