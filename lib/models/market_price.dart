@@ -172,8 +172,17 @@ class MarketPrice {
       throw const FormatException('Ungültiger Marktpreis');
     }
     final sourceName = json['source'] as String?;
-    final matches =
-        MarketPriceSource.values.where((item) => item.name == sourceName);
+    // A missing source is the legacy format for a manually entered price.
+    // An explicit unknown token is different: treating it as manual would
+    // silently promote untrusted data into a confirmed planning source.
+    final source = sourceName == null || sourceName.trim().isEmpty
+        ? MarketPriceSource.manual
+        : MarketPriceSource.values.firstWhere(
+            (item) => item.name == sourceName.trim(),
+            orElse: () => throw const FormatException(
+              'Unbekannte Preisquelle',
+            ),
+          );
     final kindName = json['kind'] as String?;
     final identityConfidence =
         (json['identityConfidence'] as num?)?.toDouble() ?? 1;
@@ -188,7 +197,7 @@ class MarketPrice {
       storeName: storeName,
       price: price,
       updatedAt: DateTime.parse(json['updatedAt'] as String),
-      source: matches.isEmpty ? MarketPriceSource.manual : matches.first,
+      source: source,
       externalId: (json['externalId'] as num?)?.toInt(),
       sourceLocationName: json['sourceLocationName'] as String?,
       sourceLocationId: json['sourceLocationId'] as String?,

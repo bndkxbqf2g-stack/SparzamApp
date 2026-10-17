@@ -1,3 +1,7 @@
+## Update 17.10.2026 – Unbekannte explizite Preisquellen bleiben Datenlücken
+
+Ein lokaler Marktpreis ohne `source` bleibt für alte Speicherformate rückwärtskompatibel manuell. Sobald ein Datensatz jedoch eine unbekannte Quellenkennung ausdrücklich setzt, verwirft die Deserialisierung den einzelnen Eintrag. Dadurch kann ein beschädigter oder fremder Wert nicht stillschweigend als bestätigter manueller Preis in Matrix oder Route gelangen; der lokale Store überspringt nur diesen Eintrag und lädt die übrigen Daten weiter.
+
 ## Update 17.10.2026 – Prospekt-Suchergebnisse behalten Identitäts- und Schlüsselcaches
 
 Die aktuellen Prospekt-Suchergebnisse halten die aufwendige Produktidentitätsauflösung
