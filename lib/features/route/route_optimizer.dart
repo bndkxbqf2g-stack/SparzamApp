@@ -80,8 +80,8 @@ class RouteOptimizer {
   var _bestSingleStorePlanComputed = false;
 
   // Route alternatives call the same travel calculation repeatedly. Keep the
-  // immutable result per ordered exact-store set so complete road matrices do
-  // not enumerate the same permutations again.
+  // immutable result per exact-store set so complete road matrices do not
+  // enumerate the same permutations again.
   final Map<String, OptimizedTravelRoute> _travelRouteCache =
       <String, OptimizedTravelRoute>{};
 
