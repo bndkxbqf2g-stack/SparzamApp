@@ -1,3 +1,29 @@
+## D186 – Transiente Prospektangebote verwenden exakte Filialschlüssel
+
+Ein Prospekt-Quellartikel darf nicht anhand seiner technischen Angebots-ID allein
+dedupliziert werden. Anbieter-IDs können auf Prospekt- oder Kampagnenebene gelten
+und in mehreren gleichnamigen Filialen wiederkehren. Der transiente Snapshot-Schlüssel
+kombiniert deshalb ID, Händler sowie vorhandene Branch-ID, Ort und Adresse. So bleiben
+gleichnamige Filialen getrennt; reguläre Preisbeobachtungen und deren Persistenzvertrag
+bleiben unverändert.
+
+## D185 – Der optionale KaufDA-Rohcache bleibt begrenzt
+
+Der KaufDA-Adapter darf öffentliche Rohantworten lokal zwischenspeichern, aber nur mit
+einer festen Grenze von 16 gültigen Einträgen und 8 MiB. Beschädigte oder übergroße
+Einträge werden verworfen, die neuesten gültigen Werte werden bevorzugt. Die Begrenzung
+schützt lokalen Speicher und ändert weder die Quelle noch die Angebots-/Normalpreis-
+Trennung.
+
+## D184 – Cache-Angebote sind vor dem Live-Refresh flüchtig nutzbar
+
+Ein validierter Cache- oder Bundle-Feed darf aktuelle, filialbezogene Angebote sofort
+in den In-Memory-Snapshot projizieren, damit Einkaufsliste und Routenhinweise offline
+sichtbar bleiben. Diese Offer-Zeilen werden nicht als dauerhafte Preisbeobachtungen
+gespeichert. Nur ausdrücklich belegte reguläre Prospektpreise laufen separat durch den
+bestehenden PriceObservationStore; der Live-Feed kann den transienten Stand später
+ersetzen.
+
 ## D183 – Manuelle Prospektübernahme bleibt ein bestätigter Listenpfad
 
 Wenn eine aktuelle, filialbezogene und belegte Prospektzeile wegen mehrerer möglicher
