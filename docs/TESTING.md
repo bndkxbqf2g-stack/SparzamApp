@@ -1,3 +1,6 @@
+## Update 17.10.2026 – Separate Coverseite vor Interiorseiten
+
+prospects_screen_test.dart prüft einen Feed mit eigener Cover-URL und einer Seitenliste ab Seite 2. Der Viewer zeigt die Coverseite als Seite 1 und behält die originale Seite 2.
 ## Update 17.10.2026 – Seitenviewer trennt Listenübernahme und Preisablage
 
 prospects_screen_test.dart prüft jetzt den Fehlerpfad eines manuell geprüften Seitenartikels: Der Artikel wird trotz fehlgeschlagener Angebotsablage in die Einkaufsliste übernommen, während die Preisablage als Warnung sichtbar bleibt.
