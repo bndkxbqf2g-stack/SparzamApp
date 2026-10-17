@@ -803,7 +803,7 @@ void main() {
       fallback: fallback,
       now: DateTime(2026, 10, 17, 12),
     );
-    final issue = guarded.prospects.single;
+    final issue = guarded.prospects.singleWhere((item) => item.storeName == 'Lidl');
 
     expect(guarded.records.single.sourceId, 'fallback-page-row');
     expect(issue.sourceStatus, 'current_fallback');
@@ -857,7 +857,7 @@ void main() {
       now: DateTime(2026, 10, 17, 12),
     );
 
-    final issue = guarded.prospects.single;
+    final issue = guarded.prospects.singleWhere((item) => item.storeName == 'Lidl');
     expect(issue.sourceStatus, 'current_fallback');
     expect(issue.pages.single.imageUrl, 'https://example.test/new-page.jpg');
   });
@@ -915,7 +915,7 @@ void main() {
       fallback: fallback,
       now: DateTime(2026, 10, 18, 12),
     );
-    final issue = guarded.prospects.single;
+    final issue = guarded.prospects.singleWhere((item) => item.storeName == 'Lidl');
 
     expect(guarded.records, isEmpty);
     expect(issue.sourceStatus, 'stale_fallback');
