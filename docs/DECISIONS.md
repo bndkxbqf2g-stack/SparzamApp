@@ -1849,3 +1849,10 @@ validierte Seitenliste bleibt im Datenmodell erhalten; nur die UI-Baumgröße un
 die anfängliche Bilddekodierung werden begrenzt. Dadurch bleiben Seitenbelege,
 OCR und manuelle Artikelübernahme unverändert, während lange Prospekte beim
 Öffnen und Scrollen weniger Arbeit erzeugen.
+
+## D189 – Preis-Hinweise nach Vergleichswert ordnen
+Die kompakte Hinweisleiste im Preise-Reiter wird nach dem bereits für das
+Preisangebot verwendeten Vergleichswert aufsteigend sortiert. Produktname,
+Marktname und Produkt-ID lösen Gleichstände stabil. Die Sortierung ist reine
+Darstellung; aktuelle Marktpreise, Quellen, Gültigkeiten und der
+RouteOptimizer bleiben unverändert.

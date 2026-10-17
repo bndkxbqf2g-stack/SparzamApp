@@ -528,3 +528,8 @@ lädt die nächste Coverstufe explizit und prüft anschließend das letzte Cover
 Die Widgetregression 'builds long prospect page lists lazily' prüft, dass ein
 langer Viewer zunächst weniger Seitenbilder materialisiert, den Button „Weitere
 Seiten laden“ verwendet und danach die letzte Seite erreichen kann.
+
+## Preise-Reiter: günstigste Hinweise
+Die Widgetregression 'sortiert aktuelle Preis-Hinweise nach dem günstigsten Wert'
+setzt die Einkaufsliste absichtlich in teurer Reihenfolge und prüft, dass die
+kompakte Hinweisleiste den günstigeren aktuellen Preis zuerst zeigt.

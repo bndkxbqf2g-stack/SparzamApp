@@ -4093,3 +4093,12 @@ der Cover-/Filialnachweis bei automatischen Asset-Aktualisierungen stabil.
 - Seitenzahl, Bildnachweis, OCR- und Artikelübernahme bleiben unverändert; die
   Begrenzung steuert ausschließlich Widgetaufbau und Bilddekodierung.
 - Die lange Viewer-Regression prüft den Nachladepfad bis zur letzten Seite.
+
+## Update 17.10.2026 – Günstigste Preis-Hinweise sortiert
+- Der Preise-Reiter sortiert die aktuelle Hinweisleiste nach dem
+  qualitätsbereinigten Vergleichswert und danach deterministisch nach Produkt
+  und Markt.
+- Der sichtbare Betrag und die zugrunde liegenden Preisquellen bleiben
+  unverändert; die Sortierung beeinflusst keine Marktpreis- oder Routenprojektion.
+- Eine Widgetregression prüft, dass ein günstigerer Listenartikel vor einem
+  teureren Hinweis erscheint.
