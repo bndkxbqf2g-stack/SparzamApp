@@ -43,6 +43,7 @@ void main() {
 
     expect(saved.prices, [price]);
     expect(saved.history.single.source, PricePointSource.manual);
+    expect(saved.observations.single.price, 1.19);
     expect((await PriceObservationStore().load()).single.price, 1.19);
     expect(deleted, isEmpty);
   });
@@ -80,6 +81,7 @@ void main() {
 
     expect(result.prices, [fetched]);
     expect(result.history.single.source, PricePointSource.openPrices);
+    expect(result.observations.single.source, PriceObservationSource.openPrices);
     expect((await PriceObservationStore().load()).single.source.name,
         'openPrices');
     expect(result.productsChecked, 1);
@@ -192,6 +194,7 @@ void main() {
       'milk',
       'eggs',
     ]));
+    expect(saved.observations, hasLength(3));
     expect((await coordinator.observationStore.load()), hasLength(3));
   });
 
