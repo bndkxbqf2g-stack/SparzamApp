@@ -1,3 +1,8 @@
+## Update 17.10.2026 – Coverübersicht normalisiert Händlerlabels
+
+- Die Coverübersicht gruppiert gleichnamige Händlerlabels über den bestehenden Präsentationsschlüssel.
+- Der Händlerfilter verwendet denselben Schlüssel; abweichende Groß-/Kleinschreibung oder ae/oe/ue-Schreibweisen erzeugen keine doppelten Karten.
+- Exakte Branch-IDs bleiben im Match-Schlüssel erhalten und werden weiterhin getrennt dargestellt.
 ## Update 17.10.2026 – Händler-Schreibvarianten in Angebotsquellenhinweisen
 
 - Die Angebotsübersicht vergleicht Händlerlabels für Quellhinweise jetzt über den gemeinsamen Präsentationsschlüssel.
