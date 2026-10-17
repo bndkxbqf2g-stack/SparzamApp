@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Prospektpreis-Basis explizit absichern
+
+Unklassifizierte oder alte Prospekt-MarketPrices ohne explizite Preisrolle bleiben
+jetzt Datenlücken. Nur `regular`-Beobachtungen werden in aktuelle Preisabdeckung,
+Historie, Shopping-Vorschläge und Routenprojektion übernommen; Angebots- und
+Unsicherheitsnachweise bleiben getrennt sichtbar. Das verhindert, dass ein
+Altformat ohne `kind` einen nicht belegten Betrag als reguläre Preisbasis nutzt.
+
 ## Update 17.10.2026 – Prospekt-Scrollcache für große Feeds begrenzt
 
 Der äußere Prospekt-Scrollvorlauf wärmt weiterhin kleine Feeds für schnelle Wischbewegungen vor. Ab zwei sichtbaren Coverseiten wird der Vorlauf auf null gesetzt, damit große Händlerlisten keine zusätzliche Bildreihe dekodieren und den Speicher-/Layoutdruck beim Scrollen erhöhen.
