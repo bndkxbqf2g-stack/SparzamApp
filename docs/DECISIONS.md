@@ -1,3 +1,11 @@
+## D207 – Kategoriepfade bleiben begrenzte Präsentations- und Filterdaten
+
+Ein Feed darf mehrere Kategorieeinträge liefern. Der Parser übernimmt daraus nur
+bekannte Felder, höchstens drei eindeutige Labels und keine beliebigen
+JSON-Schlüssel. Der verbundene Pfad dient der Anzeige und dem bestehenden
+Lebensmittel-/Non-Food-Filter; er erzeugt keine Produktidentität und keinen
+Preis.
+
 ## D206 – Datumsbereiche nur aus bekannten Gültigkeitscontainern lesen
 
 Öffentliche Feeds dürfen Angebotszeiträume unter `validity`, `dateRange`,
