@@ -270,6 +270,45 @@ class ShoppingPriceQuoteSnapshot {
       const <ShoppingPriceMatrixEntry>[];
 }
 
+/// Indexes source rows once per snapshot so each list item only visits
+/// prices/offers that can match its exact identity. Original row order is
+/// retained for deterministic tie-breaks after the existing quote sorting.
+class _ShoppingSourceIndex<T> {
+  _ShoppingSourceIndex(Iterable<T> values, String Function(T) keyFor)
+      : _values = List<T>.unmodifiable(values) {
+    for (var index = 0; index < _values.length; index++) {
+      final key = keyFor(_values[index]);
+      (_positionsByKey[key] ??= <int>[]).add(index);
+    }
+  }
+
+  final List<T> _values;
+  final Map<String, List<int>> _positionsByKey = <String, List<int>>{};
+
+  List<T> valuesFor(Iterable<String> keys) {
+    final positions = <int>{};
+    for (final key in keys) {
+      positions.addAll(_positionsByKey[key] ?? const <int>[]);
+    }
+    if (positions.isEmpty) return const <T>[];
+    final ordered = positions.toList()..sort();
+    return [for (final index in ordered) _values[index]];
+  }
+}
+
+Set<String> _snapshotOfferProductIds(
+  Product item,
+  Iterable<Product> catalogProducts,
+) {
+  final ids = <String>{item.id};
+  if (!isGenericFamilyRequest(item.name)) return ids;
+  final family = inferReceiptFamily(item.name);
+  for (final product in catalogProducts) {
+    if (inferReceiptFamily(product.name) == family) ids.add(product.id);
+  }
+  return ids;
+}
+
 /// Resolves each distinct product at most once for a shopping-list render.
 ///
 /// This keeps the existing [shoppingQuotes] and matrix rules as the single
@@ -290,13 +329,30 @@ ShoppingPriceQuoteSnapshot shoppingPriceQuoteSnapshot(
     uniqueItems.putIfAbsent(item.product.id, () => item);
   }
 
+  // The complete source lists are immutable for this render. Indexing them
+  // once avoids an O(items × sourceRows) scan while preserving the exact
+  // candidate order seen by the existing resolver.
+  final priceIndex = _ShoppingSourceIndex<MarketPrice>(
+    prices,
+    (price) => price.productId,
+  );
+  final offerIndex = _ShoppingSourceIndex<Offer>(
+    offers,
+    (offer) => offer.productId,
+  );
+
   final quotesByProductId = <String, List<ShoppingQuote>>{};
   final matrixByProductId = <String, List<ShoppingPriceMatrixEntry>>{};
   for (final entry in uniqueItems.entries) {
+    final product = entry.value.product;
     final quotes = shoppingQuotes(
       entry.value,
-      prices: prices,
-      offers: offers,
+      // Price evidence is exact-ID only. Offer evidence additionally keeps
+      // the existing generic-family display path through catalog identities.
+      prices: priceIndex.valuesFor([product.id]),
+      offers: offerIndex.valuesFor(
+        _snapshotOfferProductIds(product, catalogProducts),
+      ),
       catalogProducts: catalogProducts,
       prospectPriceHistory: prospectPriceHistory,
       enabledStores: enabledStores,
