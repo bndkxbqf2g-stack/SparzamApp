@@ -1,3 +1,7 @@
+## Update 17.10.2026 – Capture-only Feed-Stand sichtbar
+
+Wenn ein geprüfter Prospektfeed nur einen belastbaren Transportzeitpunkt (`capturedAt`) und kein eigenes `generatedAt` liefert, verwendet die Shell diesen Zeitpunkt jetzt auch für Feed-Status, Preise-Tab und Refresh-Altersprüfung. Die lokale Preis-Persistenz und der Nachweisvertrag bleiben unverändert; ein lokaler Ladezeitpunkt wird weiterhin nicht erfunden.
+
 ## Update 17.10.2026 – Prospekt-Capture-Metadaten sind cachegebunden
 
 Der öffentliche Feedcache bewahrt einen expliziten Last-Modified-/Date-Zeitpunkt
