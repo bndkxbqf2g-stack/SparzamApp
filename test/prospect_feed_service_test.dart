@@ -1572,5 +1572,51 @@ void main() {
   });
 
 
+
+  test('normalizes category lists and keeps non-food category filters active', () {
+    final result = parseProspectFeed(
+      jsonEncode({
+        'generatedAt': '2026-10-17T04:15:00Z',
+        'sources': [
+          {
+            'storeName': 'Lidl',
+            'status': 'ok',
+            'branchId': 'lidl-zellingen',
+          },
+        ],
+        'offers': [
+          {
+            'sourceId': 'category-list-food',
+            'productLabel': 'Butter 250 g',
+            'storeName': 'Lidl',
+            'offerPrice': 1.49,
+            'categories': [
+              {'name': 'Milchprodukte'},
+              {'title': 'Molkerei'},
+            ],
+            'validUntil': '2026-10-22',
+            'proofRef': 'https://example.test/lidl/butter',
+          },
+          {
+            'sourceId': 'category-list-non-food',
+            'productLabel': 'Hundefutter 1 kg',
+            'storeName': 'Lidl',
+            'offerPrice': 2.99,
+            'categories': [
+              {'name': 'Tierbedarf'},
+            ],
+            'validUntil': '2026-10-22',
+            'proofRef': 'https://example.test/lidl/hundefutter',
+          },
+        ],
+      }),
+    );
+
+    expect(result.records, hasLength(1));
+    expect(result.records.single.sourceId, 'category-list-food');
+    expect(result.records.single.category, 'Milchprodukte / Molkerei');
+  });
+
+
 }
 
