@@ -4112,3 +4112,8 @@ Der Routenpreis-Resolver gleicht nun reine Darstellungsvarianten wie Groß-/Klei
 ## Update 17.10.2026 – Preisabdeckung teilt Händlerlabel-Normalisierung
 
 Preisabdeckung und Marktmatrix verwenden jetzt denselben engen Store-Identity-Helper wie der Routenpreis-Resolver. Varianten wie `LIDL`/`Lidl` oder `ALDI SUED`/`ALDI Süd` werden innerhalb aktivierter Märkte zusammengeführt; die sichtbare konfigurierte Bezeichnung bleibt erhalten und exakte Filial-/Produktprüfungen bleiben aktiv.
+
+
+## Update 17.10.2026 – Filialprüfung folgt Händlerlabel-Normalisierung
+
+Die zentrale Branch-Prüfung verwendet nun denselben engen Händlerlabel-Schlüssel wie Route und Preis-Matrix. Dadurch werden Varianten wie `LIDL` korrekt gegen die konfigurierte Lidl-Filiale geprüft; eine abweichende Filial-ID bleibt ausgeschlossen.
