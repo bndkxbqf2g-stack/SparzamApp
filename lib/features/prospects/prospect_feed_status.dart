@@ -180,6 +180,8 @@ class ProspectCoverage {
     required this.offerImageCount,
     required this.offerCategoryCount,
     required this.offerProofCount,
+    this.offerProductImageCount = 0,
+    this.offerPageImageCount = 0,
     this.regularPriceCount = 0,
     this.persistedRegularPriceCount,
     required this.hasBranch,
@@ -205,6 +207,11 @@ class ProspectCoverage {
   final int offerImageCount;
   final int offerCategoryCount;
   final int offerProofCount;
+  /// Images supplied as product-level evidence by the source.
+  final int offerProductImageCount;
+  /// Images recovered from the matching prospect page. They prove leaflet
+  /// context but do not claim to be a product photograph.
+  final int offerPageImageCount;
   /// Count of explicitly stated, valid regular prices that can be learned
   /// without promoting an offer amount into the regular-price history.
   final int regularPriceCount;
@@ -343,6 +350,12 @@ ProspectCoverage _coverageForStore(
   final offerImageCount = records
       .where((record) => record.imageUrl?.trim().isNotEmpty == true)
       .length;
+  final offerProductImageCount = records
+      .where((record) => record.imageKind == ProspectImageKind.product)
+      .length;
+  final offerPageImageCount = records
+      .where((record) => record.imageKind == ProspectImageKind.prospectPage)
+      .length;
   final offerCategoryCount = records
       .where((record) => record.category?.trim().isNotEmpty == true)
       .length;
@@ -389,6 +402,8 @@ ProspectCoverage _coverageForStore(
     offerImageCount: offerImageCount,
     offerCategoryCount: offerCategoryCount,
     offerProofCount: offerProofCount,
+    offerProductImageCount: offerProductImageCount,
+    offerPageImageCount: offerPageImageCount,
     regularPriceCount: regularPriceCount,
     persistedRegularPriceCount: storedRegularPriceCount,
     hasBranch: issue?.branchId?.trim().isNotEmpty == true,
@@ -514,6 +529,14 @@ class _ProspectCoverageCardState extends State<ProspectCoverageCard> {
       0,
       (sum, entry) => sum + entry.offerImageCount,
     );
+    final offersWithProductImages = coverage.fold<int>(
+      0,
+      (sum, entry) => sum + entry.offerProductImageCount,
+    );
+    final offersWithPageImages = coverage.fold<int>(
+      0,
+      (sum, entry) => sum + entry.offerPageImageCount,
+    );
     final offersWithCategories = coverage.fold<int>(
       0,
       (sum, entry) => sum + entry.offerCategoryCount,
@@ -530,7 +553,9 @@ class _ProspectCoverageCardState extends State<ProspectCoverageCard> {
         subtitle: Text(
           '${coverage.length} Märkte · $marketsWithOffers mit strukturierten '
           'Angeboten · $marketsWithPages mit Bildseiten · '
-          '$offersWithImages/$totalStructuredOffers mit Artikelbildern · '
+          '$offersWithImages/$totalStructuredOffers mit Bildnachweis '
+          '($offersWithProductImages Artikelbilder · '
+          '$offersWithPageImages Prospektseiten) · '
           '$offersWithCategories/$totalStructuredOffers mit Kategorien · '
           '$marketsWithValidity mit Gültigkeitszeitraum · '
           '$marketsWithRegularPrices mit Normalpreis · '
@@ -589,7 +614,9 @@ String _coverageDetails(
   ProspectRegularPricePersistenceStatus persistenceStatus,
 ) {
   final productImages =
-      '${coverage.offerImageCount}/${coverage.structuredOfferCount} Produktbilder';
+      '${coverage.offerImageCount}/${coverage.structuredOfferCount} Bildnachweise '
+      '(${coverage.offerProductImageCount} Artikel · '
+      '${coverage.offerPageImageCount} Prospektseiten)';
   final categories =
       '${coverage.offerCategoryCount}/${coverage.structuredOfferCount} Kategorien';
   final proofs =

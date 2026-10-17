@@ -1266,5 +1266,60 @@ void main() {
     );
   });
 
+  test('distinguishes product images from prospect-page evidence', () {
+    final result = parseProspectFeed(r'''
+{
+  "sources": [
+    {
+      "storeName": "Lidl",
+      "status": "ok",
+      "branchId": "lidl-zellingen",
+      "prospects": [
+        {
+          "title": "Lidl Wochenprospekt",
+          "offerStartDate": "2026-10-12",
+          "offerEndDate": "2026-10-17",
+          "pageSamples": [
+            {"number": 3, "image": "https://example.test/page-3.jpg"}
+          ]
+        }
+      ]
+    }
+  ],
+  "offers": [
+    {
+      "sourceId": "image-kind-product",
+      "productLabel": "Butter 250 g",
+      "storeName": "Lidl",
+      "offerPrice": 1.49,
+      "validUntil": "2026-10-17",
+      "brochurePage": 3,
+      "imageUrl": "https://example.test/butter.jpg",
+      "proofRef": "https://example.test/lidl/butter"
+    },
+    {
+      "sourceId": "image-kind-page",
+      "productLabel": "Milch 1 l",
+      "storeName": "Lidl",
+      "offerPrice": 0.99,
+      "validUntil": "2026-10-17",
+      "brochurePage": 3,
+      "proofRef": "https://example.test/lidl/milch"
+    }
+  ]
+}
+''');
+    final product = result.records.firstWhere(
+      (record) => record.sourceId == 'image-kind-product',
+    );
+    final page = result.records.firstWhere(
+      (record) => record.sourceId == 'image-kind-page',
+    );
+    expect(product.imageUrl, 'https://example.test/butter.jpg');
+    expect(product.imageKind, ProspectImageKind.product);
+    expect(page.imageUrl, 'https://example.test/page-3.jpg');
+    expect(page.imageKind, ProspectImageKind.prospectPage);
+  });
+
 }
 

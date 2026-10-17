@@ -1036,3 +1036,7 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
   und MarketPrice.
 - [x] Eine Widget-/Fachregression schützt den Fall eines nach Refresh
   supersedierten, weiterhin gültigen Belegs.
+
+
+## Update 17.10.2026 – Bildherkunft in Prospektangeboten
+- [x] Prospektangebote unterscheiden jetzt zwischen einem vom Adapter gelieferten Artikelbild und einem als Nachweis verwendeten Prospektseitenbild. Die Abdeckungsanzeige und Angebotskarten zeigen diese Herkunft ausdrücklich; fehlende oder ältere Bilddaten bleiben dadurch sichtbar.

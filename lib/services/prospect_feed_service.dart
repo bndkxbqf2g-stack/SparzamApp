@@ -808,6 +808,28 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     final recordBranchId = regionalOnly
         ? explicitBranchId
         : (explicitBranchId ?? sourceFallback?.branchId);
+    final productImageUrl = _firstHttpUrl([
+      value['imageUrl'],
+      value['imageURL'],
+      value['image_url'],
+      value['image'],
+      value['productImage'],
+      value['product_image'],
+      value['bild'],
+      value['bild_app'],
+      value['bild_web130'],
+      value['bild_web90'],
+    ]);
+    final pageImageUrl = productImageUrl == null
+        ? _prospectPageImageForOffer(
+            pageImagesByStoreAndNumber,
+            storeName: storeName,
+            branchId: recordBranchId,
+            pageNumber: brochurePage,
+            validFrom: validFrom,
+            validUntil: validUntil,
+          )
+        : null;
     final record = OfferImportRecord(
         sourceId: sourceId,
         productLabel: productLabel,
@@ -819,26 +841,12 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         validUntil: validUntil,
         source: _stringValue(value['source']) ?? 'retailerWebsite',
         proofRef: _stringValue(value['proofRef']),
-        imageUrl: _firstHttpUrl([
-              value['imageUrl'],
-              value['imageURL'],
-              value['image_url'],
-              value['image'],
-              value['productImage'],
-              value['product_image'],
-              value['bild'],
-              value['bild_app'],
-              value['bild_web130'],
-              value['bild_web90'],
-            ]) ??
-            _prospectPageImageForOffer(
-              pageImagesByStoreAndNumber,
-              storeName: storeName,
-              branchId: recordBranchId,
-              pageNumber: brochurePage,
-              validFrom: validFrom,
-              validUntil: validUntil,
-            ),
+        imageUrl: productImageUrl ?? pageImageUrl,
+        imageKind: productImageUrl != null
+            ? ProspectImageKind.product
+            : pageImageUrl != null
+            ? ProspectImageKind.prospectPage
+            : null,
         category: category,
         packageSize: _firstSourceLabel(
           value,

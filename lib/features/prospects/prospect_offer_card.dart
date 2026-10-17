@@ -340,6 +340,20 @@ class _OfferSummary extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(fontSize: 12, color: Colors.black54),
           ),
+        if (record.imageKind == ProspectImageKind.product)
+          const Text(
+            'Bildnachweis: Artikelbild aus der Quelle',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 12, color: Colors.black54),
+          )
+        else if (record.imageKind == ProspectImageKind.prospectPage)
+          const Text(
+            'Bildnachweis: Prospektseite',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 12, color: Colors.black54),
+          ),
         if (record.regionalOnly)
           const Text(
             'Nur regional erkannt · Filiale noch nicht bestätigt',
