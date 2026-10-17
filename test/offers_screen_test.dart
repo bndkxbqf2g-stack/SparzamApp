@@ -479,7 +479,6 @@ void main() {
     expect(find.textContaining('nur regional erkannt'), findsOneWidget);
     expect(find.textContaining('für die Route gesperrt'), findsOneWidget);
   });
-
   testWidgets('normalisiert Händlernamen für Regionalhinweise', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
