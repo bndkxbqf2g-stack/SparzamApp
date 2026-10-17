@@ -555,12 +555,12 @@ DateTime? _parseHttpHeaderDate(String? value) {
   if (month == null) return null;
   try {
     return DateTime.utc(
-      int.parse(match.group(4)!),
+      int.parse(match.group(3)!),
       month,
       int.parse(match.group(1)!),
+      int.parse(match.group(4)!),
       int.parse(match.group(5)!),
       int.parse(match.group(6)!),
-      int.parse(match.group(7)!),
     );
   } on FormatException {
     return null;
