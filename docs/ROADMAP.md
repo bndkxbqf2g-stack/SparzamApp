@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Atomarer Preis-Snapshot für Planung
+
+- [x] Beobachtungssnapshot aus Einzelpreis, Batch und Open Prices im Coordinator zurückgeben.
+- [x] Beobachtung, aktuellen Marktpreis und Verlauf gemeinsam in den Shell-Stand übernehmen.
+- [x] Regressionen für Einzel-, Batch- und Open-Prices-Belege ergänzen; Angebotsrollen bleiben getrennt.
+
 ## Update 17.10.2026 – Bekannte Produktdaten in der Einkaufsliste
 
 - [x] Exakte Produkt-IDs nach Listenladen und Prospekt-Refresh gegen den lokalen Katalog abgleichen.

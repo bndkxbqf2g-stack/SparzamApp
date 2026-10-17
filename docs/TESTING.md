@@ -1,3 +1,7 @@
+## Update 17.10.2026 – Preis-Mutation liefert Beobachtungssnapshot
+
+Der Test shell_price_coordinator_test.dart prüft jetzt, dass Einzelpreis, Batch und Open-Prices-Sync neben Marktpreis und Verlauf auch den vollständigen gespeicherten Beobachtungsstand liefern. CI 5631 lief mit Analyse, Flutter-Tests und Web-Release-Build erfolgreich.
+
 ## Update 17.10.2026 – Listen-Metadaten werden nach Feed-Updates aktualisiert
 
 Der neue Helper in `shopping_list_updates.dart` wird durch einen lokalen Test mit geänderter Marke, Packungsgröße, Alias und Bild geprüft. Die Regression bestätigt, dass Menge, Notiz und Abhakstatus erhalten bleiben; Netzwerkanfragen und echte Nutzerdaten werden nicht verwendet.
