@@ -1,3 +1,7 @@
+## Update 17.10.2026 – Legacy-Einkaufslisten bewahren Produktmetadaten
+
+Der Legacy-Schlüssel `shopping_list` speichert jetzt alle bereits vorhandenen Produktfelder einschließlich Aliase, Marke, EAN, Packungsgröße, Favoriten-/Stammartikelstatus und Bild. Alte Einträge ohne die neuen optionalen Felder bleiben lesbar; Preis-, Angebots- und Routenlogik wurden nicht verändert.
+
 ## Update 17.10.2026 – Preis-Matrix folgt der gemeinsamen Frischeauswahl
 
 Die Preis-Matrix und der hervorgehobene Einkaufslistenpreis verwenden jetzt
