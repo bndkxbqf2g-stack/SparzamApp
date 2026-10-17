@@ -16,7 +16,7 @@ void main() {
 
   tearDown(() => SharedPreferencesAsyncPlatform.instance = null);
 
-  testWidgets('gefüllte Einkaufsliste öffnet direkt die Sparroute', (
+  testWidgets('gefüllte Einkaufsliste kennzeichnet fehlende Preise', (
     tester,
   ) async {
     const product = Product(
