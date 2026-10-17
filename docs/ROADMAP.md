@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Händler-Schreibvarianten im Preis-Refresh
+
+- [x] Der Preislernkreis verwendet denselben Normalisierungsschlüssel wie Suche und Coverage.
+- [x] Umlaut- und `ae/oe/ue`-Schreibweisen werden nur für den Refresh-Vergleich zusammengeführt.
+- [x] Filial-IDs, sichtbare Namen und die getrennte Behandlung von Aktions-/Normalpreisen bleiben unverändert.
+
 ## Update 17.10.2026 – Bestätigte Preisabdeckung bleibt aktuell
 
 - [x] Der Status der lokalen Normalpreisspeicherung zählt nur reguläre Beobachtungen mit `isCurrent=true`.
