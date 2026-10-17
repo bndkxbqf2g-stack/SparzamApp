@@ -1937,3 +1937,11 @@ beziehungsweise Unsicherheit sichtbar, werden aber weder in die aktuelle
 Preisabdeckung noch in Historie, Shopping-Vorschläge oder den
 `RoutePriceResolver` übernommen. Das schützt Altformate ohne `kind` davor,
 einen nicht belegten Betrag als reguläre Preisbasis auszugeben.
+
+## D195 – Unklassifizierte Prospektpreise werden im Preise-Reiter erklärt
+
+Der Preise-Reiter weist Prospekt-MarketPrices ohne explizite Preisrolle als eigene
+Datenlücke aus. Die Beschriftung macht sichtbar, dass der Betrag weder eine
+reguläre Preisbasis noch ein bestätigter Aktionspreis ist. Die fachliche
+Route-Sperre bleibt in Projektion und Planung unverändert; die Anzeige verbessert
+nur die Nachvollziehbarkeit lokaler Alt- und Importdaten.
