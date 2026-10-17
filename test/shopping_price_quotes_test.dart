@@ -1192,7 +1192,7 @@ void main() {
     expect(matrix, hasLength(1));
     expect(matrix.single.storeName, 'ALDI Süd');
     expect(matrix.single.quote?.storeName, 'ALDI SUED');
-  });
+  });
   test('snapshot indexing keeps exact and generic candidates isolated', () {
     const generic = Product(
       id: 'generic-milk-request',
@@ -1237,6 +1237,58 @@ void main() {
       snapshot.quotesFor(item).any((quote) => quote.unitPrice == 0.80),
       isTrue,
     );
+  });
+
+  test('erklärt fehlende Preisbelege mit einem primären Grund', () {
+    const product = Product(
+      id: 'gap-milk',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'milch',
+      packageAmount: 1,
+      packageUnit: 'l',
+    );
+    final matrix = shoppingPriceMatrix(
+      ListItem(product: product),
+      prices: [
+        MarketPrice(
+          productId: product.id,
+          storeName: 'Lidl',
+          price: 1.19,
+          updatedAt: DateTime(2030, 1, 2),
+          source: MarketPriceSource.openPrices,
+        ),
+        MarketPrice(
+          productId: product.id,
+          storeName: 'ALDI Süd',
+          price: 1.09,
+          updatedAt: DateTime(2020, 1, 2),
+          source: MarketPriceSource.openPrices,
+        ),
+        MarketPrice(
+          productId: product.id,
+          storeName: 'PENNY',
+          price: 0.89,
+          updatedAt: DateTime(2026, 9, 24),
+          source: MarketPriceSource.openPrices,
+          quantity: 500,
+          unit: 'g',
+          unitPrice: 1.78,
+        ),
+      ],
+      offers: const [],
+      enabledStores: const ['Lidl', 'ALDI Süd', 'PENNY', 'Kaufland'],
+      now: DateTime(2026, 9, 24),
+    );
+
+    expect(matrix[0].gapReason, ShoppingPriceGapReason.futureEvidence);
+    expect(matrix[0].gapLabel, 'Beleg liegt in der Zukunft');
+    expect(matrix[1].gapReason, ShoppingPriceGapReason.staleEvidence);
+    expect(
+      matrix[2].gapReason,
+      ShoppingPriceGapReason.incomparablePackage,
+    );
+    expect(matrix[3].gapReason, ShoppingPriceGapReason.noEvidence);
   });
 
 }
