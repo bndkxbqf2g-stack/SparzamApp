@@ -1,3 +1,11 @@
+## D230 – Reguläre Preisfeldherkunft bleibt in MarketPrice-Projektionen erhalten
+
+`regularPriceSource` wird nicht nur in `Offer` und `PriceObservation`, sondern
+auch in der abgeleiteten `MarketPrice`-Struktur und deren JSON-Roundtrip
+bewahrt. Dadurch kann die aktuelle Preis-Matrix oder Route dieselbe
+nachvollziehbare Feldherkunft anzeigen, ohne den technischen `sourceAdapter` als
+Preisbeleg zu missverstehen. Der Aktionspreis bleibt weiterhin eine getrennte
+Evidenz.
 ## D229 – Explizite Produktmetadaten bleiben quellgebunden
 
 Die Prospektadapter dürfen EAN/GTIN/Barcode, Packungsgröße und Grundpreis nur

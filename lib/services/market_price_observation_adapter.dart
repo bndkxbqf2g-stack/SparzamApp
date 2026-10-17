@@ -32,6 +32,7 @@ PriceObservation observationFromMarketPrice(MarketPrice price) =>
         MarketPriceSource.prospect => PriceObservationSource.leaflet,
       },
       sourceAdapter: price.sourceAdapter,
+      regularPriceSource: price.regularPriceSource,
       kind: price.kind == PriceObservationKind.unknown && price.discounted
           ? PriceObservationKind.offer
           : price.kind,
@@ -104,6 +105,7 @@ List<MarketPrice> marketPricesFromObservations(
           sourceLocationId: entry.locationId,
           sourceLocationName: entry.region,
           sourceAdapter: entry.sourceAdapter,
+          regularPriceSource: entry.regularPriceSource,
           discounted:
               entry.discounted || entry.kind == PriceObservationKind.offer,
           proofRef: entry.proofRef,
