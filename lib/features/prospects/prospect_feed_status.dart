@@ -182,6 +182,9 @@ class ProspectCoverage {
     required this.offerProofCount,
     this.offerProductImageCount = 0,
     this.offerPageImageCount = 0,
+    this.offerEanCount = 0,
+    this.offerPackageSizeCount = 0,
+    this.offerBasePriceCount = 0,
     this.regularPriceCount = 0,
     this.persistedRegularPriceCount,
     required this.hasBranch,
@@ -212,6 +215,12 @@ class ProspectCoverage {
   /// Images recovered from the matching prospect page. They prove leaflet
   /// context but do not claim to be a product photograph.
   final int offerPageImageCount;
+  /// Offer rows with an explicit source-provided EAN/GTIN.
+  final int offerEanCount;
+  /// Offer rows with an explicit source-provided package-size string.
+  final int offerPackageSizeCount;
+  /// Offer rows with an explicit source-provided base-price string.
+  final int offerBasePriceCount;
   /// Count of explicitly stated, valid regular prices that can be learned
   /// without promoting an offer amount into the regular-price history.
   final int regularPriceCount;
@@ -356,6 +365,15 @@ ProspectCoverage _coverageForStore(
   final offerPageImageCount = records
       .where((record) => record.imageKind == ProspectImageKind.prospectPage)
       .length;
+  final offerEanCount = records
+      .where((record) => record.ean?.trim().isNotEmpty == true)
+      .length;
+  final offerPackageSizeCount = records
+      .where((record) => record.packageSize?.trim().isNotEmpty == true)
+      .length;
+  final offerBasePriceCount = records
+      .where((record) => record.priceByBaseUnit?.trim().isNotEmpty == true)
+      .length;
   final offerCategoryCount = records
       .where((record) => record.category?.trim().isNotEmpty == true)
       .length;
@@ -404,6 +422,9 @@ ProspectCoverage _coverageForStore(
     offerProofCount: offerProofCount,
     offerProductImageCount: offerProductImageCount,
     offerPageImageCount: offerPageImageCount,
+    offerEanCount: offerEanCount,
+    offerPackageSizeCount: offerPackageSizeCount,
+    offerBasePriceCount: offerBasePriceCount,
     regularPriceCount: regularPriceCount,
     persistedRegularPriceCount: storedRegularPriceCount,
     hasBranch: issue?.branchId?.trim().isNotEmpty == true,
@@ -541,6 +562,18 @@ class _ProspectCoverageCardState extends State<ProspectCoverageCard> {
       0,
       (sum, entry) => sum + entry.offerCategoryCount,
     );
+    final offersWithEans = coverage.fold<int>(
+      0,
+      (sum, entry) => sum + entry.offerEanCount,
+    );
+    final offersWithPackageSizes = coverage.fold<int>(
+      0,
+      (sum, entry) => sum + entry.offerPackageSizeCount,
+    );
+    final offersWithBasePrices = coverage.fold<int>(
+      0,
+      (sum, entry) => sum + entry.offerBasePriceCount,
+    );
 
     return Card(
       child: ExpansionTile(
@@ -557,6 +590,9 @@ class _ProspectCoverageCardState extends State<ProspectCoverageCard> {
           '$offersWithProductImages Artikelbilder · '
           '$offersWithPageImages Prospektseiten als Bildnachweis · '
           '$offersWithCategories/$totalStructuredOffers mit Kategorien · '
+          '$offersWithEans/$totalStructuredOffers mit EAN · '
+          '$offersWithPackageSizes/$totalStructuredOffers mit Packungsgröße · '
+          '$offersWithBasePrices/$totalStructuredOffers mit Grundpreis · '
           '$marketsWithValidity mit Gültigkeitszeitraum · '
           '$marketsWithRegularPrices mit Normalpreis · '
           '$storageSummary · '
@@ -619,6 +655,10 @@ String _coverageDetails(
       '${coverage.offerPageImageCount} Prospektseiten)';
   final categories =
       '${coverage.offerCategoryCount}/${coverage.structuredOfferCount} Kategorien';
+  final productMetadata =
+      '${coverage.offerEanCount}/${coverage.structuredOfferCount} EAN · '
+      '${coverage.offerPackageSizeCount}/${coverage.structuredOfferCount} Packungsgrößen · '
+      '${coverage.offerBasePriceCount}/${coverage.structuredOfferCount} Grundpreise';
   final proofs =
       '${coverage.offerProofCount}/${coverage.structuredOfferCount} Nachweise';
   final regularPrices =
@@ -654,7 +694,7 @@ String _coverageDetails(
   return '${coverage.structuredOfferCount} strukturierte Angebote'
       '$regional · '
       '$pages$missingPages · $productImages · $categories · '
-      '$proofs · '
+      '$productMetadata · $proofs · '
       '$regularPrices · '
       '$storedRegularPrices · '
       '$uncertain · $storeSignals'
