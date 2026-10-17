@@ -13,6 +13,8 @@ class RecentPurchase {
     this.totalQuantity = 1,
     this.ean,
     this.aliases = const <String>[],
+    this.isFavorite = false,
+    this.isStaple = false,
     this.brand,
     this.packageAmount,
     this.packageUnit,
@@ -27,6 +29,8 @@ class RecentPurchase {
   final int totalQuantity;
   final String? ean;
   final List<String> aliases;
+  final bool isFavorite;
+  final bool isStaple;
   final String? brand;
   final double? packageAmount;
   final String? packageUnit;
@@ -41,6 +45,8 @@ class RecentPurchase {
         group: product.group,
         ean: product.ean,
         aliases: List<String>.of(product.aliases, growable: false),
+        isFavorite: product.isFavorite,
+        isStaple: product.isStaple,
         brand: product.brand,
         packageAmount: product.packageAmount,
         packageUnit: product.packageUnit,
@@ -80,6 +86,8 @@ class RecentPurchase {
       totalQuantity: totalQuantity,
       ean: json['ean'] as String?,
       aliases: aliases,
+      isFavorite: json['isFavorite'] as bool? ?? false,
+      isStaple: json['isStaple'] as bool? ?? false,
       brand: json['brand'] as String?,
       packageAmount: (json['packageAmount'] as num?)?.toDouble(),
       packageUnit: json['packageUnit'] as String?,
@@ -96,6 +104,8 @@ class RecentPurchase {
         'totalQuantity': totalQuantity,
         'ean': ean,
         'aliases': aliases,
+        'isFavorite': isFavorite,
+        'isStaple': isStaple,
         'brand': brand,
         'packageAmount': packageAmount,
         'packageUnit': packageUnit,
@@ -112,6 +122,8 @@ class RecentPurchase {
       group: group,
       ean: ean,
       aliases: aliases,
+      isFavorite: isFavorite,
+      isStaple: isStaple,
       brand: brand,
       packageAmount: packageAmount,
       packageUnit: packageUnit,

@@ -94,6 +94,8 @@ void main() {
       unit: '500 g',
       group: 'kaffee',
       aliases: ['Bohnenkaffee'],
+      isFavorite: true,
+      isStaple: true,
       ean: '4000000000001',
       brand: 'Rösterei',
       packageAmount: 500,
@@ -108,6 +110,8 @@ void main() {
 
     expect(saved.single.totalQuantity, 2);
     expect(loaded.single.aliases, ['Bohnenkaffee']);
+    expect(loaded.single.isFavorite, isTrue);
+    expect(loaded.single.isStaple, isTrue);
     expect(loaded.single.ean, '4000000000001');
     expect(loaded.single.brand, 'Rösterei');
     expect(loaded.single.packageAmount, 500);
@@ -115,6 +119,8 @@ void main() {
     expect(loaded.single.imageUrl, 'https://cdn.example.test/coffee.jpg');
     expect(restored.name, 'Röstkaffee');
     expect(restored.aliases, ['Bohnenkaffee']);
+    expect(restored.isFavorite, isTrue);
+    expect(restored.isStaple, isTrue);
     expect(restored.brand, 'Rösterei');
     expect(restored.packageAmount, 500);
     expect(restored.packageUnit, 'g');
@@ -128,6 +134,8 @@ void main() {
     );
 
     expect(legacy.aliases, isEmpty);
+    expect(legacy.isFavorite, isFalse);
+    expect(legacy.isStaple, isFalse);
     expect(legacy.brand, isNull);
     expect(legacy.toProduct().name, 'Tee');
   });

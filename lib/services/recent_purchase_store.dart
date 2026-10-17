@@ -58,6 +58,8 @@ class RecentPurchaseStore {
         aliases: metadata.aliases.isNotEmpty
             ? metadata.aliases
             : previous?.aliases ?? const <String>[],
+        isFavorite: metadata.isFavorite,
+        isStaple: metadata.isStaple,
         brand: metadata.brand ?? previous?.brand,
         packageAmount: metadata.packageAmount ?? previous?.packageAmount,
         packageUnit: metadata.packageUnit ?? previous?.packageUnit,
