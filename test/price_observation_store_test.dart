@@ -344,6 +344,42 @@ void main() {
     expect(projected.single.evidenceConfidence, EvidenceConfidence.manuallyConfirmed);
   });
 
+  test('keeps regular price provenance through MarketPrice projection', () {
+    final price = MarketPrice(
+      productId: 'coffee-500',
+      storeName: 'Lidl',
+      price: 7.99,
+      updatedAt: DateTime(2026, 10, 15),
+      source: MarketPriceSource.manual,
+      sourceAdapter: 'fixture-adapter',
+      regularPriceSource: 'oldPrice',
+      kind: PriceObservationKind.regular,
+    );
+
+    final restored = MarketPrice.fromJson(price.toJson());
+    expect(restored.regularPriceSource, 'oldPrice');
+    expect(observationFromMarketPrice(restored).regularPriceSource, 'oldPrice');
+
+    final prospectObservation = PriceObservation(
+      id: 'prospect|regular-marker',
+      productId: 'coffee-500',
+      storeName: 'Lidl',
+      locationId: 'lidl-zellingen',
+      price: 7.99,
+      observedAt: DateTime(2026, 10, 15),
+      validUntil: DateTime(2026, 10, 19),
+      source: PriceObservationSource.leaflet,
+      sourceAdapter: 'KaufDA',
+      regularPriceSource: 'oldPrice',
+      kind: PriceObservationKind.regular,
+    );
+    final projected = marketPricesFromObservations(
+      [prospectObservation],
+      now: DateTime(2026, 10, 15),
+    );
+
+    expect(projected.single.regularPriceSource, 'oldPrice');
+  });
   test('record keeps branch, amount, offer validity and proof separately', () {
     final original = PriceObservation(
       id: 'shelf-1',
