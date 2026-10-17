@@ -264,6 +264,9 @@ List<ProspectCoverage> calculateProspectCoverage({
       : issues
             .where((issue) => _isCurrentProspectIssue(issue, now: now))
             .toList(growable: false);
+  final catalogIndex = catalogProducts == null
+      ? null
+      : OfferImportCatalogIndex(catalogProducts);
 
   final issuesByKey = <String, ProspectIssue>{};
   final recordsByKey = <String, List<OfferImportRecord>>{};
@@ -344,6 +347,7 @@ List<ProspectCoverage> calculateProspectCoverage({
                 branchKeysByStore,
               ),
         catalogProducts,
+        catalogIndex,
       ),
   ];
 }
@@ -368,43 +372,66 @@ ProspectCoverage _coverageForStore(
   List<OfferImportRecord> records,
   int? persistedRegularPriceCount,
   Iterable<Product>? catalogProducts,
+  OfferImportCatalogIndex? catalogIndex,
 ) {
-  final offerImageCount = records
-      .where((record) => record.imageUrl?.trim().isNotEmpty == true)
-      .length;
-  final offerProductImageCount = records
-      .where((record) => record.imageKind == ProspectImageKind.product)
-      .length;
-  final offerPageImageCount = records
-      .where((record) => record.imageKind == ProspectImageKind.prospectPage)
-      .length;
-  final offerEanCount = records
-      .where((record) => record.ean?.trim().isNotEmpty == true)
-      .length;
-  final offerPackageSizeCount = records
-      .where((record) => record.packageSize?.trim().isNotEmpty == true)
-      .length;
-  final offerBasePriceCount = records
-      .where((record) => record.priceByBaseUnit?.trim().isNotEmpty == true)
-      .length;
-  final offerCategoryCount = records
-      .where((record) => record.category?.trim().isNotEmpty == true)
-      .length;
-  final offerProofCount = records
-      .where((record) => hasTrustedOfferProofReference(record.proofRef))
-      .length;
-  final regularPriceCount = records.where(hasLearnableProspectRegularPrice).length;
-  final regionalOnlyCount = records.where((record) => record.regionalOnly).length;
-  final storedRegularPriceCount = persistedRegularPriceCount?.clamp(0, regularPriceCount).toInt();
-  final uncertainProductCount = catalogProducts == null
-      ? issue?.uncertainProductCount
-      : records.where((record) {
-          final reason = resolveOfferImport(record, catalogProducts).reason;
-          return reason == 'unknown_identity' ||
-              reason == 'ambiguous_identity' ||
-              reason == 'package_mismatch' ||
-              reason == 'ean_mismatch';
-        }).length;
+  var offerImageCount = 0;
+  var offerProductImageCount = 0;
+  var offerPageImageCount = 0;
+  var offerEanCount = 0;
+  var offerPackageSizeCount = 0;
+  var offerBasePriceCount = 0;
+  var offerCategoryCount = 0;
+  var offerProofCount = 0;
+  var regularPriceCount = 0;
+  var regionalOnlyCount = 0;
+  var uncertainProductCount = 0;
+  for (final record in records) {
+    if (record.imageUrl?.trim().isNotEmpty == true) {
+      offerImageCount++;
+    }
+    if (record.imageKind == ProspectImageKind.product) {
+      offerProductImageCount++;
+    }
+    if (record.imageKind == ProspectImageKind.prospectPage) {
+      offerPageImageCount++;
+    }
+    if (record.ean?.trim().isNotEmpty == true) {
+      offerEanCount++;
+    }
+    if (record.packageSize?.trim().isNotEmpty == true) {
+      offerPackageSizeCount++;
+    }
+    if (record.priceByBaseUnit?.trim().isNotEmpty == true) {
+      offerBasePriceCount++;
+    }
+    if (record.category?.trim().isNotEmpty == true) {
+      offerCategoryCount++;
+    }
+    if (hasTrustedOfferProofReference(record.proofRef)) {
+      offerProofCount++;
+    }
+    if (hasLearnableProspectRegularPrice(record)) {
+      regularPriceCount++;
+    }
+    if (record.regionalOnly) {
+      regionalOnlyCount++;
+    }
+    if (catalogProducts != null) {
+      final reason = resolveOfferImport(
+        record,
+        catalogProducts,
+        catalogIndex: catalogIndex,
+      ).reason;
+      if (reason == 'unknown_identity' ||
+          reason == 'ambiguous_identity' ||
+          reason == 'package_mismatch' ||
+          reason == 'ean_mismatch') {
+        uncertainProductCount++;
+      }
+    }
+  }
+  final storedRegularPriceCount =
+      persistedRegularPriceCount?.clamp(0, regularPriceCount).toInt();
   final recordBranchId = _firstRecordValue(
     records,
     (record) => record.branchId,
