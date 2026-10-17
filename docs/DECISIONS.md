@@ -1,3 +1,11 @@
+## D208 – Individuellen Erfassungszeitpunkt vor lokaler Ladezeit bevorzugen
+
+Für automatische Prospektpreisbeobachtungen genügt entweder der globale
+Feed-Zeitpunkt oder ein expliziter `capturedAt`-Zeitpunkt am Datensatz. Fehlen
+beide Nachweise, wird die Beobachtung nicht gelernt. Die aktuelle Ladezeit darf
+keinen alten oder gecachten Prospekt künstlich aktualisieren. Der reguläre
+Preis bleibt getrennt vom Angebotspreis.
+
 ## D207 – Kategoriepfade bleiben begrenzte Präsentations- und Filterdaten
 
 Ein Feed darf mehrere Kategorieeinträge liefern. Der Parser übernimmt daraus nur

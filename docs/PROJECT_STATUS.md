@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Datensatz-Capture als Preiszeitpunkt nutzen
+
+- Reguläre Prospektpreise werden jetzt auch gelernt, wenn der Feed keinen globalen `generatedAt`-Zeitpunkt liefert, der einzelne Datensatz aber einen belegten `capturedAt`-Zeitpunkt enthält.
+- Datensätze ohne globalen oder individuellen Zeitpunkt bleiben ausgeschlossen; die lokale Ladezeit wird nicht eingesetzt.
+- Lern- und Persistenzregressionen prüfen den regulären Preis und seinen individuellen Erfassungszeitpunkt.
+
 ## Update 17.10.2026 – Kategoriepfade aus Listenfeldern
 
 - Der Prospektparser übernimmt bekannte Kategoriepfade aus `categories`, `productCategories`, `categoryPath` und verschachtelten Kategorieobjekten.

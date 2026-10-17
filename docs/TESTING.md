@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Preislernen ohne Feedzeitpunkt
+
+`prospect_price_learning_test.dart` und
+`prospect_regular_price_persistence_test.dart` prüfen einen Datensatz mit
+`capturedAt` ohne Feed-`generatedAt`. Der reguläre Preis wird gespeichert und
+behält genau diesen Zeitpunkt; ein vollständig zeitloser Datensatz bleibt
+ausgeschlossen.
+
 ## Update 17.10.2026 – Kategorie-Listen
 
 `prospect_feed_service_test.dart` prüft einen mehrteiligen
