@@ -9,8 +9,10 @@ import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'package:sparzamapp/services/prospect_feed_cache.dart';
 import 'package:sparzamapp/services/prospect_feed_service.dart';
 
-class _MemoryProspectFeedCache implements ProspectFeedCache {
+class _MemoryProspectFeedCache
+    implements ProspectFeedCache, ProspectFeedCaptureMetadataCache {
   String? raw;
+  DateTime? capturedAt;
   var saveCount = 0;
 
   @override
@@ -20,6 +22,15 @@ class _MemoryProspectFeedCache implements ProspectFeedCache {
   Future<void> save(String value) async {
     raw = value;
     saveCount++;
+  }
+
+  @override
+  Future<DateTime?> loadCapturedAt(String value) async =>
+      raw == value ? capturedAt : null;
+
+  @override
+  Future<void> saveCapturedAt(String value, DateTime timestamp) async {
+    if (raw == value) capturedAt = timestamp;
   }
 }
 
@@ -307,6 +318,38 @@ void main() {
 
     expect(result.generatedAt, isNull);
     expect(result.capturedAt, DateTime.utc(2026, 10, 17, 4, 15));
+  });
+
+  test('keeps response capture metadata with the cached feed offline', () async {
+    final body = _feed(validUntil: '2026-10-18').replaceFirst(
+      '  "generatedAt": "2026-09-30T04:15:00Z",\n',
+      '',
+    );
+    final cache = _MemoryProspectFeedCache();
+    final online = ProspectFeedService(
+      client: _FakeClient(
+        body: body,
+        headers: const {
+          'last-modified': 'Sat, 17 Oct 2026 04:15:00 GMT',
+        },
+      ),
+      cache: cache,
+      bundledLoader: () async => throw StateError('asset unavailable'),
+    );
+
+    final live = await online.load();
+    expect(live.capturedAt, DateTime.utc(2026, 10, 17, 4, 15));
+
+    final offline = ProspectFeedService(
+      client: _FakeClient(error: http.ClientException('offline')),
+      cache: cache,
+      bundledLoader: () async => throw StateError('asset unavailable'),
+      networkEnabled: false,
+    );
+
+    final cached = await offline.load();
+    expect(cached.fromCache, isTrue);
+    expect(cached.capturedAt, DateTime.utc(2026, 10, 17, 4, 15));
   });
 
   test('ein paralleler Read wartet auf einen Prospekt-Cache-Write', () async {
