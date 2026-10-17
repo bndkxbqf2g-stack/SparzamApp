@@ -1154,7 +1154,6 @@ void main() {
       expect(matrix.single.quote?.kind, ShoppingQuoteKind.openPrices);
     },
   );
-
   test('accepts retailer label variants from enabled stores', () {
     final quote = shoppingQuotes(
       item,
