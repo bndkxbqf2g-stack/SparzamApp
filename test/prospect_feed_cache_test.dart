@@ -549,5 +549,146 @@ void main() {
 
     expect(service.load, throwsA(isA<StateError>()));
   });
+
+  test('preserves current rows from an older local source when the newer source is empty', () {
+    final fallback = parseProspectFeed(
+      _feed(
+        validUntil: '2026-10-21',
+        generatedAt: '2026-10-16T04:15:00Z',
+      ),
+    );
+    final incoming = parseProspectFeed('''
+{
+  "generatedAt": "2026-10-17T04:15:00Z",
+  "sources": [{
+    "storeName": "Lidl",
+    "status": "ok",
+    "recordCount": 0,
+    "prospects": [{
+      "title": "Lidl Wochenprospekt",
+      "thumbnailUrl": "https://example.test/lidl-new-cover.jpg",
+      "validFrom": "2026-10-15",
+      "validUntil": "2026-10-21"
+    }]
+  }],
+  "offers": []
+}
+''');
+
+    final guarded = preserveCurrentProspectRowsForEmptySources(
+      incoming: incoming,
+      fallback: fallback,
+      now: DateTime(2026, 10, 17, 12),
+    );
+
+    expect(guarded.records, hasLength(1));
+    expect(guarded.records.single.sourceId, 'cache-1');
+    expect(guarded.records.single.validUntil, DateTime(2026, 10, 21));
+    final issue = guarded.prospects.firstWhere(
+      (entry) => entry.storeName == 'Lidl',
+    );
+    expect(issue.sourceStatus, 'current_fallback');
+    expect(issue.thumbnailUrl, 'https://example.test/lidl-new-cover.jpg');
+    expect(issue.recordCount, 1);
+  });
+
+  test('does not revive expired or non-food rows from the fallback source', () {
+    final incoming = parseProspectFeed('''
+{
+  "generatedAt": "2026-10-17T04:15:00Z",
+  "sources": [{"storeName": "Lidl", "status": "ok", "recordCount": 0}],
+  "offers": []
+}
+''');
+    final expired = parseProspectFeed(
+      _feed(
+        validUntil: '2026-10-16',
+        generatedAt: '2026-10-16T04:15:00Z',
+      ),
+    );
+    final nonFood = parseProspectFeed(
+      _feed(
+        validUntil: '2026-10-21',
+        generatedAt: '2026-10-16T04:15:00Z',
+      ).replaceFirst('Milch 1,5 %', 'HOME CREATION LED-Kerzen'),
+    );
+
+    final expiredResult = preserveCurrentProspectRowsForEmptySources(
+      incoming: incoming,
+      fallback: expired,
+      now: DateTime(2026, 10, 17, 12),
+    );
+    final nonFoodResult = preserveCurrentProspectRowsForEmptySources(
+      incoming: incoming,
+      fallback: nonFood,
+      now: DateTime(2026, 10, 17, 12),
+    );
+
+    expect(expiredResult.records, isEmpty);
+    expect(nonFoodResult.records, isEmpty);
+    expect(
+      expiredResult.prospects
+          .firstWhere((entry) => entry.storeName == 'Lidl')
+          .sourceStatus,
+      'ok',
+    );
+    expect(
+      nonFoodResult.prospects
+          .firstWhere((entry) => entry.storeName == 'Lidl')
+          .sourceStatus,
+      'ok',
+    );
+  });
+
+  test('keeps exact branch boundaries during empty-source fallback', () {
+    final fallback = parseProspectFeed('''
+{
+  "generatedAt": "2026-10-16T04:15:00Z",
+  "sources": [{
+    "storeName": "Lidl",
+    "status": "ok",
+    "branchId": "lidl-zellingen"
+  }],
+  "offers": [{
+    "sourceId": "branch-old",
+    "productLabel": "Milch 1,5 %",
+    "storeName": "Lidl",
+    "offerPrice": 0.99,
+    "validFrom": "2026-10-15",
+    "validUntil": "2026-10-21",
+    "source": "retailerWebsite",
+    "branchId": "lidl-zellingen",
+    "proofRef": "https://example.test/branch-old"
+  }]
+}
+''');
+    final incoming = parseProspectFeed('''
+{
+  "generatedAt": "2026-10-17T04:15:00Z",
+  "sources": [{
+    "storeName": "Lidl",
+    "status": "ok",
+    "branchId": "lidl-wuerzburg",
+    "recordCount": 0
+  }],
+  "offers": []
+}
+''');
+
+    final guarded = preserveCurrentProspectRowsForEmptySources(
+      incoming: incoming,
+      fallback: fallback,
+      now: DateTime(2026, 10, 17, 12),
+    );
+
+    expect(guarded.records, isEmpty);
+    expect(
+      guarded.prospects
+          .firstWhere((entry) => entry.storeName == 'Lidl')
+          .sourceStatus,
+      'ok',
+    );
+  });
+
 }
 
