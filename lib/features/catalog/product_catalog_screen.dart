@@ -9,6 +9,7 @@ import '../../models/price_sync_result.dart';
 import '../../services/barcode_normalizer.dart';
 import 'price_coverage.dart';
 import 'product_catalog_search.dart';
+import 'product_hierarchy.dart';
 import 'market_price_editor_screen.dart';
 import 'product_editor_screen.dart';
 
