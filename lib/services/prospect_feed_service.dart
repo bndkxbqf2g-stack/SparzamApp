@@ -231,6 +231,132 @@ String? _optionalNonEmptyString(Object? value) {
   return trimmed.isEmpty ? null : trimmed;
 }
 
+class _ProspectBranchContext {
+  const _ProspectBranchContext({
+    this.branchId,
+    this.location,
+    this.address,
+  });
+
+  final String? branchId;
+  final String? location;
+  final String? address;
+}
+
+const _directProspectBranchKeys = <String>[
+  'branchId',
+  'branchID',
+  'branch_id',
+  'branchCode',
+  'branch_code',
+  'locationId',
+  'location_id',
+];
+
+const _nestedProspectBranchKeys = <String>[
+  ..._directProspectBranchKeys,
+  'storeId',
+  'store_id',
+  'id',
+  'code',
+];
+
+const _nestedProspectLocationKeys = <String>[
+  'location',
+  'city',
+  'town',
+  'ort',
+];
+
+const _nestedProspectAddressKeys = <String>[
+  'address',
+  'streetAddress',
+  'formattedAddress',
+  'fullAddress',
+];
+
+String? _prospectBranchScalar(Object? value) {
+  if (value is String) {
+    final trimmed = value.trim();
+    return trimmed.isEmpty ? null : trimmed;
+  }
+  if (value is num && value.isFinite) return value.toString();
+  return null;
+}
+
+String? _prospectBranchValue(
+  Map<String, dynamic> value,
+  Iterable<String> keys,
+) {
+  for (final key in keys) {
+    final candidate = _prospectBranchScalar(value[key]);
+    if (candidate != null) return candidate;
+  }
+  return null;
+}
+
+String? _prospectNestedBranchValue(
+  Map<String, dynamic> value,
+  Iterable<String> keys, {
+  required bool allowGenericId,
+}) {
+  String? readFrom(Iterable<String> containerKeys, bool includeGenericId) {
+    for (final containerKey in containerKeys) {
+      final nested = value[containerKey];
+      if (nested is! Map) continue;
+      final candidateKeys = includeGenericId
+          ? keys
+          : keys.where((key) => !const ['id', 'code'].contains(key));
+      for (final key in candidateKeys) {
+        final candidate = _prospectBranchScalar(nested[key]);
+        if (candidate != null) return candidate;
+      }
+    }
+    return null;
+  }
+
+  return readFrom(
+        const ['branch', 'branchInfo', 'storeBranch'],
+        allowGenericId,
+      ) ??
+      readFrom(
+        const ['storeLocation', 'locationInfo', 'store', 'location'],
+        false,
+      );
+}
+
+_ProspectBranchContext _prospectBranchContext(Map<String, dynamic> value) {
+  final branchId = _prospectBranchValue(value, _directProspectBranchKeys) ??
+      _prospectNestedBranchValue(
+        value,
+        _nestedProspectBranchKeys,
+        allowGenericId: true,
+      );
+  final location = _prospectBranchValue(
+        value,
+        const ['location', 'city', 'town', 'ort'],
+      ) ??
+      _prospectNestedBranchValue(
+        value,
+        _nestedProspectLocationKeys,
+        allowGenericId: false,
+      );
+  final address = _prospectBranchValue(
+        value,
+        const ['address', 'streetAddress', 'formattedAddress', 'fullAddress'],
+      ) ??
+      _prospectNestedBranchValue(
+        value,
+        _nestedProspectAddressKeys,
+        allowGenericId: false,
+      );
+  return _ProspectBranchContext(
+    branchId: branchId,
+    location: location,
+    address: address,
+  );
+}
+
 // Feed sections can spell the same retailer with umlauts or ae/oe/ue.
 // This key is metadata-only; displayed labels and branch IDs stay unchanged.
 String _prospectStoreMetadataKey(String value) {
@@ -453,9 +579,10 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
       availableStores.add(storeName);
     }
     final sourceUrl = _stringValue(source['url']);
-    final branchId = _optionalNonEmptyString(source['branchId']);
-    final location = _optionalNonEmptyString(source['location']);
-    final address = _optionalNonEmptyString(source['address']);
+    final sourceBranch = _prospectBranchContext(source);
+    final branchId = sourceBranch.branchId;
+    final location = sourceBranch.location;
+    final address = sourceBranch.address;
     final sourceAdapter =
         _optionalNonEmptyString(source['sourceAdapter']) ??
         _optionalNonEmptyString(source['adapter']) ??
@@ -566,9 +693,10 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
             _stringValue(raw['endDate']) ??
             '',
       );
-      final rawBranchId = _optionalNonEmptyString(raw['branchId']);
-      final rawLocation = _optionalNonEmptyString(raw['location']);
-      final rawAddress = _optionalNonEmptyString(raw['address']);
+      final rawBranch = _prospectBranchContext(raw);
+      final rawBranchId = rawBranch.branchId;
+      final rawLocation = rawBranch.location;
+      final rawAddress = rawBranch.address;
       final inheritsSourceContext = rawBranchId == null ||
           (sourceMetadata.branchId != null &&
               rawBranchId == sourceMetadata.branchId);
@@ -800,7 +928,8 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
       value['sourceAdapter'],
     );
     final brochurePage = _intValue(value['brochurePage']);
-    final explicitBranchId = _optionalNonEmptyString(value['branchId']);
+    final offerBranch = _prospectBranchContext(value);
+    final explicitBranchId = offerBranch.branchId;
     final isKaufdaWithoutBranch =
         explicitSourceAdapter?.trim().toLowerCase() == 'kaufda' &&
         explicitBranchId == null;
@@ -881,13 +1010,11 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
         capturedAt: capturedAt,
         branchId: recordBranchId,
         location: regionalOnly
-            ? _optionalNonEmptyString(value['location'])
-            : (_optionalNonEmptyString(value['location']) ??
-                sourceFallback?.location),
+            ? offerBranch.location
+            : (offerBranch.location ?? sourceFallback?.location),
         address: regionalOnly
-            ? _optionalNonEmptyString(value['address'])
-            : (_optionalNonEmptyString(value['address']) ??
-                sourceFallback?.address),
+            ? offerBranch.address
+            : (offerBranch.address ?? sourceFallback?.address),
       );
     final key = _prospectRecordKey(record);
     recordsByKey.putIfAbsent(key, () => record);

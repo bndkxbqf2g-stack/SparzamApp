@@ -1434,5 +1434,82 @@ void main() {
   });
 
 
+
+  test('normalizes nested branch context for sources, prospects and offers', () {
+    final result = parseProspectFeed(
+      jsonEncode({
+        'generatedAt': '2026-10-17T04:15:00Z',
+        'sources': [
+          {
+            'storeName': 'Lidl',
+            'status': 'ok',
+            'branch': {
+              'id': 'lidl-zellingen',
+              'city': 'Zellingen',
+              'address': 'Branch street 1',
+            },
+            'prospects': [
+              {
+                'title': 'Lidl Wochenprospekt',
+                'branch': {
+                  'id': 'lidl-zellingen',
+                  'city': 'Zellingen',
+                  'address': 'Branch street 1',
+                },
+                'offerStartDate': '2026-10-17',
+                'offerEndDate': '2026-10-22',
+                'pageSamples': [
+                  {
+                    'number': 1,
+                    'image': 'https://example.test/lidl-cover.jpg',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            'storeName': 'Lidl',
+            'status': 'ok',
+            'branch': {
+              'id': 'lidl-wuerzburg',
+              'city': 'Würzburg',
+              'address': 'Branch street 2',
+            },
+          },
+        ],
+        'offers': [
+          {
+            'sourceId': 'nested-branch-offer',
+            'productLabel': 'Butter 250 g',
+            'storeName': 'Lidl',
+            'offerPrice': 1.49,
+            'validFrom': '2026-10-17',
+            'validUntil': '2026-10-22',
+            'branch': {
+              'id': 'lidl-zellingen',
+              'city': 'Zellingen',
+              'address': 'Offer street 1',
+            },
+            'proofRef': 'https://example.test/lidl/butter',
+          },
+        ],
+      }),
+    );
+
+    final record = result.records.single;
+    expect(record.branchId, 'lidl-zellingen');
+    expect(record.location, 'Zellingen');
+    expect(record.address, 'Offer street 1');
+
+    final issue = result.prospects.firstWhere(
+      (entry) => entry.title == 'Lidl Wochenprospekt',
+    );
+    expect(issue.branchId, 'lidl-zellingen');
+    expect(issue.location, 'Zellingen');
+    expect(issue.address, 'Branch street 1');
+    expect(issue.pages.single.imageUrl, 'https://example.test/lidl-cover.jpg');
+  });
+
+
 }
 

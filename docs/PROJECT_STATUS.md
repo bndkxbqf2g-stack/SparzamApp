@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Verschachtelten Filialkontext normalisieren
+
+- Quellen, Prospektseiten und Angebote übernehmen bekannte verschachtelte Filialobjekte (`branch`, `branchInfo`, `storeBranch`) sowie explizite Standort-/Adressfelder.
+- Die Zuordnung bleibt branchgenau: generische IDs werden nur aus einem expliziten Filialobjekt gelesen; bei mehreren gleichnamigen Filialen wird kein Standort geraten.
+- Eine Fixture-Regression deckt Quelle, Prospektseite und Angebot mit demselben verschachtelten Filialnachweis ab.
+
 ## Update 17.10.2026 – Verschachtelte Bildaliasfelder toleriert
 
 - Der öffentliche Bildlistenparser löst zusätzlich `thumbnail`, `thumbnailUrl`, `cover`, `coverUrl`, `coverImage`, `originalUrl` und `largeUrl` in begrenzter Tiefe auf.
