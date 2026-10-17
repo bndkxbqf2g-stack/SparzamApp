@@ -7,6 +7,7 @@ import '../../models/route_plan.dart';
 import '../../models/road_route_matrix.dart';
 import '../../models/store.dart';
 import 'route_price_resolver.dart';
+import '../../services/store_identity.dart';
 import 'route_price_quality.dart';
 import 'route_travel_distance.dart';
 
@@ -79,7 +80,8 @@ class RouteOptimizer {
   var _bestSingleStorePlanComputed = false;
 
   bool isStoreEnabled(Store store) =>
-      enabledStoreNames.isEmpty || enabledStoreNames.contains(store.name);
+      enabledStoreNames.isEmpty ||
+      enabledStoreNames.any((name) => sameStoreLabel(name, store.name));
 
   List<Store> get availableStores =>
       storeCatalog.where(isStoreEnabled).toList(growable: false);
