@@ -191,3 +191,8 @@ Beim automatischen Reconcile wird ein alter regulärer Preis jetzt historisch,
 wenn derselbe exakte Produkt-/Filial-Slot mit einer neuen Beobachtungs-ID
 wiederkommt. Die aktuelle Route sieht dadurch nur den neuesten belegten Wert,
 während der Preisverlauf beide Beobachtungen nachvollziehbar behält.
+## Update 17.10.2026 – Route-Suche bleibt begrenzt
+
+Der RouteOptimizer akzeptiert `maxStores` nur innerhalb der projektweit
+unterstützten Marktanzahl. Damit bleiben auch fehlerhafte Altwerte sicher
+begrenzt und die Suche behält ihre deterministische Laufzeitobergrenze.
