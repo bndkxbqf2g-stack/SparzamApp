@@ -5,8 +5,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../design/sparzam_theme.dart';
 import '../../models/product.dart';
+import '../../services/quantity_normalizer.dart';
 import '../catalog/unit_price.dart';
 import '../offers/offer_import.dart';
+import '../offers/prospect_product_match.dart';
 
 /// A prospect offer keeps the public leaflet evidence visible at the point
 /// where the user adds the exact offer-backed item to the shopping list.
@@ -285,12 +287,24 @@ class _OfferSummary extends StatelessWidget {
     final discount = validOriginalPrice == null
         ? null
         : ((savings! / validOriginalPrice) * 100).round();
-    final unit = product?.unit.trim() ?? record.packageSize?.trim();
+    final catalogUnit = product?.unit.trim();
+    final unit = catalogUnit != null &&
+            catalogUnit.isNotEmpty &&
+            catalogUnit.toLowerCase() != 'packung'
+        ? catalogUnit
+        : record.packageSize?.trim();
+    final parsedPackage = prospectPackage(
+      record.packageSize ?? record.productLabel,
+    );
     final baseUnitPrice = product == null
         ? null
         : baseUnitPriceLabel(product!, record.offerPrice);
     final sourceBaseUnitPrice = baseUnitPrice == null
         ? record.priceByBaseUnit?.trim()
+        : null;
+    final inferredBaseUnitPrice = baseUnitPrice == null &&
+            (sourceBaseUnitPrice == null || sourceBaseUnitPrice.isEmpty)
+        ? _inferredBaseUnitPrice(record.offerPrice, parsedPackage)
         : null;
 
     return Column(
@@ -398,6 +412,11 @@ class _OfferSummary extends StatelessWidget {
           Text(
             'Grundpreis $sourceBaseUnitPrice',
             style: const TextStyle(fontSize: 12, color: Colors.black54),
+          )
+        else if (inferredBaseUnitPrice != null)
+          Text(
+            'Grundpreis $inferredBaseUnitPrice (aus Packungsangabe)',
+            style: const TextStyle(fontSize: 12, color: Colors.black54),
           ),
         if (record.validFrom != null)
           Text(
@@ -421,6 +440,18 @@ class _OfferSummary extends StatelessWidget {
       ],
     );
   }
+}
+
+String? _inferredBaseUnitPrice(
+  double offerPrice,
+  ProspectPackage? package,
+) {
+  if (package == null) return null;
+  final normalized = normalizeQuantity(package.amount, package.unit);
+  if (normalized == null || normalized.amount <= 0) return null;
+  final price = offerPrice / normalized.amount;
+  if (!price.isFinite || price <= 0) return null;
+  return '${price.toStringAsFixed(2)} €/${normalized.baseUnit}';
 }
 
 String _sourceAdapterLabel(String value) {
@@ -479,5 +510,4 @@ String _dateTime(DateTime value) {
   final local = value.toLocal();
   return '${_date(local)} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')} Uhr';
 }
-
 
