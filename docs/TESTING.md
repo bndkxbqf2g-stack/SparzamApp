@@ -1,3 +1,6 @@
+## Update 17.10.2026 – Seitenviewer trennt Listenübernahme und Preisablage
+
+prospects_screen_test.dart prüft jetzt den Fehlerpfad eines manuell geprüften Seitenartikels: Der Artikel wird trotz fehlgeschlagener Angebotsablage in die Einkaufsliste übernommen, während die Preisablage als Warnung sichtbar bleibt.
 ## Update 17.10.2026 – Reguläre Prospektpreis-Provenienz
 
 Die Parserregressionen prüfen jetzt das Herkunftsfeld des regulären Preises für
