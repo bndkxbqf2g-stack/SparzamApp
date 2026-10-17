@@ -170,6 +170,48 @@ void main() {
     expect(storeCoverage.single.receiptPrices, 1);
     expect(storeCoverage.single.incompatiblePrices, 1);
   });
+  test('Coverage excludes direct prospect offers from current market coverage', () {
+    const products = [
+      Product(
+        id: 'milk',
+        name: 'Milch',
+        unit: '1 l',
+        group: 'milch',
+      ),
+    ];
+    final offer = MarketPrice(
+      productId: 'milk',
+      storeName: 'Lidl',
+      price: 0.79,
+      updatedAt: now,
+      source: MarketPriceSource.prospect,
+      kind: PriceObservationKind.offer,
+      discounted: true,
+    );
+
+    final coverage = calculatePriceCoverage(
+      products,
+      [offer],
+      openPricesMaxAgeDays: 60,
+      now: now,
+    );
+    expect(coverage.manualPrices, 0);
+    expect(coverage.openPrices, 0);
+    expect(coverage.staleOpenPrices, 0);
+    expect(coverage.incompatiblePrices, 0);
+
+    final storeCoverage = calculateStorePriceCoverage(
+      [offer],
+      storeNames: const ['Lidl'],
+      products: products,
+    );
+    expect(storeCoverage, hasLength(1));
+    expect(storeCoverage.single.storeName, 'Lidl');
+    expect(storeCoverage.single.products, 0);
+    expect(storeCoverage.single.receiptPrices, 0);
+    expect(storeCoverage.single.openPrices, 0);
+  });
+
   test('older receipts are historical and excluded from current prices', () {
     final receipt = MarketPrice(
       productId: 'bread',

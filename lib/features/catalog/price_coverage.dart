@@ -52,8 +52,11 @@ List<StorePriceCoverage> calculateStorePriceCoverage(
     ...storeNames,
     ...prices.map((price) => price.storeName),
   };
+  // Direct prospect offers remain evidence only. They must not make a store
+  // look covered by a current comparable price.
+  final eligiblePrices = prices.where((price) => !price.isProspectOffer);
   final result = names.map((name) {
-    final matches = prices.where((price) {
+    final matches = eligiblePrices.where((price) {
       if (price.storeName != name) return false;
       final product = productById[price.productId];
       // Callers without a catalog retain the legacy coverage behavior. Once
@@ -64,7 +67,7 @@ List<StorePriceCoverage> calculateStorePriceCoverage(
     }).toList();
     final incompatiblePrices = products.isEmpty
         ? 0
-        : prices.where((price) {
+        : eligiblePrices.where((price) {
             final product = productById[price.productId];
             return price.storeName == name &&
                 product != null &&
@@ -99,7 +102,12 @@ PriceCoverage calculatePriceCoverage(
   final productById = <String, Product>{
     for (final product in products) product.id: product,
   };
-  final catalogPrices = prices.where((price) => productById.containsKey(price.productId));
+  // Offer amounts are kept in the offer/evidence surface and are not
+  // comparable current prices for catalog coverage.
+  final catalogPrices = prices.where(
+    (price) =>
+        !price.isProspectOffer && productById.containsKey(price.productId),
+  );
   final incompatiblePrices = catalogPrices.where((price) {
     final product = productById[price.productId]!;
     return !marketPriceMatchesProduct(price, product);
