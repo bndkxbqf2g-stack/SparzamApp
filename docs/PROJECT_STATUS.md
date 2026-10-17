@@ -1,3 +1,17 @@
+## Update 17.10.2026 – Offizielle Prospektfeeds bewahren explizite Produktmetadaten
+
+Die strukturierten ALDI-, EDEKA-, Kaufland-, Lidl-, PENNY- und REWE-Adapter
+übernehmen ausdrücklich benannte EAN/GTIN-/Barcodefelder, eindeutige
+Packungsgrößen und vom Händler gelieferte Grundpreise. EAN/GTIN-Codes werden
+normalisiert und per Prüfziffer validiert; SKU- oder sonstige interne
+Identifikatoren werden nicht als EAN verwendet. Mehrdeutige Mengen bleiben
+unbekannt. Wenn ein Feed nur eine eindeutige Packungsgröße liefert, darf der
+bestehende konservative Einheitenfallback daraus rechnen; der Aktionspreis
+bleibt weiterhin getrennt von der regulären Preisbasis. Die Python-Regressionen
+decken gültige und ungültige Codes, verschachtelte Mengen, variable
+Packungsbereiche und die ALDI-/EDEKA-Adapter ab. Die Änderung schreibt keine
+Live-Daten und ändert keine Filial-, Gültigkeits- oder Quellenregeln.
+
 ## Update 17.10.2026 – Coverbilder erhalten einen validierten Ersatz
 
 Die Prospekt-Coveransicht verwendet weiterhin bevorzugt das vom Feed gelieferte
