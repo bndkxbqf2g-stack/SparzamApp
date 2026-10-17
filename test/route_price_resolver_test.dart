@@ -581,4 +581,57 @@ void main() {
     expect(quote!.total, 1.25);
     expect(quote.usesOffer, isFalse);
   });
+
+  test('matches retailer label presentation variants for offers', () {
+    const branchStore = Store(
+      name: 'ALDI Süd',
+      branchId: 'aldi-zellingen',
+      location: 'Zellingen',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    final quote = RoutePriceResolver(
+      [
+        Offer(
+          id: 'aldi-label-variant',
+          productId: product.id,
+          storeName: 'ALDI SUED',
+          locationId: 'ALDI-ZELLINGEN',
+          originalPrice: 1.49,
+          offerPrice: 0.89,
+          validUntil: DateTime(2026, 10, 20),
+        ),
+      ],
+      now: DateTime(2026, 10, 17),
+    ).quote(branchStore, ListItem(product: product));
+
+    expect(quote?.usesOffer, isTrue);
+    expect(quote?.total, 0.89);
+  });
+
+  test('matches retailer label presentation variants for market prices', () {
+    const branchStore = Store(
+      name: 'Lidl',
+      branchId: 'lidl-zellingen',
+      location: 'Zellingen',
+      distanceKm: 1,
+      prices: <String, double>{},
+    );
+    final quote = RoutePriceResolver(
+      const [],
+      now: DateTime(2026, 10, 17),
+      marketPrices: [
+        MarketPrice(
+          productId: product.id,
+          storeName: 'LIDL',
+          sourceLocationId: 'LIDL-ZELLINGEN',
+          price: 0.79,
+          updatedAt: DateTime(2026, 10, 16),
+        ),
+      ],
+    ).quote(branchStore, ListItem(product: product));
+
+    expect(quote?.unitPrice, 0.79);
+    expect(quote?.observation?.storeName, 'LIDL');
+  });
 }
