@@ -1,3 +1,15 @@
+## D228 – Reguläre Prospektpreise benötigen eine nachvollziehbare Feldherkunft
+
+Die automatische Prospektpreis-Pipeline speichert nur einen regulären Betrag,
+wenn der Datensatz ein ausdrücklich benanntes Streich-/Normalpreisfeld
+ausweist. `regularPriceSource` wird deshalb von KaufDA-, Bring- und offiziellen
+Refresh-Adaptern mitgeführt, an der Dart-Feedgrenze gegen eine kleine Allow-list
+geprüft und in den Feed-Fingerprint einbezogen. Ein unbekannter Marker wird
+verworfen; ein fehlender Marker auf einer konkreten neuen Adapterzeile erzeugt
+keine automatische reguläre PriceObservation. Alte, direkt erzeugte Datensätze
+ohne Adapterkennung bleiben lesbar, damit die lokale Migration nicht blind
+Daten verliert. Aktionspreise bleiben getrennte Angebotsevidenz.
+
 ## D227 – Prospektkarten teilen nur eine beschleunigte Identitätssicht
 
 Die Prospektübersicht, die Suche und der Seitenviewer dürfen bei jedem
