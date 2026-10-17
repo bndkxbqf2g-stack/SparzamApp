@@ -1365,5 +1365,40 @@ void main() {
     expect(page.imageKind, ProspectImageKind.prospectPage);
   });
 
+
+  test('resolves the first validated product image from a public image list', () {
+    final result = parseProspectFeed(
+      jsonEncode({
+        'generatedAt': '2026-10-17T04:15:00Z',
+        'sources': [
+          {
+            'storeName': 'Lidl',
+            'status': 'ok',
+            'branchId': 'lidl-zellingen',
+          },
+        ],
+        'offers': [
+          {
+            'sourceId': 'image-list-product',
+            'productLabel': 'Butter 250 g',
+            'storeName': 'Lidl',
+            'offerPrice': 1.49,
+            'validFrom': '2026-10-17',
+            'validUntil': '2026-10-22',
+            'images': [
+              {'src': 'https://example.test/butter-list.jpg'},
+            ],
+            'proofRef': 'https://example.test/lidl/butter-list',
+          },
+        ],
+      }),
+    );
+
+    expect(result.records, hasLength(1));
+    expect(result.records.single.imageUrl, 'https://example.test/butter-list.jpg');
+    expect(result.records.single.imageKind, ProspectImageKind.product);
+  });
+
+
 }
 
