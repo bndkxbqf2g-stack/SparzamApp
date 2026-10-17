@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Angebotsbilder bleiben beim Scrollen begrenzt
+
+Angebotskarten und ihre Evidenz-Miniaturen dekodieren externe Bilder jetzt mit
+begrenzter Cache-Größe und niedriger Filterqualität. Beide Bildflächen sind
+eigene Repaint-Grenzen; die Preis-, Quellen-, Gültigkeits- und
+Einkaufslistenlogik bleibt unverändert. Dadurch wächst der Bildspeicher bei
+langen Angebotslisten nicht durch die Originalauflösung der Händlerbilder.
+
 ## Update 17.10.2026 – Separate Coverseiten im Viewer
 
 Wenn ein öffentlicher Prospektfeed eine Cover-URL separat von interioren Seiten ablegt und die Seitenliste erst bei Seite 2 beginnt, ergänzt der Viewer die validierte Coverseite als Seite 1. Vorhandene Seitenzahlen, Nachweise und die progressive Ladegrenze bleiben unverändert.
