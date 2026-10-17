@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Preisquellen verwenden eine gemeinsame Evidenzrangfolge
+
+- Planung, Routenauflösung und Bon-Familienpreise teilen jetzt denselben Vergleich für qualitätsbereinigten Betrag, Aktualität und Quellpriorität.
+- Unbestätigte Identitäten sowie unvollständige Packungsbasen bleiben vor der Auswahl als Datenlücke ausgeschlossen.
+- `test/market_price_selection_test.dart` prüft Reihenfolge, Filialslots und die Route-Projektion ohne Live-Daten.
+
 ## Update 17.10.2026 – Preislernkreis erkennt Händler-Schreibvarianten
 
 - Der automatische Normalpreis-Lernpfad verwendet jetzt denselben präsentationsbezogenen Händlervergleich wie die Prospektsuche.
