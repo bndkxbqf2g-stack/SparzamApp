@@ -1,3 +1,13 @@
+## D203 – Begrenzte Auflösung von Listenfeldern für Prospekt-Artikelbilder
+
+Öffentliche Feedvarianten dürfen ein Artikelbild als kurze Liste von URL- oder
+Objektwerten liefern. Der Parser traversiert deshalb nur die bekannten
+Bildcontainer (`images`, `imageUrls`, `productImages`, `media`, `assets`)
+mit fester Rekursionstiefe. Ein Wert wird ausschließlich als absolute HTTP(S)-URL
+übernommen und bleibt als Produktbild gekennzeichnet. Preis-, Gültigkeits- und
+Filialnachweise werden dadurch nicht erweitert oder ersetzt. Unbekannte
+Strukturen bleiben ohne Bild.
+
 ## D202 – OCR-Spaces nur innerhalb markierter Geldtokens normalisieren
 
 Prospekt-OCR darf Leerzeichen zwischen Ziffern und Dezimaltrennern tolerieren,
