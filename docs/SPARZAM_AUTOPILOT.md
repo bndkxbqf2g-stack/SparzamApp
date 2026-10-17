@@ -243,3 +243,11 @@ Bekannte Kategorie-Listen und verschachtelte Pfade werden nun begrenzt für
 Anzeige und Non-Food-Filter normalisiert. Die Kategorie erzeugt keine neue
 Produkt- oder Preisidentität; bestehende Gültigkeits-, Filial- und
 Provenienzregeln bleiben unverändert.
+
+## Update 17.10.2026 – Datensatz-Capture für Prospektpreise
+
+Die automatische Preisbeobachtung nutzt nun einen belegten
+`OfferImportRecord.capturedAt`, wenn der Feed keinen globalen Zeitpunkt liefert.
+Ohne einen der beiden Nachweise bleibt der Preis ausgeschlossen; die lokale
+Ladezeit wird nicht als Beobachtungszeit erfunden. Angebots- und reguläre Preise
+bleiben getrennt.
