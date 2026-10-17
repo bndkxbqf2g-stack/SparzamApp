@@ -69,6 +69,7 @@ class _ProspectDerivedData {
     required this.categories,
     required this.stores,
     required this.visibleProspects,
+    required this.coverage,
   });
 
   final List<OfferImportRecord> currentRecords;
@@ -76,6 +77,7 @@ class _ProspectDerivedData {
   final List<String> categories;
   final List<String> stores;
   final List<ProspectIssue> visibleProspects;
+  final List<ProspectCoverage> coverage;
 }
 
 class _ProspectsScreenState extends State<ProspectsScreen> {
@@ -99,6 +101,8 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
   List<OfferImportRecord>? _derivedRecordsInput;
   List<ProspectIssue>? _derivedProspectsInput;
   DateTime? _derivedDay;
+  List<Product>? _derivedCatalogInput;
+  Map<String, int>? _derivedPersistedCountsInput;
   _ProspectDerivedData? _derivedData;
   List<OfferImportRecord>? _searchIndexInput;
   Map<OfferImportRecord, String>? _searchIndexCache;
@@ -186,6 +190,11 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
     if (cached != null &&
         identical(_derivedRecordsInput, widget.records) &&
         identical(_derivedProspectsInput, widget.prospects) &&
+        identical(_derivedCatalogInput, widget.catalogProducts) &&
+        identical(
+          _derivedPersistedCountsInput,
+          widget.persistedRegularPriceCounts,
+        ) &&
         _derivedDay == day) {
       return cached;
     }
@@ -269,15 +278,25 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
         ),
       );
     }
+    final coverage = calculateProspectCoverage(
+      issues: visibleProspects,
+      records: currentRecords,
+      now: widget.now,
+      catalogProducts: widget.catalogProducts,
+      persistedRegularPriceCounts: widget.persistedRegularPriceCounts,
+    );
     final next = _ProspectDerivedData(
       currentRecords: currentRecords,
       regularPriceCount: regularPriceCount,
       categories: _prospectCategories(currentRecords),
       stores: _prospectStores(currentRecords, widget.prospects),
       visibleProspects: visibleProspects,
+      coverage: coverage,
     );
     _derivedRecordsInput = widget.records;
     _derivedProspectsInput = widget.prospects;
+    _derivedCatalogInput = widget.catalogProducts;
+    _derivedPersistedCountsInput = widget.persistedRegularPriceCounts;
     _derivedDay = day;
     _derivedData = next;
     return next;
@@ -581,14 +600,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
                 sliver: SliverToBoxAdapter(
                   child: ProspectCoverageCard(
-                    coverage: calculateProspectCoverage(
-                      issues: visibleProspects,
-                      records: currentRecords,
-                      now: widget.now,
-                      catalogProducts: widget.catalogProducts,
-                      persistedRegularPriceCounts:
-                          widget.persistedRegularPriceCounts,
-                    ),
+                    coverage: derived.coverage,
                     regularPricePersistenceStatus:
                         widget.regularPricePersistenceStatus,
                   ),

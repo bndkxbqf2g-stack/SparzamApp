@@ -79,6 +79,12 @@ class _OffersScreenState extends State<OffersScreen> {
   List<ProspectIssue>? _currentIssuesCache;
   List<ProspectIssue>? _currentStatusIssuesInput;
   DateTime? _currentStatusIssuesDay;
+  List<OfferImportRecord>? _coverageRecordsInput;
+  List<ProspectIssue>? _coverageIssuesInput;
+  List<Product>? _coverageCatalogInput;
+  Map<String, int>? _coveragePersistedCountsInput;
+  DateTime? _coverageDay;
+  List<ProspectCoverage>? _coverageCache;
 
   List<OfferImportRecord> _currentRecords() {
     final day = offerFilterDay(widget.now);
@@ -135,6 +141,39 @@ class _OffersScreenState extends State<OffersScreen> {
     _currentIssuesDay = day;
     _currentIssuesCache = current;
     return current;
+  }
+
+  List<ProspectCoverage> _coverageFor({
+    required List<OfferImportRecord> records,
+    required List<ProspectIssue> issues,
+  }) {
+    final day = offerFilterDay(widget.now);
+    final cached = _coverageCache;
+    if (cached != null &&
+        identical(_coverageRecordsInput, records) &&
+        identical(_coverageIssuesInput, issues) &&
+        identical(_coverageCatalogInput, widget.catalogProducts) &&
+        identical(
+          _coveragePersistedCountsInput,
+          widget.persistedRegularPriceCounts,
+        ) &&
+        _coverageDay == day) {
+      return cached;
+    }
+    final next = calculateProspectCoverage(
+      issues: issues,
+      records: records,
+      now: widget.now,
+      catalogProducts: widget.catalogProducts,
+      persistedRegularPriceCounts: widget.persistedRegularPriceCounts,
+    );
+    _coverageRecordsInput = records;
+    _coverageIssuesInput = issues;
+    _coverageCatalogInput = widget.catalogProducts;
+    _coveragePersistedCountsInput = widget.persistedRegularPriceCounts;
+    _coverageDay = day;
+    _coverageCache = next;
+    return next;
   }
 
   @override
@@ -247,13 +286,9 @@ class _OffersScreenState extends State<OffersScreen> {
           if (currentProspectIssues.isNotEmpty || currentRecords.isNotEmpty) ...[
             const SizedBox(height: 18),
             ProspectCoverageCard(
-              coverage: calculateProspectCoverage(
+              coverage: _coverageFor(
                 issues: currentProspectIssues,
                 records: currentRecords,
-                now: widget.now,
-                catalogProducts: widget.catalogProducts,
-                persistedRegularPriceCounts:
-                    widget.persistedRegularPriceCounts,
               ),
               regularPricePersistenceStatus:
                   widget.regularPricePersistenceStatus,
