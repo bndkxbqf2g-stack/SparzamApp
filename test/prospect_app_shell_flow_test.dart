@@ -577,6 +577,7 @@ void main() {
         productLabel: 'Jacobs Kaffee Crema 500 g',
         storeName: 'Netto',
         originalPrice: 7.99,
+        regularPriceSource: 'originalPrice',
         offerPrice: 4.99,
         validFrom: now.subtract(const Duration(days: 1)),
         validUntil: now.add(const Duration(days: 2)),
