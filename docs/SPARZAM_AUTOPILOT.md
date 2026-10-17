@@ -222,3 +222,10 @@ Original-URL-Aliase in den bereits begrenzten Bildobjekten. Die
 HTTP(S)-Validierung, Bildprovenienz sowie Preis-, Gültigkeits- und Filiallogik
 bleiben unverändert. Die Regression liegt in
 `test/prospect_feed_service_test.dart`.
+
+## Update 17.10.2026 – Verschachtelter Filialnachweis
+
+Der Prospektparser normalisiert bekannte verschachtelte Filialobjekte für
+Quellen, Prospekte und Angebote. Die Zuordnung bleibt konservativ und
+branchgenau; gleichnamige Märkte werden ohne eindeutige Branch-ID nicht
+zusammengeführt. Preis-, Gültigkeits- und Identitätsregeln bleiben unverändert.
