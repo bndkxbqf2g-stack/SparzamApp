@@ -446,7 +446,7 @@ def _items_from_payload(payload: Mapping[str, object]) -> list[dict]:
         "items",
     ):
         if not isinstance(current, Mapping):
-            return []
+            break
         current = current.get(key)
     if isinstance(current, list):
         parsed = [item for item in current if isinstance(item, dict)]
