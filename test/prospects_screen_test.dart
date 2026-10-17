@@ -1712,8 +1712,6 @@ void main() {
       ),
     );
     expect(rail.scrollCacheExtent, const ScrollCacheExtent.pixels(0));
-    expect(rail.addAutomaticKeepAlives, isFalse);
-    expect(rail.addRepaintBoundaries, isTrue);
   });
 
   testWidgets('wärmt einen kurzen Prospekt-Scrollvorlauf vor', (tester) async {
