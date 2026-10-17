@@ -1,5 +1,6 @@
 import '../../models/product.dart';
 import '../../services/barcode_normalizer.dart';
+import 'product_identity.dart';
 
 enum CandidateRelation {
   sameBarcode,
@@ -45,6 +46,7 @@ List<ProductCandidate> suggestProducts(
   final label = _normalize(query.label);
   final requestedBrand = _normalize(query.requiredBrand ?? '');
   final code = query.ean == null ? null : normalizeBarcode(query.ean!);
+  final queryIdentity = identifyProduct(query.label);
   final candidates = <ProductCandidate>[];
   for (final product in products) {
     final brand = _normalize(product.brand ?? '');
@@ -62,12 +64,31 @@ List<ProductCandidate> suggestProducts(
         normalizedName.split(' ').contains(label);
     final sameCategory = category.isNotEmpty &&
         _normalize(product.group) == category;
-    if (!sameCode && !sameLabel && !alias && !related && !sameCategory) {
+    final productIdentities = [
+      product.name,
+      ...product.aliases,
+    ].map(identifyProduct).where((identity) => identity.isKnown);
+    final sameIdentity = queryIdentity.isKnown &&
+        !queryIdentity.isGeneric &&
+        productIdentities.any(
+          (candidate) =>
+              compatibleProductIdentity(queryIdentity, candidate) ||
+              isOpenMilkChoice(queryIdentity, candidate),
+        );
+    if (!sameCode &&
+        !sameLabel &&
+        !alias &&
+        !related &&
+        !sameCategory &&
+        !sameIdentity) {
       continue;
     }
-    final relation = sameCode ? CandidateRelation.sameBarcode
-        : sameLabel ? CandidateRelation.matchingLabel
-        : alias || related ? CandidateRelation.relatedName
+    final relation = sameCode
+        ? CandidateRelation.sameBarcode
+        : sameLabel
+        ? CandidateRelation.matchingLabel
+        : alias || related || sameIdentity
+        ? CandidateRelation.relatedName
         : CandidateRelation.categoryOnly;
     candidates.add(ProductCandidate(
       product: product,
@@ -77,10 +98,13 @@ List<ProductCandidate> suggestProducts(
         if (sameLabel) 'Gleiche Bezeichnung',
         if (alias) 'Passender Alias',
         if (related && !sameLabel) 'Begriff im Produktnamen',
+        if (sameIdentity) 'Kompatible Produktidentität',
         if (sameCategory) 'Passende Kategorie',
       ],
       cautions: [
         if (!sameCode) 'Produktidentität nicht bestätigt',
+        if (sameIdentity && !sameCode)
+          'Variante und Packungsgröße bitte prüfen',
         if (relation == CandidateRelation.categoryOnly)
           'Nur Kategoriezugehörigkeit belegt',
         if (product.packageAmount == null && !sameCode)
