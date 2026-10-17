@@ -1237,7 +1237,17 @@ class _PriceMatrixRow extends StatelessWidget {
         dense: true,
         leading: const Icon(Icons.help_outline, color: Colors.amber),
         title: Text(entry.storeName),
-        subtitle: const Text('Kein aktueller, vergleichbarer Preisbeleg'),
+        subtitle: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Kein aktueller, vergleichbarer Preisbeleg'),
+            Text(
+              entry.gapLabel,
+              style: const TextStyle(fontSize: 12, color: Colors.black54),
+            ),
+          ],
+        ),
         trailing: const Text('fehlt'),
       );
     }
