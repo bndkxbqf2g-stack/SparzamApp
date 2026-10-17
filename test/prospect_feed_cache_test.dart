@@ -592,6 +592,55 @@ void main() {
     expect(issue.recordCount, 1);
   });
 
+  test('replaces a stale duplicate source row with the current fallback row', () {
+    final fallback = parseProspectFeed(
+      _feed(
+        validUntil: '2026-10-21',
+        generatedAt: '2026-10-16T04:15:00Z',
+      ),
+    );
+    final incoming = parseProspectFeed('''
+{
+  "generatedAt": "2026-10-17T04:15:00Z",
+  "sources": [{
+    "storeName": "Lidl",
+    "status": "ok",
+    "recordCount": 1
+  }],
+  "offers": [{
+    "sourceId": "cache-1",
+    "productLabel": "Milch 1,5 %",
+    "storeName": "Lidl",
+    "offerPrice": 1.19,
+    "validFrom": "2026-10-15",
+    "validUntil": "2026-10-16",
+    "source": "retailerWebsite",
+    "proofRef": "https://example.test/cache-1-stale"
+  }]
+}
+''');
+
+    final guarded = preserveCurrentProspectRowsForEmptySources(
+      incoming: incoming,
+      fallback: fallback,
+      now: DateTime(2026, 10, 17, 12),
+    );
+    final current = currentProspectRecords(
+      guarded.records,
+      now: DateTime(2026, 10, 17, 12),
+    );
+
+    expect(current, hasLength(1));
+    expect(current.single.sourceId, 'cache-1');
+    expect(current.single.offerPrice, 0.99);
+    expect(
+      guarded.prospects
+          .firstWhere((entry) => entry.storeName == 'Lidl')
+          .sourceStatus,
+      'current_fallback',
+    );
+  });
+
   test('does not revive expired or non-food rows from the fallback source', () {
     final incoming = parseProspectFeed('''
 {
