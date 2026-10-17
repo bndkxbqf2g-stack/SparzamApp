@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Prospekt-OCR erkennt beide Währungsrichtungen
+
+- Die lokale Prospekt-OCR akzeptiert jetzt sowohl `1,99 €`/`1,99 EUR` als auch `€ 1,99`/`EUR 1,99`.
+- Beträge ohne eindeutigen Währungsmarker bleiben bewusst ausgeschlossen; bestehende Gesamt- und Zahlungszeilen werden weiterhin verworfen.
+- Durchgestrichene beziehungsweise vorherige Beträge bleiben getrennt als `originalPrice` erhalten und werden nicht automatisch bestätigt.
+- Eine synthetische Regression deckt das Währung-vor-Betrag-Format ab.
 ## Update 17.10.2026 – Route-Suche begrenzt Marktanzahl
 
 - `RouteOptimizer` begrenzt `maxStores` jetzt auf die projektweit unterstützte Marktanzahl.
