@@ -1,3 +1,10 @@
+## Update 17.10.2026 – Open-Prices-Sync wird bei großen Katalogen sparsamer
+
+- [x] Kandidaten mit derselben Produkt-ID werden vor externen Abfragen dedupliziert.
+- [x] Abbruchsignale greifen bereits in der optionalen Barcode-/Produktentdeckung.
+- [x] Die bestehende Identitätsgrenze für entdeckte EANs und der lokale Cache bleiben unverändert.
+
+
 ## Update 17.10.2026 – Produktkatalog erhält dieselbe Identitätshierarchie
 
 - [x] Katalogtreffer werden über die zentrale Produktidentität auf kompatible Varianten begrenzt.
