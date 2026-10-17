@@ -629,6 +629,10 @@ void main() {
     );
     await tester.pump();
 
+    final scroll = tester.widget<CustomScrollView>(
+      find.byKey(const ValueKey('prospect-bring-scroll')),
+    );
+    expect(scroll.scrollCacheExtent, const ScrollCacheExtent.pixels(0));
     expect(find.byKey(const ValueKey('prospect-grid')), findsOneWidget);
     expect(find.text('Markt 0'), findsWidgets);
     expect(find.text('Markt 23'), findsNothing);
