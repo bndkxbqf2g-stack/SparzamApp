@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -35,6 +37,7 @@ class PricesHubScreen extends StatefulWidget {
     this.catalogProducts = const <Product>[],
     this.onOpenList,
     this.onOpenRoute,
+    this.onRefreshProspects,
     this.onResolvePriceGap,
     this.now,
   });
@@ -58,6 +61,7 @@ class PricesHubScreen extends StatefulWidget {
   final List<Product> catalogProducts;
   final VoidCallback? onOpenList;
   final VoidCallback? onOpenRoute;
+  final Future<void> Function()? onRefreshProspects;
   final Future<void> Function(PriceGapPriority gap)? onResolvePriceGap;
   final DateTime? now;
 
@@ -421,6 +425,7 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
             count: screen.prospectRegularPriceCount,
             countsByStore: screen.prospectRegularPriceCountsByStore,
             status: screen.prospectRegularPricePersistenceStatus,
+            onRefresh: screen.onRefreshProspects,
           ),
         ],
         if (currentProspectRegularPrices.isNotEmpty) ...[
@@ -467,6 +472,7 @@ class _ProspectRegularPriceDatabaseCard extends StatelessWidget {
     required this.count,
     required this.countsByStore,
     required this.status,
+    this.onRefresh,
   });
 
   final DateTime? generatedAt;
@@ -474,6 +480,7 @@ class _ProspectRegularPriceDatabaseCard extends StatelessWidget {
   final int count;
   final Map<String, int> countsByStore;
   final ProspectRegularPricePersistenceStatus status;
+  final Future<void> Function()? onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -532,6 +539,20 @@ class _ProspectRegularPriceDatabaseCard extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(feedLabel),
+            if (onRefresh != null) ...[
+              const SizedBox(height: 10),
+              OutlinedButton.icon(
+                key: const ValueKey('prospect-regular-price-refresh'),
+                onPressed: () => unawaited(onRefresh!()),
+                icon: const Icon(Icons.refresh),
+                label: const Text('Prospektpreise jetzt aktualisieren'),
+              ),
+              const Text(
+                'Der Abruf speichert danach nur ausdrücklich ausgewiesene '
+                'reguläre Normalpreise.',
+                style: TextStyle(fontSize: 12, color: Colors.black54),
+              ),
+            ],
             if (stores.isNotEmpty) ...[
               const SizedBox(height: 8),
               Text(
