@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Coverage bei Schreibvarianten
+
+prospect_branch_coverage_test.dart prüft, dass ein LIDL-Datensatz zu einem
+Lidl-Prospekt mit derselben Branch-ID und zum persistierten Branch-Zähler
+zusammengeführt wird. Die Coverage bleibt eine Karte mit einer Filiale und
+einem gespeicherten regulären Preis.
 ## Update 17.10.2026 – Covergruppierung bei Händler-Schreibvarianten
 
 offers_screen_test.dart prüft, dass LIDL und Lidl mit gleicher Filialebene nur
