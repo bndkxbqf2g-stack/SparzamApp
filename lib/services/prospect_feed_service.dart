@@ -1046,8 +1046,9 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
       storeName,
       explicitBranchId,
     );
-    final sourceAdapter =
-        explicitSourceAdapter ?? sourceFallback?.sourceAdapter;
+    final sourceAdapter = explicitSourceAdapter ??
+        sourceFallback?.sourceAdapter ??
+        sourceAdapterForOffer(storeName, explicitBranchId);
     final isKaufdaWithoutBranch =
         sourceAdapter?.trim().toLowerCase() == 'kaufda' &&
         explicitBranchId == null;
