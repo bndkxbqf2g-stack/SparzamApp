@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Verschachtelte Bildaliasfelder toleriert
+
+- Der öffentliche Bildlistenparser löst zusätzlich `thumbnail`, `thumbnailUrl`, `cover`, `coverUrl`, `coverImage`, `originalUrl` und `largeUrl` in begrenzter Tiefe auf.
+- Die bestehende HTTP(S)-Validierung und die Kennzeichnung als Produktbild bleiben unverändert.
+- Eine Fixture-Regression deckt `images[].thumbnailUrl` ab.
+
 ## Update 17.10.2026 – Prospekt-Artikelbilder aus Listenformaten
 
 - Der Feed-Parser akzeptiert öffentliche Artikelbilder jetzt auch in begrenzten Listenfeldern wie `images`, `imageUrls`, `productImages`, `media` und `assets`.
