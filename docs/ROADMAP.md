@@ -1,3 +1,13 @@
+## Update 17.10.2026 – Routekombinationen bleiben filialgenau
+
+- [x] Doppelte Einträge derselben exakten Filiale vor der Kombinationserzeugung
+  deduplizieren, damit Feed-Merges keine künstlichen Marktstopps erzeugen.
+- [x] Den ausgewählten Filialsatz unabhängig von der Eingabereihenfolge im
+  Fahrtrouten-Cache wiederverwenden.
+- [x] Einen positiven Mindestvorteil inklusive behandeln; bei fehlender
+  Schwelle bleibt der Gleichstand deterministisch beim kleineren Filialsatz.
+- [x] Regressionen für doppelte Filialen und den exakten Schwellenwert ergänzen.
+
 ## Update 17.10.2026 – Prospektkarten ohne wiederholte Katalogscans
 
 - [x] Angebotskarten und Suchtreffer an einen Katalogindex des aktuellen Snapshots binden.
