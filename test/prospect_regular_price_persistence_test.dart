@@ -81,6 +81,21 @@ void main() {
     expect(projected.single.kind, PriceObservationKind.regular);
   });
 
+  test('persists a regular price from a record capture time without feed time', () async {
+    final store = memoryStore();
+    final result = await persistCurrentProspectRegularPrices(
+      store: store,
+      records: [current],
+      catalogProducts: const [coffee],
+      now: now,
+    );
+
+    expect(result.learned, hasLength(1));
+    expect(result.learned.single.kind, PriceObservationKind.regular);
+    expect(result.learned.single.observedAt, now);
+    expect(result.stored.single.price, 7.99);
+  });
+
   test(
     'uses the exact generated prospect product for an unknown regular price',
     () async {
