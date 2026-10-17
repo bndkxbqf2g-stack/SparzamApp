@@ -123,6 +123,25 @@ class ProspectOfferProduct {
   final Offer offer;
 }
 
+/// Builds the transient offer snapshot for a validated current prospect
+/// feed. Existing automatic imports are discarded so a refreshed feed cannot
+/// retain expired rows, while manual/user-reviewed offers remain available.
+/// The result is intentionally in-memory; callers decide separately which
+/// regular price observations are persisted.
+List<Offer> mergeTransientProspectOffers({
+  required Iterable<Offer> existingOffers,
+  required Iterable<ProspectOfferProduct> importedOffers,
+}) {
+  final byId = <String, Offer>{
+    for (final offer in existingOffers)
+      if (!offer.id.startsWith('import|')) offer.id: offer,
+  };
+  for (final entry in importedOffers) {
+    byId[entry.offer.id] = entry.offer;
+  }
+  return byId.values.toList(growable: false);
+}
+
 /// Keeps source-backed offers attached to their exact prospect product,
 /// including labels that are not in the local catalog yet. The caller may
 /// still require an explicit product selection before adding the item to a
