@@ -745,7 +745,7 @@ class _PriceDataQualityCard extends StatelessWidget {
                   Chip(
                     avatar: const Icon(Icons.schedule_outlined, size: 16),
                     label: Text(
-                      '${quality.notRouteReady} veraltet oder unvollständig',
+                      '${quality.notRouteReady} nicht routenfähig',
                     ),
                   ),
                 if (quality.prospectOfferEvidence > 0)
