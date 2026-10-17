@@ -772,7 +772,19 @@ void main() {
       proofRef: 'https://example.test/kaufda/manual-page-no-branch',
       capturedAt: now,
     );
-    final noCapture = noProof.copyWith(sourceId: 'manual-page-no-capture');
+    final noCapture = OfferImportRecord(
+      sourceId: 'manual-page-no-capture',
+      productLabel: coffee.name,
+      storeName: 'Lidl',
+      originalPrice: 7.99,
+      regularPriceSource: 'manualPage',
+      offerPrice: 4.99,
+      validFrom: DateTime(2026, 10, 10),
+      validUntil: DateTime(2026, 10, 17),
+      source: 'leaflet',
+      proofRef: 'https://example.test/lidl/manual-page-no-capture',
+      branchId: 'lidl-branch-1',
+    );
 
     expect(
       reviewedProspectRegularPriceObservation(
@@ -792,7 +804,7 @@ void main() {
     );
     expect(
       reviewedProspectRegularPriceObservation(
-        record: noCapture.copyWith(capturedAt: null),
+        record: noCapture,
         catalogProducts: const [coffee],
         now: now,
       ),
