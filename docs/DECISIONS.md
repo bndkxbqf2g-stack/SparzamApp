@@ -1,3 +1,12 @@
+## D206 – Datumsbereiche nur aus bekannten Gültigkeitscontainern lesen
+
+Öffentliche Feeds dürfen Angebotszeiträume unter `validity`, `dateRange`,
+`period` oder einem gleichnamigen Container verschachteln. Der Parser liest
+daraus nur benannte Start-/Endaliasfelder und begrenzt die Rekursion. Ein
+ungültiger oder fehlender Endzeitpunkt bleibt ein ungültiger Datensatz; der
+Parser erzeugt keine Gültigkeit aus Erfassungszeitpunkt, Preis oder
+Prospekt-ID.
+
 ## D205 – Verschachtelte Filialobjekte nur mit explizitem Nachweis verwenden
 
 Öffentliche Feedvarianten dürfen den exakten Markt in einem bekannten
