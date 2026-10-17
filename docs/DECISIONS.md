@@ -1804,3 +1804,20 @@ Aliasfelder für Händler, Angebots-ID und Preisobjekte. Die Liste wird nicht
 rekursiv aus beliebigen JSON-Schlüsseln abgeleitet. Ein Alias beeinflusst nur
 die Quellnormalisierung; Branch-, Gültigkeits-, Lebensmittel- und
 Preisrollenregeln bleiben unverändert.
+
+## D183 – Aktuelle automatische Beobachtungen haben Vorrang bei Kompaktierung
+
+Die lokale Historiengrenze sortiert automatische Beobachtungen innerhalb ihres
+bestehenden exakten Schlüssels zuerst nach `isCurrent`, danach nach
+Erfassungszeit und ID. So bleibt die aktuelle route-taugliche Projektion
+erhalten, während historische Werte weiterhin append-only nachvollziehbar und
+begrenzt bleiben. Nutzerbelege und deren Schutzregeln ändern sich nicht.
+
+## D184 – Asset-Regressionsdaten verwenden ihren eigenen Referenztag
+
+Tests für versionierte Prospektassets dürfen kein fest verdrahtetes
+Kampagnenfenster voraussetzen, wenn der Refresh-Workflow die Datei
+automatisch aktualisiert. Die Kaufland-Coverprüfung verwendet deshalb
+`generatedAt` als Referenztag und prüft weiterhin Zeitraum, Seite 1 und
+exakte Filiale. Die Produktionsdaten- und Preisregeln ändern sich dadurch
+nicht.

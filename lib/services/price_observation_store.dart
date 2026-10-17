@@ -99,6 +99,10 @@ int _newestPriceObservationFirst(
   PriceObservation a,
   PriceObservation b,
 ) {
+  // The current projection is the routeable local basis. Keep it ahead of
+  // older history when the bounded automatic ledger is compacted; otherwise a
+  // long-lived store could silently lose the only current regular price.
+  if (a.isCurrent != b.isCurrent) return a.isCurrent ? -1 : 1;
   final byDate = b.observedAt.compareTo(a.observedAt);
   return byDate == 0 ? b.id.compareTo(a.id) : byDate;
 }

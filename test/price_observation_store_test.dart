@@ -127,6 +127,47 @@ void main() {
         containsAll(<String>['kaufda', 'retailer']));
   });
 
+  test('retains current automatic evidence ahead of newer history', () {
+    final observations = [
+      PriceObservation(
+        id: 'prospect|current',
+        productId: 'coffee-500',
+        storeName: 'Lidl',
+        price: 7.99,
+        observedAt: DateTime(2026, 10, 10),
+        source: PriceObservationSource.retailerWebsite,
+        sourceAdapter: 'kaufda',
+        kind: PriceObservationKind.regular,
+        isCurrent: true,
+      ),
+      for (var index = 0; index < 3; index++)
+        PriceObservation(
+          id: 'prospect|history-$index',
+          productId: 'coffee-500',
+          storeName: 'Lidl',
+          price: 8.49 + index / 100,
+          observedAt: DateTime(2026, 10, 11 + index),
+          source: PriceObservationSource.retailerWebsite,
+          sourceAdapter: 'kaufda',
+          kind: PriceObservationKind.regular,
+          isCurrent: false,
+        ),
+    ];
+
+    final compacted = compactPriceObservationsForStorage(
+      observations,
+      maxAutomaticEntries: 10,
+      maxEntriesPerKey: 3,
+    );
+
+    expect(compacted, hasLength(3));
+    expect(compacted.any((entry) => entry.id == 'prospect|current'), isTrue);
+    expect(
+      compacted.where((entry) => entry.isCurrent),
+      hasLength(1),
+    );
+  });
+
   test('a parallel read waits for a pending price observation write', () async {
     final store = PriceObservationStore();
     final reader = PriceObservationStore();

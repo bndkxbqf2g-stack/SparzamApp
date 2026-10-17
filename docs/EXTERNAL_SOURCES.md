@@ -294,3 +294,10 @@ Der optionale Adapter erkennt einige klar benannte öffentliche Händler-,
 Angebots-ID- und Preisfelder auch in verschachtelter Form. Diese Toleranz
 ändert weder die Abschaltbarkeit noch die Cache- und Branchgrenzen und ist
 keine Nutzung einer privaten Händlerfunktion.
+
+## Lokale Preisbeobachtungen – aktuelle Projektion
+
+Die Kompaktierung automatischer Belege bevorzugt innerhalb eines bestehenden
+exakten Schlüssels aktuelle Zeilen. Das ändert keine Quelle, keinen Nachweis
+und keine Preisrolle; es verhindert nur, dass der aktuelle reguläre Prospektwert
+durch reine Verlaufseinträge aus dem begrenzten Speicher fällt.

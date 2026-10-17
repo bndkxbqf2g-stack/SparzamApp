@@ -4049,3 +4049,17 @@ Der optionale Parser toleriert zusätzlich ausdrücklich benannte Händler- und
 Angebotsfelder, wenn KaufDA diese in einer öffentlichen Antwort umbenennt oder
 verschachtelt. Verschachtelte Preisobjekte werden nur aus bekannten
 Betragsfeldern gelesen; unbekannte JSON-Strukturen bleiben ausgeschlossen.
+
+## Update 17.10.2026 – Aktuelle automatische Preisbelege überleben Kompaktierung
+
+Die lokale Begrenzung automatischer Preisbeobachtungen priorisiert jetzt aktuelle
+Belege innerhalb ihres exakten Produkt-/Filial-/Quellschlüssels. Ältere
+historische Werte bleiben weiterhin begrenzt erhalten; ein aktueller regulärer
+Prospektpreis wird dadurch nicht still aus der lokalen Routenbasis verdrängt.
+
+## Update 17.10.2026 – Versionierte Kaufland-Datumsprüfung entkoppelt
+
+Die Fixture-Regression prüft für Kaufland jetzt die belegte Invariante
+„Prospektzeitraum enthält den im Asset gespeicherten `generatedAt`-Tag“,
+statt ein einzelnes historisches Kampagnenfenster zu erzwingen. Dadurch bleibt
+der Cover-/Filialnachweis bei automatischen Asset-Aktualisierungen stabil.
