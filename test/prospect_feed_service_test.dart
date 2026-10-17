@@ -1,3 +1,4 @@
+import 'package:sparzamapp/features/offers/offer_import.dart';
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/services/prospect_feed_service.dart';
