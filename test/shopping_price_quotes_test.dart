@@ -1117,4 +1117,42 @@ void main() {
 
     expect(matrix.single.quote?.kind, ShoppingQuoteKind.receipt);
   });
+
+
+  test('accepts retailer label variants from enabled stores', () {
+    final quote = shoppingQuotes(
+      item,
+      prices: [
+        MarketPrice(
+          productId: milk.id,
+          storeName: 'LIDL',
+          price: 0.79,
+          updatedAt: DateTime(2026, 9, 24),
+        ),
+      ],
+      offers: const [],
+      enabledStores: const ['Lidl'],
+      now: DateTime(2026, 9, 24),
+    ).single;
+
+    expect(quote.storeName, 'LIDL');
+    expect(quote.unitPrice, 0.79);
+  });
+
+  test('groups retailer label variants under the configured matrix market', () {
+    final matrix = shoppingPriceMatrixFromQuotes(
+      const [
+        ShoppingQuote(
+          storeName: 'ALDI SUED',
+          unitPrice: 0.99,
+          kind: ShoppingQuoteKind.ownPrice,
+        ),
+      ],
+      enabledStores: const ['ALDI Süd'],
+    );
+
+    expect(matrix, hasLength(1));
+    expect(matrix.single.storeName, 'ALDI Süd');
+    expect(matrix.single.quote?.storeName, 'ALDI SUED');
+  });
 }
