@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Evidenzsichere Produktauflösung
+
+- [x] Angebote- und Prospekte-Reiter teilen einen validierungsrelevanten Memo-Schlüssel.
+- [x] Exakte Filiale und EAN-/Packungs-/Preis-/Gültigkeits-/Nachweisfelder invalidieren einen alten Auflösungstreffer.
+- [x] Eine Regression schützt Branch- und Identitätstrennung; CI bestätigt Analyse, Volltests und Web-Build.
+
 ## Update 17.10.2026 – Branch-sichere Prospektkarten
 
 - [x] Suchkarten, Grid-Karten und die lokale Produktauflösung verwenden denselben Schlüssel aus Händler, Quell-ID und vorhandener Filial-/Ortsherkunft.
