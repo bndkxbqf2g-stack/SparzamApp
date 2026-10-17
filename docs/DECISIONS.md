@@ -1,3 +1,12 @@
+## D193 – Feed-Join normalisiert Händlerdarstellung ohne Datenidentität zu ändern
+
+Der Feedparser verbindet Source-Metadaten, Prospektseiten und Angebotszeilen über einen
+präsentationsbezogenen Händler-Schlüssel. Damit bleiben Coverbild, Ort und Fallback-Filiale
+erhalten, wenn eine Quelle `ALDI Süd` und eine andere `ALDI SUED` meldet. Der Schlüssel
+wird nur für diesen Join verwendet; gespeicherte Labels, Branch-IDs, Produktvarianten
+und Preisbelege bleiben unverändert. Ein fehlender exakter Branch-Nachweis kann dadurch
+nicht erfunden werden, weil die vorhandene Branch-Prüfung weiterhin separat greift.
+
 ## D192 – Reconcile und Lernfilter teilen denselben Händlervergleich
 
 Der Preis-Refresh besteht aus zwei fachlich gekoppelten Schritten: neue reguläre
