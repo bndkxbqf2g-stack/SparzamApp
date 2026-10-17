@@ -313,11 +313,11 @@ void main() {
     );
 
     expect(quality.total, 3);
-    expect(quality.current, 2);
-    expect(quality.notRouteReady, 1);
+    expect(quality.current, 1);
+    expect(quality.notRouteReady, 2);
     expect(quality.currentProspectRegular, 1);
     expect(quality.prospectOfferEvidence, 1);
-    expect(quality.currentByStore['Lidl'], 2);
+    expect(quality.currentByStore['Lidl'], 1);
   });
 
   test('excludes branchless prospect regular observations from current ledger', () {

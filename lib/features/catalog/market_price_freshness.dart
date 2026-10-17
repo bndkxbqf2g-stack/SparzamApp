@@ -76,6 +76,13 @@ PriceDataQuality calculatePriceDataQuality(
       prospectOfferEvidence++;
     }
 
+    // Offer evidence remains visible in the quality breakdown, but it is
+    // never a current route-ready price. Keep it out of both the current
+    // count and the per-store coverage just like usableMarketPrices().
+    if (price.isProspectOffer) {
+      continue;
+    }
+
     if (!price.isUsable(
       now: reference,
       openPricesMaxAgeDays: openPricesMaxAgeDays,
