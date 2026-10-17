@@ -4,6 +4,7 @@ import '../../services/price_observation_store.dart';
 import 'offer_import.dart';
 import 'prospect_price_learning.dart';
 import '../prospects/prospect_issue_identity.dart';
+import '../../services/prospect_feed_service.dart';
 
 /// Counts the regular observations from the current feed that are
 /// confirmed to exist in the local observation store.
@@ -89,6 +90,7 @@ Future<ProspectRegularPricePersistenceResult>
   DateTime? observedAt,
   DateTime? now,
   Iterable<String>? refreshedStores,
+  Iterable<ProspectRefreshScope>? refreshedStoreScopes,
 }) async {
   final learned = currentDatedProspectRegularPriceObservations(
     records: records,
@@ -96,6 +98,7 @@ Future<ProspectRegularPricePersistenceResult>
     observedAt: observedAt,
     now: now,
     refreshedStores: refreshedStores,
+    refreshedStoreScopes: refreshedStoreScopes,
   ).where((entry) => entry.locationId?.trim().isNotEmpty == true).toList(
         growable: false,
       );
@@ -103,6 +106,8 @@ Future<ProspectRegularPricePersistenceResult>
       ?.map(_normalizedProspectStoreKey)
       .where((value) => value.isNotEmpty)
       .toSet();
+  final refreshedScopes =
+      refreshedStoreScopes?.toList(growable: false);
   // Reconcile by the stable product/branch slot, but keep the incoming
   // observation ID as the marker for the current value. A changed price or
   // validity period receives a new ID; the former observation must then become
@@ -122,10 +127,16 @@ Future<ProspectRegularPricePersistenceResult>
     // A successful refresh reconciles the current projection while retaining
     // superseded rows for historical inspection.
     rewriteExisting: (existing) {
-      if (refreshedStoreKeys == null ||
+      final hasRefreshScope =
+          refreshedScopes != null && refreshedScopes.isNotEmpty ||
+          refreshedStoreKeys != null && refreshedStoreKeys.isNotEmpty;
+      if (!hasRefreshScope ||
           !_isCurrentProspectRegular(existing) ||
-          !refreshedStoreKeys
-              .contains(_normalizedProspectStoreKey(existing.storeName))) {
+          !_isObservationInRefreshScope(
+            existing,
+            refreshedScopes: refreshedScopes,
+            refreshedStoreKeys: refreshedStoreKeys,
+          )) {
         return existing;
       }
       final currentIds =
@@ -157,6 +168,25 @@ bool _isAutomaticProspectOfferObservation(PriceObservation observation) {
 // Reconcile with the same presentation-only store key used by the feed and UI.
 // The persisted display label and exact branch ID remain untouched.
 String _normalizedProspectStoreKey(String value) => prospectStoreMatchKey(value);
+
+bool _isObservationInRefreshScope(
+  PriceObservation observation, {
+  required Iterable<ProspectRefreshScope>? refreshedScopes,
+  required Set<String>? refreshedStoreKeys,
+}) {
+  if (refreshedScopes != null && refreshedScopes.isNotEmpty) {
+    return refreshedScopes.any(
+      (scope) => scope.matches(
+        candidateStoreName: observation.storeName,
+        candidateBranchId: observation.locationId,
+      ),
+    );
+  }
+  if (refreshedStoreKeys == null || refreshedStoreKeys.isEmpty) return false;
+  return refreshedStoreKeys.contains(
+    _normalizedProspectStoreKey(observation.storeName),
+  );
+}
 
 bool _isCurrentProspectRegular(PriceObservation entry) =>
     entry.isCurrent &&
