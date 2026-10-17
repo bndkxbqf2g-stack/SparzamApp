@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Kompakte Prospektbilder
+
+prospect_offer_card_test.dart prüft, dass die 88-Pixel-Listenbilder mit einer
+begrenzten 192×192-Auflösung dekodiert werden; die ausführliche Ansicht behält
+ihre größere Vorschaugröße.
+
 ## Update 17.10.2026 – Separate Coverseite vor Interiorseiten
 
 prospects_screen_test.dart prüft einen Feed mit eigener Cover-URL und einer Seitenliste ab Seite 2. Der Viewer zeigt die Coverseite als Seite 1 und behält die originale Seite 2.

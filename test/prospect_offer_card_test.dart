@@ -328,5 +328,33 @@ void main() {
     expect(find.text('Erfasst 30.09.2026 08:05 Uhr'), findsOneWidget);
     expect(find.text('Prospektseite 3'), findsOneWidget);
   });
+  testWidgets('begrenzt kompakte Prospektkacheln auf eine kleine Bildgröße', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ProspectOfferCard(
+            compact: true,
+            record: OfferImportRecord(
+              sourceId: 'compact-image-budget',
+              productLabel: 'Butter 250 g',
+              storeName: 'Lidl',
+              offerPrice: 1.49,
+              validUntil: DateTime(2026, 10, 18),
+              imageUrl: 'https://example.test/lidl/butter.jpg',
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final image = tester.widget<Image>(find.byType(Image));
+    expect(image.image, isA<ResizeImage>());
+    final resized = image.image as ResizeImage;
+    expect(resized.width, 192);
+    expect(resized.height, 192);
+  });
+
 }
 
