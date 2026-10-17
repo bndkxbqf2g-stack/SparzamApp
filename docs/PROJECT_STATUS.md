@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Preisabdeckung trennt Prospekt-Aktionspreise
+
+- Direkte Prospekt-Aktionspreise werden in Katalog- und Marktdeckung nicht mehr als vergleichbare aktuelle Preise gezählt.
+- Händler bleiben bei explizit angeforderten `storeNames` sichtbar, erhalten aber bei reiner Angebots-Evidenz null aktuelle Produkte.
+- Eine Regression schützt die Trennung zwischen Angebotsbeleg und routenfähiger Preisabdeckung.
+
 ## Update 17.10.2026 – Legacy-Prospekt-Aktionspreise bleiben aus dem Preisverlauf
 
 - `ShellPriceCoordinator` schreibt direkte Prospekt-Aktionspreise nicht mehr in den regulären `PriceHistoryStore`.
