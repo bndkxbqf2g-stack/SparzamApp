@@ -717,6 +717,25 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     return entries.length == 1 ? entries.single : null;
   }
 
+  String? sourceAdapterForOffer(String storeName, String? branchId) {
+    final exact = sourceMetadataForOffer(storeName, branchId);
+    final exactAdapter = exact?.sourceAdapter?.trim();
+    if (exactAdapter != null && exactAdapter.isNotEmpty) {
+      return exactAdapter;
+    }
+    final entries =
+        sourceEntriesByStore[_prospectStoreMetadataKey(storeName)];
+    if (entries == null || entries.isEmpty) return null;
+    // Adapter provenance can remain unambiguous even when branch provenance
+    // cannot. Preserve it so a branchless KaufDA record stays visibly regional
+    // instead of looking like an unscoped first-party offer.
+    final adapters = entries
+        .map((entry) => entry.sourceAdapter?.trim() ?? '')
+        .where((value) => value.isNotEmpty)
+        .toSet();
+    return adapters.length == 1 ? adapters.single : null;
+  }
+
 
   final recordsByKey = <String, OfferImportRecord>{};
   final prospects = <ProspectIssue>[];
