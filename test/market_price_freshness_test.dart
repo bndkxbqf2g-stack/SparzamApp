@@ -305,6 +305,13 @@ void main() {
     );
 
     expect(unknown.isProspectRegularBasis, isFalse);
+    expect(
+      unknown.freshnessLabel(
+        now: now,
+        openPricesMaxAgeDays: 60,
+      ),
+      'Prospektpreis ohne Preisrolle',
+    );
     // Freshness alone does not promote an unclassified prospect amount.
     expect(unknown.isUsable(now: now, openPricesMaxAgeDays: 60), isTrue);
     expect(
@@ -315,6 +322,14 @@ void main() {
       ),
       isEmpty,
     );
+    final quality = calculatePriceDataQuality(
+      [unknown],
+      openPricesMaxAgeDays: 60,
+      now: now,
+    );
+    expect(quality.current, 0);
+    expect(quality.notRouteReady, 1);
+    expect(quality.unclassifiedProspectEvidence, 1);
   });
 
 }
