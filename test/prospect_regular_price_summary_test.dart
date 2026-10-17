@@ -9,6 +9,7 @@ void main() {
     required String id,
     required String storeName,
     String? branchId,
+    bool isCurrent = true,
   }) =>
       PriceObservation(
         id: id,
@@ -21,6 +22,7 @@ void main() {
         sourceAdapter: 'kaufda',
         kind: PriceObservationKind.regular,
         proofRef: 'https://example.test/proof/$id',
+        isCurrent: isCurrent,
       );
 
   test('keeps persisted regular counts separate for same-name branches', () {
@@ -58,6 +60,28 @@ void main() {
       'Kaufland': 1,
     });
     expect(summary.countsByBranch.containsKey('Lidl'), isFalse);
+  });
+
+  test('does not count a superseded regular price as current coverage', () {
+    final learned = regular(
+      id: 'superseded',
+      storeName: 'Lidl',
+      branchId: 'lidl-zellingen',
+    );
+    final superseded = regular(
+      id: learned.id,
+      storeName: learned.storeName,
+      branchId: learned.locationId,
+      isCurrent: false,
+    );
+
+    final summary = summarizePersistedProspectRegularPrices(
+      learned: [learned],
+      stored: [superseded],
+    );
+
+    expect(summary.count, 0);
+    expect(summary.countsByBranch, isEmpty);
   });
 
   test('does not count a regular price that was not written', () {
