@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Reguläre Prospektpreis-Provenienz
+
+Die Parserregressionen prüfen jetzt das Herkunftsfeld des regulären Preises für
+KaufDA-, Bring- und offizielle Feedzeilen. Der Dart-Feedtest verwirft einen
+unbekannten `regularPriceSource`-Marker; der Preislern-Test stellt sicher,
+dass eine konkrete Adapterzeile ohne Herkunftsfeld keine automatische reguläre
+PriceObservation erzeugt. Alle Fälle bleiben synthetisch und offline.
+
 ## Update 17.10.2026 – Capture-Zeitpunkt bleibt offline erhalten
 
 Der Prospektcache speichert den HTTP-Zeitpunkt separat und bindet ihn an den
