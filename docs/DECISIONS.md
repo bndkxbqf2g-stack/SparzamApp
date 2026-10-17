@@ -1818,6 +1818,6 @@ begrenzt bleiben. Nutzerbelege und deren Schutzregeln ändern sich nicht.
 Tests für versionierte Prospektassets dürfen kein fest verdrahtetes
 Kampagnenfenster voraussetzen, wenn der Refresh-Workflow die Datei
 automatisch aktualisiert. Die Kaufland-Coverprüfung verwendet deshalb
-`generatedAt) als Referenztag und prüft weiterhin Zeitraum, Seite 1 und
+`generatedAt` als Referenztag und prüft weiterhin Zeitraum, Seite 1 und
 exakte Filiale. Die Produktionsdaten- und Preisregeln ändern sich dadurch
 nicht.
