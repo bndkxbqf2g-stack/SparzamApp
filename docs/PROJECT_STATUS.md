@@ -1,3 +1,10 @@
+## Update 17.10.2026 – Prospekt-Capture-Metadaten sind cachegebunden
+
+Der öffentliche Feedcache bewahrt einen expliziten Last-Modified-/Date-Zeitpunkt
+separat vom Feedtext und liest ihn nur bei exakt identischem Cacheinhalt. Damit
+bleibt die automatische Regularpreis-Persistenz nach einem Offline-Neustart
+möglich, ohne einen lokalen Ladezeitpunkt als Quelle zu erfinden.
+
 ## Update 17.10.2026 – Prospektpreise mit belastbarem Transportzeitpunkt
 
 Fehlt einem öffentlichen Prospektfeed das eigene generatedAt, übernimmt der
