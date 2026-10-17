@@ -26,6 +26,17 @@ Zu zahlen 5,98 €
     expect(candidates.last.productLabel, 'Frische Vollmilch 1 l');
   });
 
+  test('accepts currency before the amount and keeps the regular price', () {
+    final candidates = parseProspectPageOcrText(
+      'Butter € 1,99 statt € 2,49',
+    );
+
+    expect(candidates, hasLength(1));
+    expect(candidates.single.productLabel, 'Butter');
+    expect(candidates.single.offerPrice, 1.99);
+    expect(candidates.single.originalPrice, 2.49);
+  });
+
   test('keeps short OCR labels visible as low confidence suggestions', () {
     final candidates = parseProspectPageOcrText('''
 Ei 1,29 €

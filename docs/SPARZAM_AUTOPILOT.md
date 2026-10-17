@@ -196,3 +196,9 @@ während der Preisverlauf beide Beobachtungen nachvollziehbar behält.
 Der RouteOptimizer akzeptiert `maxStores` nur innerhalb der projektweit
 unterstützten Marktanzahl. Damit bleiben auch fehlerhafte Altwerte sicher
 begrenzt und die Suche behält ihre deterministische Laufzeitobergrenze.
+## Update 17.10.2026 – OCR-Währungsmarker bleiben konservativ
+
+Prospektseiten können Beträge mit dem Eurozeichen vor oder nach der Zahl
+liefern. Beide Formen werden erkannt, während bare Zahlen weiterhin keine
+Angebotsposition erzeugen. So bleibt die OCR schnell nutzbar, ohne
+Packungs- oder Seitenzahlen als Preise zu übernehmen.

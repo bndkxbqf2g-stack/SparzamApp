@@ -1,3 +1,11 @@
+## D201 – Prospekt-OCR akzeptiert Währungspositionen, nicht aber bare Zahlen
+
+Die lokale Prospekt-OCR erkennt einen Betrag nur zusammen mit einem Euro- oder
+EUR-Marker. Der Marker darf vor oder nach der Zahl stehen, damit deutsche
+OCR-Ausgaben wie `€ 1,99` und `1,99 €` gleich behandelt werden. Eine einzelne
+Zahl ohne Währungsmarker bleibt unklar, weil sie ebenso eine Packungsgröße
+oder Seitenzahl sein kann. Mehrere markierte Beträge werden weiterhin nach
+der bestehenden Regel als Angebot und expliziter Vorher-Preis bewertet.
 ## D200 – RouteOptimizer respektiert die unterstützte Marktgrenze
 
 `maxStores` wird am Eingang des `RouteOptimizer` auf den Bereich von 1 bis
