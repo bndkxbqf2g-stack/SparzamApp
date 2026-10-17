@@ -140,9 +140,17 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
       add(price.price);
       add(price.updatedAt.millisecondsSinceEpoch);
       add(price.sourceLocationId);
+      add(price.sourceLocationName);
+      add(price.sourceAdapter);
+      add(price.externalId);
+      add(price.discounted);
+      add(price.proofRef);
       add(price.quantity);
       add(price.unit);
       add(price.unitPrice);
+      add(price.identityConfidence);
+      add(price.kind.name);
+      add(price.evidenceConfidence?.name);
     }
     add(widget.offers.length);
     for (final offer in widget.offers) {
@@ -151,11 +159,29 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
       add(offer.storeName);
       add(offer.offerPrice);
       add(offer.originalPrice);
+      add(offer.originalPriceVerified);
+      add(offer.evidenceConfidence?.name);
       add(offer.validFrom?.millisecondsSinceEpoch);
       add(offer.validUntil.millisecondsSinceEpoch);
+      add(offer.source);
+      add(offer.sourceAdapter);
+      add(offer.capturedAt?.millisecondsSinceEpoch);
+      add(offer.proofRef);
+      add(offer.imageUrl);
       add(offer.locationId);
+      add(offer.region);
+      add(offer.address);
       add(offer.packageAmount);
       add(offer.packageUnit);
+      add(offer.unitPrice);
+      add(offer.buyQuantity);
+      add(offer.payQuantity);
+      add(offer.coupon);
+      add(offer.couponPercent);
+      add(offer.couponAmount);
+      add(offer.cashback);
+      add(offer.cashbackPercent);
+      add(offer.cashbackAmount);
     }
     add(widget.catalogProducts.length);
     for (final product in widget.catalogProducts) {
