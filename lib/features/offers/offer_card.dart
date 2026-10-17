@@ -66,12 +66,13 @@ class OfferCard extends StatelessWidget {
                     height: 150,
                     width: double.infinity,
                     fit: BoxFit.contain,
-                    // Offer lists can contain hundreds of remote images. Keep
-                    // decoded frames close to the displayed tile size so a
-                    // long scroll cannot retain full-resolution source files.
-                    cacheWidth: 720,
-                    cacheHeight: 360,
+                    // The card renders a 150 px high preview. Keep two
+                    // device-pixel rows sharp without retaining a full-size
+                    // source image for every item in a long offer list.
+                    cacheWidth: 480,
+                    cacheHeight: 300,
                     filterQuality: FilterQuality.low,
+                    webHtmlElementStrategy: WebHtmlElementStrategy.never,
                     errorBuilder: (context, error, stackTrace) =>
                         const SizedBox.shrink(),
                   ),

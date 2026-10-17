@@ -229,11 +229,11 @@ class _OfferImage extends StatelessWidget {
             // the Canvas renderer so scrolling does not create one HTML
             // platform view per external retailer image. The prospect viewer
             // is the intentional single-image HTML fallback boundary.
-            // Compact list tiles are rendered at 88 px. A 192 px decode
-            // keeps two device-pixel rows sharp without retaining a 360 px
-            // bitmap for every item in a long prospect list.
-            cacheWidth: expanded ? 720 : 192,
-            cacheHeight: expanded ? 520 : 192,
+            // Compact list tiles are rendered at 88 px and grid tiles at
+            // 130 px. Keep two device-pixel rows sharp without retaining a
+            // full-resolution bitmap for every item in a long prospect list.
+            cacheWidth: expanded ? 480 : 192,
+            cacheHeight: expanded ? 300 : 192,
             filterQuality: FilterQuality.low,
             webHtmlElementStrategy: WebHtmlElementStrategy.never,
             fit: BoxFit.cover,

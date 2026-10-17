@@ -57,8 +57,8 @@ void main() {
     final images = tester.widgetList<Image>(find.byType(Image)).toList();
     expect(images, hasLength(2));
     final resized = images.first.image as ResizeImage;
-    expect(resized.width, 720);
-    expect(resized.height, 360);
+    expect(resized.width, 480);
+    expect(resized.height, 300);
   });
 
 }
