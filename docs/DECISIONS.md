@@ -1804,3 +1804,11 @@ Aliasfelder für Händler, Angebots-ID und Preisobjekte. Die Liste wird nicht
 rekursiv aus beliebigen JSON-Schlüsseln abgeleitet. Ein Alias beeinflusst nur
 die Quellnormalisierung; Branch-, Gültigkeits-, Lebensmittel- und
 Preisrollenregeln bleiben unverändert.
+
+## D183 – Aktuelle automatische Beobachtungen haben Vorrang bei Kompaktierung
+
+Die lokale Historiengrenze sortiert automatische Beobachtungen innerhalb ihres
+bestehenden exakten Schlüssels zuerst nach `isCurrent`, danach nach
+Erfassungszeit und ID. So bleibt die aktuelle route-taugliche Projektion
+erhalten, während historische Werte weiterhin append-only nachvollziehbar und
+begrenzt bleiben. Nutzerbelege und deren Schutzregeln ändern sich nicht.
