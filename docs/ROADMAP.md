@@ -1297,3 +1297,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Weitere aktuelle Treffer werden über einen sichtbaren Nachladebutton
   ergänzt; Suchanzahl und Filial-/Quellenlogik bleiben vollständig.
 - [x] Die Begrenzung reduziert den ersten Layout- und Bildaufwand beim Scrollen.
+
+
+## Update 17.10.2026 – Prospekt-Coverraster paginiert
+- [x] Der Prospekte-Reiter baut zunächst höchstens 12 Coverkarten auf.
+- [x] Weitere aktuelle Prospekte bleiben über einen sichtbaren Nachladebutton
+  erreichbar; Favoriten und Seitenviewer werden nicht verändert.
+- [x] Der begrenzte erste Rasteraufbau reduziert Bilddekodierung und Scrollarbeit.

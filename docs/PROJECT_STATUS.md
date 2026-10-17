@@ -4077,3 +4077,12 @@ der Cover-/Filialnachweis bei automatischen Asset-Aktualisierungen stabil.
 - Trefferzahl, Filialzuordnung, Gültigkeitsfilter und Produktauflösung bleiben
   unverändert; nur die erste Sliver-Materialisierung wird begrenzt.
 - Eine Widgetregression prüft das Nachladen eines 80-Artikel-Feeds.
+
+
+## Update 17.10.2026 – Prospekt-Coverraster seitenweise
+- Der Prospekte-Reiter materialisiert zunächst höchstens 12 Coverkarten und
+  lädt weitere aktuelle Märkte erst über „Weitere Prospekte laden“ nach.
+- Favoritenrail, Coverbildquellen, Filialschlüssel und Viewer bleiben unverändert;
+  nur die erste Rasterstufe wird begrenzt.
+- Die bestehende große Rasterregression prüft das explizite Nachladen vor dem
+  Scrollen zum letzten Cover.

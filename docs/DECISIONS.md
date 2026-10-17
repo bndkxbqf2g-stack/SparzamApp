@@ -1833,3 +1833,11 @@ Artikelkarten beim ersten Aufbau als Sliverzeilen materialisieren. Die ersten
 40 Treffer werden angezeigt; weitere aktuelle Treffer werden auf ausdrückliche
 Nutzeraktion nachgeladen. Damit bleibt die Suche vollständig und deterministisch,
 während Bilddekodierung und Widgetaufbau beim schnellen Scrollen begrenzt werden.
+
+
+## D187 – Prospekt-Coverraster materialisiert Seitenstufen
+Das Coverraster zeigt zuerst zwölf aktuelle Märkte. Weitere Märkte werden auf
+Nutzeraktion nachgeladen. Der Favoritenrail und der vollständige Seitenviewer
+bleiben unabhängig davon verfügbar. So bleibt die regionale Auswahl vollständig,
+während der erste Rasteraufbau und die Bilddekodierung bei großen Feeds begrenzt
+werden.

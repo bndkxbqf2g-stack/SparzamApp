@@ -82,6 +82,8 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
   String? selectedCategory;
   String? selectedStore;
   var _filtersExpanded = true;
+  static const _prospectGridPageSize = 12;
+  var _visibleProspectCount = _prospectGridPageSize;
   final _bringScrollController = ScrollController();
   final _moreProspectsKey = GlobalKey();
   Set<String>? _favoriteStores;
@@ -265,6 +267,15 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
   }
 
   @override
+  void didUpdateWidget(covariant ProspectsScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.records, widget.records) ||
+        !identical(oldWidget.prospects, widget.prospects)) {
+      _visibleProspectCount = _prospectGridPageSize;
+    }
+  }
+
+  @override
   void dispose() {
     searchController.dispose();
     _bringScrollController.dispose();
@@ -297,6 +308,8 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
         : visibleProspects
               .where(_isFavorite)
               .toList(growable: false);
+    final visibleProspectCount =
+        _visibleProspectCount.clamp(0, visibleProspects.length).toInt();
 
     return Theme(
       data: _bringTheme(context),
@@ -365,8 +378,10 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                       child: _ProspectCategoryChips(
                         categories: categories,
                         selectedCategory: activeCategory,
-                        onSelected: (category) =>
-                            setState(() => selectedCategory = category),
+                        onSelected: (category) => setState(() {
+                          selectedCategory = category;
+                          _visibleProspectCount = _prospectGridPageSize;
+                        }),
                       ),
                     ),
                   ],
@@ -377,8 +392,10 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                       child: _ProspectStoreChips(
                         stores: stores,
                         selectedStore: activeStore,
-                        onSelected: (store) =>
-                            setState(() => selectedStore = store),
+                        onSelected: (store) => setState(() {
+                          selectedStore = store;
+                          _visibleProspectCount = _prospectGridPageSize;
+                        }),
                       ),
                     ),
                   ],
@@ -503,7 +520,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                         ),
                       );
                     },
-                    childCount: visibleProspects.length,
+                    childCount: visibleProspectCount,
                     addAutomaticKeepAlives: false,
                     addRepaintBoundaries: true,
                   ),
@@ -514,6 +531,31 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
                     mainAxisExtent: 300,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 14,
+                  ),
+                ),
+              ),
+            if (!hasSelection &&
+                visibleProspects.isNotEmpty &&
+                visibleProspectCount < visibleProspects.length)
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                sliver: SliverToBoxAdapter(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: OutlinedButton.icon(
+                      key: const ValueKey('prospect-grid-load-more'),
+                      onPressed: () => setState(() {
+                        _visibleProspectCount = (_visibleProspectCount +
+                                _prospectGridPageSize)
+                            .clamp(0, visibleProspects.length)
+                            .toInt();
+                      }),
+                      icon: const Icon(Icons.expand_more),
+                      label: Text(
+                        'Weitere Prospekte laden '
+                        '(${visibleProspects.length - visibleProspectCount})',
+                      ),
+                    ),
                   ),
                 ),
               ),
