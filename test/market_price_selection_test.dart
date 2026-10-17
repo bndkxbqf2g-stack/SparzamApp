@@ -39,8 +39,8 @@ void main() {
       now,
     );
 
-    expect(selected.single.source, MarketPriceSource.manual);
-    expect(selected.single.price, 1.00);
+    expect(selected.values.single.source, MarketPriceSource.manual);
+    expect(selected.values.single.price, 1.00);
   });
 
   test('newer evidence wins before source precedence', () {
@@ -58,7 +58,7 @@ void main() {
       now,
     );
 
-    expect(selected.single.source, MarketPriceSource.prospect);
+    expect(selected.values.single.source, MarketPriceSource.prospect);
   });
 
   test('equal amount and age use the documented source precedence', () {
@@ -72,7 +72,7 @@ void main() {
       [prospect, receipt, openPrices],
     ]) {
       final selected = preferredMarketPricesByKey(order, now);
-      expect(selected.single.source, MarketPriceSource.receipt);
+      expect(selected.values.single.source, MarketPriceSource.receipt);
     }
   });
 
