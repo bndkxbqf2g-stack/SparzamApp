@@ -7,6 +7,13 @@ verwendete Streich-/Normalpreisfeld. JSON-Roundtrips, automatische reguläre
 Prospektpreisablage und der Preise-Reiter bewahren diesen Marker; der
 Aktionspreis bleibt weiterhin eigene, nicht als Normalpreis verwendbare Evidenz.
 
+## Update 18.10.2026 – MarketPrice-Projektion bewahrt das reguläre Quellenfeld
+
+`regularPriceSource` wird auch in der abgeleiteten `MarketPrice`-Projektion
+und ihrem JSON-Roundtrip erhalten. Dadurch bleibt die Feldherkunft im Preise-
+Reiter, in Preis-Matrix und Routenprojektion bis zur aktuellen regulären
+Beobachtung nachvollziehbar; der technische `sourceAdapter` bleibt davon
+getrennt.
 ## Update 17.10.2026 – Offizielle Prospektfeeds bewahren explizite Produktmetadaten
 
 Die strukturierten ALDI-, EDEKA-, Kaufland-, Lidl-, PENNY- und REWE-Adapter
