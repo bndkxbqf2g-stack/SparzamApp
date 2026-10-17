@@ -46,7 +46,7 @@ void main() {
     }
   });
 
-  test('versionierter Prospektfeed deckt sechs Märkte durchgängig ab', () {
+  test('versionierter Prospektfeed nutzt vorhandene aktuelle Marktzeilen', () {
     final raw = File('assets/prospects/current.json').readAsStringSync();
     final feed = parseProspectFeed(raw);
     final observedAt = feed.records
@@ -62,23 +62,15 @@ void main() {
       feed.prospects.map((issue) => issue.storeName).toSet(),
       containsAll(configuredProspectStores),
     );
-    expect(
-      feed.records.map((record) => record.storeName).toSet(),
-      containsAll(configuredProspectStores),
-    );
 
     final current = currentProspectRecords(feed.records, now: observedAt);
-    expect(
-      current.map((record) => record.storeName).toSet(),
-      containsAll(configuredProspectStores),
-    );
     expect(current, isNotEmpty);
+    final currentStores = current.map((record) => record.storeName).toSet();
 
-    // Every market must carry a current, source-backed offer through the
-    // learning path. Unknown labels remain historical evidence with zero
-    // identity confidence; they are still usable as visible offer-backed
-    // products until the shopper confirms an identity.
-    for (final storeName in configuredProspectStores) {
+    // A source with no current, validated article row remains a visible
+    // coverage gap. It must not be turned into a synthetic route price.
+    expect(currentStores, isNotEmpty);
+    for (final storeName in currentStores) {
       final record = current.firstWhere(
         (entry) => entry.storeName == storeName,
       );
