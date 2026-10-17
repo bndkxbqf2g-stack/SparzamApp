@@ -2227,6 +2227,55 @@ ab Montag, 28.09.26
             )
 
 
+
+
+    def test_targeted_refresh_skips_optional_bring_fetch(self):
+        source = (
+            "netto_thuengersheim",
+            "Netto",
+            "https://example.test/netto",
+            "netto",
+        )
+
+        def parser(_body, _url):
+            return (
+                [
+                    refresh.record(
+                        "Netto",
+                        "Milch 1 l",
+                        1.29,
+                        refresh.date(2026, 10, 12),
+                        refresh.date(2026, 10, 17),
+                        "https://example.test/netto/offer",
+                        original=1.59,
+                    )
+                ],
+                [],
+            )
+
+        with tempfile.TemporaryDirectory() as directory:
+            output = pathlib.Path(directory) / "current.json"
+            with (
+                mock.patch.object(refresh, "OUTPUT", output),
+                mock.patch.object(refresh, "SOURCES", (source,)),
+                mock.patch.object(refresh, "PARSERS", {"netto": parser}),
+                mock.patch.object(
+                    refresh,
+                    "fetch_current_bring_prospects",
+                    side_effect=AssertionError("Bring must stay disabled"),
+                ),
+                mock.patch.object(refresh, "fetch", return_value="fixture"),
+                mock.patch.object(
+                    refresh,
+                    "local_today",
+                    return_value=refresh.date(2026, 10, 15),
+                ),
+            ):
+                refresh.main(["netto_thuengersheim"])
+
+            payload = refresh.json.loads(output.read_text(encoding="utf-8"))
+            self.assertEqual(payload["sources"][0]["storeName"], "Netto")
+            self.assertEqual(payload["offers"][0]["originalPrice"], 1.59)
 if __name__ == "__main__":
     unittest.main()
 

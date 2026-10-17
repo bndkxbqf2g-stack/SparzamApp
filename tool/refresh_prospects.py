@@ -3735,13 +3735,19 @@ def main(selected_source_ids=None):
     refreshed_source_count = 0
     captured_now = datetime.now(timezone.utc)
     captured_at = captured_now.isoformat().replace("+00:00", "Z")
-    try:
-        bring_by_store = fetch_current_bring_prospects()
-    except Exception:
-        # Bring is an optional evidence source. Official retailer adapters keep
-        # working if credentials expire or the external API is unavailable.
-        bring_by_store = {}
     selected = set(selected_source_ids or ())
+    # A targeted refresh must not query optional Bring data for every market.
+    # The full scheduled refresh keeps Bring enabled; callers can opt into it
+    # explicitly alongside selected retailer IDs with the bring selector.
+    bring_by_store = {}
+    if not selected or "bring" in selected:
+        try:
+            bring_by_store = fetch_current_bring_prospects()
+        except Exception:
+            # Bring is an optional evidence source. Official retailer adapters
+            # keep working if credentials expire or the external API is
+            # unavailable.
+            bring_by_store = {}
     source_list = (
         tuple(source for source in SOURCES if source[0] in selected)
         if selected
@@ -4037,9 +4043,9 @@ if __name__ == "__main__":
     arguments = sys.argv[1:]
     if any(argument in ("-h", "--help") for argument in arguments):
         print("Usage: python tool/refresh_prospects.py [source-id ...]")
-        print("Source IDs:", ", ".join(source[0] for source in SOURCES), "(kaufda is opt-in)")
+        print("Source IDs:", ", ".join(source[0] for source in SOURCES), "(bring/kaufda are opt-in for targeted runs)")
         sys.exit(0)
-    allowed = {source[0] for source in SOURCES} | {"kaufda"}
+    allowed = {source[0] for source in SOURCES} | {"bring", "kaufda"}
     unknown = sorted(set(arguments) - allowed)
     if unknown:
         print("Unbekannte Quelle:", ", ".join(unknown), file=sys.stderr)
