@@ -263,14 +263,13 @@ void main() {
     );
 
     expect(isLearnableProspectRegularPrice(record), isFalse);
-    expect(
-      prospectPriceObservations(
-        records: [record],
-        catalogProducts: const [],
-        observedAt: DateTime(2026, 10, 12, 8),
-      ),
-      isEmpty,
+    final observations = prospectPriceObservations(
+      records: [record],
+      catalogProducts: const [],
+      observedAt: DateTime(2026, 10, 12, 8),
     );
+    expect(observations, hasLength(1));
+    expect(observations.single.kind, PriceObservationKind.offer);
   });
 
   const coffee = Product(
