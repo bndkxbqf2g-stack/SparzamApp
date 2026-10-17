@@ -4056,3 +4056,10 @@ Die lokale Begrenzung automatischer Preisbeobachtungen priorisiert jetzt aktuell
 Belege innerhalb ihres exakten Produkt-/Filial-/Quellschlüssels. Ältere
 historische Werte bleiben weiterhin begrenzt erhalten; ein aktueller regulärer
 Prospektpreis wird dadurch nicht still aus der lokalen Routenbasis verdrängt.
+
+## Update 17.10.2026 – Versionierte Kaufland-Datumsprüfung entkoppelt
+
+Die Fixture-Regression prüft für Kaufland jetzt den belegten Invariante
+„Prospektzeitraum enthält den im Asset gespeicherten `generatedAt)-Tag“,
+statt ein einzelnes historisches Kampagnenfenster zu erzwingen. Dadurch bleibt
+der Cover-/Filialnachweis bei automatischen Asset-Aktualisierungen stabil.
