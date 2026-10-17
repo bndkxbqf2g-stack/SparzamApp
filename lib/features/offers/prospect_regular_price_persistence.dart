@@ -118,7 +118,7 @@ Future<ProspectRegularPricePersistenceResult>
         .putIfAbsent(_prospectRegularCurrentKey(entry), () => <String>{})
         .add(entry.id);
   }
-  final stored = await store.upsertById(
+  final stored = await store.upsertAutomaticRegularById(
     learned,
     // Remove legacy automatic offer observations even when a cache lacks a
     // feed timestamp. They are never routeable prices and must not remain in

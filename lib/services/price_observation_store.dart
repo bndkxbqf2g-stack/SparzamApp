@@ -63,6 +63,18 @@ bool _isAutomaticPriceObservation(PriceObservation observation) => switch (
       _ => false,
     };
 
+bool _isAutomaticProspectRegularObservation(
+  PriceObservation observation,
+) =>
+    observation.kind == PriceObservationKind.regular &&
+    !observation.discounted &&
+    switch (observation.source) {
+      PriceObservationSource.retailer ||
+      PriceObservationSource.retailerWebsite ||
+      PriceObservationSource.leaflet => true,
+      _ => false,
+    };
+
 /// A delayed cache refresh must not overwrite newer automatic evidence that
 /// arrived from a live feed. Manual and receipt corrections retain the
 /// existing identity-reinterpretation semantics.
@@ -158,6 +170,24 @@ class PriceObservationStore {
       final next = [...existing, ...additions];
       return _persist(next);
     });
+  }
+
+  /// Upserts only automatically learned regular prospect prices.
+  ///
+  /// This boundary deliberately rejects offer amounts and discounted markers
+  /// before they reach local automatic price history. Manual, receipt and
+  /// explicitly saved offer evidence continue to use [upsertById].
+  Future<List<PriceObservation>> upsertAutomaticRegularById(
+    Iterable<PriceObservation> incoming, {
+    bool Function(PriceObservation observation)? removeWhere,
+    PriceObservation Function(PriceObservation observation)? rewriteExisting,
+  }) {
+    final regular = incoming.where(_isAutomaticProspectRegularObservation);
+    return upsertById(
+      regular,
+      removeWhere: removeWhere,
+      rewriteExisting: rewriteExisting,
+    );
   }
 
   /// Replaces evidence with the same stable ID. This is reserved for

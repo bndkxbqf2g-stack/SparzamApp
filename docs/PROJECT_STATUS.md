@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Automatische Prospektpreise haben einen regulär-only Speicherpfad
+
+Der lokale Beobachtungsspeicher bietet für den automatischen Prospektimport
+jetzt einen eigenen Upsert. Er akzeptiert nur `regular`-Beobachtungen aus
+Prospektquellen ohne Rabattmarker; Angebotspreise bleiben unabhängig davon als
+separate Evidenz behandelbar. Die bestehende Reconciliation, Branchbindung,
+Gültigkeit und Herkunft bleiben unverändert.
+
 ## Update 17.10.2026 – Deduplizierte Prospektzeilen behalten Quellenmetadaten
 
 Identische Prospektzeilen werden weiterhin zu einer Preis-/Identitätszeile

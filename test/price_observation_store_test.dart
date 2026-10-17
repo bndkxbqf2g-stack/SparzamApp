@@ -251,6 +251,50 @@ void main() {
     expect(saved.single.observedAt, newer.observedAt);
   });
 
+  test('automatic regular upsert rejects prospect offer amounts', () async {
+    final store = PriceObservationStore();
+    final regular = PriceObservation(
+      id: 'prospect|regular-only',
+      productId: 'milk-15',
+      storeName: 'Lidl',
+      price: 1.99,
+      observedAt: DateTime(2026, 10, 17),
+      source: PriceObservationSource.retailerWebsite,
+      sourceAdapter: 'kaufda',
+      kind: PriceObservationKind.regular,
+    );
+    final offer = PriceObservation(
+      id: 'prospect|offer-only',
+      productId: 'milk-15',
+      storeName: 'Lidl',
+      price: 1.49,
+      observedAt: DateTime(2026, 10, 17),
+      source: PriceObservationSource.retailerWebsite,
+      sourceAdapter: 'kaufda',
+      kind: PriceObservationKind.offer,
+      discounted: true,
+    );
+    final discountedRegular = PriceObservation(
+      id: 'prospect|discounted-regular',
+      productId: 'milk-15',
+      storeName: 'Lidl',
+      price: 1.89,
+      observedAt: DateTime(2026, 10, 17),
+      source: PriceObservationSource.retailerWebsite,
+      sourceAdapter: 'kaufda',
+      kind: PriceObservationKind.regular,
+      discounted: true,
+    );
+
+    final saved = await store.upsertAutomaticRegularById(
+      [regular, offer, discountedRegular],
+    );
+
+    expect(saved.map((entry) => entry.id), ['prospect|regular-only']);
+    expect(saved.single.kind, PriceObservationKind.regular);
+    expect(saved.single.discounted, isFalse);
+  });
+
   test('market price evidence survives central observation projection', () {
     final price = MarketPrice(
       productId: 'milk-15',
