@@ -1,3 +1,11 @@
+## D200 – RouteOptimizer respektiert die unterstützte Marktgrenze
+
+`maxStores` wird am Eingang des `RouteOptimizer` auf den Bereich von 1 bis
+`maximumSupportedRouteStores` begrenzt. Die Projektkonfiguration und die UI
+verwenden dieselbe Obergrenze. So bleibt die Kombinationserzeugung deterministisch
+und begrenzt, auch wenn ein Altformat oder ein externer Aufrufer einen größeren
+Wert liefert. Die Marktanzahl selbst, Preisabdeckung und Kostenregeln werden
+durch diese Schutzgrenze nicht verändert.
 ## D199 – Aktuelle Prospektpreise werden über Beobachtungs-IDs abgegrenzt
 
 Der Reconcile-Schlüssel beschreibt den fachlichen Produkt-/Filial-Slot,
