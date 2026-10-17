@@ -573,7 +573,7 @@ class KaufdaProspectTest(unittest.TestCase):
                 kaufda._load_cached_body(
                     cache_path,
                     oldest,
-                    now=datetime(2026, 10, 13, tzinfo=timezone.utc),
+                    now=datetime(2026, 10, 14, 8, tzinfo=timezone.utc),
                     max_age_hours=48,
                 )
             )
@@ -581,7 +581,7 @@ class KaufdaProspectTest(unittest.TestCase):
                 kaufda._load_cached_body(
                     cache_path,
                     newest,
-                    now=datetime(2026, 10, 13, tzinfo=timezone.utc),
+                    now=datetime(2026, 10, 14, 8, tzinfo=timezone.utc),
                     max_age_hours=48,
                 )
             )
