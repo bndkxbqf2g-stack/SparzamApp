@@ -1,3 +1,7 @@
+## Update 17.10.2026 – Einkaufsliste aktualisiert bekannte Produktdaten
+
+Nach dem Laden einer lokalen Liste und nach einem validierten Prospekt-Refresh werden Listeneinträge mit derselben exakten Produkt-ID gegen den aktuellen Katalogstand abgeglichen. Neue Marke, Aliase, Packungsgröße und Bild werden übernommen; Menge, Notiz und Abhakstatus bleiben erhalten. Unbekannte IDs werden nicht geraten.
+
 ## Update 17.10.2026 – Legacy-Einkaufslisten bewahren Produktmetadaten
 
 Der Legacy-Schlüssel `shopping_list` speichert jetzt alle bereits vorhandenen Produktfelder einschließlich Aliase, Marke, EAN, Packungsgröße, Favoriten-/Stammartikelstatus und Bild. Alte Einträge ohne die neuen optionalen Felder bleiben lesbar; Preis-, Angebots- und Routenlogik wurden nicht verändert.
