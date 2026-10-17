@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Strukturierte Kategoriepfade
+
+- [x] Listenförmige und verschachtelte Kategoriepfade aus bekannten Feedfeldern normalisieren.
+- [x] Kategoriepfade begrenzen, deduplizieren und für den bestehenden Non-Food-Filter verwenden.
+- [x] Lebensmittel- und Non-Food-Regression mit anonymisiertem Fixture ergänzen.
+
 ## Update 17.10.2026 – Verschachtelte Angebotsgültigkeit
 
 - [x] Bekannte verschachtelte Gültigkeitscontainer für Prospektseiten und Angebote normalisieren.
