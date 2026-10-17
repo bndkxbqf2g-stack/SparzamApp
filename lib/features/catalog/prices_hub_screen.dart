@@ -165,7 +165,7 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
       add(offer.validUntil.millisecondsSinceEpoch);
       add(offer.source);
       add(offer.sourceAdapter);
-      add(offer.regularPriceSource,
+      add(offer.regularPriceSource);
       add(offer.capturedAt?.millisecondsSinceEpoch);
       add(offer.proofRef);
       add(offer.imageUrl);
