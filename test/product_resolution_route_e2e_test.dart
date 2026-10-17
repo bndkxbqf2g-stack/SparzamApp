@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:sparzamapp/features/route/route_optimizer.dart';
 import 'package:sparzamapp/features/shopping_list/planning_market_prices.dart';
 import 'package:sparzamapp/features/shopping_list/receipt_family_market_prices.dart';
@@ -149,6 +151,9 @@ void main() {
         proofRef: 'https://www.kaufda.de/prospekt/route-prospect-coffee',
         capturedAt: now,
       );
+      SharedPreferencesAsyncPlatform.instance =
+          InMemorySharedPreferencesAsync.empty();
+      addTearDown(() => SharedPreferencesAsyncPlatform.instance = null);
       var raw = <String>[];
       final store = PriceObservationStore(
         readRaw: () async => List<String>.of(raw),
