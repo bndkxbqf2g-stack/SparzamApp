@@ -1758,3 +1758,12 @@ in `PriceObservationStore` geschrieben werden. Der Shell-Status wechselt daher
 vor dem queued write auf `pending` und setzt den Zähler zurück. Erst der
 erfolgreiche Abschluss bestätigt die aktuelle Anzahl; ein Fehler bleibt
 `failed` und löst keinen Fingerprint-Abschluss aus.
+
+## D178 – Prospekt-Filialvergleich über gemeinsame Branch-Identität
+
+Prospektquellen liefern dieselbe Filiale gelegentlich mit abweichender
+Groß-/Kleinschreibung oder umgebendem Leerraum. Der Parser verwendet deshalb
+\`canonicalBranchId\` ausschließlich für Vergleiche zwischen Quellenmetadaten,
+Prospektseiten und Angeboten. Der rohe Wert bleibt im importierten Datensatz
+erhalten. Punctuation, Aliasbildung und fehlende IDs werden nicht erraten; bei
+mehrdeutigen oder nicht gleichen IDs bleibt die Zuordnung unbekannt.
