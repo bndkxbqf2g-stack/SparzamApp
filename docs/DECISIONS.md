@@ -1,3 +1,15 @@
+## D229 – Explizite Produktmetadaten bleiben quellgebunden
+
+Die Prospektadapter dürfen EAN/GTIN/Barcode, Packungsgröße und Grundpreis nur
+aus ausdrücklich benannten Händlerfeldern übernehmen. Codes werden auf
+unterstützte Längen begrenzt und per Prüfziffer geprüft; SKU- und unbekannte
+Identifikatoren bleiben außerhalb der Produktidentität. Eine eindeutige
+Quell-Packungsgröße darf den vorhandenen konservativen Grundpreisfallback
+stützen, während ein expliziter Quell-Grundpreis Vorrang erhält. Variable
+Mengenbereiche und fehlende Einheiten bleiben unbekannt. Dadurch verbessert
+sich die exakte Produkt- und Grundpreisauflösung ohne Preis-, Filial- oder
+Gültigkeitsdaten zu erfinden.
+
 ## D228 – Reguläre Prospektpreise benötigen eine nachvollziehbare Feldherkunft
 
 Die automatische Prospektpreis-Pipeline speichert nur einen regulären Betrag,
