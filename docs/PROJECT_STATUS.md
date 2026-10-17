@@ -1,3 +1,12 @@
+## Update 17.10.2026 – Seitenviewer mit begrenztem Bild-Fallback
+
+Der Prospektseitenviewer lässt nun jede validierte Seite den HTML-Fallback
+probieren, wenn der Canvas-Decoder an einem öffentlichen CDN/CORS-Fehler
+scheitert. Ein eigenes Budget mit zwei gleichzeitig aktiven Plattform-Views
+wird beim ersten erfolgreichen Frame oder beim Recycling der Seite freigegeben.
+Damit bleiben auch spätere Seiten sichtbar, ohne den langen Scrollpfad mit
+unbegrenzten Browser-Views zu belasten.
+
 ## Update 17.10.2026 – Preise-Reiter aktualisiert neue Preisbelege
 
 Der Preise-Reiter trennt jetzt den Eingangssnapshot vom berechneten

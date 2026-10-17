@@ -603,6 +603,10 @@ Status: weit fortgeschritten, weitere reale Bons dienen als Praxistest.
   `generatedAt`-Zeitpunkt erhalten, damit Fallback-Daten nicht künstlich frisch
   erscheinen.
 - [x] Artikelbilder in großen Prospektlisten im Web strikt im Canvas rendern;
+- [x] Der Seitenviewer verwendet für Canvas/CORS-Fehler ein eigenes,
+  freigebendes HTML-Fallback-Budget; jede validierte Seite kann damit beim
+  Sichtbarwerden wiederhergestellt werden, ohne unbeschränkte Plattform-Views
+  oder zusätzliche Scroll-Last.
   die wenigen Cover- und Viewerbilder dürfen bei einem Bild-/CORS-Problem auf
   HTML-Plattform-Views zurückfallen. Dadurch bleibt der große Scrollpfad ohne
   unnötige Plattform-Views.
