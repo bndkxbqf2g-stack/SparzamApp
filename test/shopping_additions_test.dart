@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparzamapp/features/shopping_list/shopping_additions.dart';
+import 'package:sparzamapp/features/shopping_list/shopping_list_updates.dart';
 import 'package:sparzamapp/models/product.dart';
 import 'package:sparzamapp/models/recent_purchase.dart';
 import 'package:sparzamapp/models/replenishment_suggestion.dart';
@@ -37,3 +38,43 @@ void main() {
     expect(productsForRecentPurchase(purchase), hasLength(1));
   });
 }
+
+
+  test('aktualisiert bekannte Listeneinträge ohne Nutzerzustand zu verlieren', () {
+    const oldProduct = Product(
+      id: 'milk',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'milch',
+      packageAmount: 1,
+      packageUnit: 'l',
+    );
+    const refreshedProduct = Product(
+      id: 'milk',
+      name: 'Bio Milch',
+      unit: '1 l',
+      group: 'milch',
+      aliases: ['Kuhmilch'],
+      brand: 'Hofmilch',
+      packageAmount: 1,
+      packageUnit: 'l',
+      imageUrl: 'https://cdn.example.test/milk.jpg',
+    );
+    final item = ListItem(
+      product: oldProduct,
+      quantity: 3,
+      note: 'kalt',
+      checked: true,
+    );
+
+    final refreshed = refreshShoppingListProducts(
+      items: [item],
+      catalogProducts: [refreshedProduct],
+    );
+
+    expect(refreshed, hasLength(1));
+    expect(refreshed.single.product, same(refreshedProduct));
+    expect(refreshed.single.quantity, 3);
+    expect(refreshed.single.note, 'kalt');
+    expect(refreshed.single.checked, isTrue);
+  });
