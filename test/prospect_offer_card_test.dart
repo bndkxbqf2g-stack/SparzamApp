@@ -383,5 +383,55 @@ void main() {
     expect(resized.height, 300);
   });
 
-}
+  testWidgets(
+    'derives a base price from an unambiguous prospect package label',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ProspectOfferCard(
+              record: OfferImportRecord(
+                sourceId: 'label-package-base-price',
+                productLabel: 'Butter 250 g',
+                storeName: 'Lidl',
+                offerPrice: 1.99,
+                validUntil: DateTime(2026, 10, 18),
+                proofRef: 'https://example.test/lidl/butter-250',
+              ),
+            ),
+          ),
+        ),
+      );
 
+      expect(
+        find.text('Grundpreis 7.96 €/kg (aus Packungsangabe)'),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets(
+    'does not derive a base price from an ambiguous package range',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ProspectOfferCard(
+              record: OfferImportRecord(
+                sourceId: 'ambiguous-package-base-price',
+                productLabel: 'Joghurt 113/140/150 g',
+                storeName: 'Lidl',
+                offerPrice: 0.33,
+                validUntil: DateTime(2026, 10, 18),
+                proofRef: 'https://example.test/lidl/yoghurt',
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.textContaining('Grundpreis'), findsNothing);
+    },
+  );
+
+}
