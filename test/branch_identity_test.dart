@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sparzamapp/features/prospects/prospect_issue_identity.dart';
 import 'package:sparzamapp/services/branch_identity.dart';
 
 void main() {
@@ -13,6 +14,22 @@ void main() {
     expect(
       canonicalBranchId('lidl-zellingen'),
       isNot(canonicalBranchId('lidl_zellingen')),
+    );
+  });
+
+  test('matches retailer presentation without merging branches', () {
+    expect(prospectStoreMatchKey(' LIDL '), prospectStoreMatchKey('Lidl'));
+    expect(
+      prospectStoreMatchKey('ALDI Süd'),
+      prospectStoreMatchKey('ALDI SUED'),
+    );
+    expect(
+      prospectBranchMatchKey(storeName: 'LIDL', branchId: 'B384'),
+      prospectBranchMatchKey(storeName: 'Lidl', branchId: 'b384'),
+    );
+    expect(
+      prospectBranchMatchKey(storeName: 'Lidl', branchId: 'b384'),
+      isNot(prospectBranchMatchKey(storeName: 'Lidl', branchId: 'lidl-wuerzburg')),
     );
   });
 
