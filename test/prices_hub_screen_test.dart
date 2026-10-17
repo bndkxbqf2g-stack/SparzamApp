@@ -1015,7 +1015,7 @@ void main() {
             onOpenCatalog: () {},
             onOpenSettings: () {},
             summary: 'Preisqualität',
-            shoppingList: const [ListItem(product: product)],
+            shoppingList: [ListItem(product: product)],
             marketPrices: [
               MarketPrice(
                 productId: product.id,
