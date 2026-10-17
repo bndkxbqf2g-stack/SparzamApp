@@ -170,6 +170,13 @@ void main() {
         'price': 1.99,
         'date': '2026-09-22T00:00:00.000',
       }),
+      jsonEncode({
+        'productId': 'unknown-source',
+        'storeName': 'Lidl',
+        'price': 1.49,
+        'date': '2026-09-22T00:00:00.000',
+        'source': 'futureSource',
+      }),
     ]);
 
     final loaded = await PriceHistoryStore().load();

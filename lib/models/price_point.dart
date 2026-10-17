@@ -35,9 +35,17 @@ class PricePoint {
   factory PricePoint.fromJson(String value) {
     final json = jsonDecode(value) as Map<String, dynamic>;
     final sourceName = json['source'] as String?;
-    final source = PricePointSource.values
-        .where((item) => item.name == sourceName)
-        .firstOrNull;
+    // A missing source is the legacy format for the old sample/default
+    // history. An explicit unknown token must stay invalid; otherwise a
+    // foreign history value would be mislabeled as demo data.
+    final source = sourceName == null || sourceName.trim().isEmpty
+        ? PricePointSource.sample
+        : PricePointSource.values.firstWhere(
+            (item) => item.name == sourceName.trim(),
+            orElse: () => throw const FormatException(
+              'Unbekannte Preisverlaufsquelle',
+            ),
+          );
     final productId = json['productId'] as String?;
     final storeName = json['storeName'] as String?;
     final rawPrice = json['price'];
@@ -55,7 +63,7 @@ class PricePoint {
       storeName: storeName,
       price: price,
       date: DateTime.parse(json['date'] as String),
-      source: source ?? PricePointSource.sample,
+      source: source,
     );
   }
 
@@ -68,6 +76,3 @@ class PricePoint {
       });
 }
 
-extension<T> on Iterable<T> {
-  T? get firstOrNull => isEmpty ? null : first;
-}
