@@ -10,6 +10,12 @@
 - Ein Refresh mit `ALDI SUED` markiert daher auch eine gespeicherte Zeile `ALDI Süd` korrekt als historisch, wenn sie nicht erneut belegt wird.
 - Die sichtbare Herkunft, die Filial-ID und die append-only Historie bleiben erhalten.
 
+## Update 17.10.2026 – Feedparser verbindet Händler-Schreibvarianten
+
+- Quellmetadaten und Prospektseiten werden jetzt über denselben präsentationsbezogenen Händlervergleich mit Angebotszeilen verbunden.
+- `ALDI Süd`/`ALDI SUED` behalten dadurch Filiale, Ort und Seitenbild auch bei unterschiedlicher Quellschreibweise.
+- Die Normalisierung betrifft nur den Join-Schlüssel; sichtbare Labels und Branch-IDs bleiben unverändert.
+
 ## Update 17.10.2026 – Preisstatus zählt nur aktuelle Normalpreisbelege
 
 - Der bestätigte Speicherstatus zählt reguläre Prospektbelege jetzt nur noch, wenn ihre lokale Beobachtung weiterhin als `isCurrent` markiert ist.
