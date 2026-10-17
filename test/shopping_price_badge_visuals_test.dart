@@ -151,6 +151,15 @@ void main() {
       findsOneWidget,
     );
     expect(find.byType(Image), findsNWidgets(2));
+    final renderedImages = tester.widgetList<Image>(find.byType(Image)).toList();
+    expect(
+      renderedImages.map((image) => image.cacheWidth),
+      containsAll(<int?>[520, 108]),
+    );
+    expect(
+      renderedImages.map((image) => image.filterQuality),
+      everyElement(FilterQuality.low),
+    );
   });
 
   testWidgets('Preisfenster kennzeichnet historischen Prospekt-Median', (
