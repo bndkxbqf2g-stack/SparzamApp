@@ -1,3 +1,9 @@
+## Prospekt-OCR-Währungsformat
+
+`test/prospect_page_ocr_test.dart` prüft zusätzlich eine Zeile mit `€ 1,99`
+und `€ 2,49`. Das Ergebnis enthält den Angebotsbetrag und den getrennten
+Vorher-Preis; eine Live-Bildabfrage ist nicht beteiligt.
+
 ## Route-Suchgrenze
 
 `test/route_preferences_test.dart` prüft, dass ein absichtlich überhöhter
