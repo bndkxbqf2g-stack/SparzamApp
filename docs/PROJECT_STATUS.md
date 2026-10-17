@@ -1,3 +1,10 @@
+## Update 17.10.2026 – Unklassifizierte Prospektpreise im Preise-Reiter sichtbar
+
+Der Preise-Reiter kennzeichnet Prospekt-MarketPrices ohne explizite Preisrolle jetzt
+als eigene Datenlücke. Die Anzeige nennt diese Beträge nicht reguläre Preisbasis;
+Aktionsnachweise und reguläre Normalpreise bleiben getrennt. Die Route-Sperre und
+lokale Preisbeobachtung ändern sich dadurch nicht.
+
 ## Update 17.10.2026 – Prospektpreis-Basis explizit absichern
 
 Unklassifizierte oder alte Prospekt-MarketPrices ohne explizite Preisrolle bleiben
