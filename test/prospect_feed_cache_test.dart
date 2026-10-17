@@ -827,6 +827,9 @@ void main() {
       ).replaceFirst(
         '"sources": [{"storeName": "Lidl", "status": "ok"}]',
         '"sources": [{"storeName": "Lidl", "status": "ok", "branchId": "lidl-zellingen", "prospects": [{"pageSamples": [{"number": 1, "image": "https://example.test/old-page.jpg"}]}]}]',
+      ).replaceFirst(
+        '"storeName": "Lidl",\n    "offerPrice"',
+        '"storeName": "Lidl",\n    "branchId": "lidl-zellingen",\n    "offerPrice"',
       ),
     );
     final incoming = parseProspectFeed('''
