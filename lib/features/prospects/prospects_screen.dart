@@ -87,6 +87,7 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
   final _bringScrollController = ScrollController();
   final _moreProspectsKey = GlobalKey();
   Set<String>? _favoriteStores;
+  var _favoriteIndex = const ProspectFavoriteIndex.empty();
   late final ProspectFavoritesStore _favoriteStore;
   // Feed normalization and visible-card selection are independent from the
   // search query and favorite state. Reuse them while those controls change.
@@ -122,7 +123,10 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
   Future<void> _loadFavoriteStores() async {
     final loaded = await _favoriteStore.load();
     if (!mounted) return;
-    setState(() => _favoriteStores = loaded);
+    setState(() {
+      _favoriteStores = loaded;
+      _favoriteIndex = ProspectFavoriteIndex.from(loaded ?? const <String>[]);
+    });
   }
 
   Future<void> _toggleFavorite(ProspectIssue issue) async {
@@ -140,23 +144,26 @@ class _ProspectsScreenState extends State<ProspectsScreen> {
     } else {
       next.add(exactKey);
     }
-    setState(() => _favoriteStores = next);
+    setState(() {
+      _favoriteStores = next;
+      _favoriteIndex = ProspectFavoriteIndex.from(next);
+    });
     try {
       await _favoriteStore.save(next);
     } catch (_) {
       if (!mounted) return;
-      setState(() => _favoriteStores = previous);
+      setState(() {
+        _favoriteStores = previous;
+        _favoriteIndex =
+            ProspectFavoriteIndex.from(previous ?? const <String>[]);
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Favorit konnte nicht gespeichert werden.')),
       );
     }
   }
 
-  bool _isFavorite(ProspectIssue issue) =>
-      (_favoriteStores ?? const <String>{}).any(
-        (storedKey) =>
-            prospectFavoriteMatches(storedKey: storedKey, issue: issue),
-      );
+  bool _isFavorite(ProspectIssue issue) => _favoriteIndex.matches(issue);
 
   void _scrollToMoreProspects() {
     final target = _moreProspectsKey.currentContext;
@@ -2545,5 +2552,4 @@ Uri? _officialProspectUri(String? value) {
   }
   return uri;
 }
-
 
