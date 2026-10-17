@@ -3360,7 +3360,7 @@ def dedupe(offers):
         else:
             selected, supplement = item, previous
         merged = dict(selected)
-        for field in ("imageUrl", "category", "packageSize", "priceByBaseUnit", "brochureId", "brochurePage", "publisherId"):
+        for field in ("imageUrl", "category", "packageSize", "priceByBaseUnit", "regularPriceSource", "brochureId", "brochurePage", "publisherId"):
             if not clean(merged.get(field)) and clean(supplement.get(field)):
                 merged[field] = supplement[field]
         # Keep a verified struck-through price when only the duplicate carries
