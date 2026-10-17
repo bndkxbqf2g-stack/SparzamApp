@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Produktmetadaten in lokalen Listen
+
+- [x] Legacy-Listen speichern die vorhandenen Produktfelder vollständig.
+- [x] Alte Listen ohne optionale Felder bleiben rückwärtskompatibel.
+- [x] Der Scan-to-List-Regressionstest prüft Marke, Packungsgröße, Aliase und Bild nach dem Neustart.
+
 ## Update 17.10.2026 – Preisqualität in Matrix und Highlight vereinheitlicht
 
 - [x] Gleich bewertete aktuelle Nicht-Angebotspreise zuerst nach Beobachtungsalter auswählen.
