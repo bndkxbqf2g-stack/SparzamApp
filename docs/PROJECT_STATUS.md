@@ -1,3 +1,11 @@
+## Update 17.10.2026 – Routenfilter normalisiert Händlerlabels
+
+- Aktivierte Marktfilter verwenden jetzt den gemeinsamen Händler-Vergleichsschlüssel.
+- Schreibvarianten wie LIDL/Lidl und ALDI SUED/ALDI Süd lassen konfigurierte Märkte nicht mehr unbemerkt aus der Routenberechnung fallen.
+- Exakte Branch-IDs, Preisbelege und Filialzuordnung bleiben unverändert.
+
+route_preferences_test.dart deckt beide Schreibvarianten mit exakten Branch-IDs ab.
+
 ## Update 17.10.2026 – Coverage verbindet Händler-Schreibvarianten
 
 - Die Prospektabdeckung verbindet Issues, Angebotszeilen und gespeicherte Branch-Zähler über den bestehenden Präsentationsschlüssel.
