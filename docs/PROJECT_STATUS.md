@@ -1,3 +1,12 @@
+## Update 17.10.2026 – Preise-Reiter aktualisiert neue Preisbelege
+
+Der Preise-Reiter trennt jetzt den Eingangssnapshot vom berechneten
+Shopping-Quote-Snapshot. Wenn nach einem Prospektrefresh neue Marktpreise oder
+reguläre PriceObservations eintreffen, wird die alte Quote nicht weiter aus dem
+Widget-Cache verwendet. Die Anzeige kann damit den neuen regulären Preis und
+seine Filial-/Quellprovenienz unmittelbar übernehmen; Angebotspreise bleiben
+separat. Eine Widget-Regression prüft den Wechsel von 2,99 € auf 1,49 €.
+
 ## Update 17.10.2026 – Prospekt-Refresh ist filialscharf
 
 Die lokale automatische Preisbasis übernimmt die erfolgreiche Refresh-Scope des

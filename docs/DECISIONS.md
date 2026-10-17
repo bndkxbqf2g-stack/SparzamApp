@@ -1,3 +1,13 @@
+## D215 – Preise-Rechner-Cache folgt dem Eingangssnapshot
+
+Der Preise-Reiter darf seinen abgeleiteten Quote-Snapshot nur solange
+wiederverwenden, wie der Eingangssnapshot unverändert ist. Ein gemeinsamer
+Signaturwert für Eingänge und Ergebnis konnte bei einem Widget-Update den neuen
+Marktpreis als identisch ansehen und die alte Quote ausgeben. Deshalb werden
+Eingangssignatur und Quote-Signatur getrennt geführt; Marktpreise,
+Prospekt-Historie und relevante Beobachtungsfelder invalidieren den abgeleiteten
+Cache. Dies ändert keine Preispriorität oder Identitätsregel.
+
 ## D214 – Erfolgreiche Prospekt-Refreshes werden branch-scharf reconciliiert
 
 Ein Feed kann mehrere Filialen desselben Händlers enthalten. Der alte

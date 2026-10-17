@@ -1,3 +1,12 @@
+## Update 17.10.2026 – Preise-Reiter verarbeitet neue Preisstände
+
+- [x] Quote-Cache von Eingangssignatur und Ergebnis-Signatur trennen.
+- [x] Neue Marktpreise nach einem Prospektrefresh sofort im Preise-Reiter
+  anzeigen.
+- [x] Änderungen an gespeicherten regulären PriceObservations in die
+  Snapshot-Invalidierung einbeziehen.
+- [x] Widget-Regression für einen Preiswechsel ergänzen.
+
 ## Update 17.10.2026 – Filialscharfer Prospekt-Refresh
 
 - [x] Erfolgreiche Quellrefreshes als ProspectRefreshScope mit Branch-ID

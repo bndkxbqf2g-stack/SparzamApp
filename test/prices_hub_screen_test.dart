@@ -702,4 +702,59 @@ void main() {
     );
   });
 
+
+  testWidgets('aktualisiert den Preis-Hinweis nach neuem Preisstand', (
+    tester,
+  ) async {
+    const product = Product(
+      id: 'price-hub-refresh-milk',
+      name: 'Milch',
+      unit: '1 l',
+      group: 'Milch',
+    );
+
+    Widget app(double price) => MaterialApp(
+          home: Scaffold(
+            body: PricesHubScreen(
+              onOpenCatalog: () {},
+              onOpenSettings: () {},
+              summary: 'Preisrefresh',
+              shoppingList: [ListItem(product: product)],
+              marketPrices: [
+                MarketPrice(
+                  productId: product.id,
+                  storeName: 'Lidl',
+                  price: price,
+                  updatedAt: DateTime(2026, 10, 17),
+                  source: MarketPriceSource.manual,
+                ),
+              ],
+              enabledStoreNames: const ['Lidl'],
+              now: DateTime(2026, 10, 17),
+            ),
+          ),
+        );
+
+    await tester.pumpWidget(app(2.99));
+    final tile = find.byKey(
+      const ValueKey('price-snapshot-price-hub-refresh-milk'),
+    );
+    expect(
+      find.descendant(of: tile, matching: find.text('2,99 €')),
+      findsOneWidget,
+    );
+
+    await tester.pumpWidget(app(1.49));
+    await tester.pump();
+
+    expect(
+      find.descendant(of: tile, matching: find.text('1,49 €')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: tile, matching: find.text('2,99 €')),
+      findsNothing,
+    );
+  });
+
 }
