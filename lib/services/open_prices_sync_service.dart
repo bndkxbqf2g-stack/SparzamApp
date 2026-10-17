@@ -46,11 +46,17 @@ class OpenPricesSyncService {
   const OpenPricesSyncService({
     this.fetcher,
     this.discoverer,
+    this.productDiscovery,
     this.networkConcurrency = 2,
   }) : assert(networkConcurrency > 0);
 
   final OpenPricesProductFetcher? fetcher;
   final OpenPricesProductDiscoverer? discoverer;
+
+  /// Optional injected Open Food Facts discovery client. It is useful for
+  /// deterministic tests and keeps the live adapter replaceable without
+  /// changing the price-fetch contract.
+  final OpenFoodFactsProductDiscovery? productDiscovery;
 
   /// Limits simultaneous live Open Prices requests. Custom fetchers stay
   /// sequential so tests and injected providers keep their established
@@ -70,17 +76,27 @@ class OpenPricesSyncService {
     final customDiscoverer = discoverer;
     OpenPricesService? service;
     OpenFoodFactsProductDiscovery? discovery;
+    var ownsDiscovery = false;
     if (customFetcher == null) {
       service = OpenPricesService(
         maxAge: Duration(days: maxAgeDays),
         cache: SharedPreferencesOpenPricesCache(),
       );
+    }
+    if (productDiscovery != null) {
+      discovery = productDiscovery;
+    } else if (customFetcher == null) {
       discovery = OpenFoodFactsProductDiscovery();
+      ownsDiscovery = true;
     }
 
-    final candidatesById = <String, Product>{};
-    final discoveredIds = <String>{};
+    final candidatesById = <String, Product>{    final discoveredIds = <String>{};
     var cancelledDuringDiscovery = false;
+    final discoveryIsLive = discovery != null && customDiscoverer == null;
+    final discoveryBatchSize = openPricesNetworkBatchSize(
+      live: discoveryIsLive,
+      configured: networkConcurrency,
+    );
 
     void addCandidate(Product candidate) {
       // A catalog can contain the same product ID in the base and custom
@@ -89,29 +105,64 @@ class OpenPricesSyncService {
       candidatesById.putIfAbsent(candidate.id, () => candidate);
     }
 
-    for (final product in products) {
+    for (var start = 0;
+        start < products.length;
+        start += discoveryBatchSize) {
       if (shouldCancel?.call() == true) {
         cancelledDuringDiscovery = true;
         break;
       }
-      if (product.ean != null && normalizeBarcode(product.ean!) != null) {
-        addCandidate(product);
-        continue;
-      }
-      try {
-        final resolved = customDiscoverer != null
-            ? await customDiscoverer(product)
-            : customFetcher == null
-                ? await discovery!.discover(product)
-                : null;
-        if (resolved != null &&
-            resolved.ean != null &&
-            normalizeBarcode(resolved.ean!) != null) {
-          addCandidate(resolved);
-          discoveredIds.add(resolved.id);
+      final end = (start + discoveryBatchSize < products.length)
+          ? start + discoveryBatchSize
+          : products.length;
+      final batch = products.sublist(start, end);
+      final failed = List<bool>.filled(batch.length, false);
+      // Future.wait keeps the input order. Live discovery can overlap a
+      // small bounded batch while custom discoverers remain serial for
+      // cancellation and fixture determinism.
+      final resolved = await Future.wait<Product?>([
+        for (var index = 0; index < batch.length; index++)
+          () async {
+            final product = batch[index];
+            final hasEan = product.ean != null &&
+                normalizeBarcode(product.ean!) != null;
+            if (hasEan) return product;
+            if (customDiscoverer != null) {
+              try {
+                return await customDiscoverer(product);
+              } catch (_) {
+                failed[index] = true;
+                return null;
+              }
+            }
+            if (discovery != null) {
+              try {
+                return await discovery!.discover(product);
+              } catch (_) {
+                failed[index] = true;
+                return null;
+              }
+            }
+            return null;
+          }(),
+      ]);
+      for (var index = 0; index < batch.length; index++) {
+        final product = batch[index];
+        if (failed[index]) failures.add(product.id);
+        final candidate = resolved[index];
+        if (candidate == null ||
+            candidate.ean == null ||
+            normalizeBarcode(candidate.ean!) == null) {
+          continue;
         }
-      } catch (_) {
-        failures.add(product.id);
+        addCandidate(candidate);
+        if (product.ean == null ||
+            normalizeBarcode(product.ean!) == null) {
+          // A discovered barcode is useful retrieval evidence, but it is
+          // not yet a user-confirmed exact identity. Keep those prices out
+          // of the exact route-price stream until the identity is confirmed.
+          discoveredIds.add(candidate.id);
+        }
       }
     }
 
@@ -177,7 +228,7 @@ class OpenPricesSyncService {
       }
     } finally {
       service?.close();
-      discovery?.close();
+      if (ownsDiscovery) discovery?.close();
     }
     return OpenPricesSyncResult(
       productsChecked: products.length,
