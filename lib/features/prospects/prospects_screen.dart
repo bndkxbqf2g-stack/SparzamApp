@@ -646,6 +646,47 @@ class _ProspectSearchResultsSliverState
   static const _searchPageSize = 40;
   var _visibleCount = _searchPageSize;
 
+  // Search/filter rebuilds can replace the list instance while retaining the
+  // same immutable record objects. Keep identity resolution and collision-safe
+  // widget keys tied to the record contents instead of the current build.
+  final _resolvedProducts = <String, Product?>{};
+  List<Product>? _resolvedProductsCatalogInput;
+  List<OfferImportRecord>? _widgetKeyInput;
+  Map<OfferImportRecord, String>? _widgetKeyCache;
+
+  bool _sameRecords(
+    List<OfferImportRecord>? previous,
+    List<OfferImportRecord> current,
+  ) {
+    if (previous == null || previous.length != current.length) return false;
+    for (var index = 0; index < current.length; index++) {
+      if (!identical(previous[index], current[index])) return false;
+    }
+    return true;
+  }
+
+  Map<OfferImportRecord, String> _widgetKeysFor(
+    List<OfferImportRecord> records,
+  ) {
+    if (_sameRecords(_widgetKeyInput, records)) {
+      return _widgetKeyCache ?? const <OfferImportRecord, String>{};
+    }
+    final keys = prospectOfferWidgetKeys(records);
+    final indexed = <OfferImportRecord, String>{};
+    for (var index = 0; index < records.length; index++) {
+      indexed[records[index]] = keys[index];
+    }
+    _widgetKeyInput = List<OfferImportRecord>.unmodifiable(records);
+    _widgetKeyCache = Map<OfferImportRecord, String>.unmodifiable(indexed);
+    return _widgetKeyCache!;
+  }
+
+  void _prepareProductCache() {
+    if (identical(_resolvedProductsCatalogInput, catalogProducts)) return;
+    _resolvedProducts.clear();
+    _resolvedProductsCatalogInput = catalogProducts;
+  }
+
   List<OfferImportRecord> get records => widget.records;
   List<ProspectIssue> get prospects => widget.prospects;
   List<Product> get catalogProducts => widget.catalogProducts;
@@ -655,6 +696,10 @@ class _ProspectSearchResultsSliverState
   @override
   void didUpdateWidget(covariant _ProspectSearchResultsSliver oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.catalogProducts, widget.catalogProducts)) {
+      _resolvedProducts.clear();
+      _resolvedProductsCatalogInput = widget.catalogProducts;
+    }
     final oldFirst = oldWidget.records.isEmpty
         ? null
         : prospectOfferRecordKey(oldWidget.records.first);
@@ -678,6 +723,7 @@ class _ProspectSearchResultsSliverState
 
   @override
   Widget build(BuildContext context) {
+    _prepareProductCache();
     final issuesByStore = <String, List<ProspectIssue>>{};
     for (final issue in prospects) {
       issuesByStore.putIfAbsent(prospectStoreMatchKey(issue.storeName), () => []).add(issue);
@@ -712,11 +758,7 @@ class _ProspectSearchResultsSliverState
       );
     }
 
-    final widgetKeysByRecord = <OfferImportRecord, String>{};
-    final precomputedWidgetKeys = prospectOfferWidgetKeys(records);
-    for (var index = 0; index < records.length; index++) {
-      widgetKeysByRecord[records[index]] = precomputedWidgetKeys[index];
-    }
+    final widgetKeysByRecord = _widgetKeysFor(records);
 
     final visibleCount =
         _visibleCount.clamp(0, matchingRecords.length).toInt();
@@ -731,11 +773,10 @@ class _ProspectSearchResultsSliverState
       byStore.putIfAbsent(prospectRecordMatchKey(record), () => []).add(record);
     }
 
-    // Keep product identity resolution out of repeated sliver child builds. The
-    // map lives for the lifetime of this delegate build, so fast scrolling can
-    // reuse both positive and negative matches without changing the identity
-    // rules used by addableProductForProspectOffer.
-    final resolvedProducts = <String, Product?>{};
+    // Product identity resolution is cached on the sliver state. Fast
+    // scrolling and pagination can therefore reuse positive and negative
+    // matches without scanning the catalog for every rebuilt child.
+    final resolvedProducts = _resolvedProducts;
 
     final rows = <_ProspectSearchRow>[
       _ProspectSearchRow.heading(
