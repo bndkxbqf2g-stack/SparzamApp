@@ -1310,3 +1310,10 @@ Die Startvoraussetzung „Mengen-/Packungs-/Variantenvergleich abgeschlossen“ 
 - [x] Weitere validierte Seiten bleiben über eine sichtbare Nutzeraktion
   erreichbar; Seitenzahlen und Quellenbelege werden nicht verändert.
 - [x] Die lange Viewer-Regression deckt das Nachladen bis zur letzten Seite ab.
+
+## Update 17.10.2026 – Preise-Reiter zeigt günstigste Hinweise zuerst
+- [x] Aktuelle Preis-Hinweise werden nach dem belastbaren Vergleichswert
+  aufsteigend sortiert.
+- [x] Gleichstände werden über Produkt- und Marktnamen deterministisch gelöst.
+- [x] Die Sortierung verändert weder gespeicherte Belege noch die
+  Routenberechnung.
