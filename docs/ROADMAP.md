@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Verschachtelter Filialnachweis
+
+- [x] Bekannte verschachtelte Filialobjekte in Feed-Quelle, Prospekt und Angebot normalisieren.
+- [x] Branch-ID, Ort und Adresse getrennt erhalten und bei mehreren gleichnamigen Filialen nicht vermischen.
+- [x] Regression für exakte Filialzuordnung und Prospektseiten-Kontext ergänzen.
+
 ## Update 17.10.2026 – Verschachtelte Prospektbild-Aliase
 
 - [x] Häufige Thumbnail-, Cover- und Original-URL-Aliase in bekannten Bildobjekten auflösen.
