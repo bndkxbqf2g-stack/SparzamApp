@@ -165,6 +165,7 @@ class _PricesHubScreenState extends State<PricesHubScreen> {
       add(offer.validUntil.millisecondsSinceEpoch);
       add(offer.source);
       add(offer.sourceAdapter);
+      add(offer.regularPriceSource,
       add(offer.capturedAt?.millisecondsSinceEpoch);
       add(offer.proofRef);
       add(offer.imageUrl);
@@ -777,6 +778,8 @@ class _ProspectRegularPriceLedgerRow extends StatelessWidget {
       'Erfasst ${_priceLedgerDate(observation.observedAt)}',
       if (observation.sourceAdapter?.trim().isNotEmpty == true)
         'Quelle ${observation.sourceAdapter!.trim()}',
+      if (observation.regularPriceSource?.trim().isNotEmpty == true)
+        'Normalpreisfeld ${observation.regularPriceSource!.trim()}',
       if (observation.evidenceConfidence != null)
         'Evidenz ${evidenceConfidenceLabel(observation.evidenceConfidence!)}',
       'Nachweis vorhanden',
