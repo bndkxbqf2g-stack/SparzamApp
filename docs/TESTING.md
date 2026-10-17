@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Kategorie-Listen
+
+`prospect_feed_service_test.dart` prüft einen mehrteiligen
+Lebensmittel-Kategoriepfad und einen Tierbedarfsdatensatz. Der Lebensmittelpfad
+bleibt sichtbar; der Non-Food-Eintrag wird bereits an der Feedgrenze verworfen.
+
 ## Update 17.10.2026 – Verschachtelte Gültigkeitszeiträume
 
 `prospect_feed_service_test.dart` prüft einen gültigen verschachtelten
