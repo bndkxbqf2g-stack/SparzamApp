@@ -415,6 +415,37 @@ void main() {
     expect(find.textContaining('Lidl: 1'), findsOneWidget);
   });
 
+  testWidgets('zeigt unklassifizierte Prospektpreise als Datenlücke', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PricesHubScreen(
+            onOpenCatalog: () {},
+            onOpenSettings: () {},
+            summary: 'Prospektpreise',
+            marketPrices: [
+              MarketPrice(
+                productId: 'unknown-prospect-milk',
+                storeName: 'Lidl',
+                price: 1.29,
+                updatedAt: DateTime(2026, 10, 15),
+                source: MarketPriceSource.prospect,
+              ),
+            ],
+            now: DateTime(2026, 10, 15),
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      find.text('Prospektpreise ohne Preisrolle 1'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('zeigt bestätigte automatische Normalpreisspeicherung', (
     tester,
   ) async {
