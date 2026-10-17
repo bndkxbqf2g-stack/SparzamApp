@@ -9,7 +9,6 @@ import '../offers/offer_filter.dart';
 import '../shopping_list/shopping_intent.dart';
 import '../../services/branch_identity.dart';
 import '../../services/market_price_comparability.dart';
-import 'market_price_quality.dart';
 import 'market_price_selection.dart';
 
 class RoutePriceQuote {
@@ -199,8 +198,9 @@ class RoutePriceResolver {
     MarketPrice? best;
     final reference = now ?? DateTime.now();
     for (final price in scoped) {
-      if (best == null ||
-          compareMarketPriceEvidence(price, best!, reference) < 0) {
+      final previous = best;
+      if (previous == null ||
+          compareMarketPriceEvidence(price, previous, reference) < 0) {
         best = price;
       }
     }
