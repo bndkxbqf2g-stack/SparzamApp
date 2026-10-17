@@ -1866,3 +1866,8 @@ Der RoutePriceResolver verwendet für Händlerlabels denselben engen Präsentati
 ## D191 – Gemeinsamer Händlerlabel-Schlüssel für Route und Preis-Matrix
 
 Die öffentliche Händlerdarstellung wird einmal in `store_identity.dart` normalisiert und von RoutePriceResolver sowie ShoppingPriceMatrix verwendet. Der Schlüssel ist nur für Händlerlabel-Vergleiche bestimmt. Die Matrix zeigt bei aktivierten Märkten den konfigurierten Namen, behält im Quote aber den Quelllabel-Nachweis. Produkt-ID, Gültigkeit, Beleg und exakte Filiale werden nicht durch diese Normalisierung ersetzt.
+
+
+## D192 – Händlerlabel-Normalisierung darf Branchschutz nicht umgehen
+
+`matchesConfiguredBranch` verwendet den gemeinsamen Präsentationsschlüssel nur, um die konfigurierte Händlerzeile zu finden. Danach bleibt die kanonische Branch-ID-Prüfung unverändert. Ein Label wie `LIDL` kann damit `Lidl` zugeordnet werden, aber niemals eine fremde Lidl-Filiale freischalten.
