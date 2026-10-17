@@ -1,3 +1,6 @@
+## Geprüfte Seitenartikel und Preisablage
+
+Die Aktion „Artikel von Seite hinzufügen“ ist zweistufig: Eine manuell bestätigte Produktbezeichnung darf lokal in die Einkaufsliste gelangen, während Offer-/Preis-/Routenpersistenz weiterhin exakte Filiale, Nachweis und aktuelle Gültigkeit verlangt. Schlägt diese zweite Stufe fehl, bleibt der Artikel listbar und der Fehler wird angezeigt; kein unbestätigter Preis wird erzeugt.
 ## Regulärer Prospektpreis und Quellenfeld
 
 Ein importierter Prospektdatensatz darf einen regulären Preis nur aus einem
