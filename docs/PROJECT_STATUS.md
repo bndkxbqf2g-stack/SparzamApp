@@ -1,3 +1,8 @@
+## Update 17.10.2026 – Äußerer Angebote-Cache bei großen Feeds
+
+Der übergeordnete Angebote-Scroll hält bei mindestens 48 aktuellen Prospektzeilen
+keinen spekulativen Vorlauf mehr. Kleine Feeds behalten 180 Pixel Vorlauf; die
+verschachtelten Cover- und Angebotsbereiche bleiben separat begrenzt.
 ## Update 17.10.2026 – Kleine Prospektkacheln dekodieren maßvoll
 
 Kompakte Angebotskacheln werden mit 192×192 statt 360×360 Pixeln dekodiert,

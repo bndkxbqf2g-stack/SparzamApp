@@ -1,3 +1,8 @@
+## Update 17.10.2026 – Cache-Grenze für große Angebote-Feeds
+
+offers_screen_test.dart prüft den 180-Pixel-Vorlauf für kleine Feeds und die
+Nullgrenze des äußeren Scroll-Caches ab 48 aktuellen Prospektzeilen.
+
 ## Update 17.10.2026 – Kompakte Prospektbilder
 
 prospect_offer_card_test.dart prüft, dass die 88-Pixel-Listenbilder mit einer

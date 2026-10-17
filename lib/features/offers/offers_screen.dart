@@ -65,6 +65,8 @@ class OffersScreen extends StatefulWidget {
   State<OffersScreen> createState() => _OffersScreenState();
 }
 
+const _heavyProspectRecordThreshold = 48;
+
 class _OffersScreenState extends State<OffersScreen> {
   final searchController = TextEditingController();
   var query = '';
@@ -165,15 +167,19 @@ class _OffersScreenState extends State<OffersScreen> {
   Widget build(BuildContext context) {
     final currentRecords = _currentRecords();
     final currentProspectIssues = _currentIssues();
+    final heavyProspectFeed =
+        currentRecords.length >= _heavyProspectRecordThreshold;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Angebote'), centerTitle: true),
       body: ListView(
         key: const ValueKey('offers-scroll'),
-        // Warm a short cover lead-in so image decoding starts before a fast
-        // swipe reaches it. The nested cover/page lists keep their own
-        // strict limits; the smaller reserve avoids retaining a full extra cover row.
-        scrollCacheExtent: const ScrollCacheExtent.pixels(180),
+        // Small feeds warm a short cover lead-in. Large feeds keep no
+        // speculative outer children; their nested cover and offer sections
+        // already enforce their own bounded page sizes.
+        scrollCacheExtent: ScrollCacheExtent.pixels(
+          heavyProspectFeed ? 0.0 : 180.0,
+        ),
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
         children: [
           const Center(child: Text('Die besten Preise. Für dich.')),
