@@ -898,6 +898,9 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
 
 
   final recordsByKey = <String, OfferImportRecord>{};
+  // Indexes records by stable price/identity fields so a later copy can fill
+  // missing EAN or package metadata without collapsing two known variants.
+  final recordsByMergeKey = <String, List<String>>{};
   final prospects = <ProspectIssue>[];
   final pageImagesByStoreAndNumber =
       <String, List<_ProspectPageImageCandidate>>{};
@@ -1307,7 +1310,41 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
             : (offerBranch.address ?? sourceFallback?.address),
       );
     final key = _prospectRecordKey(record);
-    recordsByKey.putIfAbsent(key, () => record);
+    final previous = recordsByKey[key];
+    if (previous != null) {
+      recordsByKey[key] = _mergeProspectRecordMetadata(previous, record);
+      continue;
+    }
+
+    final mergeKey = _prospectRecordMergeKey(record);
+    final candidates = recordsByMergeKey[mergeKey];
+    final compatibleKeys = candidates
+        ?.where((candidateKey) {
+          final candidate = recordsByKey[candidateKey];
+          return candidate != null &&
+              _prospectRecordsCanMergeMetadata(candidate, record);
+        })
+        .toList(growable: false);
+    // Merge a metadata-only variant only when the bucket has one unambiguous
+    // compatible row. If two package/EAN variants are present, an incomplete
+    // row remains separate instead of being assigned to the wrong variant.
+    if (compatibleKeys != null && compatibleKeys.length == 1) {
+      final candidateKey = compatibleKeys.single;
+      final candidate = recordsByKey.remove(candidateKey);
+      if (candidate != null) {
+        final merged = _mergeProspectRecordMetadata(candidate, record);
+        final mergedKey = _prospectRecordKey(merged);
+        recordsByKey[mergedKey] = merged;
+        final candidateIndex = candidates!.indexOf(candidateKey);
+        if (candidateIndex >= 0) {
+          candidates[candidateIndex] = mergedKey;
+        }
+        continue;
+      }
+    }
+
+    recordsByKey[key] = record;
+    recordsByMergeKey.putIfAbsent(mergeKey, () => <String>[]).add(key);
   }
 
   final records = recordsByKey.values.toList(growable: false);
@@ -1320,6 +1357,110 @@ ProspectFeedLoadResult parseProspectFeed(String raw, {bool fromCache = false}) {
     capturedAt: capturedAt,
     prospects: prospects,
     fromCache: fromCache,
+  );
+}
+
+String _prospectRecordMergeKey(OfferImportRecord record) {
+  final fields = <String>[
+    record.storeName,
+    record.branchId ?? '',
+    record.sourceAdapter ?? '',
+    record.sourceId,
+    record.productLabel,
+    record.offerPrice.toStringAsFixed(4),
+    record.originalPrice?.toStringAsFixed(4) ?? '',
+    record.validFrom?.toIso8601String() ?? '',
+    record.validUntil.toIso8601String(),
+  ];
+  return fields
+      .map((value) => value.trim().toLowerCase().replaceAll(RegExp(r'\s+'), ' '))
+      .join('\u001f');
+}
+
+bool _prospectMetadataValueCompatible(String? first, String? second) {
+  final normalizedFirst =
+      first?.trim().toLowerCase().replaceAll(RegExp(r'\s+'), ' ');
+  final normalizedSecond =
+      second?.trim().toLowerCase().replaceAll(RegExp(r'\s+'), ' ');
+  return normalizedFirst == null ||
+      normalizedFirst.isEmpty ||
+      normalizedSecond == null ||
+      normalizedSecond.isEmpty ||
+      normalizedFirst == normalizedSecond;
+}
+
+bool _prospectRecordsCanMergeMetadata(
+  OfferImportRecord first,
+  OfferImportRecord second,
+) {
+  return _prospectMetadataValueCompatible(first.ean, second.ean) &&
+      _prospectMetadataValueCompatible(first.packageSize, second.packageSize);
+}
+
+String? _preferProspectText(String? first, String? second) {
+  if (first?.trim().isNotEmpty == true) return first;
+  if (second?.trim().isNotEmpty == true) return second;
+  return null;
+}
+
+/// Keeps one conservative price/identity row while retaining richer optional
+/// evidence from a later identical source copy. Price, validity, branch and
+/// source identity stay anchored to the first record.
+OfferImportRecord _mergeProspectRecordMetadata(
+  OfferImportRecord first,
+  OfferImportRecord second,
+) {
+  final firstHasImage = first.imageUrl?.trim().isNotEmpty == true;
+  final secondHasImage = second.imageUrl?.trim().isNotEmpty == true;
+  final preferSecondImage = secondHasImage &&
+      (!firstHasImage ||
+          (second.imageKind == ProspectImageKind.product &&
+              first.imageKind != ProspectImageKind.product));
+  final mergedImage = preferSecondImage
+      ? second.imageUrl
+      : _preferProspectText(first.imageUrl, second.imageUrl);
+  final mergedImageKind = preferSecondImage
+      ? second.imageKind
+      : (first.imageKind ?? second.imageKind);
+  final mergedCapturedAt = first.capturedAt == null
+      ? second.capturedAt
+      : second.capturedAt == null
+      ? first.capturedAt
+      : second.capturedAt!.isAfter(first.capturedAt!)
+      ? second.capturedAt
+      : first.capturedAt;
+
+  return OfferImportRecord(
+    sourceId: first.sourceId,
+    productLabel: first.productLabel,
+    storeName: first.storeName,
+    originalPrice: first.originalPrice,
+    offerPrice: first.offerPrice,
+    validUntil: first.validUntil,
+    validFrom: first.validFrom,
+    source: first.source,
+    proofRef: _preferProspectText(first.proofRef, second.proofRef),
+    imageUrl: mergedImage,
+    imageKind: mergedImageKind,
+    ean: _preferProspectText(first.ean, second.ean),
+    category: _preferProspectText(first.category, second.category),
+    packageSize: _preferProspectText(first.packageSize, second.packageSize),
+    priceByBaseUnit:
+        _preferProspectText(first.priceByBaseUnit, second.priceByBaseUnit),
+    regularPriceSource: _preferProspectText(
+      first.regularPriceSource,
+      second.regularPriceSource,
+    ),
+    sourceAdapter:
+        _preferProspectText(first.sourceAdapter, second.sourceAdapter),
+    regionalOnly: first.regionalOnly && second.regionalOnly,
+    brochureId: _preferProspectText(first.brochureId, second.brochureId),
+    brochurePage: first.brochurePage ?? second.brochurePage,
+    publisherId: _preferProspectText(first.publisherId, second.publisherId),
+    capturedAt: mergedCapturedAt,
+    branchId: _preferProspectText(first.branchId, second.branchId),
+    location: _preferProspectText(first.location, second.location),
+    address: _preferProspectText(first.address, second.address),
   );
 }
 
