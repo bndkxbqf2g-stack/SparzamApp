@@ -1,3 +1,18 @@
+## Update 17.10.2026 – Routenfilialen werden dedupliziert
+
+Der RouteOptimizer reduziert doppelte Einträge derselben exakten Filiale vor der
+Kombinationserzeugung. Dadurch werden nach Feed-/Quellmengen zusammengeführte
+Dubletten nicht als zusätzliche Marktstopps gezählt; der bestehende
+Filialschlüssel, die Reihenfolge und die Preis-/Gültigkeitsregeln bleiben
+maßgeblich.
+
+## Update 17.10.2026 – Mindestvorteil wird inklusive bewertet
+
+Ein zusätzlicher Markt wird jetzt auch dann empfohlen, wenn sein
+Planungsvorteil genau der konfigurierten Mindestschwelle entspricht. Ohne
+positive Schwelle bleibt ein Gleichstand zugunsten der Route mit weniger
+Märkten. Die Entscheidung verwendet weiterhin denselben qualitätsbereinigten
+Planungswert einschließlich Fahrt-, Zeit- und Marktstoppkosten.
 ## Update 17.10.2026 – Äußerer Angebote-Cache bei großen Feeds
 
 Der übergeordnete Angebote-Scroll hält bei mindestens 48 aktuellen Prospektzeilen
