@@ -4010,3 +4010,16 @@ Grenzen sind jetzt abgesichert:
 Die Änderung betrifft weder die gültigen Prospektangebote in der Ansicht noch die
 zeitgebundene Angebotsevidenz; nur die lokale reguläre Preisbasis bleibt
 routefähig.
+
+## Update 17.10.2026 – Filial-IDs im Prospektparser kanonisiert
+
+Der Prospektparser vergleicht Filial-IDs jetzt konsistent über die gemeinsame
+Branch-Identitätslogik. Leerraum und Groß-/Kleinschreibung werden ausschließlich
+für die Zuordnung normalisiert; der vom Feed gelieferte Wert bleibt im
+\`OfferImportRecord\` und im Nachweis sichtbar. Das gilt für Quellenmetadaten,
+Prospektseitenbilder und die Vererbung von Filialort und Adresse.
+
+Ein Regressionstest prüft die Zusammenführung von \`LIDL-ZELLINGEN\` und
+\`lidl-zellingen\` über Quelle, Prospektseite und Angebot. Die Regel bleibt
+konservativ: fehlende oder unterschiedliche Filial-IDs erzeugen keine
+automatische Zuordnung.
