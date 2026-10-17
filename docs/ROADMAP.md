@@ -1,3 +1,9 @@
+## Update 17.10.2026 – Unbekannte Preisquellen konservativ ablehnen
+
+- [x] Fehlende `source`-Felder alter Marktpreisformate rückwärtskompatibel als manuell lesen.
+- [x] Unbekannte ausdrücklich gesetzte Quellenkennungen beim Deserialisieren verwerfen.
+- [x] Store-/Modelltest gegen die stille Hochstufung zu bestätigten Preisen ergänzen.
+
 ## Update 17.10.2026 – Prospekt-Suchcache beim Scrollen
 
 - [x] Produktauflösung in aktuellen Prospektsuchergebnissen über Rebuilds und Nachladen memoisiert.
