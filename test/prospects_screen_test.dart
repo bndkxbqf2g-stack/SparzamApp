@@ -27,6 +27,25 @@ void main() {
       isTrue,
     );
   });
+
+  test('uses first valid prospect page image as cover fallback', () {
+    const issue = ProspectIssue(
+      storeName: 'Lidl',
+      title: 'Aktionsprospekt',
+      pages: [
+        ProspectPage(number: 1, imageUrl: ''),
+        ProspectPage(
+          number: 2,
+          imageUrl: 'https://example.test/page-2.jpg',
+        ),
+      ],
+    );
+
+    expect(
+      prospectCoverPreviewUrl(issue),
+      'https://example.test/page-2.jpg',
+    );
+  });
   testWidgets('shows market prospect cards instead of raw article summary', (
     tester,
   ) async {
