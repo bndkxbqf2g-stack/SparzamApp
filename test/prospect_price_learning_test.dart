@@ -390,6 +390,7 @@ void main() {
           productLabel: coffee.name,
           storeName: 'Netto',
           originalPrice: 8,
+          regularPriceSource: 'originalPrice',
           offerPrice: 5,
           validFrom: DateTime(2026, 9, 28),
           validUntil: DateTime(2026, 9, 30),
