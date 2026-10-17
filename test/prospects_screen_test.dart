@@ -1254,7 +1254,7 @@ void main() {
     expect(viewer.scrollCacheExtent, isNotNull);
 
     final preview = tester.widget<Image>(
-      find.byKey(const ValueKey('prospect-page-image-7')),
+      find.byKey(const ValueKey('prospect-page-image-7-0')),
     );
     final provider = preview.image;
     expect(provider, isA<ResizeImage>());
@@ -1318,12 +1318,12 @@ void main() {
     await tester.pump();
 
     await tester.scrollUntilVisible(
-      find.byKey(const ValueKey('prospect-page-image-20')),
+      find.byKey(const ValueKey('prospect-page-image-20-19')),
       600,
       scrollable: find.byType(Scrollable).first,
     );
     expect(
-      find.byKey(const ValueKey('prospect-page-image-20')),
+      find.byKey(const ValueKey('prospect-page-image-20-19')),
       findsOneWidget,
     );
   });
@@ -1941,15 +1941,57 @@ void main() {
     expect(find.text('Seite 1'), findsOneWidget);
     expect(find.text('Seite 2'), findsOneWidget);
     expect(
-      find.byKey(const ValueKey('prospect-page-image-1')),
+      find.byKey(const ValueKey('prospect-page-image-1-0')),
       findsOneWidget,
     );
     expect(
-      find.byKey(const ValueKey('prospect-page-image-2')),
+      find.byKey(const ValueKey('prospect-page-image-2-1')),
       findsOneWidget,
     );
   });
 
+
+  testWidgets('hält doppelte Quell-Seitennummern beim Scrollen getrennt', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectViewerScreen(
+          issue: ProspectIssue(
+            storeName: 'Lidl',
+            title: 'Aktionsprospekt',
+            pages: const [
+              ProspectPage(
+                number: 2,
+                imageUrl: 'https://example.test/page-2-a.jpg',
+              ),
+              ProspectPage(
+                number: 2,
+                imageUrl: 'https://example.test/page-2-b.jpg',
+              ),
+            ],
+          ),
+          records: const [],
+          catalogProducts: const [],
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(
+      find.byKey(const ValueKey('prospect-page-image-2-0')),
+      findsOneWidget,
+    );
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('prospect-page-image-2-1')),
+      500,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(
+      find.byKey(const ValueKey('prospect-page-image-2-1')),
+      findsOneWidget,
+    );
+  });
 }
 
 Future<void> _scrollProspects(
@@ -1962,9 +2004,4 @@ Future<void> _scrollProspects(
   );
   await tester.drag(scrollable.first, Offset(0, -distance));
   await tester.pumpAndSettle();
-
-
-
 }
-
-

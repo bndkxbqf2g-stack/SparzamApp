@@ -60,12 +60,21 @@ class OfferCard extends StatelessWidget {
             if (imageUrl != null && imageUrl.isNotEmpty) ...[
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  imageUrl,
-                  height: 150,
-                  width: double.infinity,
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+                child: RepaintBoundary(
+                  child: Image.network(
+                    imageUrl,
+                    height: 150,
+                    width: double.infinity,
+                    fit: BoxFit.contain,
+                    // Offer lists can contain hundreds of remote images. Keep
+                    // decoded frames close to the displayed tile size so a
+                    // long scroll cannot retain full-resolution source files.
+                    cacheWidth: 720,
+                    cacheHeight: 360,
+                    filterQuality: FilterQuality.low,
+                    errorBuilder: (context, error, stackTrace) =>
+                        const SizedBox.shrink(),
+                  ),
                 ),
               ),
               const SizedBox(height: 10),

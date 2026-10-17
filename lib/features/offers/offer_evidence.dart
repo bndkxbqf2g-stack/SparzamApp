@@ -48,17 +48,29 @@ class OfferEvidence extends StatelessWidget {
             label: 'Prospektbild',
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                imageUrl,
-                height: 96,
-                width: 140,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  height: 72,
+              child: RepaintBoundary(
+                child: Image.network(
+                  imageUrl,
+                  height: 96,
                   width: 140,
-                  alignment: Alignment.center,
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                  child: const Text('Prospektbild\nnicht verfügbar', textAlign: TextAlign.center),
+                  fit: BoxFit.cover,
+                  // Evidence thumbnails can repeat across long offer lists.
+                  // Decode only the bounded preview size.
+                  cacheWidth: 280,
+                  cacheHeight: 192,
+                  filterQuality: FilterQuality.low,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    height: 72,
+                    width: 140,
+                    alignment: Alignment.center,
+                    color: Theme.of(context)
+                        .colorScheme
+                        .surfaceContainerHighest,
+                    child: const Text(
+                      'Prospektbild\nnicht verfügbar',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
               ),
             ),
