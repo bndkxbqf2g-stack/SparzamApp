@@ -1201,8 +1201,9 @@ ProspectIssue _visibleIssue(
       : _bestVisibleProspect(currentEntries);
   final selected = current ?? _bestVisibleProspect(entries);
   final showStalePages = current == null &&
-      selected.sourceStatus == 'stale_fallback' &&
-      selected.pages.isNotEmpty;
+      selected.pages.isNotEmpty &&
+      (selected.sourceStatus == 'stale_fallback' ||
+          selected.sourceStatus == 'error');
 
   // Page-only fallback is explicitly marked so an older cover can remain
   // browsable while its expired prices stay outside the current offer list.
