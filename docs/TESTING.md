@@ -1,3 +1,10 @@
+## Update 17.10.2026 – KaufDA-Regionalgrenze
+
+`prospect_feed_service_test.dart` prüft, dass eine KaufDA-Kennung aus den
+Quellenmetadaten ohne eigene Angebots-Branch-ID nicht als exakte Filiale
+übernommen wird. Die Zeile bleibt regional sichtbar, aber ohne Branch-ID und
+damit außerhalb von Preisprojektion und Route.
+
 ## Update 17.10.2026 – Preislernen ohne Feedzeitpunkt
 
 `prospect_price_learning_test.dart` und
