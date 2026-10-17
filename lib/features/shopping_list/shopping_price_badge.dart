@@ -260,6 +260,10 @@ class ShoppingPriceBadge extends StatelessWidget {
                                 width: 54,
                                 height: 54,
                                 fit: BoxFit.contain,
+                                cacheWidth: 108,
+                                cacheHeight: 108,
+                                filterQuality: FilterQuality.low,
+                                webHtmlElementStrategy: WebHtmlElementStrategy.never,
                                 errorBuilder: (context, error, stackTrace) =>
                                     const Icon(Icons.local_offer_outlined),
                               ),
