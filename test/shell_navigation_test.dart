@@ -10,8 +10,6 @@ void main() {
       ['Start', 'Liste', 'Angebote', 'Prospekte', 'Preise', 'Mehr'],
     );
   });
-}
-
 
   test('Shell-Seiten werden bei unverändertem Datenstand wiederverwendet', () {
     final cache = ShellPageCache();
@@ -43,3 +41,5 @@ void main() {
     expect(identical(first, changed), isFalse);
     expect(builds, 2);
   });
+
+}
