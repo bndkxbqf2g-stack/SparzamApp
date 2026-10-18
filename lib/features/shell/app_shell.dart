@@ -2305,103 +2305,101 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     final pages = _shellPageCache.resolve(
       signature: pageSignature,
       builder: () {
-  
-      final catalog = catalogProducts;
-      final plannedPrices = planningMarketPrices;
-      final routeSnapshot = _routingSnapshotCache.resolve(
-        items: shoppingList,
-        offers: offers,
-        mobility: mobility,
-        marketPrices: plannedPrices,
-        storeCatalog: stores,
-        openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
-        roadDistances: roadDistances,
-        roadMatrix: roadMatrix,
-      );
-      final currentRouteOptimizer = routeSnapshot.current;
-      final regularRouteOptimizer = routeSnapshot.regular;
-      final currentPlan = currentRouteOptimizer?.bestPlan();
-      final regularPlan = regularRouteOptimizer?.bestSingleStorePlan();
-      final replenishment = replenishmentSuggestions;
-      final prospectHistory = prospectPriceHistory;
-      return buildShellPages(
-        dashboard: dashboardData(routeSnapshot, replenishment),
-        onOpenList: () => _selectTab(1),
-        onOpenRoute: openRoute,
-        onOpenOffers: () => _selectTab(2),
-        onOpenBudget: openBudget,
-        onOpenScanner: openScanner,
-        shoppingList: shoppingList,
-        shoppingLists: namedShoppingLists,
-        activeShoppingListId: activeShoppingListId,
-        onSelectShoppingList: selectShoppingList,
-        onCreateShoppingList: createShoppingList,
-        onAddProduct: addProduct,
-        onChangeQuantity: changeQuantity,
-        onSelectFamily: selectShoppingFamily,
-        onUpdateItemNote: updateItemNote,
-        onUpdateItemChecked: updateItemChecked,
-        preferredProductByGroup: preferredProductByGroup,
-        recentPurchases: recentPurchases,
-        onPurchased: markPurchased,
-        onClearPurchased: clearPurchasedItems,
-        shoppingListStore: widget.shoppingListStore,
-        offers: offers,
-        prospectRecords: prospectRecords,
-        prospectIssues: prospectIssues,
-        prospectFeedFromCache: prospectFeedFromCache,
-        prospectRegularPriceCount: prospectRegularPriceCount,
-        prospectRegularPriceCountsByStore: prospectRegularPriceCountsByStore,
-        prospectRegularPricePersistenceStatus:
-            prospectRegularPricePersistenceStatus,
-        prospectFeedGeneratedAt: prospectFeedGeneratedAt,
-        onRefreshProspects: () => _loadProspectOffers(
-          preferCached: false,
-          force: true,
-        ),
-        prospectsRefreshing: _prospectFeedRefreshing,
-        priceHistory: priceHistory,
-        mobility: mobility,
-        catalogProducts: catalog,
-        marketPrices: plannedPrices,
-        storeCatalog: stores,
-        openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
-        priceObservations: plannedPrices,
-        historicalPriceObservations: historicalPriceObservations,
-        prospectPriceHistory: prospectHistory,
-        replenishmentSuggestions: replenishment,
-        onRoadDistancesChanged: (value) => setState(() => roadDistances = value),
-        onRoadMatrixChanged: (value) => setState(() => roadMatrix = value),
-        currentPlan: currentPlan,
-        baselineTotal: regularPlan?.total ?? 0,
-        baselineHasDataGaps: regularPlan?.hasDataGaps ?? false,
-        purchaseHistory: purchaseHistory,
-        onCompletePurchase: completePurchase,
-        onUpdatePurchase: updatePurchase,
-        onDeletePurchase: deletePurchase,
-        onEditMobility: openMobilitySettings,
-        onEditStores: openStoreSettings,
-        storeCount: activeStoreCount(mobility.enabledStoreNames),
-        onOpenCatalog: openCatalog,
-        onResolvePriceGap: openPriceGapEditor,
-        onEditPriceData: openPriceDataSettings,
-        onSavePrice: saveMarketPrice,
-        onSavePrices: saveMarketPrices,
-        onSaveProduct: saveCatalogProduct,
-        onReceiptObservationsChanged: _loadReceiptObservations,
-        onSaveOffer: saveOffer,
-        onSaveProspectRegularPrice: saveProspectRegularPriceObservation,
-        onDeleteOffer: deleteOffer,
-        priceDataSummary: priceDataSettings.openPricesEnabled
-            ? 'Open Prices · max. ${priceDataSettings.openPricesMaxAgeDays} Tage'
-            : 'Nur eigene Preise',
-        onOpenDiagnostics: openDiagnostics,
-        onExportBackup: exportBackup,
-        onImportBackup: importBackup,
-        dataRevision: backupRevision,
-      );
-  
-  
+    final catalog = catalogProducts;
+    final plannedPrices = planningMarketPrices;
+    final routeSnapshot = _routingSnapshotCache.resolve(
+      items: shoppingList,
+      offers: offers,
+      mobility: mobility,
+      marketPrices: plannedPrices,
+      storeCatalog: stores,
+      openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
+      roadDistances: roadDistances,
+      roadMatrix: roadMatrix,
+    );
+    final currentRouteOptimizer = routeSnapshot.current;
+    final regularRouteOptimizer = routeSnapshot.regular;
+    final currentPlan = currentRouteOptimizer?.bestPlan();
+    final regularPlan = regularRouteOptimizer?.bestSingleStorePlan();
+    final replenishment = replenishmentSuggestions;
+    final prospectHistory = prospectPriceHistory;
+    return buildShellPages(
+      dashboard: dashboardData(routeSnapshot, replenishment),
+      onOpenList: () => _selectTab(1),
+      onOpenRoute: openRoute,
+      onOpenOffers: () => _selectTab(2),
+      onOpenBudget: openBudget,
+      onOpenScanner: openScanner,
+      shoppingList: shoppingList,
+      shoppingLists: namedShoppingLists,
+      activeShoppingListId: activeShoppingListId,
+      onSelectShoppingList: selectShoppingList,
+      onCreateShoppingList: createShoppingList,
+      onAddProduct: addProduct,
+      onChangeQuantity: changeQuantity,
+      onSelectFamily: selectShoppingFamily,
+      onUpdateItemNote: updateItemNote,
+      onUpdateItemChecked: updateItemChecked,
+      preferredProductByGroup: preferredProductByGroup,
+      recentPurchases: recentPurchases,
+      onPurchased: markPurchased,
+      onClearPurchased: clearPurchasedItems,
+      shoppingListStore: widget.shoppingListStore,
+      offers: offers,
+      prospectRecords: prospectRecords,
+      prospectIssues: prospectIssues,
+      prospectFeedFromCache: prospectFeedFromCache,
+      prospectRegularPriceCount: prospectRegularPriceCount,
+      prospectRegularPriceCountsByStore: prospectRegularPriceCountsByStore,
+      prospectRegularPricePersistenceStatus:
+          prospectRegularPricePersistenceStatus,
+      prospectFeedGeneratedAt: prospectFeedGeneratedAt,
+      onRefreshProspects: () => _loadProspectOffers(
+        preferCached: false,
+        force: true,
+      ),
+      prospectsRefreshing: _prospectFeedRefreshing,
+      priceHistory: priceHistory,
+      mobility: mobility,
+      catalogProducts: catalog,
+      marketPrices: plannedPrices,
+      storeCatalog: stores,
+      openPricesMaxAgeDays: priceDataSettings.openPricesMaxAgeDays,
+      priceObservations: plannedPrices,
+      historicalPriceObservations: historicalPriceObservations,
+      prospectPriceHistory: prospectHistory,
+      replenishmentSuggestions: replenishment,
+      onRoadDistancesChanged: (value) => setState(() => roadDistances = value),
+      onRoadMatrixChanged: (value) => setState(() => roadMatrix = value),
+      currentPlan: currentPlan,
+      baselineTotal: regularPlan?.total ?? 0,
+      baselineHasDataGaps: regularPlan?.hasDataGaps ?? false,
+      purchaseHistory: purchaseHistory,
+      onCompletePurchase: completePurchase,
+      onUpdatePurchase: updatePurchase,
+      onDeletePurchase: deletePurchase,
+      onEditMobility: openMobilitySettings,
+      onEditStores: openStoreSettings,
+      storeCount: activeStoreCount(mobility.enabledStoreNames),
+      onOpenCatalog: openCatalog,
+      onResolvePriceGap: openPriceGapEditor,
+      onEditPriceData: openPriceDataSettings,
+      onSavePrice: saveMarketPrice,
+      onSavePrices: saveMarketPrices,
+      onSaveProduct: saveCatalogProduct,
+      onReceiptObservationsChanged: _loadReceiptObservations,
+      onSaveOffer: saveOffer,
+      onSaveProspectRegularPrice: saveProspectRegularPriceObservation,
+      onDeleteOffer: deleteOffer,
+      priceDataSummary: priceDataSettings.openPricesEnabled
+          ? 'Open Prices · max. ${priceDataSettings.openPricesMaxAgeDays} Tage'
+          : 'Nur eigene Preise',
+      onOpenDiagnostics: openDiagnostics,
+      onExportBackup: exportBackup,
+      onImportBackup: importBackup,
+      dataRevision: backupRevision,
+    );
+
       },
     );
 
