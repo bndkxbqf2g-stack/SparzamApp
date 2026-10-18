@@ -33,6 +33,7 @@ void main() {
                 issue.storeName == storeName &&
                 issue.validFrom != null &&
                 issue.validUntil != null &&
+                issue.pages.isNotEmpty &&
                 !issue.validFrom!.isAfter(referenceDay) &&
                 !issue.validUntil!.isBefore(referenceDay),
           )
@@ -181,6 +182,8 @@ void main() {
         (record) => record.priceByBaseUnit!.contains('€/'),
       ),
       isTrue,
-    );  });
+    );
+  });
 }
+
 
