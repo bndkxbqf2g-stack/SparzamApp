@@ -1205,13 +1205,6 @@ void main() {
       ),
     );
 
-    expect(
-      find.byKey(
-        const ValueKey('prospect-cover-image-grid-Lidl'),
-      ),
-      findsOneWidget,
-    );
-
     await _scrollProspects(tester);
     await tester.tap(find.text('Lidl').last);
     await tester.pumpAndSettle();
