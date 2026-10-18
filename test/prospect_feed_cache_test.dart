@@ -104,13 +104,14 @@ void main() {
     expect(result.records, isNotEmpty);
     final reference = result.generatedAt;
     expect(reference, isNotNull);
+    final referenceDay = reference!;
     final currentProspects = result.prospects.where((issue) {
       final validFrom = issue.validFrom;
       final validUntil = issue.validUntil;
       return validFrom != null &&
           validUntil != null &&
-          !validFrom.isAfter(reference!) &&
-          !validUntil.isBefore(reference!) &&
+          !validFrom.isAfter(referenceDay) &&
+          !validUntil.isBefore(referenceDay) &&
           issue.pages.isNotEmpty;
     }).toList(growable: false);
     expect(currentProspects, isNotEmpty);
