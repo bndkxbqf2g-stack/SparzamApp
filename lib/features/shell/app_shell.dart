@@ -83,6 +83,27 @@ import 'shell_pricing.dart';
 import 'shell_purchase_coordinator.dart';
 import 'shell_price_coordinator.dart';
 
+class _ShellPageKeepAlive extends StatefulWidget {
+  const _ShellPageKeepAlive({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_ShellPageKeepAlive> createState() => _ShellPageKeepAliveState();
+}
+
+class _ShellPageKeepAliveState extends State<_ShellPageKeepAlive>
+    with AutomaticKeepAliveClientMixin<_ShellPageKeepAlive> {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
+  }
+}
+
 class AppShell extends StatefulWidget {
   const AppShell({
     super.key,
@@ -2438,10 +2459,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
           children: [
             for (var index = 0; index < pages.length; index++)
               _visitedTabs.contains(index)
-                  ? KeepAlive(
-                      keepAlive: true,
-                      child: pages[index],
-                    )
+                  ? _ShellPageKeepAlive(child: pages[index])
                   : const SizedBox.shrink(),
           ],
         ),
