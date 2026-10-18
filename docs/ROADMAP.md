@@ -1,3 +1,9 @@
+## Update 18.10.2026 – Cover-Fallback-Slots werden nach erfolgreichem Laden frei
+
+- [x] Reservierten HTML-Fallback-Slot nach dem ersten erfolgreichen Cover-Frame freigeben.
+- [x] Begrenzung paralleler Browser-Fallbacks und Freigabe beim Recycling beibehalten.
+- [x] CI und Release inklusive Web-/Pages- und Android-Build für den aktuellen `main`-Stand prüfen.
+
 ## Update 17.10.2026 – Quellgebundene Produktmetadaten im Prospektfeed
 
 - [x] Offizielle strukturierte Händleradapter übernehmen explizit gelieferte
