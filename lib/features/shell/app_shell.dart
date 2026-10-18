@@ -2438,7 +2438,10 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
           children: [
             for (var index = 0; index < pages.length; index++)
               _visitedTabs.contains(index)
-                  ? pages[index]
+                  ? KeepAlive(
+                      keepAlive: true,
+                      child: pages[index],
+                    )
                   : const SizedBox.shrink(),
           ],
         ),
