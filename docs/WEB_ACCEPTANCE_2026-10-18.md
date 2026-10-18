@@ -2,7 +2,7 @@
 
 Diese Abnahme dokumentiert den ausgelieferten main-Stand nach PR #683,
 Commit a845f712ff5a8984b74ffe86f633b64106563ccc, unter
-https://bndkxbqf2g-stack.github.io/SparzamApp/?v=deployed-683-20261018.
+https://bndkxbqf2g-stack.github.io/SparzamApp/?v=deployed-685-20261018.
 
 ## GETESTET
 
