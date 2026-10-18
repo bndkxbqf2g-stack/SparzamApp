@@ -1199,19 +1199,39 @@ ProspectIssue _visibleIssue(
   final current = currentEntries.isEmpty
       ? null
       : _bestVisibleProspect(currentEntries);
-  final selected = current ?? _bestVisibleProspect(entries);
+  final referenceDay = offerFilterDay(now);
+  final upcomingEntries = entries
+      .where((issue) {
+        final start = issue.validFrom;
+        final end = issue.validUntil;
+        if (start == null || end == null) return false;
+        final startDay = DateTime(start.year, start.month, start.day);
+        final endDay = DateTime(end.year, end.month, end.day);
+        return startDay.isAfter(referenceDay) && !endDay.isBefore(startDay);
+      })
+      .toList(growable: false)
+    ..sort(_compareUpcomingProspects);
+  final upcoming = current == null && upcomingEntries.isNotEmpty
+      ? upcomingEntries.first
+      : null;
+  final selected = current ?? upcoming ?? _bestVisibleProspect(entries);
   final showNonCurrentPages =
       current == null &&
       selected.pages.isNotEmpty &&
-      (selected.sourceStatus == 'error' ||
+      (upcoming != null ||
+          selected.sourceStatus == 'error' ||
           selected.sourceStatus == 'stale_fallback');
 
   // A source error can still carry a validated cover, and an explicitly
-  // marked stale fallback may keep an older cover visible. Ordinary expired
-  // issues stay hidden so the current card never advertises an old prospect.
+  // marked stale fallback may keep an older cover visible. A dated upcoming
+  // issue is preview-only; its products remain outside the current record set.
+  // Ordinary expired issues stay hidden so the current card never advertises
+  // an old prospect.
 
   final String sourceStatus;
-  if (currentRecordCount > 0 &&
+  if (upcoming != null && currentRecordCount == 0) {
+    sourceStatus = 'upcoming';
+  } else if (currentRecordCount > 0 &&
       currentRegionalRecordCount == currentRecordCount &&
       selected.sourceStatus != 'error' &&
       selected.sourceStatus != 'stale_fallback') {
@@ -1263,6 +1283,18 @@ ProspectIssue _visibleIssue(
         (showNonCurrentPages ? selected.validUntil : null),
   );
 }
+int _compareUpcomingProspects(ProspectIssue a, ProspectIssue b) {
+  final aStart = a.validFrom;
+  final bStart = b.validFrom;
+  if (aStart == null && bStart == null) return _compareVisibleProspects(a, b);
+  if (aStart == null) return 1;
+  if (bStart == null) return -1;
+  final aDay = DateTime(aStart.year, aStart.month, aStart.day);
+  final bDay = DateTime(bStart.year, bStart.month, bStart.day);
+  final byStart = aDay.compareTo(bDay);
+  return byStart == 0 ? _compareVisibleProspects(a, b) : byStart;
+}
+
 ProspectIssue _bestVisibleProspect(Iterable<ProspectIssue> entries) {
   final sorted = entries.toList(growable: false)
     ..sort(_compareVisibleProspects);
@@ -1313,6 +1345,7 @@ int _prospectStatusRank(String status) => switch (status) {
   'ok' => 4,
   'metadata_only' => 3,
   'current_fallback' => 2,
+  'upcoming' => 2,
   'stale_fallback' => 1,
   'regional_only' => 1,
   _ => 0,
@@ -1841,6 +1874,12 @@ bool _hasPageCompletenessMetadata(ProspectIssue issue) =>
     issue.pageStatus.trim().toLowerCase() == 'unavailable';
 
 String _sourceStatusLabel(ProspectIssue issue) {
+  if (issue.sourceStatus == 'upcoming') {
+    final start = issue.validFrom;
+    final date = start == null ? '' : ' ab ${_prospectDate(start)}';
+    return 'Nächster Prospekt$date. Aktuelle Angebote werden erst zum '
+        'Gültigkeitsbeginn berücksichtigt.';
+  }
   if (issue.sourceStatus == 'no_current_offers') {
     return 'Keine aktuell gültigen Angebotsdaten geladen.';
   }
@@ -2293,6 +2332,11 @@ class ProspectViewerScreen extends StatelessWidget {
       if (issue.validFrom != null && issue.validUntil != null)
         Text(
           '${_prospectDate(issue.validFrom!)} – ${_prospectDate(issue.validUntil!)}',
+          style: const TextStyle(color: Colors.black54),
+        ),
+      if (issue.sourceStatus == 'upcoming')
+        Text(
+          _sourceStatusLabel(issue),
           style: const TextStyle(color: Colors.black54),
         ),
       if (visiblePageCount > 0) ...[
