@@ -432,7 +432,6 @@ ShoppingPriceQuoteSnapshot shoppingPriceQuoteSnapshot(
           ),
         );
   }
-  }
 
   return ShoppingPriceQuoteSnapshot._(
     quotesByProductId: Map<String, List<ShoppingQuote>>.unmodifiable(
