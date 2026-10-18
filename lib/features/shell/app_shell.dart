@@ -216,6 +216,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   SequentialWriteQueue get _priceSaves => _persistenceSaves;
   bool _purchaseInProgress = false;
   final _routingSnapshotCache = ShellRoutingSnapshotCache();
+  final _shellPageCache = ShellPageCache();
 
   List<Product>? _catalogProductsCache;
   List<Product>? _catalogProductsCustomSource;
@@ -2242,8 +2243,68 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     );
   }
 
+  int _shellItemSignature(ListItem item) => Object.hash(
+        item.product.id,
+        item.product.name,
+        item.product.packageAmount,
+        item.product.packageUnit,
+        item.quantity,
+        item.note,
+        item.checked,
+      );
+
+  int _shellPageSignature() {
+    final now = DateTime.now();
+    final day = DateTime(now.year, now.month, now.day);
+    final itemSignature = Object.hashAll(
+      shoppingList.map(_shellItemSignature),
+    );
+    final namedListSignature = Object.hashAll(
+      namedShoppingLists.map(
+        (list) => Object.hash(
+          list.id,
+          list.name,
+          Object.hashAll(list.items.map(_shellItemSignature)),
+        ),
+      ),
+    );
+    return Object.hashAll(<Object?>[
+      backupRevision,
+      day,
+      itemSignature,
+      namedListSignature,
+      activeShoppingListId,
+      budget,
+      mobility,
+      customProducts,
+      marketPrices,
+      priceHistory,
+      historicalPriceObservations,
+      recentPurchases,
+      purchaseHistory,
+      preferredProductByGroup,
+      offers,
+      prospectRecords,
+      prospectIssues,
+      prospectProducts,
+      prospectFeedFromCache,
+      prospectFeedGeneratedAt,
+      prospectRegularPriceCount,
+      prospectRegularPriceCountsByStore,
+      prospectRegularPricePersistenceStatus,
+      _prospectFeedRefreshing,
+      roadDistances,
+      roadMatrix,
+      priceDataSettings,
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final pageSignature = _shellPageSignature();
+    final pages = _shellPageCache.resolve(
+      signature: pageSignature,
+      builder: () {
     final catalog = catalogProducts;
     final plannedPrices = planningMarketPrices;
     final routeSnapshot = _routingSnapshotCache.resolve(
@@ -2262,7 +2323,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     final regularPlan = regularRouteOptimizer?.bestSingleStorePlan();
     final replenishment = replenishmentSuggestions;
     final prospectHistory = prospectPriceHistory;
-    final pages = buildShellPages(
+    return buildShellPages(
       dashboard: dashboardData(routeSnapshot, replenishment),
       onOpenList: () => _selectTab(1),
       onOpenRoute: openRoute,
@@ -2337,6 +2398,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       onExportBackup: exportBackup,
       onImportBackup: importBackup,
       dataRevision: backupRevision,
+    );
+
+      },
     );
 
     return Scaffold(
