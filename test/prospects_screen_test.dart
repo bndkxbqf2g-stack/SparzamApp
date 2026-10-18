@@ -1163,6 +1163,66 @@ void main() {
     expect(find.text('Offiziellen Prospekt öffnen'), findsOneWidget);
   });
 
+  testWidgets('shows the next prospect cover during a date gap', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProspectsScreen(
+          records: const [],
+          prospects: [
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Abgelaufte Woche',
+              pages: const [
+                ProspectPage(
+                  number: 1,
+                  imageUrl: 'https://example.test/expired-cover.jpg',
+                ),
+              ],
+              thumbnailUrl: 'https://example.test/expired-cover.jpg',
+              url: 'https://example.test/official-prospect',
+              sourceStatus: 'ok',
+              validFrom: DateTime(2026, 10, 12),
+              validUntil: DateTime(2026, 10, 17),
+            ),
+            ProspectIssue(
+              storeName: 'Lidl',
+              title: 'Nächster Aktionsprospekt',
+              pages: const [
+                ProspectPage(
+                  number: 1,
+                  imageUrl: 'https://example.test/upcoming-cover.jpg',
+                ),
+              ],
+              thumbnailUrl: 'https://example.test/upcoming-cover.jpg',
+              url: 'https://example.test/official-prospect',
+              sourceStatus: 'ok',
+              validFrom: DateTime(2026, 10, 19),
+              validUntil: DateTime(2026, 10, 24),
+            ),
+          ],
+          now: DateTime(2026, 10, 18),
+        ),
+      ),
+    );
+
+    expect(
+      find.byKey(
+        const ValueKey('prospect-cover-image-grid-Lidl'),
+      ),
+      findsOneWidget,
+    );
+
+    await _scrollProspects(tester);
+    await tester.tap(find.text('Lidl').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Nächster Aktionsprospekt'), findsOneWidget);
+    expect(find.text('19.10.2026 – 24.10.2026'), findsOneWidget);
+    expect(find.textContaining('Nächster Prospekt ab 19.10.2026'), findsOneWidget);
+    expect(find.text('Seite 1'), findsOneWidget);
+    expect(find.text('Keine aktuell gültigen Angebotsdaten geladen.'), findsNothing);
+  });
+
   testWidgets('shows a source thumbnail as the cover page in the viewer', (
     tester,
   ) async {
