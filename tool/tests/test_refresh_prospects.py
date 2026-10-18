@@ -474,9 +474,10 @@ class ProspectParserTest(unittest.TestCase):
                 status = source.get("status")
                 self.assertIn(status, ("ok", "metadata_only", "error"))
                 if status == "error":
-                    # A failed refresh may retain the last validated current
-                    # cover, but it must remain visibly marked as an error.
-                    self.assertTrue(source.get("prospects"))
+                    # A failed refresh may have no current cover when the
+                    # previous validated leaflet has expired. Never treat an
+                    # expired page as current data.
+                    self.assertTrue(source.get("error"))
                 self.assertTrue(source.get("branchId"))
                 self.assertTrue(source.get("location"))
                 self.assertTrue(source.get("address"))
@@ -488,7 +489,9 @@ class ProspectParserTest(unittest.TestCase):
                     <= reference_day
                     <= prospect.get("offerEndDate", "")
                 ]
-                self.assertTrue(current_prospects)
+                if not current_prospects:
+                    self.assertEqual(status, "error")
+                    continue
 
                 cover_pages = current_prospects[0].get("pageSamples", [])
                 self.assertTrue(cover_pages)
@@ -514,9 +517,21 @@ class ProspectParserTest(unittest.TestCase):
                 if source["storeName"] == store_name
             )
             prospects = source.get("prospects", [])
-            self.assertTrue(prospects, store_name)
+            reference_day = refresh.date.fromisoformat(payload["generatedAt"][:10])
+            current_candidates = [
+                prospect
+                for prospect in prospects
+                if (
+                    refresh._prospect_date(prospect.get("offerStartDate"))
+                    <= reference_day
+                    <= refresh._prospect_date(prospect.get("offerEndDate"))
+                )
+            ]
+            if not current_candidates:
+                self.assertEqual(source.get("status"), "error", store_name)
+                continue
             current = max(
-                prospects,
+                current_candidates,
                 key=lambda item: len(item.get("pageSamples", [])),
             )
             with self.subTest(store=store_name):
@@ -831,7 +846,18 @@ class ProspectParserTest(unittest.TestCase):
         netto = next(
             source for source in payload["sources"] if source["storeName"] == "Netto"
         )
+        if not netto.get("prospects"):
+            self.assertEqual(netto.get("status"), "error")
+            self.assertTrue(netto.get("error"))
+            return
         prospect = netto["prospects"][0]
+        reference_day = refresh.date.fromisoformat(payload["generatedAt"][:10])
+        offer_start = refresh._prospect_date(prospect.get("offerStartDate"))
+        offer_end = refresh._prospect_date(prospect.get("offerEndDate"))
+        self.assertIsNotNone(offer_start)
+        self.assertIsNotNone(offer_end)
+        self.assertLessEqual(offer_start, reference_day)
+        self.assertGreaterEqual(offer_end, reference_day)
         self.assertEqual(prospect["offerStartDate"], "2026-10-12")
         self.assertEqual(prospect["offerEndDate"], "2026-10-17")
         self.assertEqual(prospect["pageSamples"][0]["number"], 1)
@@ -842,7 +868,18 @@ class ProspectParserTest(unittest.TestCase):
         aldi = next(
             source for source in payload["sources"] if source["storeName"] == "ALDI Süd"
         )
+        if not aldi.get("prospects"):
+            self.assertEqual(aldi.get("status"), "error")
+            self.assertTrue(aldi.get("error"))
+            return
         prospect = aldi["prospects"][0]
+        reference_day = refresh.date.fromisoformat(payload["generatedAt"][:10])
+        offer_start = refresh._prospect_date(prospect.get("offerStartDate"))
+        offer_end = refresh._prospect_date(prospect.get("offerEndDate"))
+        self.assertIsNotNone(offer_start)
+        self.assertIsNotNone(offer_end)
+        self.assertLessEqual(offer_start, reference_day)
+        self.assertGreaterEqual(offer_end, reference_day)
         self.assertEqual(prospect["offerStartDate"], "2026-10-12")
         self.assertEqual(prospect["offerEndDate"], "2026-10-17")
         self.assertEqual(prospect["pageSamples"][0]["number"], 1)
@@ -853,7 +890,18 @@ class ProspectParserTest(unittest.TestCase):
         penny = next(
             source for source in payload["sources"] if source["storeName"] == "PENNY"
         )
+        if not penny.get("prospects"):
+            self.assertEqual(penny.get("status"), "error")
+            self.assertTrue(penny.get("error"))
+            return
         prospect = penny["prospects"][0]
+        reference_day = refresh.date.fromisoformat(payload["generatedAt"][:10])
+        offer_start = refresh._prospect_date(prospect.get("offerStartDate"))
+        offer_end = refresh._prospect_date(prospect.get("offerEndDate"))
+        self.assertIsNotNone(offer_start)
+        self.assertIsNotNone(offer_end)
+        self.assertLessEqual(offer_start, reference_day)
+        self.assertGreaterEqual(offer_end, reference_day)
         self.assertEqual(prospect["offerStartDate"], "2026-10-12")
         self.assertEqual(prospect["offerEndDate"], "2026-10-17")
         self.assertEqual(prospect["pageSamples"][0]["number"], 1)
@@ -864,7 +912,18 @@ class ProspectParserTest(unittest.TestCase):
         edeka = next(
             source for source in payload["sources"] if source["storeName"] == "EDEKA"
         )
+        if not edeka.get("prospects"):
+            self.assertEqual(edeka.get("status"), "error")
+            self.assertTrue(edeka.get("error"))
+            return
         prospect = edeka["prospects"][0]
+        reference_day = refresh.date.fromisoformat(payload["generatedAt"][:10])
+        offer_start = refresh._prospect_date(prospect.get("offerStartDate"))
+        offer_end = refresh._prospect_date(prospect.get("offerEndDate"))
+        self.assertIsNotNone(offer_start)
+        self.assertIsNotNone(offer_end)
+        self.assertLessEqual(offer_start, reference_day)
+        self.assertGreaterEqual(offer_end, reference_day)
         self.assertEqual(prospect["offerStartDate"], "2026-10-12")
         self.assertEqual(prospect["offerEndDate"], "2026-10-17")
         self.assertEqual(prospect["pageSamples"][0]["number"], 1)
