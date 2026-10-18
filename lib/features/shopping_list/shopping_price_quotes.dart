@@ -398,14 +398,16 @@ ShoppingPriceQuoteSnapshot shoppingPriceQuoteSnapshot(
   final matrixByProductId = <String, List<ShoppingPriceMatrixEntry>>{};
   for (final entry in uniqueItems.entries) {
     final product = entry.value.product;
+    final candidatePrices = priceIndex.valuesFor([product.id]);
+    final candidateOffers = offerIndex.valuesFor(
+      _snapshotOfferProductIds(product, catalogProducts),
+    );
     final quotes = shoppingQuotes(
       entry.value,
       // Price evidence is exact-ID only. Offer evidence additionally keeps
       // the existing generic-family display path through catalog identities.
-      prices: priceIndex.valuesFor([product.id]),
-      offers: offerIndex.valuesFor(
-        _snapshotOfferProductIds(product, catalogProducts),
-      ),
+      prices: candidatePrices,
+      offers: candidateOffers,
       catalogProducts: catalogProducts,
       prospectPriceHistory: prospectPriceHistory,
       enabledStores: enabledStores,
@@ -420,8 +422,8 @@ ShoppingPriceQuoteSnapshot shoppingPriceQuoteSnapshot(
             enabledStores: enabledStores,
             gapReasons: shoppingPriceGapReasons(
               entry.value,
-              prices: prices,
-              offers: offers,
+              prices: candidatePrices,
+              offers: candidateOffers,
               catalogProducts: catalogProducts,
               enabledStores: enabledStores,
               openPricesMaxAgeDays: openPricesMaxAgeDays,

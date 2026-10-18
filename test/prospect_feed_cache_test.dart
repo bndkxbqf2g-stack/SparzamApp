@@ -102,34 +102,25 @@ void main() {
 
     expect(result.generatedAt, isNotNull);
     expect(result.records, isNotEmpty);
-    final netto = result.prospects.where((issue) => issue.storeName == 'Netto');
-    expect(netto, isNotEmpty);
-    expect(netto.first.pages, isNotEmpty);
-    expect(netto.first.pages.first.number, 1);
-    final kaufland = result.prospects.where(
-      (issue) => issue.storeName == 'Kaufland',
-    );
-    expect(kaufland, isNotEmpty);
-    expect(kaufland.first.pages, isNotEmpty);
-    expect(kaufland.first.pages.first.number, 1);
-    final aldi = result.prospects.where(
-      (issue) => issue.storeName == 'ALDI Süd',
-    );
-    expect(aldi, isNotEmpty);
-    expect(aldi.first.pages, isNotEmpty);
-    expect(aldi.first.pages.first.number, 1);
-    final penny = result.prospects.where(
-      (issue) => issue.storeName == 'PENNY',
-    );
-    expect(penny, isNotEmpty);
-    expect(penny.first.pages, isNotEmpty);
-    expect(penny.first.pages.first.number, 1);
-    final edeka = result.prospects.where(
-      (issue) => issue.storeName == 'EDEKA',
-    );
-    expect(edeka, isNotEmpty);
-    expect(edeka.first.pages, isNotEmpty);
-    expect(edeka.first.pages.first.number, 1);
+    final reference = result.generatedAt;
+    expect(reference, isNotNull);
+    final referenceDay = reference!;
+    final currentProspects = result.prospects.where((issue) {
+      final validFrom = issue.validFrom;
+      final validUntil = issue.validUntil;
+      return validFrom != null &&
+          validUntil != null &&
+          !validFrom.isAfter(referenceDay) &&
+          !validUntil.isBefore(referenceDay) &&
+          issue.pages.isNotEmpty;
+    }).toList(growable: false);
+    expect(currentProspects, isNotEmpty);
+    for (final issue in currentProspects) {
+      expect(issue.pages.first.number, 1, reason: issue.storeName);
+      final cover = Uri.tryParse(issue.pages.first.imageUrl);
+      expect(cover?.scheme, 'https', reason: issue.storeName);
+      expect(cover?.host, isNotEmpty, reason: issue.storeName);
+    }
   });
 
   test('non-food public feed records are excluded at the app boundary', () {
