@@ -110,7 +110,7 @@ void main() {
       return validFrom != null &&
           validUntil != null &&
           !validFrom.isAfter(reference!) &&
-          !validUntil.isBefore(reference) &&
+          !validUntil.isBefore(reference!) &&
           issue.pages.isNotEmpty;
     }).toList(growable: false);
     expect(currentProspects, isNotEmpty);
