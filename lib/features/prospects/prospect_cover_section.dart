@@ -621,7 +621,16 @@ class _ProspectAdaptiveImageState extends State<ProspectAdaptiveImage> {
           ? WebHtmlElementStrategy.fallback
           : WebHtmlElementStrategy.never,
       frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-        if (wasSynchronouslyLoaded || frame != null) return child;
+        if (wasSynchronouslyLoaded || frame != null) {
+          if (_useHtmlFallback) {
+            // A successful browser fallback no longer needs a reserved slot;
+            // release it so later covers can recover after a Canvas failure.
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) _releaseFallbackSlot();
+            });
+          }
+          return child;
+        }
         return widget.placeholder;
       },
       errorBuilder: (context, error, stackTrace) {
