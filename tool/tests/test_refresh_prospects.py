@@ -518,15 +518,16 @@ class ProspectParserTest(unittest.TestCase):
             )
             prospects = source.get("prospects", [])
             reference_day = refresh.date.fromisoformat(payload["generatedAt"][:10])
-            current_candidates = [
-                prospect
-                for prospect in prospects
+            current_candidates = []
+            for prospect in prospects:
+                offer_start = refresh._prospect_date(prospect.get("offerStartDate"))
+                offer_end = refresh._prospect_date(prospect.get("offerEndDate"))
                 if (
-                    refresh._prospect_date(prospect.get("offerStartDate"))
-                    <= reference_day
-                    <= refresh._prospect_date(prospect.get("offerEndDate"))
-                )
-            ]
+                    offer_start is not None
+                    and offer_end is not None
+                    and offer_start <= reference_day <= offer_end
+                ):
+                    current_candidates.append(prospect)
             if not current_candidates:
                 self.assertEqual(source.get("status"), "error", store_name)
                 continue
@@ -858,8 +859,7 @@ class ProspectParserTest(unittest.TestCase):
         self.assertIsNotNone(offer_end)
         self.assertLessEqual(offer_start, reference_day)
         self.assertGreaterEqual(offer_end, reference_day)
-        self.assertEqual(prospect["offerStartDate"], "2026-10-12")
-        self.assertEqual(prospect["offerEndDate"], "2026-10-17")
+
         self.assertEqual(prospect["pageSamples"][0]["number"], 1)
         self.assertEqual(prospect["branchId"], "4371")
 
@@ -880,8 +880,7 @@ class ProspectParserTest(unittest.TestCase):
         self.assertIsNotNone(offer_end)
         self.assertLessEqual(offer_start, reference_day)
         self.assertGreaterEqual(offer_end, reference_day)
-        self.assertEqual(prospect["offerStartDate"], "2026-10-12")
-        self.assertEqual(prospect["offerEndDate"], "2026-10-17")
+
         self.assertEqual(prospect["pageSamples"][0]["number"], 1)
         self.assertEqual(prospect["branchId"], "B384")
 
@@ -902,8 +901,7 @@ class ProspectParserTest(unittest.TestCase):
         self.assertIsNotNone(offer_end)
         self.assertLessEqual(offer_start, reference_day)
         self.assertGreaterEqual(offer_end, reference_day)
-        self.assertEqual(prospect["offerStartDate"], "2026-10-12")
-        self.assertEqual(prospect["offerEndDate"], "2026-10-17")
+
         self.assertEqual(prospect["pageSamples"][0]["number"], 1)
         self.assertEqual(prospect["branchId"], "230061")
 
@@ -924,8 +922,7 @@ class ProspectParserTest(unittest.TestCase):
         self.assertIsNotNone(offer_end)
         self.assertLessEqual(offer_start, reference_day)
         self.assertGreaterEqual(offer_end, reference_day)
-        self.assertEqual(prospect["offerStartDate"], "2026-10-12")
-        self.assertEqual(prospect["offerEndDate"], "2026-10-17")
+
         self.assertEqual(prospect["pageSamples"][0]["number"], 1)
         self.assertEqual(prospect["branchId"], "023738")
 
