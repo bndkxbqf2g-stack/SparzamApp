@@ -2334,6 +2334,11 @@ class ProspectViewerScreen extends StatelessWidget {
           '${_prospectDate(issue.validFrom!)} – ${_prospectDate(issue.validUntil!)}',
           style: const TextStyle(color: Colors.black54),
         ),
+      if (issue.sourceStatus == 'upcoming')
+        Text(
+          _sourceStatusLabel(issue),
+          style: const TextStyle(color: Colors.black54),
+        ),
       if (visiblePageCount > 0) ...[
         const SizedBox(height: 14),
         Text(
