@@ -83,6 +83,27 @@ import 'shell_pricing.dart';
 import 'shell_purchase_coordinator.dart';
 import 'shell_price_coordinator.dart';
 
+class _ShellPageKeepAlive extends StatefulWidget {
+  const _ShellPageKeepAlive({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_ShellPageKeepAlive> createState() => _ShellPageKeepAliveState();
+}
+
+class _ShellPageKeepAliveState extends State<_ShellPageKeepAlive>
+    with AutomaticKeepAliveClientMixin<_ShellPageKeepAlive> {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
+  }
+}
+
 class AppShell extends StatefulWidget {
   const AppShell({
     super.key,
@@ -217,6 +238,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   bool _purchaseInProgress = false;
   final _routingSnapshotCache = ShellRoutingSnapshotCache();
   final _shellPageCache = ShellPageCache();
+  // PageView lays out only the active tab. IndexedStack laid out every
+  // mounted prospect and price card on each navigation rebuild.
+  final _shellPageController = PageController(initialPage: 1);
 
   List<Product>? _catalogProductsCache;
   List<Product>? _catalogProductsCustomSource;
@@ -262,6 +286,22 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     setState(() {
       _visitedTabs.add(index);
       selectedIndex = index;
+    });
+    _showTabPage(index);
+  }
+
+  void _showTabPage(int index) {
+    if (_shellPageController.hasClients) {
+      _shellPageController.jumpToPage(index);
+      return;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted ||
+          selectedIndex != index ||
+          !_shellPageController.hasClients) {
+        return;
+      }
+      _shellPageController.jumpToPage(index);
     });
   }
 
@@ -364,6 +404,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     _prospectRefreshTimer?.cancel();
     _prospectRefreshTimer = null;
+    _shellPageController.dispose();
     // Invalidate startup/refresh callbacks before the state is torn down.
     _dataRevision++;
     super.dispose();
@@ -2405,12 +2446,20 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
 
     return Scaffold(
       body: SafeArea(
-        child: IndexedStack(
-          index: selectedIndex,
+        child: PageView(
+          controller: _shellPageController,
+          physics: const NeverScrollableScrollPhysics(),
+          onPageChanged: (index) {
+            if (selectedIndex == index) return;
+            setState(() {
+              _visitedTabs.add(index);
+              selectedIndex = index;
+            });
+          },
           children: [
             for (var index = 0; index < pages.length; index++)
               _visitedTabs.contains(index)
-                  ? pages[index]
+                  ? _ShellPageKeepAlive(child: pages[index])
                   : const SizedBox.shrink(),
           ],
         ),
