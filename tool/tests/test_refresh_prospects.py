@@ -490,7 +490,12 @@ class ProspectParserTest(unittest.TestCase):
                     <= prospect.get("offerEndDate", "")
                 ]
                 if not current_prospects:
-                    self.assertEqual(status, "error")
+                    # A source may publish only the next leaflet at a
+                    # campaign boundary. Keep it as prospect metadata, but do
+                    # not require it to be current or routeable.
+                    self.assertTrue(
+                        source.get("prospects") or status == "error"
+                    )
                     continue
 
                 cover_pages = current_prospects[0].get("pageSamples", [])
@@ -529,7 +534,12 @@ class ProspectParserTest(unittest.TestCase):
                 ):
                     current_candidates.append(prospect)
             if not current_candidates:
-                self.assertEqual(source.get("status"), "error", store_name)
+                # Future-only leaflets are valid metadata at a campaign
+                # boundary; only current pages need the coverage invariant.
+                self.assertTrue(
+                    source.get("prospects") or source.get("status") == "error",
+                    store_name,
+                )
                 continue
             current = max(
                 current_candidates,
