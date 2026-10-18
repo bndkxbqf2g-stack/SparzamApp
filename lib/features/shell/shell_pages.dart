@@ -32,6 +32,27 @@ import '../receipt/receipt_screen.dart';
 import '../route/route_screen.dart';
 import '../shopping_list/shopping_list_screen.dart';
 
+class ShellPageCache {
+  int? _signature;
+  List<Widget>? _pages;
+
+  /// Reuses the complete shell widget tree while only transient navigation
+  /// state changes. A changed data signature rebuilds every page atomically.
+  List<Widget> resolve({
+    required int signature,
+    required List<Widget> Function() builder,
+  }) {
+    final cached = _pages;
+    if (cached != null && _signature == signature) {
+      return cached;
+    }
+    final next = List<Widget>.unmodifiable(builder());
+    _signature = signature;
+    _pages = next;
+    return next;
+  }
+}
+
 List<Widget> buildShellPages({
   required DashboardData dashboard,
   required VoidCallback onOpenList,
