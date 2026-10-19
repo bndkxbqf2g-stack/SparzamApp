@@ -1,12 +1,18 @@
 ## Update 19.10.2026 – Siebte Händlerquelle REWE
 
-- [x] Exakte REWE-Filiale Veitshöchheim (Branch-ID 461683) in Feed, Prospektauflösung, Marktmodell und offiziellen Angebotslinks registrieren.
-- [x] Öffentlichen strukturierten REWE-Marktfeed mit validierter Angebotsseiten-Fallbacklogik als separaten Adapter anbinden.
-- [x] Gültigkeitsfenster, Filialherkunft, Erfassungszeitpunkt und unbekannte Normalpreise durch die bestehende Lebensmittel- und Aktualitätsprüfung führen.
-- [x] Routenobergrenze und Regressionen für den siebten konfigurierten Markt aktualisieren.
-- [ ] Ersten automatischen Refresh-Lauf nach dem Merge auswerten und die tatsächliche REWE-Abdeckung anhand des Quellenstatus dokumentieren.
-- [ ] Weitere Händlerquellen erst nach denselben Nachweis-, Lizenz- und Filialprüfungen aktivieren.
-
+- [x] Exakte REWE-Filiale Veitshöchheim (Branch-ID 461683) in Feed,
+  Prospektauflösung, Marktmodell und offiziellen Angebotslinks registrieren.
+- [x] Offizielle REWE-Filialangebotsseite als separaten, abschaltbaren Adapter
+  anbinden; den vorhandenen strukturierten API-Parser nur offline mit Fixtures
+  prüfen.
+- [x] Gültigkeitsfenster, Filialherkunft, Erfassungszeitpunkt und unbekannte
+  Normalpreise durch die bestehende Lebensmittel- und Aktualitätsprüfung führen.
+- [x] Routenobergrenze und Regressionen für den siebten konfigurierten Markt
+  aktualisieren.
+- [ ] Ersten automatischen Refresh-Lauf nach dem Merge auswerten und die
+  tatsächliche REWE-Abdeckung anhand des Quellenstatus dokumentieren.
+- [ ] Weitere Händlerquellen erst nach denselben Nachweis-, Lizenz- und
+  Filialprüfungen aktivieren.
 
 ## Update 18.10.2026 – Cover-Fallback-Slots werden nach erfolgreichem Laden frei
 
