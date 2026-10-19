@@ -92,7 +92,7 @@ void main() {
     );
     expect(find.textContaining('Grundpreis 4,98 €/kg'), findsNWidgets(2));
   });
-  testWidgets('Preisfenster zeigt Produktbild und Angebotsbild', (
+  testWidgets('Preisfenster zeigt Produktbild und Angebotsbild im Sieben-Markt-Katalog', (
     tester,
   ) async {
     final product = Product(
