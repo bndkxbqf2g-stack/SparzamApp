@@ -51,6 +51,14 @@ const configuredProspectBranches = <ProspectBranch>[
     officialUrl: 'https://www.penny.de/angebote',
   ),
   ProspectBranch(
+    storeName: 'REWE',
+    branchId: '461683',
+    postalCode: '97209',
+    location: 'Veitshöchheim',
+    officialUrl:
+        'https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1/',
+  ),
+  ProspectBranch(
     storeName: 'Netto',
     branchId: '4371',
     postalCode: '97291',
