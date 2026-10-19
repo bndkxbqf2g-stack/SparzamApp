@@ -84,10 +84,10 @@ void main() {
   });
 
   test('alle konfigurierten Märkte haben eine belegte Markt-ID', () {
-    expect(stores, hasLength(6));
+    expect(stores, hasLength(7));
     final branchIds = stores.map((store) => store.branchId).toList();
     expect(branchIds, everyElement(isNotNull));
-    expect(branchIds.toSet(), hasLength(6));
+    expect(branchIds.toSet(), hasLength(7));
   });
 
   test('Produktionsmärkte enthalten keine ungeprüften Beispielpreise', () {
