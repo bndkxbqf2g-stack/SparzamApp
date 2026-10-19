@@ -1320,6 +1320,12 @@ def parse_edeka_catalog_api(json_text, base_url):
     return dedupe(offers), []
 
 
+def parse_edeka_api(json_text, base_url):
+    """Compatibility name for the structured EDEKA catalog adapter."""
+
+    return parse_edeka_catalog_api(json_text, base_url)
+
+
 def _edeka_catalog_url(html_text, base_url):
     iframe_match = re.search(
         r'<iframe\b[^>]*\bsrc=["\']([^"\']+?/index\.html(?:\?[^"\']*)?)["\']',
@@ -3881,7 +3887,7 @@ NON_FOOD_OFFER_RE = re.compile(
     r"wärmepad|waermepad|wärmepflaster|waermepflaster|tabletten|halstabletten|"
     r"kollagenpulver|gutschein-adventskalender|mila's\s+world|max's\s+world|"
     r"home\s+creation|block\s+tech|ambiano|cachet|novitesse|multinorm|"
-    r"rose|taschentücher|taschentuecher|poly\s+palette|schwarzkopf|taft|"
+    r"rose|rosen|christrose|christrosen|taschentücher|taschentuecher|poly\s+palette|schwarzkopf|taft|"
     r"dove|cremedusche|bodyspray|duschgel|dusche|haarreif|wasserkocher|kochgeschirr|haushaltshelfer|"
     r"besenheide|geschenkpapier|geschenkband|"
     r"geschenktaschen|paw\s+patrol|franzis|playmobil|craze|lego|funko|"
