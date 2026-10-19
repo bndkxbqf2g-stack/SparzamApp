@@ -18,6 +18,7 @@ Straßenmatrix hat Vorrang.
 
 Die PR-CI und der erste produktive Refresh-Lauf stehen für dieses Paket noch aus.
 
+
 ## Update 18.10.2026 – Cover-Fallback-Budget nach erfolgreichem Laden freigegeben
 
 Der aktuelle `main`-Stand `d9b7c0a40d0921f1c0d7e45eeefc4d528ad0f3ec` enthält PR #685. Flutter CI `39082116705` und der Release-Lauf `39082116713` liefen erfolgreich durch; der Release umfasste Analyse, Flutter-Tests, Web-Release-Build, Android-APK und GitHub-Pages-Deployment. Der Cover-Renderer gibt einen reservierten HTML-Fallback-Slot nach dem ersten erfolgreich geladenen Fallback-Frame frei. Dadurch können nach anfänglichen Canvas-/CORS-Fehlern weitere Cover wieder begrenzt nachladen, ohne Preis-, Quellen-, Gültigkeits- oder Filiallogik zu verändern.
