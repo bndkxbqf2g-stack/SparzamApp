@@ -51,7 +51,7 @@ SparzamApp ist ein Flutter-Prototyp für intelligent geplante Lebensmitteleinkä
   Angebot wird nicht durch einen zufällig niedrigeren historischen Einzelpreis
   verdrängt.
 - Das Preisfenster jedes Listenartikels zeigt die aktivierten Märkte (bei leerer
-  Auswahl alle sechs Projektmärkte) einzeln. Aktive Angebote, belegte Bon-/eigene
+  Auswahl alle sieben Projektmärkte) einzeln. Aktive Angebote, belegte Bon-/eigene
   Preise und fehlende Preisbelege bleiben sichtbar getrennt; ein fehlender Markt
   wird nicht durch eine Schätzung ersetzt.
 - Die Markt-Detailansicht weist zusätzlich aus, wie viele Listenpositionen einen

@@ -29,6 +29,17 @@ void main() {
     expect(configuredProspectBranch('Unbekannt'), isNull);
   });
 
+  test('resolves the exact REWE branch outside the default postcode', () {
+    final branches = resolver.resolve('97209 Veitshöchheim, Germany');
+
+    expect(branches.map((branch) => branch.storeName), ['REWE']);
+    expect(branches.single.branchId, '461683');
+    expect(
+      configuredProspectBranch('REWE')?.officialUrl,
+      contains('/angebote/veitshoechheim/461683/'),
+    );
+  });
+
   test('keeps existing branches when the postcode is unknown', () {
     const current = [
       ProspectBranch(

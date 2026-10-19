@@ -15,6 +15,7 @@ class OfficialOfferLinks extends StatelessWidget {
     ('ALDI Süd', 'https://www.aldi-sued.de/angebote'),
     ('Netto', 'https://www.netto-online.de/filialangebote'),
     ('Kaufland', 'https://filiale.kaufland.de/angebote.html'),
+    ('REWE', 'https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1/'),
   ];
 
   Future<void> _open(BuildContext context, String url) async {
@@ -38,7 +39,7 @@ class OfficialOfferLinks extends StatelessWidget {
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Aktuelle Angebote bei 6 Märkten',
+          Text('Aktuelle Angebote bei 7 Märkten',
               style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 4),
           const Text(

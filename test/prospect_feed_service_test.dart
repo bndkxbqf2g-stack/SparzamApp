@@ -491,7 +491,7 @@ void main() {
   });
 
   test(
-    'keeps all six configured retailers visible when a source has no data',
+    'keeps all seven configured retailers visible when a source has no data',
     () {
       final result = parseProspectFeed(r'''
 {

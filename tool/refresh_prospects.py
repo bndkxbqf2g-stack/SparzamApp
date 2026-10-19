@@ -34,6 +34,7 @@ SOURCES = (
     ("lidl_zellingen", "Lidl", "https://www.lidl.de/c/online-prospekte/s10005610/", "lidl_api"),
     ("penny_retzbach", "PENNY", "https://www.penny.de/markt/zellingen/230061/penny-retzbach-am-guessgraben-1", "penny_api"),
     ("netto_thuengersheim", "Netto", "https://www.netto-online.de/filialen/thuengersheim/am-strassacker-1/4371", "netto"),
+    ("rewe_veitshoechheim", "REWE", "https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1/", "rewe"),
 )
 
 # These are the configured target branches used by the route and mobility
@@ -70,6 +71,11 @@ SOURCE_BRANCH_METADATA = {
         "branchId": "4371",
         "location": "Thüngersheim",
         "address": "Am Straßacker 1, 97291 Thüngersheim, Germany",
+    },
+    "rewe_veitshoechheim": {
+        "branchId": "461683",
+        "location": "Veitshöchheim",
+        "address": "Pont-l'Eveque-Allee 1, 97209 Veitshöchheim, Germany",
     },
 }
 
@@ -3939,6 +3945,7 @@ PARSERS = {
     "penny": parse_penny,
     "penny_api": parse_penny_api,
     "netto": parse_netto,
+    "rewe": parse_rewe,
 }
 
 def load_previous():

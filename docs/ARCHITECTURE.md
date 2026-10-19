@@ -1,3 +1,21 @@
+## REWE-Quelle und exakte Filiale
+
+tool/refresh_prospects.py behandelt REWE als eigenständige Quelle und liest
+produktiv nur die offizielle Angebotsseite der Filiale 461683. Der vorhandene
+strukturierte Parser bleibt auf Offline-Fixtures begrenzt, weil der Endpunkt
+nicht dokumentiert ist. Die zulässige Seitenantwort speist dieselbe
+Normalisierung, Lebensmittel- und Gültigkeitsprüfung, Branch-Provenienz und
+den versionierten Offline-Feed. Die Quelle kann über die bestehende Auswahl-
+und Fehlerisolationslogik ausfallen, ohne andere Händlerimporte zu blockieren.
+
+Die REWE-Filiale wird mit Standort und Branch-ID in lib/data/stores.dart und
+configuredProspectBranches geführt. Die statische Entfernung von 15,7 km ist
+ein dokumentierter OSRM-Fallback für die Startadresse 97225 Zellingen; sobald
+eine vollständige Straßenmatrix vorliegt, ersetzt sie diesen Wert. Preis-,
+Angebots- und Routenlogik bleiben getrennt: ein Quellenfehler erzeugt keinen
+Preis und verhindert keine Planung mit belegten anderen Filialen.
+
+
 ## Separate Coverseite im Seitenviewer
 
 `ProspectIssue.thumbnailUrl` darf eine eigenständige Coverseite sein. Wenn die validierten Seitenproben keine Seite 1 enthalten, ergänzt der Viewer diese URL als erste Vorschaudarstellung und lässt die übrigen Quellseitenzahlen unverändert. Die Ergänzung erzeugt keine Produkt-, Preis- oder Quellenidentität.

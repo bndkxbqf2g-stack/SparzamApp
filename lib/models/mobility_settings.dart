@@ -1,7 +1,7 @@
 enum MobilityMode { car, bike, walk }
 
 /// Maximum number of markets the current project catalog can route through.
-const maximumSupportedRouteStores = 6;
+const maximumSupportedRouteStores = 7;
 
 extension MobilityModeLabel on MobilityMode {
   String get label => switch (this) {

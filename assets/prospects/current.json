@@ -1886,6 +1886,20 @@
       "branchId": "4371",
       "location": "Thüngersheim",
       "address": "Am Straßacker 1, 97291 Thüngersheim, Germany"
+    },
+    {
+      "id": "rewe_veitshoechheim",
+      "storeName": "REWE",
+      "url": "https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1/",
+      "status": "error",
+      "recordCount": 0,
+      "mode": "rewe",
+      "capturedAt": "2026-10-18T09:12:08.404719Z",
+      "prospects": [],
+      "error": "REWE lieferte beim letzten offiziellen Seitenabruf nur eine WAF-Challenge; es wurde kein Zugriffsschutz umgangen.",
+      "branchId": "461683",
+      "location": "Veitshöchheim",
+      "address": "Pont-l'Eveque-Allee 1, 97209 Veitshöchheim, Germany"
     }
   ],
   "offers": [

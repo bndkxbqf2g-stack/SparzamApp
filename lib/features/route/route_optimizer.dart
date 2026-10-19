@@ -230,7 +230,7 @@ class RouteOptimizer {
   /// The previous implementation stopped at three nested loops, which made
   /// the optimizer silently ignore configured markets once a user selected
   /// four or more stops. The recursive generator keeps the existing
-  /// deterministic source order while supporting the complete six-market
+  /// deterministic source order while supporting the complete seven-market
   /// project catalog without introducing an external solver.
   List<List<Store>> storeCombinations() {
     final source = availableStores;

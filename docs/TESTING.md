@@ -1,3 +1,19 @@
+## Update 19.10.2026 – REWE-Adapter und siebter Markt
+
+- Die Python-Regressionen decken den vorhandenen REWE-API-Parser weiterhin mit
+  anonymisiertem Fixture ab; produktiv ist dieser nicht dokumentierte Endpunkt
+  nicht registriert und der Adapter nutzt im normalen Testlauf keine
+  Live-Abfrage.
+- Feed- und Branch-Regressionen erwarten sieben eindeutige Quellen bzw.
+  konfigurierte Märkte. Ein leerer REWE-Quellenstand bleibt als Fehlerstatus
+  sichtbar und erzeugt keinen Preis.
+- Die Einkaufsmatrix- und Markt-ID-Tests prüfen die siebte Standardfiliale.
+  Die bestehende synthetische Sechs-Markt-Kombinationsprüfung bleibt als
+  unabhängiger Grenzfall erhalten.
+- PR-CI (Python-Parser, flutter analyze, flutter test und
+  flutter build web --release) ist vor dem Merge auszuführen.
+
+
 ## Update 18.10.2026 – Reguläres Preisfeld bleibt nachvollziehbar
 
 `offer_import_test.dart` und `prospect_offer_products_test.dart` prüfen den

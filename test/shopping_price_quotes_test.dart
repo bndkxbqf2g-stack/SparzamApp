@@ -619,7 +619,7 @@ void main() {
     },
   );
 
-  test('without store filter the matrix covers the six configured markets', () {
+  test('without store filter the matrix covers the seven configured markets', () {
     final matrix = shoppingPriceMatrix(
       item,
       prices: const [],
@@ -627,7 +627,7 @@ void main() {
       now: DateTime(2026, 9, 24),
     );
 
-    expect(matrix, hasLength(6));
+    expect(matrix, hasLength(7));
     expect(matrix.every((entry) => entry.quote == null), isTrue);
   });
 

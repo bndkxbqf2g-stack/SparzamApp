@@ -1,3 +1,24 @@
+## Update 19.10.2026 – REWE als siebte exakte Filiale vorbereitet
+
+Der Prospekt-Refresh registriert jetzt die offizielle REWE-Angebotsseite für
+die Filiale 461683 in Veitshöchheim. Der vorhandene strukturierte API-Parser
+bleibt auf Offline-Fixtures begrenzt, weil der Endpunkt nicht dokumentiert ist.
+Angebotsdaten erhalten Gültigkeitsfenster, Filialmetadaten, Nachweis und
+Erfassungszeit; nicht vorhandene Normalpreise bleiben unbekannt.
+
+Der aktuelle versionierte Asset-Stand enthält nach dem begrenzten Abruf vom
+19.10.2026 nur einen transparenten REWE-Quellenfehler ohne Preise, weil die
+offizielle Seite eine WAF-/Cloudflare-Challenge zurückgab. Es wurde kein
+Zugriffsschutz umgangen. Die bestehende Pipeline für die sechs anderen Händler
+bleibt davon getrennt. Markt- und Routenmodelle enthalten die siebte Filiale,
+und das Routenlimit wurde auf sieben Märkte erweitert. Als Offline-Fallback ist
+für die konfigurierte Startadresse 97225 Zellingen eine am 19.10.2026
+öffentlich gemessene OSRM-Strecke von 15,7 km dokumentiert; eine vollständige
+Straßenmatrix hat Vorrang.
+
+Die PR-CI und der erste produktive Refresh-Lauf stehen für dieses Paket noch aus.
+
+
 ## Update 18.10.2026 – Cover-Fallback-Budget nach erfolgreichem Laden freigegeben
 
 Der aktuelle `main`-Stand `d9b7c0a40d0921f1c0d7e45eeefc4d528ad0f3ec` enthält PR #685. Flutter CI `39082116705` und der Release-Lauf `39082116713` liefen erfolgreich durch; der Release umfasste Analyse, Flutter-Tests, Web-Release-Build, Android-APK und GitHub-Pages-Deployment. Der Cover-Renderer gibt einen reservierten HTML-Fallback-Slot nach dem ersten erfolgreich geladenen Fallback-Frame frei. Dadurch können nach anfänglichen Canvas-/CORS-Fehlern weitere Cover wieder begrenzt nachladen, ohne Preis-, Quellen-, Gültigkeits- oder Filiallogik zu verändern.
