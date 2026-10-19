@@ -15,6 +15,7 @@ bestehende Straßenmatrixpfad bleibt fachlich vorrangig; die dokumentierte
 Fallback. Das Routenlimit steigt auf sieben, ohne den eigenen Optimierer durch
 einen externen Solver zu ersetzen.
 
+
 ## D230 – Reguläre Preisfeldherkunft bleibt in MarketPrice-Projektionen erhalten
 
 `regularPriceSource` wird nicht nur in `Offer` und `PriceObservation`, sondern
