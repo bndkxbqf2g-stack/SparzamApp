@@ -1142,8 +1142,101 @@ def _edeka_date(value):
     return None
 
 
-def parse_edeka_api(json_text, base_url):
+_EDEKA_CATALOG_LIST_KEYS = ("docs", "offers", "items", "results")
+_EDEKA_CATALOG_NESTED_KEYS = ("data", "catalog", "response")
+
+
+def _edeka_catalog_documents(payload, depth=0):
+    # Follow only explicit offer-list containers from the public response.
+    if depth > 2:
+        return []
+    if isinstance(payload, list):
+        return payload
+    if not isinstance(payload, dict):
+        return []
+    for key in _EDEKA_CATALOG_LIST_KEYS:
+        candidate = payload.get(key)
+        if isinstance(candidate, list) and candidate:
+            return candidate
+    for key in _EDEKA_CATALOG_NESTED_KEYS:
+        candidate = payload.get(key)
+        nested = _edeka_catalog_documents(candidate, depth + 1)
+        if nested:
+            return nested
+    return []
+
+
+def _edeka_catalog_label(doc):
+    for key in (
+        "titel",
+        "title",
+        "name",
+        "label",
+        "productLabel",
+        "productName",
+        "product_name",
+    ):
+        candidate = _source_text(doc.get(key))
+        if candidate:
+            return candidate
+    return ""
+
+
+def _edeka_catalog_offer_price(doc):
+    # These aliases are sale/current price fields. Reference prices are
+    # deliberately excluded so they cannot become active offers.
+    for key in (
+        "preis",
+        "offerPrice",
+        "offer_price",
+        "salePrice",
+        "sale_price",
+        "aktionspreis",
+        "aktionPreis",
+        "currentPrice",
+        "current_price",
+    ):
+        if key not in doc:
+            continue
+        value = _json_money(doc.get(key))
+        if value is not None:
+            return value
+
+    # Some structured catalog exports wrap the current price below offer,
+    # current, or sale. price is accepted only inside these wrappers.
+    for key in ("offer", "current", "sale"):
+        container = doc.get(key)
+        if not isinstance(container, dict):
+            continue
+        for price_key in ("price", "amount", "value", "offerPrice", "salePrice"):
+            if price_key not in container:
+                continue
+            value = _json_money(container.get(price_key))
+            if value is not None:
+                return value
+    return None
+
+
+def parse_edeka_catalog_api(json_text, base_url):
+    # Parse explicit structured EDEKA catalog offers; never OCR page images.
     payload = json.loads(json_text)
+    if isinstance(payload, dict):
+        docs = _edeka_catalog_documents(payload)
+        root = payload
+    elif isinstance(payload, list):
+        docs = payload
+        root = {}
+    else:
+        raise ValueError("EDEKA API: ungültige Antwort")
+    if not isinstance(docs, list):
+        raise ValueError("EDEKA API: Angebotsliste ist keine Liste")
+
+    offers = []
+    for index, doc in enumerate(docs):
+        if not isinstance(doc, dict):
+            continue
+        label = _edeka_catalog_label(doc)
+        sale = _edeka_catalog_offer_price(doc)    payload = json.loads(json_text)
     if isinstance(payload, dict):
         docs = payload.get("docs", [])
         root = payload
