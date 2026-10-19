@@ -1414,6 +1414,7 @@ def parse_edeka_prospects(
     today=None,
     catalog_xml=None,
     catalog_url=None,
+    product_count=None,
 ):
     """Extract branch-linked EDEKA pages from explicit HTML or catalog XML.
 
@@ -1505,7 +1506,11 @@ def parse_edeka_prospects(
         "offerStartDate": valid_from.isoformat(),
         "offerEndDate": valid_until.isoformat(),
         "status": "current",
-        "productCount": 0,
+        "productCount": (
+            max(0, int(product_count))
+            if isinstance(product_count, int)
+            else 0
+        ),
         "pageCount": len(page_samples),
         "loadedPageCount": len(page_samples),
         "pageStatus": "complete",
@@ -1529,8 +1534,12 @@ def parse_edeka_prospects(
     return [item]
 
 
-def _fetch_edeka_prospects(branch_html, base_url):
-    prospects = parse_edeka_prospects(branch_html, base_url)
+def _fetch_edeka_prospects(branch_html, base_url, *, product_count=None):
+    prospects = parse_edeka_prospects(
+        branch_html,
+        base_url,
+        product_count=product_count,
+    )
     catalog_url = _edeka_catalog_url(branch_html, base_url)
     if not catalog_url:
         return prospects
@@ -1540,6 +1549,7 @@ def _fetch_edeka_prospects(branch_html, base_url):
             base_url,
             catalog_xml=fetch(catalog_url),
             catalog_url=catalog_url,
+            product_count=product_count,
         )
     except Exception as error:
         result = [dict(item) for item in prospects]
@@ -4273,7 +4283,11 @@ def main(selected_source_ids=None):
                     if not offers:
                         raise ValueError("EDEKA API lieferte keine Angebote")
                     try:
-                        prospects = _fetch_edeka_prospects(fetch(url), url)
+                        prospects = _fetch_edeka_prospects(
+                            fetch(url),
+                            url,
+                            product_count=len(current_prospect_offers(offers)),
+                        )
                     except Exception:
                         prospects = []
                 except Exception:
