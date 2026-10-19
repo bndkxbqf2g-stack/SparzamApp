@@ -45,6 +45,16 @@ const stores = <Store>[
     prices: {},
   ),
   Store(
+    name: 'REWE',
+    branchId: '461683',
+    location: 'Veitshöchheim',
+    address: "Pont-l'Eveque-Allee 1, 97209 Veitshöchheim, Germany",
+    // Public OSRM fallback from the configured 97225 Zellingen start area
+    // measured on 2026-10-19; a complete road matrix supersedes this value.
+    distanceKm: 15.7,
+    prices: {},
+  ),
+  Store(
     name: 'Kaufland',
     branchId: 'DE5103',
     location: 'Würzburg · Nürnberger Straße',
