@@ -40,7 +40,6 @@ void main() {
     );
   });
 
-
   test('keeps existing branches when the postcode is unknown', () {
     const current = [
       ProspectBranch(
