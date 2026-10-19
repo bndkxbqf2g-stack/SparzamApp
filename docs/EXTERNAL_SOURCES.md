@@ -43,11 +43,13 @@ wiederholt diese Sperre für ältere Cache-/Asset-Stände.
 - Ein begrenzter read-only Abruf am 19.10.2026 erhielt von der REWE-Seite nur
   eine WAF-/Cloudflare-Challenge. Es wurde kein Zugriffsschutz umgangen und es
   werden keine Challenge-Parameter wiederholt. Der versionierte Feed enthält
-  deshalb bis zu einer zulässigen strukturierten Antwort nur einen transparenten
+  deshalb bis zu einer zulässigen Seitenantwort nur einen transparenten
   Quellenfehler ohne REWE-Preise. Ein Quellfehler lässt die übrigen Händler
   weiterlaufen.
 - Die offizielle Marktseite ist der Nachweis für den Filialbezug:
-  https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1/.
+  https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1.
+
+
 
 ### Netto-Filialprospekt
 
