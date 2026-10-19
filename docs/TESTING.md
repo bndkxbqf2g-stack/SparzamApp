@@ -13,6 +13,7 @@
 - PR-CI (Python-Parser, flutter analyze, flutter test und
   flutter build web --release) ist vor dem Merge auszuführen.
 
+
 ## Update 18.10.2026 – Reguläres Preisfeld bleibt nachvollziehbar
 
 `offer_import_test.dart` und `prospect_offer_products_test.dart` prüfen den
