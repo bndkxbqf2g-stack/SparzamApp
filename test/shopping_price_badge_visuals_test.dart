@@ -130,7 +130,7 @@ void main() {
         ),
       ),
     );
-    expect(find.text('1/6 Märkte'), findsOneWidget);
+    expect(find.text('1/7 Märkte'), findsOneWidget);
     await tester.tap(find.textContaining('Angebot Kaufland'));
     await tester.pumpAndSettle();
 
