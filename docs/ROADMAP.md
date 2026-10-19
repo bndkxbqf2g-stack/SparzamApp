@@ -14,6 +14,7 @@
 - [ ] Weitere Händlerquellen erst nach denselben Nachweis-, Lizenz- und
   Filialprüfungen aktivieren.
 
+
 ## Update 18.10.2026 – Cover-Fallback-Slots werden nach erfolgreichem Laden frei
 
 - [x] Reservierten HTML-Fallback-Slot nach dem ersten erfolgreichen Cover-Frame freigeben.
