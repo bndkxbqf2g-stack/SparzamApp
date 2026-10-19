@@ -1236,24 +1236,7 @@ def parse_edeka_catalog_api(json_text, base_url):
         if not isinstance(doc, dict):
             continue
         label = _edeka_catalog_label(doc)
-        sale = _edeka_catalog_offer_price(doc)    payload = json.loads(json_text)
-    if isinstance(payload, dict):
-        docs = payload.get("docs", [])
-        root = payload
-    elif isinstance(payload, list):
-        docs = payload
-        root = {}
-    else:
-        raise ValueError("EDEKA API: ungültige Antwort")
-    if not isinstance(docs, list):
-        raise ValueError("EDEKA API: docs ist keine Liste")
-
-    offers = []
-    for index, doc in enumerate(docs):
-        if not isinstance(doc, dict):
-            continue
-        label = clean(str(doc.get("titel") or ""))
-        sale = _json_money(doc.get("preis"))
+        sale = _edeka_catalog_offer_price(doc)
         if len(label) < 2 or sale is None or sale <= 0:
             continue
 
@@ -1287,7 +1270,14 @@ def parse_edeka_catalog_api(json_text, base_url):
             if regular is not None:
                 break
 
-        raw_id = clean(str(doc.get("angebotid") or doc.get("externeid") or index))
+        raw_id = clean(str(
+            doc.get("angebotid")
+            or doc.get("offerId")
+            or doc.get("offer_id")
+            or doc.get("externeid")
+            or doc.get("id")
+            or index
+        ))
         proof = base_url + "#offer-" + raw_id
         image = _source_image(
             doc,
@@ -1318,8 +1308,6 @@ def parse_edeka_catalog_api(json_text, base_url):
             ),
         ))
     return dedupe(offers), []
-
-
 def parse_edeka_api(json_text, base_url):
     """Compatibility name for the structured EDEKA catalog adapter."""
 
