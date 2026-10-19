@@ -27,27 +27,27 @@ wiederholt diese Sperre für ältere Cache-/Asset-Stände.
 ### REWE-Filialfeed Veitshöchheim
 
 - Die optionale REWE-Quelle ist als eigener, abschaltbarer Adapter in
-  `tool/refresh_prospects.py` registriert. Sie fragt den öffentlichen
-  strukturierten Marktfeed
-  `https://www.rewe.de/api/stationary-offers/461683` für die exakte Filiale
-  `461683` ab und fällt bei einer nicht verwertbaren Antwort auf die
-  offizielle Angebotsseite derselben Filiale zurück.
-- Übernommen werden nur Artikel mit Preis und explizitem
-  `fromDate`/`untilDate`-Fenster. Produktname, EAN, Packungsgröße,
-  Grundpreis und Bild bleiben unbekannt, wenn der öffentliche Datensatz sie
-  nicht ausdrücklich liefert. Ein fehlender Normalpreis verhindert den
-  Angebotsimport nicht.
+  tool/refresh_prospects.py registriert. Produktiv wird ausschließlich die
+  offizielle Angebotsseite der exakten Filiale 461683 gelesen. Der vorhandene
+  strukturierte API-Parser bleibt auf anonymisierte Offline-Fixtures begrenzt;
+  der nicht dokumentierte Endpunkt wird nicht produktiv verwendet.
+- Übernommen werden nur Artikel mit Preis und einem expliziten
+  Gültigkeitsfenster. Produktname, EAN, Packungsgröße, Grundpreis und Bild
+  bleiben unbekannt, wenn die offizielle Seite sie nicht ausdrücklich liefert.
+  Ein fehlender Normalpreis verhindert den Angebotsimport nicht.
 - Die Zieladresse ist Pont-l'Eveque-Allee 1, 97209 Veitshöchheim. Jede Zeile
-  und der Quellenknoten erhalten die Branch-ID, den Ort, die Adresse, den
-  Nachweis und den Erfassungszeitpunkt. Alte oder nicht aktuelle Datensätze
-  werden durch dieselben Gültigkeits- und Lebensmittelprüfungen wie bei den
-  übrigen offiziellen Quellen ausgeschlossen.
-- Der versionierte Feed enthält bis zum ersten erfolgreichen Lauf nur einen
-  transparenten Quellenfehler ohne REWE-Preise. Dadurch werden keine
-  synthetischen Preise veröffentlicht; ein Quellfehler lässt die übrigen
-  Händler weiterlaufen.
+  und der Quellenknoten erhalten Branch-ID, Ort, Adresse, Nachweis und
+  Erfassungszeitpunkt. Alte oder nicht aktuelle Datensätze werden durch dieselben
+  Gültigkeits- und Lebensmittelprüfungen wie bei den übrigen offiziellen
+  Quellen ausgeschlossen.
+- Ein begrenzter read-only Abruf am 19.10.2026 erhielt von der REWE-Seite nur
+  eine WAF-/Cloudflare-Challenge. Es wurde kein Zugriffsschutz umgangen und es
+  werden keine Challenge-Parameter wiederholt. Der versionierte Feed enthält
+  deshalb bis zu einer zulässigen strukturierten Antwort nur einen transparenten
+  Quellenfehler ohne REWE-Preise. Ein Quellfehler lässt die übrigen Händler
+  weiterlaufen.
 - Die offizielle Marktseite ist der Nachweis für den Filialbezug:
-  [REWE Veitshöchheim – aktuelle Angebote](https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1/).
+  https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1/.
 
 ### Netto-Filialprospekt
 
