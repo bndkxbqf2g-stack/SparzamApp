@@ -3944,8 +3944,8 @@ PARSERS = {
     "lidl": parse_lidl,
     "penny": parse_penny,
     "penny_api": parse_penny_api,
-    "rewe": parse_rewe,
     "netto": parse_netto,
+    "rewe": parse_rewe,
 }
 
 def load_previous():
