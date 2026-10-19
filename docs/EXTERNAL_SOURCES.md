@@ -1,6 +1,6 @@
 # Externe Datenquellen und Lizenzgrenzen
 
-Stand: 2026-10-13
+Stand: 2026-10-19
 
 SparzamApp verwendet externe Quellen nur über kleine, austauschbare Adapter.
 Antworten werden lokal zwischengespeichert, können über den jeweiligen
@@ -23,6 +23,31 @@ Spielzeugkampagnen bleiben als Rohquellen nicht routenfähig. Der App-Parser
 wiederholt diese Sperre für ältere Cache-/Asset-Stände.
 
 ## Tatsächlich integrierte Adapter
+
+### REWE-Filialfeed Veitshöchheim
+
+- Die optionale REWE-Quelle ist als eigener, abschaltbarer Adapter in
+  `tool/refresh_prospects.py` registriert. Sie fragt den öffentlichen
+  strukturierten Marktfeed
+  `https://www.rewe.de/api/stationary-offers/461683` für die exakte Filiale
+  `461683` ab und fällt bei einer nicht verwertbaren Antwort auf die
+  offizielle Angebotsseite derselben Filiale zurück.
+- Übernommen werden nur Artikel mit Preis und explizitem
+  `fromDate`/`untilDate`-Fenster. Produktname, EAN, Packungsgröße,
+  Grundpreis und Bild bleiben unbekannt, wenn der öffentliche Datensatz sie
+  nicht ausdrücklich liefert. Ein fehlender Normalpreis verhindert den
+  Angebotsimport nicht.
+- Die Zieladresse ist Pont-l'Eveque-Allee 1, 97209 Veitshöchheim. Jede Zeile
+  und der Quellenknoten erhalten die Branch-ID, den Ort, die Adresse, den
+  Nachweis und den Erfassungszeitpunkt. Alte oder nicht aktuelle Datensätze
+  werden durch dieselben Gültigkeits- und Lebensmittelprüfungen wie bei den
+  übrigen offiziellen Quellen ausgeschlossen.
+- Der versionierte Feed enthält bis zum ersten erfolgreichen Lauf nur einen
+  transparenten Quellenfehler ohne REWE-Preise. Dadurch werden keine
+  synthetischen Preise veröffentlicht; ein Quellfehler lässt die übrigen
+  Händler weiterlaufen.
+- Die offizielle Marktseite ist der Nachweis für den Filialbezug:
+  [REWE Veitshöchheim – aktuelle Angebote](https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1/).
 
 ### Netto-Filialprospekt
 
