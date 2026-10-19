@@ -49,8 +49,6 @@ wiederholt diese Sperre für ältere Cache-/Asset-Stände.
 - Die offizielle Marktseite ist der Nachweis für den Filialbezug:
   https://www.rewe.de/angebote/veitshoechheim/461683/rewe-markt-pont-leveque-allee-1.
 
-
-
 ### Netto-Filialprospekt
 
 - Der bestehende offizielle Netto-Adapter liest zusätzlich den öffentlichen
