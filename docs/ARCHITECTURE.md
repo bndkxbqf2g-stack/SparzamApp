@@ -15,6 +15,7 @@ eine vollständige Straßenmatrix vorliegt, ersetzt sie diesen Wert. Preis-,
 Angebots- und Routenlogik bleiben getrennt: ein Quellenfehler erzeugt keinen
 Preis und verhindert keine Planung mit belegten anderen Filialen.
 
+
 ## Separate Coverseite im Seitenviewer
 
 `ProspectIssue.thumbnailUrl` darf eine eigenständige Coverseite sein. Wenn die validierten Seitenproben keine Seite 1 enthalten, ergänzt der Viewer diese URL als erste Vorschaudarstellung und lässt die übrigen Quellseitenzahlen unverändert. Die Ergänzung erzeugt keine Produkt-, Preis- oder Quellenidentität.
