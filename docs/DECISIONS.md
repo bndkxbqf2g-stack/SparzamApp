@@ -1,13 +1,13 @@
 ## D231 – REWE wird als siebte exakte, abschaltbare Quelle geführt
 
 REWE wird für die Filiale 461683 in Veitshöchheim über einen eigenen Adapter
-angebunden. Der öffentliche strukturierte Marktfeed ist der erste Transportweg;
-die offizielle Angebotsseite derselben Filiale ist nur der
-Format-/Transportfallback. Der Adapter übernimmt ausschließlich Datensätze mit
-Preis und gültigem Zeitraum und bewahrt Filial-ID, Nachweis und
-Erfassungszeitpunkt. Fehlende Normalpreise, Bilder oder Grundpreise bleiben
-unbekannt. Ein Quellenfehler veröffentlicht keine Preise und isoliert nur
-diesen Händler.
+angebunden. Produktiv wird ausschließlich die offizielle Angebotsseite
+verwendet; der vorhandene strukturierte Parser bleibt auf Offline-Fixtures
+begrenzt, weil der Endpunkt nicht dokumentiert ist. Der Adapter übernimmt
+ausschließlich Datensätze mit Preis und gültigem Zeitraum und bewahrt Filial-ID,
+Nachweis und Erfassungszeitpunkt. Fehlende Normalpreise, Bilder oder
+Grundpreise bleiben unbekannt. Ein Quellenfehler veröffentlicht keine Preise
+und isoliert nur diesen Händler.
 
 Die Filiale gehört damit zum gemeinsamen Markt- und Routenmodell. Der
 bestehende Straßenmatrixpfad bleibt fachlich vorrangig; die dokumentierte
