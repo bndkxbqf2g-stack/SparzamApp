@@ -274,7 +274,7 @@ class ShoppingQuote {
 /// One row of the product × market view shown from the shopping list.
 ///
 /// A missing quote is intentional information: the market is enabled (or is
-/// one of the six configured markets), but no current, comparable evidence is
+/// one of the seven configured markets), but no current, comparable evidence is
 /// available for this exact product identity.
 class ShoppingPriceMatrixEntry {
   const ShoppingPriceMatrixEntry({
